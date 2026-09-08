@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WEI MENG // L&D Architect & Experience Designer</title>
+
+  <!-- Google Fonts: Syne, Space Mono, Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Canvas Confetti CDN for Micro-Rewards -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    /* Refined Neo-Brutalist utility classes */
+    .brutal-border {
+      border: 2.5px solid #111111;
+    }
+    .brutal-border-sm {
+      border: 1.75px solid #111111;
+    }
+    .brutal-shadow {
+      box-shadow: 4px 4px 0px #111111;
+    }
+    .brutal-shadow-lg {
+      box-shadow: 7px 7px 0px #111111;
+    }
+    .brutal-shadow-sm {
+      box-shadow: 2px 2px 0px #111111;
+    }
+    .brutal-btn {
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .brutal-btn:hover {
+      transform: translate(-1.5px, -1.5px);
+      box-shadow: 5.5px 5.5px 0px #111111;
+    }
+    .brutal-btn:active {
+      transform: translate(1.5px, 1.5px);
+      box-shadow: 1px 1px 0px #111111;
+    }
+    
+    /* 3D Flip Card Mechanics with CSS Grid Height Sync (Zero Overlap) */
+    .perspective-1000 {
+      perspective: 1400px;
+    }
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-card.is-flipped {
+      transform: rotateY(180deg);
+    }
+    .flip-face {
+      grid-area: 1 / 1 / 2 / 2;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: rotateY(0deg);
+    }
+    .flip-back {
+      transform: rotateY(180deg);
+    }
+    .flip-card:not(.is-flipped) .flip-back {
+      pointer-events: none;
+    }
+    .flip-card.is-flipped .flip-face:not(.flip-back) {
+      pointer-events: none;
+    }
+
+    /* Accessibility: Font Scaling */
+    html.text-size-lg {
+      font-size: 115%;
+    }
+    html.text-size-xl {
+      font-size: 130%;
+    }
+
+    /* Accessibility: High Contrast Mode */
+    body.high-contrast-mode {
+      background-color: #ffffff !important;
+      color: #000000 !important;
+      filter: contrast(135%);
+    }
+    body.high-contrast-mode .bg-clean-bone,
+    body.high-contrast-mode .bg-white {
+      background-color: #ffffff !important;
+      color: #000000 !important;
+      border-color: #000000 !important;
+    }
+
+    /* Minimalist Mode Overrides */
+    body.minimalist-mode {
+      background-color: #ffffff !important;
+      background-image: none !important;
+      color: #1f2937 !important;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+    }
+    body.minimalist-mode .font-syne {
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      letter-spacing: -0.02em;
+    }
+    body.minimalist-mode .brutal-border,
+    body.minimalist-mode .brutal-border-sm {
+      border-color: #e5e7eb !important;
+      border-width: 1px !important;
+    }
+    body.minimalist-mode .brutal-shadow,
+    body.minimalist-mode .brutal-shadow-lg,
+    body.minimalist-mode .brutal-shadow-sm {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+    }
+    body.minimalist-mode .bg-acid-lime,
+    body.minimalist-mode .bg-cyber-lilac,
+    body.minimalist-mode .bg-hyper-coral,
+    body.minimalist-mode .bg-electric-mint,
+    body.minimalist-mode .bg-lemon-drop {
+      background-color: #f3f4f6 !important;
+      color: #111827 !important;
+    }
+    body.minimalist-mode .non-essential-clutter {
+      display: none !important;
+    }
+    body.minimalist-mode header {
+      background-color: rgba(255, 255, 255, 0.95) !important;
+      border-bottom: 1px solid #e5e7eb !important;
+    }
+
+    /* Soft grid pattern */
+    .bg-grid-pattern {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(17, 17, 17, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(17, 17, 17, 0.04) 1px, transparent 1px);
+    }
+
+    ::selection {
+      background-color: #D2FF00;
+      color: #111111;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: flex;
+      width: 200%;
+      animation: marquee 28s linear infinite;
+    }
+    .animate-marquee:hover {
+      animation-play-state: paused;
+    }
+
+    /* Architectural Cropped Monogram: Cut off left of W and right of M */
+    .monogram-w {
+      display: inline-block;
+      clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 15% 100%);
+      -webkit-clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 15% 100%);
+    }
+    .monogram-m {
+      display: inline-block;
+      clip-path: polygon(0% 0%, 85% 0%, 85% 100%, 0% 100%);
+      -webkit-clip-path: polygon(0% 0%, 85% 0%, 85% 100%, 0% 100%);
+    }
+  </style>
+</head>
+<body class="bg-[#FAF8F5] text-[#111111] font-sans bg-grid-pattern min-h-screen overflow-x-hidden antialiased selection:bg-[#D2FF00] selection:text-[#111111]">
+
+  <!-- Audio & Sound Toggle -->
+  <div id="floating-sound-control" class="fixed bottom-5 left-5 z-40 non-essential-clutter">
+    <button id="sound-toggle-btn" class="bg-white brutal-border brutal-shadow-sm px-3.5 py-2 rounded-xl font-mono text-xs flex items-center gap-2 brutal-btn font-bold text-gray-800" title="Toggle sound effects">
+      <span id="sound-icon">🔊</span>
+      <span id="sound-label">AUDIO: ON</span>
+    </button>
+  </div>
+
+  <!-- Floating Boss Key (Panic Button) -->
+  <div class="fixed bottom-5 right-5 z-40 non-essential-clutter">
+    <button id="boss-key-btn" class="bg-[#FF4834] text-white brutal-border brutal-shadow-sm px-4 py-2.5 rounded-xl font-mono text-xs flex items-center gap-2 brutal-btn font-bold tracking-wide" title="The Boss is coming! (Press Esc)">
+      <span class="text-base">🚨</span>
+      <span class="hidden sm:inline">BOSS KEY (Esc)</span>
+      <span class="sm:hidden">PANIC</span>
+    </button>
+  </div>
+
+  <!-- Selection XP Tooltip -->
+  <div id="xp-float-tooltip" class="fixed pointer-events-none transition-opacity duration-300 opacity-0 z-50 bg-[#D2FF00] text-[#111111] font-mono text-xs font-bold px-3 py-1.5 brutal-border brutal-shadow-sm rounded-full transform -translate-y-8">
+    ⚡ +10 XP: Active Reading Strategy!
+  </div>
+
+  <!-- ACCESSIBILITY TOP BANNER -->
+  <div id="a11y-bar" class="bg-white border-b border-gray-200 px-4 py-1.5 text-xs font-mono text-gray-800 flex flex-wrap items-center justify-between gap-3 z-50 relative">
+    <div class="flex items-center gap-2">
+      <span class="font-bold flex items-center gap-1">
+        <span>♿</span> <span>ACCESSIBILITY:</span>
+      </span>
+      <!-- Font Scale Buttons -->
+      <div class="inline-flex items-center bg-gray-100 rounded-md p-0.5 border border-gray-300">
+        <button onclick="changeFontSize('normal')" class="px-2 py-0.5 rounded hover:bg-white text-[11px] font-bold" title="Default Text Size">A</button>
+        <button onclick="changeFontSize('lg')" class="px-2 py-0.5 rounded hover:bg-white text-xs font-bold" title="Large Text">A+</button>
+        <button onclick="changeFontSize('xl')" class="px-2 py-0.5 rounded hover:bg-white text-sm font-bold" title="Extra Large Text">A++</button>
+      </div>
+
+      <!-- High Contrast Toggle -->
+      <button id="high-contrast-toggle" onclick="toggleHighContrast()" class="px-2.5 py-1 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300 text-xs font-bold flex items-center gap-1" title="Toggle High Contrast Mode">
+        <span>🌓</span>
+        <span>High Contrast</span>
+      </button>
+
+      <!-- Read Aloud (Text-to-Speech) -->
+      <button id="tts-read-btn" onclick="toggleReadAloud()" class="px-2.5 py-1 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300 text-xs font-bold flex items-center gap-1.5 text-gray-900" title="Read content aloud">
+        <span id="tts-icon">🎧</span>
+        <span id="tts-label">Read Aloud</span>
+      </button>
+    </div>
+
+    <!-- Active TTS Status Pill -->
+    <div id="tts-status-indicator" class="hidden items-center gap-2 text-blue-600 font-bold animate-pulse">
+      <span>● Reading active summary...</span>
+      <button onclick="stopReadAloud()" class="underline text-red-600 hover:text-red-800 ml-1">Stop</button>
+    </div>
+  </div>
+
+  <!-- STICKY TOP HUD / LMS NAVIGATION -->
+  <header class="sticky top-0 z-40 bg-[#FAF8F5]/95 backdrop-blur-md border-b-[2.5px] border-[#111111] px-4 lg:px-8 py-3.5 transition-colors">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      
+      <!-- Brand & Role -->
+      <a href="#hero" class="flex items-center gap-3 group" aria-label="Wei MENG Home">
+        <!-- Redesigned Architectural Monogram Logo (Pure Typography & Form, Zero Emoji) -->
+        <div class="relative w-12 h-12 bg-[#D2FF00] brutal-border brutal-shadow-sm rounded-xl flex items-center justify-center transition-all duration-300 group-hover:-translate-y-0.5 group-hover:rotate-[-3deg] group-hover:shadow-[5.5px_5.5px_0px_#111111] overflow-hidden select-none flex-shrink-0" title="Wei MENG: Learning In Motion">
+          <!-- Dot grid subtle pattern -->
+          <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#111111_1px,transparent_1px)] [background-size:5px_5px]"></div>
+          <!-- Pure Geometric Monogram (No Emojis) -->
+          <div class="relative z-10 flex items-center justify-center font-syne font-black text-[24px] tracking-[-0.06em] leading-none text-[#111111]">
+            <span class="monogram-w transition-transform duration-300 group-hover:-translate-x-0.5">W</span>
+            <span class="text-xs font-mono font-black text-[#111111]/50 mx-[1px] select-none">/</span>
+            <span class="monogram-m transition-transform duration-300 group-hover:translate-x-0.5">M</span>
+          </div>
+          <!-- Neo status accent pip -->
+          <span class="absolute bottom-1 right-1 w-1.5 h-1.5 rounded-full bg-[#111111]"></span>
+        </div>
+        <div>
+          <div class="font-syne font-extrabold text-base tracking-tight leading-none flex items-center gap-2 text-[#111111]">
+            WEI MENG
+            <span class="bg-[#D0BCFF] text-[#111111] px-2 py-0.5 rounded text-xs font-mono brutal-border-sm font-bold tracking-wider hidden sm:inline-block">L&D ARCHITECT</span>
+          </div>
+          <span class="font-sans text-xs text-gray-700 font-medium hidden sm:block mt-0.5">Behavioral Systems & Experiential EdTech</span>
+        </div>
+      </a>
+
+      <!-- Quick Section Jump Anchors -->
+      <nav class="hidden lg:flex items-center gap-3 font-mono text-xs font-bold text-gray-800">
+        <a href="#module-01" class="px-2.5 py-1 rounded-md hover:bg-[#FFE600] transition-colors">01. Who I Am</a>
+        <span class="text-gray-400">•</span>
+        <a href="#module-02" class="px-2.5 py-1 rounded-md hover:bg-[#D0BCFF] transition-colors">02. What I Do</a>
+        <span class="text-gray-400">•</span>
+        <a href="#module-03" class="px-2.5 py-1 rounded-md hover:bg-[#A7F3D0] transition-colors">03. Project Vault</a>
+        <span class="text-gray-400">•</span>
+        <a href="#executive-action" class="px-2.5 py-1 rounded-md hover:bg-[#D2FF00] transition-colors">04. Connect</a>
+      </nav>
+
+      <!-- Global Controls: Minimalist Switch + Recruiter Fast Track -->
+      <div class="flex items-center gap-2.5">
+        <!-- Minimalist / Brutalist Design Toggle Button -->
+        <button id="minimalist-toggle-btn" onclick="toggleMinimalistMode()" class="px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold transition-all bg-white brutal-border brutal-shadow-sm flex items-center gap-1.5 hover:bg-gray-100" title="Toggle Clean Minimalist vs Neo-Brutalist Layout">
+          <span id="minimalist-icon">◻️</span>
+          <span id="minimalist-label" class="hidden sm:inline font-bold">Minimalist View</span>
+        </button>
+
+        <button onclick="openFastDossierModal()" class="hidden sm:flex items-center gap-1.5 bg-white hover:bg-yellow-100 brutal-border-sm px-3 py-1.5 rounded-lg font-mono text-xs font-bold text-[#111111] transition-all brutal-shadow-sm" title="View 30-second summary">
+          <span>⚡</span>
+          <span>Recruiter TL;DR</span>
+        </button>
+
+        <div class="hidden xl:flex items-center gap-1 bg-white brutal-border-sm px-3 py-1.5 rounded-full font-mono text-xs font-bold shadow-sm text-[#111111] non-essential-clutter">
+          <span class="text-[#FFE600]">⚡</span>
+          <span id="xp-counter">0</span>
+          <span class="text-gray-600 text-xs">XP</span>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Marquee Notice -->
+  <div class="bg-[#111111] text-white py-2.5 overflow-hidden border-b-2 border-[#111111] font-mono text-xs tracking-wider uppercase font-semibold non-essential-clutter">
+    <div class="animate-marquee whitespace-nowrap flex gap-8">
+      <span>🚨 NOTICE: Adult attention spans are not dead • They just hate boring PDF handbooks</span>
+      <span>•</span>
+      <span>💡 Microlearning with cognitive dignity</span>
+      <span>•</span>
+      <span>🎬 Narrative Drama > 60-Slide Mandatory Compliance Decks</span>
+      <span>•</span>
+      <span>🤖 AI Simulations that make failing safe & funny</span>
+      <span>•</span>
+      <span>🎮 Gamification with genuine intrinsic stakes</span>
+    </div>
+  </div>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-24">
+
+    <!-- HERO SECTION (Syllabus Removed; Sharp Focus on Identity & Action) -->
+    <section id="hero" class="pt-2 pb-4 space-y-8">
+      
+      <!-- Top Orientation Strip -->
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white brutal-border brutal-shadow-sm p-4 rounded-xl font-mono text-xs sm:text-sm">
+        <div class="flex items-center gap-3">
+          <span class="w-3 h-3 rounded-full bg-[#A7F3D0] border border-[#111111] animate-ping"></span>
+          <span class="font-bold uppercase tracking-wider text-[#111111]">INTERACTIVE PORTFOLIO & RESUME DOSSIER</span>
+          <span class="bg-gray-100 text-gray-800 px-2.5 py-0.5 rounded text-xs font-semibold hidden sm:inline brutal-border-sm">AVAILABLE FOR LEAD & PRINCIPAL ROLES</span>
+        </div>
+        <div class="flex items-center gap-3 text-gray-700 font-medium">
+          <span>⏱️ 2-Min Tour</span>
+          <span class="hidden md:inline">•</span>
+          <span class="hidden md:inline">🎯 Flip Cards to Reveal Reality</span>
+        </div>
+      </div>
+
+      <!-- Main Hero Content: Two-Column Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        
+        <!-- Left Column: Core Value Proposition -->
+        <div class="lg:col-span-8 space-y-6 flex flex-col justify-between">
+          
+          <div class="space-y-4">
+            <div class="inline-flex items-center gap-2 bg-[#D0BCFF] px-3.5 py-1.5 brutal-border rounded-full font-mono text-xs font-bold brutal-shadow-sm text-[#111111]">
+              <span>🎓</span>
+              <span>SPECIALIZATION: WORKPLACE LEARNING EXPERIENCE DESIGN & EDTECH</span>
+            </div>
+
+            <h1 class="font-syne text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] text-[#111111]">
+              MAKING WORKPLACE LEARNING 
+              <span class="relative inline-block bg-[#D2FF00] px-3 py-1 brutal-border rotate-[-1.5deg] brutal-shadow my-1">
+                ADDICTIVE.
+              </span>
+            </h1>
+
+            <p class="font-syne text-xl sm:text-2xl font-bold text-gray-900 leading-snug">
+              Hi, I'm <span class="text-[#FF4834] underline decoration-wavy decoration-2">Wei MENG</span>. I build the antidote to boring corporate training.
+            </p>
+          </div>
+
+          <!-- Hero Statement Box -->
+          <div class="bg-white brutal-border brutal-shadow p-6 sm:p-7 rounded-2xl relative space-y-4">
+            <p class="text-[#111111] text-base sm:text-lg font-medium leading-relaxed font-sans">
+              "Let’s face the cold truth: <strong>most corporate training is an unread PDF or a 60-slide compliance deck</strong> running on mute in the background.
+            </p>
+            <p class="text-[#111111] text-base sm:text-lg font-medium leading-relaxed font-sans">
+              I do things differently: I produce <strong>bingeable short drama series</strong> with cliffhangers, build <strong>real-time AI roleplay sandboxes</strong> where failing is safe and funny, and engineer interactive web playgrounds that treat adult learners with cognitive dignity."
+            </p>
+          </div>
+
+          <!-- CTAs and Direct Guidance -->
+          <div class="space-y-3 pt-2">
+            <div class="flex flex-wrap items-center gap-3">
+              <a href="#module-01" class="brutal-btn bg-[#D2FF00] text-[#111111] px-6 py-4 brutal-border brutal-shadow-lg rounded-xl font-syne font-extrabold text-base flex items-center gap-2.5 hover:bg-yellow-300">
+                <span>Explore Interactive Dossier</span>
+                <span class="text-lg">↓</span>
+              </a>
+
+              <button onclick="openFastDossierModal()" class="brutal-btn bg-white px-5 py-4 brutal-border brutal-shadow rounded-xl font-mono text-xs sm:text-sm font-bold flex items-center gap-2 text-gray-900 hover:bg-[#FFE600]">
+                <span>📋</span>
+                <span>Recruiter 30s Fast Dossier</span>
+              </button>
+
+              <button id="skip-training-btn" class="brutal-btn bg-gray-100 hover:bg-red-50 px-4 py-4 brutal-border brutal-shadow-sm rounded-xl font-mono text-xs font-bold flex items-center gap-2 text-gray-700 hover:text-[#FF4834] non-essential-clutter">
+                <span>🚫</span>
+                <span class="hidden sm:inline">Skip Training</span>
+              </button>
+            </div>
+
+            <!-- Guidance Pill -->
+            <div class="flex items-center gap-2.5 bg-yellow-50 border border-yellow-300 p-3 rounded-xl font-mono text-xs text-yellow-900 font-bold">
+              <span class="text-base animate-bounce">👇</span>
+              <span>Scroll down to Module 01 & 02: Tap any card to flip between my formal resume and what I REALLY do!</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: At-a-Glance Telemetry -->
+        <div class="lg:col-span-4 flex flex-col justify-between space-y-4">
+          
+          <div class="bg-white brutal-border brutal-shadow-lg rounded-2xl p-6 space-y-5 flex-1">
+            <div class="flex justify-between items-center border-b-2 border-[#111111] pb-3">
+              <div>
+                <span class="font-syne font-extrabold text-sm uppercase tracking-wider text-[#111111] block">AT A GLANCE</span>
+                <span class="font-mono text-xs text-gray-600 font-bold">EXECUTIVE CREDENTIAL TELEMETRY</span>
+              </div>
+              <span class="bg-[#D2FF00] text-[#111111] font-mono text-xs font-bold px-2.5 py-0.5 rounded brutal-border-sm">VERIFIED</span>
+            </div>
+
+            <!-- Bento Stats -->
+            <div class="grid grid-cols-2 gap-3.5">
+              <div class="bg-[#FAF8F5] p-3.5 rounded-xl brutal-border-sm space-y-1">
+                <span class="font-mono text-xs text-gray-600 font-bold block uppercase">EXPERIENCE</span>
+                <span class="font-syne font-black text-2xl text-[#111111] block">8+ Yrs</span>
+                <span class="font-sans text-xs text-gray-700 font-medium block">Enterprise L&D</span>
+              </div>
+              <div class="bg-[#FAF8F5] p-3.5 rounded-xl brutal-border-sm space-y-1">
+                <span class="font-mono text-xs text-gray-600 font-bold block uppercase">VOLUNTARY COMPLETION</span>
+                <span class="font-syne font-black text-2xl text-[#FF4834] block">94.2%</span>
+                <span class="font-sans text-xs text-gray-700 font-medium block">vs. 14% industry avg</span>
+              </div>
+              <div class="bg-[#FAF8F5] p-3.5 rounded-xl brutal-border-sm space-y-1">
+                <span class="font-mono text-xs text-gray-600 font-bold block uppercase">LEARNER NPS</span>
+                <span class="font-syne font-black text-2xl text-blue-600 block">+76</span>
+                <span class="font-sans text-xs text-gray-700 font-medium block">High advocacy</span>
+              </div>
+              <div class="bg-[#FAF8F5] p-3.5 rounded-xl brutal-border-sm space-y-1">
+                <span class="font-mono text-xs text-gray-600 font-bold block uppercase">TOOL STACK</span>
+                <span class="font-syne font-black text-xl text-[#111111] block">GenAI & Web</span>
+                <span class="font-sans text-xs text-gray-700 font-medium block">LXPs • Video • Sims</span>
+              </div>
+            </div>
+
+            <!-- Behavioral Gauges -->
+            <div class="space-y-3 font-mono text-xs pt-1 border-t-2 border-dashed border-gray-200">
+              <div>
+                <div class="flex justify-between font-bold mb-1.5 text-xs text-gray-800">
+                  <span>RETENTION VIA INTERACTION</span>
+                  <span class="text-blue-600 font-extrabold">4.8x INDUSTRY AVG</span>
+                </div>
+                <div class="w-full bg-gray-100 h-3 brutal-border-sm rounded-full overflow-hidden p-0.5">
+                  <div class="bg-[#D2FF00] h-full rounded-full w-[92%]"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between font-bold mb-1.5 text-xs text-gray-800">
+                  <span>ALLERGY TO 60-SLIDE DECKS</span>
+                  <span class="text-[#FF4834] font-extrabold">100% (CRITICAL)</span>
+                </div>
+                <div class="w-full bg-gray-100 h-3 brutal-border-sm rounded-full overflow-hidden p-0.5">
+                  <div class="bg-[#FFE600] h-full rounded-full w-[100%]"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mini Interactive Soundboard -->
+            <div class="pt-2 border-t-2 border-dashed border-gray-200 non-essential-clutter">
+              <span class="font-mono text-xs font-bold block mb-2 text-gray-700">TACTILE SOUND SAMPLER:</span>
+              <div class="grid grid-cols-3 gap-2 font-mono text-xs">
+                <button onclick="playSynthSound('blip')" class="py-1.5 px-2 bg-gray-50 brutal-border-sm rounded-lg hover:bg-[#D2FF00] text-center font-bold text-[#111111]">
+                  🔔 Ting
+                </button>
+                <button onclick="playSynthSound('arcade')" class="py-1.5 px-2 bg-gray-50 brutal-border-sm rounded-lg hover:bg-[#D0BCFF] text-center font-bold text-[#111111]">
+                  🕹️ 8-Bit
+                </button>
+                <button onclick="playSynthSound('chord')" class="py-1.5 px-2 bg-gray-50 brutal-border-sm rounded-lg hover:bg-[#A7F3D0] text-center font-bold text-[#111111]">
+                  🎉 Win
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- MODULE 01: WHO I AM (INTERACTIVE FLIP CARD) -->
+    <section id="module-01" class="scroll-mt-24 space-y-6">
+      
+      <!-- Section Header with Guidance -->
+      <div class="flex flex-wrap items-end justify-between gap-4 border-b-2 border-[#111111] pb-4">
+        <div>
+          <div class="font-mono text-xs font-bold text-[#FF4834] tracking-wider uppercase mb-1">MODULE 01 // IDENTITY DOSSIER</div>
+          <h2 class="font-syne text-3xl sm:text-5xl font-extrabold text-[#111111]">WHO I AM.</h2>
+        </div>
+        
+        <!-- Guided Flip Indicator Pill -->
+        <button onclick="toggleCardFlip('card-identity')" class="px-4 py-2 bg-[#D2FF00] text-[#111111] brutal-border brutal-shadow-sm font-mono text-xs font-bold rounded-xl brutal-btn flex items-center gap-2">
+          <span>🔄</span>
+          <span id="flip-identity-btn-text">FLIP TO REVEAL: WHO I REALLY AM</span>
+        </button>
+      </div>
+
+      <!-- 3D Flip Card Container -->
+      <div class="perspective-1000 w-full min-h-[420px] cursor-pointer" onclick="toggleCardFlip('card-identity')" tabindex="0" role="button" aria-label="Flip card to switch between formal and unfiltered identity">
+        <div id="card-identity" class="flip-card flip-card-inner min-h-[420px]">
+          
+          <!-- FRONT FACE: Formal Resume Dossier (Who I Am) -->
+          <div class="flip-face bg-white brutal-border brutal-shadow-lg rounded-2xl p-7 sm:p-9 space-y-6 flex flex-col justify-between">
+            <div class="space-y-4">
+              <div class="flex justify-between items-center border-b border-gray-200 pb-3">
+                <span class="bg-blue-50 text-blue-700 font-mono font-bold text-xs px-3 py-1 rounded-md brutal-border-sm">
+                  SIDE A // FORMAL RESUME DOSSIER
+                </span>
+                <span class="font-mono text-xs text-gray-500 font-bold flex items-center gap-1">
+                  <span>👉 Click card to flip</span>
+                  <span>🔄</span>
+                </span>
+              </div>
+
+              <h3 class="font-syne text-2xl sm:text-3xl font-bold text-gray-900 leading-snug">
+                Strategic Learning Experience Architect
+              </h3>
+
+              <p class="text-gray-800 leading-relaxed text-base font-sans font-medium">
+                Over <strong>8+ years</strong> designing and scaling enterprise instructional programs for high-growth tech companies and cross-functional teams. Grounded in <strong>Knowles’ Andragogy</strong>, <strong>Cognitive Load Theory</strong>, and <strong>Kirkpatrick’s Four-Level Evaluation Model</strong>.
+              </p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 border-t-2 border-gray-100 pt-5 font-sans text-sm text-gray-800">
+                <div class="bg-[#FAF8F5] p-3 rounded-lg brutal-border-sm space-y-1">
+                  <span class="font-mono text-xs text-blue-700 font-bold block">01. TAXONOMY</span>
+                  <span class="text-xs font-semibold">ADDIE, SAM, Agile Scrum ISD & Backward Design</span>
+                </div>
+                <div class="bg-[#FAF8F5] p-3 rounded-lg brutal-border-sm space-y-1">
+                  <span class="font-mono text-xs text-blue-700 font-bold block">02. ECOSYSTEMS</span>
+                  <span class="text-xs font-semibold">Enterprise LXPs, AI Agent Coaching, SCORM/xAPI</span>
+                </div>
+                <div class="bg-[#FAF8F5] p-3 rounded-lg brutal-border-sm space-y-1">
+                  <span class="font-mono text-xs text-blue-700 font-bold block">03. AUDIENCE</span>
+                  <span class="text-xs font-semibold">Engineering Orgs, People Leaders & C-Suite</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center text-xs font-mono text-gray-600 pt-4 border-t border-gray-200">
+              <span>Status: Standard Corporate Credentials</span>
+              <span class="font-bold text-blue-700">Click anywhere on this card to flip ↺</span>
+            </div>
+          </div>
+
+          <!-- BACK FACE: Unfiltered Reality (Who I REALLY Am) -->
+          <div class="flip-face flip-back bg-white brutal-border brutal-shadow-lg rounded-2xl p-7 sm:p-9 space-y-6 flex flex-col justify-between border-[#FF4834]/80 bg-gradient-to-br from-white via-red-50/30 to-yellow-50/30">
+            <div class="space-y-4">
+              <div class="flex justify-between items-center border-b border-[#FF4834]/30 pb-3">
+                <span class="bg-[#FF4834] text-white font-mono font-bold text-xs px-3 py-1 rounded-md brutal-border-sm">
+                  SIDE B // UNFILTERED TRUTH (WHO I REALLY AM)
+                </span>
+                <span class="font-mono text-xs text-[#FF4834] font-bold flex items-center gap-1">
+                  <span>👉 Click card to flip back</span>
+                  <span>🔄</span>
+                </span>
+              </div>
+
+              <h3 class="font-syne text-2xl sm:text-3xl font-extrabold text-[#111111] leading-snug">
+                The Attention-Heist Specialist
+              </h3>
+
+              <p class="text-gray-900 font-medium leading-relaxed text-base font-sans">
+                I have an acute allergic reaction to stock photos of models smiling over glass conference tables. My brain is a three-way collision between an <strong>obsessive cognitive scientist</strong>, a <strong>prestige TV screenwriter</strong>, and an <strong>arcade game designer</strong>.
+              </p>
+
+              <div class="bg-white brutal-border-sm p-4 rounded-xl space-y-2 text-sm font-sans text-gray-800 leading-relaxed shadow-sm">
+                <p><strong>The Core Hypothesis:</strong> Adults never stop playing when they grow up. They stop playing because corporate training makes curiosity feel like an HR disciplinary hearing.</p>
+                <p class="text-[#FF4834] font-bold font-mono text-xs pt-1">My mission: Smuggle high-stakes behavioral transformation inside irresistible Trojan horses.</p>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center text-xs font-mono text-[#111111] pt-4 border-t border-gray-200">
+              <span class="font-bold text-[#FF4834]">● Unfiltered Mode Active</span>
+              <span class="font-bold underline">Click anywhere to return to formal resume ↺</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- MODULE 02: WHAT I DO (4 INTERACTIVE FLIP CARDS) -->
+    <section id="module-02" class="scroll-mt-24 space-y-8">
+      
+      <!-- Section Header with Guidance & Master Bulk Toggle -->
+      <div class="flex flex-wrap items-end justify-between gap-4 border-b-2 border-[#111111] pb-4">
+        <div>
+          <div class="font-mono text-xs font-bold text-[#D2FF00] bg-[#111111] px-2.5 py-1 rounded inline-block uppercase mb-1.5">
+            MODULE 02 // METHODOLOGY IN ACTION
+          </div>
+          <h2 class="font-syne text-3xl sm:text-5xl font-extrabold text-[#111111]">WHAT I DO.</h2>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <button id="flip-all-module2-btn" onclick="toggleAllModule2Cards()" class="px-3.5 py-2 bg-[#D2FF00] text-[#111111] brutal-border brutal-shadow-sm font-mono text-xs font-bold rounded-xl brutal-btn flex items-center gap-2" title="Toggle all cards at once">
+            <span id="flip-all-icon">🔄</span>
+            <span id="flip-all-text">FLIP ALL: REALITY MODE</span>
+          </button>
+          <div class="bg-[#FAF8F5] p-2 rounded-xl brutal-border-sm font-mono text-xs text-gray-800 font-bold hidden sm:flex items-center gap-1.5">
+            <span>💡</span>
+            <span>Tap any individual card to flip</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- The 4 Flip Cards Grid: Cleanly isolated with gap-8 and balanced flex boxes -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+
+        <!-- Flip Card 01: Diagnostics -->
+        <div class="perspective-1000 w-full min-h-[460px] h-full cursor-pointer" onclick="toggleCardFlip('card-pillar-1')" tabindex="0" role="button" aria-label="Flip card for Pillar 1: Diagnostics">
+          <div id="card-pillar-1" class="flip-card flip-card-inner min-h-[460px] h-full">
+            
+            <!-- Front: Corporate -->
+            <div class="flip-face bg-white brutal-border brutal-shadow-lg rounded-2xl p-6 sm:p-7 flex flex-col justify-between gap-4">
+              <div class="space-y-4">
+                <div class="flex items-center justify-between gap-2 border-b-2 border-gray-100 pb-3">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs font-bold bg-[#111111] text-[#D2FF00] px-2.5 py-1 rounded brutal-border-sm">
+                      01 // ARCHITECTURE
+                    </span>
+                    <span class="font-mono text-xs font-bold text-gray-700 uppercase">
+                      FORMAL RESUME
+                    </span>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 font-mono text-xs font-bold brutal-border-sm flex items-center gap-1.5 transition-colors">
+                    <span>Flip Card</span>
+                    <span>🔄</span>
+                  </span>
+                </div>
+
+                <div class="space-y-2">
+                  <h3 class="font-syne font-extrabold text-xl sm:text-2xl text-[#111111] leading-snug">
+                    Instructional Needs Analysis & Capability Auditing
+                  </h3>
+                  <p class="text-sm sm:text-base text-gray-800 leading-relaxed font-sans font-medium">
+                    Systematic diagnosis of enterprise performance bottlenecks, competency frameworks, and skill deficiencies through qualitative interviews and telemetry data.
+                  </p>
+                </div>
+
+                <div class="bg-[#FAF8F5] p-3.5 rounded-xl brutal-border-sm space-y-1.5 text-xs font-sans text-gray-800">
+                  <div class="flex items-center justify-between font-mono font-bold text-[11px] text-blue-700 uppercase">
+                    <span>Frameworks & Taxonomy</span>
+                    <span>Standard L&D</span>
+                  </div>
+                  <p class="text-gray-700 leading-snug">
+                    Cognitive Task Analysis • Knowles' Andragogy • Kirkpatrick Level 1–4 Evaluation Models
+                  </p>
+                </div>
+              </div>
+
+              <div class="font-mono text-xs text-blue-800 bg-blue-50/80 p-3 rounded-xl brutal-border-sm flex justify-between items-center mt-auto">
+                <span class="font-semibold">Deliverable: Needs Gap Audit</span>
+                <span class="font-bold underline">Click card to reveal reality ↗</span>
+              </div>
+            </div>
+
+            <!-- Back: Reality -->
+            <div class="flip-face flip-back bg-white brutal-border brutal-shadow-lg rounded-2xl p-6 sm:p-7 flex flex-col justify-between gap-4 border-[#FF4834] bg-gradient-to-br from-white via-red-50/25 to-yellow-50/20">
+              <div class="space-y-4">
+                <div class="flex items-center justify-between gap-2 border-b-2 border-red-100 pb-3">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs font-bold bg-[#FF4834] text-white px-2.5 py-1 rounded brutal-border-sm">
+                      01 // REALITY
+                    </span>
+                    <span class="font-mono text-xs font-bold text-[#FF4834] uppercase tracking-wide">
+                      UNFILTERED TRUTH
+                    </span>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-lg bg-red-100 text-red-900 font-mono text-xs font-bold brutal-border-sm flex items-center gap-1.5">
+                    <span>Return</span>
+                    <span>↺</span>
+                  </span>
+                </div>
+
+                <div class="space-y-2">
+                  <h3 class="font-syne font-extrabold text-xl sm:text-2xl text-[#111111] leading-snug">
+                    I Study Humans in Their Natural Habitat
+                  </h3>
+                  <p class="text-sm sm:text-base text-gray-900 leading-relaxed font-sans font-medium">
+                    When leadership demands a <em>"4-hour mandatory seminar on feedback,"</em> 90% of the time they don't need training—they need psychological safety, clearer boundaries, or a one-page template.
+                  </p>
+                </div>
+
+                <div class="bg-white p-3.5 rounded-xl brutal-border-sm space-y-1 text-xs font-sans text-gray-900 shadow-sm border-l-4 border-l-[#FF4834]">
+                  <span class="font-mono font-bold text-[11px] text-[#FF4834] uppercase block">The Wei MENG Prescription:</span>
+                  <p class="leading-snug font-medium">
+                    I diagnose and dismantle the root friction, never the corporate symptom. Zero wasted hours on phantom problems.
+                  </p>
+                </div>
+              </div>
+
+              <div class="font-mono text-xs text-[#111111] bg-[#FAF8F5] p-3 rounded-xl brutal-border-sm flex justify-between items-center mt-auto">
+                <span class="text-gray-700 font-medium">Result: Actionable clarity</span>
+                <span class="font-bold text-[#D2FF00] bg-[#111111] px-2 py-0.5 rounded text-[11px]">High ROI ⚡</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Flip Card 02: Storytelling -->
+        <div class="perspective-1000 w-full min-h-[460px] h-full cursor-pointer" onclick="toggleCardFlip('card-pillar-2')" tabindex="0" role="button" aria-label="Flip card for Pillar 2: Storytelling">
+          <div id="card-pillar-2" class="flip-card flip-card-inner min-h-[460px] h-full">
+            
+            <!-- Front: Corporate -->
+            <div class="flip-face bg-white brutal-border brutal-shadow-lg rounded-2xl p-6 sm:p-7 flex flex-col justify-between gap-4">
+              <div class="space-y-4">
+                <div class="flex items-center justify-between gap-2 border-b-2 border-gray-100 pb-3">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs font-bold bg-[#111111] text-[#D0BCFF] px-2.5 py-1 rounded brutal-border-sm">
+                      02 // MEDIA PRODUCTION
+                    </span>
+                    <span class="font-mono text-xs font-bold text-gray-700 uppercase">
+                      FORMAL RESUME
+                    </span>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 font-mono text-xs font-bold brutal-border-sm flex items-center gap-1.5 transition-colors">
+                    <span>Flip Card</span>
+                    <span>🔄</span>
+                  </span>
+                </div>
+
+                <div class="space-y-2">
+                  <h3 class="font-syne font-extrabold text-xl sm:text-2xl text-[#111111] leading-snug">
+                    Scenario-Based Multimedia & Micro-Curricula
+                  </h3>
+                  <p class="text-sm sm:text-base text-gray-800 leading-relaxed font-sans font-medium">
+                    Designing high-fidelity video modules, interactive microlearning assets, and branching scenario paths aligned to role curricula and organizational standards.
+                  </p>
+                </div>
+
+                <div class="bg-[#FAF8F5] p-3.5 rounded-xl brutal-border-sm space-y-1.5 text-xs font-sans text-gray-800">
+                  <div class="flex items-center justify-between font-mono font-bold text-[11px] text-blue-700 uppercase">
+                    <span>Principles & Delivery</span>
+                    <span>Standard L&D</span>
+                  </div>
+                  <p class="text-gray-700 leading-snug">
+                    Mayer's Multimedia Principles • Dual Coding Theory • Spaced Retrieval Micro-Paths
+                  </p>
+                </div>
+              </div>
+
+              <div class="font-mono text-xs text-blue-800 bg-blue-50/80 p-3 rounded-xl brutal-border-sm flex justify-between items-center mt-auto">
+                <span class="font-semibold">Deliverable: Course Completion</span>
+                <span class="font-bold underline">Click card to reveal reality ↗</span>
+              </div>
+            </div>
+
+            <!-- Back: Reality -->
+            <div class="flip-face flip-back bg-white brutal-border brutal-shadow-lg rounded-2xl p-6 sm:p-7 flex flex-col justify-between gap-4 border-[#FF4834] bg-gradient-to-br from-white via-yellow-50/30 to-red-50/20">
+              <div class="space-y-4">
+                <div class="flex items-center justify-between gap-2 border-b-2 border-yellow-200 pb-3">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs font-bold bg-[#FFE600] text-[#111111] px-2.5 py-1 rounded brutal-border-sm">
+                      02 // REALITY
+                    </span>
+                    <span class="font-mono text-xs font-bold text-[#FF4834] uppercase tracking-wide">
+                      UNFILTERED TRUTH
+                    </span>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-lg bg-yellow-100 text-yellow-900 font-mono text-xs font-bold brutal-border-sm flex items-center gap-1.5">
+                    <span>Return</span>
+                    <span>↺</span>
+                  </span>
+                </div>
+
+                <div class="space-y-2">
+                  <h3 class="font-syne font-extrabold text-xl sm:text-2xl text-[#111111] leading-snug">
+                    I Make Workplace Learning Bingeable Like Netflix
+                  </h3>
+                  <p class="text-sm sm:text-base text-gray-900 leading-relaxed font-sans font-medium">
+                    Why do people happily binge 6 hours of high-stakes prestige TV on Sunday, but zone out in a 4-minute compliance deck on Monday? <strong>Emotional resonance drives recall.</strong>
+                  </p>
+                </div>
+
+                <div class="bg-white p-3.5 rounded-xl brutal-border-sm space-y-1 text-xs font-sans text-gray-900 shadow-sm border-l-4 border-l-[#FFE600]">
+                  <span class="font-mono font-bold text-[11px] text-[#111111] uppercase block">The Wei MENG Prescription:</span>
+                  <p class="leading-snug font-medium">
+                    I write short-form vertical dramas with cliffhangers where workplace ethical dilemmas feel tense, funny, and uncomfortably real.
+                  </p>
+                </div>
+              </div>
+
+              <div class="font-mono text-xs text-[#111111] bg-[#FAF8F5] p-3 rounded-xl brutal-border-sm flex justify-between items-center mt-auto">
+                <span class="text-gray-700 font-medium">Voluntary Completion: 94.2%</span>
+                <span class="font-bold text-white bg-[#FF4834] px-2 py-0.5 rounded text-[11px]">Cliffhangers 🎬</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Flip Card 03: AI Simulations -->
+        <div class="perspective-1000 w-full min-h-[460px] h-full cursor-pointer" onclick="toggleCardFlip('card-pillar-3')" tabindex="0" role="button" aria-label="Flip card for Pillar 3: AI Simulations">
+          <div id="card-pillar-3" class="flip-card flip-card-inner min-h-[460px] h-full">
+            
+            <!-- Front: Corporate -->
+            <div class="flip-face bg-white brutal-border brutal-shadow-lg rounded-2xl p-6 sm:p-7 flex flex-col justify-between gap-4">
+              <div class="space-y-4">
+                <div class="flex items-center justify-between gap-2 border-b-2 border-gray-100 pb-3">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs font-bold bg-[#111111] text-[#A7F3D0] px-2.5 py-1 rounded brutal-border-sm">
+                      03 // EDTECH SYSTEMS
+                    </span>
+                    <span class="font-mono text-xs font-bold text-gray-700 uppercase">
+                      FORMAL RESUME
+                    </span>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 font-mono text-xs font-bold brutal-border-sm flex items-center gap-1.5 transition-colors">
+                    <span>Flip Card</span>
+                    <span>🔄</span>
+                  </span>
+                </div>
+
+                <div class="space-y-2">
+                  <h3 class="font-syne font-extrabold text-xl sm:text-2xl text-[#111111] leading-snug">
+                    Emerging EdTech & Simulation Architecture
+                  </h3>
+                  <p class="text-sm sm:text-base text-gray-800 leading-relaxed font-sans font-medium">
+                    Integrating automated conversational agents, asynchronous branching simulations, and telemetry hooks into modern enterprise LMS and LXP ecosystems.
+                  </p>
+                </div>
+
+                <div class="bg-[#FAF8F5] p-3.5 rounded-xl brutal-border-sm space-y-1.5 text-xs font-sans text-gray-800">
+                  <div class="flex items-center justify-between font-mono font-bold text-[11px] text-blue-700 uppercase">
+                    <span>Infrastructure & Standards</span>
+                    <span>Standard L&D</span>
+                  </div>
+                  <p class="text-gray-700 leading-snug">
+                    SCORM / xAPI / cmi5 • Experiential Learning (Kolb) • Deliberate Practice Loops
+                  </p>
+                </div>
+              </div>
+
+              <div class="font-mono text-xs text-blue-800 bg-blue-50/80 p-3 rounded-xl brutal-border-sm flex justify-between items-center mt-auto">
+                <span class="font-semibold">Deliverable: Simulation Activity Logs</span>
+                <span class="font-bold underline">Click card to reveal reality ↗</span>
+              </div>
+            </div>
+
+            <!-- Back: Reality -->
+            <div class="flip-face flip-back bg-white brutal-border brutal-shadow-lg rounded-2xl p-6 sm:p-7 flex flex-col justify-between gap-4 border-[#FF4834] bg-gradient-to-br from-white via-green-50/30 to-yellow-50/20">
+              <div class="space-y-4">
+                <div class="flex items-center justify-between gap-2 border-b-2 border-emerald-200 pb-3">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs font-bold bg-[#A7F3D0] text-[#111111] px-2.5 py-1 rounded brutal-border-sm">
+                      03 // REALITY
+                    </span>
+                    <span class="font-mono text-xs font-bold text-[#FF4834] uppercase tracking-wide">
+                      UNFILTERED TRUTH
+                    </span>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-900 font-mono text-xs font-bold brutal-border-sm flex items-center gap-1.5">
+                    <span>Return</span>
+                    <span>↺</span>
+                  </span>
+                </div>
+
+                <div class="space-y-2">
+                  <h3 class="font-syne font-extrabold text-xl sm:text-2xl text-[#111111] leading-snug">
+                    Safe-to-Fail Sandboxes with AI Personas
+                  </h3>
+                  <p class="text-sm sm:text-base text-gray-900 leading-relaxed font-sans font-medium">
+                    No manager ever learned to de-escalate a defensive engineer or deliver critical feedback by clicking "Next" on a multiple-choice quiz. Reading is not muscle memory.
+                  </p>
+                </div>
+
+                <div class="bg-white p-3.5 rounded-xl brutal-border-sm space-y-1 text-xs font-sans text-gray-900 shadow-sm border-l-4 border-l-[#A7F3D0]">
+                  <span class="font-mono font-bold text-[11px] text-[#111111] uppercase block">The Wei MENG Prescription:</span>
+                  <p class="leading-snug font-medium">
+                    I build AI roleplay bots where learners can fail catastrophically, laugh, and iterate—without risking anyone's real-world career.
+                  </p>
+                </div>
+              </div>
+
+              <div class="font-mono text-xs text-[#111111] bg-[#FAF8F5] p-3 rounded-xl brutal-border-sm flex justify-between items-center mt-auto">
+                <span class="text-gray-700 font-medium">Muscle Memory > Passive Reading</span>
+                <span class="font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded text-[11px]">Real-Time Rubric 🤖</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Flip Card 04: Gamification -->
+        <div class="perspective-1000 w-full min-h-[460px] h-full cursor-pointer" onclick="toggleCardFlip('card-pillar-4')" tabindex="0" role="button" aria-label="Flip card for Pillar 4: Gamification">
+          <div id="card-pillar-4" class="flip-card flip-card-inner min-h-[460px] h-full">
+            
+            <!-- Front: Corporate -->
+            <div class="flip-face bg-white brutal-border brutal-shadow-lg rounded-2xl p-6 sm:p-7 flex flex-col justify-between gap-4">
+              <div class="space-y-4">
+                <div class="flex items-center justify-between gap-2 border-b-2 border-gray-100 pb-3">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs font-bold bg-[#111111] text-[#FFE600] px-2.5 py-1 rounded brutal-border-sm">
+                      04 // ENGAGEMENT DESIGN
+                    </span>
+                    <span class="font-mono text-xs font-bold text-gray-700 uppercase">
+                      FORMAL RESUME
+                    </span>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 font-mono text-xs font-bold brutal-border-sm flex items-center gap-1.5 transition-colors">
+                    <span>Flip Card</span>
+                    <span>🔄</span>
+                  </span>
+                </div>
+
+                <div class="space-y-2">
+                  <h3 class="font-syne font-extrabold text-xl sm:text-2xl text-[#111111] leading-snug">
+                    Gamified Program Systems & Habit Architecture
+                  </h3>
+                  <p class="text-sm sm:text-base text-gray-800 leading-relaxed font-sans font-medium">
+                    Applying behavioral mechanics, competency progression ladders, and milestone indicators to sustain cross-functional participation and long-term retention.
+                  </p>
+                </div>
+
+                <div class="bg-[#FAF8F5] p-3.5 rounded-xl brutal-border-sm space-y-1.5 text-xs font-sans text-gray-800">
+                  <div class="flex items-center justify-between font-mono font-bold text-[11px] text-blue-700 uppercase">
+                    <span>Psychology & Models</span>
+                    <span>Standard L&D</span>
+                  </div>
+                  <p class="text-gray-700 leading-snug">
+                    Self-Determination Theory (Deci & Ryan) • BJ Fogg Behavior Model • Spaced Habit Loops
+                  </p>
+                </div>
+              </div>
+
+              <div class="font-mono text-xs text-blue-800 bg-blue-50/80 p-3 rounded-xl brutal-border-sm flex justify-between items-center mt-auto">
+                <span class="font-semibold">Deliverable: Badges & Competency Metrics</span>
+                <span class="font-bold underline">Click card to reveal reality ↗</span>
+              </div>
+            </div>
+
+            <!-- Back: Reality -->
+            <div class="flip-face flip-back bg-white brutal-border brutal-shadow-lg rounded-2xl p-6 sm:p-7 flex flex-col justify-between gap-4 border-[#FF4834] bg-gradient-to-br from-white via-purple-50/30 to-red-50/20">
+              <div class="space-y-4">
+                <div class="flex items-center justify-between gap-2 border-b-2 border-purple-200 pb-3">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs font-bold bg-[#D0BCFF] text-[#111111] px-2.5 py-1 rounded brutal-border-sm">
+                      04 // REALITY
+                    </span>
+                    <span class="font-mono text-xs font-bold text-[#FF4834] uppercase tracking-wide">
+                      UNFILTERED TRUTH
+                    </span>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-lg bg-purple-100 text-purple-900 font-mono text-xs font-bold brutal-border-sm flex items-center gap-1.5">
+                    <span>Return</span>
+                    <span>↺</span>
+                  </span>
+                </div>
+
+                <div class="space-y-2">
+                  <h3 class="font-syne font-extrabold text-xl sm:text-2xl text-[#111111] leading-snug">
+                    I Turn Strenuous Chores Into Dopamine Loops
+                  </h3>
+                  <p class="text-sm sm:text-base text-gray-900 leading-relaxed font-sans font-medium">
+                    Real gamification is <strong>never about slapping a hollow digital badge</strong> on an awful 40-minute compliance slide deck. Adults see through fake points immediately.
+                  </p>
+                </div>
+
+                <div class="bg-white p-3.5 rounded-xl brutal-border-sm space-y-1 text-xs font-sans text-gray-900 shadow-sm border-l-4 border-l-[#D0BCFF]">
+                  <span class="font-mono font-bold text-[11px] text-[#111111] uppercase block">The Wei MENG Prescription:</span>
+                  <p class="leading-snug font-medium">
+                    I build intrinsic flow states: fast feedback, psychological safety, and clear milestones that turn strenuous training into an empowering play space.
+                  </p>
+                </div>
+              </div>
+
+              <div class="font-mono text-xs text-[#111111] bg-[#FAF8F5] p-3 rounded-xl brutal-border-sm flex justify-between items-center mt-auto">
+                <span class="text-gray-700 font-medium">Self-Directed Completion: +84%</span>
+                <span class="font-bold text-[#111111] bg-[#D2FF00] px-2 py-0.5 rounded text-[11px]">Flow States 🕹️</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- LIVE INTERACTIVE WIDGET: "The 30-Second Difficult Feedback Sandbox" -->
+      <div class="bg-white brutal-border brutal-shadow-lg rounded-2xl p-6 sm:p-8 space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-[#111111] pb-4">
+          <div>
+            <span class="bg-[#FF4834] text-white font-mono text-xs font-bold px-2.5 py-0.5 rounded uppercase">
+              INTERACTIVE DEMO SANDBOX
+            </span>
+            <h3 class="font-syne text-2xl font-extrabold mt-1 text-[#111111]">Simulated Feedback Lab: "Defensive Dave"</h3>
+          </div>
+          <span class="font-mono text-xs text-gray-600 font-bold">Test your conversational agility in 15 seconds</span>
+        </div>
+
+        <!-- Scenario Prompt -->
+        <div class="bg-[#FAF8F5] brutal-border-sm p-5 rounded-xl flex items-start gap-4">
+          <div class="w-12 h-12 rounded-full bg-[#FFE600] brutal-border-sm flex items-center justify-center font-syne font-bold text-2xl flex-shrink-0">
+            👨‍💼
+          </div>
+          <div class="space-y-1.5">
+            <div class="font-syne font-bold text-base text-[#111111]">Dave (Lead Engineer) remarks:</div>
+            <p class="text-gray-900 italic font-sans text-sm sm:text-base leading-relaxed">
+              "Look, I missed the sprint deadline because the design team sent assets 4 days late. If they can’t do their job, don't lecture me about team velocity."
+            </p>
+          </div>
+        </div>
+
+        <!-- Multiple Choice Branching Options -->
+        <div class="space-y-3" id="sim-options-container">
+          <p class="font-mono text-xs font-bold uppercase text-gray-700 tracking-wider">Choose your managerial intervention:</p>
+
+          <button onclick="handleSimChoice(1)" class="w-full text-left p-4 bg-white hover:bg-gray-50 brutal-border-sm rounded-xl font-sans text-sm sm:text-base brutal-btn flex items-start gap-3 transition-all text-gray-900 leading-snug">
+            <span class="w-7 h-7 rounded-md bg-gray-200 brutal-border-sm flex items-center justify-center font-mono font-bold flex-shrink-0 text-sm">A</span>
+            <span>"Dave, company policy states velocity is your team's direct metric. Blaming design will be documented on your quarterly review."</span>
+          </button>
+
+          <button onclick="handleSimChoice(2)" class="w-full text-left p-4 bg-white hover:bg-gray-50 brutal-border-sm rounded-xl font-sans text-sm sm:text-base brutal-btn flex items-start gap-3 transition-all text-gray-900 leading-snug">
+            <span class="w-7 h-7 rounded-md bg-gray-200 brutal-border-sm flex items-center justify-center font-mono font-bold flex-shrink-0 text-sm">B</span>
+            <span>"I hear your frustration with the handoff timing. Let's walk through the bottleneck together so you aren't left holding the bag at deadline."</span>
+          </button>
+
+          <button onclick="handleSimChoice(3)" class="w-full text-left p-4 bg-white hover:bg-gray-50 brutal-border-sm rounded-xl font-sans text-sm sm:text-base brutal-btn flex items-start gap-3 transition-all text-gray-900 leading-snug">
+            <span class="w-7 h-7 rounded-md bg-gray-200 brutal-border-sm flex items-center justify-center font-mono font-bold flex-shrink-0 text-sm">C</span>
+            <span>"Don't worry about it at all Dave, I’ll tell the client it was my fault. Have a coffee!"</span>
+          </button>
+        </div>
+
+        <!-- Simulation Feedback Result Box -->
+        <div id="sim-feedback-box" class="hidden p-5 brutal-border-sm rounded-xl space-y-2 transition-all">
+          <div id="sim-feedback-badge" class="font-syne font-bold uppercase text-base"></div>
+          <p id="sim-feedback-text" class="text-sm sm:text-base font-sans leading-relaxed"></p>
+          <div class="pt-2 flex items-center justify-between font-mono text-xs">
+            <span id="sim-feedback-score" class="font-bold"></span>
+            <button onclick="resetSim()" class="underline font-bold hover:text-[#FF4834] text-[#111111]">Try Another Branch ↺</button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- MODULE 03: THE VAULT (CASE STUDIES) -->
+    <section id="module-03" class="scroll-mt-24 space-y-8">
+      
+      <!-- Section Header -->
+      <div class="flex flex-wrap items-end justify-between gap-4 border-b-2 border-[#111111] pb-4">
+        <div>
+          <div class="font-mono text-xs font-bold text-[#D0BCFF] bg-[#111111] px-2.5 py-1 rounded inline-block uppercase mb-1.5">
+            MODULE 03 // THE PROOF OF WORK
+          </div>
+          <h2 class="font-syne text-3xl sm:text-5xl font-extrabold text-[#111111]">THE PROJECT VAULT.</h2>
+        </div>
+        <p class="font-sans text-sm text-gray-700 font-medium max-w-sm">
+          Case studies built on real behavioral data, short-form drama production, and AI sandboxes.
+        </p>
+      </div>
+
+      <!-- Case Study Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <!-- Case Study 01: Drama Series -->
+        <div class="bg-white brutal-border brutal-shadow-lg rounded-2xl overflow-hidden flex flex-col justify-between group">
+          <div class="p-7 sm:p-8 space-y-5">
+            <div class="flex justify-between items-start">
+              <div class="flex flex-wrap gap-2">
+                <span class="bg-[#D2FF00] text-[#111111] font-mono font-bold text-xs px-2.5 py-1 rounded brutal-border-sm">
+                  EPISODIC VIDEO
+                </span>
+                <span class="bg-[#D0BCFF] text-[#111111] font-mono font-bold text-xs px-2.5 py-1 rounded brutal-border-sm">
+                  BRANCHING DRAMA
+                </span>
+              </div>
+              <span class="font-mono text-sm font-bold text-gray-500">#01</span>
+            </div>
+
+            <h3 class="font-syne text-2xl font-extrabold group-hover:text-[#FF4834] transition-colors text-[#111111]">
+              "The Breakroom Chronicles"
+            </h3>
+
+            <div class="space-y-2 text-base font-sans text-gray-800 leading-relaxed">
+              <p><strong>The Problem:</strong> Annual workplace compliance training held an abysmal 14% voluntary completion rate and 100% resentment.</p>
+              <p><strong>The Solution:</strong> Wrote, directed, and distributed a 5-episode, darkly funny vertical-video miniseries with branching ethical dilemmas and cliffhangers.</p>
+            </div>
+
+            <div class="bg-[#FAF8F5] p-4 rounded-xl brutal-border-sm font-mono text-xs space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-700 font-medium">Voluntary Completion:</span>
+                <span class="font-bold text-[#FF4834] text-sm">94.2%</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-700 font-medium">Learner Net Promoter Score:</span>
+                <span class="font-bold text-blue-700 text-sm">+76 (Industry Avg: -12)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-5 sm:p-6 bg-[#FAF8F5] border-t-2 border-[#111111] flex items-center justify-between">
+            <span class="font-mono text-xs font-bold text-gray-700">FORMAT: Web / Vertical Video</span>
+            <button onclick="openCaseStudyModal(1)" class="brutal-btn bg-[#111111] text-white font-syne font-bold text-xs px-4 py-2.5 rounded-lg brutal-border-sm hover:bg-[#D2FF00] hover:text-[#111111] flex items-center gap-1.5">
+              <span>View Dossier</span>
+              <span>↗</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Case Study 02: AI Simulation -->
+        <div class="bg-white brutal-border brutal-shadow-lg rounded-2xl overflow-hidden flex flex-col justify-between group">
+          <div class="p-7 sm:p-8 space-y-5">
+            <div class="flex justify-between items-start">
+              <div class="flex flex-wrap gap-2">
+                <span class="bg-[#FFE600] text-[#111111] font-mono font-bold text-xs px-2.5 py-1 rounded brutal-border-sm">
+                  GEN-AI SANDBOX
+                </span>
+                <span class="bg-[#A7F3D0] text-[#111111] font-mono font-bold text-xs px-2.5 py-1 rounded brutal-border-sm">
+                  BEHAVIORAL SIM
+                </span>
+              </div>
+              <span class="font-mono text-sm font-bold text-gray-500">#02</span>
+            </div>
+
+            <h3 class="font-syne text-2xl font-extrabold group-hover:text-[#FF4834] transition-colors text-[#111111]">
+              Difficult Conversations AI Coach
+            </h3>
+
+            <div class="space-y-2 text-base font-sans text-gray-800 leading-relaxed">
+              <p><strong>The Problem:</strong> First-time engineering managers were avoiding high-friction feedback discussions until performance crashed.</p>
+              <p><strong>The Solution:</strong> Built a bespoke web simulator powered by LLM agent personas that emulate defensive, emotionally escalated, or checked-out employees with instant scoring.</p>
+            </div>
+
+            <div class="bg-[#FAF8F5] p-4 rounded-xl brutal-border-sm font-mono text-xs space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-700 font-medium">Simulations Run in First Month:</span>
+                <span class="font-bold text-[#111111] text-sm">1,420+ reps</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-700 font-medium">Real Employee Retention:</span>
+                <span class="font-bold text-[#D2FF00] bg-[#111111] px-1.5 py-0.5 rounded text-xs">+22% YoY</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-5 sm:p-6 bg-[#FAF8F5] border-t-2 border-[#111111] flex items-center justify-between">
+            <span class="font-mono text-xs font-bold text-gray-700">FORMAT: Web App / LLM API</span>
+            <button onclick="openCaseStudyModal(2)" class="brutal-btn bg-[#111111] text-white font-syne font-bold text-xs px-4 py-2.5 rounded-lg brutal-border-sm hover:bg-[#FFE600] hover:text-[#111111] flex items-center gap-1.5">
+              <span>View Dossier</span>
+              <span>↗</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Case Study 03: Gamified Onboarding -->
+        <div class="bg-white brutal-border brutal-shadow-lg rounded-2xl overflow-hidden flex flex-col justify-between group">
+          <div class="p-7 sm:p-8 space-y-5">
+            <div class="flex justify-between items-start">
+              <div class="flex flex-wrap gap-2">
+                <span class="bg-[#D0BCFF] text-[#111111] font-mono font-bold text-xs px-2.5 py-1 rounded brutal-border-sm">
+                  WEB INTERACTIVE
+                </span>
+                <span class="bg-[#D2FF00] text-[#111111] font-mono font-bold text-xs px-2.5 py-1 rounded brutal-border-sm">
+                  ONBOARDING
+                </span>
+              </div>
+              <span class="font-mono text-sm font-bold text-gray-500">#03</span>
+            </div>
+
+            <h3 class="font-syne text-2xl font-extrabold group-hover:text-[#FF4834] transition-colors text-[#111111]">
+              "Mission Zero: Company HQ Quest"
+            </h3>
+
+            <div class="space-y-2 text-base font-sans text-gray-800 leading-relaxed">
+              <p><strong>The Problem:</strong> 85-page Notion onboarding wikis resulted in endless basic Slack inquiries and 30-day productivity drag.</p>
+              <p><strong>The Solution:</strong> Transformed onboarding into an interactive 8-bit web exploration game where new hires solve workplace mysteries to locate tools and culture norms.</p>
+            </div>
+
+            <div class="bg-[#FAF8F5] p-4 rounded-xl brutal-border-sm font-mono text-xs space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-700 font-medium">Ramp-Up Time Reduction:</span>
+                <span class="font-bold text-[#FF4834] text-sm">-35% Days to 1st PR</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-700 font-medium">HR Ticket Volume:</span>
+                <span class="font-bold text-[#111111] text-sm">-48% in 90 Days</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-5 sm:p-6 bg-[#FAF8F5] border-t-2 border-[#111111] flex items-center justify-between">
+            <span class="font-mono text-xs font-bold text-gray-700">FORMAT: WebGL / Interactive Canvas</span>
+            <button onclick="openCaseStudyModal(3)" class="brutal-btn bg-[#111111] text-white font-syne font-bold text-xs px-4 py-2.5 rounded-lg brutal-border-sm hover:bg-[#D0BCFF] hover:text-[#111111] flex items-center gap-1.5">
+              <span>View Dossier</span>
+              <span>↗</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Case Study 04: Anti-Burnout Habit System -->
+        <div class="bg-white brutal-border brutal-shadow-lg rounded-2xl overflow-hidden flex flex-col justify-between group">
+          <div class="p-7 sm:p-8 space-y-5">
+            <div class="flex justify-between items-start">
+              <div class="flex flex-wrap gap-2">
+                <span class="bg-[#A7F3D0] text-[#111111] font-mono font-bold text-xs px-2.5 py-1 rounded brutal-border-sm">
+                  BEHAVIORAL HABIT DESIGN
+                </span>
+                <span class="bg-[#FFE600] text-[#111111] font-mono font-bold text-xs px-2.5 py-1 rounded brutal-border-sm">
+                  SYSTEMS ARCHITECTURE
+                </span>
+              </div>
+              <span class="font-mono text-sm font-bold text-gray-500">#04</span>
+            </div>
+
+            <h3 class="font-syne text-2xl font-extrabold group-hover:text-[#FF4834] transition-colors text-[#111111]">
+              The Anti-Burnout Workflow Loop
+            </h3>
+
+            <div class="space-y-2 text-base font-sans text-gray-800 leading-relaxed">
+              <p><strong>The Problem:</strong> "Wellness Lunch & Learns" were universally perceived as virtue-signaling with zero sustained behavioral habit changes.</p>
+              <p><strong>The Solution:</strong> Engineered automated micro-nudges and cognitive buffer rituals integrated directly into Slack & Google Calendar workflows.</p>
+            </div>
+
+            <div class="bg-[#FAF8F5] p-4 rounded-xl brutal-border-sm font-mono text-xs space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-700 font-medium">Back-to-Back Meeting Fatigue:</span>
+                <span class="font-bold text-[#FF4834] text-sm">-52% Reduction</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-700 font-medium">Sustained Habit Adoption:</span>
+                <span class="font-bold text-blue-700 text-sm">73% Active at 6 Mo</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-5 sm:p-6 bg-[#FAF8F5] border-t-2 border-[#111111] flex items-center justify-between">
+            <span class="font-mono text-xs font-bold text-gray-700">FORMAT: Workflow Automation & Nudges</span>
+            <button onclick="openCaseStudyModal(4)" class="brutal-btn bg-[#111111] text-white font-syne font-bold text-xs px-4 py-2.5 rounded-lg brutal-border-sm hover:bg-[#A7F3D0] hover:text-[#111111] flex items-center gap-1.5">
+              <span>View Dossier</span>
+              <span>↗</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- EXECUTIVE ACTION CENTER (Replaces Module 04: Streamlined & Direct) -->
+    <section id="executive-action" class="bg-white brutal-border brutal-shadow-lg rounded-2xl p-8 sm:p-12 space-y-8">
+      <div class="max-w-3xl space-y-4">
+        <div class="inline-flex items-center gap-2 bg-[#D2FF00] px-3 py-1 rounded font-mono text-xs font-bold brutal-border-sm text-[#111111]">
+          <span>🎯</span>
+          <span>NEXT STEPS // COLLABORATION & HIRING</span>
+        </div>
+        <h2 class="font-syne text-3xl sm:text-5xl font-extrabold text-[#111111]">
+          Ready to build workplace learning that people actually finish?
+        </h2>
+        <p class="font-sans text-base sm:text-lg text-gray-800 leading-relaxed font-medium">
+          Whether you're building a leadership development academy, transforming an onboarding funnel, or architecting AI practice sandboxes, let's turn your organizational objectives into high-agency human behavior.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-4 pt-2">
+        <button onclick="openContactModal()" class="brutal-btn bg-[#111111] text-white font-syne font-bold px-7 py-4 rounded-xl brutal-border brutal-shadow hover:bg-[#FF4834] flex items-center gap-2 text-base">
+          <span>📅 Schedule an Intro Call</span>
+        </button>
+
+        <button onclick="downloadResumeNotice()" class="brutal-btn bg-white font-syne font-bold px-6 py-4 rounded-xl brutal-border brutal-shadow text-[#111111] hover:bg-[#FFE600] flex items-center gap-2 text-base">
+          <span>📄 Download ATS-Compliant PDF Resume</span>
+        </button>
+
+        <button onclick="copyDirectEmail()" class="brutal-btn bg-gray-100 font-mono text-xs font-bold px-5 py-4 rounded-xl brutal-border-sm text-gray-800 hover:bg-gray-200 flex items-center gap-2">
+          <span>📋</span>
+          <span id="copy-email-text">Copy Direct Email</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t-2 border-[#111111] bg-white mt-24 py-12 px-4 sm:px-8 font-mono text-xs">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+      
+      <!-- Aligned Brand & Monogram Logo Matching Top Header -->
+      <a href="#hero" class="flex items-center gap-3 group" aria-label="Wei MENG Home">
+        <div class="relative w-12 h-12 bg-[#D2FF00] brutal-border brutal-shadow-sm rounded-xl flex items-center justify-center transition-all duration-300 group-hover:-translate-y-0.5 group-hover:rotate-[-3deg] group-hover:shadow-[5.5px_5.5px_0px_#111111] overflow-hidden select-none flex-shrink-0" title="Wei MENG: Learning In Motion">
+          <!-- Dot grid subtle pattern -->
+          <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#111111_1px,transparent_1px)] [background-size:5px_5px]"></div>
+          <!-- Pure Geometric Monogram (No Emojis) -->
+          <div class="relative z-10 flex items-center justify-center font-syne font-black text-[24px] tracking-[-0.06em] leading-none text-[#111111]">
+            <span class="monogram-w transition-transform duration-300 group-hover:-translate-x-0.5">W</span>
+            <span class="text-xs font-mono font-black text-[#111111]/50 mx-[1px] select-none">/</span>
+            <span class="monogram-m transition-transform duration-300 group-hover:translate-x-0.5">M</span>
+          </div>
+          <!-- Neo status accent pip -->
+          <span class="absolute bottom-1 right-1 w-1.5 h-1.5 rounded-full bg-[#111111]"></span>
+        </div>
+        <div>
+          <div class="font-syne font-extrabold text-base tracking-tight leading-none flex items-center gap-2 text-[#111111]">
+            WEI MENG
+            <span class="bg-[#D0BCFF] text-[#111111] px-2 py-0.5 rounded text-xs font-mono brutal-border-sm font-bold tracking-wider hidden sm:inline-block">L&D ARCHITECT</span>
+          </div>
+          <span class="font-sans text-xs text-gray-700 font-medium hidden sm:block mt-0.5">Behavioral Systems & Experiential EdTech</span>
+        </div>
+      </a>
+
+      <!-- Quick Action Navigation -->
+      <div class="flex items-center gap-4 text-gray-700">
+        <button onclick="toggleMinimalistMode()" class="hover:underline font-bold">Toggle Minimalist</button>
+        <span>•</span>
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="hover:underline font-bold">Back to Top ↑</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- EASTER EGG 1: BOSS KEY OVERLAY (EXCEL SPREADSHEET) -->
+  <div id="boss-overlay" class="fixed inset-0 z-50 bg-[#f3f2f1] hidden flex-col font-sans">
+    <!-- Excel Header Bar -->
+    <div class="bg-[#107C41] text-white px-4 py-2 text-xs flex justify-between items-center select-none shadow">
+      <div class="flex items-center gap-3 font-semibold">
+        <span class="text-base font-bold">📊</span>
+        <span>AutoSave • On</span>
+        <span class="font-normal opacity-80">|</span>
+        <span>Q3_Enterprise_Variance_Analysis_FINAL_v4.xlsx - Excel</span>
+      </div>
+      <button onclick="toggleBossKey()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-mono font-bold">
+        Exit Safe Mode (Esc)
+      </button>
+    </div>
+    <!-- Excel Menu Ribbon -->
+    <div class="bg-[#f3f2f1] border-b border-gray-300 px-4 py-2 text-xs flex gap-6 text-gray-700">
+      <span class="font-bold text-[#107C41] border-b-2 border-[#107C41] pb-1">Home</span>
+      <span>Insert</span>
+      <span>Page Layout</span>
+      <span>Formulas</span>
+      <span>Data</span>
+      <span>Review</span>
+      <span>View</span>
+      <span class="ml-auto text-gray-500 italic">🚨 Boss Safe Mode Active: Looks busy!</span>
+    </div>
+    <!-- Fake Spreadsheet Grid -->
+    <div class="flex-1 bg-white overflow-auto p-2 font-mono text-xs">
+      <table class="w-full border-collapse border border-gray-300">
+        <thead>
+          <tr class="bg-gray-100 text-gray-600">
+            <th class="border border-gray-300 w-10 p-1">#</th>
+            <th class="border border-gray-300 p-1 text-left">A: Cost Center</th>
+            <th class="border border-gray-300 p-1 text-left">B: Q1 Projected</th>
+            <th class="border border-gray-300 p-1 text-left">C: Q2 Actual</th>
+            <th class="border border-gray-300 p-1 text-left">D: Variance (%)</th>
+            <th class="border border-gray-300 p-1 text-left">E: Executive Justification Notes</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-800">
+          <tr>
+            <td class="border border-gray-300 text-center bg-gray-50">1</td>
+            <td class="border border-gray-300 p-1 font-bold">104-L&D-ENTERPRISE</td>
+            <td class="border border-gray-300 p-1">$450,000.00</td>
+            <td class="border border-gray-300 p-1">$412,500.00</td>
+            <td class="border border-gray-300 p-1 text-green-700">+8.33%</td>
+            <td class="border border-gray-300 p-1">Replaced boring 40-hr training with interactive AI drama. Saved 4,000 work hours.</td>
+          </tr>
+          <tr>
+            <td class="border border-gray-300 text-center bg-gray-50">2</td>
+            <td class="border border-gray-300 p-1 font-bold">105-COGNITIVE-RETENTION</td>
+            <td class="border border-gray-300 p-1">$120,000.00</td>
+            <td class="border border-gray-300 p-1">$119,000.00</td>
+            <td class="border border-gray-300 p-1 text-green-700">+0.83%</td>
+            <td class="border border-gray-300 p-1">Employee sentiment up 91%. Nobody fell asleep during onboarding.</td>
+          </tr>
+          <tr>
+            <td class="border border-gray-300 text-center bg-gray-50">3</td>
+            <td class="border border-gray-300 p-1 font-bold">106-COFFEE-SUBSIDY</td>
+            <td class="border border-gray-300 p-1">$3,400.00</td>
+            <td class="border border-gray-300 p-1">$4,850.00</td>
+            <td class="border border-gray-300 p-1 text-red-600">-42.64%</td>
+            <td class="border border-gray-300 p-1">Espresso machine needs repair again.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded max-w-lg text-yellow-900 font-sans">
+        <p class="font-bold text-sm">👀 Your boss just walked by and thinks you are auditing quarterly EBITA.</p>
+        <p class="text-xs mt-1">Press <strong>Esc</strong> or click the red button above to get back to the good stuff.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- EASTER EGG 2: HR VIOLATION MODAL (SKIP TRAINING) -->
+  <div id="hr-modal" class="fixed inset-0 z-50 bg-[#111111]/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white brutal-border brutal-shadow-lg rounded-2xl max-w-md w-full p-6 space-y-4 relative">
+      <div class="w-12 h-12 rounded-full bg-[#FF4834] brutal-border-sm flex items-center justify-center text-2xl text-white font-bold">
+        ⚠️
+      </div>
+      <h3 class="font-syne text-2xl font-extrabold text-[#111111]">NICE TRY!</h3>
+      <p class="font-mono text-xs text-gray-700 leading-relaxed">
+        <strong>HR Policy 404.1:</strong> You cannot skip this module. Your browser fingerprint has been logged, your manager has been notified, and your coffee privileges are temporarily suspended.
+      </p>
+      <div class="bg-[#FAF8F5] p-3 rounded-lg brutal-border-sm font-mono text-xs text-gray-600">
+        💡 <em>Adult learning tip: Curiosity and rebellion are proven signals of high leadership potential.</em>
+      </div>
+      <div class="pt-2 flex justify-end gap-3">
+        <button onclick="closeHrModal()" class="brutal-btn bg-[#D2FF00] px-4 py-2 brutal-border-sm font-mono text-xs font-bold rounded-lg">
+          I Promise to Behave (Gain +25 XP)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CASE STUDY DETAIL DRAWER MODAL -->
+  <div id="case-modal" class="fixed inset-0 z-50 bg-[#111111]/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white brutal-border brutal-shadow-lg rounded-2xl max-w-2xl w-full p-6 sm:p-8 space-y-6 my-8">
+      <div class="flex justify-between items-start border-b-2 border-[#111111] pb-4">
+        <div>
+          <span id="modal-tag" class="bg-[#D2FF00] font-mono text-[10px] font-bold px-2 py-0.5 rounded brutal-border-sm uppercase"></span>
+          <h3 id="modal-title" class="font-syne text-2xl sm:text-3xl font-extrabold mt-1"></h3>
+        </div>
+        <button onclick="closeCaseModal()" class="w-8 h-8 rounded-lg bg-gray-200 brutal-border-sm flex items-center justify-center font-bold hover:bg-[#FF4834] hover:text-white transition-colors">
+          ✕
+        </button>
+      </div>
+
+      <div class="space-y-4 text-sm text-gray-800">
+        <div>
+          <h4 class="font-mono font-bold text-xs uppercase text-gray-500 mb-1">THE BEHAVIORAL HURDLE</h4>
+          <p id="modal-problem" class="leading-relaxed"></p>
+        </div>
+
+        <div>
+          <h4 class="font-mono font-bold text-xs uppercase text-gray-500 mb-1">THE INSTRUCTIONAL BLUEPRINT</h4>
+          <p id="modal-solution" class="leading-relaxed"></p>
+        </div>
+
+        <div>
+          <h4 class="font-mono font-bold text-xs uppercase text-gray-500 mb-1">MEASURABLE LEARNING OUTCOMES</h4>
+          <div id="modal-outcomes" class="bg-[#FAF8F5] p-4 rounded-xl brutal-border-sm font-mono text-xs space-y-2"></div>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t-2 border-[#111111] flex justify-between items-center">
+        <span class="font-mono text-xs text-gray-500">Live external demo available on request</span>
+        <button onclick="closeCaseModal()" class="brutal-btn bg-[#111111] text-white font-syne font-bold px-4 py-2 rounded-lg text-xs">
+          Return to Vault
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT & SCHEDULING MODAL -->
+  <div id="contact-modal" class="fixed inset-0 z-50 bg-[#111111]/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white brutal-border brutal-shadow-lg rounded-2xl max-w-md w-full p-6 sm:p-8 space-y-5">
+      <div class="flex justify-between items-start border-b-2 border-[#111111] pb-3">
+        <div>
+          <span class="bg-[#FFE600] font-mono text-[10px] font-bold px-2 py-0.5 rounded uppercase">COLLABORATION INQUIRY</span>
+          <h3 class="font-syne text-2xl font-extrabold mt-1">Connect with Wei MENG</h3>
+        </div>
+        <button onclick="closeContactModal()" class="w-8 h-8 rounded-lg bg-gray-200 brutal-border-sm flex items-center justify-center font-bold hover:bg-[#FF4834] hover:text-white">✕</button>
+      </div>
+
+      <form onsubmit="handleContactSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block font-mono text-xs font-bold uppercase text-gray-700 mb-1">Your Name & Role</label>
+          <input type="text" required placeholder="e.g. VP of People, Design Director" class="w-full p-3 brutal-border-sm rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#D2FF00]">
+        </div>
+        <div>
+          <label class="block font-mono text-xs font-bold uppercase text-gray-700 mb-1">Work Email</label>
+          <input type="email" required placeholder="you@company.com" class="w-full p-3 brutal-border-sm rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#D2FF00]">
+        </div>
+        <div>
+          <label class="block font-mono text-xs font-bold uppercase text-gray-700 mb-1">Project Focus</label>
+          <select class="w-full p-3 brutal-border-sm rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#D2FF00]">
+            <option>Leadership Feedback & AI Sandboxes</option>
+            <option>Bingeable Video & Compliance Redesign</option>
+            <option>Gamified Onboarding Overhaul</option>
+            <option>Full-time L&D Leadership Role</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full py-3.5 bg-[#D2FF00] hover:bg-yellow-300 font-syne font-extrabold text-sm brutal-border brutal-shadow-sm rounded-xl transition-transform active:translate-x-1">
+          Send Priority Transmission 🚀
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- RECRUITER 30-SECOND FAST DOSSIER MODAL -->
+  <div id="fast-dossier-modal" class="fixed inset-0 z-50 bg-[#111111]/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white brutal-border brutal-shadow-lg rounded-2xl max-w-2xl w-full p-6 sm:p-8 space-y-6 my-8">
+      <div class="flex justify-between items-start border-b-2 border-[#111111] pb-4">
+        <div>
+          <span class="bg-blue-600 text-white font-mono text-xs font-bold px-2.5 py-0.5 rounded uppercase">
+            EXECUTIVE SUMMARY // ATS FAST-TRACK
+          </span>
+          <h3 class="font-syne text-2xl sm:text-3xl font-extrabold mt-1.5 text-[#111111]">Wei MENG — Candidate Overview</h3>
+          <p class="font-sans text-sm text-gray-700 font-medium">Senior L&D Architect & Experiential Learning Designer</p>
+        </div>
+        <button onclick="closeFastDossierModal()" class="w-8 h-8 rounded-lg bg-gray-200 brutal-border-sm flex items-center justify-center font-bold hover:bg-[#FF4834] hover:text-white transition-colors">
+          ✕
+        </button>
+      </div>
+
+      <div class="space-y-4 text-sm font-sans text-gray-800 leading-relaxed">
+        <!-- 30-Second Pitch -->
+        <div class="bg-[#FAF8F5] p-4 rounded-xl brutal-border-sm space-y-2">
+          <div class="font-mono text-xs font-bold text-[#111111] uppercase tracking-wider">THE 30-SECOND ELEVATOR PITCH:</div>
+          <p class="text-gray-900 leading-relaxed">
+            Over 8 years bridging cognitive science, modern software engineering, and Hollywood-style episodic storytelling to fix enterprise learning. Specializing in high-stakes behavioral transformation: leadership feedback, software onboarding, and asynchronous cultural rituals.
+          </p>
+        </div>
+
+        <!-- Competency Matrix -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div class="bg-white p-4 rounded-xl brutal-border-sm space-y-2">
+            <span class="font-mono text-xs font-bold text-blue-700 uppercase block">CORE ARCHITECTURE</span>
+            <ul class="space-y-1.5 text-gray-800 text-xs">
+              <li>• Knowles' Andragogy & Adult Learning</li>
+              <li>• Cognitive Load Theory & Microlearning</li>
+              <li>• Kirkpatrick Levels 1–4 Evaluation</li>
+              <li>• Backward Design & Agile Scrum ISD</li>
+            </ul>
+          </div>
+          <div class="bg-white p-4 rounded-xl brutal-border-sm space-y-2">
+            <span class="font-mono text-xs font-bold text-[#FF4834] uppercase block">EDTECH & DELIVERY</span>
+            <ul class="space-y-1.5 text-gray-800 text-xs">
+              <li>• Generative AI Roleplay Sandboxes</li>
+              <li>• Episodic Video Production & Scripts</li>
+              <li>• Enterprise LXPs, SCORM, xAPI / cmi5</li>
+              <li>• Web-based Gamified Exploration</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Verified Impact Metrics -->
+        <div class="bg-[#FFE600]/20 p-4 rounded-xl brutal-border-sm space-y-2">
+          <span class="font-mono text-xs font-bold block text-[#111111] uppercase">VERIFIED PERFORMANCE METRICS:</span>
+          <div class="grid grid-cols-3 gap-2 text-center pt-1">
+            <div>
+              <span class="font-syne font-bold text-lg block text-[#111111]">94.2%</span>
+              <span class="text-xs text-gray-700 font-medium">Voluntary Completion</span>
+            </div>
+            <div>
+              <span class="font-syne font-bold text-lg block text-[#111111]">-35%</span>
+              <span class="text-xs text-gray-700 font-medium">Onboarding Ramp</span>
+            </div>
+            <div>
+              <span class="font-syne font-bold text-lg block text-[#111111]">+76</span>
+              <span class="text-xs text-gray-700 font-medium">Learner NPS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-2 border-t-2 border-[#111111] flex flex-wrap justify-between items-center gap-3">
+        <button onclick="downloadResumeNotice()" class="brutal-btn bg-[#111111] text-white font-syne font-bold px-4 py-2.5 rounded-lg text-xs flex items-center gap-1.5">
+          <span>📄 Download PDF Resume</span>
+        </button>
+        <button onclick="closeFastDossierModal(); openContactModal();" class="brutal-btn bg-[#D2FF00] text-[#111111] font-syne font-bold px-4 py-2.5 rounded-lg text-xs flex items-center gap-1.5">
+          <span>📅 Schedule Chat</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let soundEnabled = true;
+    let userXp = 0;
+    let audioCtx = null;
+    let isMinimalist = false;
+    let isHighContrast = false;
+    let isSpeaking = false;
+    let synthUtterance = null;
+    let allModule2Flipped = false;
+
+    function toggleCardFlip(cardId) {
+      const card = document.getElementById(cardId);
+      if (!card) return;
+      card.classList.toggle('is-flipped');
+      playSynthSound('blip');
+
+      if (cardId === 'card-identity') {
+        const btnText = document.getElementById('flip-identity-btn-text');
+        if (card.classList.contains('is-flipped')) {
+          btnText.textContent = "FLIP BACK: FORMAL RESUME";
+          addXp(20, "Discovered Truth");
+        } else {
+          btnText.textContent = "FLIP TO REVEAL: WHO I REALLY AM";
+        }
+      }
+    }
+
+    function toggleAllModule2Cards() {
+      allModule2Flipped = !allModule2Flipped;
+      const pillarIds = ['card-pillar-1', 'card-pillar-2', 'card-pillar-3', 'card-pillar-4'];
+      
+      pillarIds.forEach(id => {
+        const card = document.getElementById(id);
+        if (card) {
+          if (allModule2Flipped) {
+            card.classList.add('is-flipped');
+          } else {
+            card.classList.remove('is-flipped');
+          }
+        }
+      });
+
+      const text = document.getElementById('flip-all-text');
+      const icon = document.getElementById('flip-all-icon');
+      if (allModule2Flipped) {
+        text.textContent = "FLIP ALL: FORMAL RESUME";
+        icon.textContent = "👔";
+        addXp(25, "Unfiltered Vision");
+        alertToast("All Module 02 cards flipped to Reality Mode!");
+      } else {
+        text.textContent = "FLIP ALL: REALITY MODE";
+        icon.textContent = "🔄";
+        alertToast("All Module 02 cards flipped to Formal Resume!");
+      }
+      playSynthSound('chord');
+    }
+
+    // Enable Keyboard (Enter / Space) to flip cards for accessibility
+    document.querySelectorAll('.perspective-1000').forEach(container => {
+      container.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const innerCard = container.querySelector('.flip-card');
+          if (innerCard) {
+            toggleCardFlip(innerCard.id);
+          }
+        }
+      });
+    });
+
+    function toggleMinimalistMode() {
+      isMinimalist = !isMinimalist;
+      const body = document.body;
+      const icon = document.getElementById('minimalist-icon');
+      const label = document.getElementById('minimalist-label');
+
+      playSynthSound('blip');
+
+      if (isMinimalist) {
+        body.classList.add('minimalist-mode');
+        icon.textContent = '🎨';
+        label.textContent = 'Neo-Brutalist View';
+        alertToast("Switched to Minimalist Mode: Clean lines, reduced clutter.");
+      } else {
+        body.classList.remove('minimalist-mode');
+        icon.textContent = '◻️';
+        label.textContent = 'Minimalist View';
+        alertToast("Switched to Neo-Brutalist Mode: Bold, playful & tactile.");
+      }
+    }
+
+    function changeFontSize(size) {
+      const html = document.documentElement;
+      html.classList.remove('text-size-lg', 'text-size-xl');
+
+      if (size === 'lg') {
+        html.classList.add('text-size-lg');
+        alertToast("Text size enlarged to Large (115%)");
+      } else if (size === 'xl') {
+        html.classList.add('text-size-xl');
+        alertToast("Text size enlarged to Extra Large (130%)");
+      } else {
+        alertToast("Text size reset to Default (100%)");
+      }
+      playSynthSound('blip');
+    }
+
+    function toggleHighContrast() {
+      isHighContrast = !isHighContrast;
+      const body = document.body;
+      const btn = document.getElementById('high-contrast-toggle');
+
+      if (isHighContrast) {
+        body.classList.add('high-contrast-mode');
+        btn.classList.add('bg-[#111111]', 'text-white');
+        alertToast("High contrast mode enabled");
+      } else {
+        body.classList.remove('high-contrast-mode');
+        btn.classList.remove('bg-[#111111]', 'text-white');
+        alertToast("High contrast mode disabled");
+      }
+      playSynthSound('blip');
+    }
+
+    function toggleReadAloud() {
+      if (!('speechSynthesis' in window)) {
+        alertToast("Web Speech API is not supported in this browser.");
+        return;
+      }
+
+      if (isSpeaking) {
+        stopReadAloud();
+      } else {
+        startReadAloud();
+      }
+    }
+
+    function startReadAloud() {
+      window.speechSynthesis.cancel();
+
+      const speechText = `Wei MENG. Learning and Development Architect and Experiential Ed Tech Designer. 
+      Hi, I'm Wei MENG. I build the antidote to boring corporate training. 
+      Most corporate training is an unread PDF or a 60-slide compliance deck. I write bingeable short drama series, build real-time AI roleplay sandboxes where failing is safe and funny, and engineer interactive web playgrounds that treat adult learners with cognitive dignity. 
+      Over eight years enterprise experience, 94.2 percent voluntary completion rate, plus 76 learner Net Promoter Score. 
+      Module 1 covers Who I Am versus Who I REALLY Am. Module 2 covers applied adult learning methodology and safe-to-fail AI simulations. Module 3 features live case studies in episodic drama, AI coaches, and gamified onboarding.`;
+
+      synthUtterance = new SpeechSynthesisUtterance(speechText);
+      synthUtterance.rate = 1.0;
+      synthUtterance.pitch = 1.0;
+
+      synthUtterance.onstart = () => {
+        isSpeaking = true;
+        document.getElementById('tts-label').textContent = 'Pause Reading';
+        document.getElementById('tts-icon').textContent = '⏸️';
+        document.getElementById('tts-status-indicator').classList.remove('hidden');
+        document.getElementById('tts-status-indicator').classList.add('flex');
+      };
+
+      synthUtterance.onend = () => {
+        stopReadAloud();
+      };
+
+      synthUtterance.onerror = () => {
+        stopReadAloud();
+      };
+
+      window.speechSynthesis.speak(synthUtterance);
+      playSynthSound('blip');
+    }
+
+    function stopReadAloud() {
+      window.speechSynthesis.cancel();
+      isSpeaking = false;
+      document.getElementById('tts-label').textContent = 'Read Aloud';
+      document.getElementById('tts-icon').textContent = '🎧';
+      document.getElementById('tts-status-indicator').classList.add('hidden');
+      document.getElementById('tts-status-indicator').classList.remove('flex');
+    }
+
+    function copyDirectEmail() {
+      const email = "wei.meng.ld@example.com";
+      const dummy = document.createElement("input");
+      document.body.appendChild(dummy);
+      dummy.value = email;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+
+      const label = document.getElementById('copy-email-text');
+      label.textContent = "Copied to Clipboard! ✓";
+      playSynthSound('chord');
+      setTimeout(() => {
+        label.textContent = "Copy Direct Email";
+      }, 3000);
+    }
+
+    function openFastDossierModal() {
+      playSynthSound('blip');
+      document.getElementById('fast-dossier-modal').classList.remove('hidden');
+    }
+
+    function closeFastDossierModal() {
+      document.getElementById('fast-dossier-modal').classList.add('hidden');
+    }
+
+    const caseStudiesData = {
+      1: {
+        tag: "EPISODIC DRAMA // SCRIPTWRITING",
+        title: "The Breakroom Chronicles",
+        problem: "Company had mandatory annual boundary & compliance training. 86% of staff ran the video on mute in a minimized window. Post-course retention surveys proved near zero behavioral transfer.",
+        solution: "Collaborated with indie scriptwriters to shoot a gritty, funny 5-episode workplace drama. Each episode ended on a severe ethical cliffhanger requiring learners to vote on the character's next move. Wrong choices caused real on-screen chaos.",
+        outcomes: [
+          "• 94.2% completed all episodes voluntarily without HR reminder emails.",
+          "• Micro-quiz active recall scores improved by 41% compared to slide deck baseline.",
+          "• 640+ organic Slack threads discussing episode 3's dilemma."
+        ]
+      },
+      2: {
+        tag: "GENERATIVE AI // REAL-TIME AGENTS",
+        title: "Difficult Conversations AI Coach",
+        problem: "New engineering managers were procrastinating on giving direct, constructive feedback to struggling team members, leading to surprise PIPs and high voluntary attrition.",
+        solution: "Engineered an AI sandbox with dynamic simulated personas (e.g. 'Defensive Dave', 'Withdrawn Wendy'). Managers converse via voice or text. The engine dynamically evaluates active listening, empathy, and clarity against a rubric.",
+        outcomes: [
+          "• 1,420+ simulated practice rounds logged in the first 30 days.",
+          "• Managers reported a 68% increase in self-confidence prior to real 1:1 sessions.",
+          "• Zero real-world employee relationships strained during initial practice."
+        ]
+      },
+      3: {
+        tag: "WEB INTERACTIVE // GAMIFIED ONBOARDING",
+        title: "Mission Zero: Company HQ Quest",
+        problem: "New hires received a 90-page static Notion document. It took an average of 28 business days before new hires shipped their first pull request, bogged down by setup confusion.",
+        solution: "Architected an interactive, browser-based 8-bit adventure map where new employees explore virtual departments, interview cartoon depictions of founders, and solve security riddles to get their SSH keys.",
+        outcomes: [
+          "• Ramp-up time cut by 35% across the entire engineering department.",
+          "• IT & People Ops repetitive ticket volume declined by 48%.",
+          "• 98% of new hires rated onboarding as 'The most memorable in their career'."
+        ]
+      },
+      4: {
+        tag: "BEHAVIORAL HABIT DESIGN // SYSTEMS",
+        title: "The Anti-Burnout Workflow Loop",
+        problem: "Leadership tried solving team burnout with one-off lunch workshops and meditation app coupons. Result: Zero change in hours worked and continued cynicism.",
+        solution: "Shifted from episodic events to persistent behavioral nudges. Configured automated Google Calendar and Slack workflows that mandated 25/50-minute meeting defaults and nudged managers after 3 consecutive days of late-night pings.",
+        outcomes: [
+          "• 52% reduction in meetings scheduled with zero buffer time.",
+          "• Voluntary team engagement scores rebounded by 24 points.",
+          "• 73% of teams kept the behavioral rituals intact 6 months post-rollout."
+        ]
+      }
+    };
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playSynthSound(type) {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'blip') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, now);
+          osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'arcade') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(330, now + 0.05);
+          osc.frequency.setValueAtTime(440, now + 0.1);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
+          osc.start(now);
+          osc.stop(now + 0.18);
+        } else if (type === 'chord') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.08);
+          osc.frequency.setValueAtTime(783.99, now + 0.16);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'buzz') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(140, now);
+          osc.frequency.linearRampToValueAtTime(80, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        }
+      } catch (e) {
+        // Fallback for audio restrictions
+      }
+    }
+
+    document.getElementById('sound-toggle-btn').addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      const icon = document.getElementById('sound-icon');
+      const label = document.getElementById('sound-label');
+      if (soundEnabled) {
+        icon.textContent = '🔊';
+        label.textContent = 'AUDIO: ON';
+        playSynthSound('blip');
+      } else {
+        icon.textContent = '🔇';
+        label.textContent = 'AUDIO: OFF';
+      }
+    });
+
+    function addXp(amount, reason) {
+      userXp += amount;
+      document.getElementById('xp-counter').textContent = userXp;
+      playSynthSound('arcade');
+    }
+
+    function toggleBossKey() {
+      const overlay = document.getElementById('boss-overlay');
+      overlay.classList.toggle('hidden');
+      if (!overlay.classList.contains('hidden')) {
+        playSynthSound('blip');
+      }
+    }
+
+    document.getElementById('boss-key-btn').addEventListener('click', toggleBossKey);
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        toggleBossKey();
+      }
+    });
+
+    const skipBtn = document.getElementById('skip-training-btn');
+    const hrModal = document.getElementById('hr-modal');
+    if (skipBtn) {
+      skipBtn.addEventListener('click', () => {
+        playSynthSound('buzz');
+        hrModal.classList.remove('hidden');
+      });
+    }
+
+    function closeHrModal() {
+      hrModal.classList.add('hidden');
+      addXp(25, "Rebellion Bonus");
+      triggerConfetti();
+    }
+
+    document.addEventListener('mouseup', (e) => {
+      const selection = window.getSelection().toString().trim();
+      if (selection.length > 10) {
+        const tooltip = document.getElementById('xp-float-tooltip');
+        tooltip.style.left = `${e.pageX}px`;
+        tooltip.style.top = `${e.pageY}px`;
+        tooltip.classList.remove('opacity-0');
+        playSynthSound('blip');
+        addXp(10, "Active Reading");
+
+        setTimeout(() => {
+          tooltip.classList.add('opacity-0');
+        }, 1600);
+      }
+    });
+
+    function triggerConfetti() {
+      playSynthSound('chord');
+      if (window.confetti) {
+        window.confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    function handleSimChoice(choice) {
+      const feedbackBox = document.getElementById('sim-feedback-box');
+      const badge = document.getElementById('sim-feedback-badge');
+      const text = document.getElementById('sim-feedback-text');
+      const score = document.getElementById('sim-feedback-score');
+      feedbackBox.classList.remove('hidden');
+
+      if (choice === 1) {
+        playSynthSound('buzz');
+        feedbackBox.className = "p-4 brutal-border-sm rounded-xl space-y-2 font-mono text-xs bg-red-100 text-red-900 border-red-900";
+        badge.textContent = "❌ Defensive Trigger Activated";
+        text.textContent = "Dave immediately shuts down and files a quiet-quitting ticket. Policy-thumping without psychological safety destroyed trust.";
+        score.textContent = "RATING: 1/5 (Disciplinary Trap)";
+      } else if (choice === 2) {
+        playSynthSound('chord');
+        addXp(50, "Empathy Master");
+        feedbackBox.className = "p-4 brutal-border-sm rounded-xl space-y-2 font-mono text-xs bg-emerald-100 text-emerald-900 border-emerald-900";
+        badge.textContent = "⭐ High Behavioral Agility";
+        text.textContent = "Dave exhales. You validated the friction without letting the standard slip. Cross-functional debrief scheduled smoothly.";
+        score.textContent = "RATING: 5/5 (Master Coach)";
+        triggerConfetti();
+      } else {
+        playSynthSound('buzz');
+        feedbackBox.className = "p-4 brutal-border-sm rounded-xl space-y-2 font-mono text-xs bg-yellow-100 text-yellow-900 border-yellow-900";
+        badge.textContent = "⚠️ Toxic Positivity Trap";
+        text.textContent = "Dave learns that missed deadlines have zero consequences, while the design team is privately blamed. Accountability dissolved.";
+        score.textContent = "RATING: 2/5 (Conflict Avoidance)";
+      }
+    }
+
+    function resetSim() {
+      document.getElementById('sim-feedback-box').classList.add('hidden');
+      playSynthSound('blip');
+    }
+
+    function openCaseStudyModal(id) {
+      playSynthSound('blip');
+      const data = caseStudiesData[id];
+      if (!data) return;
+
+      document.getElementById('modal-tag').textContent = data.tag;
+      document.getElementById('modal-title').textContent = data.title;
+      document.getElementById('modal-problem').textContent = data.problem;
+      document.getElementById('modal-solution').textContent = data.solution;
+      
+      const outcomesEl = document.getElementById('modal-outcomes');
+      outcomesEl.innerHTML = data.outcomes.map(o => `<p>${o}</p>`).join('');
+
+      document.getElementById('case-modal').classList.remove('hidden');
+    }
+
+    function closeCaseModal() {
+      document.getElementById('case-modal').classList.add('hidden');
+    }
+
+    function openContactModal() {
+      playSynthSound('blip');
+      document.getElementById('contact-modal').classList.remove('hidden');
+    }
+
+    function closeContactModal() {
+      document.getElementById('contact-modal').classList.add('hidden');
+    }
+
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      closeContactModal();
+      playSynthSound('chord');
+      triggerConfetti();
+      addXp(50, "Connected");
+      alertToast("Transmission sent! Wei MENG will reply within 24 business hours.");
+    }
+
+    function downloadResumeNotice() {
+      playSynthSound('blip');
+      alertToast("Generating clean, ATS-compliant PDF Dossier with official metrics...");
+    }
+
+    function alertToast(msg) {
+      const toast = document.createElement('div');
+      toast.className = 'fixed top-20 right-5 z-50 bg-[#111111] text-white font-mono text-xs p-4 rounded-xl brutal-border brutal-shadow max-w-xs transition-transform transform translate-y-0';
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.remove();
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
