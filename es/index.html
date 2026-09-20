@@ -1,422 +1,381 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full">
+<html lang="es" class="h-full bg-stone-100">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Vocabulario Español — Diccionario & Tarjetas de Memoria</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Vocabulario Español — Diccionario & Tarjetas</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-            display: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
-          },
-          colors: {
-            espana: {
-              red: '#c60b1e',
-              darkred: '#990000',
-              yellow: '#ffc400',
-              gold: '#e6a800',
-            }
-          }
-        }
-      }
-    };
-  </script>
-
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Estilo de la bandera de España: Tres franjas (roja, amarilla doble, roja) */
-    .bandera-rojigualda {
-      background: linear-gradient(
-        to bottom,
-        #c60b1e 0%,
-        #c60b1e 25%,
-        #ffc400 25%,
-        #ffc400 75%,
-        #c60b1e 75%,
-        #c60b1e 100%
-      );
+    :root {
+      --es-red: #c60b1e;
+      --es-yellow: #ffc400;
     }
-
-    /* Tarjeta 3D para Flashcards */
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .font-display {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .bandera-rojigualda {
+      background: linear-gradient(to bottom, #c60b1e 25%, #ffc400 25%, #ffc400 75%, #c60b1e 75%);
+    }
     .perspective-1000 {
       perspective: 1000px;
     }
-    
     .transform-style-3d {
       transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
     }
-    
     .backface-hidden {
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
     }
-    
     .rotate-y-180 {
       transform: rotateY(180deg);
     }
-
-    /* Soporte para área segura de dispositivos móviles e iOS */
-    .pb-safe {
-      padding-bottom: env(safe-area-inset-bottom, 1rem);
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-
-    /* Ocultar barra de desplazamiento sin perder funcionalidad */
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
+    ::-webkit-scrollbar-track {
+      background: #f5f5f4;
     }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    ::-webkit-scrollbar-thumb {
+      background: #d6d3d1;
+      border-radius: 9999px;
     }
-
-    /* Animación de pulso para el botón de reproducción de audio */
-    @keyframes audioWavePulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a8a29e;
     }
-    .audio-playing {
-      animation: audioWavePulse 0.6s infinite ease-in-out;
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+    .animate-pulse-subtle {
+      animation: pulse-subtle 2.5s infinite ease-in-out;
     }
   </style>
 </head>
-<body class="min-h-full bg-amber-50/40 text-stone-900 flex flex-col antialiased selection:bg-amber-300 selection:text-red-950 pb-safe">
+<body class="min-h-full flex flex-col text-stone-900 selection:bg-amber-200 selection:text-red-950">
 
-  <!-- Franja superior decorativa: Bandera Rojigualda -->
-  <div class="h-2 w-full bandera-rojigualda shadow-xs"></div>
+  <!-- Franja Superior Rojigualda -->
+  <div class="h-2 w-full bandera-rojigualda fixed top-0 left-0 z-40 shadow-xs"></div>
 
-  <!-- Barra de progreso diminuta para escaneo y carga del corpus -->
-  <div id="corpusProgressBarTrack" class="w-full bg-amber-200/50 h-1 overflow-hidden transition-opacity duration-300 opacity-0 relative z-40">
-    <div id="corpusProgressBar" class="h-full bg-gradient-to-r from-red-600 via-amber-400 to-red-600 w-0 transition-all duration-200 ease-out shadow-xs"></div>
+  <!-- Barra de progreso mínima superior -->
+  <div id="corpusProgressBarTrack" class="fixed top-2 left-0 w-full h-1 bg-stone-200/50 z-40 transition-opacity duration-300 opacity-0 pointer-events-none">
+    <div id="corpusProgressBar" class="h-full bg-gradient-to-r from-red-600 via-amber-400 to-red-600 transition-all duration-200 w-0"></div>
   </div>
 
-  <header class="w-full border-b border-amber-200/90 bg-white/95 backdrop-blur-md sticky top-0 z-30 shadow-xs">
-    <div class="max-w-5xl mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2">
+  <!-- Barra de Navegación Principal -->
+  <header class="sticky top-2 z-30 bg-white/95 backdrop-blur-md border-b border-amber-200/60 shadow-xs">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
       
-      <!-- Logotipo e Identidad de la Aplicación -->
-      <div class="flex items-center gap-2 sm:gap-3 cursor-pointer select-none" onclick="switchMainTab('diccionario')">
-        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl shadow-xs flex items-center justify-center text-white font-black text-sm sm:text-base border border-amber-400 overflow-hidden relative" style="background: linear-gradient(135deg, #c60b1e 0%, #990000 100%);">
-          <span class="relative z-10 font-display">ESP</span>
-          <div class="absolute inset-0 bandera-rojigualda opacity-25"></div>
+      <!-- Logotipo & Título -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-600 to-amber-500 text-white flex items-center justify-center font-black text-lg shadow-sm">
+          ES
         </div>
         <div>
-          <div class="flex items-center gap-1.5">
-            <h1 class="text-base sm:text-lg font-bold tracking-tight text-stone-900 font-display flex items-center gap-1">
-              Vocabulario <span class="text-red-600">Español</span>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-base sm:text-lg tracking-tight text-stone-900 leading-none">
+              Vocabulario Español
             </h1>
-            <span id="corpusBadge" class="hidden sm:inline-flex items-center gap-1 text-[10px] font-semibold bg-amber-100 text-amber-900 border border-amber-300/80 px-1.5 py-0.5 rounded-full">
-              <span id="serverPulseDot" class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-              <span id="corpusCountLabel">Cargando...</span>
+            <span id="corpusWordCountBadge" class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+              0 palabras
             </span>
           </div>
-          <p id="headerCorpusSubtitle" class="text-[10px] sm:text-xs text-stone-500 truncate max-w-[190px] sm:max-w-xs">
-            Sondeando /corpus/...
+          <p id="headerSubtitle" class="text-[11px] text-stone-500 flex items-center gap-1.5 mt-0.5">
+            <span id="serverStatusDot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+            <span id="headerStatusText" class="truncate max-w-[210px] sm:max-w-none">Iniciando corpus en /corpus/...</span>
           </p>
         </div>
       </div>
 
-      <!-- Selectores de Módulo: DICCIONARIO vs TARJETAS -->
-      <nav class="flex items-center bg-stone-100/90 p-1 rounded-xl border border-stone-200/80">
-        <button id="tabBtnDiccionario" onclick="switchMainTab('diccionario')" class="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 bg-white text-stone-900 shadow-xs">
-          <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <!-- Pestañas Principales: Diccionario vs Tarjetas -->
+      <nav class="flex items-center bg-stone-100 p-1 rounded-2xl border border-stone-200/80 shadow-inner">
+        <button 
+          id="tabBtnDict" 
+          type="button" 
+          onclick="switchView('dictionary')" 
+          class="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs bg-white text-red-700"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
           </svg>
           <span>Diccionario</span>
         </button>
-
-        <button id="tabBtnTarjetas" onclick="switchMainTab('tarjetas')" class="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 text-stone-600 hover:text-stone-900">
-          <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button 
+          id="tabBtnCards" 
+          type="button" 
+          onclick="switchView('flashcards')" 
+          class="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all text-stone-600 hover:text-stone-900"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
           </svg>
           <span>Tarjetas</span>
         </button>
       </nav>
 
-      <!-- Botones de Acción: Índice, Guardadas y Diagnóstico -->
-      <div class="flex items-center gap-1 sm:gap-1.5">
-        <button onclick="toggleIndexModal(true)" title="Explorar todas las palabras" class="px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium text-stone-700 hover:bg-stone-100 border border-stone-200/80 transition-colors flex items-center gap-1">
-          <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <!-- Acciones de Utilidad (Índice, Cuaderno, Diagnóstico) -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <button 
+          type="button" 
+          onclick="openIndexModal()" 
+          title="Ver índice completo A-Z"
+          class="p-2 rounded-xl text-stone-600 hover:text-stone-900 hover:bg-stone-100 border border-stone-200 transition-colors"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
           </svg>
-          <span class="hidden md:inline">Índice</span>
         </button>
-
-        <button onclick="toggleSavedDrawer(true)" title="Palabras guardadas" class="px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium text-stone-700 hover:bg-stone-100 border border-stone-200/80 transition-colors flex items-center gap-1 relative">
-          <svg class="w-3.5 h-3.5 text-amber-500 fill-amber-500" viewBox="0 0 24 24">
-            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        <button 
+          type="button" 
+          onclick="toggleSavedDrawer()" 
+          title="Cuaderno de palabras guardadas"
+          class="relative p-2 rounded-xl text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-300 transition-colors"
+        >
+          <svg class="w-4 h-4 fill-amber-500 text-amber-600" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
           </svg>
-          <span id="savedCountBadge" class="bg-red-600 text-white text-[10px] font-bold px-1 rounded-full min-w-[16px] text-center">0</span>
-        </button>
-
-        <button onclick="toggleDiagnosticModal(true)" title="Estado de servidor y archivos" class="p-1.5 rounded-lg text-stone-500 hover:text-stone-800 hover:bg-stone-100 transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
+          <span id="savedBadgeCount" class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 bg-red-600 text-white rounded-full text-[10px] font-extrabold flex items-center justify-center border-2 border-white">
+            0
+          </span>
         </button>
       </div>
     </div>
   </header>
 
-  <main class="flex-1 max-w-4xl w-full mx-auto px-3 sm:px-4 py-4 sm:py-6 flex flex-col">
+  <!-- Contenedor Central Dinámico -->
+  <main class="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 pb-20">
 
     <!-- ========================================== -->
-    <!-- VISTA 1: DICCIONARIO                       -->
+    <!-- VISTA 1: DICCIONARIO (BÚSQUEDA Y RESULTADO) -->
     <!-- ========================================== -->
-    <div id="viewDiccionario" class="w-full flex flex-col flex-1">
+    <section id="viewDictionary" class="space-y-6">
       
-      <!-- Barra de Búsqueda Principal -->
-      <section class="w-full mb-4 sm:mb-6">
-        <form onsubmit="handleSearchSubmit(event)" class="relative w-full">
-          <div class="relative flex items-center bg-white rounded-2xl shadow-sm border-2 border-amber-300 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100 transition-all">
-            <div class="pl-3.5 sm:pl-4 text-amber-500 flex items-center pointer-events-none">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            
+      <!-- Hero de Búsqueda Centrado y Limpio -->
+      <div class="bg-gradient-to-b from-white via-amber-50/30 to-white rounded-3xl p-6 sm:p-10 border border-amber-200/70 shadow-sm text-center relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-amber-200/40 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-red-100/40 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200 mb-3 shadow-2xs">
+          <span>🇪🇸</span> Explorador Lexicográfico
+        </span>
+        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-stone-900 font-display mb-2">
+          ¿Qué palabra deseas consultar?
+        </h2>
+        <p class="text-xs sm:text-sm text-stone-600 max-w-md mx-auto mb-6">
+          Busca en tiempo real sobre todos los archivos cargados en el servidor <code class="text-amber-900 font-mono bg-amber-100 px-1 py-0.5 rounded">/corpus/</code>.
+        </p>
+
+        <!-- Buscador con Autocompletado -->
+        <div class="relative max-w-xl mx-auto">
+          <form onsubmit="event.preventDefault(); executeSearch();" class="relative flex items-center">
             <input 
               type="text" 
-              id="mainSearchInput"
+              id="searchInput" 
+              placeholder="Ej: software, algoritmo, aleación..." 
               autocomplete="off"
               spellcheck="false"
-              placeholder="Busca una palabra en español (ej: algoritmo, célula, tejado)..." 
-              class="w-full py-3.5 sm:py-4 pl-3 pr-20 sm:pr-24 text-sm sm:text-base font-medium text-stone-900 placeholder-stone-400 bg-transparent rounded-2xl focus:outline-none"
-              oninput="handleLiveInput(event)"
-              onkeydown="handleSearchKeydown(event)"
+              oninput="handleSearchInput(event)"
+              class="w-full pl-12 pr-28 py-4 bg-white rounded-2xl border-2 border-stone-200 focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-100 text-stone-900 placeholder:text-stone-400 font-medium text-base shadow-sm transition-all"
             />
-
+            <div class="absolute left-4 text-stone-400 pointer-events-none">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
             <div class="absolute right-2 flex items-center gap-1">
               <button 
                 type="button" 
                 id="clearSearchBtn" 
-                onclick="clearSearchInput()" 
-                class="hidden p-1.5 text-stone-400 hover:text-stone-700 rounded-full hover:bg-stone-100 transition-colors"
-                title="Borrar texto"
+                onclick="clearSearch()" 
+                class="hidden p-2 text-stone-400 hover:text-stone-700 rounded-xl transition-colors"
+                title="Limpiar"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-
               <button 
                 type="submit" 
-                class="px-3 sm:px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition-all active:scale-95"
+                class="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs active:scale-95 transition-all"
               >
                 Buscar
               </button>
             </div>
-          </div>
+          </form>
 
-          <!-- Menú desplegable de autocompletado instantáneo -->
-          <div id="autocompleteDropdown" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl shadow-xl border border-amber-200 overflow-hidden z-50 max-h-72 overflow-y-auto">
-            <ul id="autocompleteList" class="divide-y divide-stone-100 text-sm"></ul>
-          </div>
-        </form>
+          <!-- Menú Flotante de Autocompletado -->
+          <div id="autocompleteMenu" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl border border-amber-200/80 shadow-xl overflow-hidden z-20 text-left max-h-64 overflow-y-auto"></div>
+        </div>
 
-        <!-- Chips de sugerencias y botón aleatorio -->
-        <div class="flex items-center justify-between mt-2.5 px-1 text-xs text-stone-500">
-          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" id="quickSampleChips">
-            <span class="text-stone-400 font-medium whitespace-nowrap">Ejemplos:</span>
-          </div>
-          <button onclick="fetchRandomWord()" class="text-xs font-medium text-red-600 hover:text-red-700 hover:underline flex items-center gap-1 whitespace-nowrap ml-2">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            <span>Aleatoria</span>
+        <!-- Palabras Rápidas Sugeridas -->
+        <div class="mt-4 flex flex-wrap items-center justify-center gap-1.5 text-xs">
+          <span class="text-stone-400 font-medium">Ejemplos:</span>
+          <button type="button" onclick="quickLookup('algoritmo')" class="px-2 py-1 rounded-lg bg-white hover:bg-amber-100 text-stone-700 hover:text-amber-900 border border-stone-200 transition-colors font-mono">algoritmo</button>
+          <button type="button" onclick="quickLookup('software')" class="px-2 py-1 rounded-lg bg-white hover:bg-amber-100 text-stone-700 hover:text-amber-900 border border-stone-200 transition-colors font-mono">software</button>
+          <button type="button" onclick="quickLookup('aleación')" class="px-2 py-1 rounded-lg bg-white hover:bg-amber-100 text-stone-700 hover:text-amber-900 border border-stone-200 transition-colors font-mono">aleación</button>
+          <button type="button" onclick="pickRandomWord()" class="px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold border border-amber-300 transition-colors flex items-center gap-1">
+            <span>🎲</span> Aleatoria
           </button>
         </div>
-      </section>
+      </div>
 
-      <!-- Área de resultados del diccionario -->
-      <div id="resultContainer" class="flex-1 flex flex-col">
+      <!-- Tarjeta de Resultado del Diccionario -->
+      <div id="dictionaryResultCard" class="hidden bg-white rounded-3xl p-6 sm:p-8 border border-amber-200 shadow-md space-y-6">
         
-        <!-- Estado Inicial / Vacío -->
-        <div id="idleState" class="flex flex-col items-center justify-center text-center p-8 bg-white/70 rounded-2xl border border-dashed border-amber-300 flex-1 my-auto">
-          <div class="w-14 h-14 rounded-2xl bg-amber-100 text-red-600 flex items-center justify-center mb-3 shadow-inner">
-            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
+        <!-- Cabecera de la Palabra -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-100">
+          <div>
+            <div class="flex items-center gap-3">
+              <h3 id="dictResultWord" class="text-2xl sm:text-3xl font-extrabold text-stone-900 font-display"></h3>
+              <span id="dictResultGrammar" class="px-3 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300"></span>
+            </div>
+            <div class="flex items-center gap-3 mt-1.5">
+              <span id="dictResultIpa" class="font-mono text-sm text-stone-500 bg-stone-50 px-2 py-0.5 rounded-md border border-stone-200"></span>
+              <button 
+                type="button" 
+                onclick="speakCurrentDictWord()" 
+                class="inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-lg transition-colors border border-red-200"
+                title="Escuchar pronunciación"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+                <span>Pronunciar</span>
+              </button>
+            </div>
           </div>
-          <h2 class="text-base sm:text-lg font-bold text-stone-900 mb-1">Busca cualquier palabra en el corpus</h2>
-          <p class="text-xs sm:text-sm text-stone-600 max-w-sm mb-4">
-            Escribe un término en el buscador o pulsa en el Índice para explorar todo el léxico sincronizado desde <code class="bg-amber-100 px-1 py-0.5 rounded text-red-800">/corpus/</code>.
-          </p>
-          <div class="flex flex-wrap items-center justify-center gap-2">
-            <button onclick="fetchRandomWord()" class="px-3.5 py-2 bg-white text-stone-800 border border-stone-300 hover:border-amber-400 rounded-xl text-xs sm:text-sm font-semibold shadow-2xs transition-all hover:bg-amber-50/50">
-              Ver palabra al azar
+
+          <!-- Botones de Acción sobre la palabra -->
+          <div class="flex items-center gap-2">
+            <button 
+              type="button" 
+              id="dictBookmarkBtn" 
+              onclick="toggleBookmarkCurrentDict()" 
+              class="px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 bg-stone-50 text-stone-700 border-stone-200 hover:bg-amber-50 hover:text-amber-900"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+              </svg>
+              <span id="dictBookmarkBtnLabel">Guardar</span>
             </button>
-            <button onclick="toggleIndexModal(true)" class="px-3.5 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-xs transition-all hover:brightness-105">
-              Abrir índice completo
+            <button 
+              type="button" 
+              onclick="sendToFlashcardsView()" 
+              class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-600 text-stone-950 shadow-xs transition-transform active:scale-95 flex items-center gap-1.5"
+            >
+              <span>Practicar en Tarjeta</span>
+              <span>→</span>
             </button>
           </div>
         </div>
 
-        <!-- Tarjeta de Resultado Detallado -->
-        <article id="resultCard" class="hidden bg-white rounded-2xl shadow-sm border border-amber-200 overflow-hidden transition-all">
-          
-          <!-- Encabezado del término -->
-          <div class="p-4 sm:p-6 bg-gradient-to-br from-amber-50/60 via-white to-orange-50/40 border-b border-amber-100 relative">
-            <div class="flex items-start justify-between gap-3">
-              <div class="flex-1">
-                <div class="flex flex-wrap items-center gap-2 mb-1.5">
-                  <span id="resGrammarTag" class="px-2 py-0.5 text-xs font-bold rounded-md bg-red-100 text-red-800 border border-red-200">
-                    sustantivo
-                  </span>
-                  <span id="resSourcePill" class="px-2 py-0.5 text-[11px] font-medium rounded-md bg-stone-100 text-stone-700 border border-stone-200 truncate max-w-[200px]">
-                    archivo.txt
-                  </span>
-                </div>
-                
-                <h2 id="resTitle" class="text-2xl sm:text-4xl font-extrabold text-stone-950 font-display tracking-tight mb-1">
-                  palabra
-                </h2>
-                
-                <div class="flex items-center gap-3">
-                  <span id="resIpa" class="text-sm sm:text-base font-mono text-amber-800 font-medium">
-                    [paˈla.βɾa]
-                  </span>
-                  
-                  <button id="resAudioBtn" onclick="playCurrentWordAudio()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-100/80 hover:bg-amber-200 text-amber-900 text-xs font-semibold transition-all active:scale-95">
-                    <svg id="audioIconSvg" class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-                    </svg>
-                    <span>Escuchar</span>
-                  </button>
-                </div>
-              </div>
+        <!-- Traducción en Inglés -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-stone-400 mb-1">
+            Significado en Inglés:
+          </label>
+          <p id="dictResultMeaning" class="text-lg sm:text-xl font-bold text-red-900"></p>
+        </div>
 
-              <!-- Botón Guardar en Cuaderno (Favoritos) -->
-              <button 
-                id="resBookmarkBtn" 
-                onclick="toggleBookmarkCurrentWord()" 
-                class="p-2.5 rounded-xl border border-stone-200 hover:border-amber-400 bg-white hover:bg-amber-50 text-stone-400 transition-all shadow-2xs"
-                title="Guardar palabra"
-              >
-                <svg id="bookmarkStarIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                </svg>
-              </button>
-            </div>
-          </div>
+        <!-- Frases de Ejemplo del Corpus -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
+            Ejemplos del Corpus:
+          </label>
+          <div id="dictResultExamplesContainer" class="space-y-2"></div>
+        </div>
 
-          <!-- Cuerpo de la ficha: Traducción y Frases de Ejemplo -->
-          <div class="p-4 sm:p-6 space-y-4">
-            <div>
-              <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800/80 block mb-1">
-                Significado en inglés
-              </span>
-              <p id="resEnglish" class="text-base sm:text-lg text-stone-800 font-semibold leading-snug">
-                definition
-              </p>
-            </div>
-
-            <div>
-              <div class="flex items-center justify-between mb-1.5">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800/80">
-                  Frases de Ejemplo
-                </span>
-                <span id="resExampleCount" class="text-[10px] text-stone-400">1 ejemplo</span>
-              </div>
-              <div id="resExamplesList" class="space-y-2">
-                <!-- Se inserta dinámicamente -->
-              </div>
-            </div>
-
-            <!-- Acciones rápidas -->
-            <div class="pt-3 border-t border-stone-100 flex flex-wrap items-center justify-between gap-2">
-              <button 
-                onclick="sendCurrentWordToFlashcard()" 
-                class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition-all flex items-center gap-1.5 active:scale-95"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-                <span>Practicar en Tarjeta</span>
-              </button>
-
-              <button 
-                onclick="copyWordDefinition()" 
-                id="copyResultBtn"
-                class="px-3 py-2 text-stone-600 hover:text-stone-900 border border-stone-200 hover:border-stone-300 rounded-xl text-xs font-medium transition-colors flex items-center gap-1"
-              >
-                <svg class="w-3.5 h-3.5 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-                <span>Copiar</span>
-              </button>
-            </div>
-          </div>
-        </article>
-
+        <!-- Archivo de Procedencia -->
+        <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-xs text-stone-400">
+          <span>Fuente(s) en servidor:</span>
+          <span id="dictResultSources" class="font-mono text-stone-600 font-medium"></span>
+        </div>
       </div>
-    </div>
+
+    </section>
 
     <!-- ========================================== -->
     <!-- VISTA 2: TARJETAS DE MEMORIA (FLASHCARDS)  -->
     <!-- ========================================== -->
-    <div id="viewTarjetas" class="hidden w-full flex flex-col flex-1">
-      
-      <!-- Barra superior de control de la baraja -->
-      <div class="flex flex-wrap items-center justify-between gap-2 mb-3 bg-white p-3 rounded-2xl border border-amber-200 shadow-2xs">
+    <section id="viewFlashcards" class="hidden space-y-6">
+
+      <!-- Panel de Control y Filtro de Mazos -->
+      <div class="bg-white rounded-3xl p-4 sm:p-5 border border-amber-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         
-        <div class="flex items-center gap-2">
-          <label for="flashcardDeckSelect" class="text-xs font-bold text-stone-600">Baraja:</label>
-          <select id="flashcardDeckSelect" onchange="handleFlashcardDeckChange()" class="text-xs sm:text-sm bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-stone-800 font-medium focus:outline-none focus:ring-2 focus:ring-red-400 max-w-[160px] sm:max-w-xs truncate">
-            <option value="all">Todo el corpus</option>
-            <option value="saved">Solo guardadas (⭐)</option>
+        <div class="flex items-center gap-3">
+          <label class="text-xs font-bold text-stone-500 uppercase tracking-wider whitespace-nowrap">Mazo:</label>
+          <select 
+            id="fcDeckFilter" 
+            onchange="handleDeckFilterChange()" 
+            class="w-full sm:w-auto text-xs sm:text-sm font-semibold px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400 text-stone-900"
+          >
+            <option value="all">Todo el Corpus</option>
+            <option value="saved">⭐ Guardadas en Cuaderno</option>
           </select>
         </div>
 
-        <!-- Métricas de dominio de tarjetas -->
-        <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-semibold">
-          <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200" title="Dominadas">
-            ✓ <span id="flashcardMasteredCount">0</span>
-          </span>
-          <span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200" title="Por repasar">
-            ↻ <span id="flashcardReviewCount">0</span>
-          </span>
-          <span class="text-stone-500 font-mono text-xs">
-            <span id="flashcardIndexNumber">1</span>/<span id="flashcardTotalCount">0</span>
-          </span>
-          <button onclick="shuffleFlashcards()" title="Barajar tarjetas" class="p-1.5 text-stone-600 hover:text-stone-900 rounded-lg hover:bg-stone-100 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
+        <!-- Contadores de Maestría y Barajado -->
+        <div class="flex items-center justify-between sm:justify-end gap-3 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
+              <span id="fcMasteredCount">0</span> Dominadas
+            </span>
+            <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-bold">
+              <span id="fcReviewCount">0</span> Por Repasar
+            </span>
+          </div>
+          <button 
+            type="button" 
+            onclick="shuffleFlashcards()" 
+            class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold flex items-center gap-1 transition-colors border border-stone-200"
+            title="Barajar tarjetas"
+          >
+            <span>🔀</span>
+            <span>Barajar</span>
           </button>
         </div>
       </div>
 
-      <!-- Barra de progreso de la sesión de tarjetas -->
-      <div class="w-full bg-stone-200 rounded-full h-1.5 mb-4 overflow-hidden">
-        <div id="flashcardProgressBar" class="bg-gradient-to-r from-red-600 to-amber-500 h-1.5 rounded-full transition-all duration-300 w-0"></div>
+      <!-- Barra de Progreso del Mazo -->
+      <div class="space-y-1">
+        <div class="flex items-center justify-between text-xs text-stone-500 font-medium px-1">
+          <span>Progreso de sesión:</span>
+          <span>
+            <strong id="fcCurrentIndex" class="text-stone-900 font-mono">1</strong> / 
+            <span id="fcTotalCount" class="font-mono">0</span>
+          </span>
+        </div>
+        <div class="w-full bg-stone-200/80 rounded-full h-2 overflow-hidden">
+          <div id="fcProgressBar" class="h-full bg-gradient-to-r from-red-600 via-amber-400 to-emerald-500 transition-all duration-300 w-0"></div>
+        </div>
       </div>
 
-      <!-- Contenedor de la Tarjeta 3D interactiva con soporte para gestos táctiles -->
-      <div class="flex-1 flex flex-col items-center justify-center min-h-[310px] sm:min-h-[380px] w-full max-w-xl mx-auto mb-4 perspective-1000">
-        
-        <div 
-          id="flashcardElement" 
-          onclick="flipFlashcard()" 
-          class="relative w-full h-80 sm:h-96 rounded-3xl shadow-md border-2 border-amber-300/80 cursor-pointer transform-style-3d transition-transform duration-500 select-none bg-white"
-        >
+      <!-- Tarjeta 3D Giratoria -->
+      <div class="perspective-1000 w-full max-w-xl mx-auto h-80 sm:h-96 select-none cursor-pointer" onclick="flipFlashcard()">
+        <div id="flashcardElement" class="relative w-full h-full transform-style-3d transition-transform duration-500 rounded-3xl shadow-xl border-2 border-amber-300">
           
-          <!-- CARA 1 (FRONT): Término en Español + Fonética + Audio -->
+          <!-- CARA 1 (FRONT): Término Español + Pronunciación -->
           <div class="absolute inset-0 w-full h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between backface-hidden bg-gradient-to-b from-white via-amber-50/20 to-orange-50/30">
             <div class="flex items-center justify-between text-xs">
-              <span id="fcFrontBadge" class="px-2.5 py-1 rounded-full bg-red-100 text-red-800 font-bold border border-red-200">
-                Español
-              </span>
+              <div class="flex items-center gap-1.5">
+                <span id="fcFrontBadge" class="px-2.5 py-1 rounded-full bg-red-100 text-red-800 font-bold border border-red-200">
+                  Español
+                </span>
+                <span id="fcPriorityBadge" class="hidden px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 font-extrabold border border-amber-300 text-[11px] flex items-center gap-1 shadow-2xs">
+                  ⭐ Prioritaria
+                </span>
+              </div>
               <span class="text-stone-400 font-medium flex items-center gap-1">
                 <span>Toca para voltear</span>
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -425,585 +384,521 @@
               </span>
             </div>
 
-            <!-- Centro del Front: Palabra & Fonética -->
-            <div class="text-center py-4 my-auto">
-              <h3 id="fcFrontWord" class="text-3xl sm:text-5xl font-extrabold text-stone-900 font-display tracking-tight mb-2">
-                cargando...
-              </h3>
-              <p id="fcFrontIpa" class="text-base sm:text-lg font-mono text-amber-800 font-medium">
-                [fonética]
-              </p>
-              
-              <button 
-                onclick="event.stopPropagation(); playFlashcardWordAudio();" 
-                class="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-semibold shadow-2xs transition-all"
-              >
-                <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                </svg>
-                <span>Escuchar en español</span>
-              </button>
+            <!-- Centro del Front -->
+            <div class="text-center my-auto space-y-3">
+              <h2 id="fcFrontWord" class="text-3xl sm:text-5xl font-extrabold text-stone-950 font-display tracking-tight"></h2>
+              <div class="flex items-center justify-center gap-2">
+                <span id="fcFrontIpa" class="font-mono text-sm text-stone-500 bg-white/80 px-2.5 py-0.5 rounded-lg border border-amber-200"></span>
+                <button 
+                  type="button" 
+                  onclick="event.stopPropagation(); speakCurrentFlashcard();" 
+                  class="p-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 transition-colors border border-red-200"
+                  title="Reproducir audio"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             <!-- Pie del Front -->
-            <div class="flex items-center justify-between text-xs text-stone-400 pt-2 border-t border-amber-100">
-              <span id="fcFrontGrammar">sustantivo</span>
-              <span id="fcFrontSource" class="truncate max-w-[150px]">corpus</span>
+            <div class="flex items-center justify-between text-xs text-stone-400 pt-2 border-t border-amber-100/80">
+              <span id="fcFrontGrammar" class="font-semibold text-amber-900"></span>
+              <span id="fcFrontSource" class="font-mono truncate max-w-[160px]"></span>
             </div>
           </div>
 
-          <!-- CARA 2 (BACK): Significado en Inglés + Contexto y Frase -->
-          <div class="absolute inset-0 w-full h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between backface-hidden rotate-y-180 bg-gradient-to-b from-stone-900 via-stone-900 to-stone-950 text-white shadow-xl">
+          <!-- CARA 2 (BACK): Significado en Inglés + Frase de Ejemplo -->
+          <div class="absolute inset-0 w-full h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between backface-hidden rotate-y-180 bg-gradient-to-b from-stone-900 via-stone-900 to-stone-950 text-white border-2 border-amber-400">
             <div class="flex items-center justify-between text-xs">
-              <span class="px-2.5 py-1 rounded-full bg-amber-400/20 text-amber-300 font-bold border border-amber-400/30">
-                Inglés & Contexto
+              <span class="px-2.5 py-1 rounded-full bg-amber-400/20 text-amber-300 font-bold border border-amber-400/40">
+                Significado & Ejemplo
               </span>
               <span class="text-stone-400 font-medium flex items-center gap-1">
-                <span>Toca para voltear</span>
+                <span>Voltear al frente</span>
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                 </svg>
               </span>
             </div>
 
-            <!-- Centro del Back: Traducción & Ejemplo -->
-            <div class="my-auto py-2">
-              <span class="text-[11px] font-bold uppercase tracking-wider text-amber-400 block mb-1">Significado</span>
-              <h4 id="fcBackTranslation" class="text-xl sm:text-2xl font-bold text-white mb-4 leading-snug">
-                meaning
-              </h4>
-
-              <div class="bg-stone-800/80 rounded-2xl p-3 sm:p-4 border border-stone-700/80">
-                <div class="flex items-center justify-between mb-1">
-                  <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">Ejemplo</span>
-                  <button onclick="event.stopPropagation(); playFlashcardSentenceAudio();" class="text-amber-400 hover:text-amber-300 text-[11px] font-semibold flex items-center gap-1">
-                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                    </svg>
-                    <span>Escuchar frase</span>
-                  </button>
-                </div>
-                <p id="fcBackExample" class="text-xs sm:text-sm text-stone-200 italic leading-relaxed">
-                  "Ejemplo en español..."
-                </p>
+            <!-- Centro del Back -->
+            <div class="my-auto space-y-4 text-center px-2">
+              <div>
+                <label class="text-[11px] font-bold text-amber-400 uppercase tracking-wider block mb-1">Traducción:</label>
+                <h3 id="fcBackTranslation" class="text-2xl sm:text-3xl font-extrabold text-amber-300 font-display"></h3>
+              </div>
+              <div class="bg-stone-800/80 p-3.5 rounded-2xl border border-stone-700">
+                <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-1">Contexto Real:</label>
+                <p id="fcBackExample" class="text-xs sm:text-sm text-stone-200 italic"></p>
+                <button 
+                  type="button" 
+                  onclick="event.stopPropagation(); speakCurrentFlashcardSentence();" 
+                  class="mt-2 text-xs font-bold text-amber-400 hover:text-amber-300 flex items-center justify-center gap-1 mx-auto"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                  </svg>
+                  <span>Escuchar Frase</span>
+                </button>
               </div>
             </div>
 
             <!-- Pie del Back -->
-            <div class="flex items-center justify-between text-xs text-stone-400 pt-2 border-t border-stone-800">
-              <button onclick="event.stopPropagation(); toggleBookmarkCurrentFlashcard();" id="fcBookmarkBtn" class="hover:text-amber-400 flex items-center gap-1 transition-colors">
-                <svg id="fcStarIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                </svg>
-                <span id="fcBookmarkLabel">Guardar en cuaderno</span>
-              </button>
-              <span class="text-stone-500 font-mono text-[11px]">Espacio para voltear</span>
+            <div class="text-center text-[11px] text-stone-400">
+              Usa las teclas <kbd class="bg-stone-800 px-1 py-0.5 rounded text-amber-300">Espacio</kbd> o flechas <kbd class="bg-stone-800 px-1 py-0.5 rounded text-amber-300">←</kbd> <kbd class="bg-stone-800 px-1 py-0.5 rounded text-amber-300">→</kbd>
             </div>
           </div>
+
         </div>
       </div>
 
-      <!-- Botones ergonómicos para móvil y escritorio -->
-      <div class="w-full max-w-xl mx-auto flex items-center justify-between gap-2 pt-2">
-        <button 
-          onclick="prevFlashcard()" 
-          class="px-3.5 py-2.5 rounded-xl border border-stone-300 hover:border-stone-400 bg-white text-stone-700 font-semibold text-xs sm:text-sm shadow-2xs active:scale-95 transition-all flex items-center gap-1 min-h-[44px]"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-          <span class="hidden sm:inline">Anterior</span>
-        </button>
-
-        <div class="flex items-center gap-2">
+      <!-- Botones de Navegación y Calificación -->
+      <div class="max-w-xl mx-auto flex flex-col gap-3">
+        <!-- Navegación Prev / Flip / Next -->
+        <div class="grid grid-cols-3 gap-2">
           <button 
+            type="button" 
+            onclick="prevFlashcard()" 
+            class="py-3 px-4 bg-white hover:bg-stone-50 border border-stone-200 text-stone-800 font-bold rounded-2xl shadow-xs transition-transform active:scale-95 flex items-center justify-center gap-1 text-xs sm:text-sm"
+          >
+            <span>←</span>
+            <span>Anterior</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="flipFlashcard()" 
+            class="py-3 px-4 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-extrabold rounded-2xl shadow-xs transition-transform active:scale-95 flex items-center justify-center gap-1 text-xs sm:text-sm"
+          >
+            <span>Voltear</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="nextFlashcard()" 
+            class="py-3 px-4 bg-white hover:bg-stone-50 border border-stone-200 text-stone-800 font-bold rounded-2xl shadow-xs transition-transform active:scale-95 flex items-center justify-center gap-1 text-xs sm:text-sm"
+          >
+            <span>Siguiente</span>
+            <span>→</span>
+          </button>
+        </div>
+
+        <!-- Botones de Estudio: Por Repasar vs Dominada -->
+        <div class="grid grid-cols-2 gap-2">
+          <button 
+            type="button" 
             onclick="markFlashcardStatus('review')" 
-            class="px-3 sm:px-4 py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-bold text-xs sm:text-sm active:scale-95 transition-all flex items-center gap-1.5 min-h-[44px]"
-            title="Repasar esta palabra (Tecla 1)"
+            class="py-2.5 px-4 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-bold rounded-2xl transition-colors flex items-center justify-center gap-1.5 text-xs"
           >
-            <span>↻ Repasar</span>
+            <span>⏳</span>
+            <span>Marcar por Repasar (1)</span>
           </button>
-
           <button 
+            type="button" 
             onclick="markFlashcardStatus('mastered')" 
-            class="px-3 sm:px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold text-xs sm:text-sm shadow-xs active:scale-95 transition-all flex items-center gap-1.5 min-h-[44px]"
-            title="¡Dominada! (Tecla 2)"
+            class="py-2.5 px-4 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-bold rounded-2xl transition-colors flex items-center justify-center gap-1.5 text-xs"
           >
-            <span>✓ Dominada</span>
+            <span>✅</span>
+            <span>Marcar Dominada (2)</span>
           </button>
         </div>
-
-        <button 
-          onclick="nextFlashcard()" 
-          class="px-3.5 py-2.5 rounded-xl border border-stone-300 hover:border-stone-400 bg-white text-stone-700 font-semibold text-xs sm:text-sm shadow-2xs active:scale-95 transition-all flex items-center gap-1 min-h-[44px]"
-        >
-          <span class="hidden sm:inline">Siguiente</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
       </div>
 
-      <p class="text-center text-[11px] text-stone-400 mt-2">
-        Consejo: Desliza con el dedo a izquierda/derecha en móvil o pulsa <kbd class="bg-stone-200 px-1 py-0.5 rounded text-[10px]">Espacio</kbd>, <kbd class="bg-stone-200 px-1 py-0.5 rounded text-[10px]">←</kbd>, <kbd class="bg-stone-200 px-1 py-0.5 rounded text-[10px]">→</kbd>
-      </p>
-    </div>
+    </section>
 
   </main>
 
   <!-- ========================================== -->
-  <!-- MODAL: ÍNDICE GENERAL DEL CORPUS           -->
+  <!-- MODAL PROMINENTE: PROGRESO DE CARGA CORPUS -->
   <!-- ========================================== -->
-  <div id="indexModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white w-full max-w-3xl max-h-[90vh] rounded-3xl shadow-2xl border border-amber-300 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+  <div id="corpusLoadingModal" class="fixed inset-0 z-50 bg-stone-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 transition-opacity duration-300">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border-2 border-amber-300 overflow-hidden transform transition-all">
+      <div class="h-2 w-full bandera-rojigualda"></div>
       
-      <div class="p-4 sm:p-5 border-b border-amber-200 bg-amber-50/70 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center font-bold text-sm">
-            Aa
+      <div class="p-5 sm:p-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-600 to-amber-500 text-white flex items-center justify-center shadow-md animate-pulse">
+              <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 id="modalLoadingTitle" class="text-base font-bold text-stone-900 font-display">
+                Sincronizando Corpus...
+              </h3>
+              <p class="text-xs text-stone-500">Buscando archivos .txt en /corpus/</p>
+            </div>
           </div>
-          <div>
-            <h3 class="font-bold text-base sm:text-lg text-stone-900 font-display">
-              Índice de Palabras del Corpus
-            </h3>
-            <p class="text-xs text-stone-500" id="indexModalSubtitle">
-              Todas las entradas procesadas desde los archivos de /corpus/
-            </p>
+          <span id="modalLoadingPercentBadge" class="text-xs font-black px-2.5 py-1 rounded-full bg-red-100 text-red-800 border border-red-200">
+            0%
+          </span>
+        </div>
+
+        <!-- Barra de progreso -->
+        <div class="w-full bg-stone-100 rounded-full h-3 overflow-hidden p-0.5 border border-amber-200 shadow-inner">
+          <div id="modalLoadingProgressBar" class="h-full bg-gradient-to-r from-red-600 via-amber-400 to-emerald-500 rounded-full transition-all duration-300 w-0"></div>
+        </div>
+
+        <!-- Estado y Métricas -->
+        <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3 text-xs space-y-1.5">
+          <div class="flex items-center justify-between text-stone-700">
+            <span class="text-stone-500">Actividad:</span>
+            <span id="modalCurrentActionText" class="font-medium text-amber-950 truncate max-w-[220px]">Sondeando directorio...</span>
+          </div>
+          <div class="flex items-center justify-between text-stone-700 pt-1 border-t border-amber-100">
+            <span>Archivos detectados:</span>
+            <span id="modalFilesCount" class="font-bold text-stone-900 font-mono">0 archivos</span>
+          </div>
+          <div class="flex items-center justify-between text-stone-700">
+            <span>Palabras procesadas:</span>
+            <span id="modalWordsCount" class="font-bold text-emerald-700 font-mono">0 palabras</span>
           </div>
         </div>
-        <button onclick="toggleIndexModal(false)" class="p-1.5 text-stone-400 hover:text-stone-700 rounded-xl hover:bg-white transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+
+        <!-- Fichas de archivos cargados -->
+        <div>
+          <label class="block text-[11px] font-bold text-stone-600 uppercase tracking-wider mb-1.5">
+            Archivos procesados:
+          </label>
+          <div id="modalLoadedFilesChips" class="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto p-2 bg-stone-50 rounded-xl border border-stone-200/80">
+            <span class="text-xs text-stone-400 italic">Buscando archivos...</span>
+          </div>
+        </div>
+
+        <!-- Entrada para añadir nombre de archivo manualmente -->
+        <div class="pt-2 border-t border-stone-100 flex items-center gap-2">
+          <input 
+            type="text" 
+            id="modalCustomFilenameInput" 
+            placeholder="Ej: vocabulario2.txt o batch_2.txt" 
+            class="flex-1 text-xs px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
+            onkeydown="if(event.key==='Enter') addCustomServerFile()"
+          />
+          <button 
+            type="button" 
+            onclick="addCustomServerFile()" 
+            class="px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-xl text-xs font-bold transition-colors whitespace-nowrap"
+          >
+            + Añadir
+          </button>
+          <button 
+            type="button" 
+            id="modalDismissBtn" 
+            onclick="closeCorpusLoadingModal()" 
+            class="px-3 py-2 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-bold transition-colors"
+          >
+            Cerrar
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ÍNDICE COMPLETO A - Z DEL CORPUS    -->
+  <!-- ========================================== -->
+  <div id="indexModal" class="hidden fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6">
+    <div class="bg-white w-full max-w-2xl max-h-[85vh] rounded-3xl shadow-2xl border border-amber-200 flex flex-col overflow-hidden">
+      
+      <div class="p-4 sm:p-5 border-b border-stone-100 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <h3 class="font-bold text-base sm:text-lg text-stone-900 font-display">Índice Léxico del Corpus</h3>
+          <span id="indexModalTotalCount" class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold border border-amber-300">0</span>
+        </div>
+        <button type="button" onclick="closeIndexModal()" class="p-2 text-stone-400 hover:text-stone-700 rounded-xl">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
       </div>
 
-      <!-- Filtros y Búsqueda en el Índice -->
-      <div class="p-3 sm:p-4 border-b border-stone-100 bg-white flex flex-col sm:flex-row gap-2 items-stretch sm:items-center justify-between">
-        <div class="relative flex-1">
-          <input 
-            type="text" 
-            id="indexFilterInput" 
-            placeholder="Filtrar palabras por texto..." 
-            oninput="renderIndexList()" 
-            class="w-full pl-8 pr-3 py-2 text-xs sm:text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
-          />
-          <svg class="w-4 h-4 text-stone-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
-
-        <!-- Filtro por Archivo Origen -->
-        <select id="indexFileSelectFilter" onchange="renderIndexList()" class="text-xs bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-stone-700 font-medium focus:outline-none focus:ring-2 focus:ring-red-400">
+      <!-- Barra de filtrado en el índice -->
+      <div class="p-3 sm:p-4 bg-stone-50 border-b border-stone-100 flex flex-col sm:flex-row gap-2">
+        <input 
+          type="text" 
+          id="indexSearchFilterInput" 
+          placeholder="Filtrar palabras en el índice..." 
+          oninput="renderIndexWordList()"
+          class="flex-1 text-xs sm:text-sm px-3 py-2 bg-white border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
+        />
+        <select 
+          id="indexFileFilterSelect" 
+          onchange="renderIndexWordList()"
+          class="text-xs sm:text-sm px-3 py-2 bg-white border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
+        >
           <option value="all">Todos los archivos</option>
         </select>
       </div>
 
-      <!-- Lista de Palabras del Índice -->
-      <div class="flex-1 overflow-y-auto p-3 sm:p-4 divide-y divide-stone-100" id="indexWordsContainer"></div>
-
-      <!-- Pie del Modal -->
-      <div class="p-3 sm:p-4 border-t border-stone-100 bg-stone-50 flex items-center justify-between text-xs text-stone-500">
-        <span id="indexItemsCount">Mostrando 0 entradas</span>
-        <button onclick="toggleIndexModal(false)" class="px-4 py-2 bg-white border border-stone-300 hover:border-stone-400 text-stone-700 font-semibold rounded-xl">
-          Cerrar
-        </button>
-      </div>
+      <!-- Lista A-Z de Palabras -->
+      <div id="indexWordsList" class="flex-1 overflow-y-auto p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs"></div>
     </div>
   </div>
 
   <!-- ========================================== -->
-  <!-- MODAL: DIAGNÓSTICO Y GESTIÓN DE ARCHIVOS   -->
+  <!-- PANEL LATERAL: CUADERNO DE PALABRAS GUARDADAS -->
   <!-- ========================================== -->
-  <div id="diagnosticModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white w-full max-w-2xl max-h-[90vh] rounded-3xl shadow-2xl border border-amber-300 flex flex-col overflow-hidden">
+  <div id="savedWordsDrawer" class="hidden fixed inset-0 z-50 bg-stone-950/40 backdrop-blur-xs flex justify-end">
+    <div class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col border-l border-amber-200">
       
-      <div class="p-4 sm:p-5 border-b border-amber-200 bg-amber-50/70 flex items-center justify-between">
+      <div class="p-4 sm:p-5 border-b border-stone-100 flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-sm">
-            ⚙
-          </div>
-          <div>
-            <h3 class="font-bold text-base sm:text-lg text-stone-900 font-display">
-              Diagnóstico del Servidor y Archivos
-            </h3>
-            <p class="text-xs text-stone-500">Estado de escaneo y carga desde /corpus/</p>
-          </div>
+          <span class="text-lg">⭐</span>
+          <h3 class="font-bold text-base text-stone-900 font-display">Palabras Guardadas</h3>
+          <span id="savedDrawerCountBadge" class="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-800 font-bold border border-red-200">0</span>
         </div>
-        <button onclick="toggleDiagnosticModal(false)" class="p-1.5 text-stone-400 hover:text-stone-700 rounded-xl hover:bg-white transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+        <button type="button" onclick="toggleSavedDrawer()" class="p-2 text-stone-400 hover:text-stone-700 rounded-xl">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
       </div>
 
-      <div class="p-4 sm:p-6 overflow-y-auto space-y-4 text-xs sm:text-sm">
-        
-        <!-- Registro de actividad en vivo -->
-        <div>
-          <h4 class="font-bold text-stone-800 mb-1">Registro de actividad en vivo:</h4>
-          <div id="diagnosticLogBox" class="bg-stone-950 text-emerald-400 font-mono text-[11px] p-3 rounded-xl max-h-40 overflow-y-auto space-y-1 select-text">
-            <div>[inicio] Sistema de lectura de corpus preparado.</div>
-          </div>
-        </div>
-
-        <!-- Archivos procesados -->
-        <div>
-          <h4 class="font-bold text-stone-800 mb-1">Archivos procesados con éxito:</h4>
-          <div id="loadedFilesSummaryList" class="bg-stone-50 border border-stone-200 rounded-xl p-3 text-xs text-stone-700 space-y-1">
-            <span class="text-stone-400 italic">Ningún archivo cargado todavía.</span>
-          </div>
-        </div>
-
-        <!-- Alternativas de carga directa para evitar 403 Forbidden -->
-        <div class="bg-amber-50/80 border border-amber-200 rounded-2xl p-4">
-          <h4 class="font-bold text-amber-950 mb-1 flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-            </svg>
-            <span>Alternativa: Carga directa desde el dispositivo</span>
-          </h4>
-          <p class="text-xs text-amber-900/80 mb-3">
-            Si tu servidor web bloquea el listado automático de carpetas (Error 403 Forbidden), puedes cargar múltiples archivos o la carpeta entera directamente:
-          </p>
-          
-          <div class="flex flex-wrap gap-2">
-            <!-- Seleccionar múltiples archivos .txt -->
-            <label class="px-3 py-2 bg-white border border-amber-300 hover:border-amber-400 text-stone-800 rounded-xl font-semibold text-xs cursor-pointer shadow-2xs transition-all flex items-center gap-1.5">
-              <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <span>Seleccionar archivos .txt</span>
-              <input type="file" id="localFilesPickerInput" multiple accept=".txt,.tsv,.csv" onchange="handleLocalFilesSelect(event)" class="hidden">
-            </label>
-
-            <!-- Cargar carpeta completa -->
-            <label class="px-3 py-2 bg-white border border-amber-300 hover:border-amber-400 text-stone-800 rounded-xl font-semibold text-xs cursor-pointer shadow-2xs transition-all flex items-center gap-1.5">
-              <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-              </svg>
-              <span>Cargar carpeta /corpus/</span>
-              <input type="file" id="localFolderPickerInput" webkitdirectory directory onchange="handleLocalFolderSelect(event)" class="hidden">
-            </label>
-
-            <!-- Reintentar escaneo -->
-            <button onclick="scanAndLoadCorpusDirectory()" class="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-semibold text-xs shadow-xs transition-all flex items-center gap-1.5">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              <span>Reescanear /corpus/</span>
-            </button>
-          </div>
-        </div>
+      <div class="p-3 bg-amber-50 border-b border-amber-100 text-xs text-amber-950 flex items-center justify-between">
+        <span>Las palabras guardadas se priorizan en las Tarjetas.</span>
+        <button type="button" onclick="clearAllSavedWords()" class="text-red-700 font-bold hover:underline">Limpiar</button>
       </div>
 
-      <div class="p-3 sm:p-4 border-t border-stone-100 bg-stone-50 flex justify-end">
-        <button onclick="toggleDiagnosticModal(false)" class="px-4 py-2 bg-white border border-stone-300 hover:border-stone-400 text-stone-700 font-semibold rounded-xl text-xs">
-          Cerrar
-        </button>
-      </div>
+      <div id="savedWordsListContainer" class="flex-1 overflow-y-auto p-4 divide-y divide-stone-100"></div>
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- DRAWER LATERAL: PALABRAS GUARDADAS (⭐)    -->
-  <!-- ========================================== -->
-  <div id="savedDrawer" class="hidden fixed inset-0 z-50 overflow-hidden">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity" onclick="toggleSavedDrawer(false)"></div>
-    <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
-      <div class="w-screen max-w-md bg-white shadow-2xl border-l border-amber-200 flex flex-col">
-        
-        <div class="p-4 sm:p-5 border-b border-amber-200 bg-amber-50 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <svg class="w-5 h-5 text-amber-500 fill-amber-500" viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-            </svg>
-            <h3 class="font-bold text-stone-900 text-base font-display">Palabras Guardadas</h3>
-            <span id="savedDrawerCount" class="text-xs bg-amber-200 text-amber-950 font-bold px-2 py-0.5 rounded-full">0</span>
-          </div>
-          <button onclick="toggleSavedDrawer(false)" class="p-1.5 text-stone-400 hover:text-stone-700 rounded-xl hover:bg-white transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <div class="p-3 bg-amber-50/50 border-b border-amber-100 flex items-center justify-between text-xs">
-          <button onclick="startFlashcardsWithSavedOnly()" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold flex items-center gap-1 shadow-2xs">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-            </svg>
-            <span>Estudiar en Tarjetas</span>
-          </button>
-          
-          <button onclick="clearAllSavedWords()" class="text-stone-500 hover:text-red-700 underline">
-            Vaciar lista
-          </button>
-        </div>
-
-        <div id="savedWordsListContainer" class="flex-1 overflow-y-auto p-4 divide-y divide-stone-100"></div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- Contenedor de Notificaciones Toast -->
+  <!-- Notificaciones Toast -->
   <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <script>
     /* ==========================================================
-       ESTADO GLOBAL Y CORPUS DE DATOS
+       ESTADO GLOBAL DE LA APLICACIÓN
        ========================================================== */
-    
-    // Rutas candidatas para el directorio de corpus en el servidor
+    const State = {
+      corpus: [],            // Lista de entradas procesadas [{ word, meaningEn, examples: [], sourceFiles: [], ipa, grammar }]
+      corpusMap: new Map(),  // Mapa para búsqueda O(1) con normalización
+      loadedFiles: [],       // Archivos cargados [{ name, count }]
+      savedWords: new Set(), // Palabras marcadas con estrella
+      fcMastered: new Set(), // IDs de tarjetas dominadas
+      fcReview: new Set(),   // IDs de tarjetas para repasar
+      fcDeck: [],            // Mazo actual en estudio
+      fcIndex: 0,            // Índice de la tarjeta actual
+      fcIsFlipped: false,    // Estado de volteo de la tarjeta
+      activeView: 'dictionary', // 'dictionary' | 'flashcards'
+      currentDictEntry: null    // Palabra activa en el diccionario
+    };
+
+    /* Rutas candidatas para el directorio corpus */
     const CORPUS_PATHS = ['corpus/', './corpus/', '/corpus/'];
 
-    // Lista de sondeo habitual de archivos .txt
-    const COMMON_CORPUS_PROBE_FILES = [
-      'example.txt', 'ciencia.txt', 'tecnologia.txt', 'vocabulario.txt',
-      'vocab.txt', 'palabras.txt', 'corpus.txt', 'batch_1.txt',
-      'batch_2.txt', 'batch_3.txt', 'Spanish_B2_Corpus_Science_Tech_Batch_12.txt',
-      'spanish_words.txt', 'corpus_espanol.txt', 'vocab1.txt', 'vocab2.txt'
-    ];
+    /* Corpus de respaldo inicial en caso de que el servidor no tenga archivos aún */
+    const SEED_CORPUS_RAW = `el software	software	Debemos actualizar el software de gestión interna.
+el algoritmo	algorithm	El algoritmo procesa millones de datos por segundo.
+la aleación	alloy	Esta pieza está hecha de una aleación de acero y titanio.
+la alteración	alteration / mutation	Se observó una alteración genética en las células.
+el análisis	analysis	Los resultados del análisis se publicarán pronto.
+la batería	battery	La batería del vehículo apenas dura unas horas.
+el desarrollo	development	El desarrollo de este programa tardó seis meses.
+el dispositivo	device	Puedes sincronizar tu teléfono con este dispositivo.
+la energía renovable	renewable energy	La energía renovable es el futuro del planeta.
+el microscopio	microscope	Observaron la muestra con un microscopio de alta resolución.`;
 
-    // Corpus inicial de respaldo en español
-    const SEED_CORPUS_RAW = `el software\tsoftware\tDebemos actualizar el software de gestión interna.
-el algoritmo\talgorithm\tEl algoritmo de inteligencia artificial aprende de forma continua.
-la base de datos\tdatabase\nToda la información de los clientes está encriptada en la base de datos.
-la célula\tcell\nLa célula es la unidad fundamental de todos los seres vivos.
-la red\tnetwork\nLa conexión a la red corporativa es rápida y fiable.
-el navegador\tbrowser\nUsa un navegador moderno para disfrutar de todas las funciones.
-el tejado\troof\nInstalaron paneles solares sobre el tejado del edificio.
-el aprendizaje\tlearning\nEl aprendizaje de un nuevo idioma abre puertas profesionales.
-el dispositivo\tdevice\nPuedes sincronizar tu dispositivo móvil con el portátil.
-la huella de carbono\tcarbon footprint\nReducir la huella de carbono es un objetivo clave para la sostenibilidad.
-la investigación\tresearch\nEl equipo de investigación publicó un hallazgo médico pionero.
-el enlace\tlink\nHaz clic en el enlace para confirmar tu correo electrónico.
-la contraseña\tpassword\nEs conveniente utilizar una contraseña segura y única.
-el almacenamiento\tstorage\nEl servicio ofrece almacenamiento seguro en la nube.
-la pantalla\tscreen\nPasar demasiadas horas frente a la pantalla cansa la vista.`;
-
-    let CURRENT_CORPUS = [];          // Lista ordenada de objetos de palabras
-    let CORPUS_MAP = new Map();       // Búsqueda rápida indexada por lema
-    let LOADED_FILES = [];            // Archivos .txt cargados
-    let SAVED_WORDS = new Set();      // Palabras guardadas en favoritos
-    
-    // Estado del módulo de Tarjetas de Memoria
-    let FLASHCARD_DECK = [];
-    let CURRENT_FC_INDEX = 0;
-    let FC_IS_FLIPPED = false;
-    let FC_MASTERED = new Set();
-    let FC_REVIEW = new Set();
-    let CURRENT_WORD_ENTRY = null;
-
-    function loadStoredPreferences() {
-      try {
-        const stored = localStorage.getItem('esp_vocab_saved');
-        if (stored) {
-          SAVED_WORDS = new Set(JSON.parse(stored));
-        }
-        const masteredStored = localStorage.getItem('esp_vocab_mastered');
-        if (masteredStored) FC_MASTERED = new Set(JSON.parse(masteredStored));
-
-        const reviewStored = localStorage.getItem('esp_vocab_review');
-        if (reviewStored) FC_REVIEW = new Set(JSON.parse(reviewStored));
-      } catch (e) {
-        console.error("Error cargando localStorage:", e);
-      }
-      updateSavedBadge();
+    /* Normalización fonética y de artículos para búsquedas en español */
+    function normalizeSpanish(text) {
+      if (!text) return '';
+      return text.toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Quitar tildes
+        .replace(/^(el|la|los|las|un|una|unos|unas)\s+/, '') // Quitar artículos iniciales
+        .trim();
     }
 
-    function saveSavedWordsToStorage() {
-      try {
-        localStorage.setItem('esp_vocab_saved', JSON.stringify(Array.from(SAVED_WORDS)));
-      } catch (e) {}
-      updateSavedBadge();
-    }
-
-    function saveFlashcardProgress() {
-      try {
-        localStorage.setItem('esp_vocab_mastered', JSON.stringify(Array.from(FC_MASTERED)));
-        localStorage.setItem('esp_vocab_review', JSON.stringify(Array.from(FC_REVIEW)));
-      } catch (e) {}
-    }
-
-    // Normalizador de palabras en español (elimina artículos: el, la, los, las, un, una...)
-    function cleanSpanishStem(rawWord) {
-      if (!rawWord) return '';
-      let w = rawWord.trim().toLowerCase();
-      w = w.replace(/^(el|la|los|las|un|una|unos|unas)\s+/i, '');
-      return w.trim();
-    }
-
-    // Eliminación de acentos diacríticos para búsquedas tolerantes
-    function stripAccents(str) {
-      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    }
-
-    // Deductor de categoría gramatical en español
-    function deduceGrammarCategory(rawWord) {
-      const lower = rawWord.toLowerCase().trim();
-      if (lower.startsWith('el ') || lower.startsWith('un ') || lower.startsWith('los ') || lower.startsWith('unos ')) return 'sustantivo masculino';
-      if (lower.startsWith('la ') || lower.startsWith('una ') || lower.startsWith('las ') || lower.startsWith('unas ')) return 'sustantivo femenino';
-      if (lower.endsWith('ar') || lower.endsWith('er') || lower.endsWith('ir')) return 'verbo';
-      if (lower.endsWith('mente')) return 'adverbio';
-      if (lower.endsWith('oso') || lower.endsWith('osa') || lower.endsWith('able') || lower.endsWith('ible') || lower.endsWith('ivo') || lower.endsWith('iva')) return 'adjetivo';
-      return 'sustantivo';
-    }
-
-    // Generador de transcripción fonética IPA adaptado al español
     function generateSpanishIPA(word) {
       if (!word) return '';
-      let text = cleanSpanishStem(word);
-      let ipa = text
-        .replace(/ch/g, 't͡ʃ')
+      let clean = word.toLowerCase().trim();
+      clean = clean.replace(/^(el|la|los|las|un|una)\s+/, '');
+      let ipa = clean
+        .replace(/ch/g, 'tʃ')
         .replace(/ll/g, 'ʎ')
-        .replace(/ñ/g, 'ɲ')
-        .replace(/qu([ei])/g, 'k$1')
-        .replace(/gu([ei])/g, 'ɡ$1')
-        .replace(/c([ei])/g, 'θ$1')
-        .replace(/z/g, 'θ')
-        .replace(/j/g, 'x')
-        .replace(/g([ei])/g, 'x$1')
         .replace(/rr/g, 'r')
-        .replace(/r$/g, 'ɾ')
+        .replace(/r/g, 'ɾ')
+        .replace(/ñ/g, 'ɲ')
+        .replace(/qu/g, 'k')
+        .replace(/gu([eiéí])/g, 'ɡ$1')
+        .replace(/g([eiéí])/g, 'x$1')
+        .replace(/j/g, 'x')
+        .replace(/c([eiéí])/g, 'θ$1')
+        .replace(/z/g, 'θ')
+        .replace(/c/g, 'k')
         .replace(/v/g, 'b');
-
       return `[${ipa}]`;
     }
 
-    function parseCorpusLines(rawText, sourceFileName = 'desconocido.txt') {
+    function guessGrammar(word) {
+      const clean = word.toLowerCase().trim();
+      if (clean.startsWith('el ')) return 'sustantivo masc.';
+      if (clean.startsWith('la ')) return 'sustantivo fem.';
+      if (clean.endsWith('ar') || clean.endsWith('er') || clean.endsWith('ir')) return 'verbo';
+      if (clean.endsWith('ble') || clean.endsWith('al') || clean.endsWith('ico') || clean.endsWith('ica')) return 'adjetivo';
+      return 'sustantivo';
+    }
+
+    function loadPersistedData() {
+      try {
+        const saved = localStorage.getItem('esp_saved_words');
+        if (saved) State.savedWords = new Set(JSON.parse(saved));
+        const mastered = localStorage.getItem('esp_fc_mastered');
+        if (mastered) State.fcMastered = new Set(JSON.parse(mastered));
+        const review = localStorage.getItem('esp_fc_review');
+        if (review) State.fcReview = new Set(JSON.parse(review));
+      } catch (e) {
+        console.warn("Storage no accesible:", e);
+      }
+      updateSavedBadge();
+    }
+
+    function persistSavedWords() {
+      try {
+        localStorage.setItem('esp_saved_words', JSON.stringify(Array.from(State.savedWords)));
+      } catch (e) {}
+      updateSavedBadge();
+    }
+
+    function showToast(message, icon = 'ℹ️') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'px-4 py-2.5 rounded-2xl bg-stone-900/90 text-white text-xs font-semibold shadow-xl flex items-center gap-2 border border-stone-700 animate-in fade-in slide-in-from-bottom-2 duration-200';
+      toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    }
+
+    function speakSpanish(text) {
+      if (!('speechSynthesis' in window) || !text) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'es-ES';
+      utterance.rate = 0.92;
+      const voices = window.speechSynthesis.getVoices();
+      const esVoice = voices.find(v => v.lang === 'es-ES') || voices.find(v => v.lang.startsWith('es'));
+      if (esVoice) utterance.voice = esVoice;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function parseCorpusLines(rawText, sourceFileName) {
       if (!rawText) return [];
-      
-      // Elimina el Byte Order Mark (BOM) UTF-8
-      const cleanText = rawText.replace(/^\uFEFF/, '');
-      const lines = cleanText.split(/\r?\n/);
-      const parsedEntries = [];
+      const lines = rawText.replace(/^\uFEFF/, '').split(/\r?\n/);
+      const results = [];
 
       for (let line of lines) {
         line = line.trim();
-        if (!line || line.startsWith('#') || line.startsWith('//') || line.startsWith('===') || line.toLowerCase().startsWith('format:')) {
+        if (!line || line.startsWith('#') || line.startsWith('Format:') || line.startsWith('===') || line.startsWith('---')) {
           continue;
         }
 
-        let word = '';
-        let meaningEn = '';
-        let example = '';
-
-        // Soporte para múltiples delimitadores comunes: tabulación, pleca, guion, punto y coma
+        let parts = [];
         if (line.includes('\t')) {
-          const parts = line.split('\t');
-          word = parts[0]?.trim() || '';
-          meaningEn = parts[1]?.trim() || '';
-          example = parts.slice(2).join(' ').trim();
+          parts = line.split('\t');
         } else if (line.includes(' | ')) {
-          const parts = line.split(' | ');
-          word = parts[0]?.trim() || '';
-          meaningEn = parts[1]?.trim() || '';
-          example = parts.slice(2).join(' ').trim();
+          parts = line.split(' | ');
         } else if (line.includes(' - ')) {
-          const parts = line.split(' - ');
-          word = parts[0]?.trim() || '';
-          meaningEn = parts[1]?.trim() || '';
-          example = parts.slice(2).join(' ').trim();
+          parts = line.split(' - ');
         } else if (line.includes(';')) {
-          const parts = line.split(';');
-          word = parts[0]?.trim() || '';
-          meaningEn = parts[1]?.trim() || '';
-          example = parts.slice(2).join(' ').trim();
+          parts = line.split(';');
         }
 
-        if (word && meaningEn) {
-          const stem = cleanSpanishStem(word);
-          const grammar = deduceGrammarCategory(word);
-          const ipa = generateSpanishIPA(word);
-
-          parsedEntries.push({
-            word: stem,
-            fullTitle: word,
-            meaningEn: meaningEn,
-            grammar: grammar,
-            ipa: ipa,
-            examples: example ? [example] : [],
-            sourceFiles: [sourceFileName]
-          });
+        if (parts.length >= 2) {
+          const word = parts[0].trim().replace(/^["']|["']$/g, '');
+          const meaningEn = parts[1].trim().replace(/^["']|["']$/g, '');
+          const example = parts[2] ? parts[2].trim().replace(/^["']|["']$/g, '') : '';
+          
+          if (word && meaningEn) {
+            results.push({
+              word,
+              meaningEn,
+              examples: example ? [example] : [],
+              sourceFiles: [sourceFileName],
+              ipa: generateSpanishIPA(word),
+              grammar: guessGrammar(word)
+            });
+          }
         }
       }
-
-      return parsedEntries;
-    }
-
-    function addDiagnosticLog(message, type = 'info') {
-      const box = document.getElementById('diagnosticLogBox');
-      if (!box) return;
-      const time = new Date().toLocaleTimeString();
-      const div = document.createElement('div');
-      div.className = type === 'error' ? 'text-red-400' : type === 'warn' ? 'text-amber-400' : type === 'success' ? 'text-emerald-300' : 'text-stone-300';
-      div.innerHTML = `<span class="text-stone-500">[${time}]</span> ${message}`;
-      box.appendChild(div);
-      box.scrollTop = box.scrollHeight;
+      return results;
     }
 
     async function discoverFilesFromDirectory() {
-      let discovered = new Set();
-      addDiagnosticLog("Iniciando escaneo del directorio /corpus/...");
+      const discovered = new Set();
 
-      // 1. Detección de manifiestos JSON o listas de texto
-      const manifestCandidates = ['files.json', 'corpus.json', 'list.txt', 'files.txt'];
+      // 1. Probar manifiestos estructurados
+      const manifests = ['files.json', 'corpus.json', 'manifest.json', 'list.txt', 'files.txt'];
       for (const basePath of CORPUS_PATHS) {
-        for (const man of manifestCandidates) {
+        for (const man of manifests) {
           try {
-            const url = `${basePath.endsWith('/') ? basePath : basePath + '/'}${man}`;
-            const res = await fetch(url, { cache: 'no-cache' });
+            const res = await fetch(`${basePath}${man}`, { cache: 'no-cache' });
             if (res.ok) {
               if (man.endsWith('.json')) {
                 const list = await res.json();
                 if (Array.isArray(list)) {
-                  list.forEach(f => { if (typeof f === 'string' && f.endsWith('.txt')) discovered.add(f); });
-                  addDiagnosticLog(`Manifiesto JSON detectado: ${man} con ${discovered.size} archivos`, 'success');
+                  list.forEach(item => {
+                    const fn = typeof item === 'string' ? item : (item.name || item.file);
+                    if (fn && fn.endsWith('.txt')) discovered.add(fn);
+                  });
                 }
               } else {
-                const text = await res.text();
-                text.split(/\r?\n/).forEach(f => {
+                const txt = await res.text();
+                txt.split(/\r?\n/).forEach(f => {
                   const tr = f.trim();
                   if (tr && tr.endsWith('.txt')) discovered.add(tr);
                 });
-                addDiagnosticLog(`Lista de texto detectada: ${man}`, 'success');
               }
             }
           } catch (e) {}
         }
       }
 
-      // 2. Inspección del HTML generado por el servidor (Apache, Nginx, Python)
+      // 2. Inspeccionar listados de directorio (Apache/Nginx/Python)
       for (const basePath of CORPUS_PATHS) {
         try {
           const res = await fetch(basePath, { cache: 'no-cache' });
           if (res.ok) {
             const html = await res.text();
-            const linkRegex = /href=["']([^"']+\.txt)["']/gi;
+            // Regex para enlaces que apuntan a archivos .txt
+            const regex = /href=["']?([^"' >\n\r\t]+\.txt)(?:[?#][^"' >\n\r\t]*)?["']?/gi;
             let match;
-            while ((match = linkRegex.exec(html)) !== null) {
-              let filename = match[1];
-              if (filename.includes('/')) filename = filename.split('/').pop();
-              try { filename = decodeURIComponent(filename); } catch (e) {}
-              discovered.add(filename);
-            }
-            if (discovered.size > 0) {
-              addDiagnosticLog(`Listado de carpetas detectado en ${basePath} (${discovered.size} archivos)`, 'success');
-              break;
+            while ((match = regex.exec(html)) !== null) {
+              let fn = match[1];
+              if (fn.includes('/')) fn = fn.split('/').pop();
+              try { fn = decodeURIComponent(fn); } catch (e) {}
+              if (fn && fn.toLowerCase().endsWith('.txt')) discovered.add(fn);
             }
           }
         } catch (e) {}
       }
 
-      // 3. Prospección con la lista de nombres habituales
-      for (const probe of COMMON_CORPUS_PROBE_FILES) {
+      // 3. Prospección automática de lotes comunes (Batch 1-30, vocab, etc.)
+      const probeList = [
+        'example.txt', 'ejemplo.txt', 'ciencia.txt', 'tecnologia.txt',
+        'vocabulario.txt', 'vocab.txt', 'palabras.txt', 'corpus.txt',
+        'Spanish_B2_Corpus_Science_Tech_Batch_12.txt'
+      ];
+      for (let i = 1; i <= 25; i++) {
+        probeList.push(`Spanish_B2_Corpus_Science_Tech_Batch_${i}.txt`);
+        probeList.push(`batch_${i}.txt`);
+        probeList.push(`vocab_${i}.txt`);
+      }
+
+      // Archivos manuales guardados por el usuario
+      try {
+        const custom = JSON.parse(localStorage.getItem('esp_custom_files') || '[]');
+        custom.forEach(f => probeList.push(f));
+      } catch (e) {}
+
+      for (const probe of probeList) {
         if (!discovered.has(probe)) {
           for (const basePath of CORPUS_PATHS) {
             try {
-              const url = `${basePath.endsWith('/') ? basePath : basePath + '/'}${probe}`;
-              const res = await fetch(url, { method: 'HEAD', cache: 'no-cache' });
+              const res = await fetch(`${basePath}${probe}`, { method: 'HEAD', cache: 'no-cache' });
               if (res.ok) {
                 discovered.add(probe);
                 break;
@@ -1016,102 +911,110 @@ la pantalla\tscreen\nPasar demasiadas horas frente a la pantalla cansa la vista.
       return Array.from(discovered);
     }
 
-    function setCorpusProgress(percent, label = null) {
+    function setCorpusProgress(percent, actionText = null, wordCount = null) {
+      const pct = Math.min(Math.max(percent, 0), 100);
+
       const track = document.getElementById('corpusProgressBarTrack');
       const bar = document.getElementById('corpusProgressBar');
-      const subtitle = document.getElementById('headerCorpusSubtitle');
       if (track && bar) {
         track.classList.remove('opacity-0');
-        track.classList.add('opacity-100');
-        bar.style.width = `${Math.min(Math.max(percent, 0), 100)}%`;
+        bar.style.width = `${pct}%`;
       }
-      if (label && subtitle) {
-        subtitle.innerText = label;
+
+      const modalBar = document.getElementById('modalLoadingProgressBar');
+      const modalPct = document.getElementById('modalLoadingPercentBadge');
+      const modalAction = document.getElementById('modalCurrentActionText');
+      const modalFiles = document.getElementById('modalFilesCount');
+      const modalWords = document.getElementById('modalWordsCount');
+      const modalBadge = document.getElementById('modalLoadedFilesChips');
+
+      if (modalBar) modalBar.style.width = `${pct}%`;
+      if (modalPct) modalPct.innerText = `${Math.round(pct)}%`;
+      if (modalAction && actionText) modalAction.innerText = actionText;
+      if (modalFiles) modalFiles.innerText = `${State.loadedFiles.length} archivo(s)`;
+      if (modalWords && wordCount !== null) modalWords.innerText = `${wordCount} palabras`;
+
+      if (modalBadge && State.loadedFiles.length > 0) {
+        modalBadge.innerHTML = State.loadedFiles.map(f => `
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 font-mono text-[10px] font-bold border border-emerald-300">
+            <span>✓</span>
+            <span class="truncate max-w-[120px]">${f.name}</span>
+            <span class="text-emerald-700 bg-emerald-200/60 px-1 rounded">${f.count}</span>
+          </span>
+        `).join('');
       }
     }
 
-    function hideCorpusProgress() {
+    function openCorpusLoadingModal() {
+      const modal = document.getElementById('corpusLoadingModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeCorpusLoadingModal() {
+      const modal = document.getElementById('corpusLoadingModal');
+      if (modal) modal.classList.add('hidden');
       const track = document.getElementById('corpusProgressBarTrack');
-      const bar = document.getElementById('corpusProgressBar');
-      if (bar) bar.style.width = '100%';
-      setTimeout(() => {
-        if (track) {
-          track.classList.remove('opacity-100');
-          track.classList.add('opacity-0');
-        }
-        setTimeout(() => {
-          if (bar) bar.style.width = '0%';
-        }, 300);
-      }, 400);
+      if (track) track.classList.add('opacity-0');
     }
 
-    async function scanAndLoadCorpusDirectory() {
-      const subtitle = document.getElementById('headerCorpusSubtitle');
-      const serverDot = document.getElementById('serverPulseDot');
-      if (subtitle) subtitle.innerText = 'Escaneando archivos en /corpus/...';
-      if (serverDot) serverDot.className = 'w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse';
+    async function scanAndLoadCorpus() {
+      openCorpusLoadingModal();
+      setCorpusProgress(15, 'Sondeando directorio /corpus/...', 0);
 
-      setCorpusProgress(15, 'Sondeando /corpus/...');
+      const files = await discoverFilesFromDirectory();
+      setCorpusProgress(30, `Procesando ${files.length} archivo(s)...`, 0);
 
-      const fileList = await discoverFilesFromDirectory();
-      addDiagnosticLog(`Archivos .txt detectados: ${fileList.length} [${fileList.join(', ')}]`, fileList.length ? 'success' : 'warn');
+      let allEntries = [];
+      const successfulFiles = [];
+      const totalFiles = Math.max(files.length, 1);
 
-      setCorpusProgress(30, `Procesando ${fileList.length} archivo(s)...`);
+      for (let i = 0; i < files.length; i++) {
+        const filename = files[i];
+        const pct = 30 + Math.round(((i + 1) / totalFiles) * 60);
+        setCorpusProgress(pct, `Cargando: ${filename}`, allEntries.length);
 
-      let successfulFiles = [];
-      let combinedEntries = [];
-      const totalToLoad = Math.max(fileList.length, 1);
-
-      for (let i = 0; i < fileList.length; i++) {
-        const filename = fileList[i];
-        setCorpusProgress(30 + Math.round(((i) / totalToLoad) * 55), `Leyendo (${i + 1}/${totalToLoad}): ${filename}`);
-        let loadedText = null;
+        let content = null;
         for (const basePath of CORPUS_PATHS) {
           try {
-            const cleanUrl = encodeURI(`${basePath.endsWith('/') ? basePath : basePath + '/'}${filename}`);
-            const res = await fetch(cleanUrl, { cache: 'no-cache' });
+            const res = await fetch(`${basePath}${filename}`, { cache: 'no-cache' });
             if (res.ok) {
               const text = await res.text();
-              if (text && !text.trim().startsWith('<!DOCTYPE') && !text.trim().startsWith('<html')) {
-                loadedText = text;
+              if (text && !text.trim().startsWith('<!DOCTYPE')) {
+                content = text;
                 break;
               }
             }
-          } catch (err) {}
+          } catch (e) {}
         }
 
-        if (loadedText) {
-          const items = parseCorpusLines(loadedText, filename);
-          if (items.length > 0) {
-            successfulFiles.push({ name: filename, count: items.length });
-            combinedEntries = combinedEntries.concat(items);
-            addDiagnosticLog(`✓ ${filename}: ${items.length} palabras procesadas`, 'success');
+        if (content) {
+          const parsed = parseCorpusLines(content, filename);
+          if (parsed.length > 0) {
+            successfulFiles.push({ name: filename, count: parsed.length });
+            allEntries = allEntries.concat(parsed);
+            State.loadedFiles = [...successfulFiles];
+            setCorpusProgress(pct, `Procesado: ${filename} (${parsed.length} palabras)`, allEntries.length);
           }
         }
       }
 
-      // Si no se encuentran archivos en el servidor, cargar corpus inicial de respaldo
-      if (combinedEntries.length === 0) {
-        addDiagnosticLog("No se encontraron archivos en /corpus/. Cargando corpus inicial de reserva.", "warn");
-        const seedItems = parseCorpusLines(SEED_CORPUS_RAW, 'corpus_inicial.txt');
-        combinedEntries = seedItems;
-        successfulFiles = [{ name: 'corpus_inicial.txt', count: seedItems.length }];
-      } else {
-        showToast(`Corpus sincronizado: ${combinedEntries.length} palabras de ${successfulFiles.length} archivo(s)`, "✅");
+      // Si no se halló ningún archivo en /corpus/, cargar el corpus semilla
+      if (allEntries.length === 0) {
+        const seedParsed = parseCorpusLines(SEED_CORPUS_RAW, 'semilla_inicial.txt');
+        allEntries = seedParsed;
+        successfulFiles.push({ name: 'semilla_inicial.txt', count: seedParsed.length });
+        State.loadedFiles = successfulFiles;
       }
 
-      CURRENT_CORPUS = [];
-      CORPUS_MAP.clear();
-      LOADED_FILES = successfulFiles;
+      State.corpus = [];
+      State.corpusMap.clear();
 
-      combinedEntries.forEach(entry => {
-        const cleanStem = entry.word.toLowerCase();
-        const cleanFull = entry.fullTitle.toLowerCase();
-        const existing = CORPUS_MAP.get(cleanStem) || CORPUS_MAP.get(cleanFull);
-
-        if (existing) {
-          entry.sourceFiles.forEach(src => {
-            if (!existing.sourceFiles.includes(src)) existing.sourceFiles.push(src);
+      allEntries.forEach(entry => {
+        const key = normalizeSpanish(entry.word);
+        if (State.corpusMap.has(key)) {
+          const existing = State.corpusMap.get(key);
+          entry.sourceFiles.forEach(s => {
+            if (!existing.sourceFiles.includes(s)) existing.sourceFiles.push(s);
           });
           entry.examples.forEach(ex => {
             if (!existing.examples.includes(ex)) existing.examples.push(ex);
@@ -1120,892 +1023,572 @@ la pantalla\tscreen\nPasar demasiadas horas frente a la pantalla cansa la vista.
             existing.meaningEn = `${existing.meaningEn} / ${entry.meaningEn}`;
           }
         } else {
-          CORPUS_MAP.set(cleanStem, entry);
-          CORPUS_MAP.set(cleanFull, entry);
-          CURRENT_CORPUS.push(entry);
+          State.corpusMap.set(key, entry);
+          State.corpus.push(entry);
         }
       });
 
-      if (serverDot) {
-        serverDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500';
-      }
+      // Actualizar UI
+      updateStatsUI();
+      syncDeckSelectOptions();
+      initFlashcardsDeck();
 
-      updateInterfaceStats();
-      syncFlashcardDeckFilters();
-      initFlashcardDeck();
-      setCorpusProgress(100, '¡Corpus listo!');
-      hideCorpusProgress();
+      setCorpusProgress(100, `¡Listo! ${State.corpus.length} palabras cargadas`, State.corpus.length);
+      const dot = document.getElementById('serverStatusDot');
+      if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-500';
+      const statusText = document.getElementById('headerStatusText');
+      if (statusText) statusText.innerText = `${State.loadedFiles.length} archivo(s) activos`;
+
+      setTimeout(closeCorpusLoadingModal, 1800);
     }
 
-    function handleLocalFilesSelect(e) {
-      const files = Array.from(e.target.files || []).filter(f => f.name.toLowerCase().endsWith('.txt') || f.name.toLowerCase().endsWith('.tsv') || f.name.toLowerCase().endsWith('.csv'));
-      if (files.length === 0) {
-        showToast("No se seleccionaron archivos de texto válidos", "⚠️");
+    function addCustomServerFile() {
+      const input = document.getElementById('modalCustomFilenameInput');
+      const val = input ? input.value.trim() : '';
+      if (!val || !val.endsWith('.txt')) {
+        showToast('El archivo debe terminar en .txt', '⚠️');
         return;
       }
-
-      addDiagnosticLog(`Cargando ${files.length} archivo(s) seleccionados...`, 'info');
-      setCorpusProgress(20, `Leyendo archivos (0/${files.length})...`);
-      let combinedEntries = [];
-      let successfulFiles = [];
-      let pending = files.length;
-      let processed = 0;
-
-      files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const text = event.target.result;
-          const items = parseCorpusLines(text, file.name);
-          if (items.length > 0) {
-            combinedEntries = combinedEntries.concat(items);
-            successfulFiles.push({ name: file.name, count: items.length });
-          }
-          pending--;
-          processed++;
-          setCorpusProgress(20 + Math.round((processed / files.length) * 75), `Leyendo: ${file.name}`);
-          if (pending === 0) {
-            LOADED_FILES = successfulFiles;
-            CURRENT_CORPUS = [];
-            CORPUS_MAP.clear();
-
-            combinedEntries.forEach(entry => {
-              const cleanStem = entry.word.toLowerCase();
-              const existing = CORPUS_MAP.get(cleanStem);
-              if (existing) {
-                entry.sourceFiles.forEach(src => {
-                  if (!existing.sourceFiles.includes(src)) existing.sourceFiles.push(src);
-                });
-                entry.examples.forEach(ex => {
-                  if (!existing.examples.includes(ex)) existing.examples.push(ex);
-                });
-                if (entry.meaningEn && !existing.meaningEn.toLowerCase().includes(entry.meaningEn.toLowerCase())) {
-                  existing.meaningEn = `${existing.meaningEn} / ${entry.meaningEn}`;
-                }
-              } else {
-                CORPUS_MAP.set(cleanStem, entry);
-                CORPUS_MAP.set(entry.fullTitle.toLowerCase(), entry);
-                CURRENT_CORPUS.push(entry);
-              }
-            });
-
-            updateInterfaceStats();
-            syncFlashcardDeckFilters();
-            initFlashcardDeck();
-            setCorpusProgress(100, 'Archivos cargados');
-            hideCorpusProgress();
-            showToast(`Cargadas ${combinedEntries.length} palabras de ${files.length} archivo(s)`, "📁");
-            addDiagnosticLog(`Carga completada: ${combinedEntries.length} palabras`, 'success');
-          }
-        };
-        reader.readAsText(file);
-      });
-    }
-
-    function handleLocalFolderSelect(e) {
-      const files = Array.from(e.target.files || []).filter(f => f.name.toLowerCase().endsWith('.txt'));
-      if (files.length === 0) {
-        showToast("No se seleccionaron archivos .txt en la carpeta", "⚠️");
-        return;
-      }
-
-      addDiagnosticLog(`Cargando carpeta con ${files.length} archivo(s)...`, 'info');
-      setCorpusProgress(20, `Leyendo carpeta (0/${files.length})...`);
-      let combinedEntries = [];
-      let successfulFiles = [];
-      let pending = files.length;
-      let processed = 0;
-
-      files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const text = event.target.result;
-          const items = parseCorpusLines(text, file.name);
-          if (items.length > 0) {
-            combinedEntries = combinedEntries.concat(items);
-            successfulFiles.push({ name: file.name, count: items.length });
-          }
-          pending--;
-          processed++;
-          setCorpusProgress(20 + Math.round((processed / files.length) * 75), `Leyendo: ${file.name}`);
-          if (pending === 0) {
-            LOADED_FILES = successfulFiles;
-            CURRENT_CORPUS = [];
-            CORPUS_MAP.clear();
-
-            combinedEntries.forEach(entry => {
-              const cleanStem = entry.word.toLowerCase();
-              const existing = CORPUS_MAP.get(cleanStem);
-              if (existing) {
-                entry.sourceFiles.forEach(src => {
-                  if (!existing.sourceFiles.includes(src)) existing.sourceFiles.push(src);
-                });
-                entry.examples.forEach(ex => {
-                  if (!existing.examples.includes(ex)) existing.examples.push(ex);
-                });
-                if (entry.meaningEn && !existing.meaningEn.toLowerCase().includes(entry.meaningEn.toLowerCase())) {
-                  existing.meaningEn = `${existing.meaningEn} / ${entry.meaningEn}`;
-                }
-              } else {
-                CORPUS_MAP.set(cleanStem, entry);
-                CORPUS_MAP.set(entry.fullTitle.toLowerCase(), entry);
-                CURRENT_CORPUS.push(entry);
-              }
-            });
-
-            updateInterfaceStats();
-            syncFlashcardDeckFilters();
-            initFlashcardDeck();
-            setCorpusProgress(100, 'Carpeta cargada');
-            hideCorpusProgress();
-            showToast(`Cargadas ${combinedEntries.length} palabras de ${files.length} archivo(s)`, "📁");
-            addDiagnosticLog(`Carga local completada: ${combinedEntries.length} palabras`, 'success');
-          }
-        };
-        reader.readAsText(file);
-      });
-    }
-
-    function updateInterfaceStats() {
-      const countLabel = document.getElementById('corpusCountLabel');
-      const subtitle = document.getElementById('headerCorpusSubtitle');
-      const sampleChips = document.getElementById('quickSampleChips');
-      const fileSummaryList = document.getElementById('loadedFilesSummaryList');
-
-      if (countLabel) countLabel.innerText = `${CURRENT_CORPUS.length} palabras`;
-      if (subtitle) {
-        const fileNames = LOADED_FILES.map(f => f.name).join(', ');
-        subtitle.innerText = `${CURRENT_CORPUS.length} entradas (${LOADED_FILES.length} archivo${LOADED_FILES.length === 1 ? '' : 's'})`;
-        subtitle.title = fileNames;
-      }
-
-      if (sampleChips && CURRENT_CORPUS.length > 0) {
-        sampleChips.innerHTML = '<span class="text-stone-400 font-medium whitespace-nowrap">Ejemplos:</span>';
-        const sampleWords = CURRENT_CORPUS.slice(0, 7);
-        sampleWords.forEach(entry => {
-          const btn = document.createElement('button');
-          btn.className = 'px-2 py-0.5 bg-amber-100/70 hover:bg-amber-200 text-amber-950 font-medium rounded-md whitespace-nowrap transition-colors text-[11px]';
-          btn.innerText = entry.fullTitle || entry.word;
-          btn.onclick = () => selectWord(entry);
-          sampleChips.appendChild(btn);
-        });
-      }
-
-      if (fileSummaryList) {
-        if (LOADED_FILES.length === 0) {
-          fileSummaryList.innerHTML = '<span class="text-stone-400 italic">Ningún archivo cargado</span>';
-        } else {
-          fileSummaryList.innerHTML = LOADED_FILES.map(f => `
-            <div class="flex items-center justify-between py-1 border-b border-stone-200 last:border-0">
-              <span class="font-mono text-stone-900 font-semibold">${f.name}</span>
-              <span class="bg-amber-100 text-amber-900 px-2 py-0.5 rounded text-[10px] font-bold">${f.count} palabras</span>
-            </div>
-          `).join('');
+      try {
+        const custom = JSON.parse(localStorage.getItem('esp_custom_files') || '[]');
+        if (!custom.includes(val)) {
+          custom.push(val);
+          localStorage.setItem('esp_custom_files', JSON.stringify(custom));
         }
-      }
+      } catch (e) {}
+      input.value = '';
+      showToast(`Añadido "${val}". Re-escaneando...`, '📄');
+      scanAndLoadCorpus();
     }
 
-    function handleSearchSubmit(e) {
-      if (e) e.preventDefault();
-      const input = document.getElementById('mainSearchInput');
-      const query = input?.value?.trim();
-      if (!query) return;
-
-      closeAutocomplete();
-      lookupWord(query);
+    function updateStatsUI() {
+      const badge = document.getElementById('corpusWordCountBadge');
+      if (badge) {
+        badge.innerText = `${State.corpus.length} palabras`;
+        badge.classList.remove('hidden');
+      }
+      const indexTotal = document.getElementById('indexModalTotalCount');
+      if (indexTotal) indexTotal.innerText = State.corpus.length;
     }
 
-    function lookupWord(query) {
-      if (!query) return;
-      const cleanQ = cleanSpanishStem(query);
-      const strippedQ = stripAccents(cleanQ);
+    function switchView(viewName) {
+      State.activeView = viewName;
+      const dictSec = document.getElementById('viewDictionary');
+      const cardsSec = document.getElementById('viewFlashcards');
+      const tabDict = document.getElementById('tabBtnDict');
+      const tabCards = document.getElementById('tabBtnCards');
 
-      let match = CORPUS_MAP.get(cleanQ) || CORPUS_MAP.get(query.toLowerCase());
-
-      if (!match) {
-        match = CURRENT_CORPUS.find(item => {
-          return stripAccents(item.word) === strippedQ || stripAccents(item.fullTitle) === strippedQ;
-        });
-      }
-
-      if (!match) {
-        match = CURRENT_CORPUS.find(item => {
-          return stripAccents(item.word).startsWith(strippedQ) || stripAccents(item.fullTitle).startsWith(strippedQ);
-        });
-      }
-
-      if (match) {
-        selectWord(match);
+      if (viewName === 'dictionary') {
+        dictSec?.classList.remove('hidden');
+        cardsSec?.classList.add('hidden');
+        tabDict?.classList.add('bg-white', 'text-red-700', 'shadow-xs');
+        tabDict?.classList.remove('text-stone-600');
+        tabCards?.classList.remove('bg-white', 'text-red-700', 'shadow-xs');
+        tabCards?.classList.add('text-stone-600');
       } else {
-        showToast(`No se encontró "${query}" en el corpus cargado`, "🔍");
+        dictSec?.classList.add('hidden');
+        cardsSec?.classList.remove('hidden');
+        tabCards?.classList.add('bg-white', 'text-red-700', 'shadow-xs');
+        tabCards?.classList.remove('text-stone-600');
+        tabDict?.classList.remove('bg-white', 'text-red-700', 'shadow-xs');
+        tabDict?.classList.add('text-stone-600');
+        renderCurrentFlashcard();
       }
     }
 
-    function handleLiveInput(e) {
+    function handleSearchInput(e) {
       const val = e.target.value;
       const clearBtn = document.getElementById('clearSearchBtn');
-      const dropdown = document.getElementById('autocompleteDropdown');
-      const list = document.getElementById('autocompleteList');
+      if (clearBtn) clearBtn.classList.toggle('hidden', !val);
 
-      if (clearBtn) {
-        clearBtn.classList.toggle('hidden', !val);
-      }
+      const menu = document.getElementById('autocompleteMenu');
+      if (!menu) return;
 
-      if (!val || val.trim().length < 1) {
-        closeAutocomplete();
+      const query = normalizeSpanish(val);
+      if (query.length === 0) {
+        menu.classList.add('hidden');
         return;
       }
 
-      const stripped = stripAccents(cleanSpanishStem(val));
-      const matches = CURRENT_CORPUS.filter(item => {
-        return stripAccents(item.word).includes(stripped) || stripAccents(item.fullTitle).includes(stripped);
+      const matches = State.corpus.filter(item => {
+        return normalizeSpanish(item.word).includes(query) || item.meaningEn.toLowerCase().includes(query);
       }).slice(0, 8);
 
-      if (matches.length > 0 && dropdown && list) {
-        list.innerHTML = matches.map(item => `
-          <li onclick="selectWordFromAutocomplete('${item.word.replace(/'/g, "\\'")}')" class="px-3.5 py-2 hover:bg-amber-50 cursor-pointer flex items-center justify-between text-xs sm:text-sm">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-stone-900">${item.fullTitle || item.word}</span>
-              <span class="text-stone-400 font-mono text-xs">${item.ipa || ''}</span>
-            </div>
-            <span class="text-stone-500 truncate max-w-[150px] text-xs">${item.meaningEn || ''}</span>
-          </li>
-        `).join('');
-        dropdown.classList.remove('hidden');
-      } else {
-        closeAutocomplete();
-      }
-    }
-
-    function handleSearchKeydown(e) {
-      if (e.key === 'Escape') closeAutocomplete();
-    }
-
-    function closeAutocomplete() {
-      const dropdown = document.getElementById('autocompleteDropdown');
-      if (dropdown) dropdown.classList.add('hidden');
-    }
-
-    function clearSearchInput() {
-      const input = document.getElementById('mainSearchInput');
-      if (input) {
-        input.value = '';
-        input.focus();
-      }
-      const clearBtn = document.getElementById('clearSearchBtn');
-      if (clearBtn) clearBtn.classList.add('hidden');
-      closeAutocomplete();
-    }
-
-    function selectWordFromAutocomplete(wordStem) {
-      closeAutocomplete();
-      const match = CORPUS_MAP.get(wordStem.toLowerCase()) || CURRENT_CORPUS.find(i => i.word === wordStem);
-      if (match) selectWord(match);
-    }
-
-    function selectWord(entry) {
-      CURRENT_WORD_ENTRY = entry;
-      const input = document.getElementById('mainSearchInput');
-      if (input) input.value = entry.fullTitle || entry.word;
-
-      const idleState = document.getElementById('idleState');
-      const resultCard = document.getElementById('resultCard');
-
-      if (idleState) idleState.classList.add('hidden');
-      if (resultCard) resultCard.classList.remove('hidden');
-
-      const titleEl = document.getElementById('resTitle');
-      const ipaEl = document.getElementById('resIpa');
-      const grammarEl = document.getElementById('resGrammarTag');
-      const sourceEl = document.getElementById('resSourcePill');
-      const englishEl = document.getElementById('resEnglish');
-      const examplesList = document.getElementById('resExamplesList');
-      const exampleCount = document.getElementById('resExampleCount');
-
-      if (titleEl) titleEl.innerText = entry.fullTitle || entry.word;
-      if (ipaEl) ipaEl.innerText = entry.ipa || generateSpanishIPA(entry.word);
-      if (grammarEl) grammarEl.innerText = entry.grammar || 'sustantivo';
-      if (sourceEl) sourceEl.innerText = entry.sourceFiles.join(', ');
-      if (englishEl) englishEl.innerText = entry.meaningEn;
-
-      if (examplesList) {
-        examplesList.innerHTML = '';
-        const exList = entry.examples.length > 0 ? entry.examples : [`No hay frases de ejemplo registradas para este término.`];
-        if (exampleCount) exampleCount.innerText = `${exList.length} ejemplo${exList.length === 1 ? '' : 's'}`;
-
-        exList.forEach(ex => {
-          const exDiv = document.createElement('div');
-          exDiv.className = 'bg-stone-50 border border-stone-200/80 rounded-xl p-3 flex items-start justify-between gap-2';
-          const highlightedSentence = highlightWordInSentence(ex, entry.word, entry.fullTitle);
-
-          exDiv.innerHTML = `
-            <div class="flex-1 text-xs sm:text-sm text-stone-800 italic leading-relaxed">
-              "${highlightedSentence}"
-            </div>
-            <button onclick="playAudioText('${ex.replace(/'/g, "\\'")}')" class="p-1 text-stone-400 hover:text-red-600 rounded-lg hover:bg-stone-200/50 transition-colors flex-shrink-0" title="Escuchar frase">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-              </svg>
-            </button>
-          `;
-          examplesList.appendChild(exDiv);
-        });
-      }
-
-      updateBookmarkButtonState();
-      
-      if (window.innerWidth < 640) {
-        resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
-
-    function highlightWordInSentence(sentence, stem, fullTitle) {
-      if (!sentence) return '';
-      const w1 = cleanSpanishStem(stem);
-      const w2 = cleanSpanishStem(fullTitle);
-      const regex = new RegExp(`\\b(${w1}|${w2})\\w*\\b`, 'gi');
-      return sentence.replace(regex, `<mark class="bg-amber-200/80 text-stone-900 font-semibold px-0.5 rounded">$1</mark>`);
-    }
-
-    function fetchRandomWord() {
-      if (CURRENT_CORPUS.length === 0) return;
-      const rand = CURRENT_CORPUS[Math.floor(Math.random() * CURRENT_CORPUS.length)];
-      selectWord(rand);
-    }
-
-    let SPANISH_VOICE = null;
-
-    function initSpeechSynthesisVoices() {
-      if (!('speechSynthesis' in window)) return;
-      const loadVoices = () => {
-        const voices = window.speechSynthesis.getVoices();
-        SPANISH_VOICE = voices.find(v => v.lang === 'es-ES' || v.lang.startsWith('es')) || null;
-      };
-      loadVoices();
-      if (window.speechSynthesis.onvoiceschanged !== undefined) {
-        window.speechSynthesis.onvoiceschanged = loadVoices;
-      }
-    }
-
-    function playAudioText(text) {
-      if (!('speechSynthesis' in window)) {
-        showToast("La síntesis de voz no está soportada en este navegador", "⚠️");
+      if (matches.length === 0) {
+        menu.classList.add('hidden');
         return;
       }
-      window.speechSynthesis.cancel();
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'es-ES';
-      if (SPANISH_VOICE) utterance.voice = SPANISH_VOICE;
-      utterance.rate = 0.95;
-      utterance.pitch = 1.0;
+      menu.innerHTML = matches.map(item => `
+        <button 
+          type="button" 
+          onclick="selectAutocompleteWord('${item.word.replace(/'/g, "\\'")}')" 
+          class="w-full px-4 py-2.5 text-left hover:bg-amber-50 border-b border-stone-100 last:border-none flex items-center justify-between transition-colors"
+        >
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-stone-900">${item.word}</span>
+            <span class="text-xs text-stone-500 font-mono">${item.ipa}</span>
+          </div>
+          <span class="text-xs text-red-700 font-medium truncate max-w-[180px]">${item.meaningEn}</span>
+        </button>
+      `).join('');
 
-      const audioBtn = document.getElementById('resAudioBtn');
-      if (audioBtn) audioBtn.classList.add('audio-playing');
-      utterance.onend = () => {
-        if (audioBtn) audioBtn.classList.remove('audio-playing');
-      };
-      utterance.onerror = () => {
-        if (audioBtn) audioBtn.classList.remove('audio-playing');
-      };
-
-      window.speechSynthesis.speak(utterance);
+      menu.classList.remove('hidden');
     }
 
-    function playCurrentWordAudio() {
-      if (CURRENT_WORD_ENTRY) {
-        playAudioText(CURRENT_WORD_ENTRY.fullTitle || CURRENT_WORD_ENTRY.word);
+    function clearSearch() {
+      const input = document.getElementById('searchInput');
+      if (input) input.value = '';
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (clearBtn) clearBtn.classList.add('hidden');
+      const menu = document.getElementById('autocompleteMenu');
+      if (menu) menu.classList.add('hidden');
+      const card = document.getElementById('dictionaryResultCard');
+      if (card) card.classList.add('hidden');
+      State.currentDictEntry = null;
+    }
+
+    function selectAutocompleteWord(word) {
+      const input = document.getElementById('searchInput');
+      if (input) input.value = word;
+      const menu = document.getElementById('autocompleteMenu');
+      if (menu) menu.classList.add('hidden');
+      executeSearch();
+    }
+
+    function quickLookup(word) {
+      const input = document.getElementById('searchInput');
+      if (input) input.value = word;
+      executeSearch();
+    }
+
+    function pickRandomWord() {
+      if (State.corpus.length === 0) return;
+      const randomItem = State.corpus[Math.floor(Math.random() * State.corpus.length)];
+      quickLookup(randomItem.word);
+    }
+
+    function executeSearch() {
+      const input = document.getElementById('searchInput');
+      const query = normalizeSpanish(input ? input.value : '');
+      if (!query) return;
+
+      const menu = document.getElementById('autocompleteMenu');
+      if (menu) menu.classList.add('hidden');
+
+      // Búsqueda O(1) exacta o prefija
+      let entry = State.corpusMap.get(query);
+      if (!entry) {
+        entry = State.corpus.find(item => normalizeSpanish(item.word) === query) ||
+                State.corpus.find(item => normalizeSpanish(item.word).includes(query));
       }
-    }
 
-    function playFlashcardWordAudio() {
-      const card = FLASHCARD_DECK[CURRENT_FC_INDEX];
-      if (card) playAudioText(card.fullTitle || card.word);
-    }
-
-    function playFlashcardSentenceAudio() {
-      const card = FLASHCARD_DECK[CURRENT_FC_INDEX];
-      if (card && card.examples && card.examples.length > 0) {
-        playAudioText(card.examples[0]);
+      const card = document.getElementById('dictionaryResultCard');
+      if (!entry) {
+        showToast(`No se encontró "${input.value}" en el corpus`, '🔍');
+        if (card) card.classList.add('hidden');
+        return;
       }
+
+      State.currentDictEntry = entry;
+      renderDictionaryResult(entry);
     }
 
-    function switchMainTab(tab) {
-      const viewDiccionario = document.getElementById('viewDiccionario');
-      const viewTarjetas = document.getElementById('viewTarjetas');
-      const tabBtnDic = document.getElementById('tabBtnDiccionario');
-      const tabBtnTar = document.getElementById('tabBtnTarjetas');
+    function renderDictionaryResult(entry) {
+      const card = document.getElementById('dictionaryResultCard');
+      if (!card) return;
 
-      if (tab === 'diccionario') {
-        if (viewDiccionario) viewDiccionario.classList.remove('hidden');
-        if (viewTarjetas) viewTarjetas.classList.add('hidden');
+      document.getElementById('dictResultWord').innerText = entry.word;
+      document.getElementById('dictResultGrammar').innerText = entry.grammar;
+      document.getElementById('dictResultIpa').innerText = entry.ipa;
+      document.getElementById('dictResultMeaning').innerText = entry.meaningEn;
+      document.getElementById('dictResultSources').innerText = entry.sourceFiles.join(', ');
 
-        tabBtnDic.className = "px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 bg-white text-stone-900 shadow-xs";
-        tabBtnTar.className = "px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 text-stone-600 hover:text-stone-900";
+      const exContainer = document.getElementById('dictResultExamplesContainer');
+      if (exContainer) {
+        if (entry.examples.length > 0) {
+          exContainer.innerHTML = entry.examples.map(ex => `
+            <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200 text-stone-800 text-sm flex items-start justify-between gap-3">
+              <span class="italic">"${ex}"</span>
+              <button 
+                type="button" 
+                onclick="speakSpanish('${ex.replace(/'/g, "\\'")}')" 
+                class="text-stone-400 hover:text-red-700 p-1 shrink-0 transition-colors"
+                title="Escuchar frase"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
+              </button>
+            </div>
+          `).join('');
+        } else {
+          exContainer.innerHTML = `<p class="text-xs text-stone-400 italic">Sin frases registradas.</p>`;
+        }
+      }
+
+      updateDictBookmarkBtn();
+      card.classList.remove('hidden');
+    }
+
+    function speakCurrentDictWord() {
+      if (State.currentDictEntry) speakSpanish(State.currentDictEntry.word);
+    }
+
+    function toggleBookmarkCurrentDict() {
+      if (!State.currentDictEntry) return;
+      const word = State.currentDictEntry.word;
+      if (State.savedWords.has(word)) {
+        State.savedWords.delete(word);
+        showToast(`"${word}" eliminada del cuaderno`, '⭐');
       } else {
-        if (viewDiccionario) viewDiccionario.classList.add('hidden');
-        if (viewTarjetas) viewTarjetas.classList.remove('hidden');
+        State.savedWords.add(word);
+        showToast(`"${word}" guardada en el cuaderno`, '⭐');
+      }
+      persistSavedWords();
+      updateDictBookmarkBtn();
+      initFlashcardsDeck();
+    }
 
-        tabBtnTar.className = "px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 bg-white text-stone-900 shadow-xs";
-        tabBtnDic.className = "px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 text-stone-600 hover:text-stone-900";
+    function updateDictBookmarkBtn() {
+      const btn = document.getElementById('dictBookmarkBtn');
+      const label = document.getElementById('dictBookmarkBtnLabel');
+      if (!btn || !State.currentDictEntry) return;
 
-        initFlashcardDeck();
+      const isSaved = State.savedWords.has(State.currentDictEntry.word);
+      if (isSaved) {
+        btn.className = 'px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 bg-amber-100 text-amber-950 border-amber-300';
+        if (label) label.innerText = 'Guardada ⭐';
+      } else {
+        btn.className = 'px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 bg-stone-50 text-stone-700 border-stone-200 hover:bg-amber-50 hover:text-amber-900';
+        if (label) label.innerText = 'Guardar';
       }
     }
 
-    function syncFlashcardDeckFilters() {
-      const select = document.getElementById('flashcardDeckSelect');
+    function updateSavedBadge() {
+      const count = State.savedWords.size;
+      const b1 = document.getElementById('savedBadgeCount');
+      const b2 = document.getElementById('savedDrawerCountBadge');
+      if (b1) b1.innerText = count;
+      if (b2) b2.innerText = count;
+      renderSavedWordsList();
+    }
+
+    function toggleSavedDrawer() {
+      const drawer = document.getElementById('savedWordsDrawer');
+      if (!drawer) return;
+      drawer.classList.toggle('hidden');
+      if (!drawer.classList.contains('hidden')) renderSavedWordsList();
+    }
+
+    function renderSavedWordsList() {
+      const container = document.getElementById('savedWordsListContainer');
+      if (!container) return;
+
+      if (State.savedWords.size === 0) {
+        container.innerHTML = `<p class="text-xs text-stone-400 italic text-center py-8">No tienes palabras guardadas todavía.</p>`;
+        return;
+      }
+
+      container.innerHTML = Array.from(State.savedWords).map(w => {
+        const entry = State.corpusMap.get(normalizeSpanish(w));
+        const meaning = entry ? entry.meaningEn : '';
+        return `
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <button type="button" onclick="quickLookup('${w.replace(/'/g, "\\'")}')" class="text-left font-bold text-stone-900 hover:text-red-700 text-xs sm:text-sm">
+              ${w} <span class="text-stone-400 text-xs font-normal">(${meaning})</span>
+            </button>
+            <button type="button" onclick="removeSavedWord('${w.replace(/'/g, "\\'")}')" class="text-stone-400 hover:text-red-700 p-1">
+              ✕
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function removeSavedWord(w) {
+      State.savedWords.delete(w);
+      persistSavedWords();
+      updateDictBookmarkBtn();
+      initFlashcardsDeck();
+    }
+
+    function clearAllSavedWords() {
+      State.savedWords.clear();
+      persistSavedWords();
+      updateDictBookmarkBtn();
+      initFlashcardsDeck();
+      showToast('Cuaderno vaciado', '🧹');
+    }
+
+    function sendToFlashcardsView() {
+      if (!State.currentDictEntry) return;
+      switchView('flashcards');
+      const targetIdx = State.fcDeck.findIndex(item => item.word === State.currentDictEntry.word);
+      if (targetIdx !== -1) {
+        State.fcIndex = targetIdx;
+        renderCurrentFlashcard();
+      }
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function syncDeckSelectOptions() {
+      const select = document.getElementById('fcDeckFilter');
+      const indexFileSelect = document.getElementById('indexFileFilterSelect');
       if (!select) return;
-      
-      const currentVal = select.value;
+
+      const fileOptions = State.loadedFiles.map(f => `
+        <option value="file:${f.name}">Archivo: ${f.name}</option>
+      `).join('');
+
       select.innerHTML = `
-        <option value="all">Todo el corpus (${CURRENT_CORPUS.length})</option>
-        <option value="saved">Solo guardadas (${SAVED_WORDS.size} ⭐)</option>
+        <option value="all">Todo el Corpus (${State.corpus.length})</option>
+        <option value="saved">⭐ Guardadas (${State.savedWords.size})</option>
+        ${fileOptions}
       `;
 
-      LOADED_FILES.forEach(f => {
-        const opt = document.createElement('option');
-        opt.value = `file:${f.name}`;
-        opt.innerText = `Archivo: ${f.name} (${f.count})`;
-        select.appendChild(opt);
-      });
-
-      if (Array.from(select.options).some(o => o.value === currentVal)) {
-        select.value = currentVal;
+      if (indexFileSelect) {
+        indexFileSelect.innerHTML = `
+          <option value="all">Todos los archivos</option>
+          ${State.loadedFiles.map(f => `<option value="${f.name}">${f.name}</option>`).join('')}
+        `;
       }
     }
 
-    function handleFlashcardDeckChange() {
-      initFlashcardDeck();
+    function handleDeckFilterChange() {
+      initFlashcardsDeck();
     }
 
-    function initFlashcardDeck() {
-      const select = document.getElementById('flashcardDeckSelect');
+    function initFlashcardsDeck() {
+      const select = document.getElementById('fcDeckFilter');
       const val = select ? select.value : 'all';
 
+      let pool = [];
       if (val === 'saved') {
-        FLASHCARD_DECK = CURRENT_CORPUS.filter(item => SAVED_WORDS.has(item.word));
+        pool = State.corpus.filter(item => State.savedWords.has(item.word));
       } else if (val.startsWith('file:')) {
         const filename = val.replace('file:', '');
-        FLASHCARD_DECK = CURRENT_CORPUS.filter(item => item.sourceFiles.includes(filename));
+        pool = State.corpus.filter(item => item.sourceFiles.includes(filename));
       } else {
-        FLASHCARD_DECK = [...CURRENT_CORPUS];
+        pool = [...State.corpus];
       }
 
-      if (FLASHCARD_DECK.length === 0) {
-        FLASHCARD_DECK = [...CURRENT_CORPUS];
-      }
+      if (pool.length === 0) pool = [...State.corpus];
 
-      CURRENT_FC_INDEX = 0;
-      FC_IS_FLIPPED = false;
+      // Requisito: Aleatorizar y priorizar palabras guardadas (las guardadas aparecen primero, ambas barajadas)
+      const savedPart = pool.filter(item => State.savedWords.has(item.word));
+      const regularPart = pool.filter(item => !State.savedWords.has(item.word));
+
+      shuffleArray(savedPart);
+      shuffleArray(regularPart);
+
+      State.fcDeck = [...savedPart, ...regularPart];
+      State.fcIndex = 0;
+      State.fcIsFlipped = false;
+
       renderCurrentFlashcard();
+    }
+
+    function shuffleFlashcards() {
+      if (State.fcDeck.length === 0) return;
+      const savedPart = State.fcDeck.filter(item => State.savedWords.has(item.word));
+      const regularPart = State.fcDeck.filter(item => !State.savedWords.has(item.word));
+
+      shuffleArray(savedPart);
+      shuffleArray(regularPart);
+
+      State.fcDeck = [...savedPart, ...regularPart];
+      State.fcIndex = 0;
+      State.fcIsFlipped = false;
+      renderCurrentFlashcard();
+      showToast('Tarjetas barajadas (guardadas priorizadas)', '🔀');
     }
 
     function renderCurrentFlashcard() {
       const cardEl = document.getElementById('flashcardElement');
-      if (cardEl && FC_IS_FLIPPED) {
+      if (cardEl && State.fcIsFlipped) {
         cardEl.classList.remove('rotate-y-180');
-        FC_IS_FLIPPED = false;
+        State.fcIsFlipped = false;
       }
 
-      const total = FLASHCARD_DECK.length;
-      const indexNumber = document.getElementById('flashcardIndexNumber');
-      const totalCount = document.getElementById('flashcardTotalCount');
-      const masteredEl = document.getElementById('flashcardMasteredCount');
-      const reviewEl = document.getElementById('flashcardReviewCount');
-      const progress = document.getElementById('flashcardProgressBar');
+      const total = State.fcDeck.length;
+      document.getElementById('fcCurrentIndex').innerText = total > 0 ? State.fcIndex + 1 : 0;
+      document.getElementById('fcTotalCount').innerText = total;
+      document.getElementById('fcMasteredCount').innerText = State.fcMastered.size;
+      document.getElementById('fcReviewCount').innerText = State.fcReview.size;
 
-      if (indexNumber) indexNumber.innerText = total > 0 ? CURRENT_FC_INDEX + 1 : 0;
-      if (totalCount) totalCount.innerText = total;
-      if (masteredEl) masteredEl.innerText = FC_MASTERED.size;
-      if (reviewEl) reviewEl.innerText = FC_REVIEW.size;
-
-      if (progress && total > 0) {
-        const pct = ((CURRENT_FC_INDEX + 1) / total) * 100;
-        progress.style.width = `${pct}%`;
+      const bar = document.getElementById('fcProgressBar');
+      if (bar && total > 0) {
+        bar.style.width = `${((State.fcIndex + 1) / total) * 100}%`;
       }
 
       if (total === 0) return;
 
-      const item = FLASHCARD_DECK[CURRENT_FC_INDEX];
-      
-      const frontWord = document.getElementById('fcFrontWord');
-      const frontIpa = document.getElementById('fcFrontIpa');
-      const frontGrammar = document.getElementById('fcFrontGrammar');
-      const frontSource = document.getElementById('fcFrontSource');
+      const item = State.fcDeck[State.fcIndex];
+      document.getElementById('fcFrontWord').innerText = item.word;
+      document.getElementById('fcFrontIpa').innerText = item.ipa;
+      document.getElementById('fcFrontGrammar').innerText = item.grammar;
+      document.getElementById('fcFrontSource').innerText = item.sourceFiles.join(', ');
 
-      if (frontWord) frontWord.innerText = item.fullTitle || item.word;
-      if (frontIpa) frontIpa.innerText = item.ipa || generateSpanishIPA(item.word);
-      if (frontGrammar) frontGrammar.innerText = item.grammar || 'sustantivo';
-      if (frontSource) frontSource.innerText = item.sourceFiles.join(', ');
-
-      const backTrans = document.getElementById('fcBackTranslation');
-      const backExample = document.getElementById('fcBackExample');
-
-      if (backTrans) backTrans.innerText = item.meaningEn;
-      if (backExample) {
-        backExample.innerText = item.examples.length > 0 ? `"${item.examples[0]}"` : `"Sin frase de ejemplo registrada."`;
+      const priorityBadge = document.getElementById('fcPriorityBadge');
+      if (priorityBadge) {
+        priorityBadge.classList.toggle('hidden', !State.savedWords.has(item.word));
       }
 
-      updateFlashcardBookmarkState();
+      document.getElementById('fcBackTranslation').innerText = item.meaningEn;
+      document.getElementById('fcBackExample').innerText = item.examples.length > 0 ? `"${item.examples[0]}"` : 'Sin frase registrada.';
     }
 
     function flipFlashcard() {
       const cardEl = document.getElementById('flashcardElement');
       if (!cardEl) return;
-      FC_IS_FLIPPED = !FC_IS_FLIPPED;
-      cardEl.classList.toggle('rotate-y-180', FC_IS_FLIPPED);
+      State.fcIsFlipped = !State.fcIsFlipped;
+      cardEl.classList.toggle('rotate-y-180', State.fcIsFlipped);
     }
 
     function nextFlashcard() {
-      if (FLASHCARD_DECK.length === 0) return;
-      CURRENT_FC_INDEX = (CURRENT_FC_INDEX + 1) % FLASHCARD_DECK.length;
+      if (State.fcDeck.length === 0) return;
+      State.fcIndex = (State.fcIndex + 1) % State.fcDeck.length;
       renderCurrentFlashcard();
     }
 
     function prevFlashcard() {
-      if (FLASHCARD_DECK.length === 0) return;
-      CURRENT_FC_INDEX = (CURRENT_FC_INDEX - 1 + FLASHCARD_DECK.length) % FLASHCARD_DECK.length;
+      if (State.fcDeck.length === 0) return;
+      State.fcIndex = (State.fcIndex - 1 + State.fcDeck.length) % State.fcDeck.length;
       renderCurrentFlashcard();
-    }
-
-    function shuffleFlashcards() {
-      for (let i = FLASHCARD_DECK.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [FLASHCARD_DECK[i], FLASHCARD_DECK[j]] = [FLASHCARD_DECK[j], FLASHCARD_DECK[i]];
-      }
-      CURRENT_FC_INDEX = 0;
-      renderCurrentFlashcard();
-      showToast("Baraja barajada correctamente", "🔀");
     }
 
     function markFlashcardStatus(type) {
-      if (FLASHCARD_DECK.length === 0) return;
-      const current = FLASHCARD_DECK[CURRENT_FC_INDEX];
+      if (State.fcDeck.length === 0) return;
+      const item = State.fcDeck[State.fcIndex];
+
       if (type === 'mastered') {
-        FC_MASTERED.add(current.word);
-        FC_REVIEW.delete(current.word);
+        State.fcMastered.add(item.word);
+        State.fcReview.delete(item.word);
+        showToast(`"${item.word}" dominada`, '✅');
       } else {
-        FC_REVIEW.add(current.word);
-        FC_MASTERED.delete(current.word);
+        State.fcReview.add(item.word);
+        State.fcMastered.delete(item.word);
+        showToast(`"${item.word}" marcada por repasar`, '⏳');
       }
-      saveFlashcardProgress();
+
+      try {
+        localStorage.setItem('esp_fc_mastered', JSON.stringify(Array.from(State.fcMastered)));
+        localStorage.setItem('esp_fc_review', JSON.stringify(Array.from(State.fcReview)));
+      } catch (e) {}
+
       nextFlashcard();
     }
 
-    function sendCurrentWordToFlashcard() {
-      if (!CURRENT_WORD_ENTRY) return;
-      switchMainTab('tarjetas');
-      const idx = FLASHCARD_DECK.findIndex(i => i.word === CURRENT_WORD_ENTRY.word);
-      if (idx !== -1) {
-        CURRENT_FC_INDEX = idx;
-      } else {
-        FLASHCARD_DECK.unshift(CURRENT_WORD_ENTRY);
-        CURRENT_FC_INDEX = 0;
-      }
-      renderCurrentFlashcard();
+    function speakCurrentFlashcard() {
+      if (State.fcDeck.length === 0) return;
+      speakSpanish(State.fcDeck[State.fcIndex].word);
     }
 
-    let touchStartX = 0;
-    let touchStartY = 0;
-
-    function setupTouchGestures() {
-      const cardEl = document.getElementById('flashcardElement');
-      if (!cardEl) return;
-
-      cardEl.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-        touchStartY = e.changedTouches[0].screenY;
-      }, { passive: true });
-
-      cardEl.addEventListener('touchend', (e) => {
-        const touchEndX = e.changedTouches[0].screenX;
-        const touchEndY = e.changedTouches[0].screenY;
-        const diffX = touchEndX - touchStartX;
-        const diffY = touchEndY - touchStartY;
-
-        // Deslizamiento horizontal claro (> 50px)
-        if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
-          if (diffX < 0) {
-            nextFlashcard();
-          } else {
-            prevFlashcard();
-          }
-        }
-      }, { passive: true });
+    function speakCurrentFlashcardSentence() {
+      if (State.fcDeck.length === 0) return;
+      const item = State.fcDeck[State.fcIndex];
+      if (item.examples.length > 0) speakSpanish(item.examples[0]);
     }
 
-    document.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-      const viewTarjetas = document.getElementById('viewTarjetas');
-      const isTarjetasVisible = viewTarjetas && !viewTarjetas.classList.contains('hidden');
-
-      if (isTarjetasVisible) {
-        if (e.code === 'Space') {
-          e.preventDefault();
-          flipFlashcard();
-        } else if (e.code === 'ArrowRight') {
-          nextFlashcard();
-        } else if (e.code === 'ArrowLeft') {
-          prevFlashcard();
-        } else if (e.key === '1') {
-          markFlashcardStatus('review');
-        } else if (e.key === '2') {
-          markFlashcardStatus('mastered');
-        }
-      }
-    });
-
-    function toggleBookmarkCurrentWord() {
-      if (!CURRENT_WORD_ENTRY) return;
-      const w = CURRENT_WORD_ENTRY.word;
-      if (SAVED_WORDS.has(w)) {
-        SAVED_WORDS.delete(w);
-        showToast(`Eliminada de guardadas: "${CURRENT_WORD_ENTRY.fullTitle || w}"`, "⭐");
-      } else {
-        SAVED_WORDS.add(w);
-        showToast(`Guardada en tu cuaderno: "${CURRENT_WORD_ENTRY.fullTitle || w}"`, "⭐");
-      }
-      saveSavedWordsToStorage();
-      updateBookmarkButtonState();
-      syncFlashcardDeckFilters();
-    }
-
-    function toggleBookmarkCurrentFlashcard() {
-      if (FLASHCARD_DECK.length === 0) return;
-      const current = FLASHCARD_DECK[CURRENT_FC_INDEX];
-      const w = current.word;
-      if (SAVED_WORDS.has(w)) {
-        SAVED_WORDS.delete(w);
-        showToast(`Eliminada de guardadas: "${current.fullTitle || w}"`, "⭐");
-      } else {
-        SAVED_WORDS.add(w);
-        showToast(`Guardada en tu cuaderno: "${current.fullTitle || w}"`, "⭐");
-      }
-      saveSavedWordsToStorage();
-      updateFlashcardBookmarkState();
-      syncFlashcardDeckFilters();
-    }
-
-    function updateBookmarkButtonState() {
-      const starIcon = document.getElementById('bookmarkStarIcon');
-      if (!starIcon || !CURRENT_WORD_ENTRY) return;
-      const isSaved = SAVED_WORDS.has(CURRENT_WORD_ENTRY.word);
-      starIcon.setAttribute('fill', isSaved ? '#ffc400' : 'none');
-      starIcon.setAttribute('stroke', isSaved ? '#e6a800' : 'currentColor');
-      starIcon.classList.toggle('text-amber-500', isSaved);
-    }
-
-    function updateFlashcardBookmarkState() {
-      const star = document.getElementById('fcStarIcon');
-      const label = document.getElementById('fcBookmarkLabel');
-      if (FLASHCARD_DECK.length === 0 || !star) return;
-      const current = FLASHCARD_DECK[CURRENT_FC_INDEX];
-      const isSaved = SAVED_WORDS.has(current.word);
-      star.setAttribute('fill', isSaved ? '#ffc400' : 'none');
-      star.setAttribute('stroke', isSaved ? '#ffc400' : 'currentColor');
-      if (label) label.innerText = isSaved ? 'Guardada en cuaderno' : 'Guardar en cuaderno';
-    }
-
-    function updateSavedBadge() {
-      const badge = document.getElementById('savedCountBadge');
-      const drawerCount = document.getElementById('savedDrawerCount');
-      if (badge) badge.innerText = SAVED_WORDS.size;
-      if (drawerCount) drawerCount.innerText = SAVED_WORDS.size;
-      renderSavedList();
-    }
-
-    function toggleSavedDrawer(open) {
-      const drawer = document.getElementById('savedDrawer');
-      if (drawer) drawer.classList.toggle('hidden', !open);
-      if (open) renderSavedList();
-    }
-
-    function renderSavedList() {
-      const container = document.getElementById('savedWordsListContainer');
-      if (!container) return;
-
-      if (SAVED_WORDS.size === 0) {
-        container.innerHTML = `
-          <div class="text-center py-12 text-stone-400">
-            <svg class="w-10 h-10 mx-auto mb-2 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-            </svg>
-            <p class="text-sm">Aún no has guardado ninguna palabra.</p>
-            <p class="text-xs text-stone-400 mt-1">Haz clic en la estrella en cualquier ficha para agregarla aquí.</p>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = '';
-      SAVED_WORDS.forEach(stem => {
-        const item = CORPUS_MAP.get(stem) || { word: stem, fullTitle: stem, meaningEn: 'Definición guardada' };
-        const row = document.createElement('div');
-        row.className = 'py-3 flex items-center justify-between gap-2';
-        row.innerHTML = `
-          <div class="cursor-pointer flex-1" onclick="selectWordFromSaved('${item.word.replace(/'/g, "\\'")}')">
-            <h5 class="font-bold text-sm text-stone-900 hover:text-red-600 transition-colors">${item.fullTitle || item.word}</h5>
-            <p class="text-xs text-stone-500 truncate max-w-xs">${item.meaningEn}</p>
-          </div>
-          <button onclick="removeSavedWord('${item.word.replace(/'/g, "\\'")}')" class="p-1.5 text-stone-400 hover:text-red-600 rounded-lg transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-          </button>
-        `;
-        container.appendChild(row);
-      });
-    }
-
-    function selectWordFromSaved(stem) {
-      toggleSavedDrawer(false);
-      switchMainTab('diccionario');
-      const item = CORPUS_MAP.get(stem);
-      if (item) selectWord(item);
-    }
-
-    function removeSavedWord(stem) {
-      SAVED_WORDS.delete(stem);
-      saveSavedWordsToStorage();
-      renderSavedList();
-      updateBookmarkButtonState();
-      syncFlashcardDeckFilters();
-    }
-
-    function clearAllSavedWords() {
-      SAVED_WORDS.clear();
-      saveSavedWordsToStorage();
-      renderSavedList();
-      updateBookmarkButtonState();
-      syncFlashcardDeckFilters();
-      showToast("Se han eliminado todas las palabras guardadas", "🗑️");
-    }
-
-    function startFlashcardsWithSavedOnly() {
-      toggleSavedDrawer(false);
-      switchMainTab('tarjetas');
-      const select = document.getElementById('flashcardDeckSelect');
-      if (select) {
-        select.value = 'saved';
-        handleFlashcardDeckChange();
-      }
-    }
-
-    function toggleIndexModal(open) {
+    function openIndexModal() {
       const modal = document.getElementById('indexModal');
-      if (modal) modal.classList.toggle('hidden', !open);
-      if (open) {
-        populateIndexFileFilter();
-        renderIndexList();
+      if (modal) {
+        modal.classList.remove('hidden');
+        renderIndexWordList();
       }
     }
 
-    function populateIndexFileFilter() {
-      const select = document.getElementById('indexFileSelectFilter');
-      if (!select) return;
-      select.innerHTML = '<option value="all">Todos los archivos</option>';
-      LOADED_FILES.forEach(f => {
-        const opt = document.createElement('option');
-        opt.value = f.name;
-        opt.innerText = `${f.name} (${f.count})`;
-        select.appendChild(opt);
-      });
+    function closeIndexModal() {
+      const modal = document.getElementById('indexModal');
+      if (modal) modal.classList.add('hidden');
     }
 
-    function renderIndexList() {
-      const container = document.getElementById('indexWordsContainer');
-      const countEl = document.getElementById('indexItemsCount');
-      const query = stripAccents(document.getElementById('indexFilterInput')?.value || '');
-      const fileFilter = document.getElementById('indexFileSelectFilter')?.value || 'all';
-
+    function renderIndexWordList() {
+      const container = document.getElementById('indexWordsList');
       if (!container) return;
 
-      let filtered = CURRENT_CORPUS.filter(item => {
-        const matchText = stripAccents(item.word).includes(query) || stripAccents(item.fullTitle).includes(query) || stripAccents(item.meaningEn).includes(query);
-        const matchFile = fileFilter === 'all' || item.sourceFiles.includes(fileFilter);
-        return matchText && matchFile;
-      });
+      const searchFilter = normalizeSpanish(document.getElementById('indexSearchFilterInput')?.value || '');
+      const fileFilter = document.getElementById('indexFileFilterSelect')?.value || 'all';
 
-      if (countEl) countEl.innerText = `Mostrando ${filtered.length} de ${CURRENT_CORPUS.length} entradas`;
+      const filtered = State.corpus.filter(item => {
+        const matchesText = !searchFilter || normalizeSpanish(item.word).includes(searchFilter) || item.meaningEn.toLowerCase().includes(searchFilter);
+        const matchesFile = fileFilter === 'all' || item.sourceFiles.includes(fileFilter);
+        return matchesText && matchesFile;
+      });
 
       if (filtered.length === 0) {
-        container.innerHTML = `
-          <div class="text-center py-12 text-stone-400">
-            <p class="text-sm font-medium">No hay coincidencias con el filtro.</p>
-          </div>
-        `;
+        container.innerHTML = `<p class="col-span-2 text-center text-stone-400 py-6 italic">No se encontraron palabras con esos filtros.</p>`;
         return;
       }
 
       container.innerHTML = filtered.map(item => `
-        <div onclick="selectWordFromIndex('${item.word.replace(/'/g, "\\'")}')" class="py-2.5 px-2 hover:bg-amber-50/70 rounded-xl cursor-pointer flex items-center justify-between gap-2 transition-colors">
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-xs sm:text-sm text-stone-900">${item.fullTitle || item.word}</span>
-              <span class="font-mono text-[11px] text-amber-800">${item.ipa || ''}</span>
-              <span class="text-[10px] bg-stone-100 text-stone-600 px-1.5 py-0.2 rounded">${item.grammar || 'sustantivo'}</span>
-            </div>
-            <p class="text-xs text-stone-500 truncate mt-0.5">${item.meaningEn}</p>
+        <div class="p-2.5 bg-stone-50 hover:bg-amber-50 rounded-xl border border-stone-200 transition-colors flex items-center justify-between">
+          <div>
+            <button type="button" onclick="closeIndexModal(); quickLookup('${item.word.replace(/'/g, "\\'")}')" class="font-bold text-stone-900 hover:text-red-700 text-left">
+              ${item.word}
+            </button>
+            <p class="text-[11px] text-stone-500 truncate max-w-[170px]">${item.meaningEn}</p>
           </div>
-          <div class="text-right flex-shrink-0">
-            <span class="text-[10px] text-stone-400 block">${item.sourceFiles.join(', ')}</span>
-          </div>
+          <span class="text-[10px] font-mono text-stone-400 px-1.5 py-0.5 bg-white rounded border border-stone-200">
+            ${item.sourceFiles[0] || ''}
+          </span>
         </div>
       `).join('');
     }
 
-    function selectWordFromIndex(stem) {
-      toggleIndexModal(false);
-      switchMainTab('diccionario');
-      const item = CORPUS_MAP.get(stem);
-      if (item) selectWord(item);
+    function setupKeyboardShortcuts() {
+      document.addEventListener('keydown', e => {
+        // Ignorar atajos si el usuario escribe en un campo de texto
+        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+
+        if (State.activeView === 'flashcards') {
+          if (e.code === 'Space') {
+            e.preventDefault();
+            flipFlashcard();
+          } else if (e.code === 'ArrowRight') {
+            nextFlashcard();
+          } else if (e.code === 'ArrowLeft') {
+            prevFlashcard();
+          } else if (e.key === '1') {
+            markFlashcardStatus('review');
+          } else if (e.key === '2') {
+            markFlashcardStatus('mastered');
+          }
+        }
+      });
     }
 
-    function toggleDiagnosticModal(open) {
-      const modal = document.getElementById('diagnosticModal');
-      if (modal) modal.classList.toggle('hidden', !open);
-    }
+    function setupTouchSwipeGestures() {
+      let touchStartX = 0;
+      let touchEndX = 0;
+      const card = document.getElementById('flashcardElement');
+      if (!card) return;
 
-    function copyWordDefinition() {
-      if (!CURRENT_WORD_ENTRY) return;
-      const text = `${CURRENT_WORD_ENTRY.fullTitle || CURRENT_WORD_ENTRY.word} (${CURRENT_WORD_ENTRY.ipa}) - ${CURRENT_WORD_ENTRY.meaningEn}`;
-      
-      const copyInput = document.createElement('textarea');
-      copyInput.value = text;
-      document.body.appendChild(copyInput);
-      copyInput.select();
-      try {
-        document.execCommand('copy');
-        showToast("Definición copiada al portapapeles", "📋");
-      } catch (err) {
-        showToast("No se pudo copiar el texto", "⚠️");
-      }
-      document.body.removeChild(copyInput);
-    }
+      card.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
 
-    function showToast(message, icon = "ℹ️") {
-      const container = document.getElementById('toastContainer');
-      if (!container) return;
-
-      const toast = document.createElement('div');
-      toast.className = 'bg-stone-900/90 text-white text-xs font-semibold px-3.5 py-2.5 rounded-xl shadow-lg backdrop-blur-xs flex items-center gap-2 border border-stone-700 animate-in fade-in slide-in-from-bottom-2 duration-200 pointer-events-auto';
-      toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
-      container.appendChild(toast);
-
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
+      card.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchEndX - touchStartX;
+        if (Math.abs(diff) > 50) {
+          if (diff < 0) nextFlashcard();
+          else prevFlashcard();
+        }
+      }, { passive: true });
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      loadStoredPreferences();
-      initSpeechSynthesisVoices();
-      setupTouchGestures();
-      
-      // Inicio del escaneo automático de archivos en /corpus/
-      scanAndLoadCorpusDirectory();
+      loadPersistedData();
+      setupKeyboardShortcuts();
+      setupTouchSwipeGestures();
+      scanAndLoadCorpus();
     });
   </script>
 </body>
