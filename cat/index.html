@@ -1,436 +1,388 @@
 <!DOCTYPE html>
-<html lang="ca" class="h-full">
+<html lang="ca" class="h-full bg-stone-100">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Vocabulari Català — Diccionari & Targetes de Memòria</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Font Google: Inter & Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-            display: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
-          },
-          colors: {
-            senyera: {
-              gold: '#facc15',
-              darkgold: '#d97706',
-              red: '#dc2626',
-              darkred: '#991b1b',
-            }
-          }
-        }
-      }
-    };
-  </script>
-
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Estil de la Senyera: Quatre barres vermelles sobre fons groc */
+    :root {
+      --cat-red: #dc2626;
+      --cat-gold: #facc15;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .font-display {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* Senyera: 4 barres vermelles sobre fons daurat */
     .bandera-senyera {
       background: repeating-linear-gradient(
         to bottom,
-        #dc2626 0px,
-        #dc2626 3px,
+        #facc15 0px,
         #facc15 3px,
-        #facc15 6px
+        #dc2626 3px,
+        #dc2626 6px
       );
     }
-
-    .bandera-senyera-horizontal {
-      background: repeating-linear-gradient(
-        to right,
-        #dc2626 0px,
-        #dc2626 8px,
-        #facc15 8px,
-        #facc15 16px
-      );
-    }
-
-    /* Targeta 3D per a Flashcards */
     .perspective-1000 {
       perspective: 1000px;
     }
-    
     .transform-style-3d {
       transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
     }
-    
     .backface-hidden {
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
     }
-    
     .rotate-y-180 {
       transform: rotateY(180deg);
     }
-
-    /* Suport per àrea segura d'iOS */
-    .pb-safe {
-      padding-bottom: env(safe-area-inset-bottom, 1rem);
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-
-    /* Ocultar barra de desplaçament però permetre scroll */
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
+    ::-webkit-scrollbar-track {
+      background: #f5f5f4;
     }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    ::-webkit-scrollbar-thumb {
+      background: #d6d3d1;
+      border-radius: 9999px;
     }
-
-    /* Animació suau de pols per l'àudio */
-    @keyframes wavePulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a8a29e;
     }
-    .audio-playing {
-      animation: wavePulse 0.6s infinite ease-in-out;
+    @keyframes pulse-gentle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+    .animate-pulse-gentle {
+      animation: pulse-gentle 2.5s infinite ease-in-out;
     }
   </style>
 </head>
-<body class="min-h-full bg-amber-50/40 text-stone-900 flex flex-col antialiased selection:bg-amber-300 selection:text-red-950 pb-safe">
+<body class="min-h-full flex flex-col text-stone-900 selection:bg-amber-200 selection:text-red-950">
 
-  <!-- Barra superior decorativa: Senyera Catalana -->
-  <div class="h-2 w-full bandera-senyera shadow-xs"></div>
+  <!-- Franja Superior Senyera de Catalunya -->
+  <div class="h-2.5 w-full bandera-senyera fixed top-0 left-0 z-40 shadow-xs"></div>
 
-  <!-- Barra de progrés de càrrega del corpus (tiny progress bar) -->
-  <div id="corpusProgressBarTrack" class="w-full bg-amber-200/50 h-1 overflow-hidden transition-opacity duration-300 opacity-0 relative z-40">
-    <div id="corpusProgressBar" class="h-full bg-gradient-to-r from-red-600 via-amber-500 to-red-600 w-0 transition-all duration-200 ease-out shadow-xs"></div>
+  <!-- Barra de progrés subtil superior -->
+  <div id="corpusProgressBarTrack" class="fixed top-2.5 left-0 w-full h-1 bg-stone-200/50 z-40 transition-opacity duration-300 opacity-0 pointer-events-none">
+    <div id="corpusProgressBar" class="h-full bg-gradient-to-r from-red-600 via-amber-400 to-red-600 transition-all duration-200 w-0"></div>
   </div>
 
-  <header class="w-full border-b border-amber-200/90 bg-white/95 backdrop-blur-md sticky top-0 z-30 shadow-xs">
-    <div class="max-w-5xl mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2">
+  <!-- Barra de Navegació Principal -->
+  <header class="sticky top-2.5 z-30 bg-white/95 backdrop-blur-md border-b border-amber-200/60 shadow-xs">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
       
-      <!-- Logotip i Títol -->
-      <div class="flex items-center gap-2 sm:gap-3 cursor-pointer select-none" onclick="switchMainTab('diccionari')">
-        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl shadow-xs flex items-center justify-center text-white font-black text-sm sm:text-base border border-amber-400 overflow-hidden relative" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);">
-          <span class="relative z-10 font-display">CAT</span>
-          <div class="absolute inset-0 bandera-senyera opacity-25"></div>
+      <!-- Logotip & Títol -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-600 via-amber-500 to-red-700 text-white flex items-center justify-center font-black text-lg shadow-sm border border-amber-300">
+          CA
         </div>
         <div>
-          <div class="flex items-center gap-1.5">
-            <h1 class="text-base sm:text-lg font-bold tracking-tight text-stone-900 font-display flex items-center gap-1">
-              Vocabulari <span class="text-red-600">Català</span>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-base sm:text-lg tracking-tight text-stone-900 leading-none">
+              Vocabulari Català
             </h1>
-            <span id="corpusBadge" class="hidden sm:inline-flex items-center gap-1 text-[10px] font-semibold bg-amber-100 text-amber-900 border border-amber-300/80 px-1.5 py-0.5 rounded-full">
-              <span id="serverPulseDot" class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-              <span id="corpusCountLabel">Carregant...</span>
+            <span id="corpusWordCountBadge" class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+              0 paraules
             </span>
           </div>
-          <p id="headerCorpusSubtitle" class="text-[10px] sm:text-xs text-stone-500 truncate max-w-[190px] sm:max-w-xs">
-            Sondejant /corpus/...
+          <p id="headerSubtitle" class="text-[11px] text-stone-500 flex items-center gap-1.5 mt-0.5">
+            <span id="serverStatusDot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+            <span id="headerStatusText" class="truncate max-w-[210px] sm:max-w-none">Iniciant corpus a /corpus/...</span>
           </p>
         </div>
       </div>
 
-      <!-- Selectors principals: DICCIONARI vs TARGETES -->
-      <nav class="flex items-center bg-stone-100/90 p-1 rounded-xl border border-stone-200/80">
-        <button id="tabBtnDiccionari" onclick="switchMainTab('diccionari')" class="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 bg-white text-stone-900 shadow-xs">
-          <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <!-- Pestanyes Principals: Diccionari vs Targetes -->
+      <nav class="flex items-center bg-stone-100 p-1 rounded-2xl border border-stone-200/80 shadow-inner">
+        <button 
+          id="tabBtnDict" 
+          type="button" 
+          onclick="switchView('dictionary')" 
+          class="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs bg-white text-red-700"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
           </svg>
           <span>Diccionari</span>
         </button>
-
-        <button id="tabBtnTargetes" onclick="switchMainTab('targetes')" class="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 text-stone-600 hover:text-stone-900">
-          <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button 
+          id="tabBtnCards" 
+          type="button" 
+          onclick="switchView('flashcards')" 
+          class="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all text-stone-600 hover:text-stone-900"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
           </svg>
           <span>Targetes</span>
         </button>
       </nav>
 
-      <!-- Botons d'acció de la dreta: Índex, Desar i Diagnòstic -->
-      <div class="flex items-center gap-1 sm:gap-1.5">
-        <button onclick="toggleIndexModal(true)" title="Explorar tots els mots" class="px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium text-stone-700 hover:bg-stone-100 border border-stone-200/80 transition-colors flex items-center gap-1">
-          <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <!-- Botons d'Utilitat (Índex A-Z i Quadern) -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <button 
+          type="button" 
+          onclick="openIndexModal()" 
+          title="Veure índex complet A-Z"
+          class="p-2 rounded-xl text-stone-600 hover:text-stone-900 hover:bg-stone-100 border border-stone-200 transition-colors"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
           </svg>
-          <span class="hidden md:inline">Índex</span>
         </button>
-
-        <button onclick="toggleSavedDrawer(true)" title="Paraules desades" class="px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium text-stone-700 hover:bg-stone-100 border border-stone-200/80 transition-colors flex items-center gap-1 relative">
-          <svg class="w-3.5 h-3.5 text-amber-500 fill-amber-500" viewBox="0 0 24 24">
-            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        <button 
+          type="button" 
+          onclick="toggleSavedDrawer()" 
+          title="Quadern de paraules desades"
+          class="relative p-2 rounded-xl text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-300 transition-colors"
+        >
+          <svg class="w-4 h-4 fill-amber-500 text-amber-600" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
           </svg>
-          <span id="savedCountBadge" class="bg-red-600 text-white text-[10px] font-bold px-1 rounded-full min-w-[16px] text-center">0</span>
-        </button>
-
-        <button onclick="toggleDiagnosticModal(true)" title="Estat de càrrega i servidor" class="p-1.5 rounded-lg text-stone-500 hover:text-stone-800 hover:bg-stone-100 transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
+          <span id="savedBadgeCount" class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 bg-red-600 text-white rounded-full text-[10px] font-extrabold flex items-center justify-center border-2 border-white">
+            0
+          </span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- CONTENIDOR PRINCIPAL -->
-  <main class="flex-1 max-w-4xl w-full mx-auto px-3 sm:px-4 py-4 sm:py-6 flex flex-col">
+  <!-- Contenidor Central Dinàmic -->
+  <main class="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 pb-20">
 
     <!-- ========================================== -->
-    <!-- VISTA 1: DICCIONARI (Cerca centrada & Fitxa) -->
+    <!-- VISTA 1: DICCIONARI (CERCA I RESULTATS)    -->
     <!-- ========================================== -->
-    <div id="viewDiccionari" class="w-full flex flex-col flex-1">
+    <section id="viewDictionary" class="space-y-6">
       
       <!-- Caixa de Cerca Principal -->
-      <section class="w-full mb-4 sm:mb-6">
-        <form onsubmit="handleSearchSubmit(event)" class="relative w-full">
-          <div class="relative flex items-center bg-white rounded-2xl shadow-sm border-2 border-amber-300 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100 transition-all">
-            <div class="pl-3.5 sm:pl-4 text-amber-500 flex items-center pointer-events-none">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            
+      <div class="bg-gradient-to-b from-white via-amber-50/30 to-white rounded-3xl p-6 sm:p-10 border border-amber-200/70 shadow-sm text-center relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-amber-200/40 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-red-100/40 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200 mb-3 shadow-2xs">
+          <span>💛</span> Explorador Lexicogràfic Català
+        </span>
+        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-stone-900 font-display mb-2">
+          Quina paraula vols consultar?
+        </h2>
+        <p class="text-xs sm:text-sm text-stone-600 max-w-md mx-auto mb-6">
+          Cerca en temps real a tots els fitxers carregats des del directori <code class="text-amber-900 font-mono bg-amber-100 px-1 py-0.5 rounded">/corpus/</code>.
+        </p>
+
+        <!-- Formulari de Cerca amb Autocompletar -->
+        <div class="relative max-w-xl mx-auto">
+          <form onsubmit="event.preventDefault(); executeSearch();" class="relative flex items-center">
             <input 
               type="text" 
-              id="mainSearchInput"
+              id="searchInput" 
+              placeholder="Ex: programari, algorisme, aliatge..." 
               autocomplete="off"
               spellcheck="false"
-              placeholder="Cerca un mot en català (ex: algorisme, cèl·lula, teulada)..." 
-              class="w-full py-3.5 sm:py-4 pl-3 pr-20 sm:pr-24 text-sm sm:text-base font-medium text-stone-900 placeholder-stone-400 bg-transparent rounded-2xl focus:outline-none"
-              oninput="handleLiveInput(event)"
-              onkeydown="handleSearchKeydown(event)"
+              oninput="handleSearchInput(event)"
+              class="w-full pl-12 pr-28 py-4 bg-white rounded-2xl border-2 border-stone-200 focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-100 text-stone-900 placeholder:text-stone-400 font-medium text-base shadow-sm transition-all"
             />
-
+            <div class="absolute left-4 text-stone-400 pointer-events-none">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
             <div class="absolute right-2 flex items-center gap-1">
               <button 
                 type="button" 
                 id="clearSearchBtn" 
-                onclick="clearSearchInput()" 
-                class="hidden p-1.5 text-stone-400 hover:text-stone-700 rounded-full hover:bg-stone-100 transition-colors"
-                title="Esborrar"
+                onclick="clearSearch()" 
+                class="hidden p-2 text-stone-400 hover:text-stone-700 rounded-xl transition-colors"
+                title="Netejar"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-
               <button 
                 type="submit" 
-                class="px-3 sm:px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition-all active:scale-95"
+                class="px-4 py-2 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs active:scale-95 transition-all"
               >
                 Cercar
               </button>
             </div>
-          </div>
+          </form>
 
-          <!-- Dropdown d'autocompletar instantani -->
-          <div id="autocompleteDropdown" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl shadow-xl border border-amber-200 overflow-hidden z-50 max-h-72 overflow-y-auto">
-            <ul id="autocompleteList" class="divide-y divide-stone-100 text-sm"></ul>
-          </div>
-        </form>
+          <!-- Menú d'Autocompletar -->
+          <div id="autocompleteMenu" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl border border-amber-200/80 shadow-xl overflow-hidden z-20 text-left max-h-64 overflow-y-auto"></div>
+        </div>
 
-        <!-- Xips de suggeriments / paraules ràpides -->
-        <div class="flex items-center justify-between mt-2.5 px-1 text-xs text-stone-500">
-          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" id="quickSampleChips">
-            <span class="text-stone-400 font-medium whitespace-nowrap">Exemples:</span>
-            <!-- Inserit dinàmicament -->
-          </div>
-          <button onclick="fetchRandomWord()" class="text-xs font-medium text-red-600 hover:text-red-700 hover:underline flex items-center gap-1 whitespace-nowrap ml-2">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            <span>Aleatòria</span>
+        <!-- Suggeriments Ràpids -->
+        <div class="mt-4 flex flex-wrap items-center justify-center gap-1.5 text-xs">
+          <span class="text-stone-400 font-medium">Exemples:</span>
+          <button type="button" onclick="quickLookup('algorisme')" class="px-2 py-1 rounded-lg bg-white hover:bg-amber-100 text-stone-700 hover:text-amber-900 border border-stone-200 transition-colors font-mono">algorisme</button>
+          <button type="button" onclick="quickLookup('programari')" class="px-2 py-1 rounded-lg bg-white hover:bg-amber-100 text-stone-700 hover:text-amber-900 border border-stone-200 transition-colors font-mono">programari</button>
+          <button type="button" onclick="quickLookup('aliatge')" class="px-2 py-1 rounded-lg bg-white hover:bg-amber-100 text-stone-700 hover:text-amber-900 border border-stone-200 transition-colors font-mono">aliatge</button>
+          <button type="button" onclick="pickRandomWord()" class="px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold border border-amber-300 transition-colors flex items-center gap-1">
+            <span>🎲</span> Aleatòria
           </button>
         </div>
-      </section>
+      </div>
 
-      <!-- Àrea de resultats -->
-      <div id="resultContainer" class="flex-1 flex flex-col">
+      <!-- Targeta de Resultat del Diccionari -->
+      <div id="dictionaryResultCard" class="hidden bg-white rounded-3xl p-6 sm:p-8 border border-amber-200 shadow-md space-y-6">
         
-        <!-- Estat inicial / buit -->
-        <div id="idleState" class="flex flex-col items-center justify-center text-center p-8 bg-white/70 rounded-2xl border border-dashed border-amber-300 flex-1 my-auto">
-          <div class="w-14 h-14 rounded-2xl bg-amber-100 text-red-600 flex items-center justify-center mb-3 shadow-inner">
-            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
+        <!-- Capçalera del Mot -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-100">
+          <div>
+            <div class="flex items-center gap-3">
+              <h3 id="dictResultWord" class="text-2xl sm:text-3xl font-extrabold text-stone-900 font-display"></h3>
+              <span id="dictResultGrammar" class="px-3 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300"></span>
+            </div>
+            <div class="flex items-center gap-3 mt-1.5">
+              <span id="dictResultIpa" class="font-mono text-sm text-stone-500 bg-stone-50 px-2 py-0.5 rounded-md border border-stone-200"></span>
+              <button 
+                type="button" 
+                onclick="speakCurrentDictWord()" 
+                class="inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-lg transition-colors border border-red-200"
+                title="Escoltar pronunciació en català"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+                <span>Pronunciar</span>
+              </button>
+            </div>
           </div>
-          <h2 class="text-base sm:text-lg font-bold text-stone-900 mb-1">Cerca qualsevol mot al corpus</h2>
-          <p class="text-xs sm:text-sm text-stone-600 max-w-sm mb-4">
-            Escriu una paraula al cercador superior o fes clic a l'Índex per explorar tot el vocabulari indexat des de <code class="bg-amber-100 px-1 py-0.5 rounded text-red-800">/corpus/</code>.
-          </p>
-          <div class="flex flex-wrap items-center justify-center gap-2">
-            <button onclick="fetchRandomWord()" class="px-3.5 py-2 bg-white text-stone-800 border border-stone-300 hover:border-amber-400 rounded-xl text-xs sm:text-sm font-semibold shadow-2xs transition-all hover:bg-amber-50/50">
-              Veure paraula a l'atzar
+
+          <!-- Accions sobre el mot -->
+          <div class="flex items-center gap-2">
+            <button 
+              type="button" 
+              id="dictBookmarkBtn" 
+              onclick="toggleBookmarkCurrentDict()" 
+              class="px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 bg-stone-50 text-stone-700 border-stone-200 hover:bg-amber-50 hover:text-amber-900"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+              </svg>
+              <span id="dictBookmarkBtnLabel">Desar</span>
             </button>
-            <button onclick="toggleIndexModal(true)" class="px-3.5 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-xs transition-all hover:brightness-105">
-              Obrir índex complet
+            <button 
+              type="button" 
+              onclick="sendToFlashcardsView()" 
+              class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-400 hover:bg-amber-500 text-stone-950 shadow-xs transition-transform active:scale-95 flex items-center gap-1.5"
+            >
+              <span>Practicar a la Targeta</span>
+              <span>→</span>
             </button>
           </div>
         </div>
 
-        <!-- Targeta de resultat detallat -->
-        <article id="resultCard" class="hidden bg-white rounded-2xl shadow-sm border border-amber-200 overflow-hidden transition-all">
-          
-          <!-- Capçalera de la paraula -->
-          <div class="p-4 sm:p-6 bg-gradient-to-br from-amber-50/60 via-white to-orange-50/40 border-b border-amber-100 relative">
-            <div class="flex items-start justify-between gap-3">
-              <div class="flex-1">
-                <div class="flex flex-wrap items-center gap-2 mb-1.5">
-                  <span id="resGrammarTag" class="px-2 py-0.5 text-xs font-bold rounded-md bg-red-100 text-red-800 border border-red-200">
-                    substantiu
-                  </span>
-                  <span id="resSourcePill" class="px-2 py-0.5 text-[11px] font-medium rounded-md bg-stone-100 text-stone-700 border border-stone-200 truncate max-w-[200px]">
-                    fitxer.txt
-                  </span>
-                </div>
-                
-                <h2 id="resTitle" class="text-2xl sm:text-4xl font-extrabold text-stone-950 font-display tracking-tight mb-1">
-                  paraula
-                </h2>
-                
-                <div class="flex items-center gap-3">
-                  <span id="resIpa" class="text-sm sm:text-base font-mono text-amber-800 font-medium">
-                    [pəˈɾaw.lə]
-                  </span>
-                  
-                  <button id="resAudioBtn" onclick="playCurrentWordAudio()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-100/80 hover:bg-amber-200 text-amber-900 text-xs font-semibold transition-all active:scale-95">
-                    <svg id="audioIconSvg" class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-                    </svg>
-                    <span>Escoltar</span>
-                  </button>
-                </div>
-              </div>
+        <!-- Significat en Anglès -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-stone-400 mb-1">
+            Significat en Anglès:
+          </label>
+          <p id="dictResultMeaning" class="text-lg sm:text-xl font-bold text-red-900"></p>
+        </div>
 
-              <!-- Botó per Desar a Preferides -->
-              <button 
-                id="resBookmarkBtn" 
-                onclick="toggleBookmarkCurrentWord()" 
-                class="p-2.5 rounded-xl border border-stone-200 hover:border-amber-400 bg-white hover:bg-amber-50 text-stone-400 transition-all shadow-2xs"
-                title="Desar paraula"
-              >
-                <svg id="bookmarkStarIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                </svg>
-              </button>
-            </div>
-          </div>
+        <!-- Frases d'Exemple del Corpus -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
+            Exemples del Corpus:
+          </label>
+          <div id="dictResultExamplesContainer" class="space-y-2"></div>
+        </div>
 
-          <!-- Cos de la fitxa: Traducció & Frases d'exemple -->
-          <div class="p-4 sm:p-6 space-y-4">
-            
-            <!-- Significat en anglès -->
-            <div>
-              <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800/80 block mb-1">
-                Significat en anglès
-              </span>
-              <p id="resEnglish" class="text-base sm:text-lg text-stone-800 font-semibold leading-snug">
-                definition
-              </p>
-            </div>
-
-            <!-- Frases d'exemple en català -->
-            <div>
-              <div class="flex items-center justify-between mb-1.5">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800/80">
-                  Frases d'Exemple
-                </span>
-                <span id="resExampleCount" class="text-[10px] text-stone-400">1 exemple</span>
-              </div>
-              <div id="resExamplesList" class="space-y-2">
-                <!-- Inserides dinàmicament -->
-              </div>
-            </div>
-
-            <!-- Botons d'acció ràpida -->
-            <div class="pt-3 border-t border-stone-100 flex flex-wrap items-center justify-between gap-2">
-              <button 
-                onclick="sendCurrentWordToFlashcard()" 
-                class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition-all flex items-center gap-1.5"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-                <span>Practicar en Targeta</span>
-              </button>
-
-              <button 
-                onclick="copyWordDefinition()" 
-                id="copyResultBtn"
-                class="px-3 py-2 text-stone-600 hover:text-stone-900 border border-stone-200 hover:border-stone-300 rounded-xl text-xs font-medium transition-colors flex items-center gap-1"
-              >
-                <svg class="w-3.5 h-3.5 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-                <span>Copiar</span>
-              </button>
-            </div>
-          </div>
-        </article>
-
+        <!-- Fitxer de Procedència -->
+        <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-xs text-stone-400">
+          <span>Font(s) al servidor:</span>
+          <span id="dictResultSources" class="font-mono text-stone-600 font-medium"></span>
+        </div>
       </div>
-    </div>
+
+    </section>
 
     <!-- ========================================== -->
-    <!-- VISTA 2: TARGETES DE MEMÒRIA (Flashcards)   -->
+    <!-- VISTA 2: TARGETES DE MEMÒRIA (FLASHCARDS)  -->
     <!-- ========================================== -->
-    <div id="viewTargetes" class="hidden w-full flex flex-col flex-1">
-      
-      <!-- Barra superior de control de la baralla -->
-      <div class="flex flex-wrap items-center justify-between gap-2 mb-3 bg-white p-3 rounded-2xl border border-amber-200 shadow-2xs">
+    <section id="viewFlashcards" class="hidden space-y-6">
+
+      <!-- Barra de Filtre de Col·lecció i Botó de Barallar -->
+      <div class="bg-white rounded-3xl p-4 sm:p-5 border border-amber-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         
-        <!-- Selector d'origen de targetes -->
-        <div class="flex items-center gap-2">
-          <label for="flashcardDeckSelect" class="text-xs font-bold text-stone-600">Baralla:</label>
-          <select id="flashcardDeckSelect" onchange="handleFlashcardDeckChange()" class="text-xs sm:text-sm bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-stone-800 font-medium focus:outline-none focus:ring-2 focus:ring-red-400">
-            <option value="all">Tot el corpus</option>
-            <option value="saved">Només desades (⭐)</option>
+        <div class="flex items-center gap-3">
+          <label class="text-xs font-bold text-stone-500 uppercase tracking-wider whitespace-nowrap">Col·lecció:</label>
+          <select 
+            id="fcDeckFilter" 
+            onchange="handleDeckFilterChange()" 
+            class="w-full sm:w-auto text-xs sm:text-sm font-semibold px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400 text-stone-900"
+          >
+            <option value="all">Tot el Corpus</option>
+            <option value="saved">⭐ Desades al Quadern</option>
           </select>
         </div>
 
-        <!-- Estadístiques de progrés -->
-        <div class="flex items-center gap-3 text-xs sm:text-sm font-semibold">
-          <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200" title="Dominades">
-            ✓ <span id="flashcardMasteredCount">0</span>
-          </span>
-          <span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200" title="Per repassar">
-            ↻ <span id="flashcardReviewCount">0</span>
-          </span>
-          <span class="text-stone-500 font-mono text-xs">
-            <span id="flashcardIndexNumber">1</span>/<span id="flashcardTotalCount">0</span>
-          </span>
-          <button onclick="shuffleFlashcards()" title="Barallar targetes" class="p-1.5 text-stone-600 hover:text-stone-900 rounded-lg hover:bg-stone-100 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
+        <!-- Comptadors de Domini i Botó Barallar -->
+        <div class="flex items-center justify-between sm:justify-end gap-3 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
+              <span id="fcMasteredCount">0</span> Dominades
+            </span>
+            <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-bold">
+              <span id="fcReviewCount">0</span> Per Repassar
+            </span>
+          </div>
+          <button 
+            type="button" 
+            onclick="shuffleFlashcards()" 
+            class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold flex items-center gap-1 transition-colors border border-stone-200"
+            title="Barallar targetes"
+          >
+            <span>🔀</span>
+            <span>Barallar</span>
           </button>
         </div>
       </div>
 
-      <!-- Barra de progrés de la sessió de targetes -->
-      <div class="w-full bg-stone-200 rounded-full h-1.5 mb-4 overflow-hidden">
-        <div id="flashcardProgressBar" class="bg-gradient-to-r from-red-600 to-amber-500 h-1.5 rounded-full transition-all duration-300 w-0"></div>
+      <!-- Barra de Progrés de la Sessió -->
+      <div class="space-y-1">
+        <div class="flex items-center justify-between text-xs text-stone-500 font-medium px-1">
+          <span>Progrés de sessió:</span>
+          <span>
+            <strong id="fcCurrentIndex" class="text-stone-900 font-mono">1</strong> / 
+            <span id="fcTotalCount" class="font-mono">0</span>
+          </span>
+        </div>
+        <div class="w-full bg-stone-200/80 rounded-full h-2 overflow-hidden">
+          <div id="fcProgressBar" class="h-full bg-gradient-to-r from-red-600 via-amber-400 to-emerald-500 transition-all duration-300 w-0"></div>
+        </div>
       </div>
 
-      <!-- Contenidor de la Targeta 3D -->
-      <div class="flex-1 flex flex-col items-center justify-center min-h-[320px] sm:min-h-[380px] w-full max-w-xl mx-auto mb-4 perspective-1000">
-        
-        <div 
-          id="flashcardElement" 
-          onclick="flipFlashcard()" 
-          class="relative w-full h-80 sm:h-96 rounded-3xl shadow-md border-2 border-amber-300/80 cursor-pointer transform-style-3d transition-transform duration-500 select-none bg-white"
-        >
+      <!-- Targeta 3D Giratòria -->
+      <div class="perspective-1000 w-full max-w-xl mx-auto h-80 sm:h-96 select-none cursor-pointer" onclick="flipFlashcard()">
+        <div id="flashcardElement" class="relative w-full h-full transform-style-3d transition-transform duration-500 rounded-3xl shadow-xl border-2 border-amber-300">
           
-          <!-- CARA 1 (FRONT): Mot en Català + Àudio + Categoria -->
+          <!-- CARA 1 (FRONT): Mot en Català + Àudio -->
           <div class="absolute inset-0 w-full h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between backface-hidden bg-gradient-to-b from-white via-amber-50/20 to-orange-50/30">
             <div class="flex items-center justify-between text-xs">
-              <span id="fcFrontBadge" class="px-2.5 py-1 rounded-full bg-red-100 text-red-800 font-bold border border-red-200">
-                Català
-              </span>
+              <div class="flex items-center gap-1.5">
+                <span id="fcFrontBadge" class="px-2.5 py-1 rounded-full bg-red-100 text-red-800 font-bold border border-red-200">
+                  Català
+                </span>
+                <span id="fcPriorityBadge" class="hidden px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 font-extrabold border border-amber-300 text-[11px] flex items-center gap-1 shadow-2xs">
+                  ⭐ Prioritària
+                </span>
+              </div>
               <span class="text-stone-400 font-medium flex items-center gap-1">
                 <span>Toca per girar</span>
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -439,602 +391,523 @@
               </span>
             </div>
 
-            <!-- Centre del Front: Mot & Fonètica -->
-            <div class="text-center py-4 my-auto">
-              <h3 id="fcFrontWord" class="text-3xl sm:text-5xl font-extrabold text-stone-900 font-display tracking-tight mb-2">
-                carregant...
-              </h3>
-              <p id="fcFrontIpa" class="text-base sm:text-lg font-mono text-amber-800 font-medium">
-                [fonètica]
-              </p>
-              
-              <button 
-                onclick="event.stopPropagation(); playFlashcardWordAudio();" 
-                class="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-semibold shadow-2xs transition-all"
-              >
-                <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                </svg>
-                <span>Escoltar en català</span>
-              </button>
-            </div>
-
-            <!-- Peu del Front -->
-            <div class="flex items-center justify-between text-xs text-stone-400 pt-2 border-t border-amber-100">
-              <span id="fcFrontGrammar">substantiu</span>
-              <span id="fcFrontSource" class="truncate max-w-[150px]">corpus</span>
-            </div>
-          </div>
-
-          <!-- CARA 2 (BACK): Traducció a l'anglès + Frase d'exemple -->
-          <div class="absolute inset-0 w-full h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between backface-hidden rotate-y-180 bg-gradient-to-b from-stone-900 via-stone-900 to-stone-950 text-white shadow-xl">
-            <div class="flex items-center justify-between text-xs">
-              <span class="px-2.5 py-1 rounded-full bg-amber-400/20 text-amber-300 font-bold border border-amber-400/30">
-                Anglès & Context
-              </span>
-              <span class="text-stone-400 font-medium flex items-center gap-1">
-                <span>Toca per girar</span>
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                </svg>
-              </span>
-            </div>
-
-            <!-- Centre del Back: Traducció & Exemple -->
-            <div class="my-auto py-2">
-              <span class="text-[11px] font-bold uppercase tracking-wider text-amber-400 block mb-1">Significat</span>
-              <h4 id="fcBackTranslation" class="text-xl sm:text-2xl font-bold text-white mb-4 leading-snug">
-                meaning
-              </h4>
-
-              <div class="bg-stone-800/80 rounded-2xl p-3 sm:p-4 border border-stone-700/80">
-                <div class="flex items-center justify-between mb-1">
-                  <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">Exemple</span>
-                  <button onclick="event.stopPropagation(); playFlashcardSentenceAudio();" class="text-amber-400 hover:text-amber-300 text-[11px] font-semibold flex items-center gap-1">
-                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                    </svg>
-                    <span>Escoltar frase</span>
-                  </button>
-                </div>
-                <p id="fcBackExample" class="text-xs sm:text-sm text-stone-200 italic leading-relaxed">
-                  "Exemple en català..."
-                </p>
+            <!-- Centre del Front -->
+            <div class="text-center my-auto space-y-3">
+              <h2 id="fcFrontWord" class="text-3xl sm:text-5xl font-extrabold text-stone-950 font-display tracking-tight"></h2>
+              <div class="flex items-center justify-center gap-2">
+                <span id="fcFrontIpa" class="font-mono text-sm text-stone-500 bg-white/80 px-2.5 py-0.5 rounded-lg border border-amber-200"></span>
+                <button 
+                  type="button" 
+                  onclick="event.stopPropagation(); speakCurrentFlashcard();" 
+                  class="p-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 transition-colors border border-red-200"
+                  title="Reproduir àudio en català"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                  </svg>
+                </button>
               </div>
             </div>
 
-            <!-- Peu del Back: Acció de desar -->
-            <div class="flex items-center justify-between text-xs text-stone-400 pt-2 border-t border-stone-800">
-              <button onclick="event.stopPropagation(); toggleBookmarkCurrentFlashcard();" id="fcBookmarkBtn" class="hover:text-amber-400 flex items-center gap-1 transition-colors">
-                <svg id="fcStarIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                </svg>
-                <span id="fcBookmarkLabel">Desar al quadern</span>
-              </button>
-              <span class="text-stone-500 font-mono text-[11px]">Espai per girar</span>
+            <!-- Peu del Front -->
+            <div class="flex items-center justify-between text-xs text-stone-400 pt-2 border-t border-amber-100/80">
+              <span id="fcFrontGrammar" class="font-semibold text-amber-900"></span>
+              <span id="fcFrontSource" class="font-mono truncate max-w-[160px]"></span>
             </div>
           </div>
+
+          <!-- CARA 2 (BACK): Traducció en Anglès + Context Real -->
+          <div class="absolute inset-0 w-full h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between backface-hidden rotate-y-180 bg-gradient-to-b from-stone-900 via-stone-900 to-stone-950 text-white border-2 border-amber-400">
+            <div class="flex items-center justify-between text-xs">
+              <span class="px-2.5 py-1 rounded-full bg-amber-400/20 text-amber-300 font-bold border border-amber-400/40">
+                Significat & Exemple
+              </span>
+              <span class="text-stone-400 font-medium flex items-center gap-1">
+                <span>Girar al davant</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+              </span>
+            </div>
+
+            <!-- Centre del Back -->
+            <div class="my-auto space-y-4 text-center px-2">
+              <div>
+                <label class="text-[11px] font-bold text-amber-400 uppercase tracking-wider block mb-1">Traducció:</label>
+                <h3 id="fcBackTranslation" class="text-2xl sm:text-3xl font-extrabold text-amber-300 font-display"></h3>
+              </div>
+              <div class="bg-stone-800/80 p-3.5 rounded-2xl border border-stone-700">
+                <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-1">Context Real:</label>
+                <p id="fcBackExample" class="text-xs sm:text-sm text-stone-200 italic"></p>
+                <button 
+                  type="button" 
+                  onclick="event.stopPropagation(); speakCurrentFlashcardSentence();" 
+                  class="mt-2 text-xs font-bold text-amber-400 hover:text-amber-300 flex items-center justify-center gap-1 mx-auto"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                  </svg>
+                  <span>Escoltar Frase</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Peu del Back -->
+            <div class="text-center text-[11px] text-stone-400">
+              Utilitza <kbd class="bg-stone-800 px-1 py-0.5 rounded text-amber-300">Espai</kbd> o les fletxes <kbd class="bg-stone-800 px-1 py-0.5 rounded text-amber-300">←</kbd> <kbd class="bg-stone-800 px-1 py-0.5 rounded text-amber-300">→</kbd>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <!-- Botons d'avanç i qualificació (Repassar / Dominada) -->
-      <div class="w-full max-w-xl mx-auto flex items-center justify-between gap-2 pt-2">
-        <button 
-          onclick="prevFlashcard()" 
-          class="px-3.5 py-2.5 rounded-xl border border-stone-300 hover:border-stone-400 bg-white text-stone-700 font-semibold text-xs sm:text-sm shadow-2xs active:scale-95 transition-all flex items-center gap-1"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-          <span>Anterior</span>
-        </button>
-
-        <div class="flex items-center gap-2">
+      <!-- Botons de Navegació i Avaluació -->
+      <div class="max-w-xl mx-auto flex flex-col gap-3">
+        <!-- Navegació Anterior / Girar / Següent -->
+        <div class="grid grid-cols-3 gap-2">
           <button 
+            type="button" 
+            onclick="prevFlashcard()" 
+            class="py-3 px-4 bg-white hover:bg-stone-50 border border-stone-200 text-stone-800 font-bold rounded-2xl shadow-xs transition-transform active:scale-95 flex items-center justify-center gap-1 text-xs sm:text-sm"
+          >
+            <span>←</span>
+            <span>Anterior</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="flipFlashcard()" 
+            class="py-3 px-4 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-stone-950 font-extrabold rounded-2xl shadow-xs transition-transform active:scale-95 flex items-center justify-center gap-1 text-xs sm:text-sm"
+          >
+            <span>Girar</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="nextFlashcard()" 
+            class="py-3 px-4 bg-white hover:bg-stone-50 border border-stone-200 text-stone-800 font-bold rounded-2xl shadow-xs transition-transform active:scale-95 flex items-center justify-center gap-1 text-xs sm:text-sm"
+          >
+            <span>Següent</span>
+            <span>→</span>
+          </button>
+        </div>
+
+        <!-- Botons d'Estudi: Repassar vs Dominada -->
+        <div class="grid grid-cols-2 gap-2">
+          <button 
+            type="button" 
             onclick="markFlashcardStatus('review')" 
-            class="px-3 sm:px-4 py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-bold text-xs sm:text-sm active:scale-95 transition-all flex items-center gap-1.5"
-            title="Cal tornar a repassar aquesta paraula (Tecla 1)"
+            class="py-2.5 px-4 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-950 font-bold rounded-2xl transition-colors flex items-center justify-center gap-1.5 text-xs"
           >
-            <span>↻ Repassar</span>
+            <span>⏳</span>
+            <span>Marcar per Repassar (1)</span>
           </button>
-
           <button 
+            type="button" 
             onclick="markFlashcardStatus('mastered')" 
-            class="px-3 sm:px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold text-xs sm:text-sm shadow-xs active:scale-95 transition-all flex items-center gap-1.5"
-            title="Ja la sé perfectament! (Tecla 2)"
+            class="py-2.5 px-4 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-bold rounded-2xl transition-colors flex items-center justify-center gap-1.5 text-xs"
           >
-            <span>✓ Dominada</span>
+            <span>✅</span>
+            <span>Marcar Dominada (2)</span>
           </button>
         </div>
-
-        <button 
-          onclick="nextFlashcard()" 
-          class="px-3.5 py-2.5 rounded-xl border border-stone-300 hover:border-stone-400 bg-white text-stone-700 font-semibold text-xs sm:text-sm shadow-2xs active:scale-95 transition-all flex items-center gap-1"
-        >
-          <span>Següent</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
       </div>
 
-      <p class="text-center text-[11px] text-stone-400 mt-2">
-        Consell: Fes lliscar cap a l'esquerra/dreta en mòbil o usa les tecles <kbd class="bg-stone-200 px-1 py-0.5 rounded text-[10px]">Espai</kbd>, <kbd class="bg-stone-200 px-1 py-0.5 rounded text-[10px]">←</kbd>, <kbd class="bg-stone-200 px-1 py-0.5 rounded text-[10px]">→</kbd>
-      </p>
-    </div>
+    </section>
 
   </main>
 
   <!-- ========================================== -->
-  <!-- MODAL: ÍNDEX GENERAL DEL CORPUS            -->
+  <!-- MODAL PROMINENT: PROGRESSIÓ DE CÀRREGA     -->
   <!-- ========================================== -->
-  <div id="indexModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white w-full max-w-3xl max-h-[90vh] rounded-3xl shadow-2xl border border-amber-300 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+  <div id="corpusLoadingModal" class="fixed inset-0 z-50 bg-stone-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 transition-opacity duration-300">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border-2 border-amber-300 overflow-hidden transform transition-all">
+      <div class="h-2 w-full bandera-senyera"></div>
       
-      <!-- Capçalera del Modal -->
-      <div class="p-4 sm:p-5 border-b border-amber-200 bg-amber-50/70 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center font-bold text-sm">
-            Aa
+      <div class="p-5 sm:p-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-600 via-amber-500 to-red-700 text-white flex items-center justify-center shadow-md animate-pulse">
+              <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 id="modalLoadingTitle" class="text-base font-bold text-stone-900 font-display">
+                Sincronitzant el Corpus...
+              </h3>
+              <p class="text-xs text-stone-500">Cercant fitxers .txt a /corpus/</p>
+            </div>
           </div>
-          <div>
-            <h3 class="font-bold text-base sm:text-lg text-stone-900 font-display">
-              Índex de Paraules del Corpus
-            </h3>
-            <p class="text-xs text-stone-500" id="indexModalSubtitle">
-              Totes les entrades carregades des dels fitxers .txt
-            </p>
+          <span id="modalLoadingPercentBadge" class="text-xs font-black px-2.5 py-1 rounded-full bg-red-100 text-red-800 border border-red-200">
+            0%
+          </span>
+        </div>
+
+        <!-- Barra de progrés -->
+        <div class="w-full bg-stone-100 rounded-full h-3 overflow-hidden p-0.5 border border-amber-200 shadow-inner">
+          <div id="modalLoadingProgressBar" class="h-full bg-gradient-to-r from-red-600 via-amber-400 to-emerald-500 rounded-full transition-all duration-300 w-0"></div>
+        </div>
+
+        <!-- Estat i Mètriques -->
+        <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3 text-xs space-y-1.5">
+          <div class="flex items-center justify-between text-stone-700">
+            <span class="text-stone-500">Activitat:</span>
+            <span id="modalCurrentActionText" class="font-medium text-amber-950 truncate max-w-[220px]">Sondejant directori...</span>
+          </div>
+          <div class="flex items-center justify-between text-stone-700 pt-1 border-t border-amber-100">
+            <span>Fitxers detectats:</span>
+            <span id="modalFilesCount" class="font-bold text-stone-900 font-mono">0 fitxers</span>
+          </div>
+          <div class="flex items-center justify-between text-stone-700">
+            <span>Paraules processades:</span>
+            <span id="modalWordsCount" class="font-bold text-emerald-700 font-mono">0 paraules</span>
           </div>
         </div>
-        <button onclick="toggleIndexModal(false)" class="p-1.5 text-stone-400 hover:text-stone-700 rounded-xl hover:bg-white transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+
+        <!-- Fites de fitxers processats -->
+        <div>
+          <label class="block text-[11px] font-bold text-stone-600 uppercase tracking-wider mb-1.5">
+            Fitxers processats:
+          </label>
+          <div id="modalLoadedFilesChips" class="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto p-2 bg-stone-50 rounded-xl border border-stone-200/80">
+            <span class="text-xs text-stone-400 italic">Cercant fitxers...</span>
+          </div>
+        </div>
+
+        <!-- Formulari per afegir nom de fitxer manualment -->
+        <div class="pt-2 border-t border-stone-100 flex items-center gap-2">
+          <input 
+            type="text" 
+            id="modalCustomFilenameInput" 
+            placeholder="Ex: vocabulari.txt o batch_1.txt" 
+            class="flex-1 text-xs px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
+            onkeydown="if(event.key==='Enter') addCustomServerFile()"
+          />
+          <button 
+            type="button" 
+            onclick="addCustomServerFile()" 
+            class="px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-xl text-xs font-bold transition-colors whitespace-nowrap"
+          >
+            + Afegir
+          </button>
+          <button 
+            type="button" 
+            id="modalDismissBtn" 
+            onclick="closeCorpusLoadingModal()" 
+            class="px-3 py-2 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-bold transition-colors"
+          >
+            Tancar
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ÍNDEX COMPLET A - Z DEL CORPUS      -->
+  <!-- ========================================== -->
+  <div id="indexModal" class="hidden fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6">
+    <div class="bg-white w-full max-w-2xl max-h-[85vh] rounded-3xl shadow-2xl border border-amber-200 flex flex-col overflow-hidden">
+      
+      <div class="p-4 sm:p-5 border-b border-stone-100 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <h3 class="font-bold text-base sm:text-lg text-stone-900 font-display">Índex Lèxic del Corpus</h3>
+          <span id="indexModalTotalCount" class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold border border-amber-300">0</span>
+        </div>
+        <button type="button" onclick="closeIndexModal()" class="p-2 text-stone-400 hover:text-stone-700 rounded-xl">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
       </div>
 
-      <!-- Filtres i Cerca a l'Índex -->
-      <div class="p-3 sm:p-4 border-b border-stone-100 bg-white flex flex-col sm:flex-row gap-2 items-stretch sm:items-center justify-between">
-        <div class="relative flex-1">
-          <input 
-            type="text" 
-            id="indexFilterInput" 
-            placeholder="Filtrar mots per text..." 
-            oninput="renderIndexList()" 
-            class="w-full pl-8 pr-3 py-2 text-xs sm:text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
-          />
-          <svg class="w-4 h-4 text-stone-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
-
-        <!-- Filtre per Fitxer Origen -->
-        <select id="indexFileSelectFilter" onchange="renderIndexList()" class="text-xs bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-stone-700 font-medium focus:outline-none focus:ring-2 focus:ring-red-400">
+      <!-- Filtre a l'índex -->
+      <div class="p-3 sm:p-4 bg-stone-50 border-b border-stone-100 flex flex-col sm:flex-row gap-2">
+        <input 
+          type="text" 
+          id="indexSearchFilterInput" 
+          placeholder="Filtrar paraules a l'índex..." 
+          oninput="renderIndexWordList()"
+          class="flex-1 text-xs sm:text-sm px-3 py-2 bg-white border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
+        />
+        <select 
+          id="indexFileFilterSelect" 
+          onchange="renderIndexWordList()"
+          class="text-xs sm:text-sm px-3 py-2 bg-white border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
+        >
           <option value="all">Tots els fitxers</option>
         </select>
       </div>
 
-      <!-- Llista de Mots de l'Índex -->
-      <div class="flex-1 overflow-y-auto p-3 sm:p-4 divide-y divide-stone-100" id="indexWordsContainer">
-        <!-- Inserit dinàmicament -->
-      </div>
-
-      <!-- Peu del Modal -->
-      <div class="p-3 sm:p-4 border-t border-stone-100 bg-stone-50 flex items-center justify-between text-xs text-stone-500">
-        <span id="indexItemsCount">Mostrant 0 entrades</span>
-        <button onclick="toggleIndexModal(false)" class="px-4 py-2 bg-white border border-stone-300 hover:border-stone-400 text-stone-700 font-semibold rounded-xl">
-          Tancar
-        </button>
-      </div>
+      <!-- Llista de paraules -->
+      <div id="indexWordsList" class="flex-1 overflow-y-auto p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs"></div>
     </div>
   </div>
 
   <!-- ========================================== -->
-  <!-- MODAL: DIAGNÒSTIC I GESTIÓ DE FITXERS      -->
+  <!-- PANEL LATERAL: QUADERN DE PARAULES DESADES -->
   <!-- ========================================== -->
-  <div id="diagnosticModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white w-full max-w-2xl max-h-[90vh] rounded-3xl shadow-2xl border border-amber-300 flex flex-col overflow-hidden">
+  <div id="savedWordsDrawer" class="hidden fixed inset-0 z-50 bg-stone-950/40 backdrop-blur-xs flex justify-end">
+    <div class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col border-l border-amber-200">
       
-      <div class="p-4 sm:p-5 border-b border-amber-200 bg-amber-50/70 flex items-center justify-between">
+      <div class="p-4 sm:p-5 border-b border-stone-100 flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-sm">
-            ⚙
-          </div>
-          <div>
-            <h3 class="font-bold text-base sm:text-lg text-stone-900 font-display">
-              Diagnòstic del Servidor i Fitxers
-            </h3>
-            <p class="text-xs text-stone-500">Estat de càrrega des de /corpus/</p>
-          </div>
+          <span class="text-lg">⭐</span>
+          <h3 class="font-bold text-base text-stone-900 font-display">Paraules Desades</h3>
+          <span id="savedDrawerCountBadge" class="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-800 font-bold border border-red-200">0</span>
         </div>
-        <button onclick="toggleDiagnosticModal(false)" class="p-1.5 text-stone-400 hover:text-stone-700 rounded-xl hover:bg-white transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+        <button type="button" onclick="toggleSavedDrawer()" class="p-2 text-stone-400 hover:text-stone-700 rounded-xl">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
       </div>
 
-      <div class="p-4 sm:p-6 overflow-y-auto space-y-4 text-xs sm:text-sm">
-        
-        <!-- Registre de diagnòstic -->
-        <div>
-          <h4 class="font-bold text-stone-800 mb-1">Registre d'activitat en viu:</h4>
-          <div id="diagnosticLogBox" class="bg-stone-950 text-emerald-400 font-mono text-[11px] p-3 rounded-xl max-h-40 overflow-y-auto space-y-1 select-text">
-            <div>[inici] Sistema de lectura de corpus preparat.</div>
-          </div>
-        </div>
-
-        <!-- Fitxers actualment carregats -->
-        <div>
-          <h4 class="font-bold text-stone-800 mb-1">Fitxers processats amb èxit:</h4>
-          <div id="loadedFilesSummaryList" class="bg-stone-50 border border-stone-200 rounded-xl p-3 text-xs text-stone-700 space-y-1">
-            <span class="text-stone-400 italic">Cap fitxer carregat encara.</span>
-          </div>
-        </div>
-
-        <!-- Accions manuals per carregar fitxers si el servidor té directori restringit -->
-        <div class="bg-amber-50/80 border border-amber-200 rounded-2xl p-4">
-          <h4 class="font-bold text-amber-950 mb-1 flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-            </svg>
-            <span>Alternativa: Càrrega directa des del dispositiu</span>
-          </h4>
-          <p class="text-xs text-amber-900/80 mb-3">
-            Si el teu servidor bloqueja el llistat automàtic de carpetes (Error 403 Forbidden), pots seleccionar la carpeta o els fitxers .txt directament:
-          </p>
-          
-          <div class="flex flex-wrap gap-2">
-            <!-- Botó per afegir fitxers .txt -->
-            <label class="px-3 py-2 bg-white border border-amber-300 hover:border-amber-400 text-stone-800 rounded-xl font-semibold text-xs cursor-pointer shadow-2xs transition-all flex items-center gap-1.5">
-              <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <span>Seleccionar fitxers .txt</span>
-              <input type="file" id="localFilesPickerInput" multiple accept=".txt,.tsv,.csv" onchange="handleLocalFilesSelect(event)" class="hidden">
-            </label>
-
-            <!-- Botó per carregar la carpeta /corpus/ sencera -->
-            <label class="px-3 py-2 bg-white border border-amber-300 hover:border-amber-400 text-stone-800 rounded-xl font-semibold text-xs cursor-pointer shadow-2xs transition-all flex items-center gap-1.5">
-              <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-              </svg>
-              <span>Carregar carpeta sencera</span>
-              <input type="file" id="localFolderPickerInput" webkitdirectory directory onchange="handleLocalFolderSelect(event)" class="hidden">
-            </label>
-
-            <!-- Recarregar des de /corpus/ -->
-            <button onclick="scanAndLoadCorpusDirectory()" class="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-semibold text-xs shadow-xs transition-all flex items-center gap-1.5">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              <span>Reescanejar /corpus/</span>
-            </button>
-          </div>
-        </div>
+      <div class="p-3 bg-amber-50 border-b border-amber-100 text-xs text-amber-950 flex items-center justify-between">
+        <span>Les paraules desades es prioritzen a les Targetes.</span>
+        <button type="button" onclick="clearAllSavedWords()" class="text-red-700 font-bold hover:underline">Buidar</button>
       </div>
 
-      <div class="p-3 sm:p-4 border-t border-stone-100 bg-stone-50 flex justify-end">
-        <button onclick="toggleDiagnosticModal(false)" class="px-4 py-2 bg-white border border-stone-300 hover:border-stone-400 text-stone-700 font-semibold rounded-xl text-xs">
-          Tancar
-        </button>
-      </div>
+      <div id="savedWordsListContainer" class="flex-1 overflow-y-auto p-4 divide-y divide-stone-100"></div>
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- DRAWER LATERAL: PARAULES DESADES (⭐)       -->
-  <!-- ========================================== -->
-  <div id="savedDrawer" class="hidden fixed inset-0 z-50 overflow-hidden">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity" onclick="toggleSavedDrawer(false)"></div>
-    <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
-      <div class="w-screen max-w-md bg-white shadow-2xl border-l border-amber-200 flex flex-col">
-        
-        <div class="p-4 sm:p-5 border-b border-amber-200 bg-amber-50 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <svg class="w-5 h-5 text-amber-500 fill-amber-500" viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-            </svg>
-            <h3 class="font-bold text-stone-900 text-base font-display">Paraules Desades</h3>
-            <span id="savedDrawerCount" class="text-xs bg-amber-200 text-amber-950 font-bold px-2 py-0.5 rounded-full">0</span>
-          </div>
-          <button onclick="toggleSavedDrawer(false)" class="p-1.5 text-stone-400 hover:text-stone-700 rounded-xl hover:bg-white transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <div class="p-3 bg-amber-50/50 border-b border-amber-100 flex items-center justify-between text-xs">
-          <button onclick="startFlashcardsWithSavedOnly()" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold flex items-center gap-1 shadow-2xs">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-            </svg>
-            <span>Estudiar en Targetes</span>
-          </button>
-          
-          <button onclick="clearAllSavedWords()" class="text-stone-500 hover:text-red-700 underline">
-            Buidar llista
-          </button>
-        </div>
-
-        <div id="savedWordsListContainer" class="flex-1 overflow-y-auto p-4 divide-y divide-stone-100">
-          <!-- Inserit dinàmicament -->
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- Contenidor de Missatges Toast -->
+  <!-- Contenidor de Notificacions Toast -->
   <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <script>
     /* ==========================================================
-       ESTAT GLOBAL I CORPUS DE DADES
+       ESTAT GLOBAL DE L'APLICACIÓ (CATALÀ)
        ========================================================== */
-    
-    // Rutes candidates per al directori /corpus/
+    const State = {
+      corpus: [],            // Llista d'entrades [{ word, meaningEn, examples: [], sourceFiles: [], ipa, grammar }]
+      corpusMap: new Map(),  // Mapa per cerca O(1) normalitzada
+      loadedFiles: [],       // Fitxers carregats [{ name, count }]
+      savedWords: new Set(), // Paraules destacades al quadern
+      fcMastered: new Set(), // Paraules dominades a flashcards
+      fcReview: new Set(),   // Paraules marcades per repassar
+      fcDeck: [],            // Mazo actual en estudi
+      fcIndex: 0,            // Índex de la targeta actual
+      fcIsFlipped: false,    // Estat de gir de la targeta
+      activeView: 'dictionary', // 'dictionary' | 'flashcards'
+      currentDictEntry: null    // Paraula activa al diccionari
+    };
+
+    /* Rutes candidates per al directori corpus */
     const CORPUS_PATHS = ['corpus/', './corpus/', '/corpus/'];
 
-    // Llista de sondeig habitual de fitxers si no hi ha autoindex
-    const COMMON_CORPUS_PROBE_FILES = [
-      'example.txt', 'ciència.txt', 'ciencia.txt', 'tecnologia.txt',
-      'vocabulari.txt', 'vocab.txt', 'paraules.txt', 'corpus.txt',
-      'batch_1.txt', 'batch_2.txt', 'batch_3.txt',
-      'Spanish_B2_Corpus_Science_Tech_Batch_12.txt',
-      'cat_words.txt', 'corpus_catala.txt', 'vocab1.txt', 'vocab2.txt'
-    ];
+    /* Corpus inicial de seguretat en català */
+    const SEED_CORPUS_RAW = `el programari	software	Cal actualitzar el programari de gestió interna.
+l'algorisme	algorithm	L'algorisme processa milions de dades per segon.
+l'aliatge	alloy	Aquesta peça està feta d'un aliatge d'acer i titani.
+l'alteració	alteration / mutation	Es va detectar una alteració genètica a les cèl·lules.
+l'anàlisi	analysis	Els resultats de l'anàlisi es publicaran aviat.
+la bateria	battery	La bateria del vehicle elèctric dura hores.
+el desenvolupament	development	El desenvolupament d'aquest projecte ha trigat sis mesos.
+el dispositiu	device	Pots connectar el teu telèfon amb aquest dispositiu.
+l'energia renovable	renewable energy	L'energia renovable és fonamental per al futur del planeta.
+el microscopi	microscope	Van examinar la mostra amb un microscopi d'alta precisió.`;
 
-    // Corpus inicial de reserva autèntic en català per si el servidor no té fitxers
-    const SEED_CORPUS_RAW = `el programari\tsoftware\tHem d'actualitzar el programari de gestió interna.
-l'algorisme\talgorithm\tL'algorisme d'intel·ligència artificial aprèn de forma contínua.
-la base de dades\tdatabase\nTota la informació dels clients està encriptada a la base de dades.
-la cèl·lula\tcell\nLa cèl·lula és la unitat fonamental de tots els éssers vius.
-la xarxa\tnetwork\nLa connexió a la xarxa corporativa és ràpida i fiable.
-el navegador\tbrowser\nFes servir un navegador modern per gaudir de totes les funcions.
-la teulada\troof\nVan col·locar plaques solars sobre la teulada de l'edifici.
-l'aprenentatge\tlearning\nL'aprenentatge d'una nova llengua obre portes professionals.
-el dispositiu\tdevice\nPots sincronitzar el teu dispositiu mòbil amb el portàtil.
-la petjada de carboni\tcarbon footprint\nReduir la petjada de carboni és un objectiu clau per a la sostenibilitat.
-la recerca\tresearch\nL'equip de recerca va publicar una troballa mèdica pionera.
-l'enllaç\tlink\nClica sobre l'enllaç per confirmar la teva adreça electrònica.
-la contrasenya\tpassword\nÉs convenient utilitzar una contrasenya segura i única.
-l'emmagatzematge\tstorage\nEl servei ofereix emmagatzematge segur al núvol.
-la pantalla\tscreen\nPassar massa hores davant la pantalla pot cansar la vista.`;
-
-    let CURRENT_CORPUS = [];          // Llista ordenada d'objectes paraula
-    let CORPUS_MAP = new Map();       // Cerca ràpida per lema en minúscules
-    let LOADED_FILES = [];            // Fitxers .txt carregats
-    let SAVED_WORDS = new Set();      // Paraules desades (localStorage)
-    
-    // Estat de les Targetes (Flashcards)
-    let FLASHCARD_DECK = [];
-    let CURRENT_FC_INDEX = 0;
-    let FC_IS_FLIPPED = false;
-    let FC_MASTERED = new Set();
-    let FC_REVIEW = new Set();
-    let CURRENT_WORD_ENTRY = null;
-
-    // Inicialització d'emmagatzematge local
-    function loadStoredPreferences() {
-      try {
-        const stored = localStorage.getItem('cat_vocab_saved');
-        if (stored) {
-          const arr = JSON.parse(stored);
-          SAVED_WORDS = new Set(arr);
-        }
-        const masteredStored = localStorage.getItem('cat_vocab_mastered');
-        if (masteredStored) FC_MASTERED = new Set(JSON.parse(masteredStored));
-
-        const reviewStored = localStorage.getItem('cat_vocab_review');
-        if (reviewStored) FC_REVIEW = new Set(JSON.parse(reviewStored));
-      } catch (e) {
-        console.error("Error carregant localStorage:", e);
-      }
-      updateSavedBadge();
+    /* Normalització de caràcters i articles en català */
+    function normalizeCatalan(text) {
+      if (!text) return '';
+      return text.toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Treure accents i diacrítics
+        .replace(/^(l'|d'|s')/, '')       // Treure apòstrofs inicials (l'arbre -> arbre)
+        .replace(/^(el|la|els|les|un|una|uns|unes)\s+/, '') // Treure articles
+        .trim();
     }
 
-    function saveSavedWordsToStorage() {
-      try {
-        localStorage.setItem('cat_vocab_saved', JSON.stringify(Array.from(SAVED_WORDS)));
-      } catch (e) {}
-      updateSavedBadge();
-    }
-
-    function saveFlashcardProgress() {
-      try {
-        localStorage.setItem('cat_vocab_mastered', JSON.stringify(Array.from(FC_MASTERED)));
-        localStorage.setItem('cat_vocab_review', JSON.stringify(Array.from(FC_REVIEW)));
-      } catch (e) {}
-    }
-
-    // Normalitzador de paraules per a cerques (elimina articles inicials: el, la, l', els, les, un, una...)
-    function cleanCatalanStem(rawWord) {
-      if (!rawWord) return '';
-      let w = rawWord.trim().toLowerCase();
-      // Elimina apòstrofs inicials de l'article (l', d', s')
-      w = w.replace(/^[lds]['’]/i, '');
-      // Elimina articles definits i indefinits inicials
-      w = w.replace(/^(el|la|els|les|un|una|uns|unes)\s+/i, '');
-      return w.trim();
-    }
-
-    // Normalització sense accents per permetre cerques tolerants
-    function stripAccents(str) {
-      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    }
-
-    // Deductor de categoria gramatical per a mots catalans
-    function deduceGrammarCategory(rawWord) {
-      const lower = rawWord.toLowerCase().trim();
-      if (lower.startsWith('el ') || lower.startsWith('un ')) return 'substantiu masculí';
-      if (lower.startsWith('la ') || lower.startsWith('una ')) return 'substantiu femení';
-      if (lower.startsWith("l'") || lower.startsWith("l’")) return 'substantiu';
-      if (lower.endsWith('ar') || lower.endsWith('er') || lower.endsWith('ir') || lower.endsWith('re')) return 'verb';
-      if (lower.endsWith('ment')) return 'adverbi';
-      if (lower.endsWith('ós') || lower.endsWith('osa') || lower.endsWith('able') || lower.endsWith('ible')) return 'adjectiu';
-      return 'substantiu';
-    }
-
-    // Generador de transcripció fonètica IPA adaptat al català
+    /* Generador fonètic IPA adaptat al català */
     function generateCatalanIPA(word) {
       if (!word) return '';
-      let text = cleanCatalanStem(word);
-      let ipa = text
+      let clean = word.toLowerCase().trim();
+      clean = clean.replace(/^(el|la|els|les|l'|d')\s*/, '');
+      let ipa = clean
         .replace(/l·l/g, 'lː')
         .replace(/ll/g, 'ʎ')
         .replace(/ny/g, 'ɲ')
-        .replace(/tx/g, 't͡ʃ')
-        .replace(/tg|tj/g, 'd͡ʒ')
-        .replace(/tz/g, 'd͡z')
+        .replace(/tx/g, 'tʃ')
+        .replace(/tg([eiéí])/g, 'dʒ$1')
+        .replace(/tj/g, 'dʒ')
+        .replace(/tz/g, 'dz')
+        .replace(/qu([eiéí])/g, 'k$1')
+        .replace(/gu([eiéí])/g, 'ɡ$1')
         .replace(/ç/g, 's')
-        .replace(/qu([ei])/g, 'k$1')
-        .replace(/gu([ei])/g, 'ɡ$1')
-        .replace(/ig$/g, 'it͡ʃ')
-        .replace(/ix/g, 'iʃ')
-        .replace(/x/g, 'ʃ')
-        .replace(/z/g, 'z')
-        .replace(/r$/g, 'ɾ')
-        .replace(/rr/g, 'r');
-
+        .replace(/rr/g, 'r')
+        .replace(/r/g, 'ɾ');
       return `[${ipa}]`;
     }
 
-    function parseCorpusLines(rawText, sourceFileName = 'desconegut.txt') {
+    /* Inferència de categoria gramatical en català */
+    function guessGrammar(word) {
+      const clean = word.toLowerCase().trim();
+      if (clean.startsWith('el ') || clean.startsWith("l'")) return 'substantiu masc.';
+      if (clean.startsWith('la ')) return 'substantiu fem.';
+      if (clean.endsWith('ar') || clean.endsWith('er') || clean.endsWith('re') || clean.endsWith('ir')) return 'verb';
+      if (clean.endsWith('ble') || clean.endsWith('al') || clean.endsWith('ic') || clean.endsWith('ica')) return 'adjectiu';
+      return 'substantiu';
+    }
+
+    function loadPersistedData() {
+      try {
+        const saved = localStorage.getItem('cat_saved_words');
+        if (saved) State.savedWords = new Set(JSON.parse(saved));
+        const mastered = localStorage.getItem('cat_fc_mastered');
+        if (mastered) State.fcMastered = new Set(JSON.parse(mastered));
+        const review = localStorage.getItem('cat_fc_review');
+        if (review) State.fcReview = new Set(JSON.parse(review));
+      } catch (e) {
+        console.warn("Emmagatzematge no accessible:", e);
+      }
+      updateSavedBadge();
+    }
+
+    function persistSavedWords() {
+      try {
+        localStorage.setItem('cat_saved_words', JSON.stringify(Array.from(State.savedWords)));
+      } catch (e) {}
+      updateSavedBadge();
+    }
+
+    function showToast(message, icon = 'ℹ️') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'px-4 py-2.5 rounded-2xl bg-stone-900/90 text-white text-xs font-semibold shadow-xl flex items-center gap-2 border border-stone-700 animate-in fade-in slide-in-from-bottom-2 duration-200';
+      toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    }
+
+    /* Síntesi de Veu Web Speech API en Català (ca-ES) */
+    function speakCatalan(text) {
+      if (!('speechSynthesis' in window) || !text) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ca-ES';
+      utterance.rate = 0.92;
+      const voices = window.speechSynthesis.getVoices();
+      const caVoice = voices.find(v => v.lang === 'ca-ES' || v.lang === 'ca_ES') || voices.find(v => v.lang.startsWith('ca'));
+      if (caVoice) utterance.voice = caVoice;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function parseCorpusLines(rawText, sourceFileName) {
       if (!rawText) return [];
-      
-      // Elimina el Byte Order Mark (BOM) típic d'arxius UTF-8 de Windows
-      const cleanText = rawText.replace(/^\uFEFF/, '');
-      const lines = cleanText.split(/\r?\n/);
-      const parsedEntries = [];
+      const lines = rawText.replace(/^\uFEFF/, '').split(/\r?\n/);
+      const results = [];
 
       for (let line of lines) {
         line = line.trim();
-        // Ignora línies buides, comentaris i capçaleres
-        if (!line || line.startsWith('#') || line.startsWith('//') || line.startsWith('===') || line.toLowerCase().startsWith('format:')) {
+        if (!line || line.startsWith('#') || line.startsWith('Format:') || line.startsWith('===') || line.startsWith('---')) {
           continue;
         }
 
-        let word = '';
-        let meaningEn = '';
-        let example = '';
-
-        // Prova amb diversos delimitadors comuns
+        let parts = [];
         if (line.includes('\t')) {
-          const parts = line.split('\t');
-          word = parts[0]?.trim() || '';
-          meaningEn = parts[1]?.trim() || '';
-          example = parts.slice(2).join(' ').trim();
+          parts = line.split('\t');
         } else if (line.includes(' | ')) {
-          const parts = line.split(' | ');
-          word = parts[0]?.trim() || '';
-          meaningEn = parts[1]?.trim() || '';
-          example = parts.slice(2).join(' ').trim();
+          parts = line.split(' | ');
         } else if (line.includes(' - ')) {
-          const parts = line.split(' - ');
-          word = parts[0]?.trim() || '';
-          meaningEn = parts[1]?.trim() || '';
-          example = parts.slice(2).join(' ').trim();
+          parts = line.split(' - ');
         } else if (line.includes(';')) {
-          const parts = line.split(';');
-          word = parts[0]?.trim() || '';
-          meaningEn = parts[1]?.trim() || '';
-          example = parts.slice(2).join(' ').trim();
+          parts = line.split(';');
         }
 
-        if (word && meaningEn) {
-          const stem = cleanCatalanStem(word);
-          const grammar = deduceGrammarCategory(word);
-          const ipa = generateCatalanIPA(word);
-
-          parsedEntries.push({
-            word: stem,
-            fullTitle: word,
-            meaningEn: meaningEn,
-            grammar: grammar,
-            ipa: ipa,
-            examples: example ? [example] : [],
-            sourceFiles: [sourceFileName]
-          });
+        if (parts.length >= 2) {
+          const word = parts[0].trim().replace(/^["']|["']$/g, '');
+          const meaningEn = parts[1].trim().replace(/^["']|["']$/g, '');
+          const example = parts[2] ? parts[2].trim().replace(/^["']|["']$/g, '') : '';
+          
+          if (word && meaningEn) {
+            results.push({
+              word,
+              meaningEn,
+              examples: example ? [example] : [],
+              sourceFiles: [sourceFileName],
+              ipa: generateCatalanIPA(word),
+              grammar: guessGrammar(word)
+            });
+          }
         }
       }
-
-      return parsedEntries;
-    }
-
-    function addDiagnosticLog(message, type = 'info') {
-      const box = document.getElementById('diagnosticLogBox');
-      if (!box) return;
-      const time = new Date().toLocaleTimeString();
-      const div = document.createElement('div');
-      div.className = type === 'error' ? 'text-red-400' : type === 'warn' ? 'text-amber-400' : type === 'success' ? 'text-emerald-300' : 'text-stone-300';
-      div.innerHTML = `<span class="text-stone-500">[${time}]</span> ${message}`;
-      box.appendChild(div);
-      box.scrollTop = box.scrollHeight;
+      return results;
     }
 
     async function discoverFilesFromDirectory() {
-      let discovered = new Set();
-      addDiagnosticLog("Iniciant escaneig del directori /corpus/...");
+      const discovered = new Set();
 
-      // 1. Prova de fitxers de manifest JSON o llistes de text
-      const manifestCandidates = ['files.json', 'corpus.json', 'list.txt', 'files.txt'];
+      // 1. Cercar manifestos estructurats (JSON i text)
+      const manifests = ['files.json', 'corpus.json', 'manifest.json', 'list.txt', 'files.txt'];
       for (const basePath of CORPUS_PATHS) {
-        for (const man of manifestCandidates) {
+        for (const man of manifests) {
           try {
-            const url = `${basePath.endsWith('/') ? basePath : basePath + '/'}${man}`;
-            const res = await fetch(url, { cache: 'no-cache' });
+            const res = await fetch(`${basePath}${man}`, { cache: 'no-cache' });
             if (res.ok) {
               if (man.endsWith('.json')) {
                 const list = await res.json();
                 if (Array.isArray(list)) {
-                  list.forEach(f => { if (typeof f === 'string' && f.endsWith('.txt')) discovered.add(f); });
-                  addDiagnosticLog(`Manifest JSON trobat: ${man} amb ${discovered.size} fitxers`, 'success');
+                  list.forEach(item => {
+                    const fn = typeof item === 'string' ? item : (item.name || item.file);
+                    if (fn && fn.endsWith('.txt')) discovered.add(fn);
+                  });
                 }
               } else {
-                const text = await res.text();
-                text.split(/\r?\n/).forEach(f => {
+                const txt = await res.text();
+                txt.split(/\r?\n/).forEach(f => {
                   const tr = f.trim();
                   if (tr && tr.endsWith('.txt')) discovered.add(tr);
                 });
-                addDiagnosticLog(`Manifest de text trobat: ${man}`, 'success');
               }
             }
           } catch (e) {}
         }
       }
 
-      // 2. Prova d'inspeccionar l'HTML del directori (Apache mod_autoindex, Nginx, Python)
+      // 2. Inspeccionar directori del servidor (Apache/Nginx/Python autoindex)
       for (const basePath of CORPUS_PATHS) {
         try {
           const res = await fetch(basePath, { cache: 'no-cache' });
           if (res.ok) {
             const html = await res.text();
-            // Extreu enllaços a fitxers .txt
-            const linkRegex = /href=["']([^"']+\.txt)["']/gi;
+            const regex = /href=["']?([^"' >\n\r\t]+\.txt)(?:[?#][^"' >\n\r\t]*)?["']?/gi;
             let match;
-            while ((match = linkRegex.exec(html)) !== null) {
-              let filename = match[1];
-              if (filename.includes('/')) filename = filename.split('/').pop();
-              try { filename = decodeURIComponent(filename); } catch (e) {}
-              discovered.add(filename);
-            }
-            if (discovered.size > 0) {
-              addDiagnosticLog(`Llistat de carpetes del servidor detectat a ${basePath} (${discovered.size} fitxers)`, 'success');
-              break;
+            while ((match = regex.exec(html)) !== null) {
+              let fn = match[1];
+              if (fn.includes('/')) fn = fn.split('/').pop();
+              try { fn = decodeURIComponent(fn); } catch (e) {}
+              if (fn && fn.toLowerCase().endsWith('.txt')) discovered.add(fn);
             }
           }
         } catch (e) {}
       }
 
-      // 3. Prova amb la llista de sondeig habitual
-      for (const probe of COMMON_CORPUS_PROBE_FILES) {
+      // 3. Prospecció de noms habituals en català i llistats per lots
+      const probeList = [
+        'example.txt', 'exemple.txt', 'ciencia.txt', 'ciència.txt', 'tecnologia.txt',
+        'vocabulari.txt', 'vocab.txt', 'paraules.txt', 'corpus.txt',
+        'Catalan_Corpus_Batch_1.txt'
+      ];
+      for (let i = 1; i <= 25; i++) {
+        probeList.push(`batch_${i}.txt`);
+        probeList.push(`vocab_${i}.txt`);
+        probeList.push(`Catalan_Corpus_Batch_${i}.txt`);
+      }
+
+      // Fitxers personals desats per l'usuari
+      try {
+        const custom = JSON.parse(localStorage.getItem('cat_custom_files') || '[]');
+        custom.forEach(f => probeList.push(f));
+      } catch (e) {}
+
+      for (const probe of probeList) {
         if (!discovered.has(probe)) {
           for (const basePath of CORPUS_PATHS) {
             try {
-              const url = `${basePath.endsWith('/') ? basePath : basePath + '/'}${probe}`;
-              const res = await fetch(url, { method: 'HEAD', cache: 'no-cache' });
+              const res = await fetch(`${basePath}${probe}`, { method: 'HEAD', cache: 'no-cache' });
               if (res.ok) {
                 discovered.add(probe);
                 break;
@@ -1047,1016 +920,682 @@ la pantalla\tscreen\nPassar massa hores davant la pantalla pot cansar la vista.`
       return Array.from(discovered);
     }
 
-    function setCorpusProgress(percent, label = null) {
+    function setCorpusProgress(percent, actionText = null, wordCount = null) {
+      const pct = Math.min(Math.max(percent, 0), 100);
+
       const track = document.getElementById('corpusProgressBarTrack');
       const bar = document.getElementById('corpusProgressBar');
-      const subtitle = document.getElementById('headerCorpusSubtitle');
       if (track && bar) {
         track.classList.remove('opacity-0');
-        track.classList.add('opacity-100');
-        bar.style.width = `${Math.min(Math.max(percent, 0), 100)}%`;
+        bar.style.width = `${pct}%`;
       }
-      if (label && subtitle) {
-        subtitle.innerText = label;
+
+      const modalBar = document.getElementById('modalLoadingProgressBar');
+      const modalPct = document.getElementById('modalLoadingPercentBadge');
+      const modalAction = document.getElementById('modalCurrentActionText');
+      const modalFiles = document.getElementById('modalFilesCount');
+      const modalWords = document.getElementById('modalWordsCount');
+      const modalBadge = document.getElementById('modalLoadedFilesChips');
+
+      if (modalBar) modalBar.style.width = `${pct}%`;
+      if (modalPct) modalPct.innerText = `${Math.round(pct)}%`;
+      if (modalAction && actionText) modalAction.innerText = actionText;
+      if (modalFiles) modalFiles.innerText = `${State.loadedFiles.length} fitxer(s)`;
+      if (modalWords && wordCount !== null) modalWords.innerText = `${wordCount} paraules`;
+
+      if (modalBadge && State.loadedFiles.length > 0) {
+        modalBadge.innerHTML = State.loadedFiles.map(f => `
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 font-mono text-[10px] font-bold border border-emerald-300">
+            <span>✓</span>
+            <span class="truncate max-w-[120px]">${f.name}</span>
+            <span class="text-emerald-700 bg-emerald-200/60 px-1 rounded">${f.count}</span>
+          </span>
+        `).join('');
       }
     }
 
-    function hideCorpusProgress() {
+    function openCorpusLoadingModal() {
+      const modal = document.getElementById('corpusLoadingModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeCorpusLoadingModal() {
+      const modal = document.getElementById('corpusLoadingModal');
+      if (modal) modal.classList.add('hidden');
       const track = document.getElementById('corpusProgressBarTrack');
-      const bar = document.getElementById('corpusProgressBar');
-      if (bar) bar.style.width = '100%';
-      setTimeout(() => {
-        if (track) {
-          track.classList.remove('opacity-100');
-          track.classList.add('opacity-0');
-        }
-        setTimeout(() => {
-          if (bar) bar.style.width = '0%';
-        }, 300);
-      }, 400);
+      if (track) track.classList.add('opacity-0');
     }
 
-    async function scanAndLoadCorpusDirectory() {
-      const subtitle = document.getElementById('headerCorpusSubtitle');
-      const serverDot = document.getElementById('serverPulseDot');
-      if (subtitle) subtitle.innerText = 'Escanejant fitxers a /corpus/...';
-      if (serverDot) serverDot.className = 'w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse';
+    async function scanAndLoadCorpus() {
+      openCorpusLoadingModal();
+      setCorpusProgress(15, 'Sondejant directori /corpus/...', 0);
 
-      setCorpusProgress(15, 'Sondejant /corpus/...');
+      const files = await discoverFilesFromDirectory();
+      setCorpusProgress(30, `Processant ${files.length} fitxer(s)...`, 0);
 
-      const fileList = await discoverFilesFromDirectory();
-      addDiagnosticLog(`Fitxers .txt detectats: ${fileList.length} [${fileList.join(', ')}]`, fileList.length ? 'success' : 'warn');
+      let allEntries = [];
+      const successfulFiles = [];
+      const totalFiles = Math.max(files.length, 1);
 
-      setCorpusProgress(30, `Processant ${fileList.length} fitxer(s)...`);
+      for (let i = 0; i < files.length; i++) {
+        const filename = files[i];
+        const pct = 30 + Math.round(((i + 1) / totalFiles) * 60);
+        setCorpusProgress(pct, `Carregant: ${filename}`, allEntries.length);
 
-      let successfulFiles = [];
-      let combinedEntries = [];
-      const totalToLoad = Math.max(fileList.length, 1);
-
-      for (let i = 0; i < fileList.length; i++) {
-        const filename = fileList[i];
-        setCorpusProgress(30 + Math.round(((i) / totalToLoad) * 55), `Llegint (${i + 1}/${totalToLoad}): ${filename}`);
-        let loadedText = null;
+        let content = null;
         for (const basePath of CORPUS_PATHS) {
           try {
-            const cleanUrl = encodeURI(`${basePath.endsWith('/') ? basePath : basePath + '/'}${filename}`);
-            const res = await fetch(cleanUrl, { cache: 'no-cache' });
+            const res = await fetch(`${basePath}${filename}`, { cache: 'no-cache' });
             if (res.ok) {
               const text = await res.text();
-              if (text && !text.trim().startsWith('<!DOCTYPE') && !text.trim().startsWith('<html')) {
-                loadedText = text;
+              if (text && !text.trim().startsWith('<!DOCTYPE')) {
+                content = text;
                 break;
               }
             }
-          } catch (err) {}
+          } catch (e) {}
         }
 
-        if (loadedText) {
-          const items = parseCorpusLines(loadedText, filename);
-          if (items.length > 0) {
-            successfulFiles.push({ name: filename, count: items.length });
-            combinedEntries = combinedEntries.concat(items);
-            addDiagnosticLog(`✓ ${filename}: ${items.length} mots processats`, 'success');
+        if (content) {
+          const parsed = parseCorpusLines(content, filename);
+          if (parsed.length > 0) {
+            successfulFiles.push({ name: filename, count: parsed.length });
+            allEntries = allEntries.concat(parsed);
+            State.loadedFiles = [...successfulFiles];
+            setCorpusProgress(pct, `Processat: ${filename} (${parsed.length} paraules)`, allEntries.length);
           }
         }
       }
 
-      // Si no es detecten fitxers al servidor, utilitzar el corpus inicial en català
-      if (combinedEntries.length === 0) {
-        addDiagnosticLog("No s'han detectat fitxers .txt a /corpus/. Carregant el corpus inicial incorporat.", "warn");
-        const seedItems = parseCorpusLines(SEED_CORPUS_RAW, 'corpus_inicial.txt');
-        combinedEntries = seedItems;
-        successfulFiles = [{ name: 'corpus_inicial.txt', count: seedItems.length }];
-      } else {
-        showToast(`Corpus sincronitzat: ${combinedEntries.length} paraules de ${successfulFiles.length} fitxer(s)`, "✅");
+      // Si no s'ha trobat cap fitxer, carregar el corpus llavor en català
+      if (allEntries.length === 0) {
+        const seedParsed = parseCorpusLines(SEED_CORPUS_RAW, 'llavor_inicial.txt');
+        allEntries = seedParsed;
+        successfulFiles.push({ name: 'llavor_inicial.txt', count: seedParsed.length });
+        State.loadedFiles = successfulFiles;
       }
 
-      CURRENT_CORPUS = [];
-      CORPUS_MAP.clear();
-      LOADED_FILES = successfulFiles;
+      State.corpus = [];
+      State.corpusMap.clear();
 
-      combinedEntries.forEach(entry => {
-        const cleanStem = entry.word.toLowerCase();
-        const cleanFull = entry.fullTitle.toLowerCase();
-        const existing = CORPUS_MAP.get(cleanStem) || CORPUS_MAP.get(cleanFull);
-
-        if (existing) {
-          // Fusiona orígens de fitxers
-          entry.sourceFiles.forEach(src => {
-            if (!existing.sourceFiles.includes(src)) existing.sourceFiles.push(src);
+      allEntries.forEach(entry => {
+        const key = normalizeCatalan(entry.word);
+        if (State.corpusMap.has(key)) {
+          const existing = State.corpusMap.get(key);
+          entry.sourceFiles.forEach(s => {
+            if (!existing.sourceFiles.includes(s)) existing.sourceFiles.push(s);
           });
-          // Fusiona frases d'exemple
           entry.examples.forEach(ex => {
             if (!existing.examples.includes(ex)) existing.examples.push(ex);
           });
-          // Si té significats nous o més precisos, fusiona'ls
           if (entry.meaningEn && !existing.meaningEn.toLowerCase().includes(entry.meaningEn.toLowerCase())) {
             existing.meaningEn = `${existing.meaningEn} / ${entry.meaningEn}`;
           }
         } else {
-          CORPUS_MAP.set(cleanStem, entry);
-          CORPUS_MAP.set(cleanFull, entry);
-          CURRENT_CORPUS.push(entry);
+          State.corpusMap.set(key, entry);
+          State.corpus.push(entry);
         }
       });
 
-      if (serverDot) {
-        serverDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500';
-      }
+      // Actualitzar Interfície
+      updateStatsUI();
+      syncDeckSelectOptions();
+      initFlashcardsDeck();
 
-      updateInterfaceStats();
-      syncFlashcardDeckFilters();
-      initFlashcardDeck();
-      setCorpusProgress(100, 'Corpus a punt!');
-      hideCorpusProgress();
+      setCorpusProgress(100, `Llest! ${State.corpus.length} paraules carregades`, State.corpus.length);
+      const dot = document.getElementById('serverStatusDot');
+      if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-500';
+      const statusText = document.getElementById('headerStatusText');
+      if (statusText) statusText.innerText = `${State.loadedFiles.length} fitxer(s) actius`;
+
+      setTimeout(closeCorpusLoadingModal, 1800);
     }
 
-    // Carregar múltiples fitxers .txt directament des del dispositiu
-    function handleLocalFilesSelect(e) {
-      const files = Array.from(e.target.files || []).filter(f => f.name.toLowerCase().endsWith('.txt') || f.name.toLowerCase().endsWith('.tsv') || f.name.toLowerCase().endsWith('.csv'));
-      if (files.length === 0) {
-        showToast("No s'han seleccionat fitxers de text vàlids", "⚠️");
+    function addCustomServerFile() {
+      const input = document.getElementById('modalCustomFilenameInput');
+      const val = input ? input.value.trim() : '';
+      if (!val || !val.endsWith('.txt')) {
+        showToast('El fitxer ha d\'acabar en .txt', '⚠️');
         return;
       }
-
-      addDiagnosticLog(`Carregant ${files.length} fitxer(s) seleccionat(s)...`, 'info');
-      setCorpusProgress(20, `Llegint fitxers (0/${files.length})...`);
-      let combinedEntries = [];
-      let successfulFiles = [];
-      let pending = files.length;
-      let processed = 0;
-
-      files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const text = event.target.result;
-          const items = parseCorpusLines(text, file.name);
-          if (items.length > 0) {
-            combinedEntries = combinedEntries.concat(items);
-            successfulFiles.push({ name: file.name, count: items.length });
-          }
-          pending--;
-          processed++;
-          setCorpusProgress(20 + Math.round((processed / files.length) * 75), `Llegint: ${file.name}`);
-          if (pending === 0) {
-            LOADED_FILES = successfulFiles;
-            CURRENT_CORPUS = [];
-            CORPUS_MAP.clear();
-
-            combinedEntries.forEach(entry => {
-              const cleanStem = entry.word.toLowerCase();
-              const existing = CORPUS_MAP.get(cleanStem);
-              if (existing) {
-                entry.sourceFiles.forEach(src => {
-                  if (!existing.sourceFiles.includes(src)) existing.sourceFiles.push(src);
-                });
-                entry.examples.forEach(ex => {
-                  if (!existing.examples.includes(ex)) existing.examples.push(ex);
-                });
-                if (entry.meaningEn && !existing.meaningEn.toLowerCase().includes(entry.meaningEn.toLowerCase())) {
-                  existing.meaningEn = `${existing.meaningEn} / ${entry.meaningEn}`;
-                }
-              } else {
-                CORPUS_MAP.set(cleanStem, entry);
-                CORPUS_MAP.set(entry.fullTitle.toLowerCase(), entry);
-                CURRENT_CORPUS.push(entry);
-              }
-            });
-
-            updateInterfaceStats();
-            syncFlashcardDeckFilters();
-            initFlashcardDeck();
-            setCorpusProgress(100, 'Fitxers carregats!');
-            hideCorpusProgress();
-            showToast(`Carregades ${combinedEntries.length} paraules de ${files.length} fitxer(s)`, "📁");
-            addDiagnosticLog(`Càrrega completada: ${combinedEntries.length} paraules`, 'success');
-          }
-        };
-        reader.readAsText(file);
-      });
-    }
-
-    function handleLocalFolderSelect(e) {
-      const files = Array.from(e.target.files || []).filter(f => f.name.toLowerCase().endsWith('.txt'));
-      if (files.length === 0) {
-        showToast("No s'han seleccionat fitxers .txt", "⚠️");
-        return;
-      }
-
-      addDiagnosticLog(`Carregant ${files.length} fitxer(s) des del selector local...`, 'info');
-      setCorpusProgress(20, `Llegint carpeta (0/${files.length})...`);
-      let combinedEntries = [];
-      let successfulFiles = [];
-      let pending = files.length;
-      let processed = 0;
-
-      files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const text = event.target.result;
-          const items = parseCorpusLines(text, file.name);
-          if (items.length > 0) {
-            combinedEntries = combinedEntries.concat(items);
-            successfulFiles.push({ name: file.name, count: items.length });
-          }
-          pending--;
-          processed++;
-          setCorpusProgress(20 + Math.round((processed / files.length) * 75), `Llegint: ${file.name}`);
-          if (pending === 0) {
-            LOADED_FILES = successfulFiles;
-            CURRENT_CORPUS = [];
-            CORPUS_MAP.clear();
-
-            combinedEntries.forEach(entry => {
-              const cleanStem = entry.word.toLowerCase();
-              const existing = CORPUS_MAP.get(cleanStem);
-              if (existing) {
-                entry.sourceFiles.forEach(src => {
-                  if (!existing.sourceFiles.includes(src)) existing.sourceFiles.push(src);
-                });
-                entry.examples.forEach(ex => {
-                  if (!existing.examples.includes(ex)) existing.examples.push(ex);
-                });
-                if (entry.meaningEn && !existing.meaningEn.toLowerCase().includes(entry.meaningEn.toLowerCase())) {
-                  existing.meaningEn = `${existing.meaningEn} / ${entry.meaningEn}`;
-                }
-              } else {
-                CORPUS_MAP.set(cleanStem, entry);
-                CORPUS_MAP.set(entry.fullTitle.toLowerCase(), entry);
-                CURRENT_CORPUS.push(entry);
-              }
-            });
-
-            updateInterfaceStats();
-            syncFlashcardDeckFilters();
-            initFlashcardDeck();
-            setCorpusProgress(100, 'Carpeta carregada!');
-            hideCorpusProgress();
-            showToast(`Carregades ${combinedEntries.length} paraules de ${files.length} fitxer(s)`, "📁");
-            addDiagnosticLog(`Càrrega local completada: ${combinedEntries.length} paraules`, 'success');
-          }
-        };
-        reader.readAsText(file);
-      });
-    }
-
-    function updateInterfaceStats() {
-      const countLabel = document.getElementById('corpusCountLabel');
-      const subtitle = document.getElementById('headerCorpusSubtitle');
-      const sampleChips = document.getElementById('quickSampleChips');
-      const fileSummaryList = document.getElementById('loadedFilesSummaryList');
-
-      if (countLabel) countLabel.innerText = `${CURRENT_CORPUS.length} mots`;
-      if (subtitle) {
-        const fileNames = LOADED_FILES.map(f => f.name).join(', ');
-        subtitle.innerText = `${CURRENT_CORPUS.length} entrades (${LOADED_FILES.length} fitxer${LOADED_FILES.length === 1 ? '' : 's'})`;
-        subtitle.title = fileNames;
-      }
-
-      // Actualitza els xips d'exemple amb paraules reals del corpus
-      if (sampleChips && CURRENT_CORPUS.length > 0) {
-        sampleChips.innerHTML = '<span class="text-stone-400 font-medium whitespace-nowrap">Exemples:</span>';
-        const sampleWords = CURRENT_CORPUS.slice(0, 7);
-        sampleWords.forEach(entry => {
-          const btn = document.createElement('button');
-          btn.className = 'px-2 py-0.5 bg-amber-100/70 hover:bg-amber-200 text-amber-950 font-medium rounded-md whitespace-nowrap transition-colors text-[11px]';
-          btn.innerText = entry.fullTitle || entry.word;
-          btn.onclick = () => {
-            selectWord(entry);
-          };
-          sampleChips.appendChild(btn);
-        });
-      }
-
-      // Llista de fitxers al diagnòstic
-      if (fileSummaryList) {
-        if (LOADED_FILES.length === 0) {
-          fileSummaryList.innerHTML = '<span class="text-stone-400 italic">Cap fitxer carregat</span>';
-        } else {
-          fileSummaryList.innerHTML = LOADED_FILES.map(f => `
-            <div class="flex items-center justify-between py-1 border-b border-stone-200 last:border-0">
-              <span class="font-mono text-stone-900 font-semibold">${f.name}</span>
-              <span class="bg-amber-100 text-amber-900 px-2 py-0.5 rounded text-[10px] font-bold">${f.count} mots</span>
-            </div>
-          `).join('');
+      try {
+        const custom = JSON.parse(localStorage.getItem('cat_custom_files') || '[]');
+        if (!custom.includes(val)) {
+          custom.push(val);
+          localStorage.setItem('cat_custom_files', JSON.stringify(custom));
         }
-      }
+      } catch (e) {}
+      input.value = '';
+      showToast(`Afegit "${val}". Re-escanejant directori...`, '📄');
+      scanAndLoadCorpus();
     }
 
-    function handleSearchSubmit(e) {
-      if (e) e.preventDefault();
-      const input = document.getElementById('mainSearchInput');
-      const query = input?.value?.trim();
-      if (!query) return;
-
-      closeAutocomplete();
-      lookupWord(query);
+    function updateStatsUI() {
+      const badge = document.getElementById('corpusWordCountBadge');
+      if (badge) {
+        badge.innerText = `${State.corpus.length} paraules`;
+        badge.classList.remove('hidden');
+      }
+      const indexTotal = document.getElementById('indexModalTotalCount');
+      if (indexTotal) indexTotal.innerText = State.corpus.length;
     }
 
-    function lookupWord(query) {
-      if (!query) return;
-      const cleanQ = cleanCatalanStem(query);
-      const strippedQ = stripAccents(cleanQ);
+    function switchView(viewName) {
+      State.activeView = viewName;
+      const dictSec = document.getElementById('viewDictionary');
+      const cardsSec = document.getElementById('viewFlashcards');
+      const tabDict = document.getElementById('tabBtnDict');
+      const tabCards = document.getElementById('tabBtnCards');
 
-      // Cerca directa
-      let match = CORPUS_MAP.get(cleanQ) || CORPUS_MAP.get(query.toLowerCase());
-
-      // Cerca amb tolerància d'accents
-      if (!match) {
-        match = CURRENT_CORPUS.find(item => {
-          return stripAccents(item.word) === strippedQ || stripAccents(item.fullTitle) === strippedQ;
-        });
-      }
-
-      // Cerca que comença per...
-      if (!match) {
-        match = CURRENT_CORPUS.find(item => {
-          return stripAccents(item.word).startsWith(strippedQ) || stripAccents(item.fullTitle).startsWith(strippedQ);
-        });
-      }
-
-      if (match) {
-        selectWord(match);
+      if (viewName === 'dictionary') {
+        dictSec?.classList.remove('hidden');
+        cardsSec?.classList.add('hidden');
+        tabDict?.classList.add('bg-white', 'text-red-700', 'shadow-xs');
+        tabDict?.classList.remove('text-stone-600');
+        tabCards?.classList.remove('bg-white', 'text-red-700', 'shadow-xs');
+        tabCards?.classList.add('text-stone-600');
       } else {
-        showToast(`No s'ha trobat "${query}" al corpus carregat`, "🔍");
+        dictSec?.classList.add('hidden');
+        cardsSec?.classList.remove('hidden');
+        tabCards?.classList.add('bg-white', 'text-red-700', 'shadow-xs');
+        tabCards?.classList.remove('text-stone-600');
+        tabDict?.classList.remove('bg-white', 'text-red-700', 'shadow-xs');
+        tabDict?.classList.add('text-stone-600');
+        renderCurrentFlashcard();
       }
     }
 
-    function handleLiveInput(e) {
+    function handleSearchInput(e) {
       const val = e.target.value;
       const clearBtn = document.getElementById('clearSearchBtn');
-      const dropdown = document.getElementById('autocompleteDropdown');
-      const list = document.getElementById('autocompleteList');
+      if (clearBtn) clearBtn.classList.toggle('hidden', !val);
 
-      if (clearBtn) {
-        clearBtn.classList.toggle('hidden', !val);
-      }
+      const menu = document.getElementById('autocompleteMenu');
+      if (!menu) return;
 
-      if (!val || val.trim().length < 1) {
-        closeAutocomplete();
+      const query = normalizeCatalan(val);
+      if (query.length === 0) {
+        menu.classList.add('hidden');
         return;
       }
 
-      const stripped = stripAccents(cleanCatalanStem(val));
-      const matches = CURRENT_CORPUS.filter(item => {
-        return stripAccents(item.word).includes(stripped) || stripAccents(item.fullTitle).includes(stripped);
+      const matches = State.corpus.filter(item => {
+        return normalizeCatalan(item.word).includes(query) || item.meaningEn.toLowerCase().includes(query);
       }).slice(0, 8);
 
-      if (matches.length > 0 && dropdown && list) {
-        list.innerHTML = matches.map(item => `
-          <li onclick="selectWordFromAutocomplete('${item.word.replace(/'/g, "\\'")}')" class="px-3.5 py-2 hover:bg-amber-50 cursor-pointer flex items-center justify-between text-xs sm:text-sm">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-stone-900">${item.fullTitle || item.word}</span>
-              <span class="text-stone-400 font-mono text-xs">${item.ipa || ''}</span>
-            </div>
-            <span class="text-stone-500 truncate max-w-[150px] text-xs">${item.meaningEn || ''}</span>
-          </li>
-        `).join('');
-        dropdown.classList.remove('hidden');
-      } else {
-        closeAutocomplete();
-      }
-    }
-
-    function handleSearchKeydown(e) {
-      if (e.key === 'Escape') closeAutocomplete();
-    }
-
-    function closeAutocomplete() {
-      const dropdown = document.getElementById('autocompleteDropdown');
-      if (dropdown) dropdown.classList.add('hidden');
-    }
-
-    function clearSearchInput() {
-      const input = document.getElementById('mainSearchInput');
-      if (input) {
-        input.value = '';
-        input.focus();
-      }
-      const clearBtn = document.getElementById('clearSearchBtn');
-      if (clearBtn) clearBtn.classList.add('hidden');
-      closeAutocomplete();
-    }
-
-    function selectWordFromAutocomplete(wordStem) {
-      closeAutocomplete();
-      const match = CORPUS_MAP.get(wordStem.toLowerCase()) || CURRENT_CORPUS.find(i => i.word === wordStem);
-      if (match) selectWord(match);
-    }
-
-    function selectWord(entry) {
-      CURRENT_WORD_ENTRY = entry;
-      const input = document.getElementById('mainSearchInput');
-      if (input) input.value = entry.fullTitle || entry.word;
-
-      const idleState = document.getElementById('idleState');
-      const resultCard = document.getElementById('resultCard');
-
-      if (idleState) idleState.classList.add('hidden');
-      if (resultCard) resultCard.classList.remove('hidden');
-
-      // Emplenar dades a la targeta
-      const titleEl = document.getElementById('resTitle');
-      const ipaEl = document.getElementById('resIpa');
-      const grammarEl = document.getElementById('resGrammarTag');
-      const sourceEl = document.getElementById('resSourcePill');
-      const englishEl = document.getElementById('resEnglish');
-      const examplesList = document.getElementById('resExamplesList');
-      const exampleCount = document.getElementById('resExampleCount');
-
-      if (titleEl) titleEl.innerText = entry.fullTitle || entry.word;
-      if (ipaEl) ipaEl.innerText = entry.ipa || generateCatalanIPA(entry.word);
-      if (grammarEl) grammarEl.innerText = entry.grammar || 'substantiu';
-      if (sourceEl) sourceEl.innerText = entry.sourceFiles.join(', ');
-      if (englishEl) englishEl.innerText = entry.meaningEn;
-
-      // Renderitzar frases d'exemple
-      if (examplesList) {
-        examplesList.innerHTML = '';
-        const exList = entry.examples.length > 0 ? entry.examples : [`No hi ha frases d'exemple registrades per a aquest mot.`];
-        if (exampleCount) exampleCount.innerText = `${exList.length} exemple${exList.length === 1 ? '' : 's'}`;
-
-        exList.forEach((ex, idx) => {
-          const exDiv = document.createElement('div');
-          exDiv.className = 'bg-stone-50 border border-stone-200/80 rounded-xl p-3 flex items-start justify-between gap-2';
-          
-          // Ressalta el mot a la frase
-          const highlightedSentence = highlightWordInSentence(ex, entry.word, entry.fullTitle);
-
-          exDiv.innerHTML = `
-            <div class="flex-1 text-xs sm:text-sm text-stone-800 italic leading-relaxed">
-              "${highlightedSentence}"
-            </div>
-            <button onclick="playAudioText('${ex.replace(/'/g, "\\'")}')" class="p-1 text-stone-400 hover:text-red-600 rounded-lg hover:bg-stone-200/50 transition-colors flex-shrink-0" title="Escoltar frase">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-              </svg>
-            </button>
-          `;
-          examplesList.appendChild(exDiv);
-        });
-      }
-
-      updateBookmarkButtonState();
-      
-      // Desplaça suaument a la fitxa si és mòbil
-      if (window.innerWidth < 640) {
-        resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
-
-    function highlightWordInSentence(sentence, stem, fullTitle) {
-      if (!sentence) return '';
-      const w1 = cleanCatalanStem(stem);
-      const w2 = cleanCatalanStem(fullTitle);
-      const regex = new RegExp(`\\b(${w1}|${w2})\\w*\\b`, 'gi');
-      return sentence.replace(regex, `<mark class="bg-amber-200/80 text-stone-900 font-semibold px-0.5 rounded">$1</mark>`);
-    }
-
-    function fetchRandomWord() {
-      if (CURRENT_CORPUS.length === 0) return;
-      const rand = CURRENT_CORPUS[Math.floor(Math.random() * CURRENT_CORPUS.length)];
-      selectWord(rand);
-    }
-
-    let CATALAN_VOICE = null;
-
-    function initSpeechSynthesisVoices() {
-      if (!('speechSynthesis' in window)) return;
-      const loadVoices = () => {
-        const voices = window.speechSynthesis.getVoices();
-        CATALAN_VOICE = voices.find(v => v.lang === 'ca-ES' || v.lang.startsWith('ca')) || null;
-      };
-      loadVoices();
-      if (window.speechSynthesis.onvoiceschanged !== undefined) {
-        window.speechSynthesis.onvoiceschanged = loadVoices;
-      }
-    }
-
-    function playAudioText(text) {
-      if (!('speechSynthesis' in window)) {
-        showToast("La síntesi de veu no està suportada en aquest navegador", "⚠️");
+      if (matches.length === 0) {
+        menu.classList.add('hidden');
         return;
       }
-      window.speechSynthesis.cancel(); // Atura àudios anteriors
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ca-ES';
-      if (CATALAN_VOICE) utterance.voice = CATALAN_VOICE;
-      utterance.rate = 0.92; // Lleugerament més pausat per a claredat d'estudi
-      utterance.pitch = 1.0;
+      menu.innerHTML = matches.map(item => `
+        <button 
+          type="button" 
+          onclick="selectAutocompleteWord('${item.word.replace(/'/g, "\\'")}')" 
+          class="w-full px-4 py-2.5 text-left hover:bg-amber-50 border-b border-stone-100 last:border-none flex items-center justify-between transition-colors"
+        >
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-stone-900">${item.word}</span>
+            <span class="text-xs text-stone-500 font-mono">${item.ipa}</span>
+          </div>
+          <span class="text-xs text-red-700 font-medium truncate max-w-[180px]">${item.meaningEn}</span>
+        </button>
+      `).join('');
 
-      const audioBtn = document.getElementById('resAudioBtn');
-      if (audioBtn) audioBtn.classList.add('audio-playing');
-      utterance.onend = () => {
-        if (audioBtn) audioBtn.classList.remove('audio-playing');
-      };
-      utterance.onerror = () => {
-        if (audioBtn) audioBtn.classList.remove('audio-playing');
-      };
-
-      window.speechSynthesis.speak(utterance);
+      menu.classList.remove('hidden');
     }
 
-    function playCurrentWordAudio() {
-      if (CURRENT_WORD_ENTRY) {
-        playAudioText(CURRENT_WORD_ENTRY.fullTitle || CURRENT_WORD_ENTRY.word);
+    function clearSearch() {
+      const input = document.getElementById('searchInput');
+      if (input) input.value = '';
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (clearBtn) clearBtn.classList.add('hidden');
+      const menu = document.getElementById('autocompleteMenu');
+      if (menu) menu.classList.add('hidden');
+      const card = document.getElementById('dictionaryResultCard');
+      if (card) card.classList.add('hidden');
+      State.currentDictEntry = null;
+    }
+
+    function selectAutocompleteWord(word) {
+      const input = document.getElementById('searchInput');
+      if (input) input.value = word;
+      const menu = document.getElementById('autocompleteMenu');
+      if (menu) menu.classList.add('hidden');
+      executeSearch();
+    }
+
+    function quickLookup(word) {
+      const input = document.getElementById('searchInput');
+      if (input) input.value = word;
+      executeSearch();
+    }
+
+    function pickRandomWord() {
+      if (State.corpus.length === 0) return;
+      const randomItem = State.corpus[Math.floor(Math.random() * State.corpus.length)];
+      quickLookup(randomItem.word);
+    }
+
+    function executeSearch() {
+      const input = document.getElementById('searchInput');
+      const query = normalizeCatalan(input ? input.value : '');
+      if (!query) return;
+
+      const menu = document.getElementById('autocompleteMenu');
+      if (menu) menu.classList.add('hidden');
+
+      let entry = State.corpusMap.get(query);
+      if (!entry) {
+        entry = State.corpus.find(item => normalizeCatalan(item.word) === query) ||
+                State.corpus.find(item => normalizeCatalan(item.word).includes(query));
       }
-    }
 
-    function playFlashcardWordAudio() {
-      const card = FLASHCARD_DECK[CURRENT_FC_INDEX];
-      if (card) playAudioText(card.fullTitle || card.word);
-    }
-
-    function playFlashcardSentenceAudio() {
-      const card = FLASHCARD_DECK[CURRENT_FC_INDEX];
-      if (card && card.examples && card.examples.length > 0) {
-        playAudioText(card.examples[0]);
+      const card = document.getElementById('dictionaryResultCard');
+      if (!entry) {
+        showToast(`No s'ha trobat "${input.value}" al corpus`, '🔍');
+        if (card) card.classList.add('hidden');
+        return;
       }
+
+      State.currentDictEntry = entry;
+      renderDictionaryResult(entry);
     }
 
-    function switchMainTab(tab) {
-      const viewDiccionari = document.getElementById('viewDiccionari');
-      const viewTargetes = document.getElementById('viewTargetes');
-      const tabBtnDic = document.getElementById('tabBtnDiccionari');
-      const tabBtnTar = document.getElementById('tabBtnTargetes');
+    function renderDictionaryResult(entry) {
+      const card = document.getElementById('dictionaryResultCard');
+      if (!card) return;
 
-      if (tab === 'diccionari') {
-        if (viewDiccionari) viewDiccionari.classList.remove('hidden');
-        if (viewTargetes) viewTargetes.classList.add('hidden');
+      document.getElementById('dictResultWord').innerText = entry.word;
+      document.getElementById('dictResultGrammar').innerText = entry.grammar;
+      document.getElementById('dictResultIpa').innerText = entry.ipa;
+      document.getElementById('dictResultMeaning').innerText = entry.meaningEn;
+      document.getElementById('dictResultSources').innerText = entry.sourceFiles.join(', ');
 
-        tabBtnDic.className = "px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 bg-white text-stone-900 shadow-xs";
-        tabBtnTar.className = "px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 text-stone-600 hover:text-stone-900";
+      const exContainer = document.getElementById('dictResultExamplesContainer');
+      if (exContainer) {
+        if (entry.examples.length > 0) {
+          exContainer.innerHTML = entry.examples.map(ex => `
+            <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200 text-stone-800 text-sm flex items-start justify-between gap-3">
+              <span class="italic">"${ex}"</span>
+              <button 
+                type="button" 
+                onclick="speakCatalan('${ex.replace(/'/g, "\\'")}')" 
+                class="text-stone-400 hover:text-red-700 p-1 shrink-0 transition-colors"
+                title="Escoltar frase en català"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
+              </button>
+            </div>
+          `).join('');
+        } else {
+          exContainer.innerHTML = `<p class="text-xs text-stone-400 italic">Sense frases registrades.</p>`;
+        }
+      }
+
+      updateDictBookmarkBtn();
+      card.classList.remove('hidden');
+    }
+
+    function speakCurrentDictWord() {
+      if (State.currentDictEntry) speakCatalan(State.currentDictEntry.word);
+    }
+
+    function toggleBookmarkCurrentDict() {
+      if (!State.currentDictEntry) return;
+      const word = State.currentDictEntry.word;
+      if (State.savedWords.has(word)) {
+        State.savedWords.delete(word);
+        showToast(`"${word}" eliminada del quadern`, '⭐');
       } else {
-        if (viewDiccionari) viewDiccionari.classList.add('hidden');
-        if (viewTargetes) viewTargetes.classList.remove('hidden');
+        State.savedWords.add(word);
+        showToast(`"${word}" desada al quadern`, '⭐');
+      }
+      persistSavedWords();
+      updateDictBookmarkBtn();
+      initFlashcardsDeck();
+    }
 
-        tabBtnTar.className = "px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 bg-white text-stone-900 shadow-xs";
-        tabBtnDic.className = "px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 text-stone-600 hover:text-stone-900";
+    function updateDictBookmarkBtn() {
+      const btn = document.getElementById('dictBookmarkBtn');
+      const label = document.getElementById('dictBookmarkBtnLabel');
+      if (!btn || !State.currentDictEntry) return;
 
-        initFlashcardDeck();
+      const isSaved = State.savedWords.has(State.currentDictEntry.word);
+      if (isSaved) {
+        btn.className = 'px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 bg-amber-100 text-amber-950 border-amber-300';
+        if (label) label.innerText = 'Desada ⭐';
+      } else {
+        btn.className = 'px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 bg-stone-50 text-stone-700 border-stone-200 hover:bg-amber-50 hover:text-amber-900';
+        if (label) label.innerText = 'Desar';
       }
     }
 
-    function syncFlashcardDeckFilters() {
-      const select = document.getElementById('flashcardDeckSelect');
+    function updateSavedBadge() {
+      const count = State.savedWords.size;
+      const b1 = document.getElementById('savedBadgeCount');
+      const b2 = document.getElementById('savedDrawerCountBadge');
+      if (b1) b1.innerText = count;
+      if (b2) b2.innerText = count;
+      renderSavedWordsList();
+    }
+
+    function toggleSavedDrawer() {
+      const drawer = document.getElementById('savedWordsDrawer');
+      if (!drawer) return;
+      drawer.classList.toggle('hidden');
+      if (!drawer.classList.contains('hidden')) renderSavedWordsList();
+    }
+
+    function renderSavedWordsList() {
+      const container = document.getElementById('savedWordsListContainer');
+      if (!container) return;
+
+      if (State.savedWords.size === 0) {
+        container.innerHTML = `<p class="text-xs text-stone-400 italic text-center py-8">No tens cap paraula desada encara.</p>`;
+        return;
+      }
+
+      container.innerHTML = Array.from(State.savedWords).map(w => {
+        const entry = State.corpusMap.get(normalizeCatalan(w));
+        const meaning = entry ? entry.meaningEn : '';
+        return `
+          <div class="py-2.5 flex items-center justify-between gap-2">
+            <button type="button" onclick="quickLookup('${w.replace(/'/g, "\\'")}')" class="text-left font-bold text-stone-900 hover:text-red-700 text-xs sm:text-sm">
+              ${w} <span class="text-stone-400 text-xs font-normal">(${meaning})</span>
+            </button>
+            <button type="button" onclick="removeSavedWord('${w.replace(/'/g, "\\'")}')" class="text-stone-400 hover:text-red-700 p-1">
+              ✕
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function removeSavedWord(w) {
+      State.savedWords.delete(w);
+      persistSavedWords();
+      updateDictBookmarkBtn();
+      initFlashcardsDeck();
+    }
+
+    function clearAllSavedWords() {
+      State.savedWords.clear();
+      persistSavedWords();
+      updateDictBookmarkBtn();
+      initFlashcardsDeck();
+      showToast('Quadern buidat', '🧹');
+    }
+
+    function sendToFlashcardsView() {
+      if (!State.currentDictEntry) return;
+      switchView('flashcards');
+      const targetIdx = State.fcDeck.findIndex(item => item.word === State.currentDictEntry.word);
+      if (targetIdx !== -1) {
+        State.fcIndex = targetIdx;
+        renderCurrentFlashcard();
+      }
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function syncDeckSelectOptions() {
+      const select = document.getElementById('fcDeckFilter');
+      const indexFileSelect = document.getElementById('indexFileFilterSelect');
       if (!select) return;
-      
-      const currentVal = select.value;
+
+      const fileOptions = State.loadedFiles.map(f => `
+        <option value="file:${f.name}">Fitxer: ${f.name}</option>
+      `).join('');
+
       select.innerHTML = `
-        <option value="all">Tot el corpus (${CURRENT_CORPUS.length})</option>
-        <option value="saved">Només desades (${SAVED_WORDS.size} ⭐)</option>
+        <option value="all">Tot el Corpus (${State.corpus.length})</option>
+        <option value="saved">⭐ Desades (${State.savedWords.size})</option>
+        ${fileOptions}
       `;
 
-      LOADED_FILES.forEach(f => {
-        const opt = document.createElement('option');
-        opt.value = `file:${f.name}`;
-        opt.innerText = `Fitxer: ${f.name} (${f.count})`;
-        select.appendChild(opt);
-      });
-
-      if (Array.from(select.options).some(o => o.value === currentVal)) {
-        select.value = currentVal;
+      if (indexFileSelect) {
+        indexFileSelect.innerHTML = `
+          <option value="all">Tots els fitxers</option>
+          ${State.loadedFiles.map(f => `<option value="${f.name}">${f.name}</option>`).join('')}
+        `;
       }
     }
 
-    function handleFlashcardDeckChange() {
-      initFlashcardDeck();
+    function handleDeckFilterChange() {
+      initFlashcardsDeck();
     }
 
-    function initFlashcardDeck() {
-      const select = document.getElementById('flashcardDeckSelect');
+    function initFlashcardsDeck() {
+      const select = document.getElementById('fcDeckFilter');
       const val = select ? select.value : 'all';
 
+      let pool = [];
       if (val === 'saved') {
-        FLASHCARD_DECK = CURRENT_CORPUS.filter(item => SAVED_WORDS.has(item.word));
+        pool = State.corpus.filter(item => State.savedWords.has(item.word));
       } else if (val.startsWith('file:')) {
         const filename = val.replace('file:', '');
-        FLASHCARD_DECK = CURRENT_CORPUS.filter(item => item.sourceFiles.includes(filename));
+        pool = State.corpus.filter(item => item.sourceFiles.includes(filename));
       } else {
-        FLASHCARD_DECK = [...CURRENT_CORPUS];
+        pool = [...State.corpus];
       }
 
-      if (FLASHCARD_DECK.length === 0) {
-        FLASHCARD_DECK = [...CURRENT_CORPUS];
-      }
+      if (pool.length === 0) pool = [...State.corpus];
 
-      CURRENT_FC_INDEX = 0;
-      FC_IS_FLIPPED = false;
+      // Requisit Clau: Aleatoritzar i prioritzar les paraules desades (van davant, barallades)
+      const savedPart = pool.filter(item => State.savedWords.has(item.word));
+      const regularPart = pool.filter(item => !State.savedWords.has(item.word));
+
+      shuffleArray(savedPart);
+      shuffleArray(regularPart);
+
+      State.fcDeck = [...savedPart, ...regularPart];
+      State.fcIndex = 0;
+      State.fcIsFlipped = false;
+
       renderCurrentFlashcard();
+    }
+
+    function shuffleFlashcards() {
+      if (State.fcDeck.length === 0) return;
+      const savedPart = State.fcDeck.filter(item => State.savedWords.has(item.word));
+      const regularPart = State.fcDeck.filter(item => !State.savedWords.has(item.word));
+
+      shuffleArray(savedPart);
+      shuffleArray(regularPart);
+
+      State.fcDeck = [...savedPart, ...regularPart];
+      State.fcIndex = 0;
+      State.fcIsFlipped = false;
+      renderCurrentFlashcard();
+      showToast('Targetes barallades (desades prioritzades)', '🔀');
     }
 
     function renderCurrentFlashcard() {
       const cardEl = document.getElementById('flashcardElement');
-      if (cardEl && FC_IS_FLIPPED) {
+      if (cardEl && State.fcIsFlipped) {
         cardEl.classList.remove('rotate-y-180');
-        FC_IS_FLIPPED = false;
+        State.fcIsFlipped = false;
       }
 
-      const total = FLASHCARD_DECK.length;
-      const indexNumber = document.getElementById('flashcardIndexNumber');
-      const totalCount = document.getElementById('flashcardTotalCount');
-      const masteredEl = document.getElementById('flashcardMasteredCount');
-      const reviewEl = document.getElementById('flashcardReviewCount');
-      const progress = document.getElementById('flashcardProgressBar');
+      const total = State.fcDeck.length;
+      document.getElementById('fcCurrentIndex').innerText = total > 0 ? State.fcIndex + 1 : 0;
+      document.getElementById('fcTotalCount').innerText = total;
+      document.getElementById('fcMasteredCount').innerText = State.fcMastered.size;
+      document.getElementById('fcReviewCount').innerText = State.fcReview.size;
 
-      if (indexNumber) indexNumber.innerText = total > 0 ? CURRENT_FC_INDEX + 1 : 0;
-      if (totalCount) totalCount.innerText = total;
-      if (masteredEl) masteredEl.innerText = FC_MASTERED.size;
-      if (reviewEl) reviewEl.innerText = FC_REVIEW.size;
-
-      if (progress && total > 0) {
-        const pct = ((CURRENT_FC_INDEX + 1) / total) * 100;
-        progress.style.width = `${pct}%`;
+      const bar = document.getElementById('fcProgressBar');
+      if (bar && total > 0) {
+        bar.style.width = `${((State.fcIndex + 1) / total) * 100}%`;
       }
 
       if (total === 0) return;
 
-      const item = FLASHCARD_DECK[CURRENT_FC_INDEX];
-      
-      // Front
-      const frontWord = document.getElementById('fcFrontWord');
-      const frontIpa = document.getElementById('fcFrontIpa');
-      const frontGrammar = document.getElementById('fcFrontGrammar');
-      const frontSource = document.getElementById('fcFrontSource');
+      const item = State.fcDeck[State.fcIndex];
+      document.getElementById('fcFrontWord').innerText = item.word;
+      document.getElementById('fcFrontIpa').innerText = item.ipa;
+      document.getElementById('fcFrontGrammar').innerText = item.grammar;
+      document.getElementById('fcFrontSource').innerText = item.sourceFiles.join(', ');
 
-      if (frontWord) frontWord.innerText = item.fullTitle || item.word;
-      if (frontIpa) frontIpa.innerText = item.ipa || generateCatalanIPA(item.word);
-      if (frontGrammar) frontGrammar.innerText = item.grammar || 'substantiu';
-      if (frontSource) frontSource.innerText = item.sourceFiles.join(', ');
-
-      // Back
-      const backTrans = document.getElementById('fcBackTranslation');
-      const backExample = document.getElementById('fcBackExample');
-
-      if (backTrans) backTrans.innerText = item.meaningEn;
-      if (backExample) {
-        backExample.innerText = item.examples.length > 0 ? `"${item.examples[0]}"` : `"Sense frase d'exemple registrada."`;
+      const priorityBadge = document.getElementById('fcPriorityBadge');
+      if (priorityBadge) {
+        priorityBadge.classList.toggle('hidden', !State.savedWords.has(item.word));
       }
 
-      updateFlashcardBookmarkState();
+      document.getElementById('fcBackTranslation').innerText = item.meaningEn;
+      document.getElementById('fcBackExample').innerText = item.examples.length > 0 ? `"${item.examples[0]}"` : 'Sense frase registrada.';
     }
 
     function flipFlashcard() {
       const cardEl = document.getElementById('flashcardElement');
       if (!cardEl) return;
-      FC_IS_FLIPPED = !FC_IS_FLIPPED;
-      cardEl.classList.toggle('rotate-y-180', FC_IS_FLIPPED);
+      State.fcIsFlipped = !State.fcIsFlipped;
+      cardEl.classList.toggle('rotate-y-180', State.fcIsFlipped);
     }
 
     function nextFlashcard() {
-      if (FLASHCARD_DECK.length === 0) return;
-      CURRENT_FC_INDEX = (CURRENT_FC_INDEX + 1) % FLASHCARD_DECK.length;
+      if (State.fcDeck.length === 0) return;
+      State.fcIndex = (State.fcIndex + 1) % State.fcDeck.length;
       renderCurrentFlashcard();
     }
 
     function prevFlashcard() {
-      if (FLASHCARD_DECK.length === 0) return;
-      CURRENT_FC_INDEX = (CURRENT_FC_INDEX - 1 + FLASHCARD_DECK.length) % FLASHCARD_DECK.length;
+      if (State.fcDeck.length === 0) return;
+      State.fcIndex = (State.fcIndex - 1 + State.fcDeck.length) % State.fcDeck.length;
       renderCurrentFlashcard();
-    }
-
-    function shuffleFlashcards() {
-      for (let i = FLASHCARD_DECK.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [FLASHCARD_DECK[i], FLASHCARD_DECK[j]] = [FLASHCARD_DECK[j], FLASHCARD_DECK[i]];
-      }
-      CURRENT_FC_INDEX = 0;
-      renderCurrentFlashcard();
-      showToast("Baralla remenada correctament", "🔀");
     }
 
     function markFlashcardStatus(type) {
-      if (FLASHCARD_DECK.length === 0) return;
-      const current = FLASHCARD_DECK[CURRENT_FC_INDEX];
+      if (State.fcDeck.length === 0) return;
+      const item = State.fcDeck[State.fcIndex];
+
       if (type === 'mastered') {
-        FC_MASTERED.add(current.word);
-        FC_REVIEW.delete(current.word);
+        State.fcMastered.add(item.word);
+        State.fcReview.delete(item.word);
+        showToast(`"${item.word}" dominada`, '✅');
       } else {
-        FC_REVIEW.add(current.word);
-        FC_MASTERED.delete(current.word);
+        State.fcReview.add(item.word);
+        State.fcMastered.delete(item.word);
+        showToast(`"${item.word}" marcada per repassar`, '⏳');
       }
-      saveFlashcardProgress();
+
+      try {
+        localStorage.setItem('cat_fc_mastered', JSON.stringify(Array.from(State.fcMastered)));
+        localStorage.setItem('cat_fc_review', JSON.stringify(Array.from(State.fcReview)));
+      } catch (e) {}
+
       nextFlashcard();
     }
 
-    function sendCurrentWordToFlashcard() {
-      if (!CURRENT_WORD_ENTRY) return;
-      switchMainTab('targetes');
-      const idx = FLASHCARD_DECK.findIndex(i => i.word === CURRENT_WORD_ENTRY.word);
-      if (idx !== -1) {
-        CURRENT_FC_INDEX = idx;
-      } else {
-        FLASHCARD_DECK.unshift(CURRENT_WORD_ENTRY);
-        CURRENT_FC_INDEX = 0;
-      }
-      renderCurrentFlashcard();
+    function speakCurrentFlashcard() {
+      if (State.fcDeck.length === 0) return;
+      speakCatalan(State.fcDeck[State.fcIndex].word);
     }
 
-    let touchStartX = 0;
-    let touchStartY = 0;
-
-    function setupTouchGestures() {
-      const cardEl = document.getElementById('flashcardElement');
-      if (!cardEl) return;
-
-      cardEl.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-        touchStartY = e.changedTouches[0].screenY;
-      }, { passive: true });
-
-      cardEl.addEventListener('touchend', (e) => {
-        const touchEndX = e.changedTouches[0].screenX;
-        const touchEndY = e.changedTouches[0].screenY;
-        const diffX = touchEndX - touchStartX;
-        const diffY = touchEndY - touchStartY;
-
-        // Si és un lliscament horitzontal clar (> 50px) i no un desplaçament vertical
-        if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
-          if (diffX < 0) {
-            nextFlashcard(); // Swipe esquerra -> Següent
-          } else {
-            prevFlashcard(); // Swipe dreta -> Anterior
-          }
-        }
-      }, { passive: true });
+    function speakCurrentFlashcardSentence() {
+      if (State.fcDeck.length === 0) return;
+      const item = State.fcDeck[State.fcIndex];
+      if (item.examples.length > 0) speakCatalan(item.examples[0]);
     }
 
-    // Dreceres de teclat per a les targetes
-    document.addEventListener('keydown', (e) => {
-      // Ignora si l'usuari està escrivint en un input
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-      const viewTargetes = document.getElementById('viewTargetes');
-      const isTargetesVisible = viewTargetes && !viewTargetes.classList.contains('hidden');
-
-      if (isTargetesVisible) {
-        if (e.code === 'Space') {
-          e.preventDefault();
-          flipFlashcard();
-        } else if (e.code === 'ArrowRight') {
-          nextFlashcard();
-        } else if (e.code === 'ArrowLeft') {
-          prevFlashcard();
-        } else if (e.key === '1') {
-          markFlashcardStatus('review');
-        } else if (e.key === '2') {
-          markFlashcardStatus('mastered');
-        }
-      }
-    });
-
-    function toggleBookmarkCurrentWord() {
-      if (!CURRENT_WORD_ENTRY) return;
-      const w = CURRENT_WORD_ENTRY.word;
-      if (SAVED_WORDS.has(w)) {
-        SAVED_WORDS.delete(w);
-        showToast(`Eliminat de desades: "${CURRENT_WORD_ENTRY.fullTitle || w}"`, "⭐");
-      } else {
-        SAVED_WORDS.add(w);
-        showToast(`Desat al teu quadern: "${CURRENT_WORD_ENTRY.fullTitle || w}"`, "⭐");
-      }
-      saveSavedWordsToStorage();
-      updateBookmarkButtonState();
-      syncFlashcardDeckFilters();
-    }
-
-    function toggleBookmarkCurrentFlashcard() {
-      if (FLASHCARD_DECK.length === 0) return;
-      const current = FLASHCARD_DECK[CURRENT_FC_INDEX];
-      const w = current.word;
-      if (SAVED_WORDS.has(w)) {
-        SAVED_WORDS.delete(w);
-        showToast(`Eliminat de desades: "${current.fullTitle || w}"`, "⭐");
-      } else {
-        SAVED_WORDS.add(w);
-        showToast(`Desat al teu quadern: "${current.fullTitle || w}"`, "⭐");
-      }
-      saveSavedWordsToStorage();
-      updateFlashcardBookmarkState();
-      syncFlashcardDeckFilters();
-    }
-
-    function updateBookmarkButtonState() {
-      const starIcon = document.getElementById('bookmarkStarIcon');
-      if (!starIcon || !CURRENT_WORD_ENTRY) return;
-      const isSaved = SAVED_WORDS.has(CURRENT_WORD_ENTRY.word);
-      starIcon.setAttribute('fill', isSaved ? '#f59e0b' : 'none');
-      starIcon.setAttribute('stroke', isSaved ? '#d97706' : 'currentColor');
-      starIcon.classList.toggle('text-amber-500', isSaved);
-    }
-
-    function updateFlashcardBookmarkState() {
-      const star = document.getElementById('fcStarIcon');
-      const label = document.getElementById('fcBookmarkLabel');
-      if (FLASHCARD_DECK.length === 0 || !star) return;
-      const current = FLASHCARD_DECK[CURRENT_FC_INDEX];
-      const isSaved = SAVED_WORDS.has(current.word);
-      star.setAttribute('fill', isSaved ? '#f59e0b' : 'none');
-      star.setAttribute('stroke', isSaved ? '#f59e0b' : 'currentColor');
-      if (label) label.innerText = isSaved ? 'Desada al quadern' : 'Desar al quadern';
-    }
-
-    function updateSavedBadge() {
-      const badge = document.getElementById('savedCountBadge');
-      const drawerCount = document.getElementById('savedDrawerCount');
-      if (badge) badge.innerText = SAVED_WORDS.size;
-      if (drawerCount) drawerCount.innerText = SAVED_WORDS.size;
-      renderSavedList();
-    }
-
-    function toggleSavedDrawer(open) {
-      const drawer = document.getElementById('savedDrawer');
-      if (drawer) drawer.classList.toggle('hidden', !open);
-      if (open) renderSavedList();
-    }
-
-    function renderSavedList() {
-      const container = document.getElementById('savedWordsListContainer');
-      if (!container) return;
-
-      if (SAVED_WORDS.size === 0) {
-        container.innerHTML = `
-          <div class="text-center py-12 text-stone-400">
-            <svg class="w-10 h-10 mx-auto mb-2 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-            </svg>
-            <p class="text-sm">Encara no has desat cap paraula.</p>
-            <p class="text-xs text-stone-400 mt-1">Clica la icona de l'estrella en qualsevol fitxa per afegir-la aquí.</p>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = '';
-      SAVED_WORDS.forEach(stem => {
-        const item = CORPUS_MAP.get(stem) || { word: stem, fullTitle: stem, meaningEn: 'Definició desada' };
-        const row = document.createElement('div');
-        row.className = 'py-3 flex items-center justify-between gap-2';
-        row.innerHTML = `
-          <div class="cursor-pointer flex-1" onclick="selectWordFromSaved('${item.word.replace(/'/g, "\\'")}')">
-            <h5 class="font-bold text-sm text-stone-900 hover:text-red-600 transition-colors">${item.fullTitle || item.word}</h5>
-            <p class="text-xs text-stone-500 truncate max-w-xs">${item.meaningEn}</p>
-          </div>
-          <button onclick="removeSavedWord('${item.word.replace(/'/g, "\\'")}')" class="p-1.5 text-stone-400 hover:text-red-600 rounded-lg transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-          </button>
-        `;
-        container.appendChild(row);
-      });
-    }
-
-    function selectWordFromSaved(stem) {
-      toggleSavedDrawer(false);
-      switchMainTab('diccionari');
-      const item = CORPUS_MAP.get(stem);
-      if (item) selectWord(item);
-    }
-
-    function removeSavedWord(stem) {
-      SAVED_WORDS.delete(stem);
-      saveSavedWordsToStorage();
-      renderSavedList();
-      updateBookmarkButtonState();
-      syncFlashcardDeckFilters();
-    }
-
-    function clearAllSavedWords() {
-      SAVED_WORDS.clear();
-      saveSavedWordsToStorage();
-      renderSavedList();
-      updateBookmarkButtonState();
-      syncFlashcardDeckFilters();
-      showToast("S'han eliminat totes les paraules desades", "🗑️");
-    }
-
-    function startFlashcardsWithSavedOnly() {
-      toggleSavedDrawer(false);
-      switchMainTab('targetes');
-      const select = document.getElementById('flashcardDeckSelect');
-      if (select) {
-        select.value = 'saved';
-        handleFlashcardDeckChange();
-      }
-    }
-
-    function toggleIndexModal(open) {
+    function openIndexModal() {
       const modal = document.getElementById('indexModal');
-      if (modal) modal.classList.toggle('hidden', !open);
-      if (open) {
-        populateIndexFileFilter();
-        renderIndexList();
+      if (modal) {
+        modal.classList.remove('hidden');
+        renderIndexWordList();
       }
     }
 
-    function populateIndexFileFilter() {
-      const select = document.getElementById('indexFileSelectFilter');
-      if (!select) return;
-      select.innerHTML = '<option value="all">Tots els fitxers</option>';
-      LOADED_FILES.forEach(f => {
-        const opt = document.createElement('option');
-        opt.value = f.name;
-        opt.innerText = `${f.name} (${f.count})`;
-        select.appendChild(opt);
-      });
+    function closeIndexModal() {
+      const modal = document.getElementById('indexModal');
+      if (modal) modal.classList.add('hidden');
     }
 
-    function renderIndexList() {
-      const container = document.getElementById('indexWordsContainer');
-      const countEl = document.getElementById('indexItemsCount');
-      const query = stripAccents(document.getElementById('indexFilterInput')?.value || '');
-      const fileFilter = document.getElementById('indexFileSelectFilter')?.value || 'all';
-
+    function renderIndexWordList() {
+      const container = document.getElementById('indexWordsList');
       if (!container) return;
 
-      let filtered = CURRENT_CORPUS.filter(item => {
-        const matchText = stripAccents(item.word).includes(query) || stripAccents(item.fullTitle).includes(query) || stripAccents(item.meaningEn).includes(query);
-        const matchFile = fileFilter === 'all' || item.sourceFiles.includes(fileFilter);
-        return matchText && matchFile;
-      });
+      const searchFilter = normalizeCatalan(document.getElementById('indexSearchFilterInput')?.value || '');
+      const fileFilter = document.getElementById('indexFileFilterSelect')?.value || 'all';
 
-      if (countEl) countEl.innerText = `Mostrant ${filtered.length} de ${CURRENT_CORPUS.length} entrades`;
+      const filtered = State.corpus.filter(item => {
+        const matchesText = !searchFilter || normalizeCatalan(item.word).includes(searchFilter) || item.meaningEn.toLowerCase().includes(searchFilter);
+        const matchesFile = fileFilter === 'all' || item.sourceFiles.includes(fileFilter);
+        return matchesText && matchesFile;
+      });
 
       if (filtered.length === 0) {
-        container.innerHTML = `
-          <div class="text-center py-12 text-stone-400">
-            <p class="text-sm font-medium">No hi ha coincidències amb el filtre.</p>
-          </div>
-        `;
+        container.innerHTML = `<p class="col-span-2 text-center text-stone-400 py-6 italic">No s'han trobat paraules amb aquests filtres.</p>`;
         return;
       }
 
       container.innerHTML = filtered.map(item => `
-        <div onclick="selectWordFromIndex('${item.word.replace(/'/g, "\\'")}')" class="py-2.5 px-2 hover:bg-amber-50/70 rounded-xl cursor-pointer flex items-center justify-between gap-2 transition-colors">
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-xs sm:text-sm text-stone-900">${item.fullTitle || item.word}</span>
-              <span class="font-mono text-[11px] text-amber-800">${item.ipa || ''}</span>
-              <span class="text-[10px] bg-stone-100 text-stone-600 px-1.5 py-0.2 rounded">${item.grammar || 'substantiu'}</span>
-            </div>
-            <p class="text-xs text-stone-500 truncate mt-0.5">${item.meaningEn}</p>
+        <div class="p-2.5 bg-stone-50 hover:bg-amber-50 rounded-xl border border-stone-200 transition-colors flex items-center justify-between">
+          <div>
+            <button type="button" onclick="closeIndexModal(); quickLookup('${item.word.replace(/'/g, "\\'")}')" class="font-bold text-stone-900 hover:text-red-700 text-left">
+              ${item.word}
+            </button>
+            <p class="text-[11px] text-stone-500 truncate max-w-[170px]">${item.meaningEn}</p>
           </div>
-          <div class="text-right flex-shrink-0">
-            <span class="text-[10px] text-stone-400 block">${item.sourceFiles.join(', ')}</span>
-          </div>
+          <span class="text-[10px] font-mono text-stone-400 px-1.5 py-0.5 bg-white rounded border border-stone-200">
+            ${item.sourceFiles[0] || ''}
+          </span>
         </div>
       `).join('');
     }
 
-    function selectWordFromIndex(stem) {
-      toggleIndexModal(false);
-      switchMainTab('diccionari');
-      const item = CORPUS_MAP.get(stem);
-      if (item) selectWord(item);
+    function setupKeyboardShortcuts() {
+      document.addEventListener('keydown', e => {
+        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+
+        if (State.activeView === 'flashcards') {
+          if (e.code === 'Space') {
+            e.preventDefault();
+            flipFlashcard();
+          } else if (e.code === 'ArrowRight') {
+            nextFlashcard();
+          } else if (e.code === 'ArrowLeft') {
+            prevFlashcard();
+          } else if (e.key === '1') {
+            markFlashcardStatus('review');
+          } else if (e.key === '2') {
+            markFlashcardStatus('mastered');
+          }
+        }
+      });
     }
 
-    function toggleDiagnosticModal(open) {
-      const modal = document.getElementById('diagnosticModal');
-      if (modal) modal.classList.toggle('hidden', !open);
-    }
+    function setupTouchSwipeGestures() {
+      let touchStartX = 0;
+      let touchEndX = 0;
+      const card = document.getElementById('flashcardElement');
+      if (!card) return;
 
-    function copyWordDefinition() {
-      if (!CURRENT_WORD_ENTRY) return;
-      const text = `${CURRENT_WORD_ENTRY.fullTitle || CURRENT_WORD_ENTRY.word} (${CURRENT_WORD_ENTRY.ipa}) - ${CURRENT_WORD_ENTRY.meaningEn}`;
-      
-      const copyInput = document.createElement('textarea');
-      copyInput.value = text;
-      document.body.appendChild(copyInput);
-      copyInput.select();
-      try {
-        document.execCommand('copy');
-        showToast("Definició copiada al porta-retalls", "📋");
-      } catch (err) {
-        showToast("No s'ha pogut copiar el text", "⚠️");
-      }
-      document.body.removeChild(copyInput);
-    }
+      card.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
 
-    function showToast(message, icon = "ℹ️") {
-      const container = document.getElementById('toastContainer');
-      if (!container) return;
-
-      const toast = document.createElement('div');
-      toast.className = 'bg-stone-900/90 text-white text-xs font-semibold px-3.5 py-2.5 rounded-xl shadow-lg backdrop-blur-xs flex items-center gap-2 border border-stone-700 animate-in fade-in slide-in-from-bottom-2 duration-200 pointer-events-auto';
-      toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
-      container.appendChild(toast);
-
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
+      card.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchEndX - touchStartX;
+        if (Math.abs(diff) > 50) {
+          if (diff < 0) nextFlashcard();
+          else prevFlashcard();
+        }
+      }, { passive: true });
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      loadStoredPreferences();
-      initSpeechSynthesisVoices();
-      setupTouchGestures();
-      
-      // Carrega inicial des del directori /corpus/
-      scanAndLoadCorpusDirectory();
+      loadPersistedData();
+      setupKeyboardShortcuts();
+      setupTouchSwipeGestures();
+      scanAndLoadCorpus();
     });
   </script>
 </body>
