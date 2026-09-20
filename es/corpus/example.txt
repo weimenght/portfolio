@@ -1,0 +1,99 @@
+el ADN	DNA	El análisis de ADN confirmó la identidad del sospechoso.
+el agujero de ozono	ozone hole	El agujero de ozono se ha reducido en los últimos años.
+la aleación	alloy	Esta pieza está hecha de una aleación de acero y titanio.
+el algoritmo	algorithm	El algoritmo de la red social decide qué contenido ves.
+la alteración	alteration / mutation	Se observó una alteración genética en las células afectadas.
+el análisis	analysis	Los resultados del análisis científico se publicarán pronto.
+la aplicación	application / app	Descargué una aplicación nueva para rastrear mi sueño.
+el archivo	file	Por favor, adjunta el archivo PDF en el correo electrónico.
+la arroba	@ symbol	Para mencionarlo, debes poner una arroba antes de su nombre.
+el asteroide	asteroid	Un gran asteroide pasará muy cerca de la Tierra mañana.
+la astronomía	astronomy	Desde niño ha estado fascinado por la astronomía y las estrellas.
+el avance	advance / breakthrough	Este medicamento representa un gran avance médico.
+la avería	breakdown / fault	El sistema sufrió una avería debido a un corte de luz.
+la bacteria	bacteria	Esta bacteria es resistente a los antibióticos comunes.
+la base de datos	database	Toda la información de los clientes está en una base de datos segura.
+la batería	battery	La batería de mi teléfono móvil apenas dura unas horas.
+biológico	biological	Estudian el ciclo biológico de varias especies marinas.
+la búsqueda	search	El motor de búsqueda procesa millones de solicitudes por segundo.
+el cableado	wiring	Tuvieron que cambiar todo el cableado eléctrico del edificio.
+el calentamiento global	global warming	El calentamiento global está derritiendo los polos a gran velocidad.
+la capa de ozono	ozone layer	La capa de ozono nos protege de los rayos ultravioleta.
+la carpeta	folder	Guarda todos estos documentos en la carpeta compartida.
+la célula	cell	La célula es la unidad fundamental de todos los seres vivos.
+la ciencia	science	La ciencia ficción a menudo predice la tecnología del futuro.
+el científico	scientist	El científico ganó el premio Nobel por su investigación sobre vacunas.
+el clic	click	Haz un doble clic en el icono para abrir el programa.
+el código	code	Los programadores pasaron toda la noche escribiendo el código.
+el combustible	fuel	Están buscando una alternativa limpia al combustible fósil.
+la conexión	connection	Mi conexión a internet es muy lenta hoy.
+la configuración	configuration / settings	Puedes cambiar el idioma en el menú de configuración.
+la contraseña	password	Es recomendable usar una contraseña segura y difícil de adivinar.
+la contaminación	pollution	La contaminación del aire es un problema grave en las grandes ciudades.
+contaminar	to pollute	Las fábricas no deben contaminar los ríos cercanos.
+la copia de seguridad	backup	Siempre hago una copia de seguridad de mis archivos importantes.
+el cursor	cursor	Mueve el cursor hacia la esquina superior derecha de la pantalla.
+el daño	damage	El derrame de petróleo causó daños irreparables al ecosistema.
+la deforestación	deforestation	La deforestación amenaza la supervivencia de muchas especies.
+derretir	to melt	El calor excesivo está haciendo que los glaciares se derritan.
+el desarrollo	development	El desarrollo de esta vacuna tardó menos de un año.
+descargar	to download	Tarda mucho en descargar películas con esta conexión.
+el descubrimiento	discovery	El descubrimiento de la penicilina salvó millones de vidas.
+el desecho	waste / rubbish	El manejo de desechos tóxicos requiere mucha precaución.
+el dispositivo	device	Puedes sincronizar tu reloj inteligente con este dispositivo.
+la ecología	ecology	Estudia ecología para entender las relaciones entre los organismos.
+el ecosistema	ecosystem	La selva tropical alberga un ecosistema increíblemente diverso.
+el efecto invernadero	greenhouse effect	Las emisiones de gas aumentan el efecto invernadero.
+el eje	axis	La Tierra gira sobre su propio eje una vez al día.
+la emisión	emission	El objetivo es reducir la emisión de gases contaminantes a cero.
+la energía renovable	renewable energy	La energía renovable, como la solar, es el futuro del planeta.
+el enlace	link	Haz clic en el enlace para acceder a la página web.
+el ensayo	trial / test / essay	El ensayo clínico demostró que el tratamiento es seguro.
+el entorno	environment / surroundings	Debemos adaptar nuestra tecnología para proteger el entorno natural.
+el equipo	equipment / team	Necesitan actualizar el equipo informático de la oficina.
+la especie	species	Esa ave es una especie en peligro de extinción.
+el experimento	experiment	Llevaron a cabo un experimento químico en el laboratorio.
+extinguir	to extinguish / to go extinct	Si no protegemos su hábitat, el tigre se podría extinguir.
+el formato	format	Tienes que guardar la imagen en formato JPEG.
+la fuente de energía	energy source	El sol es la fuente de energía más abundante que tenemos.
+la genética	genetics	La genética determina muchos aspectos de nuestra salud física.
+el genoma	genome	Lograron secuenciar el genoma humano hace un par de décadas.
+el glaciar	glacier	Hicieron una expedición para caminar sobre el enorme glaciar.
+el hardware	hardware	El problema del ordenador no es el sistema operativo, es el hardware.
+la huella de carbono	carbon footprint	Intento viajar en tren para reducir mi huella de carbono.
+imprimir	to print	Voy a imprimir el informe para leerlo en papel.
+la informática	computer science / computing	Mi hermano estudia ingeniería informática en la universidad.
+la innovación	innovation	La innovación tecnológica es clave para el éxito de la empresa.
+instalar	to install	Tengo que instalar un nuevo software antivirus en mi laptop.
+la inteligencia artificial	artificial intelligence	La inteligencia artificial está revolucionando múltiples industrias.
+el invento	invention	El teléfono es uno de los inventos más importantes del siglo XIX.
+la investigación	research	El centro recibió una beca para financiar su investigación médica.
+el investigador	researcher	Un grupo de investigadores descubrió un nuevo exoplaneta.
+el laboratorio	laboratory	Llevan batas blancas por seguridad dentro del laboratorio.
+el láser	laser	La cirugía ocular con láser es muy rápida y precisa.
+el medio ambiente	environment	Es responsabilidad de todos cuidar el medio ambiente.
+el método	method	Aplicaron un método científico riguroso para probar la teoría.
+el microbio	microbe	Hay miles de microbios viviendo en nuestro sistema digestivo.
+el microscopio	microscope	Observaron la estructura de la hoja a través de un microscopio.
+el motor de búsqueda	search engine	Google es el motor de búsqueda más utilizado del mundo.
+la muestra	sample	Tomaron una muestra de agua del río para analizar su pureza.
+el navegador	browser	Uso ese navegador web porque bloquea los anuncios automáticamente.
+nuclear	nuclear	El debate sobre la energía nuclear sigue muy vivo en Europa.
+la nube	cloud (computing/weather)	Tengo todas mis fotos guardadas en la nube para no perderlas.
+la pantalla	screen	Pasar mucho tiempo frente a una pantalla puede cansar la vista.
+el planeta	planet	Marte es el planeta más cercano a la Tierra.
+el plástico	plastic	Una gran cantidad de plástico termina contaminando los océanos.
+la plataforma	platform	Están creando una nueva plataforma digital para la educación a distancia.
+procesar	to process	El chip es capaz de procesar millones de datos por segundo.
+programar	to program	Aprendió a programar en Python de forma autodidacta.
+el químico	chemical / chemist	Limpiaron la superficie con un producto químico muy fuerte.
+la radiación	radiation	Los astronautas están expuestos a mayores niveles de radiación espacial.
+el ratón	mouse (computer/animal)	El ratón inalámbrico dejó de funcionar porque se quedó sin pilas.
+reciclar	to recycle	Es importante reciclar el cartón, el vidrio y los envases plásticos.
+la red	network	Nuestra red Wi-Fi no llega hasta el jardín trasero.
+el residuo	waste / residue	La planta trata los residuos industriales para evitar la contaminación.
+el servidor	server	La página web se cayó porque el servidor estaba sobrecargado.
+el software	software	La última actualización del software ha corregido varios errores.
+el teclado	keyboard	Derramé café sobre el teclado y algunas teclas ya no funcionan.
+la tecnología	technology	La tecnología médica actual permite realizar cirugías menos invasivas.
+el telescopio	telescope	Pudimos ver los anillos de Saturno gracias a este telescopio.
