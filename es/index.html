@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Vocabulario Español — Diccionario & Tarjetas</title>
+  <title>Vocabulario Español — Diccionario & Tarjetas de Memoria</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
-      --es-red: #c60b1e;
-      --es-yellow: #ffc400;
+      --esp-red: #c60b1e;
+      --esp-gold: #ffc400;
     }
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -23,8 +23,17 @@
     .font-mono {
       font-family: 'JetBrains Mono', monospace;
     }
+    /* Bandera Rojigualda de España: franja central doble */
     .bandera-rojigualda {
-      background: linear-gradient(to bottom, #c60b1e 25%, #ffc400 25%, #ffc400 75%, #c60b1e 75%);
+      background: linear-gradient(
+        to bottom,
+        #c60b1e 0%,
+        #c60b1e 25%,
+        #ffc400 25%,
+        #ffc400 75%,
+        #c60b1e 75%,
+        #c60b1e 100%
+      );
     }
     .perspective-1000 {
       perspective: 1000px;
@@ -54,32 +63,32 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #a8a29e;
     }
-    @keyframes pulse-subtle {
+    @keyframes pulse-gentle {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.85; transform: scale(1.02); }
     }
-    .animate-pulse-subtle {
-      animation: pulse-subtle 2.5s infinite ease-in-out;
+    .animate-pulse-gentle {
+      animation: pulse-gentle 2.5s infinite ease-in-out;
     }
   </style>
 </head>
 <body class="min-h-full flex flex-col text-stone-900 selection:bg-amber-200 selection:text-red-950">
 
-  <!-- Franja Superior Rojigualda -->
-  <div class="h-2 w-full bandera-rojigualda fixed top-0 left-0 z-40 shadow-xs"></div>
+  <!-- Franja Superior Rojigualda de España -->
+  <div class="h-2.5 w-full bandera-rojigualda fixed top-0 left-0 z-40 shadow-xs"></div>
 
-  <!-- Barra de progreso mínima superior -->
-  <div id="corpusProgressBarTrack" class="fixed top-2 left-0 w-full h-1 bg-stone-200/50 z-40 transition-opacity duration-300 opacity-0 pointer-events-none">
+  <!-- Barra de progreso sutil superior -->
+  <div id="corpusProgressBarTrack" class="fixed top-2.5 left-0 w-full h-1 bg-stone-200/50 z-40 transition-opacity duration-300 opacity-0 pointer-events-none">
     <div id="corpusProgressBar" class="h-full bg-gradient-to-r from-red-600 via-amber-400 to-red-600 transition-all duration-200 w-0"></div>
   </div>
 
   <!-- Barra de Navegación Principal -->
-  <header class="sticky top-2 z-30 bg-white/95 backdrop-blur-md border-b border-amber-200/60 shadow-xs">
+  <header class="sticky top-2.5 z-30 bg-white/95 backdrop-blur-md border-b border-amber-200/60 shadow-xs">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
       
       <!-- Logotipo & Título -->
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-600 to-amber-500 text-white flex items-center justify-center font-black text-lg shadow-sm">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-600 via-amber-500 to-red-700 text-white flex items-center justify-center font-black text-lg shadow-sm border border-amber-300">
           ES
         </div>
         <div>
@@ -124,7 +133,7 @@
         </button>
       </nav>
 
-      <!-- Acciones de Utilidad (Índice, Cuaderno, Diagnóstico) -->
+      <!-- Botones de Utilidad (Índice A-Z y Cuaderno de Guardadas) -->
       <div class="flex items-center gap-1.5 sm:gap-2">
         <button 
           type="button" 
@@ -140,7 +149,7 @@
           type="button" 
           onclick="toggleSavedDrawer()" 
           title="Cuaderno de palabras guardadas"
-          class="relative p-2 rounded-xl text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-300 transition-colors"
+          class="relative p-2 rounded-xl text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-300 transition-colors"
         >
           <svg class="w-4 h-4 fill-amber-500 text-amber-600" viewBox="0 0 20 20">
             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
@@ -157,26 +166,26 @@
   <main class="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 pb-20">
 
     <!-- ========================================== -->
-    <!-- VISTA 1: DICCIONARIO (BÚSQUEDA Y RESULTADO) -->
+    <!-- VISTA 1: DICCIONARIO (BÚSQUEDA Y RESULTADOS)-->
     <!-- ========================================== -->
     <section id="viewDictionary" class="space-y-6">
       
-      <!-- Hero de Búsqueda Centrado y Limpio -->
+      <!-- Caja de Búsqueda Principal -->
       <div class="bg-gradient-to-b from-white via-amber-50/30 to-white rounded-3xl p-6 sm:p-10 border border-amber-200/70 shadow-sm text-center relative overflow-hidden">
         <div class="absolute -top-24 -right-24 w-48 h-48 bg-amber-200/40 rounded-full blur-3xl pointer-events-none"></div>
         <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-red-100/40 rounded-full blur-3xl pointer-events-none"></div>
         
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200 mb-3 shadow-2xs">
-          <span>🇪🇸</span> Explorador Lexicográfico
+          <span>🇪🇸</span> Explorador Lexicográfico Español
         </span>
         <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-stone-900 font-display mb-2">
           ¿Qué palabra deseas consultar?
         </h2>
         <p class="text-xs sm:text-sm text-stone-600 max-w-md mx-auto mb-6">
-          Busca en tiempo real sobre todos los archivos cargados en el servidor <code class="text-amber-900 font-mono bg-amber-100 px-1 py-0.5 rounded">/corpus/</code>.
+          Búsqueda en tiempo real en todos los archivos cargados desde el directorio <code class="text-amber-900 font-mono bg-amber-100 px-1 py-0.5 rounded">/corpus/</code>.
         </p>
 
-        <!-- Buscador con Autocompletado -->
+        <!-- Formulario de Búsqueda con Autocompletado -->
         <div class="relative max-w-xl mx-auto">
           <form onsubmit="event.preventDefault(); executeSearch();" class="relative flex items-center">
             <input 
@@ -207,24 +216,24 @@
               </button>
               <button 
                 type="submit" 
-                class="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs active:scale-95 transition-all"
+                class="px-4 py-2 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs active:scale-95 transition-all"
               >
                 Buscar
               </button>
             </div>
           </form>
 
-          <!-- Menú Flotante de Autocompletado -->
+          <!-- Menú de Autocompletado -->
           <div id="autocompleteMenu" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl border border-amber-200/80 shadow-xl overflow-hidden z-20 text-left max-h-64 overflow-y-auto"></div>
         </div>
 
-        <!-- Palabras Rápidas Sugeridas -->
+        <!-- Sugerencias Rápidas -->
         <div class="mt-4 flex flex-wrap items-center justify-center gap-1.5 text-xs">
           <span class="text-stone-400 font-medium">Ejemplos:</span>
           <button type="button" onclick="quickLookup('algoritmo')" class="px-2 py-1 rounded-lg bg-white hover:bg-amber-100 text-stone-700 hover:text-amber-900 border border-stone-200 transition-colors font-mono">algoritmo</button>
           <button type="button" onclick="quickLookup('software')" class="px-2 py-1 rounded-lg bg-white hover:bg-amber-100 text-stone-700 hover:text-amber-900 border border-stone-200 transition-colors font-mono">software</button>
           <button type="button" onclick="quickLookup('aleación')" class="px-2 py-1 rounded-lg bg-white hover:bg-amber-100 text-stone-700 hover:text-amber-900 border border-stone-200 transition-colors font-mono">aleación</button>
-          <button type="button" onclick="pickRandomWord()" class="px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold border border-amber-300 transition-colors flex items-center gap-1">
+          <button type="button" onclick="pickRandomWord()" class="px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold border border-amber-300 transition-colors flex items-center gap-1">
             <span>🎲</span> Aleatoria
           </button>
         </div>
@@ -233,7 +242,7 @@
       <!-- Tarjeta de Resultado del Diccionario -->
       <div id="dictionaryResultCard" class="hidden bg-white rounded-3xl p-6 sm:p-8 border border-amber-200 shadow-md space-y-6">
         
-        <!-- Cabecera de la Palabra -->
+        <!-- Cabecera del Término -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-100">
           <div>
             <div class="flex items-center gap-3">
@@ -246,7 +255,7 @@
                 type="button" 
                 onclick="speakCurrentDictWord()" 
                 class="inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-lg transition-colors border border-red-200"
-                title="Escuchar pronunciación"
+                title="Escuchar pronunciación en español"
               >
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
@@ -256,7 +265,7 @@
             </div>
           </div>
 
-          <!-- Botones de Acción sobre la palabra -->
+          <!-- Acciones sobre la palabra -->
           <div class="flex items-center gap-2">
             <button 
               type="button" 
@@ -272,7 +281,7 @@
             <button 
               type="button" 
               onclick="sendToFlashcardsView()" 
-              class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-600 text-stone-950 shadow-xs transition-transform active:scale-95 flex items-center gap-1.5"
+              class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-400 hover:bg-amber-500 text-stone-950 shadow-xs transition-transform active:scale-95 flex items-center gap-1.5"
             >
               <span>Practicar en Tarjeta</span>
               <span>→</span>
@@ -280,7 +289,7 @@
           </div>
         </div>
 
-        <!-- Traducción en Inglés -->
+        <!-- Significado en Inglés -->
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider text-stone-400 mb-1">
             Significado en Inglés:
@@ -298,7 +307,7 @@
 
         <!-- Archivo de Procedencia -->
         <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-xs text-stone-400">
-          <span>Fuente(s) en servidor:</span>
+          <span>Fuente(s) en el servidor:</span>
           <span id="dictResultSources" class="font-mono text-stone-600 font-medium"></span>
         </div>
       </div>
@@ -310,22 +319,22 @@
     <!-- ========================================== -->
     <section id="viewFlashcards" class="hidden space-y-6">
 
-      <!-- Panel de Control y Filtro de Mazos -->
+      <!-- Barra de Filtro de Colección y Botón de Barajar -->
       <div class="bg-white rounded-3xl p-4 sm:p-5 border border-amber-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         
         <div class="flex items-center gap-3">
-          <label class="text-xs font-bold text-stone-500 uppercase tracking-wider whitespace-nowrap">Mazo:</label>
+          <label class="text-xs font-bold text-stone-500 uppercase tracking-wider whitespace-nowrap">Colección:</label>
           <select 
             id="fcDeckFilter" 
             onchange="handleDeckFilterChange()" 
             class="w-full sm:w-auto text-xs sm:text-sm font-semibold px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400 text-stone-900"
           >
             <option value="all">Todo el Corpus</option>
-            <option value="saved">⭐ Guardadas en Cuaderno</option>
+            <option value="saved">⭐ Guardadas en el Cuaderno</option>
           </select>
         </div>
 
-        <!-- Contadores de Maestría y Barajado -->
+        <!-- Contadores de Dominio y Botón Barajar -->
         <div class="flex items-center justify-between sm:justify-end gap-3 text-xs">
           <div class="flex items-center gap-2">
             <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
@@ -347,7 +356,7 @@
         </div>
       </div>
 
-      <!-- Barra de Progreso del Mazo -->
+      <!-- Barra de Progreso de la Sesión -->
       <div class="space-y-1">
         <div class="flex items-center justify-between text-xs text-stone-500 font-medium px-1">
           <span>Progreso de sesión:</span>
@@ -365,7 +374,7 @@
       <div class="perspective-1000 w-full max-w-xl mx-auto h-80 sm:h-96 select-none cursor-pointer" onclick="flipFlashcard()">
         <div id="flashcardElement" class="relative w-full h-full transform-style-3d transition-transform duration-500 rounded-3xl shadow-xl border-2 border-amber-300">
           
-          <!-- CARA 1 (FRONT): Término Español + Pronunciación -->
+          <!-- CARA 1 (FRONT): Término en Español + Audio -->
           <div class="absolute inset-0 w-full h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between backface-hidden bg-gradient-to-b from-white via-amber-50/20 to-orange-50/30">
             <div class="flex items-center justify-between text-xs">
               <div class="flex items-center gap-1.5">
@@ -377,7 +386,7 @@
                 </span>
               </div>
               <span class="text-stone-400 font-medium flex items-center gap-1">
-                <span>Toca para voltear</span>
+                <span>Toca para girar</span>
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                 </svg>
@@ -393,7 +402,7 @@
                   type="button" 
                   onclick="event.stopPropagation(); speakCurrentFlashcard();" 
                   class="p-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 transition-colors border border-red-200"
-                  title="Reproducir audio"
+                  title="Reproducir audio en español"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
@@ -409,14 +418,14 @@
             </div>
           </div>
 
-          <!-- CARA 2 (BACK): Significado en Inglés + Frase de Ejemplo -->
+          <!-- CARA 2 (BACK): Traducción en Inglés + Contexto Real -->
           <div class="absolute inset-0 w-full h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between backface-hidden rotate-y-180 bg-gradient-to-b from-stone-900 via-stone-900 to-stone-950 text-white border-2 border-amber-400">
             <div class="flex items-center justify-between text-xs">
               <span class="px-2.5 py-1 rounded-full bg-amber-400/20 text-amber-300 font-bold border border-amber-400/40">
                 Significado & Ejemplo
               </span>
               <span class="text-stone-400 font-medium flex items-center gap-1">
-                <span>Voltear al frente</span>
+                <span>Girar al frente</span>
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                 </svg>
@@ -447,16 +456,16 @@
 
             <!-- Pie del Back -->
             <div class="text-center text-[11px] text-stone-400">
-              Usa las teclas <kbd class="bg-stone-800 px-1 py-0.5 rounded text-amber-300">Espacio</kbd> o flechas <kbd class="bg-stone-800 px-1 py-0.5 rounded text-amber-300">←</kbd> <kbd class="bg-stone-800 px-1 py-0.5 rounded text-amber-300">→</kbd>
+              Usa <kbd class="bg-stone-800 px-1 py-0.5 rounded text-amber-300">Espacio</kbd> o las flechas <kbd class="bg-stone-800 px-1 py-0.5 rounded text-amber-300">←</kbd> <kbd class="bg-stone-800 px-1 py-0.5 rounded text-amber-300">→</kbd>
             </div>
           </div>
 
         </div>
       </div>
 
-      <!-- Botones de Navegación y Calificación -->
+      <!-- Botones de Navegación y Evaluación -->
       <div class="max-w-xl mx-auto flex flex-col gap-3">
-        <!-- Navegación Prev / Flip / Next -->
+        <!-- Navegación Anterior / Girar / Siguiente -->
         <div class="grid grid-cols-3 gap-2">
           <button 
             type="button" 
@@ -469,9 +478,9 @@
           <button 
             type="button" 
             onclick="flipFlashcard()" 
-            class="py-3 px-4 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-extrabold rounded-2xl shadow-xs transition-transform active:scale-95 flex items-center justify-center gap-1 text-xs sm:text-sm"
+            class="py-3 px-4 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-stone-950 font-extrabold rounded-2xl shadow-xs transition-transform active:scale-95 flex items-center justify-center gap-1 text-xs sm:text-sm"
           >
-            <span>Voltear</span>
+            <span>Girar</span>
           </button>
           <button 
             type="button" 
@@ -483,15 +492,15 @@
           </button>
         </div>
 
-        <!-- Botones de Estudio: Por Repasar vs Dominada -->
+        <!-- Botones de Estudio: Repasar vs Dominada -->
         <div class="grid grid-cols-2 gap-2">
           <button 
             type="button" 
             onclick="markFlashcardStatus('review')" 
-            class="py-2.5 px-4 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-bold rounded-2xl transition-colors flex items-center justify-center gap-1.5 text-xs"
+            class="py-2.5 px-4 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-950 font-bold rounded-2xl transition-colors flex items-center justify-center gap-1.5 text-xs"
           >
             <span>⏳</span>
-            <span>Marcar por Repasar (1)</span>
+            <span>Marcar para Repasar (1)</span>
           </button>
           <button 
             type="button" 
@@ -509,7 +518,7 @@
   </main>
 
   <!-- ========================================== -->
-  <!-- MODAL PROMINENTE: PROGRESO DE CARGA CORPUS -->
+  <!-- MODAL PROMINENTE: PROGRESIÓN DE CARGA      -->
   <!-- ========================================== -->
   <div id="corpusLoadingModal" class="fixed inset-0 z-50 bg-stone-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 transition-opacity duration-300">
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border-2 border-amber-300 overflow-hidden transform transition-all">
@@ -518,7 +527,7 @@
       <div class="p-5 sm:p-6 space-y-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-600 to-amber-500 text-white flex items-center justify-center shadow-md animate-pulse">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-600 via-amber-500 to-red-700 text-white flex items-center justify-center shadow-md animate-pulse">
               <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -526,7 +535,7 @@
             </div>
             <div>
               <h3 id="modalLoadingTitle" class="text-base font-bold text-stone-900 font-display">
-                Sincronizando Corpus...
+                Sincronizando el Corpus...
               </h3>
               <p class="text-xs text-stone-500">Buscando archivos .txt en /corpus/</p>
             </div>
@@ -557,7 +566,7 @@
           </div>
         </div>
 
-        <!-- Fichas de archivos cargados -->
+        <!-- Ficheros cargados -->
         <div>
           <label class="block text-[11px] font-bold text-stone-600 uppercase tracking-wider mb-1.5">
             Archivos procesados:
@@ -567,12 +576,39 @@
           </div>
         </div>
 
-        <!-- Entrada para añadir nombre de archivo manualmente -->
+        <!-- Aviso y botones directos si el servidor no permite listar automáticamente -->
+        <div id="modalAutoScanNotice" class="hidden p-3 bg-amber-50 border border-amber-300 rounded-2xl text-xs space-y-2">
+          <p class="text-amber-950 font-medium">
+            💡 <strong>Aviso:</strong> El servidor no permite listar automáticamente el directorio <code class="bg-amber-100 px-1 py-0.5 rounded font-mono">/corpus/</code> o estás ejecutando la página en local (<code class="font-mono">file://</code>).
+          </p>
+          <div class="flex flex-wrap gap-2 pt-1">
+            <button 
+              type="button" 
+              onclick="document.getElementById('corpusFolderPicker').click()" 
+              class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95 flex items-center gap-1.5"
+            >
+              <span>📁</span> Elegir carpeta /corpus/
+            </button>
+            <button 
+              type="button" 
+              onclick="document.getElementById('corpusFilesPicker').click()" 
+              class="px-3 py-1.5 bg-stone-800 hover:bg-stone-900 text-white rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95 flex items-center gap-1.5"
+            >
+              <span>📄</span> Elegir archivos .txt
+            </button>
+          </div>
+        </div>
+
+        <!-- Inputs ocultos para cargar carpeta o archivos directamente -->
+        <input type="file" id="corpusFolderPicker" webkitdirectory directory multiple class="hidden" onchange="handleLocalFolderPicker(event)">
+        <input type="file" id="corpusFilesPicker" accept=".txt" multiple class="hidden" onchange="handleLocalFilesPicker(event)">
+
+        <!-- Formulario para añadir nombre de archivo manualmente -->
         <div class="pt-2 border-t border-stone-100 flex items-center gap-2">
           <input 
             type="text" 
             id="modalCustomFilenameInput" 
-            placeholder="Ej: vocabulario2.txt o batch_2.txt" 
+            placeholder="Ej: vocabulario.txt o batch_1.txt" 
             class="flex-1 text-xs px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
             onkeydown="if(event.key==='Enter') addCustomServerFile()"
           />
@@ -613,7 +649,7 @@
         </button>
       </div>
 
-      <!-- Barra de filtrado en el índice -->
+      <!-- Filtro en el índice -->
       <div class="p-3 sm:p-4 bg-stone-50 border-b border-stone-100 flex flex-col sm:flex-row gap-2">
         <input 
           type="text" 
@@ -631,7 +667,7 @@
         </select>
       </div>
 
-      <!-- Lista A-Z de Palabras -->
+      <!-- Lista de palabras -->
       <div id="indexWordsList" class="flex-1 overflow-y-auto p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs"></div>
     </div>
   </div>
@@ -655,86 +691,102 @@
 
       <div class="p-3 bg-amber-50 border-b border-amber-100 text-xs text-amber-950 flex items-center justify-between">
         <span>Las palabras guardadas se priorizan en las Tarjetas.</span>
-        <button type="button" onclick="clearAllSavedWords()" class="text-red-700 font-bold hover:underline">Limpiar</button>
+        <button type="button" onclick="clearAllSavedWords()" class="text-red-700 font-bold hover:underline">Vaciar</button>
       </div>
 
       <div id="savedWordsListContainer" class="flex-1 overflow-y-auto p-4 divide-y divide-stone-100"></div>
     </div>
   </div>
 
-  <!-- Notificaciones Toast -->
+  <!-- Contenedor de Notificaciones Toast -->
   <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <script>
     /* ==========================================================
-       ESTADO GLOBAL DE LA APLICACIÓN
+       ESTADO GLOBAL DE LA APLICACIÓN (ESPAÑOL)
        ========================================================== */
     const State = {
-      corpus: [],            // Lista de entradas procesadas [{ word, meaningEn, examples: [], sourceFiles: [], ipa, grammar }]
-      corpusMap: new Map(),  // Mapa para búsqueda O(1) con normalización
+      corpus: [],            // Lista de entradas [{ word, meaningEn, examples: [], sourceFiles: [], ipa, grammar }]
+      corpusMap: new Map(),  // Mapa para búsqueda O(1) normalizada
       loadedFiles: [],       // Archivos cargados [{ name, count }]
-      savedWords: new Set(), // Palabras marcadas con estrella
-      fcMastered: new Set(), // IDs de tarjetas dominadas
-      fcReview: new Set(),   // IDs de tarjetas para repasar
+      savedWords: new Set(), // Palabras destacadas en el cuaderno
+      fcMastered: new Set(), // Palabras dominadas en flashcards
+      fcReview: new Set(),   // Palabras marcadas para repasar
       fcDeck: [],            // Mazo actual en estudio
       fcIndex: 0,            // Índice de la tarjeta actual
-      fcIsFlipped: false,    // Estado de volteo de la tarjeta
+      fcIsFlipped: false,    // Estado de giro de la tarjeta
       activeView: 'dictionary', // 'dictionary' | 'flashcards'
       currentDictEntry: null    // Palabra activa en el diccionario
     };
 
     /* Rutas candidatas para el directorio corpus */
-    const CORPUS_PATHS = ['corpus/', './corpus/', '/corpus/'];
+    const CORPUS_PATHS = ['corpus/', '/corpus/'];
 
-    /* Corpus de respaldo inicial en caso de que el servidor no tenga archivos aún */
-    const SEED_CORPUS_RAW = `el software	software	Debemos actualizar el software de gestión interna.
-el algoritmo	algorithm	El algoritmo procesa millones de datos por segundo.
-la aleación	alloy	Esta pieza está hecha de una aleación de acero y titanio.
-la alteración	alteration / mutation	Se observó una alteración genética en las células.
-el análisis	analysis	Los resultados del análisis se publicarán pronto.
-la batería	battery	La batería del vehículo apenas dura unas horas.
-el desarrollo	development	El desarrollo de este programa tardó seis meses.
-el dispositivo	device	Puedes sincronizar tu teléfono con este dispositivo.
-la energía renovable	renewable energy	La energía renovable es el futuro del planeta.
-el microscopio	microscope	Observaron la muestra con un microscopio de alta resolución.`;
+    /* Petición fetch resiliente con límite de tiempo para evitar bloqueos infinitos */
+    async function fetchWithTimeout(url, options = {}, timeoutMs = 1400) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = await fetch(url, { ...options, signal: controller.signal });
+        clearTimeout(timeoutId);
+        return response;
+      } catch (err) {
+        clearTimeout(timeoutId);
+        throw err;
+      }
+    }
 
-    /* Normalización fonética y de artículos para búsquedas en español */
+    /* Corpus inicial de seguridad en español */
+    const SEED_CORPUS_RAW = `el software\tsoftware\tEs necesario actualizar el software de gestión interna.
+el algoritmo\talgorithm\tEl algoritmo procesa millones de datos por segundo.
+la aleación\talloy\tEsta pieza está hecha de una aleación de acero y titanio.
+la alteración\talteration / mutation\tSe detectó una alteración genética en las células.
+el análisis\tanalysis\tLos resultados del análisis se publicarán pronto.
+la batería\tbattery\tLa batería del vehículo eléctrico dura muchas horas.
+el desarrollo\tdevelopment\tEl desarrollo de este proyecto duró seis meses.
+el dispositivo\tdevice\tPuedes conectar tu teléfono con este dispositivo.
+la energía renovable\trenewable energy\tLa energía renovable es fundamental para el futuro del planeta.
+el microscopio\tmicroscope\tExaminaron la muestra con un microscopio de alta precisión.`;
+
+    /* Normalización de caracteres y artículos en español */
     function normalizeSpanish(text) {
       if (!text) return '';
       return text.toLowerCase()
         .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '') // Quitar tildes
-        .replace(/^(el|la|los|las|un|una|unos|unas)\s+/, '') // Quitar artículos iniciales
+        .replace(/[\u0300-\u036f]/g, '') // Quitar acentos y diacríticos
+        .replace(/^(el|la|los|las|un|una|unos|unas)\s+/, '') // Quitar artículos
         .trim();
     }
 
+    /* Generador fonético IPA adaptado al español */
     function generateSpanishIPA(word) {
       if (!word) return '';
       let clean = word.toLowerCase().trim();
-      clean = clean.replace(/^(el|la|los|las|un|una)\s+/, '');
+      clean = clean.replace(/^(el|la|los|las|un|una)\s*/, '');
       let ipa = clean
         .replace(/ch/g, 'tʃ')
-        .replace(/ll/g, 'ʎ')
+        .replace(/ll/g, 'ʝ')
+        .replace(/y(?=[aeiouáéíóú])/g, 'ʝ')
         .replace(/rr/g, 'r')
         .replace(/r/g, 'ɾ')
-        .replace(/ñ/g, 'ɲ')
-        .replace(/qu/g, 'k')
+        .replace(/qu([eiéí])/g, 'k$1')
         .replace(/gu([eiéí])/g, 'ɡ$1')
-        .replace(/g([eiéí])/g, 'x$1')
-        .replace(/j/g, 'x')
+        .replace(/gü([eiéí])/g, 'ɡw$1')
         .replace(/c([eiéí])/g, 'θ$1')
         .replace(/z/g, 'θ')
-        .replace(/c/g, 'k')
+        .replace(/j/g, 'x')
+        .replace(/g([eiéí])/g, 'x$1')
         .replace(/v/g, 'b');
       return `[${ipa}]`;
     }
 
+    /* Inferencia de categoría gramatical en español */
     function guessGrammar(word) {
       const clean = word.toLowerCase().trim();
       if (clean.startsWith('el ')) return 'sustantivo masc.';
       if (clean.startsWith('la ')) return 'sustantivo fem.';
       if (clean.endsWith('ar') || clean.endsWith('er') || clean.endsWith('ir')) return 'verbo';
-      if (clean.endsWith('ble') || clean.endsWith('al') || clean.endsWith('ico') || clean.endsWith('ica')) return 'adjetivo';
+      if (clean.endsWith('ble') || clean.endsWith('al') || clean.endsWith('ico') || clean.endsWith('ica') || clean.endsWith('oso') || clean.endsWith('osa')) return 'adjetivo';
       return 'sustantivo';
     }
 
@@ -747,7 +799,7 @@ el microscopio	microscope	Observaron la muestra con un microscopio de alta resol
         const review = localStorage.getItem('esp_fc_review');
         if (review) State.fcReview = new Set(JSON.parse(review));
       } catch (e) {
-        console.warn("Storage no accesible:", e);
+        console.warn("Almacenamiento no accesible:", e);
       }
       updateSavedBadge();
     }
@@ -773,14 +825,15 @@ el microscopio	microscope	Observaron la muestra con un microscopio de alta resol
       }, 2500);
     }
 
+    /* Síntesis de Voz Web Speech API en Español (es-ES) */
     function speakSpanish(text) {
       if (!('speechSynthesis' in window) || !text) return;
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'es-ES';
-      utterance.rate = 0.92;
+      utterance.rate = 0.94;
       const voices = window.speechSynthesis.getVoices();
-      const esVoice = voices.find(v => v.lang === 'es-ES') || voices.find(v => v.lang.startsWith('es'));
+      const esVoice = voices.find(v => v.lang === 'es-ES' || v.lang === 'es_ES') || voices.find(v => v.lang.startsWith('es'));
       if (esVoice) utterance.voice = esVoice;
       window.speechSynthesis.speak(utterance);
     }
@@ -830,83 +883,104 @@ el microscopio	microscope	Observaron la muestra con un microscopio de alta resol
     async function discoverFilesFromDirectory() {
       const discovered = new Set();
 
-      // 1. Probar manifiestos estructurados
-      const manifests = ['files.json', 'corpus.json', 'manifest.json', 'list.txt', 'files.txt'];
-      for (const basePath of CORPUS_PATHS) {
-        for (const man of manifests) {
-          try {
-            const res = await fetch(`${basePath}${man}`, { cache: 'no-cache' });
-            if (res.ok) {
-              if (man.endsWith('.json')) {
-                const list = await res.json();
-                if (Array.isArray(list)) {
-                  list.forEach(item => {
-                    const fn = typeof item === 'string' ? item : (item.name || item.file);
-                    if (fn && fn.endsWith('.txt')) discovered.add(fn);
-                  });
-                }
-              } else {
-                const txt = await res.text();
-                txt.split(/\r?\n/).forEach(f => {
-                  const tr = f.trim();
-                  if (tr && tr.endsWith('.txt')) discovered.add(tr);
-                });
-              }
-            }
-          } catch (e) {}
-        }
+      // En modo local file:///, el navegador bloquea fetch por seguridad (CORS)
+      if (window.location.protocol === 'file:') {
+        console.warn("Detectado entorno local file:///. fetch está restringido por el navegador.");
+        return [];
       }
 
-      // 2. Inspeccionar listados de directorio (Apache/Nginx/Python)
+      // 1. Buscar manifiestos estructurados en paralelo
+      const manifests = ['files.json', 'corpus.json', 'manifest.json', 'list.txt', 'files.txt'];
+      const manifestPromises = [];
+
       for (const basePath of CORPUS_PATHS) {
+        for (const man of manifests) {
+          manifestPromises.push(
+            fetchWithTimeout(`${basePath}${man}`, { cache: 'no-cache' }, 1200)
+              .then(async res => {
+                if (!res.ok) return;
+                if (man.endsWith('.json')) {
+                  const list = await res.json();
+                  if (Array.isArray(list)) {
+                    list.forEach(item => {
+                      const fn = typeof item === 'string' ? item : (item.name || item.file);
+                      if (fn && fn.toLowerCase().endsWith('.txt')) discovered.add(fn);
+                    });
+                  }
+                } else {
+                  const txt = await res.text();
+                  txt.split(/\r?\n/).forEach(f => {
+                    const tr = f.trim();
+                    if (tr && tr.toLowerCase().endsWith('.txt')) discovered.add(tr);
+                  });
+                }
+              })
+              .catch(() => {})
+          );
+        }
+      }
+      await Promise.allSettled(manifestPromises);
+
+      // 2. Probar autoíndice del servidor (Apache, Nginx, Python) en paralelo
+      const dirPromises = CORPUS_PATHS.map(async basePath => {
         try {
-          const res = await fetch(basePath, { cache: 'no-cache' });
+          const res = await fetchWithTimeout(basePath, { cache: 'no-cache' }, 1500);
           if (res.ok) {
-            const html = await res.text();
-            // Regex para enlaces que apuntan a archivos .txt
-            const regex = /href=["']?([^"' >\n\r\t]+\.txt)(?:[?#][^"' >\n\r\t]*)?["']?/gi;
-            let match;
-            while ((match = regex.exec(html)) !== null) {
-              let fn = match[1];
-              if (fn.includes('/')) fn = fn.split('/').pop();
-              try { fn = decodeURIComponent(fn); } catch (e) {}
-              if (fn && fn.toLowerCase().endsWith('.txt')) discovered.add(fn);
+            const contentType = res.headers.get('content-type') || '';
+            if (contentType.includes('json')) {
+              const list = await res.json();
+              if (Array.isArray(list)) {
+                list.forEach(item => {
+                  const fn = typeof item === 'string' ? item : item.name;
+                  if (fn && fn.toLowerCase().endsWith('.txt')) discovered.add(fn);
+                });
+              }
+            } else {
+              const html = await res.text();
+              const regex = /href=["']?([^"' >\n\r\t]+\.txt)(?:[?#][^"' >\n\r\t]*)?["']?/gi;
+              let match;
+              while ((match = regex.exec(html)) !== null) {
+                let fn = match[1];
+                if (fn.includes('/')) fn = fn.split('/').pop();
+                try { fn = decodeURIComponent(fn); } catch (e) {}
+                if (fn && fn.toLowerCase().endsWith('.txt')) discovered.add(fn);
+              }
             }
           }
         } catch (e) {}
-      }
+      });
+      await Promise.allSettled(dirPromises);
 
-      // 3. Prospección automática de lotes comunes (Batch 1-30, vocab, etc.)
+      // 3. Prospección rápida en paralelo de nombres habituales
       const probeList = [
         'example.txt', 'ejemplo.txt', 'ciencia.txt', 'tecnologia.txt',
         'vocabulario.txt', 'vocab.txt', 'palabras.txt', 'corpus.txt',
-        'Spanish_B2_Corpus_Science_Tech_Batch_12.txt'
+        'Spanish_B2_Corpus_Science_Tech_Batch_12.txt', 'Spanish_Corpus_Batch_1.txt'
       ];
-      for (let i = 1; i <= 25; i++) {
-        probeList.push(`Spanish_B2_Corpus_Science_Tech_Batch_${i}.txt`);
+      for (let i = 1; i <= 15; i++) {
         probeList.push(`batch_${i}.txt`);
         probeList.push(`vocab_${i}.txt`);
+        probeList.push(`Spanish_Corpus_Batch_${i}.txt`);
       }
 
-      // Archivos manuales guardados por el usuario
+      // Archivos personales guardados por el usuario
       try {
         const custom = JSON.parse(localStorage.getItem('esp_custom_files') || '[]');
-        custom.forEach(f => probeList.push(f));
+        custom.forEach(f => { if (!probeList.includes(f)) probeList.push(f); });
       } catch (e) {}
 
-      for (const probe of probeList) {
-        if (!discovered.has(probe)) {
-          for (const basePath of CORPUS_PATHS) {
-            try {
-              const res = await fetch(`${basePath}${probe}`, { method: 'HEAD', cache: 'no-cache' });
-              if (res.ok) {
-                discovered.add(probe);
-                break;
-              }
-            } catch (e) {}
-          }
+      const probePromises = probeList.filter(p => !discovered.has(p)).map(async probe => {
+        for (const basePath of CORPUS_PATHS) {
+          try {
+            const res = await fetchWithTimeout(`${basePath}${probe}`, { method: 'HEAD', cache: 'no-cache' }, 900);
+            if (res.ok) {
+              discovered.add(probe);
+              break;
+            }
+          } catch (e) {}
         }
-      }
+      });
+      await Promise.allSettled(probePromises);
 
       return Array.from(discovered);
     }
@@ -957,55 +1031,8 @@ el microscopio	microscope	Observaron la muestra con un microscopio de alta resol
       if (track) track.classList.add('opacity-0');
     }
 
-    async function scanAndLoadCorpus() {
-      openCorpusLoadingModal();
-      setCorpusProgress(15, 'Sondeando directorio /corpus/...', 0);
-
-      const files = await discoverFilesFromDirectory();
-      setCorpusProgress(30, `Procesando ${files.length} archivo(s)...`, 0);
-
-      let allEntries = [];
-      const successfulFiles = [];
-      const totalFiles = Math.max(files.length, 1);
-
-      for (let i = 0; i < files.length; i++) {
-        const filename = files[i];
-        const pct = 30 + Math.round(((i + 1) / totalFiles) * 60);
-        setCorpusProgress(pct, `Cargando: ${filename}`, allEntries.length);
-
-        let content = null;
-        for (const basePath of CORPUS_PATHS) {
-          try {
-            const res = await fetch(`${basePath}${filename}`, { cache: 'no-cache' });
-            if (res.ok) {
-              const text = await res.text();
-              if (text && !text.trim().startsWith('<!DOCTYPE')) {
-                content = text;
-                break;
-              }
-            }
-          } catch (e) {}
-        }
-
-        if (content) {
-          const parsed = parseCorpusLines(content, filename);
-          if (parsed.length > 0) {
-            successfulFiles.push({ name: filename, count: parsed.length });
-            allEntries = allEntries.concat(parsed);
-            State.loadedFiles = [...successfulFiles];
-            setCorpusProgress(pct, `Procesado: ${filename} (${parsed.length} palabras)`, allEntries.length);
-          }
-        }
-      }
-
-      // Si no se halló ningún archivo en /corpus/, cargar el corpus semilla
-      if (allEntries.length === 0) {
-        const seedParsed = parseCorpusLines(SEED_CORPUS_RAW, 'semilla_inicial.txt');
-        allEntries = seedParsed;
-        successfulFiles.push({ name: 'semilla_inicial.txt', count: seedParsed.length });
-        State.loadedFiles = successfulFiles;
-      }
-
+    /* Aplicar un conjunto de entradas al diccionario y tarjetas */
+    function applyCorpusEntries(allEntries, saveToCache = false) {
       State.corpus = [];
       State.corpusMap.clear();
 
@@ -1028,10 +1055,97 @@ el microscopio	microscope	Observaron la muestra con un microscopio de alta resol
         }
       });
 
-      // Actualizar UI
+      if (saveToCache) {
+        try {
+          localStorage.setItem('esp_cached_corpus', JSON.stringify(State.corpus));
+          localStorage.setItem('esp_cached_files', JSON.stringify(State.loadedFiles));
+        } catch (e) {}
+      }
+
       updateStatsUI();
       syncDeckSelectOptions();
       initFlashcardsDeck();
+    }
+
+    async function scanAndLoadCorpus() {
+      openCorpusLoadingModal();
+      const notice = document.getElementById('modalAutoScanNotice');
+      if (notice) notice.classList.add('hidden');
+
+      setCorpusProgress(15, 'Sondeando directorio /corpus/...', 0);
+
+      let files = [];
+      try {
+        files = await discoverFilesFromDirectory();
+      } catch (err) {
+        console.warn("Error durante el sondeo de archivos:", err);
+      }
+
+      setCorpusProgress(40, `Detectados ${files.length} archivo(s)...`, 0);
+
+      let allEntries = [];
+      const successfulFiles = [];
+
+      if (files.length > 0) {
+        const totalFiles = files.length;
+        for (let i = 0; i < totalFiles; i++) {
+          const filename = files[i];
+          const pct = 40 + Math.round(((i + 1) / totalFiles) * 50);
+          setCorpusProgress(pct, `Cargando: ${filename}`, allEntries.length);
+
+          let content = null;
+          for (const basePath of CORPUS_PATHS) {
+            try {
+              const res = await fetchWithTimeout(`${basePath}${filename}`, { cache: 'no-cache' }, 2000);
+              if (res.ok) {
+                const text = await res.text();
+                if (text && !text.trim().startsWith('<!DOCTYPE')) {
+                  content = text;
+                  break;
+                }
+              }
+            } catch (e) {}
+          }
+
+          if (content) {
+            const parsed = parseCorpusLines(content, filename);
+            if (parsed.length > 0) {
+              successfulFiles.push({ name: filename, count: parsed.length });
+              allEntries = allEntries.concat(parsed);
+              State.loadedFiles = [...successfulFiles];
+              setCorpusProgress(pct, `Procesado: ${filename} (${parsed.length} palabras)`, allEntries.length);
+            }
+          }
+        }
+      }
+
+      // Si no se han detectado archivos a través del servidor web
+      if (successfulFiles.length === 0) {
+        if (notice) notice.classList.remove('hidden');
+
+        // Intentar restaurar última sesión de la caché
+        let restoredFromCache = false;
+        try {
+          const cached = localStorage.getItem('esp_cached_corpus');
+          if (cached) {
+            const cachedEntries = JSON.parse(cached);
+            if (Array.isArray(cachedEntries) && cachedEntries.length > 0) {
+              allEntries = cachedEntries;
+              State.loadedFiles = JSON.parse(localStorage.getItem('esp_cached_files') || '[]');
+              restoredFromCache = true;
+            }
+          }
+        } catch (e) {}
+
+        if (!restoredFromCache) {
+          const seedParsed = parseCorpusLines(SEED_CORPUS_RAW, 'semilla_inicial.txt');
+          allEntries = seedParsed;
+          successfulFiles.push({ name: 'semilla_inicial.txt (ejemplo)', count: seedParsed.length });
+          State.loadedFiles = successfulFiles;
+        }
+      }
+
+      applyCorpusEntries(allEntries);
 
       setCorpusProgress(100, `¡Listo! ${State.corpus.length} palabras cargadas`, State.corpus.length);
       const dot = document.getElementById('serverStatusDot');
@@ -1039,7 +1153,70 @@ el microscopio	microscope	Observaron la muestra con un microscopio de alta resol
       const statusText = document.getElementById('headerStatusText');
       if (statusText) statusText.innerText = `${State.loadedFiles.length} archivo(s) activos`;
 
-      setTimeout(closeCorpusLoadingModal, 1800);
+      // Si se cargaron archivos reales del servidor, cerrar automáticamente
+      if (successfulFiles.length > 0 && successfulFiles[0].name !== 'semilla_inicial.txt (ejemplo)') {
+        setTimeout(closeCorpusLoadingModal, 1800);
+      }
+    }
+
+    /* Cargador de archivos locales: selección de carpeta */
+    async function handleLocalFolderPicker(event) {
+      const files = Array.from(event.target.files || []).filter(f => f.name.toLowerCase().endsWith('.txt'));
+      if (files.length === 0) {
+        showToast('No se encontró ningún archivo .txt en la carpeta seleccionada', '⚠️');
+        return;
+      }
+      await processLocalFileList(files);
+    }
+
+    /* Cargador de archivos locales: selección de archivos individuales */
+    async function handleLocalFilesPicker(event) {
+      const files = Array.from(event.target.files || []).filter(f => f.name.toLowerCase().endsWith('.txt'));
+      if (files.length === 0) {
+        showToast('Selecciona uno o más archivos .txt', '⚠️');
+        return;
+      }
+      await processLocalFileList(files);
+    }
+
+    /* Procesamiento directo de los archivos seleccionados desde el navegador */
+    async function processLocalFileList(files) {
+      openCorpusLoadingModal();
+      setCorpusProgress(25, `Procesando ${files.length} archivo(s) locales...`, 0);
+
+      let allEntries = [];
+      const loaded = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const pct = 25 + Math.round(((i + 1) / files.length) * 70);
+        setCorpusProgress(pct, `Leyendo: ${file.name}`, allEntries.length);
+
+        try {
+          const text = await file.text();
+          const parsed = parseCorpusLines(text, file.name);
+          if (parsed.length > 0) {
+            loaded.push({ name: file.name, count: parsed.length });
+            allEntries = allEntries.concat(parsed);
+          }
+        } catch (err) {
+          console.warn("Error leyendo archivo local:", file.name, err);
+        }
+      }
+
+      if (allEntries.length > 0) {
+        State.loadedFiles = loaded;
+        applyCorpusEntries(allEntries, true);
+        setCorpusProgress(100, `¡Cargadas ${State.corpus.length} palabras de ${loaded.length} archivo(s)!`, State.corpus.length);
+
+        const notice = document.getElementById('modalAutoScanNotice');
+        if (notice) notice.classList.add('hidden');
+
+        showToast(`${State.corpus.length} palabras importadas con éxito`, '✅');
+        setTimeout(closeCorpusLoadingModal, 1500);
+      } else {
+        showToast('Los archivos seleccionados no contienen datos de vocabulario válidos', '⚠️');
+      }
     }
 
     function addCustomServerFile() {
@@ -1057,7 +1234,7 @@ el microscopio	microscope	Observaron la muestra con un microscopio de alta resol
         }
       } catch (e) {}
       input.value = '';
-      showToast(`Añadido "${val}". Re-escaneando...`, '📄');
+      showToast(`Añadido "${val}". Re-sondeando directorio...`, '📄');
       scanAndLoadCorpus();
     }
 
@@ -1176,7 +1353,6 @@ el microscopio	microscope	Observaron la muestra con un microscopio de alta resol
       const menu = document.getElementById('autocompleteMenu');
       if (menu) menu.classList.add('hidden');
 
-      // Búsqueda O(1) exacta o prefija
       let entry = State.corpusMap.get(query);
       if (!entry) {
         entry = State.corpus.find(item => normalizeSpanish(item.word) === query) ||
@@ -1214,7 +1390,7 @@ el microscopio	microscope	Observaron la muestra con un microscopio de alta resol
                 type="button" 
                 onclick="speakSpanish('${ex.replace(/'/g, "\\'")}')" 
                 class="text-stone-400 hover:text-red-700 p-1 shrink-0 transition-colors"
-                title="Escuchar frase"
+                title="Escuchar frase en español"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
               </button>
@@ -1284,7 +1460,7 @@ el microscopio	microscope	Observaron la muestra con un microscopio de alta resol
       if (!container) return;
 
       if (State.savedWords.size === 0) {
-        container.innerHTML = `<p class="text-xs text-stone-400 italic text-center py-8">No tienes palabras guardadas todavía.</p>`;
+        container.innerHTML = `<p class="text-xs text-stone-400 italic text-center py-8">No tienes ninguna palabra guardada todavía.</p>`;
         return;
       }
 
@@ -1380,7 +1556,7 @@ el microscopio	microscope	Observaron la muestra con un microscopio de alta resol
 
       if (pool.length === 0) pool = [...State.corpus];
 
-      // Requisito: Aleatorizar y priorizar palabras guardadas (las guardadas aparecen primero, ambas barajadas)
+      // Requisito Clave: Aleatorizar y priorizar las palabras guardadas (van delante, barajadas)
       const savedPart = pool.filter(item => State.savedWords.has(item.word));
       const regularPart = pool.filter(item => !State.savedWords.has(item.word));
 
@@ -1474,7 +1650,7 @@ el microscopio	microscope	Observaron la muestra con un microscopio de alta resol
       } else {
         State.fcReview.add(item.word);
         State.fcMastered.delete(item.word);
-        showToast(`"${item.word}" marcada por repasar`, '⏳');
+        showToast(`"${item.word}" marcada para repasar`, '⏳');
       }
 
       try {
@@ -1523,7 +1699,7 @@ el microscopio	microscope	Observaron la muestra con un microscopio de alta resol
       });
 
       if (filtered.length === 0) {
-        container.innerHTML = `<p class="col-span-2 text-center text-stone-400 py-6 italic">No se encontraron palabras con esos filtros.</p>`;
+        container.innerHTML = `<p class="col-span-2 text-center text-stone-400 py-6 italic">No se encontraron palabras con estos filtros.</p>`;
         return;
       }
 
@@ -1544,7 +1720,6 @@ el microscopio	microscope	Observaron la muestra con un microscopio de alta resol
 
     function setupKeyboardShortcuts() {
       document.addEventListener('keydown', e => {
-        // Ignorar atajos si el usuario escribe en un campo de texto
         if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
 
         if (State.activeView === 'flashcards') {
