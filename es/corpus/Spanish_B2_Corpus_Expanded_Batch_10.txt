@@ -1,0 +1,103 @@
+Format: Word - English Translation - Example Sentence
+============================================================
+
+transformar	to transform	Quieren transformar este viejo edificio en un museo.
+el tránsito	transit / traffic	El tránsito de vehículos pesados está prohibido en esta calle.
+transmitir	to transmit / to broadcast	El partido se va a transmitir en directo por televisión.
+transparente	transparent	El agua de esta playa es tan transparente que puedes ver los peces.
+el transporte	transportation	El transporte público en esta ciudad es muy eficiente.
+tratar	to treat / to deal with	El libro trata sobre la guerra civil española.
+la trayectoria	trajectory / career	Su trayectoria profesional en la empresa ha sido impecable.
+el tribunal	court	El tribunal decidirá mañana si el acusado es culpable o inocente.
+triunfar	to triumph / to succeed	Trabajó muy duro para triunfar en el mundo de la música.
+el truco	trick	El mago no quiso revelar el secreto de su truco.
+ubicar	to locate / to place	Fue difícil ubicar el restaurante en el mapa.
+últimamente	lately	Últimamente me siento muy cansado al final del día.
+el último	the last	Fui el último en llegar a la fiesta anoche.
+únicamente	only / solely	Esa oferta es válida únicamente para estudiantes.
+unir	to unite / to join	Tuvieron que unir fuerzas para terminar el proyecto a tiempo.
+el universo	universe	El estudio del universo es fascinante y complejo.
+untar	to spread (food/cream)	Me gusta untar mantequilla y mermelada en las tostadas.
+urbano	urban	El desarrollo urbano ha destruido muchas zonas verdes.
+la urgencia	urgency / emergency	Fue llevado a la sala de urgencias tras el accidente.
+usado	used / second-hand	Compré un coche usado porque era más barato.
+útil	useful	Aprender otro idioma siempre es una herramienta muy útil.
+la utilidad	usefulness	La utilidad de esta aplicación es indiscutible.
+utilizar	to utilize / to use	Podemos utilizar estos datos para mejorar nuestras ventas.
+vacío	empty	La botella de agua está completamente vacía.
+valer	to be worth / to cost	¿Cuánto puede valer este cuadro antiguo?
+valiente	brave	Fue muy valiente al enfrentarse a sus miedos.
+el valor	value / courage	Esa joya tiene un gran valor sentimental para mi madre.
+valorar	to value / to assess	Es importante valorar el esfuerzo de los demás.
+la vanguardia	vanguard / forefront	Esa empresa está a la vanguardia de la tecnología.
+vanidoso	vain	Es un hombre muy vanidoso, se pasa horas frente al espejo.
+variar	to vary	Los precios pueden variar dependiendo de la temporada alta.
+la variedad	variety	El restaurante ofrece una gran variedad de platos vegetarianos.
+vario	various / several	Hemos discutido este tema en varias ocasiones.
+vasto	vast	El imperio romano controlaba un vasto territorio.
+la vejez	old age	Espera pasar su vejez en una casa cerca del mar.
+la velocidad	velocity / speed	Reduzca la velocidad, hay una escuela cerca.
+vencer	to defeat / to expire	El plazo para pagar la factura va a vencer mañana.
+vender	to sell	Voy a vender mi bicicleta vieja por internet.
+la ventaja	advantage	Saber idiomas es una gran ventaja en el mundo laboral.
+la vergüenza	shame / embarrassment	Me dio mucha vergüenza caerme delante de todos.
+verificar	to verify	Necesitamos verificar tu identidad antes de abrir la cuenta.
+la versión	version	Esta es la última versión del software de edición.
+verter	to pour	Tienes que verter el líquido lentamente en el recipiente.
+vertiginoso	dizzying / rapid	El avance de la inteligencia artificial es vertiginoso.
+el vestido	dress	Se compró un vestido rojo para la fiesta de graduación.
+el vestigio	vestige / trace	Aún quedan vestigios de la antigua muralla romana.
+veterano	veteran	Es un periodista veterano con mucha experiencia.
+viajar	to travel	Me encantaría viajar a Japón el próximo año.
+el viaje	trip / journey	El viaje en tren hasta Madrid duró tres horas.
+la vibración	vibration	Pude sentir la vibración de la música en el suelo.
+vibrar	to vibrate	El teléfono empezó a vibrar en mi bolsillo.
+el vicio	vice / bad habit	Fumar es un vicio muy difícil de dejar.
+la víctima	victim	La víctima del robo fue atendida por la policía.
+la victoria	victory	El equipo celebró su gran victoria con una fiesta.
+la vida	life	La vida en el campo es mucho más tranquila.
+el vidrio	glass (material)	Tuvimos que recoger los pedazos de vidrio roto del suelo.
+viejo	old	Mi coche es muy viejo, necesito comprar uno nuevo.
+el viento	wind	Hoy hace mucho viento, ideal para volar una cometa.
+vigilar	to watch / to guard	El guardia de seguridad se encarga de vigilar la entrada.
+el vigor	vigor / strength	A pesar de su edad, mantiene el vigor de su juventud.
+el vínculo	bond / tie	El vínculo entre una madre y su hijo es muy fuerte.
+la violencia	violence	Condenamos cualquier acto de violencia en el deporte.
+violento	violent	La película era demasiado violenta para los niños.
+virtual	virtual	Tuvimos la reunión de forma virtual por culpa de la pandemia.
+la virtud	virtue	La paciencia es una gran virtud que pocos poseen.
+visible	visible	Las cicatrices de la operación apenas son visibles.
+la visión	vision / sight	Lleva gafas porque tiene problemas de visión.
+la visita	visit	Recibiremos la visita de mis abuelos este fin de semana.
+visitar	to visit	Vamos a visitar varios museos durante nuestro viaje a París.
+la vista	view / sight	Las habitaciones del hotel tienen una vista preciosa al mar.
+vistoso	showy / colorful	Llevaba un sombrero muy vistoso que llamaba la atención.
+vital	vital / essential	El agua es un elemento vital para la supervivencia.
+la viuda	widow	La viuda heredó toda la fortuna de su marido.
+vivir	to live	Me gustaría vivir en una ciudad con un clima más cálido.
+vivo	alive / bright (color)	Afortunadamente, el piloto fue encontrado vivo tras el accidente.
+vociferar	to shout / to yell	El jefe empezó a vociferar al ver el error en el informe.
+volar	to fly	Los pájaros comenzaron a volar hacia el sur por el invierno.
+la voluntad	will / willpower	Dejó de fumar gracias a su increíble fuerza de voluntad.
+voluntario	voluntary / volunteer	Trabajó como voluntario en una ONG durante tres años.
+volver	to return / to go back	Prometió volver a casa antes de que anocheciera.
+votar	to vote	Todos los ciudadanos tienen derecho a votar en las elecciones.
+el voto	vote	El candidato ganó por un solo voto de diferencia.
+la voz	voice	Tiene una voz muy bonita y canta fenomenal.
+vulnerable	vulnerable	Los niños son los más vulnerables en zonas de conflicto.
+yacer	to lie (down) / to be situated	El pueblo yace en el fondo de un valle profundo.
+el yacimiento	deposit (mining/archaeology)	Descubrieron un importante yacimiento romano en la zona.
+ya que	since / because	Ya que estás aquí, ¿puedes ayudarme con esto?
+el yelmo	helmet (armor)	El caballero medieval se puso el yelmo antes de la batalla.
+el yeso	plaster / cast	Tuvo que llevar yeso en el brazo durante un mes.
+la yema	yolk / fingertip	Para esta receta, solo necesitas la yema del huevo.
+el zafiro	sapphire	Le regaló un anillo de oro con un zafiro azul.
+zambullirse	to dive / to plunge	Se zambulló en la piscina para refrescarse.
+la zanja	ditch / trench	Los obreros cavaron una zanja para instalar las tuberías.
+el zapato	shoe	Me aprieta este zapato, creo que me queda pequeño.
+la zona	zone / area	Aparcar en esta zona del centro es casi imposible.
+el zorro	fox	Vimos un zorro cruzando la carretera de noche.
+zumbir / zumbar	to buzz	Podía escuchar a las abejas zumbar alrededor de las flores.
+zurdo	left-handed	Mi hermano es zurdo y le cuesta usar estas tijeras.
+el zurrón	pouch / bag	El pastor guardaba su comida en un viejo zurrón de cuero.
+zuzar	to urge on (a dog) / to incite	No se debe zuzar a los perros para que peleen.

@@ -1,0 +1,104 @@
+Format: Word - English Translation - Example Sentence
+============================================================
+
+el acontecimiento	event	La boda real fue el acontecimiento del año.
+la actualidad	present time / current events	Me gusta leer el periódico para estar al tanto de la actualidad.
+aguantar	to endure / to put up with	No puedo aguantar este calor tan intenso.
+al fin y al cabo	in the end / after all	Al fin y al cabo, lo más importante es la salud.
+el alcalde	mayor	El alcalde inauguró el nuevo parque de la ciudad.
+el alcance	reach / scope	El alcance de esta investigación es verdaderamente global.
+alejarse	to move away	Decidió alejarse de la ciudad para buscar tranquilidad.
+ameno	pleasant / enjoyable	La conferencia fue muy amena y educativa.
+añadir	to add	No olvides añadir sal a la sopa.
+el aparato	device / appliance	Este aparato sirve para medir la presión arterial.
+apenas	barely / hardly	Apenas tuvimos tiempo para comer antes de la reunión.
+aportar	to contribute	Cada miembro del equipo debe aportar nuevas ideas.
+la apuesta	bet / wager	Hicieron una apuesta sobre quién ganaría el partido.
+el archivo	file / archive	Guarda el archivo en la carpeta principal del ordenador.
+arrancar	to start (engine) / to tear out	El coche no quiso arrancar esta mañana debido al frío.
+el asombro	amazement / astonishment	Miró el truco de magia con gran asombro.
+el aspecto	appearance / aspect	El aspecto de la casa mejoró tras la pintura.
+asumir	to assume / to take on	Debes asumir la responsabilidad de tus actos.
+el atasco	traffic jam	Llegué tarde por culpa de un gran atasco en la autopista.
+atreverse	to dare	No me atrevo a saltar desde tan alto.
+el avance	advance / progress	El avance tecnológico ha cambiado nuestras vidas.
+averiguar	to find out / to discover	Voy a averiguar a qué hora empieza el concierto.
+el ayuntamiento	city council / town hall	Fui al ayuntamiento para pagar mis impuestos locales.
+la beca	scholarship / grant	Consiguió una beca para estudiar en la universidad.
+el bienestar	well-being	El yoga es excelente para tu bienestar físico y mental.
+la bondad	kindness / goodness	Su bondad con los animales es admirable.
+burlarse	to mock / to make fun of	No está bien burlarse de los errores de los demás.
+la búsqueda	search	La búsqueda de los montañeros perdidos continúa.
+la cadena	chain / network	Esa es mi cadena de televisión favorita.
+caer bien	to make a good impression / to like (someone)	Tu nuevo amigo me cae muy bien.
+la carencia	shortcoming / lack	Existe una grave carencia de hospitales en la región.
+la carga	load / burden	La mula llevaba una carga muy pesada.
+el cariño	affection	Los abuelos tratan a sus nietos con mucho cariño.
+castigar	to punish	El profesor decidió castigar a los alumnos ruidosos.
+la casualidad	coincidence / chance	Nos encontramos en París por pura casualidad.
+el cerebro	brain	El cerebro humano es un órgano fascinante y complejo.
+chillar	to scream / to shout	No hace falta chillar, te escucho perfectamente.
+la cita	appointment / date	Tengo una cita con el dentista a las cinco.
+cobrar	to charge (money) / to get paid	Hoy voy a cobrar mi sueldo de este mes.
+comprometerse	to commit oneself / to get engaged	Se comprometieron después de cinco años de noviazgo.
+el concurso	contest / competition	Ganó el primer premio en el concurso de fotografía.
+la conducta	behavior / conduct	Su conducta en la escuela ha sido ejemplar.
+la consecuencia	consequence	Toda acción tiene su consecuencia.
+conservar	to preserve / to keep	Es importante conservar las tradiciones culturales.
+el consumo	consumption	El consumo de agua aumenta durante el verano.
+el contrato	contract	Firmamos el contrato de alquiler por un año.
+convivir	to live together / to coexist	Es difícil convivir con personas que no respetan las reglas.
+la corriente	current / draft	Cierra la ventana, hay mucha corriente de aire.
+cotidiano	daily / everyday	Hacer la cama es parte de mi rutina cotidiana.
+el crecimiento	growth	El crecimiento económico del país ha sido lento.
+el cruce	intersection / crossing	Gira a la derecha en el próximo cruce.
+la culpa	blame / guilt	No fue mi culpa que llegáramos tarde.
+el cultivo	cultivation / crop	El cultivo de café es fundamental para esta región.
+la cumbre	summit / peak	Los alpinistas alcanzaron la cumbre al amanecer.
+el currículum	resume / CV	Envié mi currículum a varias agencias de empleo.
+darse cuenta	to realize	Acabo de darse cuenta de que dejé las llaves en casa.
+el deber	duty / obligation	Es nuestro deber proteger a los más vulnerables.
+decepcionar	to disappoint	La película me decepcionó mucho, esperaba más.
+el defecto	flaw / defect	Su mayor defecto es la impaciencia.
+defender	to defend	El abogado va a defender a su cliente en el juicio.
+definitivo	definitive / final	La decisión del juez es definitiva.
+dejar de	to stop (doing something)	Deberías dejar de fumar por tu salud.
+el deleite	delight / pleasure	Escuchar esa sinfonía fue un verdadero deleite.
+delicado	delicate / fragile	Las copas de cristal son muy delicadas.
+el delito	crime	Robar un banco es un delito grave.
+demostrar	to demonstrate / to show	Pudo demostrar su inocencia con pruebas contundentes.
+depender	to depend	Nuestro plan va a depender del clima de mañana.
+el desafío	challenge / defiance	Completar la maratón fue un gran desafío personal.
+el descanso	rest / break	Trabajamos cinco horas sin descanso.
+el descubrimiento	discovery	El descubrimiento de la penicilina salvó millones de vidas.
+desear	to wish / to desire	Te deseo mucho éxito en tu nueva empresa.
+la desgracia	misfortune / tragedy	Fue una desgracia perder la casa en el incendio.
+despedir	to fire / to say goodbye	Tuvieron que despedir a cinco empleados por los recortes.
+el destino	destiny / destination	Su destino final era la capital del país.
+detener	to stop / to arrest	La policía logró detener al ladrón en la calle.
+la deuda	debt	Trabaja en dos lugares para pagar su deuda universitaria.
+devolver	to return (an object)	Tengo que devolver este libro a la biblioteca.
+el diario	newspaper / diary	Mi abuelo lee el diario todas las mañanas.
+digno	worthy / dignified	Es un rival digno de nuestro respeto.
+dirigir	to direct / to manage	Ella se encarga de dirigir el departamento de marketing.
+diseñar	to design	Contrataron a un arquitecto para diseñar el edificio.
+disfrutar	to enjoy	Espero que puedas disfrutar de tus vacaciones en la playa.
+disminuir	to decrease / to reduce	El gobierno busca disminuir la tasa de desempleo.
+disparar	to shoot	El cazador se preparó para disparar su rifle.
+dispuesto	willing / ready	Estoy dispuesto a ayudarte en lo que necesites.
+la distancia	distance	Mantén una distancia segura del vehículo de adelante.
+distinguir	to distinguish / to tell apart	Es difícil distinguir a los gemelos.
+distribuir	to distribute	Vamos a distribuir folletos por todo el vecindario.
+divertir	to amuse / to entertain	El payaso logró divertir a todos los niños de la fiesta.
+el dolor	pain / ache	Siento un dolor agudo en la espalda.
+el dominio	control / domain	El imperio expandió su dominio por todo el continente.
+donar	to donate	Decidió donar parte de su fortuna a obras de caridad.
+dudar	to doubt	No debes dudar de tus propias capacidades.
+durar	to last	La batería de este teléfono suele durar dos días.
+echar de menos	to miss (someone/something)	Voy a echar de menos a mis amigos cuando me mude.
+la eficacia	effectiveness / efficiency	La eficacia de la vacuna ha sido probada clínicamente.
+elegir	to choose / to elect	Tienes que elegir entre ir al cine o al teatro.
+el empate	tie / draw	El partido terminó en un empate a dos goles.
+empeorar	to worsen	Si no tomas tu medicina, tu salud va a empeorar.
+el empleo	employment / job	La tasa de empleo ha subido este trimestre.
+encajar	to fit in	El nuevo estudiante logró encajar rápidamente en el grupo.

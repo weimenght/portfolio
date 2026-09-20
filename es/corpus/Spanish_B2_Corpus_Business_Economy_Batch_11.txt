@@ -1,0 +1,103 @@
+Format: Word - English Translation - Example Sentence
+============================================================
+
+las acciones	shares / stock	Compró acciones de la compañía tecnológica cuando estaban baratas.
+el accionista	shareholder	El accionista mayoritario votó en contra de la fusión.
+la aduana	customs	Tuvimos que pagar aranceles en la aduana por la mercancía importada.
+el ahorro	saving(s)	Mis ahorros de toda la vida están en una cuenta segura.
+al por mayor	wholesale	Compramos los materiales al por mayor para reducir los costos.
+al por menor	retail	El comercio al por menor ha sufrido mucho este año.
+el almacén	warehouse	Guardamos todo el inventario en el almacén de las afueras.
+alquilar	to rent	Vamos a alquilar una nueva oficina en el centro de la ciudad.
+la amortización	amortization / depreciation	La amortización del préstamo durará diez años.
+el anticipo	advance (payment)	Pidió un anticipo de su sueldo para pagar unas facturas.
+el arancel	tariff / duty	El gobierno impuso un nuevo arancel a los productos extranjeros.
+ascender	to promote / to rise	Lo van a ascender a director general el próximo mes.
+el asesor	consultant / advisor	Contratamos a un asesor financiero para mejorar nuestras inversiones.
+el aumento	raise / increase	Le concedieron un aumento de sueldo por su excelente desempeño.
+el balance	balance sheet	El balance anual muestra un crecimiento notable en las ventas.
+la bancarrota	bankruptcy	La crisis económica llevó a la empresa a la bancarrota.
+el beneficio	profit / benefit	El beneficio neto de la empresa superó las expectativas.
+el bono	bond / bonus	A fin de año, todos los empleados reciben un bono de productividad.
+el cargo	position / charge	Asumió el cargo de gerente de recursos humanos.
+la cartera	portfolio / wallet	Tiene una cartera de clientes muy amplia y variada.
+cobrar	to charge / to get paid	Mañana me toca cobrar la nómina de este mes.
+el comercio	commerce / trade	El comercio internacional facilita el intercambio cultural.
+la competencia	competition	Nuestra empresa tiene que innovar para superar a la competencia.
+competir	to compete	Es difícil competir con los precios de las multinacionales.
+el consumidor	consumer	El comportamiento del consumidor cambia según las tendencias.
+contratar	to hire	Van a contratar a cinco ingenieros para el nuevo proyecto.
+el contrato	contract	Antes de empezar a trabajar, debes firmar el contrato.
+el costo / el coste	cost	El costo de producción ha aumentado debido a la inflación.
+cotizar	to quote / to list on the stock exchange	La empresa empezó a cotizar en bolsa el año pasado.
+el crédito	credit / loan	El banco le denegó el crédito para comprar la maquinaria.
+la cuenta	account / bill	Por favor, ingrese el dinero en mi cuenta corriente.
+la cuota	quota / installment	Paga una cuota mensual de trescientos euros por el coche.
+el déficit	deficit	El gobierno intentará reducir el déficit público este año.
+la demanda	demand / lawsuit	Hay mucha demanda de programadores informáticos hoy en día.
+el depósito	deposit	Hizo un depósito de mil dólares en su cuenta de ahorros.
+el descuento	discount	Me hicieron un descuento del veinte por ciento en la tienda.
+despedir	to fire / dismiss	Tuvieron que despedir a varios empleados por los recortes.
+la deuda	debt	Trabajó duro para pagar la deuda que tenía con el banco.
+devaluar	to devalue	El gobierno decidió devaluar la moneda para favorecer la exportación.
+el dividendo	dividend	Los accionistas recibieron un buen dividendo este trimestre.
+la divisa	foreign currency	El mercado de divisas es muy volátil en tiempos de crisis.
+el ejecutivo	executive	Los ejecutivos de la compañía se reúnen todos los lunes.
+el embargo	embargo / seizure	Sufrieron el embargo de sus bienes por no pagar los impuestos.
+el empleador	employer	El empleador debe garantizar un ambiente de trabajo seguro.
+emprender	to undertake / to start a business	Decidió dejar su trabajo para emprender su propio negocio.
+el empresario	entrepreneur / business owner	El empresario invirtió toda su fortuna en esta nueva tecnología.
+la entrevista	interview	Tengo una entrevista de trabajo mañana a las nueve.
+la escasez	shortage / scarcity	La escasez de materias primas paralizó la producción.
+la estadística	statistic	La estadística muestra que las ventas online siguen creciendo.
+la exportación	export	La exportación de vino español ha batido récords este año.
+facturar	to invoice / to check in (luggage)	La empresa espera facturar dos millones de euros este año.
+las finanzas	finances	El departamento de finanzas está revisando los presupuestos.
+financiar	to finance	Buscamos inversores que quieran financiar nuestro proyecto.
+el fondo	fund / bottom	Crearon un fondo de emergencia para posibles imprevistos.
+la franquicia	franchise	Abrió una franquicia de comida rápida en su ciudad.
+la ganancia	profit / gain	La ganancia neta de la operación fue bastante modesta.
+gastar	to spend	No deberías gastar más de lo que ingresas.
+la gestión	management	Una buena gestión del tiempo es clave para la productividad.
+la huelga	strike	El sindicato convocó una huelga para exigir mejoras laborales.
+importar	to import / to matter	Tenemos que importar estas piezas desde China.
+el impuesto	tax	El gobierno planea subir el impuesto sobre la renta.
+el índice	index / rate	El índice de desempleo ha bajado un poco este mes.
+la industria	industry	La industria automotriz está en plena transformación ecológica.
+la inflación	inflation	La inflación hace que el dinero pierda su valor adquisitivo.
+el informe	report	El jefe me pidió el informe de ventas para el viernes.
+ingresar	to deposit / to enter / to earn	Voy a ingresar este cheque en el banco.
+el ingreso	income / revenue	Tienen unos ingresos mensuales superiores a la media.
+la inversión	investment	Comprar bienes raíces suele ser una buena inversión.
+el inversor	investor	El inversor extranjero inyectó capital en la startup.
+la junta	board (of directors) / meeting	La junta directiva aprobó el nuevo plan estratégico.
+la liquidación	clearance / settlement / liquidation	Compré esta chaqueta muy barata en las rebajas de liquidación.
+la marca	brand	Esta marca de ropa es muy popular entre los jóvenes.
+el mercadeo	marketing (LatAm)	El departamento de mercadeo lanzó una nueva campaña publicitaria.
+el mercado	market	El mercado inmobiliario está sufriendo una pequeña crisis.
+la meta	goal / target	Nuestra meta es duplicar las ventas en dos años.
+el monopolio	monopoly	Esa empresa tiene el monopolio de las telecomunicaciones en el país.
+la multinacional	multinational corporation	Trabaja para una gran multinacional del sector farmacéutico.
+el negocio	business	Hacer negocio con él siempre resulta muy rentable.
+negociar	to negotiate	Tuvieron que negociar el precio final de la vivienda.
+la nómina	payroll / payslip	Me enviaron la nómina de este mes por correo electrónico.
+la oferta	offer / supply	La ley de la oferta y la demanda dicta los precios.
+el paro	unemployment (Spain)	Muchos jóvenes se ven afectados por el paro juvenil.
+el patrimonio	assets / heritage	El patrimonio neto de la empresa supera los cien millones.
+el pedido	order (purchase)	El proveedor prometió entregar el pedido mañana por la mañana.
+la pérdida	loss	La compañía sufrió una gran pérdida económica el año pasado.
+el personal	staff / personnel	El departamento de personal está buscando nuevos talentos.
+el plazo	term / deadline	El plazo de entrega del proyecto vence la próxima semana.
+el porcentaje	percentage	El banco cobra un alto porcentaje de intereses por el préstamo.
+el presupuesto	budget	Tenemos un presupuesto muy ajustado para la publicidad.
+el proveedor	supplier	Nuestro proveedor principal nos subió los precios de los materiales.
+el puesto	position / job	Le ofrecieron un puesto de gerente en la nueva sucursal.
+la quiebra	bankruptcy / failure	La mala administración llevó al banco a la quiebra.
+reembolsar	to reimburse / to refund	La aerolínea se negó a reembolsar el costo del billete.
+el requisito	requirement	El principal requisito para el puesto es hablar inglés.
+el riesgo	risk	Toda inversión financiera conlleva cierto nivel de riesgo.
+el saldo	balance (of an account)	El saldo de tu cuenta es insuficiente para realizar esta compra.
+el socio	partner (business)	Mi socio y yo vamos a abrir un nuevo restaurante juntos.
+la sucursal	branch (office)	El banco ha cerrado su sucursal en nuestro barrio.
+la tasa	rate / fee	El banco central decidió subir la tasa de interés.
+la transacción	transaction	La transacción comercial se realizó de forma segura por internet.

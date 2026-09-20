@@ -1,0 +1,103 @@
+Format: Word - English Translation - Example Sentence
+============================================================
+
+lograr	to achieve	Es difícil lograr todas tus metas sin esfuerzo.
+desarrollar	to develop	Necesitamos desarrollar una nueva estrategia de ventas.
+el medio ambiente	environment	Debemos proteger el medio ambiente para las futuras generaciones.
+el apoyo	support	Agradezco mucho el apoyo de mi familia durante este proceso.
+sin embargo	however	Quería salir; sin embargo, empezó a llover muy fuerte.
+la empresa	company / enterprise	Trabajo para una empresa internacional.
+soler	to usually do	Suelo levantarme temprano los fines de semana.
+el reto	challenge	Aprender un nuevo idioma es un gran reto.
+la ventaja	advantage	Una ventaja de vivir aquí es el transporte público.
+la desventaja	disadvantage	La única desventaja es el ruido del tráfico.
+actualmente	currently	Actualmente estoy estudiando para mi maestría.
+el extranjero	abroad	Me gustaría vivir en el extranjero por un año.
+acostumbrarse	to get used to	Me costó acostumbrarse al clima frío.
+la herramienta	tool	El internet es una herramienta indispensable hoy en día.
+mejorar	to improve	Quiero mejorar mi nivel de español escrito.
+la calidad	quality	La calidad de este producto es impresionante.
+involucrar	to involve	El proyecto va a involucrar a varios departamentos.
+el comportamiento	behavior	El comportamiento del niño ha mejorado mucho en clase.
+la cifra	figure / number	Las cifras de ventas han aumentado este trimestre.
+a pesar de	in spite of	Salimos a caminar a pesar del mal tiempo.
+la propuesta	proposal	El comité rechazó la propuesta inicial.
+comprobar	to check / to prove	Necesito comprobar que los datos son correctos.
+enfrentar	to face	Tenemos que enfrentar nuestros miedos para avanzar.
+el ingreso	income	Sus ingresos anuales han crecido significativamente.
+la fuente	source	El sol es una fuente de energía renovable.
+el vínculo	bond / tie	Existe un fuerte vínculo entre los dos hermanos.
+destacar	to stand out / highlight	Quiero destacar la importancia de este tema.
+la medida	measure	El gobierno tomará nuevas medidas de seguridad.
+el esfuerzo	effort	Aprobar el examen requerirá mucho esfuerzo.
+suponer	to suppose / to mean	Esto va a suponer un cambio radical en nuestras vidas.
+exigir	to demand	El trabajo exige mucha concentración y paciencia.
+el ciudadano	citizen	Todo ciudadano tiene derechos y deberes.
+la encuesta	survey	La encuesta muestra que la mayoría está de acuerdo.
+el promedio	average	El promedio de edad de los estudiantes es de veinte años.
+alcanzar	to reach	Espero alcanzar mi peso ideal para el verano.
+el riesgo	risk	Invertir en esa compañía conlleva un alto riesgo.
+la costumbre	custom / habit	Es una costumbre local cenar muy tarde.
+valer la pena	to be worth it	El viaje fue largo, pero valió la pena.
+la etapa	stage / phase	Estamos en la etapa final del proyecto.
+hallar	to find	Lograron hallar la solución al problema matemático.
+la falta	lack	La falta de comunicación causó el malentendido.
+surgir	to arise	Pueden surgir imprevistos durante la construcción.
+el entorno	environment / surroundings	Creció en un entorno muy rural y tranquilo.
+solucionar	to solve	Tenemos que solucionar esto lo antes posible.
+la red	network	Han ampliado la red de transporte en la ciudad.
+afirmar	to state / affirm	El testigo afirmó haber visto al sospechoso.
+el cargo	position / charge	Asumió el cargo de director el mes pasado.
+la mente	mind	Ten la mente abierta cuando viajes a nuevos lugares.
+evitar	to avoid	Trato de evitar el tráfico saliendo temprano.
+el papel	role / paper	La educación juega un papel clave en el desarrollo.
+la política	policy / politics	La política de la empresa es muy estricta.
+aprovechar	to take advantage of	Debes aprovechar esta oportunidad única.
+el nivel	level	El nivel del mar está subiendo debido al cambio climático.
+la inversión	investment	Comprar una casa es una gran inversión a largo plazo.
+advertir	to warn	Le advertí que no fuera por ese camino oscuro.
+el rasgo	feature / trait	Su mejor rasgo de personalidad es su honestidad.
+el dato	piece of data / fact	Los datos muestran una tendencia positiva.
+juzgar	to judge	No debes juzgar a alguien sin conocer su historia.
+la actitud	attitude	Una actitud positiva te ayudará a superar los obstáculos.
+el diseño	design	El diseño arquitectónico del edificio es muy moderno.
+rendir	to perform / produce	Necesito dormir bien para rendir en el trabajo.
+la huelga	strike	Los trabajadores iniciaron una huelga ayer.
+el trato	treatment / deal	Llegaron a un trato después de horas de negociación.
+cuidar	to take care of	Debemos cuidar nuestros recursos naturales.
+el derecho	right	Todos tienen derecho a la libertad de expresión.
+escaso	scarce	El agua es escasa en las regiones desérticas.
+la duda	doubt	Tengo una duda sobre la lección de gramática.
+el fracaso	failure	El fracaso de la misión se debió a fallos técnicos.
+la amenaza	threat	La deforestación es una amenaza para la biodiversidad.
+confiar	to trust	Puedes confiar en mí para guardar tu secreto.
+el perfil	profile	Su perfil profesional es perfecto para este puesto.
+la frontera	border	Cruzaron la frontera de madrugada.
+el éxito	success	La obra de teatro fue un éxito rotundo.
+preocupar	to worry	Me preocupa la situación económica actual.
+la obra	work of art / construction	Esta es su obra literaria más importante.
+el mercado	market	El mercado inmobiliario está muy inestable ahora.
+la juventud	youth	Pasó su juventud viajando por toda Europa.
+agotar	to exhaust / sell out	Las entradas para el concierto se agotaron rápido.
+el propósito	purpose	El propósito de la reunión es definir el presupuesto.
+la ley	law	Es importante que todos respeten la ley.
+proporcionar	to provide	El curso proporciona todos los materiales necesarios.
+el debate	debate	El debate presidencial será transmitido por televisión.
+la moda	fashion / trend	La moda de los años ochenta está volviendo.
+el daño	damage	El huracán causó daños irreparables en la costa.
+caber	to fit	Ese mueble no va a caber por la puerta.
+la gestión	management	La gestión del tiempo es vital para ser productivo.
+el recurso	resource	La empresa invirtió en recursos humanos este año.
+la pantalla	screen	La pantalla de mi ordenador se ha roto.
+convencer	to convince	Intentaré convencerla de que venga con nosotros.
+el ruido	noise	Hay demasiado ruido en este restaurante.
+la clave	key (metaphorical)	La constancia es la clave del éxito.
+el siglo	century	Vivimos en el siglo veintiuno.
+la demanda	demand	Ha habido un aumento en la demanda de coches eléctricos.
+fomentar	to encourage / promote	Queremos fomentar la lectura entre los niños.
+el presupuesto	budget	No podemos viajar este año, no tenemos presupuesto.
+la señal	sign / signal	No hay señal de teléfono en las montañas.
+vencer	to defeat / overcome	Tarde o temprano vamos a vencer esta enfermedad.
+el paisaje	landscape	El paisaje desde la cima de la montaña era hermoso.
+la seguridad	security / safety	La seguridad del aeropuerto fue reforzada.
+tratar de	to try to	Siempre trato de ser amable con todos.

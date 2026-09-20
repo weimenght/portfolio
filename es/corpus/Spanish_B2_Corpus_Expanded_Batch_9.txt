@@ -1,0 +1,103 @@
+Format: Word - English Translation - Example Sentence
+============================================================
+
+soler	to usually do	Suelo levantarme muy temprano para hacer ejercicio.
+solicitar	to request / to apply for	Voy a solicitar un préstamo en el banco mañana.
+la solicitud	application / request	Tienes que rellenar la solicitud de empleo por internet.
+soltar	to let go / to release	¡Suelta la cuerda antes de que te hagas daño!
+la sombra	shadow / shade	Hacía mucho calor, así que nos sentamos en la sombra.
+someter	to subject / to subdue	El nuevo material fue sometido a pruebas de resistencia.
+sonar	to sound / to ring	El teléfono empezó a sonar en medio de la reunión.
+sonreír	to smile	Ella no pudo evitar sonreír al ver el regalo.
+la sonrisa	smile	Su sonrisa ilumina toda la habitación.
+soñar	to dream	Anoche volví a soñar que volaba sobre la ciudad.
+la sopa	soup	Esta sopa de verduras está deliciosa.
+soplar	to blow	Tienes que soplar las velas y pedir un deseo.
+soportar	to bear / to stand	No puedo soportar este ruido tan fuerte.
+sorprendente	surprising	El final de la película fue realmente sorprendente.
+sorprender	to surprise	Quería sorprender a mi novia con una cena romántica.
+la sorpresa	surprise	Me llevé una gran sorpresa al verte aquí.
+sospechar	to suspect	La policía empezó a sospechar del vecino.
+sostener	to hold / to sustain	¿Me puedes sostener la chaqueta un momento?
+suave	soft / smooth	Esta toalla de algodón es muy suave al tacto.
+subir	to go up / to upload	Voy a subir las fotos de las vacaciones a mis redes sociales.
+subrayar	to underline / to highlight	Es útil subrayar las palabras clave cuando estudias.
+el subsidio	subsidy	Recibieron un subsidio del gobierno para instalar placas solares.
+suceder	to happen	Nadie sabe exactamente qué va a suceder mañana.
+el suceso	event / incident	El periódico local informó sobre el extraño suceso.
+sucio	dirty	No dejes los platos sucios en el fregadero.
+el sudor	sweat	Se secó el sudor de la frente tras la carrera.
+el sueldo	salary / wage	Le han subido el sueldo después de un año en la empresa.
+el suelo	floor / ground	El vaso se cayó y se rompió en el suelo.
+suelto	loose / loose change	¿Llevas algo de dinero suelto para la máquina de café?
+el sueño	dream / sleep	No he dormido bien y tengo mucho sueño.
+sufrir	to suffer	Sufre de alergias al polen cada primavera.
+sugerir	to suggest	Me gustaría sugerir una alternativa diferente a este plan.
+sujetar	to hold / to fasten	Asegúrate de sujetar bien al perro con la correa.
+sumar	to add up	Tienes que sumar todos los gastos del mes.
+sumergir	to submerge	Hay que sumergir la olla en agua fría para limpiarla bien.
+superar	to overcome / to exceed	Logró superar todos los obstáculos y ganar la carrera.
+la superficie	surface	La superficie del lago estaba completamente congelada.
+suplicar	to beg	Le tuve que suplicar que me prestara su coche nuevo.
+suponer	to suppose / to assume	Supongo que llegarán tarde por culpa del tráfico.
+surgir	to arise / to emerge	Pueden surgir problemas inesperados durante el proyecto.
+suspender	to fail / to suspend	Si no estudias más, vas a suspender el examen de matemáticas.
+el susto	fright / scare	¡Qué susto me diste al entrar sin avisar!
+sustituir	to replace / to substitute	Tuvimos que sustituir la batería del ordenador.
+sutil	subtle	Había un olor sutil a vainilla en la cocina.
+el talento	talent	El niño demostró un talento increíble para el piano.
+la talla	size (clothing)	Creo que necesito una talla más grande de camisa.
+el tamaño	size (general)	El tamaño del apartamento es perfecto para una persona sola.
+tapar	to cover	Usa esta manta para tapar el sofá y no ensuciarlo.
+la taquilla	box office / locker	Compramos las entradas en la taquilla del teatro.
+tardar	to take time / to delay	El tren no debería tardar más de diez minutos en llegar.
+la tarea	task / homework	Terminar esta tarea me llevará toda la tarde.
+la tarifa	fare / rate	La tarifa del autobús urbano ha subido cincuenta céntimos.
+la tarjeta	card	Pagué la cuenta con mi tarjeta de crédito.
+la tasa	rate / fee	La tasa de desempleo ha bajado un tres por ciento este año.
+teclear	to type	Se pasa el día tecleando frente al ordenador.
+el tejido	tissue / fabric	El tejido muscular necesita proteínas para repararse.
+la tela	fabric / cloth	Compré unos metros de esta tela para hacer unas cortinas.
+el teléfono	phone	Olvidé mi teléfono en la mesa del restaurante.
+temblar	to tremble	Empezó a temblar de frío al salir a la calle.
+temer	to fear	No tienes nada que temer, todo va a salir bien.
+el temor	fear / dread	Siente un gran temor a las alturas.
+el temperamento	temperament	Su abuelo tenía un temperamento muy tranquilo.
+la temperatura	temperature	La temperatura bajará bruscamente esta noche.
+la tempestad	storm	La tempestad destruyó parte del tejado de la cabaña.
+temprano	early	Mañana tengo que levantarme muy temprano para ir a trabajar.
+la tendencia	tendency / trend	Existe una fuerte tendencia a comprar productos ecológicos.
+tender	to hang out / to tend to	Se encargó de lavar y tender toda la ropa blanca.
+la tensión	tension / stress	Había mucha tensión en el ambiente antes del anuncio.
+la teoría	theory	En teoría parece fácil, pero en la práctica es diferente.
+el tercer	third	Mi apartamento está en el tercer piso del edificio.
+terminar	to finish / to end	¿A qué hora vas a terminar de pintar esa pared?
+el término	term / end	Este contrato llegará a su término el mes que viene.
+la ternura	tenderness	Miraba a su gato con mucha ternura y cariño.
+el terreno	terrain / plot of land	Compraron un terreno en las afueras para construir su casa.
+terrible	terrible	El ruido de las obras era verdaderamente terrible.
+el territorio	territory	Este animal marca su territorio para alejar a los rivales.
+el tesoro	treasure	Los piratas enterraron el tesoro en una isla desierta.
+el testigo	witness	El único testigo del accidente declaró ante la policía.
+tímido	shy	De pequeño era muy tímido y no hablaba mucho.
+típico	typical	Comer paella los domingos es muy típico en mi familia.
+tirar	to throw / to pull	No te olvides de tirar la basura antes de salir de casa.
+el título	title / degree	Finalmente consiguió su título universitario en ingeniería.
+tocar	to touch / to play (instrument)	Me encanta cómo sabes tocar la guitarra acústica.
+tolerar	to tolerate	No puedo tolerar que me mientan a la cara.
+la tontería	nonsense / foolishness	Nos reímos mucho con cualquier tontería que dice.
+el tope	limit / top	El coche llegó al tope de su velocidad en la recta.
+la tormenta	storm	Se avecina una gran tormenta de nieve para el fin de semana.
+torpe	clumsy	Fui un poco torpe y derramé el vaso de agua.
+la torre	tower	Subimos a lo alto de la torre para ver la ciudad.
+toser	to cough	Tienes que taparte la boca al toser.
+total	total / absolute	El coste total de las vacaciones fue de mil euros.
+tragar	to swallow	Tómate un poco de agua para ayudarte a tragar la pastilla.
+traicionar	to betray	Nunca sería capaz de traicionar la confianza de un amigo.
+el traje	suit	Se compró un traje muy elegante para la boda de su hermana.
+la trama	plot (of a story)	La trama de esta novela es muy compleja y emocionante.
+el tramo	stretch / section	El último tramo de la carrera fue el más difícil.
+la trampa	trap / cheating	El ratón se comió el queso sin caer en la trampa.
+la tranquilidad	tranquility / peace	Buscaba la paz y la tranquilidad del campo.
+tranquilo	calm / quiet	Mantente tranquilo, los bomberos están en camino.
+transcurrir	to pass / to elapse	El viaje pareció transcurrir muy lentamente.

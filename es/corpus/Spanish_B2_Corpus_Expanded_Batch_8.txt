@@ -1,0 +1,103 @@
+Format: Word - English Translation - Example Sentence
+============================================================
+
+el refugio	shelter / refuge	Encontramos un pequeño refugio en la montaña para pasar la noche.
+regalar	to give a gift	No sé qué regalarle a mi madre por su cumpleaños.
+el régimen	regime / diet	El médico le recomendó un régimen bajo en grasas.
+la regla	rule / ruler	La primera regla del club es no hablar del club.
+el regreso	return	El regreso a casa después de las vacaciones siempre es duro.
+regular	regular / to regulate	El gobierno intenta regular el uso de la inteligencia artificial.
+la relación	relationship	Tienen una relación muy estrecha desde que eran niños.
+el relato	tale / story	Escribió un relato corto sobre sus aventuras en la India.
+relevante	relevant	Esa información no es relevante para el caso que estamos investigando.
+rellenar	to refill / to fill out	Tienes que rellenar este formulario con tus datos personales.
+el remedio	remedy / solution	No hay otro remedio que aceptar las consecuencias.
+rendir	to perform / to produce	Para rendir bien en el examen, es necesario dormir ocho horas.
+renunciar	to resign / to give up	Decidió renunciar a su puesto para viajar por el mundo.
+reparar	to repair / to notice	Van a reparar el techo antes de que lleguen las lluvias.
+repartir	to distribute / to hand out	Tenemos que repartir estos folletos por todo el barrio.
+repasar	to review	Es buena idea repasar los apuntes antes de la clase.
+de repente	suddenly	Estábamos caminando cuando, de repente, empezó a llover.
+la repercusión	repercussion / impact	La noticia tuvo una gran repercusión a nivel mundial.
+la repetición	repetition	La repetición constante ayuda a memorizar el vocabulario.
+el reportaje	report / article	Vi un documental y un reportaje sobre el cambio climático.
+representar	to represent	El abogado va a representar a la empresa en el juicio.
+el requisito	requirement	Tener experiencia previa es un requisito indispensable para el puesto.
+rescatar	to rescue	Los bomberos lograron rescatar al gato del árbol.
+la reserva	reservation / reserve	Hice una reserva para dos en el restaurante italiano.
+resistir	to resist / to endure	El edificio fue construido para resistir terremotos.
+la resolución	resolution	La resolución del conflicto requerirá tiempo y paciencia.
+resolver	to solve / to resolve	Necesitamos resolver este problema matemático antes del viernes.
+el respeto	respect	El respeto a los mayores es un valor muy importante.
+respirar	to breathe	Sal al balcón para respirar un poco de aire fresco.
+responder	to respond / to answer	Tardó tres días en responder a mi correo electrónico.
+la responsabilidad	responsibility	Asumió la responsabilidad de cuidar a sus hermanos menores.
+el responsable	person responsible	¿Quién es el responsable de este desastre en la cocina?
+la respuesta	response / answer	Aún estoy esperando una respuesta a mi solicitud de empleo.
+el resto	the rest / remainder	Cómete la mitad ahora y guarda el resto para mañana.
+el resultado	result	El resultado del experimento fue sorprendente.
+resultar	to turn out to be / to result	El libro resultó ser mucho más interesante de lo que pensaba.
+el retrato	portrait	Pintó un retrato precioso de su abuela.
+el retraso	delay	Pedimos disculpas por el retraso del vuelo.
+la reunión	meeting	La reunión de directivos se pospuso para la próxima semana.
+revelar	to reveal	El periodista se negó a revelar sus fuentes de información.
+la revista	magazine	Compré una revista de moda en el quiosco de la esquina.
+el rincón	corner (inside)	Pusieron una pequeña planta en el rincón del salón.
+el riesgo	risk	Invertir todo tu dinero en una sola empresa conlleva mucho riesgo.
+rodear	to surround	Decidieron rodear la casa con una valla de madera.
+rogar	to beg / to pray	Le rogó que le perdonara por haberle mentido.
+romper	to break	Cuidado con no romper esa copa de cristal.
+el rostro	face	Tenía una expresión de tristeza en el rostro.
+la rutina	routine	Hacer ejercicio se ha convertido en parte de mi rutina diaria.
+el saber	knowledge	El saber no ocupa lugar, siempre es bueno aprender cosas nuevas.
+el sabor	flavor / taste	Este helado tiene un sabor muy peculiar a menta.
+sacar	to take out / to get	No te olvides de sacar la basura antes de dormir.
+la sabiduría	wisdom	Con los años viene la sabiduría y la experiencia.
+el salario	salary	Le ofrecieron un puesto con un salario muy competitivo.
+la salida	exit / departure	Diríjase hacia la salida de emergencia más cercana.
+saltar	to jump / to skip	Los niños no paran de saltar en la cama.
+la salud	health	Fumar es muy perjudicial para la salud a largo plazo.
+salvar	to save (a life/something in danger)	Los médicos hicieron todo lo posible por salvar su vida.
+sanar	to heal	La herida tardará un par de semanas en sanar por completo.
+la sangre	blood	Donar sangre puede salvar hasta tres vidas.
+sano	healthy	Lleva un estilo de vida muy sano, come bien y hace deporte.
+la satisfacción	satisfaction	Ver a sus alumnos graduarse le produce una gran satisfacción.
+secar	to dry	Deja la ropa al sol para que se pueda secar más rápido.
+el secreto	secret	Te contaré un secreto, pero prométeme no decírselo a nadie.
+el sector	sector	Trabaja en el sector de las energías renovables.
+la secuencia	sequence	La contraseña es una secuencia de números y letras.
+el secuestro	kidnapping	El secuestro del empresario conmocionó a toda la ciudad.
+la sede	headquarters	La sede principal de la ONU está en Nueva York.
+el sello	stamp / seal	Necesitas ponerle un sello al sobre antes de enviarlo.
+la selva	jungle	Hicieron una expedición de dos semanas por la selva amazónica.
+semejante	similar / such	Nunca había visto una criatura semejante en mi vida.
+sembrar	to sow / to plant	Llegó la época de sembrar el trigo en los campos.
+la semilla	seed	Planta la semilla en la tierra húmeda y espera a que brote.
+sencillo	simple	El funcionamiento de esta máquina es bastante sencillo.
+el seno	breast / bosom / core	El problema se originó en el seno de la propia organización.
+sensible	sensitive	Es una persona muy sensible, llora con facilidad con las películas.
+el sentimiento	feeling	Tengo el presentimiento y el sentimiento de que algo va mal.
+la señal	sign / signal	La paloma blanca es una señal universal de paz.
+señalar	to point out / to signal	Me gustaría señalar la importancia de este último punto.
+separar	to separate	Tienes que separar la ropa blanca de la de color al lavar.
+la sequía	drought	La grave sequía ha arruinado las cosechas de este año.
+la serie	series	Ayer terminé de ver la última temporada de mi serie favorita.
+serio	serious	Es un chico muy serio, casi nunca se ríe de las bromas.
+el servicio	service	El servicio de atención al cliente es excelente en esta tienda.
+servir	to serve / to be useful	Esta herramienta puede servir para reparar el motor.
+severo	severe / strict	El juez impuso un castigo muy severo al culpable.
+significativo	significant	Hubo un aumento significativo en las ventas este trimestre.
+el silencio	silence	Disfruto del silencio del bosque cuando paseo solo.
+el símbolo	symbol	El león es el símbolo de la fuerza y el coraje.
+simple	simple / mere	Fue un simple malentendido, no te preocupes.
+el sindicato	labor union	El sindicato convocó una huelga para exigir mejores salarios.
+singular	singular / unique	Ese edificio tiene una arquitectura muy singular y diferente.
+el síntoma	symptom	La fiebre alta es un síntoma común de la gripe.
+el sistema	system	El sistema educativo necesita una reforma profunda.
+el sitio	place / site	Este es mi sitio favorito para leer y relajarme.
+la situación	situation	La situación política del país es bastante inestable.
+sobrar	to be left over / to not be needed	Va a sobrar mucha comida de la fiesta.
+sobrevivir	to survive	Es difícil sobrevivir en el desierto sin agua.
+el socorro	help / relief	El equipo de socorro llegó rápidamente al lugar del accidente.
+solar	solar	Instalaron paneles de energía solar en el tejado de la casa.
+la soledad	loneliness / solitude	A veces, la soledad es necesaria para encontrarse a uno mismo.
