@@ -29,11 +29,11 @@
           <div class="flex items-center gap-1.5">
             <span class="font-cinzel font-bold text-stone-900 tracking-tight text-lg">Léxico Español</span>
             <span id="serverBadge" class="px-1.5 py-0.5 text-[10px] font-extrabold bg-emerald-100 text-emerald-900 rounded-md border border-emerald-200 tracking-wide flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              /es/corpus/
+              <span id="serverPulseDot" class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              /corpus/
             </span>
           </div>
-          <span id="headerCorpusSubtitle" class="text-[10px] text-stone-400 font-medium -mt-0.5">Explorando carpeta /es/corpus/...</span>
+          <span id="headerCorpusSubtitle" class="text-[10px] text-stone-400 font-medium -mt-0.5">Escaneando carpeta /corpus/...</span>
         </div>
       </div>
       
@@ -120,9 +120,10 @@
               <span id="resPhonetic" class="font-mono text-stone-500 font-semibold tracking-wide">[—]</span>
               <span class="text-stone-300">•</span>
               <span id="resPos" class="font-medium text-stone-600 italic">sustantivo</span>
-              <span id="resSourceContainer" class="hidden flex items-center gap-1.5">
+              <span id="resSourceContainer" class="hidden flex items-center gap-1.5 flex-wrap">
                 <span class="text-stone-300">•</span>
-                <span id="resSourceFile" class="px-2 py-0.5 rounded-md font-mono text-[10px] bg-stone-100 text-stone-600 border border-stone-200 truncate max-w-[160px]">archivo.txt</span>
+                <span class="text-[11px] text-stone-400 font-medium">Archivos:</span>
+                <span id="resSourcePills" class="flex items-center gap-1 flex-wrap"></span>
               </span>
             </div>
           </div>
@@ -150,16 +151,21 @@
         <div class="space-y-2.5">
           <div class="flex items-center justify-between flex-wrap gap-2">
             <h4 class="text-xs font-extrabold uppercase tracking-wider text-stone-400">Frase de ejemplo</h4>
-            <button onclick="window.speakExampleSentence()" class="text-xs text-red-700 hover:text-red-900 font-bold hover:underline flex items-center gap-1.5 transition-colors">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
-              <span>Escuchar frase completa</span>
-            </button>
+            <div class="flex items-center gap-2">
+              <span id="resExampleCountBadge" class="hidden text-[10px] font-bold px-2 py-0.5 rounded-md bg-stone-100 text-stone-600">1 de 1</span>
+              <button onclick="window.speakExampleSentence()" class="text-xs text-red-700 hover:text-red-900 font-bold hover:underline flex items-center gap-1.5 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                <span>Escuchar</span>
+              </button>
+            </div>
           </div>
-          <div class="p-5 sm:p-6 rounded-2xl bg-stone-900 text-stone-100 space-y-2 relative overflow-hidden shadow-md">
-            <div class="absolute right-4 top-2 text-6xl text-stone-800 select-none pointer-events-none font-serif font-black opacity-30">“</div>
-            <p id="resExampleEs" class="text-sm sm:text-base font-serif italic text-red-100 leading-relaxed relative z-10">
-              —
-            </p>
+          <div id="resExamplesContainer" class="space-y-2">
+            <div class="p-5 sm:p-6 rounded-2xl bg-stone-900 text-stone-100 space-y-2 relative overflow-hidden shadow-md">
+              <div class="absolute right-4 top-2 text-6xl text-stone-800 select-none pointer-events-none font-serif font-black opacity-30">“</div>
+              <p id="resExampleEs" class="text-sm sm:text-base font-serif italic text-red-100 leading-relaxed relative z-10">
+                —
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -175,7 +181,7 @@
             <h3 class="text-lg sm:text-xl font-bold text-stone-900 font-serif">Índice del Corpus</h3>
             <span id="modalTotalBadge" class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-red-100 text-red-900 border border-red-300">0 Palabras</span>
           </div>
-          <p id="modalCorpusFolderSubtitle" class="text-xs text-stone-500 mt-0.5">Explora todos los términos cargados desde la carpeta /es/corpus/.</p>
+          <p id="modalCorpusFolderSubtitle" class="text-xs text-stone-500 mt-0.5">Explora todos los términos cargados desde la carpeta /corpus/.</p>
         </div>
         <button onclick="window.closeCorpusIndexModal()" class="p-2 rounded-xl text-stone-400 hover:text-stone-700 hover:bg-stone-200/60 transition-colors">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -183,9 +189,52 @@
       </div>
 
       <!-- Loaded files pill container -->
-      <div id="modalLoadedFilesBar" class="px-5 py-2.5 bg-stone-100/70 border-b border-stone-200/70 text-[11px] text-stone-600 flex items-center gap-2 overflow-x-auto custom-scrollbar">
-        <span class="font-bold shrink-0 text-stone-500">Archivos en /es/corpus/:</span>
-        <div id="modalFilesListPills" class="flex items-center gap-1.5 flex-nowrap"></div>
+      <div id="modalLoadedFilesBar" class="px-5 py-2.5 bg-stone-100/70 border-b border-stone-200/70 text-[11px] text-stone-600 flex items-center justify-between gap-2 overflow-x-auto custom-scrollbar">
+        <div class="flex items-center gap-2 flex-nowrap">
+          <span class="font-bold shrink-0 text-stone-500">Archivos escaneados:</span>
+          <div id="modalFilesListPills" class="flex items-center gap-1.5 flex-nowrap"></div>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button onclick="window.toggleDiagnosticsPanel()" id="btnDiagnosticsToggle" class="px-2 py-1 bg-white hover:bg-stone-200 border border-stone-300 rounded-md font-bold text-[10px] text-stone-700 transition-colors flex items-center gap-1" title="Ver diagnóstico de escaneo del servidor">
+            <svg class="w-3 h-3 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span>Diagnóstico</span>
+          </button>
+          <label class="px-2 py-1 bg-white hover:bg-stone-200 border border-stone-300 rounded-md font-bold text-[10px] text-stone-700 transition-colors flex items-center gap-1 cursor-pointer" title="Cargar carpeta /corpus/ localmente si el servidor bloquea Directory Indexing">
+            <svg class="w-3 h-3 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+            <span>Carpeta local</span>
+            <input type="file" id="localFolderInput" webkitdirectory directory multiple class="hidden" onchange="window.handleLocalFolderSelect(event)">
+          </label>
+          <button onclick="window.scanAndLoadCorpusDirectory()" class="p-1 hover:bg-stone-200 rounded text-stone-500 hover:text-stone-800 transition-colors" title="Volver a escanear /corpus/">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Diagnostics & Troubleshooting Panel -->
+      <div id="diagnosticsPanel" class="hidden px-5 py-3.5 bg-stone-900 text-stone-200 border-b border-stone-700 text-xs space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-amber-400 flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            Diagnóstico de escaneo en servidor
+          </span>
+          <button onclick="window.toggleDiagnosticsPanel()" class="text-stone-400 hover:text-white">✕</button>
+        </div>
+        <div id="diagnosticsLog" class="font-mono text-[11px] bg-stone-950 p-2.5 rounded-lg max-h-36 overflow-y-auto custom-scrollbar text-stone-300 space-y-1">
+          <div>Iniciando escáner...</div>
+        </div>
+        <div class="text-[11px] text-stone-400 leading-relaxed border-t border-stone-800 pt-2">
+          <strong>¿Cómo permitir que el navegador lea cualquier archivo en <code class="text-amber-300">/corpus/</code> automáticamente?</strong><br>
+          • <strong>Apache:</strong> Crea un archivo <code class="text-amber-300">/corpus/.htaccess</code> con: <code class="bg-stone-800 px-1 py-0.5 rounded text-amber-200">Options +Indexes</code><br>
+          • <strong>Nginx:</strong> En la configuración del bloque de servidor añade: <code class="bg-stone-800 px-1 py-0.5 rounded text-amber-200">location /corpus/ { autoindex on; }</code><br>
+          • <strong>PHP:</strong> Crea un archivo <code class="text-amber-300">/corpus/index.php</code> con: <code class="bg-stone-800 px-1 py-0.5 rounded text-amber-200">&lt;?php echo json_encode(glob("*.txt")); ?&gt;</code>
+        </div>
+      </div>
+
+      <!-- File Tab Filters -->
+      <div id="modalFileTabsBar" class="px-5 py-2 bg-stone-50 border-b border-stone-200/70 text-xs flex items-center gap-1.5 overflow-x-auto custom-scrollbar">
+        <button onclick="window.setIndexFileFilter('ALL')" id="filterTab_ALL" class="px-2.5 py-1 rounded-lg font-bold text-[11px] bg-stone-900 text-white shadow-xs">
+          Todos los archivos
+        </button>
       </div>
       
       <div class="p-4 border-b border-stone-100 bg-white">
@@ -237,14 +286,16 @@
   </div>
 
   <script>
-    /* SERVER /corpus/ CONFIGURATION */
-    const CORPUS_DIRECTORY = 'es/corpus/';
+    /* UNIVERSAL SERVER /corpus/ DIRECTORY SCANNER */
+    const CORPUS_PATHS = ['corpus/', '/corpus/', './corpus/'];
     
     let CURRENT_CORPUS = [];
     const CORPUS_MAP = new Map();
     let LOADED_FILES = [];
     let currentWordData = null;
     let savedWords = [];
+    let activeFileFilter = 'ALL';
+    let scanLogs = [];
 
     // Load saved words from persistent storage
     try {
@@ -254,12 +305,21 @@
       savedWords = [];
     }
 
-    /* Fallback corpus payload ensuring the app is always functional if server has not mounted /corpus/ yet */
-    const FALLBACK_CORPUS_PAYLOAD = `el algoritmo\talgorithm\tEl algoritmo de la red social decide qué contenido ves.
-la alteración\talteration / mutation\tSe observó una alteración genética en las células afectadas.
-el análisis\tanalysis\tLos resultados del análisis científico se publicarán pronto.
-la aplicación\tapplication / app\tDescargué una aplicación nueva para rastrear mi sueño.
-el archivo\tfile\tPor favor, adjunta el archivo PDF en el correo electrónico.`;
+    function addDiagnosticLog(msg, type = 'info') {
+      const time = new Date().toLocaleTimeString();
+      const color = type === 'error' ? 'text-rose-400' : type === 'success' ? 'text-emerald-400' : type === 'warn' ? 'text-amber-400' : 'text-stone-300';
+      scanLogs.push({ time, msg, color });
+      const logBox = document.getElementById('diagnosticsLog');
+      if (logBox) {
+        logBox.innerHTML = scanLogs.slice(-30).map(l => `<div class="${l.color}">[${l.time}] ${l.msg}</div>`).join('');
+        logBox.scrollTop = logBox.scrollHeight;
+      }
+    }
+
+    function toggleDiagnosticsPanel() {
+      const panel = document.getElementById('diagnosticsPanel');
+      if (panel) panel.classList.toggle('hidden');
+    }
 
     function computeIPA(text) {
       if (!text) return "[—]";
@@ -297,10 +357,11 @@ el archivo\tfile\tPor favor, adjunta el archivo PDF en el correo electrónico.`;
         word: wordStem,
         fullTitle: rawWord,
         meaningEn: meaning || "Traducción disponible",
-        exampleEs: example || `Ejemplo de uso formal para '${rawWord}'.`,
+        examples: example ? [example] : [],
+        exampleEs: example || `Ejemplo de uso para '${rawWord}'.`,
         phonetic: computeIPA(rawWord),
         pos: pos,
-        sourceFile: sourceFile || 'corpus'
+        sourceFiles: sourceFile ? [sourceFile] : ['corpus']
       };
     }
 
@@ -331,110 +392,252 @@ el archivo\tfile\tPor favor, adjunta el archivo PDF en el correo electrónico.`;
       return items;
     }
 
-    async function loadAllCorpusFiles() {
-      const subtitle = document.getElementById('headerCorpusSubtitle');
-      if (subtitle) subtitle.innerText = 'Explorando carpeta /corpus/...';
+    async function discoverFilesFromDirectory() {
+      const discovered = new Set();
+      addDiagnosticLog("Iniciando escaneo dinámico de /corpus/...");
 
-      let discoveredFiles = [];
+      // Strategy 1: Check dynamic listing endpoints (index.php, files.json, dir.json, files.txt)
+      const dynamicEndpoints = [
+        'corpus/index.php', '/corpus/index.php',
+        'corpus/files.json', '/corpus/files.json',
+        'corpus/dir.json', '/corpus/dir.json',
+        'corpus/files.txt', '/corpus/files.txt',
+        'corpus/list.txt', '/corpus/list.txt'
+      ];
 
-      // Method 1: Check for an explicit manifest file (e.g. /corpus/files.json or /corpus/manifest.json)
-      try {
-        const manifestRes = await fetch(`${CORPUS_DIRECTORY}files.json`);
-        if (manifestRes.ok) {
-          const json = await manifestRes.json();
-          if (Array.isArray(json)) discoveredFiles = json;
-          else if (json.files && Array.isArray(json.files)) discoveredFiles = json.files;
-        }
-      } catch (e) {}
-
-      // Method 2: If no manifest, attempt to fetch directory index HTML of /corpus/
-      if (discoveredFiles.length === 0) {
+      for (const endpoint of dynamicEndpoints) {
         try {
-          const dirRes = await fetch(CORPUS_DIRECTORY);
-          if (dirRes.ok) {
-            const htmlText = await dirRes.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlText, 'text/html');
-            const links = Array.from(doc.querySelectorAll('a'));
-            
-            discoveredFiles = links
-              .map(a => a.getAttribute('href') || '')
-              .filter(href => href.toLowerCase().endsWith('.txt') && !href.startsWith('..'))
-              .map(href => href.replace(/^\/|^\.\//, ''));
+          const res = await fetch(endpoint, { cache: 'no-cache' });
+          if (res.ok) {
+            const ct = res.headers.get('content-type') || '';
+            if (ct.includes('json') || endpoint.endsWith('.json') || endpoint.endsWith('.php')) {
+              try {
+                const data = await res.json();
+                if (Array.isArray(data)) {
+                  data.forEach(item => {
+                    const fname = typeof item === 'string' ? item : (item.name || item.file || '');
+                    if (fname && fname.toLowerCase().endsWith('.txt')) {
+                      discovered.add(fname.replace(/^.*\//, ''));
+                    }
+                  });
+                  addDiagnosticLog(`Archivos listados en ${endpoint}: ${data.length}`, 'success');
+                }
+              } catch (je) {}
+            } else {
+              const txt = await res.text();
+              txt.split(/\r?\n/).forEach(l => {
+                const f = l.trim().replace(/^.*\//, '');
+                if (f.toLowerCase().endsWith('.txt')) discovered.add(f);
+              });
+              addDiagnosticLog(`Archivos identificados en ${endpoint}`, 'success');
+            }
           }
         } catch (e) {}
       }
 
-      // Method 3: Probe common batch names or default file names if directory listing is disabled by server
-      if (discoveredFiles.length === 0) {
-        const probeList = [
-          'Spanish_Corpus_Batch_1.txt',
-          'Spanish_Corpus_Batch_2.txt',
-          'Spanish_B2_Corpus_Science_Tech_Batch_12.txt',
-          'corpus.txt',
-          'vocabulario.txt',
-          'batch_1.txt',
-          'batch_2.txt',
-          'batch_3.txt',
-          'words.txt'
-        ];
+      // Strategy 2: Probe directory roots directly for Directory Indexing (Apache, Nginx, Python, Caddy)
+      for (const dirPath of CORPUS_PATHS) {
+        try {
+          addDiagnosticLog(`Consultando directorio en ${dirPath}...`);
+          const res = await fetch(dirPath, {
+            headers: { 'Accept': 'application/json, text/html, text/plain, */*' },
+            cache: 'no-cache'
+          });
 
-        const probePromises = probeList.map(async fname => {
-          try {
-            const res = await fetch(`${CORPUS_DIRECTORY}${fname}`, { method: 'HEAD' });
-            if (res.ok) return fname;
-          } catch(err) {}
-          return null;
-        });
+          if (res.ok) {
+            const rawBody = await res.text();
+            addDiagnosticLog(`Respuesta de ${dirPath} (HTTP ${res.status}). Procesando...`, 'success');
 
-        const probeResults = await Promise.all(probePromises);
-        discoveredFiles = probeResults.filter(Boolean);
-      }
+            // 2A. Check JSON autoindex
+            try {
+              const jsonData = JSON.parse(rawBody);
+              if (Array.isArray(jsonData)) {
+                jsonData.forEach(item => {
+                  const fname = typeof item === 'string' ? item : (item.name || '');
+                  if (fname.toLowerCase().endsWith('.txt')) discovered.add(fname);
+                });
+              }
+            } catch (notJson) {
+              // 2B. Parse HTML directory listing (links)
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(rawBody, 'text/html');
+              const links = Array.from(doc.querySelectorAll('a'));
 
-      // Fetch content for all detected text files in parallel
-      let aggregatedItems = [];
-      let successfulFiles = [];
+              links.forEach(a => {
+                const href = decodeURIComponent((a.getAttribute('href') || '').trim());
+                const cleanPath = href.split('?')[0].split('#')[0];
+                if (cleanPath.toLowerCase().endsWith('.txt')) {
+                  const fname = cleanPath.split('/').filter(Boolean).pop();
+                  if (fname && !fname.startsWith('.')) {
+                    discovered.add(fname);
+                  }
+                }
+              });
 
-      if (discoveredFiles.length > 0) {
-        const fetchFilePromises = discoveredFiles.map(async (filename) => {
-          try {
-            const cleanPath = filename.startsWith(CORPUS_DIRECTORY) ? filename : `${CORPUS_DIRECTORY}${filename}`;
-            const res = await fetch(cleanPath);
-            if (res.ok) {
-              const text = await res.text();
-              const items = parseCorpusLines(text, filename);
-              return { filename, items };
+              // 2C. Fallback regex search on raw HTML/Text
+              const regexMatches = rawBody.match(/[a-zA-Z0-9_\-\s%]+\.txt\b/gi) || [];
+              regexMatches.forEach(match => {
+                const decoded = decodeURIComponent(match).trim();
+                const fname = decoded.split('/').filter(Boolean).pop();
+                if (fname && fname.toLowerCase().endsWith('.txt') && !fname.startsWith('.')) {
+                  discovered.add(fname);
+                }
+              });
             }
-          } catch (e) {}
-          return null;
-        });
-
-        const results = await Promise.all(fetchFilePromises);
-        for (const res of results) {
-          if (res && res.items.length > 0) {
-            aggregatedItems = aggregatedItems.concat(res.items);
-            successfulFiles.push({ name: res.filename, count: res.items.length });
+          } else {
+            addDiagnosticLog(`Acceso a ${dirPath} respondió con HTTP ${res.status}`, res.status === 403 ? 'warn' : 'info');
           }
+        } catch (err) {
+          addDiagnosticLog(`Error al conectar con ${dirPath}: ${err.message}`, 'warn');
         }
       }
 
-      // If no server files found or /corpus/ is not mounted yet, fallback cleanly
-      if (aggregatedItems.length === 0) {
-        aggregatedItems = parseCorpusLines(FALLBACK_CORPUS_PAYLOAD, 'demostracion.txt');
-        successfulFiles.push({ name: 'demostracion.txt', count: aggregatedItems.length });
+      // Strategy 3: Proactive probe for standard names
+      const proactiveProbes = [
+        'example.txt', 'ejemplo.txt', 'vocab1.txt', 'vocab2.txt', 'spanish.txt',
+        'corpus.txt', 'words.txt', 'Spanish_B2_Corpus_Science_Tech_Batch_12.txt'
+      ];
+      for (const p of proactiveProbes) {
+        if (!discovered.has(p)) {
+          try {
+            const probeRes = await fetch(`corpus/${p}`, { method: 'HEAD', cache: 'no-cache' });
+            if (probeRes.ok) discovered.add(p);
+          } catch(e) {}
+        }
       }
 
-      // Save aggregated corpus
-      CURRENT_CORPUS = aggregatedItems;
-      LOADED_FILES = successfulFiles;
-      CORPUS_MAP.clear();
+      return Array.from(discovered);
+    }
 
-      CURRENT_CORPUS.forEach(item => {
-        CORPUS_MAP.set(item.word.toLowerCase(), item);
-        CORPUS_MAP.set(item.fullTitle.toLowerCase(), item);
+    async function scanAndLoadCorpusDirectory() {
+      const subtitle = document.getElementById('headerCorpusSubtitle');
+      const serverDot = document.getElementById('serverPulseDot');
+      if (subtitle) subtitle.innerText = 'Escaneando archivos en /corpus/...';
+      if (serverDot) serverDot.className = 'w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse';
+
+      const fileList = await discoverFilesFromDirectory();
+      addDiagnosticLog(`Archivos .txt detectados: ${fileList.length} [${fileList.join(', ')}]`, fileList.length ? 'success' : 'warn');
+
+      let successfulFiles = [];
+      let combinedEntries = [];
+
+      for (const filename of fileList) {
+        let loadedText = null;
+        for (const basePath of CORPUS_PATHS) {
+          try {
+            const cleanUrl = `${basePath.endsWith('/') ? basePath : basePath + '/'}${filename}`;
+            const res = await fetch(cleanUrl, { cache: 'no-cache' });
+            if (res.ok) {
+              const text = await res.text();
+              if (text && !text.trim().startsWith('<!DOCTYPE') && !text.trim().startsWith('<html')) {
+                loadedText = text;
+                break;
+              }
+            }
+          } catch (err) {}
+        }
+
+        if (loadedText) {
+          const items = parseCorpusLines(loadedText, filename);
+          if (items.length > 0) {
+            successfulFiles.push({ name: filename, count: items.length });
+            combinedEntries = combinedEntries.concat(items);
+            addDiagnosticLog(`✓ ${filename}: ${items.length} palabras procesadas`, 'success');
+          }
+        } else {
+          addDiagnosticLog(`No se pudo leer el contenido de ${filename}`, 'warn');
+        }
+      }
+
+      if (combinedEntries.length === 0) {
+        addDiagnosticLog("No se pudieron cargar archivos .txt automáticamente desde el servidor.", "error");
+        showToast("No se detectaron archivos .txt en /corpus/. Consulta 'Diagnóstico'.", "⚠️");
+      } else {
+        showToast(`Corpus sincronizado: ${combinedEntries.length} palabras de ${successfulFiles.length} archivo(s)`, "✅");
+      }
+
+      CURRENT_CORPUS = [];
+      CORPUS_MAP.clear();
+      LOADED_FILES = successfulFiles;
+
+      combinedEntries.forEach(entry => {
+        const cleanStem = entry.word.toLowerCase();
+        const existing = CORPUS_MAP.get(cleanStem);
+
+        if (existing) {
+          entry.sourceFiles.forEach(src => {
+            if (!existing.sourceFiles.includes(src)) existing.sourceFiles.push(src);
+          });
+          entry.examples.forEach(ex => {
+            if (!existing.examples.includes(ex)) existing.examples.push(ex);
+          });
+        } else {
+          CORPUS_MAP.set(cleanStem, entry);
+          CORPUS_MAP.set(entry.fullTitle.toLowerCase(), entry);
+          CURRENT_CORPUS.push(entry);
+        }
       });
 
+      if (serverDot) {
+        serverDot.className = CURRENT_CORPUS.length > 0 
+          ? 'w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse' 
+          : 'w-1.5 h-1.5 rounded-full bg-amber-500';
+      }
+
       updateInterfaceStats();
+    }
+
+    function handleLocalFolderSelect(e) {
+      const files = Array.from(e.target.files || []).filter(f => f.name.toLowerCase().endsWith('.txt'));
+      if (files.length === 0) {
+        showToast("No se seleccionaron archivos .txt", "⚠️");
+        return;
+      }
+
+      addDiagnosticLog(`Cargando ${files.length} archivo(s) desde el selector local...`, 'info');
+      let combinedEntries = [];
+      let successfulFiles = [];
+      let pending = files.length;
+
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const text = event.target.result;
+          const items = parseCorpusLines(text, file.name);
+          if (items.length > 0) {
+            combinedEntries = combinedEntries.concat(items);
+            successfulFiles.push({ name: file.name, count: items.length });
+          }
+          pending--;
+          if (pending === 0) {
+            LOADED_FILES = successfulFiles;
+            CURRENT_CORPUS = [];
+            CORPUS_MAP.clear();
+
+            combinedEntries.forEach(entry => {
+              const cleanStem = entry.word.toLowerCase();
+              const existing = CORPUS_MAP.get(cleanStem);
+              if (existing) {
+                entry.sourceFiles.forEach(src => {
+                  if (!existing.sourceFiles.includes(src)) existing.sourceFiles.push(src);
+                });
+                entry.examples.forEach(ex => {
+                  if (!existing.examples.includes(ex)) existing.examples.push(ex);
+                });
+              } else {
+                CORPUS_MAP.set(cleanStem, entry);
+                CORPUS_MAP.set(entry.fullTitle.toLowerCase(), entry);
+                CURRENT_CORPUS.push(entry);
+              }
+            });
+
+            updateInterfaceStats();
+            showToast(`Cargados ${combinedEntries.length} términos desde ${files.length} archivo(s)`, "📁");
+            addDiagnosticLog(`Procesamiento local completado: ${combinedEntries.length} palabras`, 'success');
+          }
+        };
+        reader.readAsText(file);
+      });
     }
 
     function updateInterfaceStats() {
@@ -449,30 +652,64 @@ el archivo\tfile\tPor favor, adjunta el archivo PDF en el correo electrónico.`;
 
       const sub = document.getElementById('headerCorpusSubtitle');
       if (sub) {
-        sub.innerText = `${count} términos (${fileCount} archivo${fileCount === 1 ? '' : 's'} en /corpus/)`;
+        sub.innerText = fileCount > 0 
+          ? `${count} términos (${fileCount} archivo${fileCount === 1 ? '' : 's'} escaneado${fileCount === 1 ? '' : 's'})`
+          : 'Esperando archivos en /corpus/...';
       }
 
       const modalSub = document.getElementById('modalCorpusFolderSubtitle');
       if (modalSub) {
-        modalSub.innerText = `${count} palabras recuperadas desde ${fileCount} archivo(s) .txt en /corpus/`;
+        modalSub.innerText = `${count} palabras combinadas desde ${fileCount} archivo(s) .txt en /corpus/`;
       }
 
-      // Render file pills inside the index modal
+      // Render file pills in modal header
       const pillsContainer = document.getElementById('modalFilesListPills');
       if (pillsContainer) {
-        pillsContainer.innerHTML = LOADED_FILES.map(f => `
-          <span class="px-2 py-0.5 rounded-md bg-stone-200/80 text-stone-700 font-mono text-[10px] whitespace-nowrap">
-            ${f.name} (${f.count})
-          </span>
-        `).join('');
+        pillsContainer.innerHTML = LOADED_FILES.length > 0 
+          ? LOADED_FILES.map(f => `
+              <span class="px-2 py-0.5 rounded-md bg-stone-200/80 text-stone-700 font-mono text-[10px] whitespace-nowrap">
+                ${f.name} (${f.count})
+              </span>
+            `).join('')
+          : `<span class="text-stone-400 italic">Ningún archivo detectado</span>`;
       }
 
+      renderFileFilterTabs();
       renderQuickChips();
 
-      // Automatically render the first term if none is active
       if (!currentWordData && CURRENT_CORPUS.length > 0) {
-        renderResult(CURRENT_CORPUS[3] || CURRENT_CORPUS[0]);
+        renderResult(CURRENT_CORPUS[0]);
       }
+    }
+
+    function renderFileFilterTabs() {
+      const bar = document.getElementById('modalFileTabsBar');
+      if (!bar) return;
+
+      const allActive = activeFileFilter === 'ALL';
+      let html = `
+        <button onclick="window.setIndexFileFilter('ALL')" id="filterTab_ALL" class="px-2.5 py-1 rounded-lg font-bold text-[11px] transition-colors whitespace-nowrap ${allActive ? 'bg-stone-900 text-white shadow-xs' : 'bg-white border border-stone-200 text-stone-700 hover:bg-stone-100'}">
+          Todos los archivos (${CURRENT_CORPUS.length})
+        </button>
+      `;
+
+      LOADED_FILES.forEach(f => {
+        const isActive = activeFileFilter === f.name;
+        html += `
+          <button onclick="window.setIndexFileFilter('${f.name}')" class="px-2.5 py-1 rounded-lg font-bold text-[11px] transition-colors whitespace-nowrap ${isActive ? 'bg-stone-900 text-white shadow-xs' : 'bg-white border border-stone-200 text-stone-700 hover:bg-stone-100'}">
+            ${f.name} (${f.count})
+          </button>
+        `;
+      });
+
+      bar.innerHTML = html;
+    }
+
+    function setIndexFileFilter(filterName) {
+      activeFileFilter = filterName;
+      renderFileFilterTabs();
+      const searchVal = (document.getElementById('modalSearchInput') || {}).value || '';
+      renderModalWordGrid(searchVal);
     }
 
     function renderQuickChips() {
@@ -499,21 +736,84 @@ el archivo\tfile\tPor favor, adjunta el archivo PDF en el correo electrónico.`;
       document.getElementById('resPos').innerText = data.pos;
       document.getElementById('resMeaning').innerText = data.meaningEn;
 
+      // Render source file pills
       const sourceContainer = document.getElementById('resSourceContainer');
-      const sourceFileSpan = document.getElementById('resSourceFile');
-      if (data.sourceFile && sourceContainer && sourceFileSpan) {
-        sourceFileSpan.innerText = data.sourceFile;
-        sourceContainer.classList.remove('hidden');
-      } else if (sourceContainer) {
-        sourceContainer.classList.add('hidden');
+      const sourcePills = document.getElementById('resSourcePills');
+      if (sourceContainer && sourcePills) {
+        if (data.sourceFiles && data.sourceFiles.length > 0) {
+          sourcePills.innerHTML = data.sourceFiles.map(src => `
+            <span class="px-2 py-0.5 rounded-md font-mono text-[10px] bg-red-100 text-red-900 border border-red-200">${src}</span>
+          `).join('');
+          sourceContainer.classList.remove('hidden');
+        } else {
+          sourceContainer.classList.add('hidden');
+        }
       }
 
-      // Highlight target word in the example sentence
-      const rawTerm = data.word.slice(0, 5);
-      const regex = new RegExp(`(${rawTerm}[a-záéíóúñ]*)`, 'gi');
-      document.getElementById('resExampleEs').innerHTML = `"${data.exampleEs.replace(regex, '<strong class="text-red-300 underline font-bold">$1</strong>')}"`;
+      // Render example sentences
+      const examples = (data.examples && data.examples.length > 0) ? data.examples : [data.exampleEs];
+      const countBadge = document.getElementById('resExampleCountBadge');
+      if (countBadge) {
+        if (examples.length > 1) {
+          countBadge.innerText = `${examples.length} frases disponibles`;
+          countBadge.classList.remove('hidden');
+        } else {
+          countBadge.classList.add('hidden');
+        }
+      }
+
+      const container = document.getElementById('resExamplesContainer');
+      if (container) {
+        const rawTerm = data.word.slice(0, 5);
+        const regex = new RegExp(`(${rawTerm}[a-záéíóúñ]*)`, 'gi');
+
+        container.innerHTML = examples.map(ex => `
+          <div class="p-5 sm:p-6 rounded-2xl bg-stone-900 text-stone-100 space-y-2 relative overflow-hidden shadow-md">
+            <div class="absolute right-4 top-2 text-6xl text-stone-800 select-none pointer-events-none font-serif font-black opacity-30">“</div>
+            <p class="text-sm sm:text-base font-serif italic text-red-100 leading-relaxed relative z-10">
+              "${ex.replace(regex, '<strong class="text-red-300 underline font-bold">$1</strong>')}"
+            </p>
+          </div>
+        `).join('');
+      }
 
       updateSaveIconState();
+    }
+
+    function renderModalWordGrid(searchQuery) {
+      const grid = document.getElementById('modalWordGrid');
+      if (!grid) return;
+
+      const q = (searchQuery || '').toLowerCase().trim();
+      const filtered = CURRENT_CORPUS.filter(item => {
+        const matchesSearch = !q || 
+          item.word.toLowerCase().includes(q) || 
+          item.fullTitle.toLowerCase().includes(q) || 
+          item.meaningEn.toLowerCase().includes(q);
+
+        const matchesFile = activeFileFilter === 'ALL' || item.sourceFiles.includes(activeFileFilter);
+        return matchesSearch && matchesFile;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full p-8 text-center text-stone-400 text-xs font-medium">No se encontraron términos que coincidan con los filtros seleccionados.</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => `
+        <div onclick="window.closeCorpusIndexModal(); window.quickSearch('${item.word}')" class="p-3.5 bg-white rounded-2xl border border-stone-200/80 hover:border-red-400 hover:shadow-md cursor-pointer transition-all flex flex-col justify-between group">
+          <div class="flex items-start justify-between gap-1.5">
+            <span class="font-serif font-bold text-stone-900 text-sm group-hover:text-red-800 transition-colors">${item.fullTitle}</span>
+            <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-stone-100 text-stone-600">${item.pos}</span>
+          </div>
+          <div class="flex items-center justify-between gap-2 mt-2">
+            <p class="text-xs text-stone-500 font-medium truncate">${item.meaningEn}</p>
+            <div class="flex items-center gap-1 shrink-0">
+              ${item.sourceFiles.map(src => `<span class="text-[9px] font-mono px-1 py-0.5 rounded bg-stone-100 text-stone-500 max-w-[70px] truncate">${src}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('');
     }
 
     function lookupWord(query) {
@@ -533,7 +833,7 @@ el archivo\tfile\tPor favor, adjunta el archivo PDF en el correo electrónico.`;
       if (match) {
         renderResult(match);
       } else {
-        const dynamicWord = parseGrammaticalLemma(query, "Término no registrado en el corpus", `Uso formal de '${query}'.`, 'búsqueda libre');
+        const dynamicWord = parseGrammaticalLemma(query, "Término no registrado en el corpus", `Uso en contexto de '${query}'.`, 'búsqueda libre');
         renderResult(dynamicWord);
         showToast(`'${query}' no figura en el corpus actual`, "ℹ️");
       }
@@ -763,36 +1063,6 @@ el archivo\tfile\tPor favor, adjunta el archivo PDF en el correo electrónico.`;
       renderModalWordGrid((query || '').toLowerCase().trim());
     }
 
-    function renderModalWordGrid(searchQuery) {
-      const grid = document.getElementById('modalWordGrid');
-      if (!grid) return;
-
-      const filtered = CURRENT_CORPUS.filter(item => 
-        !searchQuery || 
-        item.word.toLowerCase().includes(searchQuery) || 
-        item.fullTitle.toLowerCase().includes(searchQuery) || 
-        item.meaningEn.toLowerCase().includes(searchQuery)
-      );
-
-      if (filtered.length === 0) {
-        grid.innerHTML = `<div class="col-span-full p-8 text-center text-stone-400 text-xs font-medium">No se encontraron términos que coincidan con la búsqueda.</div>`;
-        return;
-      }
-
-      grid.innerHTML = filtered.map(item => `
-        <div onclick="window.closeCorpusIndexModal(); window.quickSearch('${item.word}')" class="p-3.5 bg-white rounded-2xl border border-stone-200/80 hover:border-red-400 hover:shadow-md cursor-pointer transition-all flex flex-col justify-between group">
-          <div class="flex items-start justify-between gap-1.5">
-            <span class="font-serif font-bold text-stone-900 text-sm group-hover:text-red-800 transition-colors">${item.fullTitle}</span>
-            <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-stone-100 text-stone-600">${item.pos}</span>
-          </div>
-          <div class="flex items-center justify-between gap-2 mt-1">
-            <p class="text-xs text-stone-500 font-medium truncate">${item.meaningEn}</p>
-            ${item.sourceFile ? `<span class="text-[9px] font-mono text-stone-400 shrink-0 truncate max-w-[80px]">${item.sourceFile}</span>` : ''}
-          </div>
-        </div>
-      `).join('');
-    }
-
     function showToast(message, icon = "✨") {
       const toast = document.getElementById('toast');
       if (!toast) return;
@@ -804,6 +1074,7 @@ el archivo\tfile\tPor favor, adjunta el archivo PDF en el correo electrónico.`;
       }, 2500);
     }
 
+    // Expose functions to window
     window.handleSearchSubmit = handleSearchSubmit;
     window.handleLiveInput = handleLiveInput;
     window.clearSearchInput = clearSearchInput;
@@ -820,11 +1091,15 @@ el archivo\tfile\tPor favor, adjunta el archivo PDF en el correo electrónico.`;
     window.handleModalSearch = handleModalSearch;
     window.closeAutocomplete = closeAutocomplete;
     window.resetView = resetView;
+    window.scanAndLoadCorpusDirectory = scanAndLoadCorpusDirectory;
+    window.handleLocalFolderSelect = handleLocalFolderSelect;
+    window.toggleDiagnosticsPanel = toggleDiagnosticsPanel;
+    window.setIndexFileFilter = setIndexFileFilter;
 
     window.addEventListener('DOMContentLoaded', () => {
       updateSavedBadge();
       renderSavedList();
-      loadAllCorpusFiles();
+      scanAndLoadCorpusDirectory();
     });
 
     // Close autocomplete on external click
