@@ -574,6 +574,33 @@
           </div>
         </div>
 
+        <!-- Avís i botons directes si el servidor no permet llistar automàticament -->
+        <div id="modalAutoScanNotice" class="hidden p-3 bg-amber-50 border border-amber-300 rounded-2xl text-xs space-y-2">
+          <p class="text-amber-950 font-medium">
+            💡 <strong>Avís:</strong> El servidor no permet llistar automàticament el directori <code class="bg-amber-100 px-1 py-0.5 rounded font-mono">/corpus/</code> o estàs executant la pàgina en local (<code class="font-mono">file://</code>).
+          </p>
+          <div class="flex flex-wrap gap-2 pt-1">
+            <button 
+              type="button" 
+              onclick="document.getElementById('corpusFolderPicker').click()" 
+              class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95 flex items-center gap-1.5"
+            >
+              <span>📁</span> Triar carpeta /corpus/
+            </button>
+            <button 
+              type="button" 
+              onclick="document.getElementById('corpusFilesPicker').click()" 
+              class="px-3 py-1.5 bg-stone-800 hover:bg-stone-900 text-white rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95 flex items-center gap-1.5"
+            >
+              <span>📄</span> Triar fitxers .txt
+            </button>
+          </div>
+        </div>
+
+        <!-- Inputs ocults per carregar carpeta o fitxers directament -->
+        <input type="file" id="corpusFolderPicker" webkitdirectory directory multiple class="hidden" onchange="handleLocalFolderPicker(event)">
+        <input type="file" id="corpusFilesPicker" accept=".txt" multiple class="hidden" onchange="handleLocalFilesPicker(event)">
+
         <!-- Formulari per afegir nom de fitxer manualment -->
         <div class="pt-2 border-t border-stone-100 flex items-center gap-2">
           <input 
@@ -691,7 +718,21 @@
     };
 
     /* Rutes candidates per al directori corpus */
-    const CORPUS_PATHS = ['corpus/', './corpus/', '/corpus/'];
+    const CORPUS_PATHS = ['corpus/', '/corpus/'];
+
+    /* Petició fetch resilient amb límit de temps per evitar bloquejos infinits */
+    async function fetchWithTimeout(url, options = {}, timeoutMs = 1400) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = await fetch(url, { ...options, signal: controller.signal });
+        clearTimeout(timeoutId);
+        return response;
+      } catch (err) {
+        clearTimeout(timeoutId);
+        throw err;
+      }
+    }
 
     /* Corpus inicial de seguretat en català */
     const SEED_CORPUS_RAW = `el programari	software	Cal actualitzar el programari de gestió interna.
@@ -840,58 +881,81 @@ el microscopi	microscope	Van examinar la mostra amb un microscopi d'alta precisi
     async function discoverFilesFromDirectory() {
       const discovered = new Set();
 
-      // 1. Cercar manifestos estructurats (JSON i text)
-      const manifests = ['files.json', 'corpus.json', 'manifest.json', 'list.txt', 'files.txt'];
-      for (const basePath of CORPUS_PATHS) {
-        for (const man of manifests) {
-          try {
-            const res = await fetch(`${basePath}${man}`, { cache: 'no-cache' });
-            if (res.ok) {
-              if (man.endsWith('.json')) {
-                const list = await res.json();
-                if (Array.isArray(list)) {
-                  list.forEach(item => {
-                    const fn = typeof item === 'string' ? item : (item.name || item.file);
-                    if (fn && fn.endsWith('.txt')) discovered.add(fn);
-                  });
-                }
-              } else {
-                const txt = await res.text();
-                txt.split(/\r?\n/).forEach(f => {
-                  const tr = f.trim();
-                  if (tr && tr.endsWith('.txt')) discovered.add(tr);
-                });
-              }
-            }
-          } catch (e) {}
-        }
+      // En mode local file:///, el navegador bloqueja fetch per seguretat (CORS)
+      if (window.location.protocol === 'file:') {
+        console.warn("Detectat entorn local file:///. fetch està restringit pel navegador.");
+        return [];
       }
 
-      // 2. Inspeccionar directori del servidor (Apache/Nginx/Python autoindex)
+      // 1. Cercar manifestos estructurats en paral·lel
+      const manifests = ['files.json', 'corpus.json', 'manifest.json', 'list.txt', 'files.txt'];
+      const manifestPromises = [];
+
       for (const basePath of CORPUS_PATHS) {
+        for (const man of manifests) {
+          manifestPromises.push(
+            fetchWithTimeout(`${basePath}${man}`, { cache: 'no-cache' }, 1200)
+              .then(async res => {
+                if (!res.ok) return;
+                if (man.endsWith('.json')) {
+                  const list = await res.json();
+                  if (Array.isArray(list)) {
+                    list.forEach(item => {
+                      const fn = typeof item === 'string' ? item : (item.name || item.file);
+                      if (fn && fn.toLowerCase().endsWith('.txt')) discovered.add(fn);
+                    });
+                  }
+                } else {
+                  const txt = await res.text();
+                  txt.split(/\r?\n/).forEach(f => {
+                    const tr = f.trim();
+                    if (tr && tr.toLowerCase().endsWith('.txt')) discovered.add(tr);
+                  });
+                }
+              })
+              .catch(() => {})
+          );
+        }
+      }
+      await Promise.allSettled(manifestPromises);
+
+      // 2. Provar autoíndex del servidor (Apache, Nginx, Python) en paral·lel
+      const dirPromises = CORPUS_PATHS.map(async basePath => {
         try {
-          const res = await fetch(basePath, { cache: 'no-cache' });
+          const res = await fetchWithTimeout(basePath, { cache: 'no-cache' }, 1500);
           if (res.ok) {
-            const html = await res.text();
-            const regex = /href=["']?([^"' >\n\r\t]+\.txt)(?:[?#][^"' >\n\r\t]*)?["']?/gi;
-            let match;
-            while ((match = regex.exec(html)) !== null) {
-              let fn = match[1];
-              if (fn.includes('/')) fn = fn.split('/').pop();
-              try { fn = decodeURIComponent(fn); } catch (e) {}
-              if (fn && fn.toLowerCase().endsWith('.txt')) discovered.add(fn);
+            const contentType = res.headers.get('content-type') || '';
+            if (contentType.includes('json')) {
+              const list = await res.json();
+              if (Array.isArray(list)) {
+                list.forEach(item => {
+                  const fn = typeof item === 'string' ? item : item.name;
+                  if (fn && fn.toLowerCase().endsWith('.txt')) discovered.add(fn);
+                });
+              }
+            } else {
+              const html = await res.text();
+              const regex = /href=["']?([^"' >\n\r\t]+\.txt)(?:[?#][^"' >\n\r\t]*)?["']?/gi;
+              let match;
+              while ((match = regex.exec(html)) !== null) {
+                let fn = match[1];
+                if (fn.includes('/')) fn = fn.split('/').pop();
+                try { fn = decodeURIComponent(fn); } catch (e) {}
+                if (fn && fn.toLowerCase().endsWith('.txt')) discovered.add(fn);
+              }
             }
           }
         } catch (e) {}
-      }
+      });
+      await Promise.allSettled(dirPromises);
 
-      // 3. Prospecció de noms habituals en català i llistats per lots
+      // 3. Prospecció ràpida en paral·lel de noms habituals
       const probeList = [
         'example.txt', 'exemple.txt', 'ciencia.txt', 'ciència.txt', 'tecnologia.txt',
         'vocabulari.txt', 'vocab.txt', 'paraules.txt', 'corpus.txt',
-        'Catalan_Corpus_Batch_1.txt'
+        'Spanish_B2_Corpus_Science_Tech_Batch_12.txt', 'Catalan_Corpus_Batch_1.txt'
       ];
-      for (let i = 1; i <= 25; i++) {
+      for (let i = 1; i <= 15; i++) {
         probeList.push(`batch_${i}.txt`);
         probeList.push(`vocab_${i}.txt`);
         probeList.push(`Catalan_Corpus_Batch_${i}.txt`);
@@ -900,22 +964,21 @@ el microscopi	microscope	Van examinar la mostra amb un microscopi d'alta precisi
       // Fitxers personals desats per l'usuari
       try {
         const custom = JSON.parse(localStorage.getItem('cat_custom_files') || '[]');
-        custom.forEach(f => probeList.push(f));
+        custom.forEach(f => { if (!probeList.includes(f)) probeList.push(f); });
       } catch (e) {}
 
-      for (const probe of probeList) {
-        if (!discovered.has(probe)) {
-          for (const basePath of CORPUS_PATHS) {
-            try {
-              const res = await fetch(`${basePath}${probe}`, { method: 'HEAD', cache: 'no-cache' });
-              if (res.ok) {
-                discovered.add(probe);
-                break;
-              }
-            } catch (e) {}
-          }
+      const probePromises = probeList.filter(p => !discovered.has(p)).map(async probe => {
+        for (const basePath of CORPUS_PATHS) {
+          try {
+            const res = await fetchWithTimeout(`${basePath}${probe}`, { method: 'HEAD', cache: 'no-cache' }, 900);
+            if (res.ok) {
+              discovered.add(probe);
+              break;
+            }
+          } catch (e) {}
         }
-      }
+      });
+      await Promise.allSettled(probePromises);
 
       return Array.from(discovered);
     }
@@ -966,55 +1029,8 @@ el microscopi	microscope	Van examinar la mostra amb un microscopi d'alta precisi
       if (track) track.classList.add('opacity-0');
     }
 
-    async function scanAndLoadCorpus() {
-      openCorpusLoadingModal();
-      setCorpusProgress(15, 'Sondejant directori /corpus/...', 0);
-
-      const files = await discoverFilesFromDirectory();
-      setCorpusProgress(30, `Processant ${files.length} fitxer(s)...`, 0);
-
-      let allEntries = [];
-      const successfulFiles = [];
-      const totalFiles = Math.max(files.length, 1);
-
-      for (let i = 0; i < files.length; i++) {
-        const filename = files[i];
-        const pct = 30 + Math.round(((i + 1) / totalFiles) * 60);
-        setCorpusProgress(pct, `Carregant: ${filename}`, allEntries.length);
-
-        let content = null;
-        for (const basePath of CORPUS_PATHS) {
-          try {
-            const res = await fetch(`${basePath}${filename}`, { cache: 'no-cache' });
-            if (res.ok) {
-              const text = await res.text();
-              if (text && !text.trim().startsWith('<!DOCTYPE')) {
-                content = text;
-                break;
-              }
-            }
-          } catch (e) {}
-        }
-
-        if (content) {
-          const parsed = parseCorpusLines(content, filename);
-          if (parsed.length > 0) {
-            successfulFiles.push({ name: filename, count: parsed.length });
-            allEntries = allEntries.concat(parsed);
-            State.loadedFiles = [...successfulFiles];
-            setCorpusProgress(pct, `Processat: ${filename} (${parsed.length} paraules)`, allEntries.length);
-          }
-        }
-      }
-
-      // Si no s'ha trobat cap fitxer, carregar el corpus llavor en català
-      if (allEntries.length === 0) {
-        const seedParsed = parseCorpusLines(SEED_CORPUS_RAW, 'llavor_inicial.txt');
-        allEntries = seedParsed;
-        successfulFiles.push({ name: 'llavor_inicial.txt', count: seedParsed.length });
-        State.loadedFiles = successfulFiles;
-      }
-
+    /* Aplicar un conjunt d'entrades al diccionari i flashcards */
+    function applyCorpusEntries(allEntries, saveToCache = false) {
       State.corpus = [];
       State.corpusMap.clear();
 
@@ -1037,10 +1053,97 @@ el microscopi	microscope	Van examinar la mostra amb un microscopi d'alta precisi
         }
       });
 
-      // Actualitzar Interfície
+      if (saveToCache) {
+        try {
+          localStorage.setItem('cat_cached_corpus', JSON.stringify(State.corpus));
+          localStorage.setItem('cat_cached_files', JSON.stringify(State.loadedFiles));
+        } catch (e) {}
+      }
+
       updateStatsUI();
       syncDeckSelectOptions();
       initFlashcardsDeck();
+    }
+
+    async function scanAndLoadCorpus() {
+      openCorpusLoadingModal();
+      const notice = document.getElementById('modalAutoScanNotice');
+      if (notice) notice.classList.add('hidden');
+
+      setCorpusProgress(15, 'Sondejant directori /corpus/...', 0);
+
+      let files = [];
+      try {
+        files = await discoverFilesFromDirectory();
+      } catch (err) {
+        console.warn("Error durant la descoberta de fitxers:", err);
+      }
+
+      setCorpusProgress(40, `Detectats ${files.length} fitxer(s)...`, 0);
+
+      let allEntries = [];
+      const successfulFiles = [];
+
+      if (files.length > 0) {
+        const totalFiles = files.length;
+        for (let i = 0; i < totalFiles; i++) {
+          const filename = files[i];
+          const pct = 40 + Math.round(((i + 1) / totalFiles) * 50);
+          setCorpusProgress(pct, `Carregant: ${filename}`, allEntries.length);
+
+          let content = null;
+          for (const basePath of CORPUS_PATHS) {
+            try {
+              const res = await fetchWithTimeout(`${basePath}${filename}`, { cache: 'no-cache' }, 2000);
+              if (res.ok) {
+                const text = await res.text();
+                if (text && !text.trim().startsWith('<!DOCTYPE')) {
+                  content = text;
+                  break;
+                }
+              }
+            } catch (e) {}
+          }
+
+          if (content) {
+            const parsed = parseCorpusLines(content, filename);
+            if (parsed.length > 0) {
+              successfulFiles.push({ name: filename, count: parsed.length });
+              allEntries = allEntries.concat(parsed);
+              State.loadedFiles = [...successfulFiles];
+              setCorpusProgress(pct, `Processat: ${filename} (${parsed.length} paraules)`, allEntries.length);
+            }
+          }
+        }
+      }
+
+      // Si no s'han detectat fitxers a través del servidor web
+      if (successfulFiles.length === 0) {
+        if (notice) notice.classList.remove('hidden');
+
+        // Intentar restaurar darrera sessió de la memòria cau
+        let restoredFromCache = false;
+        try {
+          const cached = localStorage.getItem('cat_cached_corpus');
+          if (cached) {
+            const cachedEntries = JSON.parse(cached);
+            if (Array.isArray(cachedEntries) && cachedEntries.length > 0) {
+              allEntries = cachedEntries;
+              State.loadedFiles = JSON.parse(localStorage.getItem('cat_cached_files') || '[]');
+              restoredFromCache = true;
+            }
+          }
+        } catch (e) {}
+
+        if (!restoredFromCache) {
+          const seedParsed = parseCorpusLines(SEED_CORPUS_RAW, 'llavor_inicial.txt');
+          allEntries = seedParsed;
+          successfulFiles.push({ name: 'llavor_inicial.txt (exemple)', count: seedParsed.length });
+          State.loadedFiles = successfulFiles;
+        }
+      }
+
+      applyCorpusEntries(allEntries);
 
       setCorpusProgress(100, `Llest! ${State.corpus.length} paraules carregades`, State.corpus.length);
       const dot = document.getElementById('serverStatusDot');
@@ -1048,7 +1151,70 @@ el microscopi	microscope	Van examinar la mostra amb un microscopi d'alta precisi
       const statusText = document.getElementById('headerStatusText');
       if (statusText) statusText.innerText = `${State.loadedFiles.length} fitxer(s) actius`;
 
-      setTimeout(closeCorpusLoadingModal, 1800);
+      // Si s'han carregat fitxers reals del servidor, tancar automàticament
+      if (successfulFiles.length > 0 && successfulFiles[0].name !== 'llavor_inicial.txt (exemple)') {
+        setTimeout(closeCorpusLoadingModal, 1800);
+      }
+    }
+
+    /* Carregador de fitxers locals: selecció de carpeta */
+    async function handleLocalFolderPicker(event) {
+      const files = Array.from(event.target.files || []).filter(f => f.name.toLowerCase().endsWith('.txt'));
+      if (files.length === 0) {
+        showToast('No s\'ha trobat cap fitxer .txt a la carpeta seleccionada', '⚠️');
+        return;
+      }
+      await processLocalFileList(files);
+    }
+
+    /* Carregador de fitxers locals: selecció de fitxers individuals */
+    async function handleLocalFilesPicker(event) {
+      const files = Array.from(event.target.files || []).filter(f => f.name.toLowerCase().endsWith('.txt'));
+      if (files.length === 0) {
+        showToast('Selecciona un o més fitxers .txt', '⚠️');
+        return;
+      }
+      await processLocalFileList(files);
+    }
+
+    /* Processament directe dels fitxers seleccionats des del navegador */
+    async function processLocalFileList(files) {
+      openCorpusLoadingModal();
+      setCorpusProgress(25, `Processant ${files.length} fitxer(s) locals...`, 0);
+
+      let allEntries = [];
+      const loaded = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const pct = 25 + Math.round(((i + 1) / files.length) * 70);
+        setCorpusProgress(pct, `Llegint: ${file.name}`, allEntries.length);
+
+        try {
+          const text = await file.text();
+          const parsed = parseCorpusLines(text, file.name);
+          if (parsed.length > 0) {
+            loaded.push({ name: file.name, count: parsed.length });
+            allEntries = allEntries.concat(parsed);
+          }
+        } catch (err) {
+          console.warn("Error llegint fitxer local:", file.name, err);
+        }
+      }
+
+      if (allEntries.length > 0) {
+        State.loadedFiles = loaded;
+        applyCorpusEntries(allEntries, true);
+        setCorpusProgress(100, `Carregades ${State.corpus.length} paraules de ${loaded.length} fitxer(s)!`, State.corpus.length);
+
+        const notice = document.getElementById('modalAutoScanNotice');
+        if (notice) notice.classList.add('hidden');
+
+        showToast(`${State.corpus.length} paraules importades amb èxit`, '✅');
+        setTimeout(closeCorpusLoadingModal, 1500);
+      } else {
+        showToast('Els fitxers seleccionats no contenen dades de vocabulari vàlides', '⚠️');
+      }
     }
 
     function addCustomServerFile() {
