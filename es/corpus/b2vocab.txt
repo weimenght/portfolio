@@ -405,9 +405,6 @@ vencer	to defeat / overcome	Tarde o temprano vamos a vencer esta enfermedad.
 el paisaje	landscape	El paisaje desde la cima de la montaña era hermoso.
 la seguridad	security / safety	La seguridad del aeropuerto fue reforzada.
 tratar de	to try to	Siempre trato de ser amable con todos.
-Format: Word - English Translation - Example Sentence
-============================================================
-
 el acontecimiento	event	La boda real fue el acontecimiento del año.
 la actualidad	present time / current events	Me gusta leer el periódico para estar al tanto de la actualidad.
 aguantar	to endure / to put up with	No puedo aguantar este calor tan intenso.
@@ -509,9 +506,6 @@ el empate	tie / draw	El partido terminó en un empate a dos goles.
 empeorar	to worsen	Si no tomas tu medicina, tu salud va a empeorar.
 el empleo	employment / job	La tasa de empleo ha subido este trimestre.
 encajar	to fit in	El nuevo estudiante logró encajar rápidamente en el grupo.
-Format: Word - English Translation - Example Sentence
-============================================================
-
 encargar	to put in charge / to order	Le encargaron el proyecto a la nueva gerente.
 el encanto	charm	Este pequeño pueblo costero tiene mucho encanto.
 encender	to turn on / to light	Voy a encender la estufa porque hace frío.
@@ -612,9 +606,6 @@ el interés	interest	El banco cobra un alto interés por ese préstamo.
 interpretar	to interpret / to perform	El actor va a interpretar el papel principal de la obra.
 interrumpir	to interrupt	Es de mala educación interrumpir cuando alguien está hablando.
 inútil	useless	Es inútil intentar convencerlo, ya ha tomado una decisión.
-Format: Word - English Translation - Example Sentence
-============================================================
-
 la jubilación	retirement	Mi padre está disfrutando de su jubilación en la costa.
 el juicio	trial / judgment	El juicio del sospechoso durará varias semanas.
 juntar	to gather / to join	Vamos a juntar dinero para comprarle un regalo.
@@ -715,9 +706,6 @@ odiar	to hate	Solía odiar las verduras cuando era niño, pero ahora me encantan
 el odio	hatred	No debemos dejar que el odio guíe nuestras acciones.
 ofender	to offend	No fue mi intención ofender con mi comentario anterior.
 ofrecer	to offer	Le van a ofrecer un puesto mejor en la nueva sucursal.
-Format: Word - English Translation - Example Sentence
-============================================================
-
 padecer	to suffer from	Mi abuela padece de artritis desde hace años.
 el paisaje	landscape	El paisaje de la montaña nevada era impresionante.
 el papel	role / paper	El actor interpretó el papel de villano a la perfección.
@@ -817,9 +805,6 @@ redactar	to write / to draft	El abogado se encargó de redactar el contrato.
 reducir	to reduce	Debemos reducir nuestra huella de carbono urgentemente.
 reflejar	to reflect	El espejo refleja la luz del sol directamente hacia aquí.
 la reforma	reform / renovation	La casa necesita una reforma completa antes de venderla.
-Format: Word - English Translation - Example Sentence
-============================================================
-
 el refugio	shelter / refuge	Encontramos un pequeño refugio en la montaña para pasar la noche.
 regalar	to give a gift	No sé qué regalarle a mi madre por su cumpleaños.
 el régimen	regime / diet	El médico le recomendó un régimen bajo en grasas.
@@ -920,9 +905,6 @@ sobrevivir	to survive	Es difícil sobrevivir en el desierto sin agua.
 el socorro	help / relief	El equipo de socorro llegó rápidamente al lugar del accidente.
 solar	solar	Instalaron paneles de energía solar en el tejado de la casa.
 la soledad	loneliness / solitude	A veces, la soledad es necesaria para encontrarse a uno mismo.
-Format: Word - English Translation - Example Sentence
-============================================================
-
 soler	to usually do	Suelo levantarme muy temprano para hacer ejercicio.
 solicitar	to request / to apply for	Voy a solicitar un préstamo en el banco mañana.
 la solicitud	application / request	Tienes que rellenar la solicitud de empleo por internet.
@@ -1023,9 +1005,6 @@ la trampa	trap / cheating	El ratón se comió el queso sin caer en la trampa.
 la tranquilidad	tranquility / peace	Buscaba la paz y la tranquilidad del campo.
 tranquilo	calm / quiet	Mantente tranquilo, los bomberos están en camino.
 transcurrir	to pass / to elapse	El viaje pareció transcurrir muy lentamente.
-Format: Word - English Translation - Example Sentence
-============================================================
-
 transformar	to transform	Quieren transformar este viejo edificio en un museo.
 el tránsito	transit / traffic	El tránsito de vehículos pesados está prohibido en esta calle.
 transmitir	to transmit / to broadcast	El partido se va a transmitir en directo por televisión.
@@ -1126,9 +1105,6 @@ zumbir / zumbar	to buzz	Podía escuchar a las abejas zumbar alrededor de las flo
 zurdo	left-handed	Mi hermano es zurdo y le cuesta usar estas tijeras.
 el zurrón	pouch / bag	El pastor guardaba su comida en un viejo zurrón de cuero.
 zuzar	to urge on (a dog) / to incite	No se debe zuzar a los perros para que peleen.
-Format: Word - English Translation - Example Sentence
-============================================================
-
 las acciones	shares / stock	Compró acciones de la compañía tecnológica cuando estaban baratas.
 el accionista	shareholder	El accionista mayoritario votó en contra de la fusión.
 la aduana	customs	Tuvimos que pagar aranceles en la aduana por la mercancía importada.
@@ -1229,9 +1205,6 @@ el socio	partner (business)	Mi socio y yo vamos a abrir un nuevo restaurante jun
 la sucursal	branch (office)	El banco ha cerrado su sucursal en nuestro barrio.
 la tasa	rate / fee	El banco central decidió subir la tasa de interés.
 la transacción	transaction	La transacción comercial se realizó de forma segura por internet.
-Format: Word - English Translation - Example Sentence
-============================================================
-
 el ADN	DNA	El análisis de ADN confirmó la identidad del sospechoso.
 el agujero de ozono	ozone hole	El agujero de ozono se ha reducido en los últimos años.
 la aleación	alloy	Esta pieza está hecha de una aleación de acero y titanio.
