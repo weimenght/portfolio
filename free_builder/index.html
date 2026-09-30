@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FREEBUILDER | Next-Gen L&D Solutions</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons (Phosphor Icons for a modern look) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: '#0a0a0c',
+                        offwhite: '#f3f4f6',
+                        acid: '#dfff00',
+                        neon: '#39ff14',
+                        magenta: '#ff00ff',
+                        darkgray: '#1a1a1c'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    animation: {
+                        'spin-slow': 'spin 8s linear infinite',
+                        'glitch': 'glitch 2s linear infinite',
+                    },
+                    keyframes: {
+                        glitch: {
+                            '2%, 64%': { transform: 'translate(2px,0) skew(0deg)' },
+                            '4%, 60%': { transform: 'translate(-2px,0) skew(0deg)' },
+                            '62%': { transform: 'translate(0,0) skew(5deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base styles & A11y defaults */
+        body {
+            background-color: #0a0a0c;
+            color: #f3f4f6;
+            cursor: none; /* Hide default cursor */
+            overflow-x: hidden;
+        }
+
+        /* Custom Cursor */
+        #cursor-dot, #cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        #cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #dfff00;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        #cursor-outline {
+            width: 32px;
+            height: 32px;
+            border: 1px solid rgba(223, 255, 0, 0.5);
+            transition: width 0.15s, height 0.15s, border-color 0.15s;
+        }
+        
+        /* Cursor Hover States */
+        body.cursor-hover #cursor-dot {
+            width: 40px;
+            height: 40px;
+            background-color: #ff00ff;
+            mix-blend-mode: difference;
+        }
+        body.cursor-hover #cursor-outline {
+            width: 60px;
+            height: 60px;
+            border-color: #ff00ff;
+        }
+        body.cursor-play #cursor-dot {
+            width: 60px;
+            height: 60px;
+            background-color: #39ff14;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        body.cursor-play #cursor-dot::after {
+            content: '►';
+            color: #0a0a0c;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* Button Squish Physics */
+        .btn-squish {
+            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+        }
+        .btn-squish:active {
+            transform: scale(0.92);
+        }
+
+        /* Scroll Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero Background Mesh */
+        .bg-mesh {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,10%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,29%,12%,1) 0, transparent 50%);
+            z-index: -1;
+            opacity: 0.8;
+        }
+        .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+        }
+
+        /* Scroll Trigger Glitch Line */
+        .scroll-trigger {
+            width: 2px;
+            height: 60px;
+            background: linear-gradient(to bottom, #dfff00, transparent);
+            animation: pulse-line 2s infinite;
+        }
+        @keyframes pulse-line {
+            0% { transform: scaleY(0) translateY(-100%); transform-origin: top; opacity: 0; }
+            50% { transform: scaleY(1) translateY(0); transform-origin: top; opacity: 1; }
+            50.1% { transform: scaleY(1) translateY(0); transform-origin: bottom; opacity: 1; }
+            100% { transform: scaleY(0) translateY(100%); transform-origin: bottom; opacity: 0; }
+        }
+
+        /* Glitch Text Effect */
+        .hover-glitch:hover {
+            animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+            color: #39ff14;
+        }
+
+        /* Easter Egg / Custom Toast */
+        #toast-container {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10000;
+        }
+        #toast-container.show {
+            bottom: 30px;
+        }
+
+        /* Accessibility Modes */
+        body.reduce-motion * {
+            animation: none !important;
+            transition: none !important;
+            scroll-behavior: auto !important;
+        }
+        body.reduce-motion #cursor-dot, body.reduce-motion #cursor-outline {
+            display: none;
+        }
+        body.reduce-motion {
+            cursor: auto;
+        }
+        body.high-contrast {
+            background-color: #000;
+            color: #fff;
+        }
+        body.high-contrast .text-acid, body.high-contrast .text-neon {
+            color: #fff !important;
+            text-decoration: underline;
+        }
+        body.high-contrast .bg-acid {
+            background-color: #fff !important;
+            color: #000 !important;
+            border: 2px solid #000;
+        }
+        body.high-contrast .bg-mesh, body.high-contrast .grid-overlay {
+            display: none;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-acid selection:text-obsidian">
+
+    <div id="cursor-dot"></div>
+    <div id="cursor-outline"></div>
+
+    <div id="toast-container" class="bg-darkgray border border-neon px-6 py-4 rounded-xl shadow-[0_0_20px_rgba(57,255,20,0.2)] flex items-center gap-4">
+        <i class="ph ph-sparkle text-neon text-2xl"></i>
+        <p id="toast-message" class="text-sm font-sans font-medium text-offwhite"></p>
+    </div>
+
+    <!-- Will-Skill Matrix Modal (Easter Egg) -->
+    <div id="matrix-modal" class="fixed inset-0 bg-obsidian/90 backdrop-blur-sm z-[9999] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-darkgray border-2 border-magenta p-8 rounded-2xl max-w-lg w-full relative">
+            <button onclick="closeMatrix()" class="absolute top-4 right-4 text-offwhite hover:text-magenta transition-colors interactable">
+                <i class="ph ph-x text-2xl"></i>
+            </button>
+            <h3 class="font-display text-2xl font-bold mb-6 text-magenta">DIAGNOSTIC COMPLETE</h3>
+            <div class="relative w-full aspect-square border-l-2 border-b-2 border-offwhite/50 flex flex-col">
+                <span class="absolute -left-10 top-1/2 -translate-y-1/2 -rotate-90 text-xs font-bold text-offwhite/50 tracking-widest">WILL</span>
+                <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs font-bold text-offwhite/50 tracking-widest">SKILL</span>
+                
+                <div class="flex-1 flex">
+                    <div class="flex-1 border-r border-b border-dashed border-offwhite/20"></div>
+                    <div class="flex-1 border-b border-dashed border-offwhite/20 relative">
+                        <!-- User Marker -->
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-acid rounded-full shadow-[0_0_15px_#dfff00] animate-pulse"></div>
+                        <span class="absolute top-1/2 left-1/2 mt-4 -translate-x-1/2 text-xs text-acid font-bold whitespace-nowrap">YOU (High Will / High Skill)</span>
+                    </div>
+                </div>
+                <div class="flex-1 flex">
+                    <div class="flex-1 border-r border-dashed border-offwhite/20"></div>
+                    <div class="flex-1 relative"></div>
+                </div>
+            </div>
+            <p class="mt-6 text-sm text-gray-400">You found the secret. Plot twist: you were top-right quadrant all along.</p>
+        </div>
+    </div>
+
+    <nav class="fixed w-full top-0 z-50 bg-obsidian/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <!-- Logo with Easter Egg Trigger -->
+            <div id="logo-trigger" class="flex items-center gap-3 group cursor-pointer interactable select-none" onclick="handleLogoClick()">
+                <div class="grid grid-cols-2 gap-1 w-7 h-7 transform group-hover:rotate-90 transition-transform duration-500">
+                    <div class="bg-offwhite rounded-sm group-hover:bg-acid transition-colors"></div>
+                    <div class="bg-offwhite rounded-sm group-hover:bg-neon transition-colors delay-75"></div>
+                    <div class="bg-offwhite rounded-sm group-hover:bg-magenta transition-colors delay-100"></div>
+                    <div class="bg-acid rounded-sm animate-pulse"></div>
+                </div>
+                <span class="font-display font-bold text-2xl tracking-tighter hidden sm:block">FREE<span class="text-acid">//</span>BUILDER</span>
+            </div>
+
+            <!-- Main Menu (Hidden on mobile for simplicity, conceptual) -->
+            <div class="hidden md:flex items-center gap-8 font-sans text-sm font-medium">
+                <a href="#hero" class="text-offwhite/70 hover:text-acid transition-colors interactable" data-i18n="nav.home">Home</a>
+                <a href="#who" class="text-offwhite/70 hover:text-acid transition-colors interactable" data-i18n="nav.who">Who I Am</a>
+                <a href="#lab" class="text-offwhite/70 hover:text-acid transition-colors interactable" data-i18n="nav.lab">The Lab</a>
+                <a href="#services" class="text-offwhite/70 hover:text-acid transition-colors interactable" data-i18n="nav.services">Capabilities</a>
+            </div>
+
+            <!-- Toggles (Right Align) -->
+            <div class="flex items-center gap-4">
+                <!-- Lang Toggle -->
+                <div class="relative group">
+                    <button class="flex items-center gap-1 text-sm font-mono hover-glitch interactable">
+                        <i class="ph ph-globe text-lg"></i>
+                        <span id="current-lang">EN</span>
+                    </button>
+                    <!-- Dropdown -->
+                    <div class="absolute right-0 mt-2 w-24 bg-darkgray border border-white/10 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2">
+                        <button onclick="setLanguage('en')" class="w-full text-left px-4 py-1 text-sm hover:text-acid interactable">EN</button>
+                        <button onclick="setLanguage('zh-cn')" class="w-full text-left px-4 py-1 text-sm hover:text-acid interactable">简体</button>
+                        <button onclick="setLanguage('zh-tw')" class="w-full text-left px-4 py-1 text-sm hover:text-acid interactable">繁體</button>
+                    </div>
+                </div>
+
+                <!-- Accessibility Toggle -->
+                <button onclick="toggleA11yPanel()" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors interactable" aria-label="Accessibility Options">
+                    <i class="ph ph-wheelchair text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- A11y Panel -->
+    <div id="a11y-panel" class="fixed top-24 right-6 w-72 bg-darkgray border border-white/10 rounded-2xl p-6 shadow-2xl z-50 transform translate-x-[120%] transition-transform duration-300">
+        <div class="flex justify-between items-center mb-6">
+            <h4 class="font-display font-bold">Access Options</h4>
+            <button onclick="toggleA11yPanel()" class="text-white/50 hover:text-white interactable"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="space-y-4">
+            <label class="flex items-center justify-between cursor-pointer interactable">
+                <span class="text-sm font-sans">Reduce Motion</span>
+                <input type="checkbox" id="toggle-motion" class="sr-only peer" onchange="toggleMotion(this.checked)">
+                <div class="w-11 h-6 bg-white/10 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neon relative"></div>
+            </label>
+            <label class="flex items-center justify-between cursor-pointer interactable">
+                <span class="text-sm font-sans">High Contrast</span>
+                <input type="checkbox" id="toggle-contrast" class="sr-only peer" onchange="toggleContrast(this.checked)">
+                <div class="w-11 h-6 bg-white/10 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neon relative"></div>
+            </label>
+            <div class="pt-4 border-t border-white/10">
+                <label class="flex items-center justify-between cursor-pointer interactable mb-2">
+                    <span class="text-sm font-sans font-bold text-magenta">Voice Assist</span>
+                    <input type="checkbox" id="toggle-voice" class="sr-only peer" onchange="toggleVoiceAssist(this.checked)">
+                    <div class="w-11 h-6 bg-white/10 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-magenta relative"></div>
+                </label>
+                <p class="text-xs text-white/50 font-sans leading-relaxed">Hover over or tab to any text to have it read aloud via Screen Reader. Includes visual focus tracking.</p>
+            </div>
+        </div>
+    </div>
+
+    <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center pt-20 px-6">
+        <div class="bg-mesh"></div>
+        <div class="grid-overlay"></div>
+        
+        <div class="max-w-5xl mx-auto text-center relative z-10 reveal">
+            <h1 class="font-display font-bold text-6xl md:text-8xl lg:text-9xl leading-[0.9] tracking-tighter mb-6 uppercase" data-i18n="hero.title">
+                STOP BORING <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-acid to-neon">YOUR EMPLOYEES.</span>
+            </h1>
+            <p class="font-sans text-lg md:text-xl text-offwhite/80 max-w-2xl mx-auto mb-10 leading-relaxed" data-i18n="hero.subtitle">
+                I build cutting-edge, tech-powered learning solutions that people <em class="text-acid not-italic font-bold">actually</em> want to finish. No snooze-fest seminars. Just high-ROI brain upgrades designed for the modern workforce.
+            </p>
+            <a href="#lab" class="inline-block bg-acid text-obsidian font-display font-bold text-lg px-8 py-4 rounded-full btn-squish interactable hover:shadow-[0_0_30px_rgba(223,255,0,0.4)]" data-i18n="hero.cta">
+                ENTER THE LAB
+            </a>
+        </div>
+
+        <!-- Scroll Trigger -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+            <span class="text-[10px] font-mono tracking-widest text-white/30 uppercase" data-i18n="hero.scroll">Initiate Sequence</span>
+            <div class="scroll-trigger"></div>
+        </div>
+    </section>
+
+    <section id="who" class="py-32 px-6 bg-obsidian relative">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-16 items-center">
+            
+            <!-- Interactive Image Container -->
+            <div class="md:col-span-5 relative group reveal interactable" onmousemove="handleImageScrub(event)">
+                <!-- Primary Image -->
+                <div class="aspect-[4/5] bg-darkgray rounded-3xl overflow-hidden relative border border-white/10 group-hover:border-acid transition-colors">
+                    <img src="https://images.unsplash.com/photo-1573164574572-cb89e39749b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Professional Headshot" class="w-full h-full object-cover transition-opacity duration-300" id="img-pro">
+                    <!-- Secondary "Easter Egg" Image revealed on scrub -->
+                    <div id="img-fun-mask" class="absolute inset-0" style="clip-path: circle(0px at 50% 50%); transition: clip-path 0.1s ease-out;">
+                        <img src="https://images.unsplash.com/photo-1552820728-8b83bb6b773f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Fun VR Headset" class="w-full h-full object-cover grayscale brightness-150 mix-blend-screen text-acid">
+                        <!-- Duotone effect overlay -->
+                        <div class="absolute inset-0 bg-acid/20 mix-blend-color"></div>
+                    </div>
+                </div>
+                <div class="absolute -bottom-6 -right-6 w-32 h-32 border-2 border-dashed border-magenta rounded-full animate-spin-slow opacity-50 pointer-events-none"></div>
+            </div>
+
+            <div class="md:col-span-7 space-y-16 reveal">
+                <!-- Bio -->
+                <div>
+                    <h2 class="font-display text-xs tracking-[0.3em] text-magenta mb-4">01 // FREE//BUILDER</h2>
+                    <p class="font-sans text-xl md:text-2xl leading-relaxed text-offwhite/90">
+                        I am an L&D Consultant and Executive Coach who refuses to accept the status quo of corporate training. Working alongside top-tier global consultancies and hyper-growth tech firms, I blend deep organizational psychology with high-end media production.
+                    </p>
+                </div>
+
+                <!-- Mission -->
+                <div>
+                    <h2 class="font-display text-xs tracking-[0.3em] text-neon mb-4">02 // THE MISSION</h2>
+                    <p class="font-sans text-xl md:text-2xl leading-relaxed text-offwhite/90">
+                        To eradicate the "mandatory training sigh." I leverage the latest in Generative AI, gamification, and interactive storytelling to transform how organizations learn. I don’t just train your workforce; I upgrade their entire operating system through highly realistic, culturally grounded, and actually humorous learning ecosystems<span class="text-acid cursor-pointer interactable hover:animate-ping inline-block" onclick="triggerSynapsePoint()">.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="lab" class="py-32 px-6 bg-darkgray relative border-t border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-20 reveal">
+                <h2 class="font-display font-bold text-5xl md:text-7xl uppercase mb-4" data-i18n="lab.title">Proof of Concept.</h2>
+                <p class="font-mono text-white/50" data-i18n="lab.subtitle">Hover to explore. Don't be shy.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Card 1 -->
+                <div class="group bg-obsidian rounded-3xl p-8 border border-white/5 hover:border-neon transition-colors reveal play-trigger interactable">
+                    <div class="h-48 w-full bg-[#1a1a1c] rounded-xl mb-8 flex items-center justify-center overflow-hidden relative">
+                        <i class="ph-fill ph-film-strip text-6xl text-white/10 group-hover:scale-110 transition-transform duration-500"></i>
+                        <div class="absolute inset-0 bg-gradient-to-t from-neon/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-3 text-offwhite">The Corporate Survival Drama</h3>
+                    <p class="font-sans text-white/60 mb-4 text-sm leading-relaxed">A 14-episode, multi-level video series tackling real-world management challenges. Scripted with hyper-realistic dialogues (zero awkward monologues) and produced using advanced AI video tools.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs font-mono px-3 py-1 rounded-full border border-white/10 text-white/50">AI Video</span>
+                        <span class="text-xs font-mono px-3 py-1 rounded-full border border-white/10 text-white/50">Scripting</span>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group bg-obsidian rounded-3xl p-8 border border-white/5 hover:border-acid transition-colors reveal play-trigger interactable md:translate-y-12">
+                    <div class="h-48 w-full bg-[#1a1a1c] rounded-xl mb-8 flex items-center justify-center overflow-hidden relative">
+                        <i class="ph-fill ph-game-controller text-6xl text-white/10 group-hover:scale-110 transition-transform duration-500"></i>
+                        <div class="absolute inset-0 bg-gradient-to-t from-acid/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    <h3 class="font-display text-2xl font-bold mb-3 text-offwhite">The Immersive Onboarding Universe</h3>
+                    <p class="font-sans text-white/60 mb-4 text-sm leading-relaxed">A fully gamified orientation experience. Interactive maps, branching scenarios, and a custom reward system where employees earn "Synapse Points" for mastering culture.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs font-mono px-3 py-1 rounded-full border border-white/10 text-white/50">Gamification</span>
+                        <span class="text-xs font-mono px-3 py-1 rounded-full border border-white/10 text-white/50">UI/UX</span>
+                    </div>
+                </div>
+
+                 <!-- Card 3 (Full Width) -->
+                 <div class="group bg-obsidian rounded-3xl p-8 border border-white/5 hover:border-magenta transition-colors reveal play-trigger interactable md:col-span-2 mt-8 md:mt-12">
+                    <div class="flex flex-col md:flex-row gap-8 items-center">
+                        <div class="h-48 md:h-64 w-full md:w-1/3 bg-[#1a1a1c] rounded-xl flex items-center justify-center overflow-hidden relative">
+                            <i class="ph-fill ph-robot text-6xl text-white/10 group-hover:scale-110 transition-transform duration-500"></i>
+                             <div class="absolute inset-0 bg-gradient-to-t from-magenta/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </div>
+                        <div class="md:w-2/3">
+                            <h3 class="font-display text-2xl font-bold mb-3 text-offwhite">AI-Driven Asset Production</h3>
+                            <p class="font-sans text-white/60 mb-4 text-sm leading-relaxed max-w-2xl">From prompt to production. Transforming a raw training concept into a polished script tailored for specific regional nuances (capturing everything from Hong Kong corporate speech characteristics to mainland social media trends).</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="text-xs font-mono px-3 py-1 rounded-full border border-white/10 text-white/50">Gen AI</span>
+                                <span class="text-xs font-mono px-3 py-1 rounded-full border border-white/10 text-white/50">Localization</span>
+                                <span class="text-xs font-mono px-3 py-1 rounded-full border border-white/10 text-white/50">Rapid Prototyping</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="py-32 px-6 bg-obsidian border-t border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="font-display font-bold text-4xl md:text-6xl mb-20 text-center reveal">HOW WE UPGRADE YOUR TEAM.</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <!-- Service 1 -->
+                <div class="reveal group interactable">
+                    <div class="w-20 h-20 rounded-3xl bg-darkgray border border-white/10 flex items-center justify-center mb-8 relative transition-all duration-300 group-hover:border-acid group-hover:-translate-y-2">
+                        <div class="absolute inset-0 bg-acid/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl -z-10"></div>
+                        <i class="ph-duotone ph-brain text-4xl text-acid transform group-hover:scale-110 transition-transform duration-300"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-2xl mb-4 text-offwhite group-hover:text-acid transition-colors">L&D Consulting Retainers</h3>
+                    <p class="font-sans text-white/60 text-sm leading-relaxed">End-to-end curriculum design, structural L&D audits, and tech-stack integration for internal training teams at top-tier firms.</p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="reveal transition-delay-100 group interactable">
+                    <div class="w-20 h-20 rounded-3xl bg-darkgray border border-white/10 flex items-center justify-center mb-8 relative transition-all duration-300 group-hover:border-neon group-hover:-translate-y-2">
+                        <div class="absolute inset-0 bg-neon/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl -z-10"></div>
+                        <i class="ph-duotone ph-rocket-launch text-4xl text-neon transform group-hover:scale-110 transition-transform duration-300"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-2xl mb-4 text-offwhite group-hover:text-neon transition-colors">Executive Coaching</h3>
+                    <p class="font-sans text-white/60 text-sm leading-relaxed">Targeted interventions using proven behavioral frameworks to transition high-potential talent into high-performing leaders.</p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="reveal transition-delay-200 group interactable">
+                    <div class="w-20 h-20 rounded-3xl bg-darkgray border border-white/10 flex items-center justify-center mb-8 relative transition-all duration-300 group-hover:border-magenta group-hover:-translate-y-2">
+                        <div class="absolute inset-0 bg-magenta/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl -z-10"></div>
+                        <i class="ph-duotone ph-magic-wand text-4xl text-magenta transform group-hover:scale-110 transition-transform duration-300"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-2xl mb-4 text-offwhite group-hover:text-magenta transition-colors">Custom Media Production</h3>
+                    <p class="font-sans text-white/60 text-sm leading-relaxed">AI-assisted scriptwriting, video production, and interactive asset creation tailored to your company's unique culture and pain points.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-32 px-6 bg-obsidian relative overflow-hidden border-t border-white/10">
+        <!-- Background element -->
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-acid opacity-[0.03] blur-[120px] rounded-t-full pointer-events-none"></div>
+
+        <div class="max-w-4xl mx-auto text-center relative z-10 reveal">
+            <h2 class="font-display font-bold text-4xl md:text-6xl uppercase leading-tight mb-8">
+                Ready to make learning your <br><span class="text-acid">competitive advantage?</span>
+            </h2>
+            <p class="font-sans text-xl text-white/50 mb-16">Let’s build something they won't want to skip.</p>
+
+            <form class="max-w-xl mx-auto space-y-6 text-left" onsubmit="event.preventDefault(); triggerSubmitToast();">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-xs font-mono text-white/50 uppercase">Name</label>
+                        <input type="text" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-acid transition-colors interactable">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-mono text-white/50 uppercase">Company</label>
+                        <input type="text" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-acid transition-colors interactable">
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-mono text-white/50 uppercase">Biggest L&D Headache?</label>
+                    <select class="w-full bg-[#111113] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-acid transition-colors interactable appearance-none">
+                        <option>Low completion rates</option>
+                        <option>Boring compliance training</option>
+                        <option>Onboarding is a mess</option>
+                        <option>Up-skilling Gen Z</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-neon text-obsidian font-display font-bold text-lg px-8 py-4 rounded-xl mt-4 btn-squish interactable hover:shadow-[0_0_20px_rgba(57,255,20,0.3)]">
+                    INITIATE UPGRADE
+                </button>
+            </form>
+
+            <div class="mt-32 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-sans text-white/40">
+                <p>&copy; 2026 FREE//BUILDER L&D Solutions.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-acid transition-colors interactable">LinkedIn</a>
+                    <a href="#" class="hover:text-acid transition-colors interactable">Email</a>
+                    <a href="#" class="hover:text-acid transition-colors interactable">Newsletter</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. Custom Cursor Logic ---
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+        const interactables = document.querySelectorAll('.interactable, a, button, input, select');
+        const playTriggers = document.querySelectorAll('.play-trigger');
+
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+            
+            // Fast follow for dot
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+            
+            // Slight delay for outline using animate for smoothness
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Hover states
+        interactables.forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+
+        // Play cursor state for portfolio items
+        playTriggers.forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-play'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-play'));
+        });
+
+        // --- 2. Scroll Reveal Animations ---
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // --- 3. Interactive Image Scrubbing ---
+        function handleImageScrub(e) {
+            const container = e.currentTarget;
+            const mask = document.getElementById('img-fun-mask');
+            const rect = container.getBoundingClientRect();
+            
+            // Calculate mouse position relative to container
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Update clip-path to reveal image underneath
+            mask.style.clipPath = `circle(120px at ${x}px ${y}px)`;
+        }
+        
+        // Reset clip path when mouse leaves
+        document.querySelector('.group[onmousemove]').addEventListener('mouseleave', () => {
+            document.getElementById('img-fun-mask').style.clipPath = `circle(0px at 50% 50%)`;
+        });
+
+        // --- 4. Easter Eggs & Toasts ---
+        let logoClicks = 0;
+        let clickTimer;
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast-container');
+            const msgEl = document.getElementById('toast-message');
+            msgEl.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        function triggerSynapsePoint() {
+            showToast("You found a hidden Synapse Point! (Redeemable for 0 real dollars, but top-tier curiosity.)");
+        }
+
+        function triggerSubmitToast() {
+            showToast("Upgrade sequence initiated. We'll be in touch.");
+        }
+
+        function handleLogoClick() {
+            logoClicks++;
+            clearTimeout(clickTimer);
+            
+            if (logoClicks >= 3) {
+                document.getElementById('matrix-modal').classList.remove('hidden');
+                // Small delay to allow display:block to apply before animating opacity
+                setTimeout(() => {
+                    document.getElementById('matrix-modal').classList.remove('opacity-0');
+                    document.getElementById('matrix-modal').classList.add('opacity-100');
+                }, 10);
+                logoClicks = 0;
+            } else {
+                clickTimer = setTimeout(() => { logoClicks = 0; }, 1000);
+            }
+        }
+
+        function closeMatrix() {
+            const modal = document.getElementById('matrix-modal');
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- 5. Accessibility Controls ---
+        function toggleA11yPanel() {
+            const panel = document.getElementById('a11y-panel');
+            if (panel.style.transform === 'translateX(0%)') {
+                panel.style.transform = 'translateX(120%)';
+            } else {
+                panel.style.transform = 'translateX(0%)';
+            }
+        }
+
+        function toggleMotion(isReduced) {
+            if (isReduced) {
+                document.body.classList.add('reduce-motion');
+            } else {
+                document.body.classList.remove('reduce-motion');
+            }
+        }
+
+        function toggleContrast(isHigh) {
+            if (isHigh) {
+                document.body.classList.add('high-contrast');
+            } else {
+                document.body.classList.remove('high-contrast');
+            }
+        }
+
+        let voiceAssistEnabled = false;
+        let speechSynth = window.speechSynthesis;
+
+        function toggleVoiceAssist(isEnabled) {
+            voiceAssistEnabled = isEnabled;
+            if (isEnabled) {
+                speakText("Voice assistance activated. Hover over or tab to text to read aloud.", document.getElementById('a11y-panel'));
+            } else {
+                if(speechSynth) speechSynth.cancel();
+                document.querySelectorAll('.speaking-highlight').forEach(el => el.classList.remove('speaking-highlight', 'ring-2', 'ring-magenta', 'ring-offset-2', 'ring-offset-obsidian', 'rounded'));
+            }
+        }
+
+        function speakText(text, element = null) {
+            if (!speechSynth) return;
+            speechSynth.cancel(); // Stop current speech
+            
+            // Remove previous highlights
+            document.querySelectorAll('.speaking-highlight').forEach(el => el.classList.remove('speaking-highlight', 'ring-2', 'ring-magenta', 'ring-offset-2', 'ring-offset-obsidian', 'rounded'));
+            
+            // Add visual highlight to current element
+            if (element) {
+                element.classList.add('speaking-highlight', 'ring-2', 'ring-magenta', 'ring-offset-2', 'ring-offset-obsidian', 'rounded');
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.95;
+            utterance.pitch = 1.0;
+            
+            utterance.onend = () => {
+                if (element) {
+                    element.classList.remove('speaking-highlight', 'ring-2', 'ring-magenta', 'ring-offset-2', 'ring-offset-obsidian', 'rounded');
+                }
+            };
+
+            speechSynth.speak(utterance);
+        }
+
+        // Attach hover and focus listeners to readable elements
+        const readableElements = document.querySelectorAll('h1, h2, h3, h4, p, button, a, span[data-i18n], label');
+        readableElements.forEach(el => {
+            el.addEventListener('mouseenter', (e) => {
+                if (voiceAssistEnabled) {
+                    e.stopPropagation(); // Prevent bubbling up to parent containers
+                    const textToRead = el.getAttribute('aria-label') || el.innerText || el.textContent;
+                    if (textToRead && textToRead.trim() !== '') {
+                        speakText(textToRead.trim(), el);
+                    }
+                }
+            });
+            el.addEventListener('focus', (e) => {
+                if (voiceAssistEnabled) {
+                    const textToRead = el.getAttribute('aria-label') || el.innerText || el.textContent;
+                    if (textToRead && textToRead.trim() !== '') {
+                        speakText(textToRead.trim(), el);
+                    }
+                }
+            });
+        });
+
+        // --- 6. Internationalization (i18n) Mockup ---
+        const dictionary = {
+            'en': {
+                'nav.home': 'Home',
+                'nav.who': 'Who I Am',
+                'nav.lab': 'The Lab',
+                'nav.services': 'Capabilities',
+                'hero.title': 'STOP BORING <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-acid to-neon">YOUR EMPLOYEES.</span>',
+                'hero.subtitle': 'I build cutting-edge, tech-powered learning solutions that people <em class="text-acid not-italic font-bold">actually</em> want to finish.',
+                'hero.cta': 'ENTER THE LAB',
+                'hero.scroll': 'Initiate Sequence',
+                'lab.title': 'Proof of Concept.',
+                'lab.subtitle': "Hover to explore. Don't be shy."
+            },
+            'zh-cn': {
+                'nav.home': '首页',
+                'nav.who': '关于我',
+                'nav.lab': '实验室',
+                'nav.services': '专业能力',
+                'hero.title': '停止让你的员工<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-acid to-neon">感到无聊。</span>',
+                'hero.subtitle': '我打造前沿的、科技驱动的学习解决方案，让人们<em class="text-acid not-italic font-bold">真正</em>想要学完。',
+                'hero.cta': '进入实验室',
+                'hero.scroll': '启动序列',
+                'lab.title': '概念验证。',
+                'lab.subtitle': '悬停探索。别害羞。'
+            },
+            'zh-tw': {
+                'nav.home': '首頁',
+                'nav.who': '關於我',
+                'nav.lab': '實驗室',
+                'nav.services': '專業能力',
+                'hero.title': '停止讓你的員工<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-acid to-neon">感到無聊。</span>',
+                'hero.subtitle': '我打造前沿的、科技驅動的學習解決方案，讓人們<em class="text-acid not-italic font-bold">真正</em>想要學完。',
+                'hero.cta': '進入實驗室',
+                'hero.scroll': '啟動序列',
+                'lab.title': '概念驗證。',
+                'lab.subtitle': '懸停探索。別害羞。'
+            }
+        };
+
+        function setLanguage(lang) {
+            document.getElementById('current-lang').textContent = lang === 'en' ? 'EN' : lang === 'zh-cn' ? '简体' : '繁體';
+            
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dictionary[lang] && dictionary[lang][key]) {
+                    el.innerHTML = dictionary[lang][key];
+                }
+            });
+            
+            // Close A11y panel if it was open (UX improvement)
+            document.getElementById('a11y-panel').style.transform = 'translateX(120%)';
+        }
+    </script>
+</body>
+</html>
