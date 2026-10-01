@@ -251,6 +251,32 @@
         </div>
     </div>
 
+    <!-- Video Player Modal -->
+    <div id="video-modal" class="fixed inset-0 bg-obsidian/90 backdrop-blur-md z-[9990] hidden flex items-center justify-center opacity-0 transition-opacity duration-300 p-4 sm:p-6" onclick="handleVideoModalBackdrop(event)">
+        <div class="bg-darkgray border-2 border-neon p-6 rounded-2xl max-w-4xl w-full relative shadow-[0_0_50px_rgba(57,255,20,0.25)]">
+            <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-3">
+                <div class="flex items-center gap-3">
+                    <span class="w-2.5 h-2.5 rounded-full bg-neon animate-pulse"></span>
+                    <h3 class="font-display text-lg sm:text-xl font-bold text-offwhite tracking-tight">The Corporate Survival Drama</h3>
+                    <span class="text-neon text-xs font-mono uppercase border border-neon/40 px-2 py-0.5 rounded-full hidden sm:inline-block">Episode Preview</span>
+                </div>
+                <button onclick="closeVideoModal()" class="text-offwhite/70 hover:text-neon transition-colors interactable p-1" aria-label="Close video player">
+                    <i class="ph ph-x text-2xl"></i>
+                </button>
+            </div>
+            <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-black border border-white/10">
+                <video id="player-video" class="w-full h-full object-contain bg-black" controls playsinline preload="metadata">
+                    <source src="/asset/hovercraft.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="mt-4 flex items-center justify-between text-xs font-mono text-white/40">
+                <span>SRC: /asset/hovercraft.mp4</span>
+                <span class="text-white/30 hidden sm:inline">Press ESC or click outside to dismiss</span>
+            </div>
+        </div>
+    </div>
+
     <nav class="fixed w-full top-0 z-50 bg-obsidian/80 backdrop-blur-md border-b border-white/5">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <!-- Logo with Easter Egg Trigger -->
@@ -394,17 +420,25 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Card 1 -->
-                <div class="group bg-obsidian rounded-3xl p-8 border border-white/5 hover:border-neon transition-colors reveal play-trigger interactable">
+                <!-- Card 1: Corporate Survival Drama with Video Playback -->
+                <div onclick="openVideoModal()" class="group bg-obsidian rounded-3xl p-8 border border-white/5 hover:border-neon transition-colors reveal play-trigger interactable cursor-pointer">
                     <div class="h-48 w-full bg-[#1a1a1c] rounded-xl mb-8 flex items-center justify-center overflow-hidden relative">
                         <i class="ph-fill ph-film-strip text-6xl text-white/10 group-hover:scale-110 transition-transform duration-500"></i>
                         <div class="absolute inset-0 bg-gradient-to-t from-neon/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        
+                        <!-- Hover Play Indicator -->
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div class="w-14 h-14 rounded-full bg-neon text-obsidian flex items-center justify-center shadow-[0_0_20px_rgba(57,255,20,0.5)] transform group-hover:scale-110 transition-transform">
+                                <i class="ph-fill ph-play text-2xl ml-1"></i>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="font-display text-2xl font-bold mb-3 text-offwhite">The Corporate Survival Drama</h3>
+                    <h3 class="font-display text-2xl font-bold mb-3 text-offwhite group-hover:text-neon transition-colors">The Corporate Survival Drama</h3>
                     <p class="font-sans text-white/60 mb-4 text-sm leading-relaxed">A 14-episode, multi-level video series tackling real-world management challenges. Scripted with hyper-realistic dialogues (zero awkward monologues) and produced using advanced AI video tools.</p>
                     <div class="flex flex-wrap gap-2">
                         <span class="text-xs font-mono px-3 py-1 rounded-full border border-white/10 text-white/50">AI Video</span>
                         <span class="text-xs font-mono px-3 py-1 rounded-full border border-white/10 text-white/50">Scripting</span>
+                        <span class="text-xs font-mono px-3 py-1 rounded-full border border-neon/40 text-neon flex items-center gap-1"><i class="ph-fill ph-play text-[10px]"></i> Watch Demo</span>
                     </div>
                 </div>
 
@@ -422,12 +456,12 @@
                     </div>
                 </div>
 
-                 <!-- Card 3 (Full Width) -->
-                 <div class="group bg-obsidian rounded-3xl p-8 border border-white/5 hover:border-magenta transition-colors reveal play-trigger interactable md:col-span-2 mt-8 md:mt-12">
+                <!-- Card 3 (Full Width) -->
+                <div class="group bg-obsidian rounded-3xl p-8 border border-white/5 hover:border-magenta transition-colors reveal play-trigger interactable md:col-span-2 mt-8 md:mt-12">
                     <div class="flex flex-col md:flex-row gap-8 items-center">
                         <div class="h-48 md:h-64 w-full md:w-1/3 bg-[#1a1a1c] rounded-xl flex items-center justify-center overflow-hidden relative">
                             <i class="ph-fill ph-robot text-6xl text-white/10 group-hover:scale-110 transition-transform duration-500"></i>
-                             <div class="absolute inset-0 bg-gradient-to-t from-magenta/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-magenta/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                         <div class="md:w-2/3">
                             <h3 class="font-display text-2xl font-bold mb-3 text-offwhite">AI-Driven Asset Production</h3>
@@ -620,7 +654,6 @@
             
             if (logoClicks >= 3) {
                 document.getElementById('matrix-modal').classList.remove('hidden');
-                // Small delay to allow display:block to apply before animating opacity
                 setTimeout(() => {
                     document.getElementById('matrix-modal').classList.remove('opacity-0');
                     document.getElementById('matrix-modal').classList.add('opacity-100');
@@ -640,7 +673,52 @@
             }, 300);
         }
 
-        // --- 5. Accessibility Controls ---
+        // --- 5. Video Player Modal Logic ---
+        function openVideoModal() {
+            const modal = document.getElementById('video-modal');
+            const video = document.getElementById('player-video');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.classList.add('opacity-100');
+            }, 10);
+            if (video) {
+                video.currentTime = 0;
+                video.play().catch(e => {
+                    // Browser autoplay policy might require manual user interaction
+                    console.warn("Autoplay blocked or waiting for user interaction:", e);
+                });
+            }
+        }
+
+        function closeVideoModal() {
+            const modal = document.getElementById('video-modal');
+            const video = document.getElementById('player-video');
+            if (video) {
+                video.pause();
+            }
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function handleVideoModalBackdrop(e) {
+            if (e.target.id === 'video-modal') {
+                closeVideoModal();
+            }
+        }
+
+        // Global ESC key listener for both modals
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeVideoModal();
+                closeMatrix();
+            }
+        });
+
+        // --- 6. Accessibility Controls ---
         function toggleA11yPanel() {
             const panel = document.getElementById('a11y-panel');
             if (panel.style.transform === 'translateX(0%)') {
@@ -726,7 +804,7 @@
             });
         });
 
-        // --- 6. Internationalization (i18n) Mockup ---
+        // --- 7. Internationalization (i18n) Mockup ---
         const dictionary = {
             'en': {
                 'nav.home': 'Home',
