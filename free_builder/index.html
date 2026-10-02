@@ -301,7 +301,7 @@
                         <span id="current-lang">EN</span>
                     </button>
                     <div class="absolute right-0 mt-2 w-28 bg-darkgray border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50">
-                        <button onclick="setLanguage('en')" class="w-full text-left px-4 py-1.5 text-xs hover:text-acid transition interactable">English (EN)</button>
+                        <button onclick="setLanguage('en')" class="w-full text-left px-4 py-1.5 text-xs hover:text-acid transition interactable">English</button>
                         <button onclick="setLanguage('zh-cn')" class="w-full text-left px-4 py-1.5 text-xs hover:text-acid transition interactable">简体中文</button>
                         <button onclick="setLanguage('zh-tw')" class="w-full text-left px-4 py-1.5 text-xs hover:text-acid transition interactable">繁體中文</button>
                     </div>
@@ -642,11 +642,7 @@
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs font-mono text-white/50 uppercase" data-i18n="form.headache">Biggest L&D Headache?</label>
-                        <select name="headache" class="w-full bg-[#111113] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-acid transition-colors interactable appearance-none">
-                            <option value="Low completion rates" data-i18n="form.opt1">Low completion rates</option>
-                            <option value="Boring compliance training" data-i18n="form.opt2">Boring compliance training</option>
-                            <option value="Onboarding is a mess" data-i18n="form.opt3">Onboarding is a mess</option>
-                            <option value="Up-skilling Gen Z" data-i18n="form.opt4">Up-skilling Gen Z</option>
+                        <input type="text" name="headache" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-acid transition-colors interactable">
                         </select>
                     </div>
                 </div>
@@ -1268,14 +1264,14 @@
                 'video.hint': '按 ESC 键或点击空白区域关闭',
 
                 'hero.title': '停止让你的员工<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-acid via-neon to-cybercyan">感到无聊。</span>',
-                'hero.subtitle': '企业培训早已过时。催眠式的 PPT 和打勾式合规课无法改变行为。我打造高回报的互动数字世界、沉浸式职场模拟与 AI 领航工具，让员工真正期待学完。',
+                'hero.subtitle': '企业培训早已过时。催眠式的 PPT 和打勾式合规课无法改变行为。我打造高回报的互动数字世界、沉浸式职场模拟与AI工具，让员工真正期待学完。',
                 'hero.cta': '进入实验室',
                 'hero.scroll': '启动序列',
 
                 'who.sec1_tag': '01 // FREE//BUILDER',
                 'who.sec1_bio': '我是一名拒绝接受传统企业培训现状的 L&D 顾问兼教练。曾与全球顶尖咨询机构及高速发展的科技巨头携手合作，将深层组织心理学与工业级视听制作融为一体。',
                 'who.sec2_tag': '02 // 核心使命',
-                'who.sec2_mission': '彻底消除“又来强制培训”的叹息。我借助前沿生成式 AI、游戏化机制与交互式叙事重塑组织学习体验。不仅是培训员工，更通过极度写实、贴合本土语境且妙趣横生的学习生态，升级他们的思维操作系统',
+                'who.sec2_mission': '彻底消除“又来强制培训”的叹息。我借助生成式 AI、游戏化机制与交互式叙事重塑组织学习体验。不仅是培训员工，更通过极度写实、贴合本土语境且妙趣横生的学习生态，升级他们的思维系统',
 
                 'lab.title': '实验室：可玩概念验证。',
                 'lab.subtitle': '点击任意预览图片即可直接进入对应的实战互动网页。',
@@ -1368,14 +1364,14 @@
                 'video.hint': '按 ESC 鍵或點擊空白區域關閉',
 
                 'hero.title': '停止讓你的員工<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-acid via-neon to-cybercyan">感到無聊。</span>',
-                'hero.subtitle': '企業培訓早已過時。催眠式的簡報與打勾式合規課無法改變行為。我打造高投報率的互動數位世界、沉浸式職場模擬與 AI 領航工具，讓員工真正期待學完。',
+                'hero.subtitle': '企業培訓早已過時。催眠式的簡報與打勾式合規課無法改變行為。我打造高投報率的互動數位世界、沉浸式職場模擬與AI工具，讓員工真正期待學完。',
                 'hero.cta': '進入實驗室',
                 'hero.scroll': '啟動序列',
 
                 'who.sec1_tag': '01 // FREE//BUILDER',
                 'who.sec1_bio': '我是一名拒絕接受傳統企業培訓現狀的 L&D 顧問兼教練。曾與全球頂尖諮詢顧問及高速成長的科技企業攜手合作，將深層組織心理學與專業級影音製作融為一體。',
                 'who.sec2_tag': '02 // 核心使命',
-                'who.sec2_mission': '徹底終結「又是強制培訓」的無奈嘆息。我借助尖端生成式 AI、遊戲化機制與互動敘事重塑組織學習體驗。不僅是培訓團隊，更透過極度寫實、貼合在地語境且深具幽默感的學習生態，全面升級他們的思維操作系統',
+                'who.sec2_mission': '徹底終結「又是強制培訓」的無奈嘆息。我借助生成式 AI、遊戲化機制與互動敘事重塑組織學習體驗。不僅是培訓團隊，更透過極度寫實、貼合在地語境且深具幽默感的學習生態，全面升級他們的思維系統',
 
                 'lab.title': '實驗室：可玩概念驗證。',
                 'lab.subtitle': '點擊任意預覽圖片即可直接進入對應的實戰互動網頁。',
