@@ -1,0 +1,2265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SYNAPSE // The Art of Making</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & ReactDOM CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <!-- Babel Standalone (transpiles JSX in the browser) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Lucide Icons & Canvas Confetti -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body { margin: 0; background: #07080d; overflow: hidden; }
+  </style>
+</head>
+<body class="bg-[#07080d] text-white">
+  <div id="root"></div>
+
+  <!-- Your React Component Code -->
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+    import {
+      Sparkles,
+      Volume2,
+      VolumeX,
+      RotateCcw,
+      BookOpen,
+      X,
+      ChevronRight,
+      Copy,
+      Check,
+      Award,
+      Play,
+      Activity,
+      Zap,
+      Gift,
+      HelpCircle,
+      Eye,
+      Sliders,
+      Flame,
+      ArrowRight,
+      Compass,
+      Feather,
+      Lightbulb,
+      Info,
+      CheckCircle2
+    } from 'lucide-react';
+    
+    class SynapseAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+        this.droneOsc = null;
+        this.droneGain = null;
+      }
+    
+      init() {
+        if (!this.ctx && typeof window !== 'undefined') {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) {
+            this.ctx = new AudioCtx();
+            this.startDrone();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+    
+      startDrone() {
+        if (this.muted || !this.ctx || this.droneOsc) return;
+        try {
+          this.droneOsc = this.ctx.createOscillator();
+          this.droneGain = this.ctx.createGain();
+          const filter = this.ctx.createBiquadFilter();
+    
+          this.droneOsc.type = 'sine';
+          this.droneOsc.frequency.setValueAtTime(55, this.ctx.currentTime);
+    
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(140, this.ctx.currentTime);
+    
+          this.droneGain.gain.setValueAtTime(0.001, this.ctx.currentTime);
+          this.droneGain.gain.linearRampToValueAtTime(0.018, this.ctx.currentTime + 3);
+    
+          this.droneOsc.connect(filter);
+          filter.connect(this.droneGain);
+          this.droneGain.connect(this.ctx.destination);
+          this.droneOsc.start();
+        } catch (e) {}
+      }
+    
+      playTone(freq, duration = 0.2, type = 'sine', gainVal = 0.08, glide = null) {
+        if (this.muted) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const filter = this.ctx.createBiquadFilter();
+    
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(2400, this.ctx.currentTime);
+    
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          if (glide) {
+            osc.frequency.exponentialRampToValueAtTime(glide, this.ctx.currentTime + duration);
+          }
+    
+          gain.gain.setValueAtTime(0.0001, this.ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(gainVal, this.ctx.currentTime + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+    
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+    
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {}
+      }
+    
+      jump() {
+        this.playTone(320, 0.16, 'triangle', 0.08, 620);
+      }
+    
+      dash() {
+        this.playTone(220, 0.18, 'sawtooth', 0.07, 75);
+      }
+    
+      floatHum() {
+        this.playTone(480, 0.15, 'sine', 0.04, 520);
+      }
+    
+      bubblePop() {
+        this.playTone(600, 0.08, 'sine', 0.12, 1200);
+        setTimeout(() => this.playTone(900, 0.12, 'triangle', 0.08, 300), 30);
+      }
+    
+      bounceCloud() {
+        this.playTone(260, 0.35, 'sine', 0.14, 580);
+        setTimeout(() => this.playTone(520, 0.25, 'triangle', 0.09, 880), 50);
+      }
+    
+      collect() {
+        const notes = [523.25, 659.25, 783.99, 1046.5];
+        const n = notes[Math.floor(Math.random() * notes.length)];
+        this.playTone(n, 0.35, 'sine', 0.12);
+      }
+    
+      easterEggFanfare() {
+        const notes = [523.25, 659.25, 783.99, 1046.5, 1318.51];
+        notes.forEach((n, i) => {
+          setTimeout(() => this.playTone(n, 0.45, 'sine', 0.12), i * 70);
+        });
+      }
+    
+      victory() {
+        const chord = [392.0, 493.88, 587.33, 783.99, 987.77];
+        chord.forEach((n, i) => {
+          setTimeout(() => this.playTone(n, 1.2, 'sine', 0.09), i * 100);
+        });
+      }
+    }
+    
+    const audio = new SynapseAudioEngine();
+    
+    const GAME_STAGES = [
+      {
+        id: 1,
+        code: '01',
+        phase: 'EMPATHIZE',
+        name: 'The Blind Spot',
+        subtext: 'You cannot design for what you refuse to perceive.',
+        accent: '#8b5cf6',
+        actionTip: 'Toggle Persona Sonar [E] to reveal invisible latent bridges.',
+        codex: {
+          title: 'Contextual Inquiries & Active Shadowing',
+          coreConcept: 'In the game, solid ground exists across the void, but remains completely invisible until you shift into the user\'s frequency. In product strategy, real requirements only materialize when you observe users in their native context without intervening.',
+          sprintRules: [
+            'Run 30-minute silent screen recordings of users working in their native environment.',
+            'Never ask "Would you like X?". Ask: "Show me the last workaround you had to invent."',
+            'Log 4 quadrants: What they Say, Think, Do, and Feel (latent friction).'
+          ]
+        }
+      },
+      {
+        id: 2,
+        code: '02',
+        phase: 'DEFINE',
+        name: 'The Noise Chasm',
+        subtext: 'Executing flawlessly on the wrong problem is still failure.',
+        accent: '#06b6d4',
+        actionTip: 'Align with the Root Cause Beacon to lock the coherent bridge.',
+        codex: {
+          title: 'The Anti-Assumption POV Formula',
+          coreConcept: 'Surface complaints create chaos. Synthesizing User + Need + Root Insight cuts through false noise to forge an unshakeable roadmap.',
+          sprintRules: [
+            'Ban generic problem statements like "We need a faster dashboard".',
+            'Use the POV formula: [Specific User] needs [Actionable Outcome] because surprisingly [Root Cause].',
+            'Frame 3 divergent "How Might We" questions from the root insight.'
+          ]
+        }
+      },
+      {
+        id: 3,
+        code: '03',
+        phase: 'IDEATE',
+        name: 'The Buoyant Cloudway',
+        subtext: 'Quantity breeds quality. Float freely, pop doubts, and follow the sparks.',
+        accent: '#f59e0b',
+        actionTip: 'Hold UP / SPACE to glide effortlessly. Touch doubt walls to pop them into confetti!',
+        codex: {
+          title: 'Crazy 8s & Idea Divergence Protocol',
+          coreConcept: 'Ideation should feel weightless. The doubt walls ("Too Risky", "No Budget") pop like delicate bubbles the instant you confront them. Momentum and psychological safety lead to radical breakthroughs.',
+          sprintRules: [
+            'Crazy 8s: 8 distinct sketches in 8 minutes (60 seconds per box).',
+            'Strict censorship ban: Any statement starting with "Yeah, but..." is silenced.',
+            'Silent voting with 3 colored sticky dots only after all ideas are hung.'
+          ]
+        }
+      },
+      {
+        id: 4,
+        code: '04',
+        phase: 'PROTOTYPE',
+        name: 'Fail Forward',
+        subtext: 'Prototypes are disposable questions, not precious monuments.',
+        accent: '#10b981',
+        actionTip: 'Deploy rapid wireframes [Q/F]. Failed jumps create permanent Ghost Platforms!',
+        codex: {
+          title: 'The 48-Hour Disposable Prototype Rule',
+          coreConcept: 'The abyss is too wide to cross in a single leap. Every time you drop, your fallen prototype solidifies in place, turning your fast failure into the exact stepping stone required to reach the summit.',
+          sprintRules: [
+            'Never code in production what you haven\'t verified with a paper sketch or clickable mockup.',
+            'Maximum prototype build time: 4 to 48 hours.',
+            'Test to learn what breaks, not to defend your ego.'
+          ]
+        }
+      },
+      {
+        id: 5,
+        code: '05',
+        phase: 'TEST',
+        name: 'The Validation Summit',
+        subtext: 'Feedback is not an attack. Ride user currents to Product-Market Fit.',
+        accent: '#ec4899',
+        actionTip: 'Harness validation wind currents and collect 3 Delight Orbs to reach PMF.',
+        codex: {
+          title: 'The "I Like, I Wish, What If" User Testing Matrix',
+          coreConcept: 'Customer feedback isn\'t a personal judgment—it\'s wind currents that guide your trajectory toward true product resonance.',
+          sprintRules: [
+            'Observe user tests in total silence. Do not defend, explain, or assist.',
+            'If the user cannot figure out where to click, the design failed, not the user.',
+            'Distribute findings into: I Like (Keep), I Wish (Fix), What If (Innovate).'
+          ]
+        }
+      }
+    ];
+    
+    const INITIAL_EASTER_EGGS = [
+      {
+        id: 'beginners_mind',
+        title: "The Beginner's Mind",
+        triggerDesc: 'Walked backward into the void at the very start of Level 1.',
+        quote: '"In the beginner\'s mind there are many possibilities; in the expert\'s mind there are few." — Shunryu Suzuki',
+        workplaceTip: 'Drop your industry tenure at the door. When starting discovery, pretend you know nothing. Ask naive questions that challenge institutional orthodoxies.',
+        unlocked: false
+      },
+      {
+        id: 'edge_case',
+        title: 'The Extreme User (Edge Case)',
+        triggerDesc: 'Balanced precariously on a cliff precipice for 2 continuous seconds.',
+        quote: '"Design for the extremes; the middle will take care of itself." — IDEO Design Principle',
+        workplaceTip: 'Mainstream users rarely articulate novel friction. Always interview extreme outliers: the novice who refuses the software and the power user with 14 brittle spreadsheets.',
+        unlocked: false
+      },
+      {
+        id: 'five_whys',
+        title: 'The 5 Whys Rabbit Hole',
+        triggerDesc: 'Bumped / probed a curious boundary wall 5 consecutive times in Stage 2.',
+        quote: '"Ask \'why\' five times about every matter." — Sakichi Toyoda (Toyota)',
+        workplaceTip: 'When a stakeholder says "We need an export button", asking why five times reveals they have a broken cross-team reporting sync, saving 6 weeks of useless dev work.',
+        unlocked: false
+      },
+      {
+        id: 'worst_idea',
+        title: 'The "Worst Possible Idea" Inversion',
+        triggerDesc: 'Embraced a void descent without frustration in the Prototype Foundry.',
+        quote: '"To get good ideas, you must generate bad ideas first." — Alex Osborn',
+        workplaceTip: 'Break team analysis-paralysis with a 5-minute "Worst Possible Idea" sprint. Asking for catastrophic solutions removes the fear of failure and unlocks genuine innovation.',
+        unlocked: false
+      },
+      {
+        id: 'quantity_breeds_quality',
+        title: 'Quantity Breeds Quality (Combo Chain)',
+        triggerDesc: 'Chained 3 consecutive updraft floats/bounces in Stage 3 without touching solid ground.',
+        quote: '"The best way to have a good idea is to have a lot of ideas." — Linus Pauling',
+        workplaceTip: 'Never stop brainstorming at idea #10. The first 15 ideas are obvious tropes everyone does. True market differentiation emerges between ideas #30 and #50.',
+        unlocked: false
+      }
+    ];
+    
+    const LEVEL_CONFIGS = [
+      // Stage 1: The Blind Spot (Empathize)
+      {
+        worldWidth: 1650,
+        playerStart: { x: 70, y: 310 },
+        platforms: [
+          { x: 0, y: 380, w: 260, h: 60, isSolid: true },
+          { x: 740, y: 380, w: 220, h: 60, isSolid: true },
+          { x: 1360, y: 380, w: 300, h: 60, isSolid: true }
+        ],
+        perspectiveBridges: [
+          { x: 300, y: 320, w: 110, h: 14, label: 'Unspoken Need' },
+          { x: 450, y: 260, w: 120, h: 14, label: 'Latent Frustration' },
+          { x: 610, y: 210, w: 90, h: 14, label: 'Workflow Gap' },
+          { x: 1000, y: 310, w: 110, h: 14, label: 'Emotional Strain' },
+          { x: 1160, y: 250, w: 110, h: 14, label: 'Shadowed Workaround' }
+        ],
+        sparks: [
+          { id: 's1_1', x: 355, y: 280, label: 'Active Observation' },
+          { id: 's1_2', x: 655, y: 170, label: 'Contextual Reality' },
+          { id: 's1_3', x: 1215, y: 210, label: 'Unspoken Need' }
+        ],
+        beacon: { x: 1540, y: 300, w: 32, h: 80 }
+      },
+    
+      // Stage 2: The Noise Chasm (Define)
+      {
+        worldWidth: 1750,
+        playerStart: { x: 70, y: 310 },
+        platforms: [
+          { x: 0, y: 380, w: 260, h: 60, isSolid: true },
+          { x: 360, y: 320, w: 90, h: 14, isSolid: true },
+          { x: 550, y: 240, w: 100, h: 14, isSolid: true },
+          { x: 750, y: 180, w: 100, h: 14, isSolid: true },
+          { x: 1400, y: 380, w: 350, h: 60, isSolid: true }
+        ],
+        tuningNodes: [
+          { id: 'tn1', x: 390, y: 280, label: 'Decoy: Superficial UI Whining', isRoot: false, tuned: false },
+          { id: 'tn2', x: 590, y: 200, label: 'Decoy: Pet Feature Request', isRoot: false, tuned: false },
+          { id: 'tn3', x: 790, y: 140, label: 'CORE ROOT CAUSE', isRoot: true, tuned: false }
+        ],
+        beamBridge: { x: 890, y: 250, w: 510, h: 12, unlocked: false },
+        sparks: [
+          { id: 's2_1', x: 405, y: 250, label: 'Synthesized Need' },
+          { id: 's2_2', x: 800, y: 100, label: 'Razor-Sharp POV' }
+        ],
+        beacon: { x: 1620, y: 300, w: 32, h: 80 }
+      },
+    
+      // Stage 3: The Buoyant Cloudway (Ideate - ZERO FRUSTRATION, PURE FUN)
+      {
+        worldWidth: 2000,
+        playerStart: { x: 80, y: 280 },
+        platforms: [
+          { x: 0, y: 360, w: 220, h: 60, isSolid: true },
+          { x: 1650, y: 340, w: 350, h: 80, isSolid: true }
+        ],
+        // Giant safety trampoline cloud across the entire void floor: impossible to die!
+        safetyCloudFloor: { x: 0, y: 410, w: 2000, h: 50 },
+        // Soft buoyant updraft zone filling the middle expanse
+        updraftField: { x: 220, y: 20, w: 1430, h: 390 },
+        // Fragile doubt walls that pop on simple touch or dash
+        doubtBubbles: [
+          { id: 'db1', x: 580, y: 120, w: 24, h: 180, label: '"Too Risky"', popped: false },
+          { id: 'db2', x: 980, y: 90, w: 24, h: 210, label: '"No Budget"', popped: false },
+          { id: 'db3', x: 1380, y: 130, w: 24, h: 170, label: '"Not Logical"', popped: false }
+        ],
+        // High-magnetic sparks that drift straight to Kibo
+        sparks: [
+          { id: 's3_1', x: 450, y: 200, label: '💡 Wild Analogy', originalY: 200 },
+          { id: 's3_2', x: 820, y: 170, label: '💡 Radical Inversion', originalY: 170 },
+          { id: 's3_3', x: 1220, y: 180, label: '💡 Cross-Domain Mashup', originalY: 180 }
+        ],
+        beacon: { x: 1820, y: 260, w: 40, h: 80 }
+      },
+    
+      // Stage 4: Fail Forward (Prototype)
+      {
+        worldWidth: 1700,
+        playerStart: { x: 70, y: 310 },
+        platforms: [
+          { x: 0, y: 380, w: 240, h: 60, isSolid: true },
+          { x: 1300, y: 160, w: 400, h: 280, isSolid: true }
+        ],
+        sparks: [
+          { id: 's4_1', x: 1460, y: 100, label: 'Validated Prototype' }
+        ],
+        beacon: { x: 1560, y: 80, w: 32, h: 80 }
+      },
+    
+      // Stage 5: The Validation Summit (Test)
+      {
+        worldWidth: 1900,
+        playerStart: { x: 70, y: 310 },
+        platforms: [
+          { x: 0, y: 380, w: 260, h: 60, isSolid: true },
+          { x: 340, y: 320, w: 90, h: 14, isSolid: true },
+          { x: 520, y: 250, w: 100, h: 14, isSolid: true },
+          { x: 710, y: 190, w: 110, h: 14, isSolid: true },
+          { x: 910, y: 280, w: 110, h: 14, isSolid: true },
+          { x: 1120, y: 210, w: 120, h: 14, isSolid: true },
+          { x: 1350, y: 150, w: 120, h: 14, isSolid: true },
+          { x: 1550, y: 380, w: 350, h: 60, isSolid: true }
+        ],
+        feedbackCurrents: [
+          { x: 620, y: 140, w: 70, h: 240, forceY: -0.68, label: 'Affirmative Signal' },
+          { x: 1240, y: 100, w: 80, h: 260, forceY: -0.78, label: 'Customer Delight' }
+        ],
+        sparks: [
+          { id: 's5_1', x: 560, y: 200, label: '⭐️ Usability Telemetry' },
+          { id: 's5_2', x: 760, y: 140, label: '⭐️ Value Proof' },
+          { id: 's5_3', x: 1400, y: 100, label: '⭐️ Product-Market Fit' }
+        ],
+        beacon: { x: 1720, y: 300, w: 32, h: 80 }
+      }
+    ];
+    
+    export default function App() {
+      const [hasStarted, setHasStarted] = useState(false);
+      const [stageIndex, setStageIndex] = useState(0);
+      const [soundEnabled, setSoundEnabled] = useState(true);
+      const [perspectiveActive, setPerspectiveActive] = useState(false);
+      const [ideaWingsAssist, setIdeaWingsAssist] = useState(false);
+      const [showStage3Overlay, setShowStage3Overlay] = useState(true);
+      const [codexOpen, setCodexOpen] = useState(false);
+      const [activeCodexTab, setActiveCodexTab] = useState('easter_eggs');
+      const [stageClearedModal, setStageClearedModal] = useState(false);
+      const [gameCompleted, setGameCompleted] = useState(false);
+      const [toastMsg, setToastMsg] = useState(null);
+      const [copySuccessKey, setCopySuccessKey] = useState(null);
+    
+      // Easter Eggs state
+      const [easterEggs, setEasterEggs] = useState(INITIAL_EASTER_EGGS);
+      const [eggModalData, setEggModalData] = useState(null);
+    
+      // Telemetry & metrics
+      const [elapsedSeconds, setElapsedSeconds] = useState(0);
+      const [iterationFailures, setIterationFailures] = useState(0);
+      const [practitionerName, setPractitionerName] = useState('Alex Rivera');
+    
+      // Crazy 8s sprint facilitation timer
+      const [crazy8Round, setCrazy8Round] = useState(1);
+      const [crazy8SecondsLeft, setCrazy8SecondsLeft] = useState(60);
+      const [crazy8Running, setCrazy8Running] = useState(false);
+    
+      const canvasRef = useRef(null);
+      const currentStage = GAME_STAGES[stageIndex];
+    
+      const stateRef = useRef({
+        cameraX: 0,
+        shake: 0,
+        kibo: {
+          x: 70,
+          y: 310,
+          vx: 0,
+          vy: 0,
+          w: 22,
+          h: 28,
+          facing: 1,
+          grounded: false,
+          coyoteTime: 0,
+          jumpBuffer: 0,
+          onWall: 0,
+          canAirDash: true,
+          isDashing: false,
+          dashTimer: 0,
+          dashCooldown: 0,
+          blinkTimer: 120,
+          isBlinking: false,
+          squashX: 1,
+          squashY: 1,
+          haloPulse: 0,
+          trail: [],
+          airChainCount: 0
+        },
+        heuristics: {
+          edgeTimer: 0,
+          wallTapCount: 0,
+          lastWallTapTime: 0
+        },
+        keys: {
+          left: false,
+          right: false,
+          up: false,
+          dash: false
+        },
+        level: null,
+        collectedSparks: {},
+        placedBlocks: [],
+        ghostPlatforms: [],
+        confettiParticles: [],
+        cloudPuffs: [],
+        shockwaves: []
+      });
+    
+      const showToast = useCallback((msg) => {
+        setToastMsg(msg);
+        setTimeout(() => {
+          setToastMsg((prev) => (prev === msg ? null : prev));
+        }, 2800);
+      }, []);
+    
+      const unlockEasterEgg = useCallback((eggId) => {
+        setEasterEggs((prev) => {
+          const target = prev.find((e) => e.id === eggId);
+          if (target && !target.unlocked) {
+            audio.easterEggFanfare();
+            setEggModalData(target);
+            return prev.map((e) => (e.id === eggId ? { ...e, unlocked: true } : e));
+          }
+          return prev;
+        });
+      }, []);
+    
+      const initLevel = useCallback((index, isRetry = false) => {
+        const raw = LEVEL_CONFIGS[index];
+        const deep = JSON.parse(JSON.stringify(raw));
+        const s = stateRef.current;
+    
+        s.cameraX = 0;
+        s.shake = 0;
+        s.kibo = {
+          x: deep.playerStart.x,
+          y: deep.playerStart.y,
+          vx: 0,
+          vy: 0,
+          w: 22,
+          h: 28,
+          facing: 1,
+          grounded: false,
+          coyoteTime: 0,
+          jumpBuffer: 0,
+          onWall: 0,
+          canAirDash: true,
+          isDashing: false,
+          dashTimer: 0,
+          dashCooldown: 0,
+          blinkTimer: 120,
+          isBlinking: false,
+          squashX: 1,
+          squashY: 1,
+          haloPulse: 0,
+          trail: [],
+          airChainCount: 0
+        };
+        s.level = deep;
+        s.collectedSparks = {};
+        s.placedBlocks = [];
+        s.shockwaves = [];
+        s.confettiParticles = [];
+        s.cloudPuffs = [];
+        s.heuristics = { edgeTimer: 0, wallTapCount: 0, lastWallTapTime: 0 };
+    
+        if (!isRetry) {
+          s.ghostPlatforms = [];
+        }
+    
+        setPerspectiveActive(false);
+        setStageClearedModal(false);
+        if (index === 2) {
+          setShowStage3Overlay(true);
+        }
+      }, []);
+    
+      useEffect(() => {
+        initLevel(stageIndex);
+      }, [stageIndex, initLevel]);
+    
+      // Master telemetry stopwatch
+      useEffect(() => {
+        if (!hasStarted || gameCompleted) return;
+        const t = setInterval(() => setElapsedSeconds((s) => s + 1), 1000);
+        return () => clearInterval(t);
+      }, [hasStarted, gameCompleted]);
+    
+      // Interactive Crazy 8s sprint facilitation timer
+      useEffect(() => {
+        let t;
+        if (crazy8Running) {
+          t = setInterval(() => {
+            setCrazy8SecondsLeft((prev) => {
+              if (prev <= 1) {
+                audio.collect();
+                if (crazy8Round < 8) {
+                  setCrazy8Round((r) => r + 1);
+                  return 60;
+                } else {
+                  setCrazy8Running(false);
+                  audio.victory();
+                  return 0;
+                }
+              }
+              return prev - 1;
+            });
+          }, 1000);
+        }
+        return () => clearInterval(t);
+      }, [crazy8Running, crazy8Round]);
+    
+      // Audio synchronization
+      useEffect(() => {
+        audio.muted = !soundEnabled;
+        if (soundEnabled && hasStarted) {
+          audio.init();
+        }
+      }, [soundEnabled, hasStarted]);
+    
+      const handleDeployBlock = useCallback(() => {
+        const s = stateRef.current;
+        if (stageIndex !== 3) return;
+    
+        if (s.placedBlocks.length >= 3) {
+          s.placedBlocks.shift();
+        }
+    
+        const spawnX = s.kibo.facing === 1 ? s.kibo.x + 28 : s.kibo.x - 72;
+        const spawnY = Math.min(360, Math.max(130, s.kibo.y + 12));
+    
+        s.placedBlocks.push({
+          x: spawnX,
+          y: spawnY,
+          w: 68,
+          h: 14,
+          isSolid: true,
+          life: 260
+        });
+    
+        audio.playTone(160, 0.15, 'square', 0.08, 90);
+        showToast('Rapid MVP Wireframe deployed! [Leap upon it]');
+      }, [stageIndex, showToast]);
+    
+      useEffect(() => {
+        const handleKeyDown = (e) => {
+          if (!hasStarted) {
+            if (e.key === ' ' || e.key === 'Enter') {
+              audio.init();
+              setHasStarted(true);
+            }
+            return;
+          }
+    
+          if (stageClearedModal || codexOpen || eggModalData) return;
+          const k = stateRef.current.keys;
+          const p = stateRef.current.kibo;
+    
+          if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') k.left = true;
+          if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') k.right = true;
+          if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W' || e.key === ' ') {
+            e.preventDefault();
+            k.up = true;
+            p.jumpBuffer = 6;
+          }
+          if (e.key === 'Shift' || e.key === 'j' || e.key === 'J') {
+            e.preventDefault();
+            k.dash = true;
+          }
+          if (e.key === 'e' || e.key === 'E') {
+            if (stageIndex === 0) {
+              setPerspectiveActive((prev) => {
+                const next = !prev;
+                audio.playTone(next ? 440 : 220, 0.3, 'sine', 0.1, next ? 880 : 110);
+                showToast(next ? 'Persona Sonar: Latent bridges revealed!' : 'Normal View.');
+                return next;
+              });
+            }
+          }
+          if (e.key === 'q' || e.key === 'Q' || e.key === 'f' || e.key === 'F') {
+            handleDeployBlock();
+          }
+          if (e.key === 'r' || e.key === 'R') {
+            setIterationFailures((f) => f + 1);
+            initLevel(stageIndex, true);
+            showToast('Iterating... Respawned at base.');
+          }
+          if (e.key === 'Tab') {
+            e.preventDefault();
+            setCodexOpen((prev) => !prev);
+          }
+        };
+    
+        const handleKeyUp = (e) => {
+          const k = stateRef.current.keys;
+          const p = stateRef.current.kibo;
+    
+          if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') k.left = false;
+          if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') k.right = false;
+          if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W' || e.key === ' ') {
+            k.up = false;
+            if (p.vy < -2.4 && stageIndex !== 2) p.vy *= 0.45;
+          }
+          if (e.key === 'Shift' || e.key === 'j' || e.key === 'J') k.dash = false;
+        };
+    
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', handleKeyUp);
+        return () => {
+          window.removeEventListener('keydown', handleKeyDown);
+          window.removeEventListener('keyup', handleKeyUp);
+        };
+      }, [hasStarted, stageClearedModal, codexOpen, eggModalData, stageIndex, initLevel, handleDeployBlock, showToast]);
+    
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let animId;
+    
+        const V_W = 860;
+        const V_H = 460;
+    
+        // Movement & Feel Constants
+        const GRAV = 0.42;
+        const RUN_ACCEL = 0.78;
+        const FRICTION = 0.82;
+        const MAX_SPEED = 4.6;
+        const JUMP_POWER = -9.5;
+        const DASH_SPEED = 10.8;
+        const DASH_FRAMES = 10;
+    
+        const emitShockwave = (x, y, color = '#ffffff') => {
+          stateRef.current.shockwaves.push({
+            x,
+            y,
+            radius: 4,
+            maxRadius: 36,
+            alpha: 0.8,
+            color
+          });
+        };
+    
+        const spawnConfetti = (x, y) => {
+          const colors = ['#f59e0b', '#ec4899', '#06b6d4', '#10b981', '#ffffff', '#fbbf24'];
+          for (let i = 0; i < 22; i++) {
+            stateRef.current.confettiParticles.push({
+              x,
+              y,
+              vx: (Math.random() - 0.5) * 8,
+              vy: (Math.random() - 0.8) * 8,
+              w: Math.random() * 5 + 3,
+              h: Math.random() * 5 + 3,
+              color: colors[Math.floor(Math.random() * colors.length)],
+              alpha: 1,
+              rot: Math.random() * Math.PI,
+              vRot: (Math.random() - 0.5) * 0.2
+            });
+          }
+        };
+    
+        const spawnCloudPuff = (x, y) => {
+          for (let i = 0; i < 6; i++) {
+            stateRef.current.cloudPuffs.push({
+              x: x + (Math.random() - 0.5) * 40,
+              y: y + (Math.random() - 0.5) * 10,
+              vx: (Math.random() - 0.5) * 2,
+              vy: -Math.random() * 2 - 1,
+              radius: Math.random() * 14 + 10,
+              alpha: 0.5
+            });
+          }
+        };
+    
+        const loop = () => {
+          const gs = stateRef.current;
+          const { kibo, keys, level, collectedSparks, placedBlocks, ghostPlatforms, shockwaves, confettiParticles, cloudPuffs, heuristics } = gs;
+          const stage = GAME_STAGES[stageIndex];
+    
+          if (!level) {
+            animId = requestAnimationFrame(loop);
+            return;
+          }
+    
+          kibo.blinkTimer--;
+          if (kibo.blinkTimer <= 0) {
+            kibo.isBlinking = true;
+            if (kibo.blinkTimer <= -8) {
+              kibo.isBlinking = false;
+              kibo.blinkTimer = Math.floor(Math.random() * 160 + 120);
+            }
+          }
+          kibo.squashX += (1 - kibo.squashX) * 0.14;
+          kibo.squashY += (1 - kibo.squashY) * 0.14;
+          kibo.haloPulse = (kibo.haloPulse + 0.05) % (Math.PI * 2);
+    
+          // Dash Cooldown and Dash Activation
+          if (kibo.dashCooldown > 0) kibo.dashCooldown--;
+    
+          if (keys.dash && kibo.canAirDash && kibo.dashCooldown === 0 && !kibo.isDashing) {
+            kibo.isDashing = true;
+            kibo.canAirDash = false;
+            kibo.dashTimer = DASH_FRAMES;
+            kibo.dashCooldown = 24;
+            kibo.vx = kibo.facing * DASH_SPEED;
+            kibo.vy = 0;
+            kibo.squashX = 1.45;
+            kibo.squashY = 0.65;
+            gs.shake = 5;
+            audio.dash();
+            emitShockwave(kibo.x + kibo.w / 2, kibo.y + kibo.h / 2, stage.accent);
+    
+            // Easter Egg 5 air combo chain count
+            if (stageIndex === 2) {
+              kibo.airChainCount++;
+              if (kibo.airChainCount >= 3) {
+                unlockEasterEgg('quantity_breeds_quality');
+              }
+            }
+          }
+    
+          const isStage3 = stageIndex === 2;
+    
+          if (kibo.isDashing) {
+            kibo.dashTimer--;
+            kibo.vy = 0;
+            kibo.trail.unshift({
+              x: kibo.x,
+              y: kibo.y,
+              alpha: 0.7,
+              facing: kibo.facing
+            });
+            if (kibo.trail.length > 9) kibo.trail.pop();
+    
+            if (kibo.dashTimer <= 0) {
+              kibo.isDashing = false;
+              kibo.vx *= 0.55;
+            }
+          } else {
+            kibo.trail.forEach((t) => (t.alpha *= 0.84));
+            kibo.trail = kibo.trail.filter((t) => t.alpha > 0.05);
+    
+            // Run acceleration
+            if (keys.left) {
+              kibo.vx -= RUN_ACCEL;
+              kibo.facing = -1;
+            } else if (keys.right) {
+              kibo.vx += RUN_ACCEL;
+              kibo.facing = 1;
+            } else {
+              kibo.vx *= FRICTION;
+            }
+            kibo.vx = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, kibo.vx));
+    
+            // STAGE 3 SPECIAL FLOAT DYNAMICS / IDEA WINGS
+            if (isStage3) {
+              // Inside Updraft zone or with Idea Wings Assist enabled
+              const inUpdraft = level.updraftField &&
+                kibo.x + kibo.w > level.updraftField.x &&
+                kibo.x < level.updraftField.x + level.updraftField.w;
+    
+              if (ideaWingsAssist) {
+                // Infinite graceful flight assist
+                if (keys.up) {
+                  kibo.vy = -4.5;
+                } else {
+                  kibo.vy = Math.sin(Date.now() * 0.005) * 0.4; // gentle hover
+                }
+              } else if (inUpdraft && keys.up) {
+                // Balloon glide upward
+                kibo.vy -= 0.65;
+                kibo.vy = Math.max(-5.2, kibo.vy);
+                kibo.canAirDash = true; // Air dash continuously available in updraft!
+                if (Math.random() < 0.08) audio.floatHum();
+              } else {
+                // Gentle feather-fall gravity in Stage 3
+                kibo.vy += 0.22;
+                kibo.vy = Math.min(kibo.vy, 3.2); // Low terminal velocity
+              }
+            } else {
+              // Standard gravity for other stages
+              let insideUpdraft = false;
+              if (level.feedbackCurrents) {
+                level.feedbackCurrents.forEach((c) => {
+                  if (
+                    kibo.x + kibo.w > c.x &&
+                    kibo.x < c.x + c.w &&
+                    kibo.y + kibo.h > c.y &&
+                    kibo.y < c.y + c.h
+                  ) {
+                    insideUpdraft = true;
+                    kibo.vy += c.forceY;
+                    kibo.vy = Math.max(-7.5, kibo.vy);
+                  }
+                });
+              }
+    
+              if (!insideUpdraft) {
+                kibo.vy += GRAV;
+              }
+    
+              if (kibo.onWall !== 0 && !kibo.grounded && kibo.vy > 0) {
+                kibo.vy = Math.min(kibo.vy, 1.4);
+              }
+            }
+          }
+    
+          // Update positions
+          kibo.x += kibo.vx;
+          kibo.y += kibo.vy;
+    
+          // EASTER EGG 1: The Beginner's Mind
+          if (stageIndex === 0 && kibo.x <= 15) {
+            unlockEasterEgg('beginners_mind');
+          }
+    
+          // Arena horizontal limits
+          if (kibo.x < 10) {
+            kibo.x = 10;
+            kibo.vx = 0;
+          }
+          if (kibo.x + kibo.w > level.worldWidth - 10) {
+            kibo.x = level.worldWidth - 10 - kibo.w;
+            kibo.vx = 0;
+          }
+    
+          // Coyote time & jump buffer
+          if (kibo.grounded) {
+            kibo.coyoteTime = 6;
+            kibo.canAirDash = true;
+            kibo.airChainCount = 0;
+          } else if (kibo.coyoteTime > 0) {
+            kibo.coyoteTime--;
+          }
+    
+          if (kibo.jumpBuffer > 0) kibo.jumpBuffer--;
+    
+          kibo.grounded = false;
+          kibo.onWall = 0;
+    
+          const solidPlats = [...level.platforms];
+    
+          // Stage 1 Perspective Bridges
+          if (perspectiveActive && level.perspectiveBridges) {
+            solidPlats.push(...level.perspectiveBridges);
+          }
+    
+          // Stage 2 Beam Bridge
+          if (level.beamBridge && level.beamBridge.unlocked) {
+            solidPlats.push(level.beamBridge);
+          }
+    
+          // Stage 4 Wireframes & Ghosts
+          solidPlats.push(...placedBlocks);
+          solidPlats.push(...ghostPlatforms);
+    
+          let onPrecariousEdge = false;
+    
+          solidPlats.forEach((plat) => {
+            // Landing on top
+            if (
+              kibo.x + kibo.w > plat.x &&
+              kibo.x < plat.x + plat.w &&
+              kibo.y + kibo.h >= plat.y &&
+              kibo.y + kibo.h <= plat.y + 16 &&
+              kibo.vy >= 0
+            ) {
+              kibo.y = plat.y - kibo.h;
+              kibo.vy = 0;
+              kibo.grounded = true;
+              kibo.squashX = 1.35;
+              kibo.squashY = 0.72;
+    
+              const distToLeft = Math.abs(kibo.x - plat.x);
+              const distToRight = Math.abs(kibo.x + kibo.w - (plat.x + plat.w));
+              if (distToLeft < 8 || distToRight < 8) {
+                onPrecariousEdge = true;
+              }
+            }
+    
+            // Wall latching
+            if (kibo.y + kibo.h > plat.y && kibo.y < plat.y + plat.h) {
+              if (kibo.x <= plat.x + plat.w && kibo.x >= plat.x + plat.w - 8 && kibo.vx <= 0) {
+                kibo.onWall = -1;
+                kibo.canAirDash = true;
+    
+                // EASTER EGG 3: The 5 Whys (Bump into dead-end wall 5 times in Level 2)
+                if (stageIndex === 1 && Date.now() - heuristics.lastWallTapTime > 300) {
+                  heuristics.wallTapCount++;
+                  heuristics.lastWallTapTime = Date.now();
+                  if (heuristics.wallTapCount >= 5) {
+                    unlockEasterEgg('five_whys');
+                  }
+                }
+              }
+              if (kibo.x + kibo.w >= plat.x && kibo.x + kibo.w <= plat.x + 8 && kibo.vx >= 0) {
+                kibo.onWall = 1;
+                kibo.canAirDash = true;
+              }
+            }
+          });
+    
+          // EASTER EGG 2: The Edge Case (Balance on precipice edge for 2 seconds)
+          if (kibo.grounded && onPrecariousEdge) {
+            heuristics.edgeTimer++;
+            if (heuristics.edgeTimer >= 110) {
+              unlockEasterEgg('edge_case');
+            }
+          } else {
+            heuristics.edgeTimer = 0;
+          }
+    
+          if (isStage3 && level.safetyCloudFloor) {
+            const sc = level.safetyCloudFloor;
+            if (kibo.y + kibo.h >= sc.y) {
+              kibo.y = sc.y - kibo.h;
+              kibo.vy = -12.5; // High joyful cloud trampoline spring!
+              kibo.canAirDash = true;
+              kibo.squashX = 1.45;
+              kibo.squashY = 0.55;
+              gs.shake = 4;
+              audio.bounceCloud();
+              spawnCloudPuff(kibo.x + kibo.w / 2, sc.y);
+              showToast('☁️ Cloud Trampoline: Sprung high into the updraft!');
+    
+              kibo.airChainCount++;
+              if (kibo.airChainCount >= 3) {
+                unlockEasterEgg('quantity_breeds_quality');
+              }
+            }
+          }
+    
+          // Jump execution
+          if ((keys.up || kibo.jumpBuffer > 0) && !kibo.isDashing && !isStage3) {
+            if (kibo.coyoteTime > 0) {
+              kibo.vy = JUMP_POWER;
+              kibo.coyoteTime = 0;
+              kibo.jumpBuffer = 0;
+              kibo.grounded = false;
+              kibo.squashX = 0.78;
+              kibo.squashY = 1.35;
+              audio.jump();
+              emitShockwave(kibo.x + kibo.w / 2, kibo.y + kibo.h, stage.accent);
+            } else if (kibo.onWall !== 0) {
+              kibo.vy = -8.6;
+              kibo.vx = -kibo.onWall * 5.2;
+              kibo.facing = -kibo.onWall;
+              kibo.jumpBuffer = 0;
+              kibo.squashX = 0.8;
+              kibo.squashY = 1.3;
+              audio.jump();
+              emitShockwave(kibo.x + kibo.w / 2, kibo.y + kibo.h / 2, '#ffffff');
+            }
+          }
+    
+          if (isStage3 && level.doubtBubbles) {
+            level.doubtBubbles.forEach((bubble) => {
+              if (!bubble.popped) {
+                if (
+                  kibo.x + kibo.w > bubble.x &&
+                  kibo.x < bubble.x + bubble.w &&
+                  kibo.y + kibo.h > bubble.y &&
+                  kibo.y < bubble.y + bubble.h
+                ) {
+                  bubble.popped = true;
+                  audio.bubblePop();
+                  gs.shake = 7;
+                  spawnConfetti(bubble.x + bubble.w / 2, bubble.y + bubble.h / 2);
+                  emitShockwave(bubble.x + bubble.w / 2, bubble.y + bubble.h / 2, '#f59e0b');
+                  showToast(`🎉 Popped Doubt: ${bubble.label}! Ideas flow freely.`);
+    
+                  kibo.airChainCount++;
+                  if (kibo.airChainCount >= 3) {
+                    unlockEasterEgg('quantity_breeds_quality');
+                  }
+                }
+              }
+            });
+          }
+    
+          // Stage 2 Tuning Nodes
+          if (level.tuningNodes) {
+            level.tuningNodes.forEach((node) => {
+              const dist = Math.hypot(
+                kibo.x + kibo.w / 2 - node.x,
+                kibo.y + kibo.h / 2 - node.y
+              );
+              if (dist < 40 && !node.tuned) {
+                node.tuned = true;
+                if (node.isRoot) {
+                  level.beamBridge.unlocked = true;
+                  audio.victory();
+                  gs.shake = 8;
+                  emitShockwave(node.x, node.y, '#06b6d4');
+                  showToast('ROOT CAUSE IDENTIFIED: The coherent light bridge locked in!');
+                } else {
+                  audio.playTone(180, 0.2, 'sawtooth', 0.08);
+                  showToast(`Discarded False Noise: ${node.label}`);
+                }
+              }
+            });
+          }
+    
+          if (level.sparks) {
+            // In Stage 3, sparks have a massive magnetic pull (220px radius)
+            const magnetDist = isStage3 ? 220 : 75;
+    
+            level.sparks.forEach((spk) => {
+              if (!collectedSparks[spk.id]) {
+                const dx = kibo.x + kibo.w / 2 - spk.x;
+                const dy = kibo.y + kibo.h / 2 - spk.y;
+                const dist = Math.hypot(dx, dy);
+    
+                if (dist < magnetDist) {
+                  const pullSpeed = isStage3 ? 6.5 : 4.2;
+                  spk.x += (dx / dist) * pullSpeed;
+                  spk.y += (dy / dist) * pullSpeed;
+                }
+    
+                if (dist < 30) {
+                  collectedSparks[spk.id] = true;
+                  audio.collect();
+                  emitShockwave(spk.x, spk.y, stage.accent);
+                  showToast(`✨ Acquired Spark: ${spk.label}`);
+                }
+              }
+            });
+          }
+    
+          if (kibo.y > V_H + 40 && !isStage3) {
+            setIterationFailures((f) => f + 1);
+    
+            if (stageIndex === 3) {
+              unlockEasterEgg('worst_idea');
+    
+              const ghostX = Math.max(240, Math.min(1240, kibo.x - 30));
+              const ghostY = Math.max(180, Math.min(380, kibo.y - 90));
+              ghostPlatforms.push({
+                x: ghostX,
+                y: ghostY,
+                w: 80,
+                h: 14,
+                isSolid: true,
+                iteration: ghostPlatforms.length + 1
+              });
+              audio.playTone(110, 0.4, 'triangle', 0.12, 220);
+              gs.shake = 8;
+              showToast(`MVP #${ghostPlatforms.length} failed fast. Solidified as Ghost Staircase!`);
+            } else {
+              audio.playTone(120, 0.3, 'sine', 0.08);
+              showToast('Iteration reset. Pushing forward.');
+            }
+    
+            kibo.x = level.playerStart.x;
+            kibo.y = level.playerStart.y;
+            kibo.vx = 0;
+            kibo.vy = 0;
+            kibo.isDashing = false;
+            kibo.airChainCount = 0;
+          }
+    
+          // Reaching the Goal Beacon
+          const b = level.beacon;
+          if (
+            kibo.x + kibo.w >= b.x &&
+            kibo.x <= b.x + b.w &&
+            kibo.y + kibo.h >= b.y
+          ) {
+            if (!stageClearedModal) {
+              audio.victory();
+              emitShockwave(b.x + b.w / 2, b.y + b.h / 2, stage.accent);
+              setStageClearedModal(true);
+              if (stageIndex === GAME_STAGES.length - 1) {
+                setGameCompleted(true);
+              }
+            }
+          }
+    
+          const targetCam = kibo.x - 280;
+          gs.cameraX += (targetCam - gs.cameraX) * 0.09;
+          gs.cameraX = Math.max(0, Math.min(level.worldWidth - V_W, gs.cameraX));
+    
+          let offsetX = 0;
+          let offsetY = 0;
+          if (gs.shake > 0) {
+            offsetX = (Math.random() - 0.5) * gs.shake;
+            offsetY = (Math.random() - 0.5) * gs.shake;
+            gs.shake *= 0.88;
+            if (gs.shake < 0.2) gs.shake = 0;
+          }
+    
+          ctx.clearRect(0, 0, V_W, V_H);
+          ctx.save();
+          ctx.translate(-Math.floor(gs.cameraX) + offsetX, offsetY);
+    
+          // Minimalist Obsidian Gradient
+          const bgGrad = ctx.createLinearGradient(gs.cameraX, 0, gs.cameraX, V_H);
+          if (isStage3) {
+            bgGrad.addColorStop(0, '#151006');
+            bgGrad.addColorStop(1, '#090807');
+          } else {
+            bgGrad.addColorStop(0, perspectiveActive ? '#120d26' : '#090a10');
+            bgGrad.addColorStop(1, perspectiveActive ? '#090616' : '#050608');
+          }
+          ctx.fillStyle = bgGrad;
+          ctx.fillRect(gs.cameraX, 0, V_W, V_H);
+    
+          // STAGE 3 BREADCRUMB FLIGHT PATH TO PORTAL
+          if (isStage3) {
+            // Glowing sinuous flight guide leading right to the exit
+            ctx.save();
+            ctx.strokeStyle = 'rgba(245, 158, 11, 0.35)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([8, 12]);
+            ctx.beginPath();
+            for (let x = 120; x < level.beacon.x + 20; x += 15) {
+              const y = 200 + Math.sin(x * 0.007 + Date.now() * 0.003) * 45;
+              if (x === 120) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.restore();
+    
+            // Updraft Field Visual Aura (Gentle rising particles)
+            const uf = level.updraftField;
+            ctx.fillStyle = 'rgba(245, 158, 11, 0.03)';
+            ctx.fillRect(uf.x, uf.y, uf.w, uf.h);
+    
+            for (let i = 0; i < 10; i++) {
+              const py = (uf.y + uf.h - ((Date.now() * 0.06 + i * 40) % uf.h));
+              const px = uf.x + ((i * 143) % uf.w);
+              ctx.fillStyle = 'rgba(245, 158, 11, 0.3)';
+              ctx.beginPath();
+              ctx.arc(px, py, 2, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+    
+          // Sonar scanlines if Empathy Sonar is on
+          if (perspectiveActive) {
+            ctx.strokeStyle = 'rgba(139, 92, 246, 0.09)';
+            ctx.lineWidth = 1;
+            for (let y = 0; y < V_H; y += 6) {
+              ctx.beginPath();
+              ctx.moveTo(gs.cameraX, y);
+              ctx.lineTo(gs.cameraX + V_W, y);
+              ctx.stroke();
+            }
+          }
+    
+          // Minimalist grid coordinate accents
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+          ctx.lineWidth = 1;
+          for (let x = 0; x < level.worldWidth; x += 40) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, V_H);
+            ctx.stroke();
+          }
+    
+          // Render Stage 3 Safety Cloud Trampoline Floor
+          if (isStage3 && level.safetyCloudFloor) {
+            const sc = level.safetyCloudFloor;
+            ctx.save();
+            ctx.fillStyle = '#1c1917';
+            ctx.fillRect(sc.x, sc.y, sc.w, sc.h);
+    
+            // Fluffy cloud pillows along the top rim
+            ctx.fillStyle = 'rgba(245, 158, 11, 0.22)';
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 1.5;
+            for (let cx = sc.x; cx < sc.x + sc.w; cx += 50) {
+              ctx.beginPath();
+              ctx.arc(cx + 25, sc.y + 4, 20, Math.PI, 0);
+              ctx.fill();
+              ctx.stroke();
+            }
+    
+            ctx.fillStyle = '#fde68a';
+            ctx.font = 'bold 9px monospace';
+            ctx.textAlign = 'center';
+            for (let tx = 200; tx < level.worldWidth; tx += 400) {
+              ctx.fillText('☁️ SAFETY CLOUD TRAMPOLINE (BOUNCES YOU HIGH)', tx, sc.y + 24);
+            }
+            ctx.restore();
+          }
+    
+          // Render Stage 3 Doubt Bubbles (Translucent, glowing, easy to pop)
+          if (isStage3 && level.doubtBubbles) {
+            level.doubtBubbles.forEach((bubble) => {
+              if (!bubble.popped) {
+                const wobble = Math.sin(Date.now() * 0.005 + bubble.x) * 3;
+                ctx.save();
+                ctx.fillStyle = 'rgba(245, 158, 11, 0.16)';
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                ctx.roundRect(bubble.x + wobble, bubble.y, bubble.w, bubble.h, 12);
+                ctx.fill();
+                ctx.stroke();
+                ctx.setLineDash([]);
+    
+                ctx.save();
+                ctx.translate(bubble.x + bubble.w / 2 + wobble, bubble.y + bubble.h / 2);
+                ctx.rotate(-Math.PI / 2);
+                ctx.fillStyle = '#fde68a';
+                ctx.font = 'bold 9px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${bubble.label} [TOUCH TO POP]`, 0, 3);
+                ctx.restore();
+                ctx.restore();
+              }
+            });
+          }
+    
+          // Render Platforms
+          solidPlats.forEach((p) => {
+            if (p.iteration) {
+              ctx.strokeStyle = '#10b981';
+              ctx.lineWidth = 1.5;
+              ctx.strokeRect(p.x, p.y, p.w, p.h);
+              ctx.fillStyle = 'rgba(16, 185, 129, 0.16)';
+              ctx.fillRect(p.x, p.y, p.w, p.h);
+    
+              ctx.fillStyle = '#6ee7b7';
+              ctx.font = 'bold 8px monospace';
+              ctx.textAlign = 'center';
+              ctx.fillText(`MVP #${p.iteration}`, p.x + p.w / 2, p.y + 10);
+            } else if (p.life) {
+              ctx.strokeStyle = '#34d399';
+              ctx.setLineDash([4, 4]);
+              ctx.strokeRect(p.x, p.y, p.w, p.h);
+              ctx.setLineDash([]);
+              ctx.fillStyle = 'rgba(52, 211, 153, 0.2)';
+              ctx.fillRect(p.x, p.y, p.w, p.h);
+            } else if (p === level.beamBridge) {
+              ctx.fillStyle = '#06b6d4';
+              ctx.shadowColor = '#06b6d4';
+              ctx.shadowBlur = 14;
+              ctx.fillRect(p.x, p.y, p.w, p.h);
+              ctx.shadowBlur = 0;
+            } else {
+              ctx.fillStyle = '#14161f';
+              ctx.beginPath();
+              ctx.roundRect(p.x, p.y, p.w, p.h, 4);
+              ctx.fill();
+    
+              ctx.fillStyle = stage.accent;
+              ctx.fillRect(p.x, p.y, p.w, 2);
+            }
+          });
+    
+          // Stage 1: Invisible bridge indicators when Sonar is OFF
+          if (!perspectiveActive && level.perspectiveBridges) {
+            level.perspectiveBridges.forEach((b) => {
+              ctx.strokeStyle = 'rgba(139, 92, 246, 0.12)';
+              ctx.setLineDash([2, 4]);
+              ctx.strokeRect(b.x, b.y, b.w, b.h);
+              ctx.setLineDash([]);
+            });
+          }
+    
+          if (level.sparks) {
+            level.sparks.forEach((spk) => {
+              if (!collectedSparks[spk.id]) {
+                const t = Date.now() * 0.005;
+                const floatY = spk.y + Math.sin(t + spk.x) * 5;
+    
+                ctx.save();
+                ctx.translate(spk.x, floatY);
+                ctx.rotate(t * 0.8);
+                ctx.fillStyle = stage.accent;
+                ctx.shadowColor = stage.accent;
+                ctx.shadowBlur = 12;
+                ctx.fillRect(-6, -6, 12, 12);
+                ctx.shadowBlur = 0;
+                ctx.restore();
+    
+                ctx.fillStyle = '#fde68a';
+                ctx.font = 'bold 9px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(spk.label, spk.x, floatY - 14);
+              }
+            });
+          }
+    
+          // Exit Beacon
+          ctx.fillStyle = stage.accent;
+          ctx.shadowColor = stage.accent;
+          ctx.shadowBlur = 18;
+          ctx.fillRect(b.x, b.y, b.w, b.h);
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(b.x + 8, b.y + 6, b.w - 16, b.h - 12);
+          ctx.shadowBlur = 0;
+    
+          // Stage 4 Portal Exit Sign
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 11px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(stageIndex === 2 ? 'STAGE 4 PORTAL ➔' : 'EXIT BEACON', b.x + b.w / 2, b.y - 12);
+    
+          // Motion trail
+          kibo.trail.forEach((t) => {
+            ctx.fillStyle = `${stage.accent}${Math.floor(t.alpha * 255)
+              .toString(16)
+              .padStart(2, '0')}`;
+            ctx.beginPath();
+            ctx.roundRect(t.x, t.y, kibo.w, kibo.h, 6);
+            ctx.fill();
+          });
+    
+          // Kibo rendering with squash & stretch
+          ctx.save();
+          const centerX = kibo.x + kibo.w / 2;
+          const centerY = kibo.y + kibo.h;
+          ctx.translate(centerX, centerY);
+          ctx.scale(kibo.squashX, kibo.squashY);
+    
+          // Stage 3 Lightbulb Idea Halo
+          if (isStage3) {
+            ctx.save();
+            const haloY = -kibo.h - 14 + Math.sin(kibo.haloPulse) * 2;
+            ctx.strokeStyle = '#fcd34d';
+            ctx.fillStyle = '#f59e0b';
+            ctx.shadowColor = '#f59e0b';
+            ctx.shadowBlur = 14;
+            ctx.beginPath();
+            ctx.arc(0, haloY, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+    
+            // Little yellow filament rays
+            for (let r = 0; r < 4; r++) {
+              const ang = (r * Math.PI) / 2 + kibo.haloPulse;
+              ctx.beginPath();
+              ctx.moveTo(Math.cos(ang) * 8, haloY + Math.sin(ang) * 8);
+              ctx.lineTo(Math.cos(ang) * 12, haloY + Math.sin(ang) * 12);
+              ctx.stroke();
+            }
+            ctx.restore();
+          }
+    
+          // Kibo Body
+          ctx.fillStyle = '#ffffff';
+          ctx.shadowColor = stage.accent;
+          ctx.shadowBlur = 10;
+          ctx.beginPath();
+          ctx.roundRect(-kibo.w / 2, -kibo.h, kibo.w, kibo.h, 8);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+    
+          // Inner Core Accent
+          ctx.fillStyle = stage.accent;
+          ctx.beginPath();
+          ctx.roundRect(-kibo.w / 2 + 4, -kibo.h + 12, kibo.w - 8, kibo.h - 16, 4);
+          ctx.fill();
+    
+          // Expressive Eyes
+          const lookOffset = kibo.facing === 1 ? 2.5 : -2.5;
+          const eyeY = -kibo.h + 8;
+    
+          if (kibo.isBlinking) {
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(-4 + lookOffset, eyeY);
+            ctx.lineTo(-1 + lookOffset, eyeY);
+            ctx.moveTo(3 + lookOffset, eyeY);
+            ctx.lineTo(6 + lookOffset, eyeY);
+            ctx.stroke();
+          } else if (kibo.isDashing) {
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(-4 + lookOffset, eyeY - 1);
+            ctx.lineTo(-1 + lookOffset, eyeY + 1);
+            ctx.moveTo(3 + lookOffset, eyeY + 1);
+            ctx.lineTo(6 + lookOffset, eyeY - 1);
+            ctx.stroke();
+          } else {
+            const eyeW = Math.abs(kibo.vy) > 3 ? 3.5 : 2.5;
+            const eyeH = Math.abs(kibo.vy) > 3 ? 4.5 : 3.5;
+    
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.arc(-3 + lookOffset, eyeY, eyeW, 0, Math.PI * 2);
+            ctx.arc(4 + lookOffset, eyeY, eyeW, 0, Math.PI * 2);
+            ctx.fill();
+    
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(-3 + lookOffset + (kibo.facing * 0.8), eyeY - 1, 1, 0, Math.PI * 2);
+            ctx.arc(4 + lookOffset + (kibo.facing * 0.8), eyeY - 1, 1, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+    
+          // Confetti particles
+          for (let i = confettiParticles.length - 1; i >= 0; i--) {
+            const cp = confettiParticles[i];
+            cp.x += cp.vx;
+            cp.y += cp.vy;
+            cp.vy += 0.2;
+            cp.rot += cp.vRot;
+            cp.alpha *= 0.96;
+            if (cp.alpha <= 0.05) {
+              confettiParticles.splice(i, 1);
+            } else {
+              ctx.save();
+              ctx.translate(cp.x, cp.y);
+              ctx.rotate(cp.rot);
+              ctx.fillStyle = cp.color;
+              ctx.globalAlpha = cp.alpha;
+              ctx.fillRect(-cp.w / 2, -cp.h / 2, cp.w, cp.h);
+              ctx.restore();
+            }
+          }
+    
+          // Cloud puffs
+          for (let i = cloudPuffs.length - 1; i >= 0; i--) {
+            const pf = cloudPuffs[i];
+            pf.x += pf.vx;
+            pf.y += pf.vy;
+            pf.radius += 0.4;
+            pf.alpha *= 0.94;
+            if (pf.alpha <= 0.05) {
+              cloudPuffs.splice(i, 1);
+            } else {
+              ctx.fillStyle = 'rgba(253, 230, 138, 0.4)';
+              ctx.globalAlpha = pf.alpha;
+              ctx.beginPath();
+              ctx.arc(pf.x, pf.y, pf.radius, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.globalAlpha = 1;
+            }
+          }
+    
+          // Shockwaves
+          for (let i = shockwaves.length - 1; i >= 0; i--) {
+            const sw = shockwaves[i];
+            sw.radius += 2.2;
+            sw.alpha *= 0.91;
+            if (sw.alpha <= 0.05 || sw.radius >= sw.maxRadius) {
+              shockwaves.splice(i, 1);
+            } else {
+              ctx.strokeStyle = sw.color;
+              ctx.globalAlpha = sw.alpha;
+              ctx.lineWidth = 1.5;
+              ctx.beginPath();
+              ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
+              ctx.stroke();
+              ctx.globalAlpha = 1;
+            }
+          }
+    
+          ctx.restore();
+          animId = requestAnimationFrame(loop);
+        };
+    
+        animId = requestAnimationFrame(loop);
+        return () => cancelAnimationFrame(animId);
+      }, [stageIndex, perspectiveActive, ideaWingsAssist, stageClearedModal, unlockEasterEgg]);
+    
+      const handleCopy = (text, key) => {
+        navigator.clipboard.writeText(text);
+        setCopySuccessKey(key);
+        audio.collect();
+        showToast('Copied actionable protocol to clipboard!');
+        setTimeout(() => setCopySuccessKey(null), 2400);
+      };
+    
+      const formatTime = (totalSec) => {
+        const mins = Math.floor(totalSec / 60);
+        const secs = totalSec % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+      };
+    
+      const unlockedCount = useMemo(() => easterEggs.filter((e) => e.unlocked).length, [easterEggs]);
+    
+      return (
+        <div className="min-h-screen bg-[#07080d] text-slate-100 flex flex-col font-sans select-none antialiased">
+          {/* Toast Notification Banner */}
+          {toastMsg && (
+            <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-[#12141f]/95 border border-slate-700 text-slate-100 px-4 py-2 rounded-xl text-xs font-mono shadow-2xl backdrop-blur-md flex items-center gap-2 animate-fade-in">
+              <Activity className="w-3.5 h-3.5 text-cyan-400" />
+              <span>{toastMsg}</span>
+            </div>
+          )}
+    
+          {/* Atmospheric Header & Telemetry */}
+          <header className="border-b border-slate-800/80 bg-[#07080d]/80 backdrop-blur-md px-4 sm:px-8 py-2.5 sticky top-0 z-40">
+            <div className="max-w-6xl mx-auto flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-xs tracking-widest text-slate-400 font-bold uppercase">SYNAPSE</span>
+                <span className="text-slate-600">//</span>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: currentStage.accent }} />
+                  <span className="font-mono text-xs uppercase tracking-wider text-slate-200">
+                    {currentStage.code} // {currentStage.phase}
+                  </span>
+                </div>
+              </div>
+    
+              <div className="hidden sm:flex items-center gap-6 font-mono text-xs text-slate-400">
+                <div>
+                  TIME <span className="text-slate-100 font-bold">{formatTime(elapsedSeconds)}</span>
+                </div>
+                <div>
+                  ITERATIONS <span className="text-slate-100 font-bold">#{iterationFailures}</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-amber-400">
+                  <Gift className="w-3.5 h-3.5" />
+                  <span>EASTER EGGS {unlockedCount}/5</span>
+                </div>
+              </div>
+    
+              <div className="flex items-center gap-2.5">
+                {stageIndex === 2 && (
+                  <button
+                    onClick={() => {
+                      setIdeaWingsAssist((prev) => !prev);
+                      audio.collect();
+                      showToast(ideaWingsAssist ? 'Idea Wings OFF' : '🪽 Idea Wings ON: Infinite gentle glide!');
+                    }}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-mono border transition flex items-center gap-1.5 ${
+                      ideaWingsAssist
+                        ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold shadow-md'
+                        : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-slate-200'
+                    }`}
+                    title="Toggle Infinite Glide Assist Mode"
+                  >
+                    <Feather className="w-3.5 h-3.5" />
+                    <span>Idea Wings: {ideaWingsAssist ? 'ON' : 'OFF'}</span>
+                  </button>
+                )}
+    
+                <button
+                  onClick={() => {
+                    setIterationFailures((f) => f + 1);
+                    initLevel(stageIndex, true);
+                    showToast('Stage reset. Pushing iteration forward.');
+                  }}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition"
+                  title="Reset Stage (R)"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </button>
+    
+                <button
+                  onClick={() => setSoundEnabled(!soundEnabled)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition"
+                  title={soundEnabled ? 'Mute Audio' : 'Unmute Audio'}
+                >
+                  {soundEnabled ? <Volume2 className="w-4 h-4 text-emerald-400" /> : <VolumeX className="w-4 h-4 text-slate-500" />}
+                </button>
+    
+                <button
+                  onClick={() => {
+                    audio.collect();
+                    setCodexOpen(true);
+                  }}
+                  className="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-lg text-xs font-mono border border-slate-700/80 flex items-center gap-1.5 transition"
+                >
+                  <BookOpen className="w-3.5 h-3.5 text-violet-400" />
+                  <span>[Field Codex & Secrets]</span>
+                </button>
+              </div>
+            </div>
+          </header>
+    
+          {/* Main Game Stage */}
+          <main className="flex-1 max-w-6xl w-full mx-auto p-3 sm:p-5 flex flex-col justify-between">
+            {/* Stage Tabs & Guidance Cue */}
+            <div className="flex items-center justify-between pb-2.5">
+              <div className="flex items-center gap-1.5 overflow-x-auto">
+                {GAME_STAGES.map((s, idx) => (
+                  <button
+                    key={s.id}
+                    onClick={() => {
+                      audio.jump();
+                      setStageIndex(idx);
+                    }}
+                    className={`px-3 py-1 rounded-md text-xs font-mono transition border ${
+                      stageIndex === idx
+                        ? 'bg-slate-900 text-slate-100 border-slate-600 font-semibold'
+                        : 'text-slate-500 border-transparent hover:text-slate-300'
+                    }`}
+                  >
+                    {s.code}. {s.phase}
+                  </button>
+                ))}
+              </div>
+    
+              <span className="text-[11px] font-mono text-slate-400 hidden lg:block">
+                {currentStage.actionTip}
+              </span>
+            </div>
+    
+            {/* Canvas Game Area with Atmospheric Overlays */}
+            <div className="relative rounded-2xl overflow-hidden border border-slate-800 bg-[#07080d] shadow-2xl flex flex-col items-center">
+              <canvas
+                ref={canvasRef}
+                width={860}
+                height={460}
+                className="w-full h-auto max-h-[500px] aspect-[860/460] block"
+              />
+    
+              {/* STAGE 3 CRYSTAL-CLEAR WALKTHROUGH OVERLAY */}
+              {stageIndex === 2 && showStage3Overlay && (
+                <div className="absolute top-3 left-3 right-3 sm:left-6 sm:right-6 bg-amber-950/80 border border-amber-500/80 rounded-xl p-3 backdrop-blur-md z-30 shadow-2xl animate-fade-in flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-left">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-amber-300 font-mono text-xs font-bold">
+                      <Lightbulb className="w-4 h-4 text-amber-400" />
+                      <span>HOW TO PASS STAGE 3 (IDEATE): 3 EASY STEPS</span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] text-amber-100 font-mono pt-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-4 h-4 rounded-full bg-amber-500 text-slate-950 font-bold flex items-center justify-center text-[10px]">1</span>
+                        <span>Hold <kbd className="bg-amber-900 px-1 rounded">UP / SPACE</kbd> to float up</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-4 h-4 rounded-full bg-amber-500 text-slate-950 font-bold flex items-center justify-center text-[10px]">2</span>
+                        <span>Sparks fly to you magnetically</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-4 h-4 rounded-full bg-amber-500 text-slate-950 font-bold flex items-center justify-center text-[10px]">3</span>
+                        <span>Touch doubt walls to pop them!</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 self-end sm:self-center">
+                    <button
+                      onClick={() => setShowStage3Overlay(false)}
+                      className="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg text-xs font-mono transition"
+                    >
+                      GOT IT!
+                    </button>
+                  </div>
+                </div>
+              )}
+    
+              {/* Intro Screen - Zero Login Required */}
+              {!hasStarted && (
+                <div className="absolute inset-0 bg-[#07080d]/92 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-30 animate-fade-in">
+                  <div className="max-w-md space-y-4">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-950/60 border border-violet-800/80 text-[11px] font-mono text-violet-300">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Meet Kibo the Cyber-Luminary</span>
+                    </div>
+                    <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+                      SYNAPSE
+                    </h1>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      Design Thinking is an instinct forged through play, rapid iteration, and psychological safety. Float, pop skepticism, and discover 5 secret Easter Eggs!
+                    </p>
+                    <div className="pt-2">
+                      <button
+                        onClick={() => {
+                          audio.init();
+                          setHasStarted(true);
+                        }}
+                        className="px-6 py-3 bg-white hover:bg-slate-200 text-slate-950 font-bold rounded-xl text-xs font-mono tracking-wide transition shadow-lg flex items-center justify-center gap-2 mx-auto"
+                      >
+                        <Play className="w-4 h-4 fill-current" />
+                        <span>PRESS SPACE / CLICK TO DIVE IN</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+    
+              {/* EASTER EGG UNLOCKED MODAL */}
+              {eggModalData && (
+                <div className="absolute inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in">
+                  <div className="max-w-md w-full bg-[#121422] border border-amber-500/80 rounded-2xl p-6 shadow-2xl space-y-4 text-left">
+                    <div className="flex items-center justify-between border-b border-amber-500/30 pb-3">
+                      <div className="flex items-center gap-2 text-amber-400 font-mono text-xs font-bold">
+                        <Gift className="w-4 h-4" />
+                        <span>SECRET EASTER EGG DISCOVERED!</span>
+                      </div>
+                      <button
+                        onClick={() => setEggModalData(null)}
+                        className="p-1 rounded bg-slate-800 text-slate-400 hover:text-white"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+    
+                    <div>
+                      <h3 className="text-lg font-bold text-white tracking-tight">{eggModalData.title}</h3>
+                      <p className="text-[11px] font-mono text-slate-400 mt-0.5">{eggModalData.triggerDesc}</p>
+                      <p className="text-xs text-amber-300/90 italic font-mono mt-3 p-2.5 rounded-lg bg-amber-950/20 border border-amber-900/40">
+                        {eggModalData.quote}
+                      </p>
+                    </div>
+    
+                    <div className="bg-[#090b12] p-3.5 rounded-xl border border-slate-800 space-y-1">
+                      <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-wider block">
+                        HOW TO APPLY THIS AT WORK:
+                      </span>
+                      <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                        {eggModalData.workplaceTip}
+                      </p>
+                    </div>
+    
+                    <button
+                      onClick={() => setEggModalData(null)}
+                      className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-xs font-bold font-mono transition"
+                    >
+                      RESUME ODYSSEY
+                    </button>
+                  </div>
+                </div>
+              )}
+    
+              {/* Stage Cleared Modal */}
+              {stageClearedModal && !eggModalData && (
+                <div className="absolute inset-0 bg-[#07080d]/92 backdrop-blur-md flex items-center justify-center p-4 z-40 animate-fade-in">
+                  <div className="max-w-md w-full bg-[#12141e] border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4 text-left">
+                    <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                      <span className="font-mono text-xs uppercase tracking-wider text-slate-400">
+                        STAGE {currentStage.code} // COMPLETE
+                      </span>
+                      <span
+                        className="w-2.5 h-2.5 rounded-full"
+                        style={{ backgroundColor: currentStage.accent }}
+                      />
+                    </div>
+    
+                    <div>
+                      <h3 className="text-lg font-bold text-white tracking-tight">{currentStage.name}</h3>
+                      <p className="text-xs text-slate-400 mt-1 italic font-mono">
+                        "{currentStage.subtext}"
+                      </p>
+                      <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                        {currentStage.codex.coreConcept}
+                      </p>
+                    </div>
+    
+                    <div className="bg-[#090a10] p-3.5 rounded-xl border border-slate-800/80">
+                      <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-wider block mb-1">
+                        WORKPLACE APPLICATION: {currentStage.codex.title}
+                      </span>
+                      <ul className="text-xs text-slate-300 space-y-1 font-mono">
+                        {currentStage.codex.sprintRules.map((r, i) => (
+                          <li key={i} className="flex items-start gap-1.5">
+                            <span className="text-violet-400 font-bold">›</span>
+                            <span>{r}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+    
+                    <div className="flex items-center gap-2 pt-1">
+                      {stageIndex < GAME_STAGES.length - 1 ? (
+                        <button
+                          onClick={() => {
+                            audio.jump();
+                            setStageIndex(stageIndex + 1);
+                          }}
+                          className="flex-1 py-2.5 bg-white hover:bg-slate-200 text-slate-950 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-md"
+                        >
+                          <span>Advance to Stage 0{stageIndex + 2}</span>
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            audio.victory();
+                            setStageClearedModal(false);
+                            setCodexOpen(true);
+                            setActiveCodexTab('cert');
+                          }}
+                          className="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-md"
+                        >
+                          <span>Claim Architect Credential</span>
+                          <Award className="w-4 h-4" />
+                        </button>
+                      )}
+                      <button
+                        onClick={() => initLevel(stageIndex, true)}
+                        className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-mono transition"
+                      >
+                        Replay
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+    
+            {/* Minimalist Controls & Mobile Touch Pad */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#0d0f18]/60 p-2.5 rounded-xl border border-slate-800/70 text-xs mt-2.5">
+              <div className="flex items-center gap-4 text-slate-400 font-mono text-[11px]">
+                <span>
+                  <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-200">A / D</kbd> Move
+                </span>
+                <span>
+                  <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-200">
+                    {stageIndex === 2 ? 'Hold UP / SPACE to Float' : 'Space Jump'}
+                  </kbd>
+                </span>
+                <span>
+                  <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-200">Shift / J</kbd> Dash
+                </span>
+                {stageIndex === 0 && (
+                  <span>
+                    <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-violet-400">E</kbd> Sonar
+                  </span>
+                )}
+                {stageIndex === 3 && (
+                  <span>
+                    <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-emerald-400">Q / F</kbd> Deploy MVP
+                  </span>
+                )}
+              </div>
+    
+              {/* Touch Gamepad */}
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+                <div className="flex gap-1.5">
+                  <button
+                    onTouchStart={() => (stateRef.current.keys.left = true)}
+                    onTouchEnd={() => (stateRef.current.keys.left = false)}
+                    onMouseDown={() => (stateRef.current.keys.left = true)}
+                    onMouseUp={() => (stateRef.current.keys.left = false)}
+                    className="w-10 h-8 bg-slate-900 border border-slate-800 active:bg-slate-800 rounded-lg text-slate-200 font-mono flex items-center justify-center"
+                  >
+                    ←
+                  </button>
+                  <button
+                    onTouchStart={() => (stateRef.current.keys.right = true)}
+                    onTouchEnd={() => (stateRef.current.keys.right = false)}
+                    onMouseDown={() => (stateRef.current.keys.right = true)}
+                    onMouseUp={() => (stateRef.current.keys.right = false)}
+                    className="w-10 h-8 bg-slate-900 border border-slate-800 active:bg-slate-800 rounded-lg text-slate-200 font-mono flex items-center justify-center"
+                  >
+                    →
+                  </button>
+                </div>
+    
+                <div className="flex gap-1.5">
+                  {stageIndex === 0 && (
+                    <button
+                      onClick={() => setPerspectiveActive((prev) => !prev)}
+                      className="px-2.5 h-8 bg-violet-950/80 border border-violet-700 active:bg-violet-900 rounded-lg text-violet-200 text-xs font-mono"
+                    >
+                      SONAR
+                    </button>
+                  )}
+                  {stageIndex === 2 && (
+                    <button
+                      onClick={() => setShowStage3Overlay((prev) => !prev)}
+                      className="px-2.5 h-8 bg-amber-950/80 border border-amber-700 active:bg-amber-900 rounded-lg text-amber-200 text-xs font-mono"
+                    >
+                      GUIDE
+                    </button>
+                  )}
+                  {stageIndex === 3 && (
+                    <button
+                      onClick={handleDeployBlock}
+                      className="px-2.5 h-8 bg-emerald-950/80 border border-emerald-700 active:bg-emerald-900 rounded-lg text-emerald-200 text-xs font-mono"
+                    >
+                      DEPLOY MVP
+                    </button>
+                  )}
+                  <button
+                    onTouchStart={() => (stateRef.current.keys.dash = true)}
+                    onTouchEnd={() => (stateRef.current.keys.dash = false)}
+                    onMouseDown={() => (stateRef.current.keys.dash = true)}
+                    onMouseUp={() => (stateRef.current.keys.dash = false)}
+                    className="px-3 h-8 bg-slate-900 border border-slate-800 active:bg-slate-800 rounded-lg text-slate-300 text-xs font-mono"
+                  >
+                    DASH
+                  </button>
+                  <button
+                    onTouchStart={() => {
+                      stateRef.current.keys.up = true;
+                      stateRef.current.kibo.jumpBuffer = 6;
+                    }}
+                    onTouchEnd={() => (stateRef.current.keys.up = false)}
+                    onMouseDown={() => {
+                      stateRef.current.keys.up = true;
+                      stateRef.current.kibo.jumpBuffer = 6;
+                    }}
+                    onMouseUp={() => (stateRef.current.keys.up = false)}
+                    className="px-4 h-8 bg-white active:bg-slate-200 text-slate-950 font-bold rounded-lg text-xs font-mono"
+                  >
+                    {stageIndex === 2 ? 'FLOAT' : 'JUMP'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </main>
+    
+          {/* Field Codex & Secret Drawer */}
+          {codexOpen && (
+            <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex justify-end animate-fade-in">
+              <div className="w-full max-w-xl bg-[#090b12] border-l border-slate-800 h-full overflow-y-auto p-6 flex flex-col justify-between">
+                <div className="space-y-6">
+                  {/* Drawer Top Header */}
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                    <div>
+                      <span className="font-mono text-[10px] uppercase text-slate-500 tracking-widest">
+                        SYNAPSE FIELD ARCHIVE
+                      </span>
+                      <h2 className="text-lg font-bold text-white mt-0.5">The Maker's Field Codex</h2>
+                    </div>
+                    <button
+                      onClick={() => setCodexOpen(false)}
+                      className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+    
+                  {/* Navigation Tabs */}
+                  <div className="flex border-b border-slate-800 text-xs font-mono">
+                    <button
+                      onClick={() => setActiveCodexTab('easter_eggs')}
+                      className={`pb-2 px-3 border-b-2 transition flex items-center gap-1.5 ${
+                        activeCodexTab === 'easter_eggs'
+                          ? 'border-amber-400 text-amber-300 font-bold'
+                          : 'border-transparent text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
+                      <Gift className="w-3.5 h-3.5" />
+                      <span>Easter Eggs ({unlockedCount}/5)</span>
+                    </button>
+                    <button
+                      onClick={() => setActiveCodexTab('protocols')}
+                      className={`pb-2 px-3 border-b-2 transition ${
+                        activeCodexTab === 'protocols'
+                          ? 'border-white text-white font-bold'
+                          : 'border-transparent text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
+                      Protocols
+                    </button>
+                    <button
+                      onClick={() => setActiveCodexTab('timer')}
+                      className={`pb-2 px-3 border-b-2 transition ${
+                        activeCodexTab === 'timer'
+                          ? 'border-white text-white font-bold'
+                          : 'border-transparent text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
+                      Crazy 8s Timer
+                    </button>
+                    <button
+                      onClick={() => setActiveCodexTab('cert')}
+                      className={`pb-2 px-3 border-b-2 transition ${
+                        activeCodexTab === 'cert'
+                          ? 'border-white text-white font-bold'
+                          : 'border-transparent text-slate-500 hover:text-slate-300'
+                      }`}
+                    >
+                      Architect Card
+                    </button>
+                  </div>
+    
+                  {/* Tab 1: Secret Easter Eggs Archive */}
+                  {activeCodexTab === 'easter_eggs' && (
+                    <div className="space-y-3">
+                      <div className="p-3 bg-amber-950/20 border border-amber-900/50 rounded-xl text-xs text-amber-300 font-mono">
+                        Explore with curiosity. These secret heuristics reveal counter-intuitive truths about innovation.
+                      </div>
+    
+                      {easterEggs.map((egg) => (
+                        <div
+                          key={egg.id}
+                          className={`p-4 rounded-xl border transition ${
+                            egg.unlocked
+                              ? 'bg-[#121422] border-amber-500/60 shadow-lg'
+                              : 'bg-[#0d0f18]/60 border-slate-800 opacity-60'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between font-mono text-xs">
+                            <span className={`font-bold flex items-center gap-1.5 ${egg.unlocked ? 'text-amber-300' : 'text-slate-400'}`}>
+                              {egg.unlocked ? <Gift className="w-3.5 h-3.5 text-amber-400" /> : <HelpCircle className="w-3.5 h-3.5 text-slate-500" />}
+                              {egg.unlocked ? egg.title : 'Locked Secret Easter Egg'}
+                            </span>
+                            <span className={`text-[10px] px-2 py-0.5 rounded ${egg.unlocked ? 'bg-amber-500/20 text-amber-300' : 'bg-slate-800 text-slate-500'}`}>
+                              {egg.unlocked ? 'UNLOCKED' : 'FIND IN GAME'}
+                            </span>
+                          </div>
+    
+                          {egg.unlocked ? (
+                            <div className="mt-2 space-y-2">
+                              <p className="text-xs text-slate-400 font-mono italic">
+                                {egg.quote}
+                              </p>
+                              <div className="bg-[#090b12] p-2.5 rounded-lg border border-slate-800 text-xs text-slate-300 leading-relaxed font-sans">
+                                <span className="text-[10px] font-mono text-cyan-400 block font-bold mb-0.5 uppercase">Workplace Application:</span>
+                                {egg.workplaceTip}
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-xs text-slate-500 mt-2 font-mono">
+                              Hint: {egg.triggerDesc}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+    
+                  {/* Tab 2: Mechanic ↔ Workplace Protocol */}
+                  {activeCodexTab === 'protocols' && (
+                    <div className="space-y-3">
+                      {GAME_STAGES.map((s) => (
+                        <div key={s.id} className="p-4 bg-[#11131e] rounded-xl border border-slate-800/80 space-y-2">
+                          <div className="flex items-center justify-between font-mono text-xs">
+                            <span className="font-bold text-slate-200">
+                              {s.code} // {s.name}
+                            </span>
+                            <span className="text-[10px] text-slate-400">{s.phase}</span>
+                          </div>
+                          <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                            {s.codex.coreConcept}
+                          </p>
+                          <div className="pt-1">
+                            <span className="text-[10px] font-mono text-violet-400 uppercase tracking-wider block mb-1">
+                              Actionable Rules:
+                            </span>
+                            <ul className="text-xs text-slate-400 space-y-1 font-mono">
+                              {s.codex.sprintRules.map((rule, idx) => (
+                                <li key={idx} className="flex items-start gap-1.5">
+                                  <span className="text-slate-500">•</span>
+                                  <span>{rule}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+    
+                  {/* Tab 3: Interactive Crazy 8s Facilitation Timer */}
+                  {activeCodexTab === 'timer' && (
+                    <div className="p-5 bg-[#11131e] rounded-xl border border-slate-800 space-y-4 text-center">
+                      <span className="font-mono text-[10px] uppercase text-amber-400 tracking-wider">
+                        Interactive Ideation Facilitator
+                      </span>
+                      <div>
+                        <h3 className="text-base font-bold text-white">Crazy 8s Sprint Clock</h3>
+                        <p className="text-xs text-slate-400 mt-1">
+                          Fold a sheet of paper into 8 sections. Sketch 1 radical distinct concept every 60 seconds.
+                        </p>
+                      </div>
+    
+                      <div className="py-4">
+                        <div className="text-5xl font-mono font-extrabold text-white tracking-tight">
+                          0:{crazy8SecondsLeft.toString().padStart(2, '0')}
+                        </div>
+                        <span className="text-xs font-mono text-slate-400 mt-1 block">
+                          ROUND {crazy8Round} OF 8
+                        </span>
+                      </div>
+    
+                      <div className="flex items-center justify-center gap-2">
+                        <button
+                          onClick={() => {
+                            audio.jump();
+                            setCrazy8Running(!crazy8Running);
+                          }}
+                          className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg text-xs font-mono transition"
+                        >
+                          {crazy8Running ? 'PAUSE SPRINT' : 'START 8-MINUTE SPRINT'}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setCrazy8Running(false);
+                            setCrazy8Round(1);
+                            setCrazy8SecondsLeft(60);
+                          }}
+                          className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-mono transition"
+                        >
+                          RESET
+                        </button>
+                      </div>
+                    </div>
+                  )}
+    
+                  {/* Tab 4: Design Architect Credential Card */}
+                  {activeCodexTab === 'cert' && (
+                    <div className="p-5 bg-[#11131e] border border-slate-800 rounded-xl space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-[10px] text-slate-500 uppercase tracking-widest">
+                          SYNAPSE CREDENTIAL RECORD
+                        </span>
+                        <span className="text-xs font-mono text-emerald-400 flex items-center gap-1">
+                          <Check className="w-3.5 h-3.5" /> Certified Maker
+                        </span>
+                      </div>
+    
+                      <div>
+                        <span className="text-xs text-slate-400 block mb-1">Architect Name:</span>
+                        <input
+                          type="text"
+                          value={practitionerName}
+                          onChange={(e) => setPractitionerName(e.target.value)}
+                          className="w-full bg-[#0a0c14] border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-slate-500"
+                        />
+                      </div>
+    
+                      <div className="border-t border-slate-800/80 pt-3 text-xs font-mono text-slate-400 space-y-1">
+                        <div>PRACTITIONER: {practitionerName.toUpperCase()}</div>
+                        <div>TELEMETRY TIME: {formatTime(elapsedSeconds)}</div>
+                        <div>FAILURES / ITERATIONS: #{iterationFailures}</div>
+                        <div>EASTER EGGS DISCOVERED: {unlockedCount} / 5</div>
+                      </div>
+    
+                      <button
+                        onClick={() => {
+                          const credentialText = `===========================================
+    SYNAPSE // DESIGN ARCHITECT CREDENTIAL
+    ===========================================
+    PRACTITIONER: ${practitionerName}
+    SPEEDRUN TIME: ${formatTime(elapsedSeconds)}
+    ITERATION FAILURES: ${iterationFailures}
+    EASTER EGGS DISCOVERED: ${unlockedCount} / 5
+    CORE DESIGN THINKING COMPETENCIES:
+    1. Empathize: Discarded boardroom assumptions via Contextual Sonar
+    2. Define: Isolated Core Root Cause over superficial noise
+    3. Ideate: Floated freely through skepticism barriers with Kibo
+    4. Prototype: Converted fast failures into physical stepping stones
+    5. Test: Navigated real customer telemetry to Product-Market Fit
+    ===========================================`;
+                          handleCopy(credentialText, 'card_copy');
+                        }}
+                        className="w-full py-2 bg-white hover:bg-slate-200 text-slate-950 font-bold rounded-lg text-xs font-mono transition flex items-center justify-center gap-1.5"
+                      >
+                        {copySuccessKey === 'card_copy' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                        Copy Credential
+                      </button>
+                    </div>
+                  )}
+                </div>
+    
+                {/* Footer */}
+                <div className="pt-4 border-t border-slate-800">
+                  <button
+                    onClick={() => setCodexOpen(false)}
+                    className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-xl text-xs font-mono transition"
+                  >
+                    Return to Odyssey
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<SynapseGame />);
+  </script>
+</body>
+</html>
