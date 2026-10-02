@@ -383,13 +383,49 @@
             </div>
 
             <div class="md:col-span-7 space-y-16 reveal">
+                <!-- Self-Intro Bio with Interactive Hover Popover on "I" / "我" -->
                 <div>
                     <h2 class="font-display text-xs tracking-[0.3em] text-magenta mb-4" data-i18n="who.sec1_tag">01 // FREE//BUILDER</h2>
-                    <p class="font-sans text-xl md:text-2xl leading-relaxed text-offwhite/90" data-i18n="who.sec1_bio">
-                        I am an L&D Consultant and Coach who refuses to accept the status quo of corporate training. Working alongside top-tier global consultancies and hyper-growth tech firms, I blend deep organizational psychology with high-end media production.
+                    <p class="font-sans text-xl md:text-2xl leading-relaxed text-offwhite/90">
+                        <!-- Pop-up Wrapper -->
+                        <span class="relative inline-block group/popover" id="i-trigger-wrapper">
+                            <span 
+                                id="i-text-trigger" 
+                                class="text-neon font-bold underline decoration-neon/40 underline-offset-8 hover:decoration-neon transition-all cursor-pointer interactable select-none"
+                                onmouseenter="audio.glassTick()"
+                                data-i18n="who.i_subject">I</span>
+                            
+                            <!-- Hover Card Pop-Up (Floating Tooltip) -->
+                            <span class="absolute bottom-full left-0 mb-3 w-64 sm:w-72 p-4 bg-darkgray/95 border border-neon/60 rounded-2xl shadow-[0_0_35px_rgba(57,255,20,0.25)] backdrop-blur-xl opacity-0 invisible group-hover/popover:opacity-100 group-hover/popover:visible translate-y-2 group-hover/popover:translate-y-0 transition-all duration-200 z-50 text-left pointer-events-auto block font-sans">
+                                <span class="flex items-center justify-between border-b border-white/10 pb-2 mb-2.5">
+                                    <span class="flex items-center gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-neon animate-pulse"></span>
+                                        <span class="text-[10px] font-mono text-neon font-bold tracking-wider uppercase" data-i18n="popover.status">ACTIVE CONSULTANT</span>
+                                    </span>
+                                    <span class="text-[10px] font-mono text-white/40">PORTFOLIO</span>
+                                </span>
+                                <span class="text-xs text-slate-300 font-sans block leading-snug mb-3" data-i18n="popover.desc">
+                                    Wei MENG — L&D Architect & Coach creating tech-powered simulations.
+                                </span>
+                                <!-- REPLACE URL HERE with your target website -->
+                                <a 
+                                    href="https://wei-meng.org" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer" 
+                                    onclick="audio.quantumLaunch()" 
+                                    class="inline-flex items-center justify-between w-full px-3 py-2 rounded-xl bg-neon text-obsidian text-xs font-mono font-bold btn-squish interactable hover:shadow-[0_0_15px_rgba(57,255,20,0.4)] transition">
+                                    <span data-i18n="popover.btn">Visit Personal Site</span>
+                                    <i class="ph-bold ph-arrow-up-right text-sm"></i>
+                                </a>
+                                <!-- Decorative pointer arrow -->
+                                <span class="absolute top-full left-4 -mt-1 border-4 border-transparent border-t-darkgray"></span>
+                            </span>
+                        </span>
+                        <span id="who-bio-remainder" data-i18n="who.sec1_bio_rest"> am an L&D Consultant and Coach who refuses to accept the status quo of corporate training. Working alongside top-tier global consultancies and hyper-growth tech firms, I blend deep organizational psychology with high-end media production.</span>
                     </p>
                 </div>
 
+                <!-- Mission -->
                 <div>
                     <h2 class="font-display text-xs tracking-[0.3em] text-neon mb-4" data-i18n="who.sec2_tag">02 // THE MISSION</h2>
                     <p class="font-sans text-xl md:text-2xl leading-relaxed text-offwhite/90">
@@ -1242,6 +1278,16 @@
                 'toast.submit_fail': 'Submission failed. Please check your form endpoint.',
                 'toast.network_err': 'Network error. Please try again later.',
                 'voice.activated': 'Voice assistance activated. Hover over text to read aloud.'
+
+                'who.sec1_tag': '01 // FREE//BUILDER',
+                'who.i_subject': 'I',
+                'who.sec1_bio_rest': ' am an L&D Consultant and Coach who refuses to accept the status quo of corporate training. Working alongside top-tier global consultancies and hyper-growth tech firms, I blend deep organizational psychology with high-end media production.',
+                'who.sec2_tag': '02 // THE MISSION',
+                'who.sec2_mission': 'To eradicate the "mandatory training sigh." I leverage Generative AI, gamification, and interactive storytelling to transform how organizations learn. I don’t just train your workforce; I upgrade their entire operating system through highly realistic, culturally grounded, and actually humorous learning ecosystems',
+
+                'popover.status': 'ACTIVE CONSULTANT // WEI MENG',
+                'popover.desc': 'Wei MENG — L&D Architect & Coach creating tech-powered simulations.',
+                'popover.btn': 'Visit Personal Site',
             },
             'zh-cn': {
                 'nav.home': '首页',
@@ -1342,6 +1388,16 @@
                 'toast.submit_fail': '提交失败，请检查表单接口配置。',
                 'toast.network_err': '网络连接异常，请稍后重试。',
                 'voice.activated': '语音辅助已开启。光标悬停或使用Tab键切换文本即可朗读。'
+
+                'who.sec1_tag': '01 // FREE//BUILDER',
+                'who.i_subject': '我',
+                'who.sec1_bio_rest': ' 是一名拒绝接受传统企业培训现状的 L&D 顾问兼教练。曾与全球顶尖咨询机构及高速发展的科技巨头携手合作，将深层组织心理学与工业级视听制作融为一体。',
+                'who.sec2_tag': '02 // 核心使命',
+                'who.sec2_mission': '彻底消除“又来强制培训”的叹息。我借助前沿生成式 AI、游戏化机制与交互式叙事重塑组织学习体验。不仅是培训员工，更通过极度写实、贴合本土语境且妙趣横生的学习生态，升级他们的思维操作系统',
+
+                'popover.status': '顾问 // WEI MENG',
+                'popover.desc': '孟玮 — L&D 架构师与教练，专注于技术驱动的沉浸式培训产品开发。',
+                'popover.btn': '访问个人主页',
             },
             'zh-tw': {
                 'nav.home': '首頁',
@@ -1442,6 +1498,16 @@
                 'toast.submit_fail': '提交失敗，請檢查表單接口設定。',
                 'toast.network_err': '網路連線異常，請稍後重試。',
                 'voice.activated': '語音輔助已開啟。游標懸停或使用Tab鍵切換文字即可朗讀。'
+
+                'who.sec1_tag': '01 // FREE//BUILDER',
+                'who.i_subject': '我',
+                'who.sec1_bio_rest': ' 是一名拒絕接受傳統企業培訓現狀的 L&D 顧問兼教練。曾與全球頂尖諮詢顧問及高速成長的科技企業攜手合作，將深層組織心理學與專業級影音製作融為一體。',
+                'who.sec2_tag': '02 // 核心使命',
+                'who.sec2_mission': '徹底終結「又是強制培訓」的無奈嘆息。我借助尖端生成式 AI、遊戲化機制與互動敘事重塑組織學習體驗。不僅是培訓團隊，更透過極度寫實、貼合在地語境且深具幽默感的學習生態，全面升級他們的思維操作系統',
+
+                'popover.status': '顧問 // WEI MENG',
+                'popover.desc': '孟瑋 — L&D 架構師與教練，專注於技術驅動的沉浸式培訓產品開發。',
+                'popover.btn': '造訪個人主頁',
             }
         };
 
