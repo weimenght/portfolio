@@ -255,12 +255,12 @@
             </div>
             <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-black border border-white/10">
                 <video id="player-video" class="w-full h-full object-contain bg-black" controls playsinline preload="metadata">
-                    <source src="/asset/hovercraft.mp4" type="video/mp4">
+                    <source src="https://media.wei-meng.org/hovercraft.mp4" type="video/mp4">
                     Your browser does not support HTML5 video streaming.
                 </video>
             </div>
             <div class="mt-4 flex items-center justify-between text-xs font-mono text-white/40">
-                <span>SRC: /asset/hovercraft.mp4</span>
+                <span>SRC: hovercraft.mp4</span>
                 <span class="text-white/30 hidden sm:inline" data-i18n="video.hint">Press ESC or click outside to dismiss</span>
             </div>
         </div>
@@ -383,44 +383,59 @@
             </div>
 
             <div class="md:col-span-7 space-y-16 reveal">
-                <!-- Self-Intro Bio with Interactive Hover Popover on "I" / "我" -->
+                <!-- Self-Intro Bio with Sophisticated Holographic Pop-up on "I" / "我" -->
                 <div>
                     <h2 class="font-display text-xs tracking-[0.3em] text-magenta mb-4" data-i18n="who.sec1_tag">01 // FREE//BUILDER</h2>
                     <p class="font-sans text-xl md:text-2xl leading-relaxed text-offwhite/90">
-                        <!-- Pop-up Wrapper -->
+                        <!-- Sophisticated Cyberpunk Popover Trigger Wrapper -->
                         <span class="relative inline-block group/popover" id="i-trigger-wrapper">
                             <span 
                                 id="i-text-trigger" 
-                                class="text-neon font-bold underline decoration-neon/40 underline-offset-8 hover:decoration-neon transition-all cursor-pointer interactable select-none"
-                                onmouseenter="audio.glassTick()"
+                                class="text-neon font-extrabold underline decoration-neon/40 underline-offset-8 hover:decoration-neon transition-all cursor-pointer interactable select-none px-1 rounded hover:bg-neon/10"
+                                onmouseenter="audio.玻璃微震 ? audio.glassTick() : audio.glassTick()"
                                 data-i18n="who.i_subject">I</span>
                             
-                            <!-- Hover Card Pop-Up (Floating Tooltip) -->
-                            <span class="absolute bottom-full left-0 mb-3 w-64 sm:w-72 p-4 bg-darkgray/95 border border-neon/60 rounded-2xl shadow-[0_0_35px_rgba(57,255,20,0.25)] backdrop-blur-xl opacity-0 invisible group-hover/popover:opacity-100 group-hover/popover:visible translate-y-2 group-hover/popover:translate-y-0 transition-all duration-200 z-50 text-left pointer-events-auto block font-sans">
-                                <span class="flex items-center justify-between border-b border-white/10 pb-2 mb-2.5">
-                                    <span class="flex items-center gap-1.5">
-                                        <span class="w-2 h-2 rounded-full bg-neon animate-pulse"></span>
-                                        <span class="text-[10px] font-mono text-neon font-bold tracking-wider uppercase" data-i18n="popover.status">ACTIVE CONSULTANT</span>
+                            <!-- Sophisticated Glassmorphism Hover Card (Floating Pop-up) -->
+                            <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-72 sm:w-80 p-5 bg-obsidian/95 border border-neon/50 rounded-3xl shadow-[0_10px_40px_rgba(57,255,20,0.2)] backdrop-blur-2xl opacity-0 invisible group-hover/popover:opacity-100 group-hover/popover:visible translate-y-3 group-hover/popover:translate-y-0 transition-all duration-300 z-50 text-left pointer-events-auto block font-sans">
+                                <!-- Top status bar -->
+                                <span class="flex items-center justify-between border-b border-white/10 pb-3 mb-3.5">
+                                    <span class="flex items-center gap-2">
+                                        <span class="relative flex h-2.5 w-2.5">
+                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon opacity-75"></span>
+                                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-neon"></span>
+                                        </span>
+                                        <span class="text-[10px] font-mono text-neon font-bold tracking-widest uppercase" data-i18n="popover.status">ACTIVE CONSULTANT</span>
                                     </span>
-                                    <span class="text-[10px] font-mono text-white/40">PORTFOLIO</span>
                                 </span>
-                                <span class="text-xs text-slate-300 font-sans block leading-snug mb-3" data-i18n="popover.desc">
-                                    Wei MENG — L&D Architect & Coach creating tech-powered simulations.
+
+                                <!-- Main Popover Body -->
+                                <span class="flex items-start gap-3.5 mb-4">
+                                    <span class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-neon/20 to-cybercyan/20 border border-neon/40 flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
+                                    </span>
+                                    <span class="space-y-1">
+                                        <span class="font-display font-bold text-sm text-offwhite block tracking-tight">Wei MENG</span>
+                                        <span class="text-xs text-slate-300 font-sans block leading-snug" data-i18n="popover.desc">
+                                            L&D Architect & Coach designing gamified corporate training simulations.
+                                        </span>
+                                    </span>
                                 </span>
+
+                                <!-- Action Link Button -->
                                 <a 
                                     href="https://wei-meng.org" 
                                     target="_blank" 
                                     rel="noopener noreferrer" 
                                     onclick="audio.quantumLaunch()" 
-                                    class="inline-flex items-center justify-between w-full px-3 py-2 rounded-xl bg-neon text-obsidian text-xs font-mono font-bold btn-squish interactable hover:shadow-[0_0_15px_rgba(57,255,20,0.4)] transition">
+                                    class="flex items-center justify-between w-full px-4 py-2.5 rounded-2xl bg-gradient-to-r from-neon to-cybercyan text-obsidian text-xs font-mono font-bold btn-squish interactable hover:shadow-[0_0_20px_rgba(57,255,20,0.4)] transition">
                                     <span data-i18n="popover.btn">Visit Personal Site</span>
-                                    <i class="ph-bold ph-arrow-up-right text-sm"></i>
+                                    <i class="ph-bold ph-arrow-up-right text-base font-bold"></i>
                                 </a>
-                                <!-- Decorative pointer arrow -->
-                                <span class="absolute top-full left-4 -mt-1 border-4 border-transparent border-t-darkgray"></span>
+
+                                <!-- Sophisticated glowing triangle caret -->
+                                <span class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-8 border-transparent border-t-obsidian"></span>
                             </span>
                         </span>
-                        <span id="who-bio-remainder" data-i18n="who.sec1_bio_rest"> am an L&D Consultant and Coach who refuses to accept the status quo of corporate training. Working alongside top-tier global consultancies and hyper-growth tech firms, I blend deep organizational psychology with high-end media production.</span>
+                        <span id="who-bio-remainder" data-i18n="who.sec1_bio_rest"> am an L&D Consultant and Executive Coach who refuses to accept the status quo of corporate training. Working alongside top-tier global consultancies and hyper-growth tech firms, I blend deep organizational psychology with high-end media production.</span>
                     </p>
                 </div>
 
@@ -482,7 +497,7 @@
                 <div class="group bg-obsidian rounded-3xl p-7 border border-white/5 hover:border-acid transition-all reveal flex flex-col justify-between" onmouseenter="audio.subWarmth()">
                     <div>
                         <!-- Clickable Image Container -->
-                        <a href="https://projectsunrsie.win/journey" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="h-48 w-full bg-[#1a1a1c] rounded-2xl mb-6 overflow-hidden relative block cursor-pointer interactable play-trigger">
+                        <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="h-48 w-full bg-[#1a1a1c] rounded-2xl mb-6 overflow-hidden relative block cursor-pointer interactable play-trigger">
                             <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80" alt="The Immersive Onboarding Universe" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/20 to-transparent"></div>
                             <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -491,11 +506,11 @@
                                 </div>
                             </div>
                         </a>
-                        <a href="https://projectsunrsie.win/journey" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="font-display text-xl font-bold mb-2.5 text-offwhite group-hover:text-acid transition-colors block" data-i18n="lab.card2.title">The Immersive Onboarding Universe</a>
+                        <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="font-display text-xl font-bold mb-2.5 text-offwhite group-hover:text-acid transition-colors block" data-i18n="lab.card2.title">The Immersive Onboarding Universe</a>
                         <p class="font-sans text-slate-400 text-xs leading-relaxed mb-6" data-i18n="lab.card2.desc">A fully gamified orientation experience. Interactive maps, branching scenarios, and a custom reward system where employees earn "Synapse Points" for mastering culture.</p>
                     </div>
                     <div class="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-white/5">
-                        <a href="https://projectsunrsie.win/journey" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="text-[11px] font-mono text-acid font-bold flex items-center gap-1 hover:underline interactable">
+                        <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="text-[11px] font-mono text-acid font-bold flex items-center gap-1 hover:underline interactable">
                             <i class="ph-bold ph-arrow-up-right text-[10px]"></i> <span data-i18n="lab.card2.cta">Open Webpage</span>
                         </a>
                         <div class="flex gap-1.5">
@@ -545,7 +560,7 @@
                                 </div>
                             </div>
                         </a>
-                        <a href="./coach/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="font-display text-xl font-bold mb-2.5 text-offwhite group-hover:text-cyberindigo transition-colors block" data-i18n="lab.card4.title">LeadCraft AI: Coaching Co-Pilot</a>
+                        <a href="./coach/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="font-display text-xl font-bold mb-2.5 text-offwhite group-hover:text-cyberindigo transition-colors block" data-i18n="lab.card4.title">LeadCraft AI: Executive Coaching Co-Pilot</a>
                         <p class="font-sans text-slate-400 text-xs leading-relaxed mb-6" data-i18n="lab.card4.desc">An interactive coaching co-pilot for people managers. Replaces micromanagement with high-leverage inquiry using behavioral frameworks like SCARF, The Coaching Habit, Situational Leadership (SLII), and Radical Candor.</p>
                     </div>
                     <div class="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-white/5">
@@ -637,7 +652,7 @@
                         <div class="absolute inset-0 bg-neon/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl -z-10"></div>
                         <i class="ph-duotone ph-rocket-launch text-4xl text-neon transform group-hover:scale-110 transition-transform duration-300"></i>
                     </div>
-                    <h3 class="font-display font-bold text-2xl mb-4 text-offwhite group-hover:text-neon transition-colors" data-i18n="services.s2.title">Corporate Coaching</h3>
+                    <h3 class="font-display font-bold text-2xl mb-4 text-offwhite group-hover:text-neon transition-colors" data-i18n="services.s2.title">Executive Coaching</h3>
                     <p class="font-sans text-white/60 text-sm leading-relaxed" data-i18n="services.s2.desc">Targeted interventions using proven behavioral frameworks to transition high-potential talent into high-performing leaders.</p>
                 </div>
 
@@ -682,11 +697,7 @@
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs font-mono text-white/50 uppercase" data-i18n="form.headache">Biggest L&D Headache?</label>
-                        <select name="headache" class="w-full bg-[#111113] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-acid transition-colors interactable appearance-none">
-                            <option value="Low completion rates" data-i18n="form.opt1">Low completion rates</option>
-                            <option value="Boring compliance training" data-i18n="form.opt2">Boring compliance training</option>
-                            <option value="Onboarding is a mess" data-i18n="form.opt3">Onboarding is a mess</option>
-                            <option value="Up-skilling Gen Z" data-i18n="form.opt4">Up-skilling Gen Z</option>
+                        <input type="text" name="headache" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-acid transition-colors interactable">
                         </select>
                     </div>
                 </div>
@@ -699,9 +710,6 @@
             <div class="mt-32 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs sm:text-sm font-sans text-white/40">
                 <p data-i18n="footer.copy">&copy; 2026 FREE//BUILDER L&D Solutions.</p>
                 <div class="flex gap-6">
-                    <a href="#" class="hover:text-acid transition-colors interactable" data-i18n="footer.linkedin">LinkedIn</a>
-                    <a href="#" class="hover:text-acid transition-colors interactable" data-i18n="footer.email_link">Email</a>
-                    <a href="#" class="hover:text-acid transition-colors interactable" data-i18n="footer.newsletter">Newsletter</a>
                 </div>
             </div>
         </div>
@@ -1209,13 +1217,12 @@
 
                 'who.sec1_tag': '01 // FREE//BUILDER',
                 'who.i_subject': 'I',
-                'who.sec1_bio_rest': ' am an L&D Consultant and Coach who refuses to accept the status quo of corporate training. Working alongside top-tier global consultancies and hyper-growth tech firms, I blend deep organizational psychology with high-end media production.',
+                'who.sec1_bio_rest': ' am an L&D Consultant and Executive Coach who refuses to accept the status quo of corporate training. Working alongside top-tier global consultancies and hyper-growth tech firms, I blend deep organizational psychology with high-end media production.',
                 'who.sec2_tag': '02 // THE MISSION',
                 'who.sec2_mission': 'To eradicate the "mandatory training sigh." I leverage Generative AI, gamification, and interactive storytelling to transform how organizations learn. I don’t just train your workforce; I upgrade their entire operating system through highly realistic, culturally grounded, and actually humorous learning ecosystems',
 
                 'popover.status': 'ACTIVE CONSULTANT // WEI MENG',
-                'popover.desc': 'Wei MENG — L&D Architect &
-                    Coach creating tech-powered simulations.',
+                'popover.desc': 'Wei MENG — L&D Architect & Executive Coach designing gamified corporate training simulations.',
                 'popover.btn': 'Visit Personal Site',
 
                 'lab.title': 'The Lab: Playable Proof.',
@@ -1239,7 +1246,7 @@
                 'lab.card3.tag2': 'Active Recall',
                 'lab.card3.cta': 'Open Webpage',
 
-                'lab.card4.title': 'LeadCraft AI: Coaching Co-Pilot',
+                'lab.card4.title': 'LeadCraft AI: Executive Coaching Co-Pilot',
                 'lab.card4.desc': 'An interactive coaching co-pilot for people managers. Replaces micromanagement with high-leverage inquiry using behavioral frameworks like SCARF, The Coaching Habit, Situational Leadership (SLII), and Radical Candor.',
                 'lab.card4.tag1': 'Coaching Leadership',
                 'lab.card4.tag2': 'SCARF & SLII',
@@ -1260,7 +1267,7 @@
                 'services.title': 'HOW WE UPGRADE YOUR TEAM.',
                 'services.s1.title': 'L&D Consulting Retainers',
                 'services.s1.desc': 'End-to-end curriculum design, structural L&D audits, and tech-stack integration for internal training teams at top-tier firms.',
-                'services.s2.title': 'Corporate Coaching',
+                'services.s2.title': 'Executive Coaching',
                 'services.s2.desc': 'Targeted interventions using proven behavioral frameworks to transition high-potential talent into high-performing leaders.',
                 'services.s3.title': 'Custom Media Production',
                 'services.s3.desc': "AI-assisted scriptwriting, video production, and interactive asset creation tailored to your company's unique culture and pain points.",
@@ -1315,12 +1322,12 @@
 
                 'who.sec1_tag': '01 // FREE//BUILDER',
                 'who.i_subject': '我',
-                'who.sec1_bio_rest': ' 是一名拒绝接受传统企业培训现状的 L&D 顾问兼教练。曾与全球顶尖咨询机构及高速发展的科技巨头携手合作，将深层组织心理学与工业级视听制作融为一体。',
+                'who.sec1_bio_rest': ' 是一名拒绝接受传统企业培训现状的 L&D 顾问兼高管教练。曾与全球顶尖咨询机构及高速发展的科技巨头携手合作，将深层组织心理学与工业级视听制作融为一体。',
                 'who.sec2_tag': '02 // 核心使命',
                 'who.sec2_mission': '彻底消除“又来强制培训”的叹息。我借助前沿生成式 AI、游戏化机制与交互式叙事重塑组织学习体验。不仅是培训员工，更通过极度写实、贴合本土语境且妙趣横生的学习生态，升级他们的思维操作系统',
 
                 'popover.status': '在职顾问 // WEI MENG',
-                'popover.desc': 'Wei MENG — L&D 架构师与教练，专注于技术驱动的沉浸式培训产品开发。',
+                'popover.desc': 'Wei MENG — L&D 架构师与高管教练，专注于技术驱动的沉浸式培训产品开发。',
                 'popover.btn': '访问个人主页',
 
                 'lab.title': '实验室：可玩概念验证。',
@@ -1365,13 +1372,13 @@
                 'services.title': '我们如何为团队赋能升级。',
                 'services.s1.title': 'L&D 常年咨询顾问',
                 'services.s1.desc': '涵盖端到端课程体系设计、企业培训架构审计，以及面向顶尖企业的学习技术栈整合。',
-                'services.s2.title': '领导力教练',
+                'services.s2.title': '高管领导力教练',
                 'services.s2.desc': '基于实证行为学框架的高效教练干预，助力高潜人才顺畅蜕变转化为卓越业务领袖。',
                 'services.s3.title': '定制化多媒体开发',
                 'services.s3.desc': '融合AI辅助编剧、高品质视频制作与交互课件开发，深度契合企业独特文化与痛点。',
 
                 'footer.title': '准备好让学习成为你的<br><span class="text-acid">核心竞争优势了吗？</span>',
-                'footer.subtitle': '让我们打造员工舍不得跳过的培训体验。',
+                'footer.subtitle': '让我们打造员工捨不得跳过的培训体验。',
                 'form.name': '姓名',
                 'form.email': '工作邮箱',
                 'form.company': '公司名称',
@@ -1420,11 +1427,11 @@
 
                 'who.sec1_tag': '01 // FREE//BUILDER',
                 'who.i_subject': '我',
-                'who.sec1_bio_rest': ' 是一名拒絕接受傳統企業培訓現狀的 L&D 顧問兼教練。曾與全球頂尖諮詢顧問及高速成長的科技企業攜手合作，將深層組織心理學與專業級影音製作融為一體。',
+                'who.sec1_bio_rest': ' 是一名拒絕接受傳統企業培訓現狀的 L&D 顧問兼高階主管教練。曾與全球頂尖諮詢顧問及高速成長的科技企業攜手合作，將深層組織心理學與專業級影音製作融為一體。',
                 'who.sec2_tag': '02 // 核心使命',
                 'who.sec2_mission': '徹底終結「又是強制培訓」的無奈嘆息。我借助尖端生成式 AI、遊戲化機制與互動敘事重塑組織學習體驗。不僅是培訓團隊，更透過極度寫實、貼合在地語境且深具幽默感的學習生態，全面升級他們的思維操作系統',
 
-                'popover.status': '顧問 // WEI MENG',
+                'popover.status': '在職顧問 // WEI MENG',
                 'popover.desc': 'Wei MENG — L&D 架構師與高階主管教練，專注於技術驅動的沉浸式培訓產品開發。',
                 'popover.btn': '造訪個人主頁',
 
@@ -1449,7 +1456,7 @@
                 'lab.card3.tag2': '主動回憶機制',
                 'lab.card3.cta': '開啟網頁',
 
-                'lab.card4.title': 'LeadCraft AI：教練領航協同',
+                'lab.card4.title': 'LeadCraft AI：高階主管教練領航協同',
                 'lab.card4.desc': '專為團隊經理人打造的 AI 領導力教練協同系統。融合 SCARF 社交神經科學、史坦尼爾《教練習慣》、情境領導力（SLII）與徹底坦率模型，以高槓桿啟發式提問取代微觀指令管理。',
                 'lab.card4.tag1': '教練領導力',
                 'lab.card4.tag2': 'SCARF與情境領導',
