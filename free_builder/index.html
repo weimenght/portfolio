@@ -287,14 +287,12 @@
                 <a href="#services" class="text-offwhite/70 hover:text-acid transition-colors interactable" data-i18n="nav.services">Capabilities</a>
             </div>
 
-            <!-- Controls (Audio, Lang, A11y) -->
+            <!-- Controls -->
             <div class="flex items-center gap-3">
-                <!-- Sound Toggle -->
                 <button onclick="toggleAudio()" id="audio-toggle-btn" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors interactable text-offwhite" title="Toggle Sound FX">
                     <i class="ph ph-speaker-high text-lg" id="audio-icon"></i>
                 </button>
 
-                <!-- Language Selector -->
                 <div class="relative group">
                     <button class="flex items-center gap-1.5 px-3 py-2 rounded-full bg-white/5 text-xs font-mono hover:text-acid transition-colors interactable">
                         <i class="ph ph-globe text-base"></i>
@@ -307,7 +305,6 @@
                     </div>
                 </div>
 
-                <!-- Accessibility Drawer -->
                 <button onclick="toggleA11yPanel()" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors interactable" aria-label="Accessibility Options">
                     <i class="ph ph-wheelchair text-lg"></i>
                 </button>
@@ -392,7 +389,7 @@
                             <span 
                                 id="i-text-trigger" 
                                 class="text-neon font-extrabold underline decoration-neon/40 underline-offset-8 hover:decoration-neon transition-all cursor-pointer interactable select-none px-1 rounded hover:bg-neon/10"
-                                onmouseenter="audio.玻璃微震 ? audio.glassTick() : audio.glassTick()"
+                                onmouseenter="audio.glassTick()"
                                 data-i18n="who.i_subject">I</span>
 
                             <!-- Sophisticated Glassmorphism Hover Card (Floating Pop-up) -->
@@ -416,7 +413,7 @@
                                     <span class="space-y-1">
                                         <span class="font-display font-bold text-sm text-offwhite block tracking-tight">Wei MENG</span>
                                         <span class="text-xs text-slate-300 font-sans block leading-snug" data-i18n="popover.desc">
-                                            L&D Architect & Corporate Coach designing gamified training simulations.
+                                            L&D Architect & Corporate Coach designing gamified corporate training simulations.
                                         </span>
                                     </span>
                                 </span>
@@ -467,7 +464,6 @@
                 <!-- Card 1: Corporate Survival Drama (Video Lightbox) -->
                 <div class="group bg-obsidian rounded-3xl p-7 border border-white/5 hover:border-neon transition-all reveal flex flex-col justify-between" onmouseenter="audio.subWarmth()">
                     <div>
-                        <!-- Clickable Image Container -->
                         <div onclick="openVideoModal()" class="h-48 w-full bg-[#1a1a1c] rounded-2xl mb-6 overflow-hidden relative cursor-pointer interactable play-trigger">
                             <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=800&q=80" alt="The Corporate Survival Drama" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/20 to-transparent"></div>
@@ -491,10 +487,9 @@
                     </div>
                 </div>
 
-                <!-- Card 2: Immersive Onboarding Universe (Direct Webpage Link) -->
+                <!-- Card 2: Immersive Onboarding Universe -->
                 <div class="group bg-obsidian rounded-3xl p-7 border border-white/5 hover:border-acid transition-all reveal flex flex-col justify-between" onmouseenter="audio.subWarmth()">
                     <div>
-                        <!-- Clickable Image Container -->
                         <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="h-48 w-full bg-[#1a1a1c] rounded-2xl mb-6 overflow-hidden relative block cursor-pointer interactable play-trigger">
                             <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80" alt="The Immersive Onboarding Universe" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/20 to-transparent"></div>
@@ -518,10 +513,9 @@
                     </div>
                 </div>
 
-                <!-- Card 3: Coach Ziggy Sales Psychology Academy (Direct Webpage Link) -->
+                <!-- Card 3: Coach Ziggy Sales Psychology Academy -->
                 <div class="group bg-obsidian rounded-3xl p-7 border border-white/5 hover:border-magenta transition-all reveal flex flex-col justify-between" onmouseenter="audio.subWarmth()">
                     <div>
-                        <!-- Clickable Image Container -->
                         <a href="./sale/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="h-48 w-full bg-[#1a1a1c] rounded-2xl mb-6 overflow-hidden relative block cursor-pointer interactable play-trigger">
                             <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80" alt="Coach Ziggy Sales Psychology Academy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/20 to-transparent"></div>
@@ -545,10 +539,9 @@
                     </div>
                 </div>
 
-                <!-- Card 4: LeadCraft AI Coaching Co-Pilot (Direct Webpage Link) -->
+                <!-- Card 4: LeadCraft AI Coaching Co-Pilot -->
                 <div class="group bg-obsidian rounded-3xl p-7 border border-white/5 hover:border-cyberindigo transition-all reveal flex flex-col justify-between" onmouseenter="audio.subWarmth()">
                     <div>
-                        <!-- Clickable Image Container -->
                         <a href="./coach/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="h-48 w-full bg-[#1a1a1c] rounded-2xl mb-6 overflow-hidden relative block cursor-pointer interactable play-trigger">
                             <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80" alt="LeadCraft AI Leadership Coaching Co-Pilot" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/20 to-transparent"></div>
@@ -572,10 +565,9 @@
                     </div>
                 </div>
 
-                <!-- Card 5: TERRA CQ The Intercultural Atlas (Direct Webpage Link) -->
+                <!-- Card 5: TERRA CQ The Intercultural Atlas -->
                 <div class="group bg-obsidian rounded-3xl p-7 border border-white/5 hover:border-cyberamber transition-all reveal flex flex-col justify-between" onmouseenter="audio.subWarmth()">
                     <div>
-                        <!-- Clickable Image Container -->
                         <a href="./cq/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="h-48 w-full bg-[#1a1a1c] rounded-2xl mb-6 overflow-hidden relative block cursor-pointer interactable play-trigger">
                             <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="Intercultural Atlas" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/20 to-transparent"></div>
@@ -598,12 +590,11 @@
                     </div>
                 </div>
 
-                <!-- Card 6: SYNAPSE Design Thinking Odyssey (Direct Webpage Link) -->
+                <!-- Card 6: SYNAPSE Design Thinking Odyssey -->
                 <div class="group bg-obsidian rounded-3xl p-7 border border-white/5 hover:border-cybercyan transition-all reveal flex flex-col justify-between" onmouseenter="audio.subWarmth()">
                     <div>
-                        <!-- Clickable Image Container -->
                         <a href="./design/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="h-48 w-full bg-[#1a1a1c] rounded-2xl mb-6 overflow-hidden relative block cursor-pointer interactable play-trigger">
-                            <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80" alt="SYNAPSE Design Thinking Odyssey" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80" alt="Design Thinking Odyssey" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/20 to-transparent"></div>
                             <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 <div class="w-14 h-14 rounded-full bg-cybercyan text-obsidian flex items-center justify-center shadow-[0_0_20px_rgba(0,240,255,0.5)] transform group-hover:scale-110 transition-transform">
@@ -649,7 +640,7 @@
                         <div class="absolute inset-0 bg-neon/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl -z-10"></div>
                         <i class="ph-duotone ph-rocket-launch text-4xl text-neon transform group-hover:scale-110 transition-transform duration-300"></i>
                     </div>
-                    <h3 class="font-display font-bold text-2xl mb-4 text-offwhite group-hover:text-neon transition-colors" data-i18n="services.s2.title">Corporate Coaching</h3>
+                    <h3 class="font-display font-bold text-2xl mb-4 text-offwhite group-hover:text-neon transition-colors" data-i18n="services.s2.title">Leadership Coaching</h3>
                     <p class="font-sans text-white/60 text-sm leading-relaxed" data-i18n="services.s2.desc">Targeted interventions using proven behavioral frameworks to transition high-potential talent into high-performing leaders.</p>
                 </div>
 
@@ -695,7 +686,6 @@
                     <div class="space-y-2">
                         <label class="text-xs font-mono text-white/50 uppercase" data-i18n="form.headache">Biggest L&D Headache?</label>
                         <input type="text" name="headache" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-acid transition-colors interactable">
-                        </select>
                     </div>
                 </div>
 
@@ -714,7 +704,6 @@
 
     <!-- Sophisticated Procedural Audio Engine & UI Controller -->
     <script>
-        // --- 1. Procedural Audio Synthesizer (Zero Assets, Ultra-Responsive) ---
         class SophisticatedAudioEngine {
             constructor() {
                 this.ctx = null;
@@ -946,7 +935,7 @@
             }
         }
 
-        // --- 2. Custom Cursor Tracking ---
+        // Custom Cursor Tracking
         const cursorDot = document.getElementById('cursor-dot');
         const cursorOutline = document.getElementById('cursor-outline');
         const interactables = document.querySelectorAll('.interactable, a, button, input, select');
@@ -976,7 +965,7 @@
             el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-play'));
         });
 
-        // --- 3. Scroll Reveal Engine ---
+        // Scroll Reveal Engine
         const revealElements = document.querySelectorAll('.reveal');
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -985,7 +974,7 @@
         }, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
         revealElements.forEach(el => revealObserver.observe(el));
 
-        // --- 4. Interactive Image Scrubbing ---
+        // Interactive Image Scrubbing
         function handleImageScrub(e) {
             const container = e.currentTarget;
             const mask = document.getElementById('img-fun-mask');
@@ -998,7 +987,6 @@
             document.getElementById('img-fun-mask').style.clipPath = `circle(0px at 50% 50%)`;
         });
 
-        // --- 5. Easter Eggs & Toast Notifications ---
         let logoClicks = 0;
         let clickTimer;
         let currentLang = 'en';
@@ -1045,7 +1033,6 @@
             if (e.target.id === 'matrix-modal') closeMatrix();
         }
 
-        // --- 6. Video Modal Lightbox Controls ---
         function openVideoModal() {
             audio.cinemaWhoosh();
             const modal = document.getElementById('modal-video');
@@ -1082,7 +1069,6 @@
             }
         });
 
-        // --- 7. Formspree AJAX Submission Handler ---
         async function handleFormSubmit(event) {
             event.preventDefault();
             audio.tactileClick();
@@ -1121,7 +1107,6 @@
             }
         }
 
-        // --- 8. Accessibility Controls ---
         function toggleA11yPanel() {
             audio.tactileClick();
             const panel = document.getElementById('a11y-panel');
@@ -1185,7 +1170,6 @@
             });
         });
 
-        // --- 9. Comprehensive Internationalization (i18n) Dictionary ---
         const dictionary = {
             'en': {
                 'nav.home': 'Home',
@@ -1323,12 +1307,12 @@
                 'who.sec2_tag': '02 // 核心使命',
                 'who.sec2_mission': '彻底消除“又来强制培训”的叹息。我借助生成式 AI、游戏化机制与交互式叙事重塑组织学习体验。不仅是培训员工，更通过极度写实、贴合本土语境且妙趣横生的学习生态，升级他们的思维系统',
 
-                'popover.status': '顾问',
+                'popover.status': '在职顾问',
                 'popover.desc': '孟玮 — L&D 架构师与企业教练，专注于技术驱动的沉浸式培训产品开发。',
                 'popover.btn': '访问个人主页',
 
                 'lab.title': '实验室：验证可玩概念。',
-                'lab.subtitle': '点击任意预览图片即可直接进入对应的互动网页。',
+                'lab.subtitle': '点击任意预览图片即可直接进入对应的实战互动网页。',
 
                 'lab.card1.title': '职场生存大戏',
                 'lab.card1.desc': '专为解决真实管理挑战打造的多层级视频系列。采用超写实职场对话编剧（彻底告别尴尬说教），并依托先进AI视听工具制作。',
@@ -1336,7 +1320,7 @@
                 'lab.card1.tag2': '剧本编剧',
                 'lab.card1.cta': '观看演示',
 
-                'lab.card2.title': '沉浸式入职宇宙',
+                'lab.card2.title': '沉浸式入职元宇宙',
                 'lab.card2.desc': '全流程游戏化新人培训体验。包含互动地图、分支剧情决策以及专属奖励系统，员工通过掌握企业文化赚取积分。',
                 'lab.card2.tag1': '游戏化机制',
                 'lab.card2.tag2': 'UI/UX 设计',
@@ -1426,9 +1410,9 @@
                 'who.i_subject': '我',
                 'who.sec1_bio_rest': ' 是一名拒絕接受傳統企業培訓現狀的 L&D 顧問兼企業教練。曾與全球頂尖諮詢顧問及高速成長的科技企業攜手合作，將深層組織心理學與專業級影音製作融為一體。',
                 'who.sec2_tag': '02 // 核心使命',
-                'who.sec2_mission': '徹底終結「又是強制培訓」的無奈嘆息。我借助生成式 AI、遊戲化機制與互動敘事重塑組織學習體驗。不僅是培訓團隊，更透過極度寫實、貼合在地語境且深具幽默感的學習生態，全面升級他們的思維系統',
+                'who.sec2_mission': '徹底終結「又是強制培訓」的無奈嘆息。我借助生成式 AI、遊戲化機制與互動敘事重塑組織學習體驗。不僅是培訓團隊，更透過極度寫實、貼合在地語境且深具幽默感的學習生態，全面升級他們的思維操作系統',
 
-                'popover.status': '顧問,
+                'popover.status': '在職顧問',
                 'popover.desc': '孟瑋 — L&D 架構師與高階主管教練，專注於技術驅動的沉浸式培訓產品開發。',
                 'popover.btn': '造訪個人主頁',
 
@@ -1496,7 +1480,7 @@
                 'footer.email_link': '電子郵件',
                 'footer.newsletter': '電子報',
 
-                'toast.synapse': '你發現了隱藏的積分！（+50 好奇心點數）',
+                'toast.synapse': '你發現了隱藏的突觸積分！（+50 好奇心點數）',
                 'toast.submit_success': '已收到傳輸請求，升級序列已啟動！',
                 'toast.submit_fail': '提交失敗，請檢查表單接口設定。',
                 'toast.network_err': '網路連線異常，請稍後重試。',
