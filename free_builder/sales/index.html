@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coach Ziggy | Sales Psychology Academy</title>
+  
+  <!-- Coach Ziggy Vector Favicon -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='20,40 10,12 42,26' fill='%23ea580c'/%3E%3Cpolygon points='24,35 17,18 38,28' fill='%23fbcfe8'/%3E%3Cpolygon points='80,40 90,12 58,26' fill='%23ea580c'/%3E%3Cpolygon points='76,35 83,18 62,28' fill='%23fbcfe8'/%3E%3Ccircle cx='50' cy='54' r='36' fill='%23f97316'/%3E%3Cellipse cx='32' cy='62' rx='14' ry='12' fill='%23fffaf5'/%3E%3Cellipse cx='68' cy='62' rx='14' ry='12' fill='%23fffaf5'/%3E%3Ccircle cx='36' cy='48' r='5' fill='%231e293b'/%3E%3Ccircle cx='38' cy='46' r='1.8' fill='%23ffffff'/%3E%3Ccircle cx='64' cy='48' r='5' fill='%231e293b'/%3E%3Ccircle cx='66' cy='46' r='1.8' fill='%23ffffff'/%3E%3Cpolygon points='46,56 54,56 50,62' fill='%230f172a'/%3E%3Ccircle cx='50' cy='32' r='4' fill='%23a855f7'/%3E%3C/svg%3E">
+
+  <!-- Google Fonts: Fredoka & Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              300: '#c4b5fd',
+              400: '#a78bfa',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              800: '#5b21b6',
+              900: '#4c1d95',
+            },
+            ziggy: {
+              orange: '#f97316',
+              deep: '#ea580c',
+              light: '#fdba74',
+              cream: '#fff7ed',
+              belly: '#fffaf5',
+            }
+          },
+          fontFamily: {
+            sans: ['Nunito', 'sans-serif'],
+            display: ['Fredoka', 'Nunito', 'sans-serif'],
+          },
+          keyframes: {
+            mascotFloat: {
+              '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+              '50%': { transform: 'translateY(-6px) rotate(1.5deg)' },
+            },
+            earTwitch: {
+              '0%, 85%, 100%': { transform: 'rotate(0deg)' },
+              '90%': { transform: 'rotate(-4deg)' },
+              '95%': { transform: 'rotate(3deg)' }
+            },
+            glowPulse: {
+              '0%, 100%': { borderColor: 'rgba(139, 92, 246, 0.4)', boxShadow: '0 0 15px rgba(139, 92, 246, 0.15)' },
+              '50%': { borderColor: 'rgba(139, 92, 246, 0.9)', boxShadow: '0 0 25px rgba(139, 92, 246, 0.4)' },
+            },
+            clozeShimmer: {
+              '0%': { backgroundPosition: '-200% 0' },
+              '100%': { backgroundPosition: '200% 0' }
+            }
+          },
+          animation: {
+            'mascot-float': 'mascotFloat 3.5s ease-in-out infinite',
+            'ear-twitch': 'earTwitch 4s ease-in-out infinite',
+            'glow-pulse': 'glowPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'cloze-shimmer': 'clozeShimmer 2.5s infinite linear'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* 3D Flashcard Structure */
+    .perspective-1400 {
+      perspective: 1400px;
+    }
+    .transform-style-3d {
+      transform-style: preserve-3d;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+
+    /* Tactile Neo-Pop 3D Push Buttons */
+    .tactile-btn {
+      transition: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      user-select: none;
+    }
+    .tactile-btn:active:not(:disabled) {
+      transform: translateY(3px) !important;
+      box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* Speech Bubble Pointer Triangle */
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 26px;
+      border-width: 8px 10px 8px 0;
+      border-style: solid;
+      border-color: transparent white transparent transparent;
+      display: block;
+      width: 0;
+    }
+    @media (max-width: 640px) {
+      .speech-bubble::after {
+        left: 28px;
+        top: -10px;
+        border-width: 0 8px 10px 8px;
+        border-color: transparent transparent white transparent;
+      }
+    }
+
+    /* Active Recall Cloze Blank Token */
+    .cloze-blank {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.15rem 0.55rem;
+      border-radius: 0.5rem;
+      margin: 0 0.15rem;
+      font-weight: 800;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      background: linear-gradient(90deg, #ede9fe 0%, #fae8ff 50%, #ede9fe 100%);
+      background-size: 200% 100%;
+      border: 1.5px dashed #a78bfa;
+      color: #6d28d9;
+      box-shadow: 0 2px 4px rgba(109, 40, 217, 0.1);
+    }
+    .cloze-blank:hover {
+      transform: translateY(-1px) scale(1.03);
+      border-color: #7c3aed;
+      background-color: #ddd6fe;
+    }
+    .cloze-blank.revealed {
+      background: #ecfdf5 !important;
+      border: 1.5px solid #10b981 !important;
+      color: #065f46 !important;
+      transform: scale(1.02);
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+    }
+
+    /* Guided Tour Progress Line */
+    .tour-meter {
+      transition: width linear;
+    }
+
+    /* Custom Sleek Scrollbar */
+    .card-back-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .card-back-scroll::-webkit-scrollbar-thumb {
+      background: rgba(167, 139, 250, 0.4);
+      border-radius: 9999px;
+    }
+    .card-back-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(139, 92, 246, 0.7);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-amber-50/70 via-orange-50/30 to-purple-50/40 text-slate-800 min-h-full font-sans antialiased flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <!-- Top Navigation Header -->
+  <header class="w-full max-w-4xl mx-auto px-4 pt-4 pb-2 flex items-center justify-between gap-3">
+    <!-- Brand & Ziggy Logo -->
+    <div class="flex items-center gap-2.5 cursor-pointer group" onclick="ziggy.poke()" title="Coach Ziggy - Sales Psychology Academy">
+      <!-- Mascot Face Logo SVG -->
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-ziggy-deep via-ziggy-orange to-amber-400 p-1 shadow-md shadow-orange-500/20 border-2 border-white flex items-center justify-center transition-transform group-hover:scale-105">
+        <svg viewBox="0 0 100 100" class="w-full h-full">
+          <!-- Ears -->
+          <polygon points="20,40 10,12 42,26" fill="#c2410c" />
+          <polygon points="24,35 17,18 38,28" fill="#fbcfe8" />
+          <polygon points="80,40 90,12 58,26" fill="#c2410c" />
+          <polygon points="76,35 83,18 62,28" fill="#fbcfe8" />
+          <!-- Head -->
+          <circle cx="50" cy="54" r="36" fill="#ea580c" />
+          <ellipse cx="32" cy="62" rx="14" ry="12" fill="#fffaf5" />
+          <ellipse cx="68" cy="62" rx="14" ry="12" fill="#fffaf5" />
+          <!-- Eyes -->
+          <circle cx="36" cy="48" r="4.5" fill="#0f172a" />
+          <circle cx="38" cy="46" r="1.5" fill="#ffffff" />
+          <circle cx="64" cy="48" r="4.5" fill="#0f172a" />
+          <circle cx="66" cy="46" r="1.5" fill="#ffffff" />
+          <!-- Nose & Smile -->
+          <polygon points="46,56 54,56 50,62" fill="#0f172a" />
+          <path d="M 44 65 Q 50 70 56 65" stroke="#0f172a" stroke-width="2.5" fill="none" stroke-linecap="round" />
+          <!-- Spark Gem -->
+          <circle cx="50" cy="32" r="4" fill="#a855f7" />
+        </svg>
+      </div>
+
+      <div>
+        <div class="flex items-center gap-1.5">
+          <h1 class="text-lg font-display font-extrabold tracking-tight text-slate-900 leading-none">Coach Ziggy</h1>
+          <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 border border-orange-200">
+            Sales Learning
+          </span>
+        </div>
+        <p class="text-[11px] font-extrabold text-brand-600 tracking-wide uppercase">Sales Psychology Academy</p>
+      </div>
+    </div>
+
+    <!-- Center Progress Track -->
+    <div class="flex-1 max-w-xs sm:max-w-sm mx-2">
+      <div class="flex items-center justify-between text-[11px] font-black text-slate-500 mb-1">
+        <span class="tracking-wider uppercase">Capabilities</span>
+        <span id="deck-progress-text" class="text-brand-600 font-extrabold">1 / 12</span>
+      </div>
+      <div class="w-full h-3 bg-slate-200/90 rounded-full overflow-hidden p-0.5 shadow-inner">
+        <div id="deck-progress-bar" class="h-full bg-gradient-to-r from-orange-400 via-brand-500 to-emerald-400 rounded-full transition-all duration-300" style="width: 8%;"></div>
+      </div>
+    </div>
+
+    <!-- Stats & Sound Controls -->
+    <div class="flex items-center gap-2">
+      <!-- Streak Pill -->
+      <div class="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-2xl bg-amber-100/90 border border-amber-300 text-amber-900 font-black text-xs shadow-sm" title="Active Learning Streak">
+        <span class="text-sm">🔥</span>
+        <span id="streak-count">3</span>
+      </div>
+
+      <!-- XP & Level Badge -->
+      <div class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-2xl bg-brand-100/90 border border-brand-300 text-brand-900 font-black text-xs shadow-sm cursor-pointer hover:bg-brand-200 transition-colors" onclick="app.showRankModal()" title="View Sales Psychology Rank">
+        <span class="text-xs">⚡</span>
+        <span id="xp-counter">0 XP</span>
+      </div>
+
+      <!-- Audio Mute Toggle -->
+      <button onclick="sound.toggle()" id="audio-toggle-btn" class="p-2 rounded-2xl bg-white border-2 border-slate-200 hover:border-slate-300 text-slate-700 transition-colors shadow-sm" title="Toggle Sound FX">
+        <svg id="sound-svg-on" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
+        <svg id="sound-svg-off" class="w-4 h-4 hidden text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" /></svg>
+      </button>
+
+      <!-- Reset & Options Button -->
+      <button onclick="app.showResetModal()" class="p-2 rounded-2xl bg-white border-2 border-slate-200 hover:border-slate-300 text-slate-500 hover:text-rose-600 transition-colors shadow-sm" title="Options / Reset Progress">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Gym Container -->
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-2 flex flex-col justify-between">
+    
+    <!-- Coach Ziggy Interactive Stage -->
+    <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 my-1">
+      <!-- Animated SVG Mascot: Coach Ziggy -->
+      <div onclick="ziggy.poke()" class="relative cursor-pointer group flex-shrink-0 animate-mascot-float" title="Tap Coach Ziggy for on-the-spot sales coaching!">
+        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-b from-orange-400 via-ziggy-orange to-orange-600 p-2 shadow-lg shadow-orange-500/25 border-4 border-white flex items-center justify-center relative overflow-hidden transition-transform group-hover:scale-105 group-active:scale-95">
+          
+          <svg viewBox="0 0 100 100" class="w-full h-full">
+            <!-- Ears with Twitch Animation -->
+            <g class="animate-ear-twitch origin-bottom">
+              <polygon points="20,40 10,12 42,26" fill="#c2410c" />
+              <polygon points="24,35 17,18 38,28" fill="#fbcfe8" />
+              <polygon points="80,40 90,12 58,26" fill="#c2410c" />
+              <polygon points="76,35 83,18 62,28" fill="#fbcfe8" />
+            </g>
+
+            <!-- Fox Head Base -->
+            <circle cx="50" cy="54" r="36" fill="#f97316" />
+            <!-- Cheeks -->
+            <ellipse cx="32" cy="62" rx="14" ry="12" fill="#fffaf5" />
+            <ellipse cx="68" cy="62" rx="14" ry="12" fill="#fffaf5" />
+
+            <!-- Dynamic Eyes -->
+            <g id="ziggy-eyes">
+              <circle cx="36" cy="48" r="4.5" fill="#1e293b" />
+              <circle cx="38" cy="46" r="1.5" fill="#ffffff" />
+              <circle cx="64" cy="48" r="4.5" fill="#1e293b" />
+              <circle cx="66" cy="46" r="1.5" fill="#ffffff" />
+            </g>
+
+            <!-- Snout & Nose -->
+            <polygon points="46,56 54,56 50,62" fill="#0f172a" />
+            
+            <!-- Dynamic Smile -->
+            <path id="ziggy-mouth" d="M 44 65 Q 50 71 56 65" stroke="#0f172a" stroke-width="2.5" fill="none" stroke-linecap="round" />
+            
+            <!-- Glowing Brain Gem -->
+            <circle cx="50" cy="32" r="5" fill="#8b5cf6" class="animate-pulse" />
+            <polygon points="50,28 52,32 50,36 48,32" fill="#ffffff" />
+          </svg>
+
+          <!-- Mood Floating Badge -->
+          <div id="ziggy-mood-badge" class="absolute bottom-1 right-1 text-xs bg-white rounded-full px-1 shadow border border-orange-200">
+            🦊
+          </div>
+        </div>
+      </div>
+
+      <!-- Ziggy Interactive Speech Bubble -->
+      <div onclick="ziggy.poke()" class="speech-bubble relative flex-1 bg-white border-2 border-slate-200 rounded-3xl p-3.5 sm:p-4 shadow-sm cursor-pointer hover:border-brand-400 transition-colors">
+        <div class="flex items-center justify-between gap-2 mb-1">
+          <div class="flex items-center gap-1.5">
+            <span class="text-xs font-display font-black uppercase text-brand-700 tracking-wider">Coach Ziggy</span>
+            <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200">
+              Sales Neuro-Trainer
+            </span>
+          </div>
+          <span class="text-[11px] font-extrabold text-slate-400 flex items-center gap-1">
+            <span>Tap for advice</span> 💡
+          </span>
+        </div>
+        <p id="ziggy-speech" class="text-xs sm:text-sm font-bold text-slate-700 leading-relaxed">
+          "Ready to rewire your sales reflexes? Flip to the back to unlock the 3-step guided breakdown and cloze memorization mode!"
+        </p>
+      </div>
+    </div>
+
+    <!-- 3D Flashcard Stage -->
+    <div class="w-full perspective-1400 my-auto py-2">
+      <div id="flashcard" class="relative w-full h-[525px] sm:h-[535px] rounded-3xl transform-style-3d transition-transform duration-500 shadow-xl group">
+        
+        <!-- FRONT OF CARD -->
+        <div id="card-front" onclick="flashcards.flip()" class="absolute inset-0 w-full h-full backface-hidden bg-white rounded-3xl p-6 sm:p-8 flex flex-col justify-between border-2 border-slate-200 shadow-[0_8px_0_0_#e2e8f0] group-hover:border-brand-400 transition-colors cursor-pointer">
+          <div>
+            <!-- Top Badges -->
+            <div class="flex items-center justify-between">
+              <span id="card-stage" class="text-[11px] font-display font-black uppercase px-3 py-1 rounded-full bg-orange-100 text-orange-800 tracking-wider border border-orange-200">
+                Negotiation & Pricing
+              </span>
+              <span id="card-origin" class="text-xs font-extrabold text-slate-400">
+                Joel Huber & Dan Ariely
+              </span>
+            </div>
+
+            <!-- Title & Brain Hook -->
+            <div class="mt-8 text-center">
+              <span class="text-5xl sm:text-6xl block mb-3" id="card-icon">🪤</span>
+              <h2 id="card-title" class="text-2xl sm:text-4xl font-display font-black text-slate-900 tracking-tight">
+                The Decoy Effect
+              </h2>
+              <span id="card-subtitle" class="text-xs sm:text-sm font-black text-brand-600 uppercase tracking-widest block mt-2">
+                Asymmetric Dominance
+              </span>
+            </div>
+
+            <!-- Core Concept Synopsis -->
+            <div class="mt-6 p-5 rounded-2xl bg-slate-50 border border-slate-100 text-center max-w-lg mx-auto">
+              <p id="card-concept" class="text-sm sm:text-base text-slate-600 font-semibold leading-relaxed">
+                Introducing an asymmetrical, inferior third option makes your target high-tier offering look like an irresistible bargain without altering the actual product.
+              </p>
+            </div>
+          </div>
+
+          <!-- Bottom Prompt -->
+          <div class="flex items-center justify-between text-xs font-black text-slate-400 border-t border-slate-100 pt-3">
+            <span class="flex items-center gap-1.5 text-brand-600">
+              <span class="animate-pulse">👆</span> Tap anywhere to flip for Guided Science & Script Practice
+            </span>
+            <kbd class="hidden sm:inline-block px-2 py-0.5 text-[10px] font-mono bg-slate-100 rounded border border-slate-200 font-bold">SPACE</kbd>
+          </div>
+        </div>
+
+        <!-- BACK OF CARD (Redesigned, High-Legibility, Guided Learning) -->
+        <div id="card-back" class="absolute inset-0 w-full h-full backface-hidden rotate-y-180 bg-white rounded-3xl p-4 sm:p-6 flex flex-col justify-between border-2 border-brand-400 shadow-[0_8px_0_0_#c4b5fd]">
+          
+          <!-- Top Controller Bar: Guided Steps & Memorize Toggle -->
+          <div class="flex-shrink-0 border-b border-slate-100 pb-3 mb-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              
+              <!-- Step Segmented Controller Tabs -->
+              <div class="flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200/80 text-[11px] font-black">
+                <button onclick="flashcards.setStep(1)" id="step-btn-1" class="px-2.5 sm:px-3 py-1 rounded-xl transition-all font-display text-slate-600 hover:text-slate-900">
+                  ① Science
+                </button>
+                <button onclick="flashcards.setStep(2)" id="step-btn-2" class="px-2.5 sm:px-3 py-1 rounded-xl transition-all font-display text-slate-600 hover:text-slate-900">
+                  ② Script
+                </button>
+                <button onclick="flashcards.setStep(3)" id="step-btn-3" class="px-2.5 sm:px-3 py-1 rounded-xl transition-all font-display text-slate-600 hover:text-slate-900">
+                  ③ Trap
+                </button>
+                <button onclick="flashcards.setStep(0)" id="step-btn-0" class="px-2.5 sm:px-3 py-1 rounded-xl transition-all font-display bg-white text-brand-700 shadow-sm">
+                  👁 All
+                </button>
+              </div>
+
+              <!-- Action Controls: Guided Tour & Memorize Toggle -->
+              <div class="flex items-center gap-1.5 sm:gap-2">
+                <!-- Guided Walkthrough / Tour Button -->
+                <button onclick="flashcards.toggleGuidedTour()" id="tour-toggle-btn" class="tactile-btn flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-amber-100 text-amber-900 border border-amber-300 font-black text-[11px] hover:bg-amber-200 transition-colors" title="Play an animated guided sequence through each section">
+                  <span id="tour-icon">▶</span>
+                  <span id="tour-label">Guided Tour</span>
+                </button>
+
+                <!-- Active Recall Cloze Memorize Mode -->
+                <button onclick="flashcards.toggleMemorizeMode()" id="cloze-toggle-btn" class="tactile-btn flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-brand-50 text-brand-700 border border-brand-200 font-black text-[11px] hover:bg-brand-100 transition-colors" title="Toggle active recall practice by blanking out key words">
+                  <span>🧠</span>
+                  <span id="cloze-label">Memorize Mode</span>
+                </button>
+
+                <!-- Flip Back Quick Button -->
+                <button onclick="flashcards.flip()" class="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 transition-colors" title="Flip to front">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+              </div>
+
+            </div>
+
+            <!-- Guided Tour Timed Progress Bar (Visible during Auto Tour) -->
+            <div id="tour-progress-track" class="w-full h-1 bg-slate-100 rounded-full overflow-hidden mt-2 hidden">
+              <div id="tour-progress-meter" class="h-full bg-amber-500 rounded-full w-0 tour-meter"></div>
+            </div>
+          </div>
+
+          <!-- Scrollable Content Canvas with 3 Distinct High-Contrast Modules -->
+          <div id="card-modules-container" class="flex-1 overflow-y-auto space-y-3 pr-1 card-back-scroll">
+            
+            <!-- MODULE 1: THE BRAIN RULE -->
+            <div id="mod-science" onclick="flashcards.setStep(1)" class="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-br from-indigo-50/90 to-purple-50/90 border-2 border-indigo-200/80 transition-all duration-300 relative cursor-pointer hover:border-indigo-400">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs font-black">1</span>
+                  <span class="text-xs font-display font-black uppercase text-indigo-900 tracking-wider">The Brain Rule (Neuro-Mechanism)</span>
+                </div>
+                <span id="card-citation-badge" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-white text-indigo-700 border border-indigo-200">
+                  Behavioral Economics
+                </span>
+              </div>
+
+              <!-- High-Contrast Takeaway Headline -->
+              <p id="card-takeaway" class="text-xs sm:text-sm font-extrabold text-indigo-950 leading-snug mb-1">
+                The human brain cannot calculate absolute value in isolation. It relies on contrast shortcuts to preserve metabolic glucose.
+              </p>
+
+              <!-- Deeper Science Detail -->
+              <p id="card-science-detail" class="text-[11px] sm:text-xs text-indigo-800/90 font-semibold leading-relaxed">
+                When forced to evaluate options, the prefrontal cortex searches for an obvious anchor. An asymmetrically dominated decoy removes cognitive friction and makes the high tier feel effortless.
+              </p>
+            </div>
+
+            <!-- MODULE 2: VERBATIM FIELD SCRIPT (Interactive Lab with Cloze) -->
+            <div id="mod-script" onclick="flashcards.setStep(2)" class="p-3.5 sm:p-4 rounded-2xl bg-slate-900 text-white border-2 border-slate-700 transition-all duration-300 relative shadow-inner cursor-pointer hover:border-brand-400">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-lg bg-emerald-500 text-slate-950 flex items-center justify-center text-xs font-black">2</span>
+                  <span class="text-xs font-display font-black uppercase text-emerald-400 tracking-wider">Verbatim Field Script</span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <!-- Delivery Cadence Tag -->
+                  <span id="card-cadence-badge" class="hidden sm:inline-flex text-[10px] font-bold text-slate-300 bg-slate-800 px-2 py-0.5 rounded-lg border border-slate-700">
+                    🎙️ Calm downward inflection
+                  </span>
+
+                  <!-- Instant Copy Script Button -->
+                  <button onclick="event.stopPropagation(); flashcards.copyScript();" class="text-[10px] font-black text-emerald-400 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/30 px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1" title="Copy script to clipboard">
+                    <span id="copy-label">Copy Script</span> 📋
+                  </button>
+                </div>
+              </div>
+
+              <!-- Active Script Area (Supports Normal Mode & Cloze Active Recall) -->
+              <div class="p-3 rounded-xl bg-slate-800/90 border border-slate-700/80">
+                <p id="card-script-display" class="text-xs sm:text-sm font-bold text-slate-100 italic leading-relaxed tracking-wide">
+                  <!-- Populated dynamically with cloze tokens or highlighted script -->
+                </p>
+              </div>
+
+              <!-- Cloze Instruction Hint (Visible when in Memorize Mode) -->
+              <div id="cloze-hint-banner" class="mt-2 text-[10px] font-black text-purple-300 flex items-center justify-between hidden">
+                <span>⚡ Active Recall: Tap the purple blanks to verify your memory!</span>
+                <span id="cloze-score-badge" class="bg-purple-900/60 px-2 py-0.5 rounded text-purple-200 border border-purple-700">0 / 0 Revealed</span>
+              </div>
+            </div>
+
+            <!-- MODULE 3: THE FATAL AMATEUR TRAP -->
+            <div id="mod-trap" onclick="flashcards.setStep(3)" class="p-3.5 sm:p-4 rounded-2xl bg-rose-50/90 border-2 border-rose-200 transition-all duration-300 relative cursor-pointer hover:border-rose-400">
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-lg bg-rose-600 text-white flex items-center justify-center text-xs font-black">3</span>
+                  <span class="text-xs font-display font-black uppercase text-rose-800 tracking-wider">The Fatal Amateur Trap</span>
+                </div>
+                <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200">
+                  Buyer Fight-or-Flight
+                </span>
+              </div>
+
+              <div class="grid sm:grid-cols-2 gap-2 text-xs">
+                <div class="p-2.5 rounded-xl bg-white border border-rose-100">
+                  <div class="text-[10px] font-black text-rose-600 uppercase mb-0.5">❌ What Rookies Say</div>
+                  <p id="card-rookie-mistake" class="font-bold text-slate-700 leading-snug">
+                    "We have Basic for $500 and Pro for $1,500. Which one fits your budget?"
+                  </p>
+                </div>
+                <div class="p-2.5 rounded-xl bg-white border border-rose-100">
+                  <div class="text-[10px] font-black text-rose-600 uppercase mb-0.5">🧠 Buyer Subconscious Reaction</div>
+                  <p id="card-buyer-reaction" class="font-bold text-slate-700 leading-snug">
+                    Prospect defaults to the cheapest option ($500) over 70% of the time due to lack of a reference anchor.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- MODULE 4: INSTANT MNEMONIC PEG (Sticky 5-Word Mental Anchor) -->
+          <div class="flex-shrink-0 pt-2.5 mt-2 border-t border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs">⚡</span>
+              <span class="text-[10px] font-display font-black uppercase text-brand-700 tracking-wider">5-Word Mental Peg:</span>
+              <span id="card-mnemonic-peg" class="text-xs font-black text-slate-800 bg-amber-100 px-2 py-0.5 rounded-lg border border-amber-200">
+                Decoys anchor value; Pro triumphs!
+              </span>
+            </div>
+
+            <button onclick="flashcards.flip()" class="text-[11px] font-black text-brand-600 hover:text-brand-800 transition-colors flex items-center gap-1">
+              <span>Flip Front</span> ↩
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom Repetition Action Bar -->
+    <div class="w-full grid grid-cols-4 gap-2 sm:gap-3 my-2">
+      <!-- Review Again -->
+      <button onclick="flashcards.rate(false)" class="tactile-btn py-3 px-2 rounded-2xl bg-white border-2 border-b-4 border-rose-400 text-rose-600 font-display font-black text-xs sm:text-sm hover:bg-rose-50 shadow-sm flex flex-col sm:flex-row items-center justify-center gap-1" title="Shortcut: Left Arrow">
+        <span class="text-base sm:text-lg">🔄</span>
+        <span>Review</span>
+      </button>
+
+      <!-- Flip Card Toggle -->
+      <button onclick="flashcards.flip()" class="tactile-btn py-3 px-2 rounded-2xl bg-white border-2 border-b-4 border-slate-300 text-slate-700 font-display font-black text-xs sm:text-sm hover:bg-slate-50 shadow-sm flex flex-col sm:flex-row items-center justify-center gap-1" title="Shortcut: Space">
+        <span class="text-base sm:text-lg">🃏</span>
+        <span>Flip Card</span>
+      </button>
+
+      <!-- Mastered / Nailed It -->
+      <button onclick="flashcards.rate(true)" class="tactile-btn py-3 px-2 rounded-2xl bg-emerald-500 border-2 border-b-4 border-emerald-700 text-white font-display font-black text-xs sm:text-sm hover:bg-emerald-400 shadow-sm flex flex-col sm:flex-row items-center justify-center gap-1" title="Shortcut: Right Arrow">
+        <span class="text-base sm:text-lg">✅</span>
+        <span>Nailed It!</span>
+        <span class="text-[10px] opacity-90">+15 XP</span>
+      </button>
+
+      <!-- Ziggy's Sales Blitz Trivia -->
+      <button onclick="trivia.triggerSurpriseQuiz()" class="tactile-btn py-3 px-2 rounded-2xl bg-gradient-to-r from-brand-600 to-indigo-600 border-2 border-b-4 border-brand-900 text-white font-display font-black text-xs sm:text-sm hover:brightness-110 shadow-sm flex flex-col sm:flex-row items-center justify-center gap-1" title="Shortcut: T">
+        <span class="text-base sm:text-lg animate-pulse">⚡</span>
+        <span>Sales Blitz</span>
+      </button>
+    </div>
+
+  </main>
+
+  <!-- SURPRISE SALES BLITZ TRIVIA MODAL -->
+  <div id="trivia-modal" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="relative w-full max-w-lg bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-4 border-brand-500 transform transition-all scale-95 opacity-0 duration-200" id="trivia-modal-panel">
+      
+      <!-- Top Alert Ribbon -->
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-orange-500 text-white flex items-center justify-center font-black text-sm shadow animate-bounce">
+            🦊
+          </div>
+          <div>
+            <h3 class="font-display font-black text-sm uppercase tracking-wider text-rose-600 leading-none">Ziggy's Sales Blitz!</h3>
+            <span class="text-[10px] font-extrabold text-slate-400">Live Tricky Buyer Defense</span>
+          </div>
+        </div>
+
+        <!-- 15-Second Circular Progress Timer -->
+        <div class="relative w-10 h-10 flex items-center justify-center">
+          <svg class="w-10 h-10 transform -rotate-90">
+            <circle cx="20" cy="20" r="16" stroke="#e2e8f0" stroke-width="3.5" fill="transparent"/>
+            <circle id="quiz-timer-ring" cx="20" cy="20" r="16" stroke="#8b5cf6" stroke-width="3.5" fill="transparent" stroke-dasharray="100.5" stroke-dashoffset="0" stroke-linecap="round" class="transition-all duration-100"/>
+          </svg>
+          <span id="quiz-timer-text" class="absolute font-black text-xs text-slate-800">15</span>
+        </div>
+      </div>
+
+      <!-- Question Text -->
+      <div class="mb-5">
+        <span id="quiz-tag" class="text-[10px] font-display font-black uppercase px-2.5 py-0.5 rounded-full bg-brand-100 text-brand-800 border border-brand-200">
+          Cognitive Persuasion
+        </span>
+        <h4 id="quiz-question" class="text-base sm:text-lg font-black text-slate-900 mt-2 leading-snug">
+          According to Daniel Kahneman's Prospect Theory, how much more intense is the psychological pain of losing $10,000 compared to the joy of gaining $10,000?
+        </h4>
+      </div>
+
+      <!-- Choices Grid -->
+      <div id="quiz-options-container" class="space-y-2.5 mb-4">
+        <!-- Dynamically injected choices -->
+      </div>
+
+      <!-- Live Debrief Box -->
+      <div id="quiz-feedback-box" class="hidden p-4 rounded-2xl mb-4 border transition-all">
+        <div id="quiz-feedback-title" class="font-display font-black text-xs uppercase mb-1"></div>
+        <p id="quiz-feedback-text" class="text-xs font-bold leading-relaxed"></p>
+      </div>
+
+      <!-- Continue Action -->
+      <div class="flex items-center justify-between">
+        <span class="text-[11px] font-extrabold text-slate-400">
+          Keys: <kbd class="px-1.5 py-0.5 bg-slate-100 rounded border border-slate-200">1</kbd> - <kbd class="px-1.5 py-0.5 bg-slate-100 rounded border border-slate-200">4</kbd>
+        </span>
+        <button id="quiz-continue-btn" onclick="trivia.closeModal()" class="tactile-btn hidden px-5 py-2.5 rounded-xl bg-brand-600 text-white font-display font-black text-xs uppercase tracking-wider hover:bg-brand-500 shadow-md">
+          Back to Gym →
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RANK & MASTERY MODAL -->
+  <div id="rank-modal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 hidden" onclick="app.closeRankModal()">
+    <div class="relative w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl border-2 border-slate-200 text-center" onclick="event.stopPropagation()">
+      <div class="w-16 h-16 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-3xl mx-auto mb-3 shadow-inner">
+        👑
+      </div>
+      <h3 id="modal-rank-title" class="text-xl font-display font-black text-slate-900">Rapport Specialist</h3>
+      <p id="modal-rank-desc" class="text-xs text-slate-500 font-bold mt-1">Wiring mirror neurons and anchoring high-ticket contracts.</p>
+
+      <div class="grid grid-cols-2 gap-2 my-4">
+        <div class="p-3 bg-slate-50 rounded-2xl border border-slate-100">
+          <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Total XP</div>
+          <div id="modal-total-xp" class="text-lg font-black text-brand-600">0</div>
+        </div>
+        <div class="p-3 bg-slate-50 rounded-2xl border border-slate-100">
+          <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Capabilities</div>
+          <div id="modal-cards-mastered" class="text-lg font-black text-emerald-600">0 / 12</div>
+        </div>
+      </div>
+
+      <button onclick="app.closeRankModal()" class="tactile-btn w-full py-2.5 rounded-xl bg-slate-900 text-white font-display font-black text-xs uppercase tracking-wider">
+        Keep Training
+      </button>
+    </div>
+  </div>
+
+  <!-- RESET CONFIRMATION MODAL -->
+  <div id="reset-modal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 hidden" onclick="app.closeResetModal()">
+    <div class="relative w-full max-w-xs bg-white rounded-3xl p-6 shadow-2xl border-2 border-slate-200 text-center" onclick="event.stopPropagation()">
+      <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl mx-auto mb-3">
+        ⚠️
+      </div>
+      <h3 class="text-base font-display font-black text-slate-900">Reset Learning Progress?</h3>
+      <p class="text-xs text-slate-500 font-bold mt-1">This resets your XP and card masteries. Your daily streak will stay intact.</p>
+      
+      <div class="grid grid-cols-2 gap-2 mt-4">
+        <button onclick="app.closeResetModal()" class="tactile-btn py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs">
+          Cancel
+        </button>
+        <button onclick="app.confirmReset()" class="tactile-btn py-2 rounded-xl bg-rose-600 text-white font-black text-xs hover:bg-rose-500">
+          Reset All
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================
+     * 1. PROCEDURAL RETRO SOUND ENGINE (ZERO EXTERNAL ASSETS)
+     * ========================================================= */
+    class ProceduralAudio {
+      constructor() {
+        this.ctx = null;
+        this.enabled = localStorage.getItem('cz_sound') !== 'false';
+        this.updateIcon();
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      toggle() {
+        this.enabled = !this.enabled;
+        localStorage.setItem('cz_sound', this.enabled);
+        this.updateIcon();
+        if (this.enabled) this.playVoiceBlip();
+      }
+
+      updateIcon() {
+        const on = document.getElementById('sound-svg-on');
+        const off = document.getElementById('sound-svg-off');
+        if (on && off) {
+          if (this.enabled) {
+            on.classList.remove('hidden');
+            off.classList.add('hidden');
+          } else {
+            on.classList.add('hidden');
+            off.classList.remove('hidden');
+          }
+        }
+      }
+
+      playVoiceBlip(freq = 440) {
+        if (!this.enabled) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq + (Math.random() * 60 - 30), this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.05);
+      }
+
+      playFlip() {
+        if (!this.enabled) return;
+        this.init();
+        const bufferSize = this.ctx.sampleRate * 0.05;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(600, this.ctx.currentTime);
+        filter.frequency.exponentialRampToValueAtTime(1400, this.ctx.currentTime + 0.05);
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start();
+      }
+
+      playStepClick() {
+        if (!this.enabled) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(620, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.04);
+        gain.gain.setValueAtTime(0.07, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.04);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.04);
+      }
+
+      playClozePop() {
+        if (!this.enabled) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(520, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1046, this.ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.12);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.12);
+      }
+
+      playSuccess() {
+        if (!this.enabled) return;
+        this.init();
+        const chord = [523.25, 659.25, 783.99, 1046.5];
+        chord.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.04);
+          gain.gain.setValueAtTime(0.1, this.ctx.currentTime + idx * 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.04 + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + idx * 0.04);
+          osc.stop(this.ctx.currentTime + idx * 0.04 + 0.25);
+        });
+      }
+
+      playBuzzer() {
+        if (!this.enabled) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(180, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(110, this.ctx.currentTime + 0.18);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.18);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.18);
+      }
+
+      playAlarm() {
+        if (!this.enabled) return;
+        this.init();
+        const notes = [440, 554, 659, 880];
+        notes.forEach((f, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(f, this.ctx.currentTime + i * 0.07);
+          gain.gain.setValueAtTime(0.06, this.ctx.currentTime + i * 0.07);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.07 + 0.1);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + i * 0.07);
+          osc.stop(this.ctx.currentTime + i * 0.07 + 0.1);
+        });
+      }
+    }
+
+    const sound = new ProceduralAudio();
+
+    /* =========================================================
+     * 2. EXPANDED SALES PSYCHOLOGY DATABASE (12 BATTLECARDS)
+     * ========================================================= */
+    const SALES_DECK = [
+      {
+        id: "decoy",
+        icon: "🪤",
+        title: "The Decoy Effect",
+        subtitle: "Asymmetric Dominance",
+        stage: "Negotiation & Pricing",
+        origin: "Joel Huber & Dan Ariely",
+        citation: "Duke & MIT Behavioral Research",
+        concept: "Introducing an asymmetrical, inferior third option makes your target high-tier offering look like an irresistible bargain without altering the actual product.",
+        takeaway: "The human prefrontal cortex cannot evaluate price in a vacuum; it craves relative contrasts to conserve glucose.",
+        scienceDetail: "When buyers see Basic ($900) vs Pro ($1,800), the gap triggers price anxiety. Adding a decoy of Support-Only ($1,750) makes Pro feel like an absolute mathematical steal.",
+        cadence: "🎙️ Confident, matter-of-fact, deliberate pauses",
+        fullScript: "Tier 1 is Software-only at $900. Tier 2 is Support-only at $1,750. Tier 3 bundles Software plus 24/7 Dedicated SLA for $1,800.",
+        clozeTokens: ["Software-only", "Support-only", "bundles", "$1,800"],
+        rookieSaid: "\"We have Basic for $900 and Pro for $1,800. Which one fits your budget?\"",
+        buyerReaction: "Prospect defaults to the cheapest $900 tier over 70% of the time due to lack of a high-value comparison peg.",
+        mnemonic: "Decoys anchor value; Pro triumphs!",
+        ziggyTips: {
+          step1: "Notice how the decoy changes the question from 'Is it worth $1,800?' to 'Which tier gives more value?'",
+          step2: "When pitching Tier 3, emphasize the bundle. Let the silence hang after dropping $1,800!",
+          step3: "Amateurs pitch 2 tiers. Pros always provide a comparative frame to direct the choice."
+        }
+      },
+      {
+        id: "loss_aversion",
+        icon: "🩸",
+        title: "Loss Aversion Bias",
+        subtitle: "Prospect Theory",
+        stage: "Closing & Urgency",
+        origin: "Daniel Kahneman & Amos Tversky",
+        citation: "Nobel Prize in Economic Sciences",
+        concept: "The psychological pain of losing something hurts 2.1 to 2.5 times more intensely than the pleasure of gaining the equivalent reward.",
+        takeaway: "Loss activates primal amygdala survival circuitry, completely overriding slower analytical ROI calculation.",
+        scienceDetail: "Prospects will fight tooth-and-nail to protect what they currently possess. Framing the current status quo as an active cash hemorrhage triggers urgent executive intervention.",
+        cadence: "🎙️ Somber, serious, slow downward cadence",
+        fullScript: "Every month you delay migrating, your audit logs show you are bleeding $14,200 in manual engineer overtime that can never be recouped.",
+        clozeTokens: ["delay migrating", "bleeding", "$14,200", "never be recouped"],
+        rookieSaid: "\"If you sign today, you might gain up to $15,000 in operational efficiency next year!\"",
+        buyerReaction: "Future gain feels optional and speculative; buyer pushes decision to next quarter without panic.",
+        mnemonic: "Bleeding wounds close urgent deals!",
+        ziggyTips: {
+          step1: "Evolution wired humans to flee predators before foraging for berries. Fear of loss is raw survival!",
+          step2: "Don't say 'save money'. Say 'stopping the bleed'. The word 'bleeding' creates visceral discomfort.",
+          step3: "Rookies sell shiny futures. Top closers spotlight the silent fire burning the customer's desk right now."
+        }
+      },
+      {
+        id: "accusation_audit",
+        icon: "🛡️",
+        title: "The Accusation Audit",
+        subtitle: "Preemptive De-escalation",
+        stage: "Objection Smashing",
+        origin: "Chris Voss",
+        citation: "FBI Crisis Negotiation Unit",
+        concept: "Proactively verbalizing every harsh, skeptical thing the prospect could possibly think about you before they have the chance to say it.",
+        takeaway: "Verbalizing unexpressed negative accusations de-activates amygdala arousal and creates instant psychological safety.",
+        scienceDetail: "When you state their unspoken hostility out loud, the prospect's brain ceases defensive posture and instinctively responds with reassuring empathy.",
+        cadence: "🎙️ Gentle, unhurried 'late-night FM DJ' tone",
+        fullScript: "You're probably thinking: here is another pushy vendor who wants to blow up our calendar, gouge our budget, and trap us in an inflexible contract.",
+        clozeTokens: ["pushy vendor", "blow up our calendar", "gouge our budget", "trap us"],
+        rookieSaid: "\"I promise you we are not like other pushy vendors, we have the best customer service!\"",
+        buyerReaction: "Defensive denial triggers skepticism. The buyer immediately puts their guard up.",
+        mnemonic: "Call your own elephant first!",
+        ziggyTips: {
+          step1: "When you say it first, you disarm the bomb before they can throw it at you!",
+          step2: "Lean into the audit without being defensive. Never follow with '...but we aren't like that!' Let it sit.",
+          step3: "If you try to hide your weaknesses, buyers assume the worst. Shine the flashlight yourself."
+        }
+      },
+      {
+        id: "anchoring",
+        icon: "⚓",
+        title: "The Anchoring Effect",
+        subtitle: "Numerical Priming",
+        stage: "Negotiation & Discovery",
+        origin: "Kahneman & Tversky",
+        citation: "Judgment Under Uncertainty",
+        concept: "The very first number introduced into a negotiation becomes a subconscious gravitational center that warps all subsequent price expectations.",
+        takeaway: "The human mind cannot un-see the initial figure; it adjusts insufficiently from whatever benchmark is dropped first.",
+        scienceDetail: "Establishing a premium enterprise benchmark first establishes a psychological reference ceiling. Your subsequent proposal feels modest and safe by comparison.",
+        cadence: "🎙️ Relaxed, authoritative, neutral tone",
+        fullScript: "Our multi-region enterprise deployments average $150,000 annually. For your 60-seat pilot rollout, however, we can structure it at $32,000.",
+        clozeTokens: ["enterprise deployments", "$150,000", "pilot rollout", "$32,000"],
+        rookieSaid: "\"Our software is $32,000, but please let us know what budget you have in mind!\"",
+        buyerReaction: "Without an anchor, $32,000 feels high; the buyer anchors on $10,000 and demands heavy discounts.",
+        mnemonic: "First number dictates deal orbit!",
+        ziggyTips: {
+          step1: "Whoever drops the first high number sets the gravity of the room!",
+          step2: "Notice the juxtaposition: $150K makes $32K sound like an affordable fraction.",
+          step3: "Never ask the buyer for their budget first. If they say $5,000, your $20,000 pitch is dead in the water."
+        }
+      },
+      {
+        id: "pratfall",
+        icon: "☕",
+        title: "The Pratfall Effect",
+        subtitle: "Strategic Imperfection",
+        stage: "Discovery & Trust",
+        origin: "Elliot Aronson",
+        citation: "Social Psychology Experiments",
+        concept: "A highly competent person or brand becomes dramatically more likable and trustworthy when they openly admit a minor imperfection.",
+        takeaway: "Flawless sales pitches activate buyer defense networks; admitting a flaw proves honesty and authenticity.",
+        scienceDetail: "Prospects know every software has flaws. Voluntarily spotlighting where you are weak makes your claims of excellence 10x more credible.",
+        cadence: "🎙️️ Candid, grounded, transparent delivery",
+        fullScript: "Full transparency: our visual analytics dashboard is not as flashy as Vendor X. We deliberately sacrificed UI shine to make query response speeds 5x faster.",
+        clozeTokens: ["Full transparency", "not as flashy", "sacrificed UI shine", "5x faster"],
+        rookieSaid: "\"Our software is the absolute number one in every category: best UI, fastest speed, and lowest price!\"",
+        buyerReaction: "Buyer's BS detector flashes red. They assume the salesperson is hiding catastrophic flaws.",
+        mnemonic: "Admit a six, prove ten!",
+        ziggyTips: {
+          step1: "A tiny blemish makes the diamond real. Perfection smells like a scam!",
+          step2: "Admit a weakness in an area the customer doesn't prioritize, then anchor your unmatched core strength.",
+          step3: "Claiming to be 10/10 everywhere makes you sound like a 2/10 amateur."
+        }
+      },
+      {
+        id: "no_oriented",
+        icon: "🚫",
+        title: "No-Oriented Questions",
+        subtitle: "Autonomy Trigger",
+        stage: "Prospecting & Outreach",
+        origin: "Chris Voss",
+        citation: "Hostage Negotiation Field Studies",
+        concept: "Buyers feel defensive and pressured when forced to say 'Yes', but feel completely safe, sovereign, and in control when allowed to say 'No'.",
+        takeaway: "Saying 'No' preserves psychological autonomy and lowers cortisol, opening genuine communication.",
+        scienceDetail: "Prospects have been burned by 'Yes-traps' their entire careers. Permitting them to say 'No' lowers their guard instantly.",
+        cadence: "🎙️ Gentle, unhurried, respectful posture",
+        fullScript: "Have you completely given up on streamlining your billing webhook pipeline this quarter?",
+        clozeTokens: ["completely given up", "streamlining", "pipeline this quarter"],
+        rookieSaid: "\"Do you have 15 minutes this Thursday for a quick demo to see how we can help you?\"",
+        buyerReaction: "Buyer feels a slick trap approaching; they ghost or reply 'Not interested right now.'",
+        mnemonic: "Let them say 'No' first!",
+        ziggyTips: {
+          step1: "People will defend their right to say 'No' to the death. Give it to them freely!",
+          step2: "When prospects say 'No, we haven't given up', they have just committed to solving the problem!",
+          step3: "Never push for a slippery 'Yes'. Yes is commitment; No is protection."
+        }
+      },
+      {
+        id: "door_in_face",
+        icon: "🚪",
+        title: "Door-in-the-Face Technique",
+        subtitle: "Reciprocal Concession",
+        stage: "Negotiation & Closing",
+        origin: "Robert Cialdini",
+        citation: "Influence: The Psychology of Persuasion",
+        concept: "Making an extreme, easily rejected request first ensures that your real, reasonable secondary request is perceived as a generous concession.",
+        takeaway: "The universal norm of reciprocity compels people to match a concession with a concession to relieve social guilt.",
+        scienceDetail: "When you visibly retreat from a large ask, the buyer's subconscious perceives your step-back as a personal favor that must be repaid.",
+        cadence: "🎙️ Courteous, flexible, collaborative tone",
+        fullScript: "Can we schedule a 2-day on-site architectural audit with your executive team? No? Then could we just do a 20-minute Zoom call on Tuesday?",
+        clozeTokens: ["2-day on-site", "executive team", "20-minute Zoom", "concession"],
+        rookieSaid: "\"Could you please just give me 20 minutes? I promise it won't take long!\"",
+        buyerReaction: "Feels like low-status begging; buyer easily declines without feeling any reciprocal guilt.",
+        mnemonic: "Step back so they step!",
+        ziggyTips: {
+          step1: "When you back down gracefully, their subconscious feels an urge to meet you in the middle.",
+          step2: "Make sure the first ask is ambitious but believable, not insulting or absurd.",
+          step3: "Don't pause for 3 days between asks; the concession effect fades quickly."
+        }
+      },
+      {
+        id: "social_proof",
+        icon: "👥",
+        title: "Social Proof & Peer Bias",
+        subtitle: "Pluralistic Heuristic",
+        stage: "Discovery & Trust",
+        origin: "Robert Cialdini",
+        citation: "Social Psychology Studies",
+        concept: "When faced with uncertainty, individuals instinctively mirror the decisions of similar peers rather than doing exhaustive research.",
+        takeaway: "The brain conserves metabolic decision-energy by following the tracks of similar pack members.",
+        scienceDetail: "Social proof only triggers when the prospect identifies with the peer. Naming a direct competitor or twin company validates safety.",
+        cadence: "🎙️ Casual, observational, peer-level tone",
+        fullScript: "Three other Series-B FinTech CTOs in London faced this exact compliance hurdle last quarter. Here is the exact architecture they deployed.",
+        clozeTokens: ["Series-B FinTech CTOs", "compliance hurdle", "exact architecture", "deployed"],
+        rookieSaid: "\"We have over 10,000 customers worldwide including massive Fortune 500 banks!\"",
+        buyerReaction: "Seed-stage CTO thinks: 'Those giant banks have 1,000 engineers. This tool is too bloated for me.'",
+        mnemonic: "Peers mirror identical peer footsteps!",
+        ziggyTips: {
+          step1: "The closer the peer is to their company size and pain, the more magnetic the proof!",
+          step2: "Don't boast about global logos. Spotlight the twin who solved the exact same headache.",
+          step3: "Generic testimonials are ignored. Specific architectural stories get devoured."
+        }
+      },
+      {
+        id: "zeigarnik",
+        icon: "🧩",
+        title: "The Zeigarnik Effect",
+        subtitle: "Open Narrative Loops",
+        stage: "Follow-ups & Cadence",
+        origin: "Bluma Zeigarnik",
+        citation: "Gestalt Memory & Task Tension",
+        concept: "The human mind experiences persistent cognitive tension regarding unfinished tasks or unresolved stories until they achieve closure.",
+        takeaway: "The brain keeps unfinished business active in high-priority working memory, generating intrusive curiosity.",
+        scienceDetail: "Ending a sales call with a clean bow allows the prospect to mentally archive the meeting. Leaving one key bottleneck open keeps you on their mind.",
+        cadence: "🎙️ Intriguing, thoughtful, cliffhanger delivery",
+        fullScript: "We resolved two of your pipeline issues today. The third bottleneck regarding your API rate limits has a counter-intuitive fix—let's unpack that Thursday.",
+        clozeTokens: ["resolved two", "third bottleneck", "counter-intuitive fix", "unpack that Thursday"],
+        rookieSaid: "\"We covered everything today! I'll send over the contract and hope to hear back from you soon!\"",
+        buyerReaction: "Meeting feels complete and closed; deal drops to the bottom of their urgent task list.",
+        mnemonic: "Leave one loop hanging open!",
+        ziggyTips: {
+          step1: "Netflix builds multi-billion dollar empires on open loops. Sales deals thrive on the exact same tension!",
+          step2: "Never wrap everything in a neat gift box on Call 1. Always tease the unexpected solution on Call 2.",
+          step3: "Curiosity is an itch the prospect's brain desperately needs to scratch."
+        }
+      },
+      {
+        id: "labeling",
+        icon: "🏷️",
+        title: "Tactical Labeling",
+        subtitle: "Affect Labeling",
+        stage: "Objection Smashing",
+        origin: "Chris Voss",
+        citation: "UCLA fMRI Emotion Regulation Studies",
+        concept: "Neutral, non-judgmental statements that give a name to the prospect's unspoken emotions or hidden fears without sounding combative.",
+        takeaway: "Labeling negative emotions visibly calms amygdala arousal on brain scans and stimulates analytical problem-solving.",
+        scienceDetail: "Never use the word 'I'. Beginning with 'It seems like...' or 'It sounds like...' invites the buyer to elaborate without feeling interrogated.",
+        cadence: "🎙️ Empathetic, curious, calm observation",
+        fullScript: "It sounds like you're worried about getting burned by another painful 9-month implementation like your team endured last year.",
+        clozeTokens: ["It sounds like", "getting burned", "painful 9-month", "implementation"],
+        rookieSaid: "\"I understand exactly how you feel, but you really shouldn't worry about that with us!\"",
+        buyerReaction: "Prospect bristles: 'You don't know anything about my company!' Defenses solidify.",
+        mnemonic: "Label the fear, quiet amygdala!",
+        ziggyTips: {
+          step1: "Never say 'I understand'. You don't. Say 'It sounds like...' and let them confirm or correct you.",
+          step2: "When you nail their hidden fear, they reply with those two magical words: 'That's right.'",
+          step3: "Silence after a label is golden. Don't step on your own label—let them fill the void."
+        }
+      },
+      {
+        id: "framing",
+        icon: "🖼️",
+        title: "Cognitive Framing",
+        subtitle: "Baselines & Context",
+        stage: "Negotiation & Value",
+        origin: "Amos Tversky & Daniel Kahneman",
+        citation: "Journal of Risk and Uncertainty",
+        concept: "Presenting the identical factual information in a way that shifts the cognitive baseline from a burdensome expense to a preventative shield.",
+        takeaway: "Cognitive baselines govern emotional value tags. Shifting to insurance value triggers safety and risk minimization pathways.",
+        scienceDetail: "Framing costs as a discrete line-item invites procurement line-item slashing. Framing it as insurance against existential system outages makes cutting it feel hazardous.",
+        cadence: "🎙️ Reassuring, protective, executive delivery",
+        fullScript: "This isn't an operational software cost of $1,200 a month. It is a 24/7 automated guard rail that ensures your checkout pipeline never drops a single transaction.",
+        clozeTokens: ["operational software cost", "24/7 automated guard rail", "checkout pipeline", "never drops"],
+        rookieSaid: "\"Our software subscription is $1,200 per month, billed annually.\"",
+        buyerReaction: "Prospect places it in their discretionary expense bucket and tries to squeeze a 30% discount.",
+        mnemonic: "Reframe price from cost to guard!",
+        ziggyTips: {
+          step1: "Nobody wants another software bill. Everyone desperately wants an insurance policy against disaster.",
+          step2: "Frame the price against the catastrophic cost of a single checkout crash.",
+          step3: "Context is king. $1,200 sounds expensive for code; it sounds practically free for total peace of mind."
+        }
+      },
+      {
+        id: "endowment",
+        icon: "🔑",
+        title: "The Endowment Effect",
+        subtitle: "Psychological Ownership",
+        stage: "Demo & Proof-of-Concept",
+        origin: "Richard Thaler",
+        citation: "Cornell Behavioral Economics Lab",
+        concept: "People place a substantially higher subjective value on tools or workflows once they feel even preliminary psychological ownership over them.",
+        takeaway: "Once an object or workflow is integrated into a person's self-concept, giving it up triggers the neural pain of loss.",
+        scienceDetail: "Passive slide decks generate zero psychological ownership. Putting the prospect's real data and daily team routines into the pilot makes revoking access painful.",
+        cadence: "🎙️ Collaborative, hands-on, guiding tone",
+        fullScript: "Let's configure your actual team Slack channels and live production webhook alerts right now so your engineers can test drive their exact morning routine tomorrow.",
+        clozeTokens: ["actual team Slack", "live production webhook", "test drive", "exact morning routine"],
+        rookieSaid: "\"Here is a generic sandbox environment with fake dummy accounts for you to browse whenever you have free time.\"",
+        buyerReaction: "Zero emotional attachment; prospect forgets about the sandbox within 24 hours.",
+        mnemonic: "Real keys create urgent ownership!",
+        ziggyTips: {
+          step1: "Car salesmen don't describe the car—they hand you the keys and smell of new leather. Do the same!",
+          step2: "Once their team workflows are inside your platform, ripping it out feels like a painful demotion.",
+          step3: "Never demo with 'Acme Corp' dummy data. Use their actual pain points and team structure."
+        }
+      }
+    ];
+
+    /* =========================================================
+     * 3. LIVE SURPRISE TRIVIA DATABASE (SALES BLITZ)
+     * ========================================================= */
+    const TRIVIA_BANK = [
+      {
+        q: "In behavioral economics, how much more intense is the psychological pain of losing $5,000 compared to gaining $5,000?",
+        tag: "Loss Aversion",
+        options: [
+          "Roughly equal (1:1 ratio)",
+          "About 2.1 to 2.5 times more intense",
+          "5 to 10 times more intense",
+          "Gains are felt more acutely than losses"
+        ],
+        correct: 1,
+        debrief: "Losses loom 2.1x–2.5x larger than gains. This is why framing 'cost of inaction' closes deals faster than promises of growth!"
+      },
+      {
+        q: "In high-stakes negotiation, what is the core psychological objective of a 'No-Oriented Question'?",
+        tag: "Tactical Empathy",
+        options: [
+          "To reject the buyer before they reject you",
+          "To give the buyer complete autonomy and safety so they drop defenses",
+          "To prove that their current vendor is incompetent",
+          "To force them into signing an NDA"
+        ],
+        correct: 1,
+        debrief: "Saying 'No' protects personal sovereignty. When buyers feel in control, their fight-or-flight defenses immediately subside."
+      },
+      {
+        q: "What is the 'Pratfall Effect' in consultative enterprise selling?",
+        tag: "Trust Dynamics",
+        options: [
+          "Deliberately tripping over equipment to break the ice",
+          "Voluntarily admitting a minor product limitation, which skyrockets credibility",
+          "Blaming your engineers for a missed software feature",
+          "Offering an unannounced 50% discount at the end"
+        ],
+        correct: 1,
+        debrief: "No product is perfect. Admitting a small flaw proves honesty, making all your other claimed strengths 10x more believable!"
+      },
+      {
+        q: "Why does the 'Decoy Effect' (Asymmetric Dominance) work so reliably in SaaS tier pricing?",
+        tag: "Pricing Psychology",
+        options: [
+          "It forces buyers to pick the cheapest tier",
+          "The brain struggles with absolute values; the decoy provides an effortless comparative shortcut",
+          "Decoy tiers are secretly subsidized by investors",
+          "It confuses the procurement department into overpaying"
+        ],
+        correct: 1,
+        debrief: "Our brains conserve metabolic energy by comparing easy pairs. The decoy makes the target tier look like an undeniable bargain!"
+      },
+      {
+        q: "What does the 'Zeigarnik Effect' predict about prospects between discovery calls?",
+        tag: "Cognitive Memory",
+        options: [
+          "They forget 90% of what was said in 24 hours",
+          "The brain maintains intrusive focus on unfinished tasks and open loops",
+          "They secretly prefer email over Zoom",
+          "They always choose the lowest bidder"
+        ],
+        correct: 1,
+        debrief: "Unfinished narrative loops keep your deal top-of-mind. Always leave one juicy question to resolve on the next call!"
+      },
+      {
+        q: "Why is 'Affect Labeling' (e.g. 'It sounds like you feel overwhelmed') effective on skeptical buyers?",
+        tag: "Neuro-Psychology",
+        options: [
+          "It confuses the buyer into agreeing",
+          "fMRI scans show labeling negative emotions calms amygdala arousal",
+          "It legally protects your sales representations",
+          "It forces the buyer to defend their company"
+        ],
+        correct: 1,
+        debrief: "Putting words to silent dread calms the buyer's brain threat response, creating an immediate psychological alliance!"
+      }
+    ];
+
+    /* =========================================================
+     * 4. COACH ZIGGY CONTROLLER (MASCOT & EMOTIONS)
+     * ========================================================= */
+    class MascotZiggy {
+      constructor() {
+        this.eyesEl = document.getElementById('ziggy-eyes');
+        this.mouthEl = document.getElementById('ziggy-mouth');
+        this.speechEl = document.getElementById('ziggy-speech');
+        this.moodBadge = document.getElementById('ziggy-mood-badge');
+      }
+
+      setMood(mood) {
+        if (!this.eyesEl || !this.mouthEl) return;
+
+        if (mood === 'happy') {
+          this.eyesEl.innerHTML = `
+            <path d="M 32 50 Q 36 42 40 50" stroke="#1e293b" stroke-width="3" fill="none" stroke-linecap="round" />
+            <path d="M 60 50 Q 64 42 68 50" stroke="#1e293b" stroke-width="3" fill="none" stroke-linecap="round" />
+          `;
+          this.mouthEl.setAttribute('d', 'M 42 64 Q 50 74 58 64');
+          this.moodBadge.textContent = '😸';
+        } else if (mood === 'quiz') {
+          this.eyesEl.innerHTML = `
+            <circle cx="36" cy="46" r="6" fill="#1e293b" />
+            <circle cx="38" cy="44" r="2" fill="#ffffff" />
+            <circle cx="64" cy="46" r="6" fill="#1e293b" />
+            <circle cx="66" cy="44" r="2" fill="#ffffff" />
+          `;
+          this.mouthEl.setAttribute('d', 'M 46 64 A 4 4 0 1 0 54 64 A 4 4 0 1 0 46 64');
+          this.moodBadge.textContent = '🚨';
+        } else if (mood === 'thinking') {
+          this.eyesEl.innerHTML = `
+            <ellipse cx="36" cy="46" rx="5" ry="3" fill="#1e293b" />
+            <ellipse cx="64" cy="46" rx="5" ry="3" fill="#1e293b" />
+          `;
+          this.mouthEl.setAttribute('d', 'M 44 67 Q 50 64 56 67');
+          this.moodBadge.textContent = '🤔';
+        } else {
+          // Default
+          this.eyesEl.innerHTML = `
+            <circle cx="36" cy="48" r="4.5" fill="#1e293b" />
+            <circle cx="38" cy="46" r="1.5" fill="#ffffff" />
+            <circle cx="64" cy="48" r="4.5" fill="#1e293b" />
+            <circle cx="66" cy="46" r="1.5" fill="#ffffff" />
+          `;
+          this.mouthEl.setAttribute('d', 'M 44 65 Q 50 71 56 65');
+          this.moodBadge.textContent = '🦊';
+        }
+      }
+
+      say(text, mood = 'neutral', playAudio = true) {
+        this.setMood(mood);
+        if (this.speechEl) {
+          this.speechEl.textContent = text;
+          this.speechEl.classList.remove('animate-pop-in');
+          void this.speechEl.offsetWidth;
+          this.speechEl.classList.add('animate-pop-in');
+        }
+
+        if (playAudio) {
+          for (let i = 0; i < 3; i++) {
+            setTimeout(() => sound.playVoiceBlip(430 + i * 40), i * 60);
+          }
+        }
+      }
+
+      poke() {
+        const card = SALES_DECK[flashcards.currentIndex];
+        const tip = card.mnemonic || card.takeaway;
+        this.say(`Coach Peg: "${tip}" Keep this in mind when objections rise!`, 'happy');
+      }
+    }
+
+    const ziggy = new MascotZiggy();
+
+    /* =========================================================
+     * 5. FLASHCARD CONTROLLER (GUIDED LEARNING & CLOZE ENGINE)
+     * ========================================================= */
+    class FlashcardEngine {
+      constructor() {
+        this.currentIndex = 0;
+        this.isFlipped = false;
+        this.activeStep = 0; // 0 = all, 1 = science, 2 = script, 3 = trap
+        this.memorizeMode = false;
+        this.revealedClozes = new Set();
+        this.isTourRunning = false;
+        this.tourTimeout = null;
+        this.cardEl = document.getElementById('flashcard');
+        this.init();
+      }
+
+      init() {
+        this.loadCard();
+        this.bindKeys();
+      }
+
+      bindKeys() {
+        window.addEventListener('keydown', (e) => {
+          if (trivia.isOpen) {
+            if (['1', '2', '3', '4'].includes(e.key)) {
+              trivia.pickOption(parseInt(e.key) - 1);
+            }
+            return;
+          }
+          if (e.code === 'Space') {
+            e.preventDefault();
+            this.flip();
+          } else if (e.code === 'ArrowRight') {
+            this.rate(true);
+          } else if (e.code === 'ArrowLeft') {
+            this.rate(false);
+          } else if (e.key.toLowerCase() === 't') {
+            trivia.triggerSurpriseQuiz();
+          } else if (e.key.toLowerCase() === 'm' && this.isFlipped) {
+            this.toggleMemorizeMode();
+          } else if (e.key.toLowerCase() === 'g' && this.isFlipped) {
+            this.toggleGuidedTour();
+          } else if (e.key.toLowerCase() === 'z') {
+            ziggy.poke();
+          }
+        });
+      }
+
+      loadCard() {
+        this.stopGuidedTour();
+        this.revealedClozes.clear();
+        const card = SALES_DECK[this.currentIndex];
+        this.isFlipped = false;
+        this.cardEl.classList.remove('rotate-y-180');
+
+        // Front elements
+        document.getElementById('card-icon').textContent = card.icon;
+        document.getElementById('card-stage').textContent = card.stage;
+        document.getElementById('card-origin').textContent = card.origin;
+        document.getElementById('card-title').textContent = card.title;
+        document.getElementById('card-subtitle').textContent = card.subtitle;
+        document.getElementById('card-concept').textContent = card.concept;
+
+        // Back elements
+        document.getElementById('card-citation-badge').textContent = card.citation;
+        document.getElementById('card-takeaway').textContent = card.takeaway;
+        document.getElementById('card-science-detail').textContent = card.scienceDetail;
+        document.getElementById('card-cadence-badge').textContent = card.cadence;
+        document.getElementById('card-rookie-mistake').textContent = card.rookieSaid;
+        document.getElementById('card-buyer-reaction').textContent = card.buyerReaction;
+        document.getElementById('card-mnemonic-peg').textContent = card.mnemonic;
+
+        this.renderScriptArea();
+        this.setStep(0, false);
+
+        // Progress bar
+        const total = SALES_DECK.length;
+        const progress = Math.round(((this.currentIndex + 1) / total) * 100);
+        document.getElementById('deck-progress-bar').style.width = `${progress}%`;
+        document.getElementById('deck-progress-text').textContent = `${this.currentIndex + 1} / ${total}`;
+
+        ziggy.say(`Card #${this.currentIndex + 1}: ${card.title}. Study how ${card.origin} explains this subconscious trigger!`, 'thinking', false);
+      }
+
+      flip() {
+        sound.playFlip();
+        this.isFlipped = !this.isFlipped;
+        this.cardEl.classList.toggle('rotate-y-180', this.isFlipped);
+
+        if (this.isFlipped) {
+          ziggy.say(`Use the step buttons (① Science, ② Script, ③ Trap) or hit 'Guided Tour' for an animated walkthrough!`, 'happy');
+        } else {
+          this.stopGuidedTour();
+        }
+      }
+
+      setStep(step, announce = true) {
+        this.activeStep = step;
+        sound.playStepClick();
+
+        const modScience = document.getElementById('mod-science');
+        const modScript = document.getElementById('mod-script');
+        const modTrap = document.getElementById('mod-trap');
+
+        // Update button styles
+        [0, 1, 2, 3].forEach(s => {
+          const btn = document.getElementById(`step-btn-${s}`);
+          if (s === step) {
+            btn.className = "px-2.5 sm:px-3 py-1 rounded-xl transition-all font-display bg-white text-brand-700 shadow-sm font-black";
+          } else {
+            btn.className = "px-2.5 sm:px-3 py-1 rounded-xl transition-all font-display text-slate-600 hover:text-slate-900";
+          }
+        });
+
+        // Reset highlights & opacities
+        [modScience, modScript, modTrap].forEach(el => {
+          el.classList.remove('ring-4', 'ring-brand-500', 'shadow-xl', 'scale-[1.01]', 'opacity-30');
+          el.classList.add('opacity-100');
+        });
+
+        const card = SALES_DECK[this.currentIndex];
+
+        if (step === 1) {
+          modScience.classList.add('ring-4', 'ring-indigo-400', 'shadow-xl', 'scale-[1.01]');
+          modScript.classList.add('opacity-30');
+          modTrap.classList.add('opacity-30');
+          modScience.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          if (announce) ziggy.say(`🧠 Step 1 (The Science): ${card.ziggyTips.step1}`, 'thinking');
+        } else if (step === 2) {
+          modScript.classList.add('ring-4', 'ring-emerald-400', 'shadow-xl', 'scale-[1.01]');
+          modScience.classList.add('opacity-30');
+          modTrap.classList.add('opacity-30');
+          modScript.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          if (announce) ziggy.say(`🎯 Step 2 (Field Script): ${card.ziggyTips.step2}`, 'happy');
+        } else if (step === 3) {
+          modTrap.classList.add('ring-4', 'ring-rose-400', 'shadow-xl', 'scale-[1.01]');
+          modScience.classList.add('opacity-30');
+          modScript.classList.add('opacity-30');
+          modTrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          if (announce) ziggy.say(`⚠️ Step 3 (The Trap): ${card.ziggyTips.step3}`, 'thinking');
+        } else {
+          // All visible
+          if (announce) ziggy.say(`Viewing complete breakdown. Tap 'Guided Tour' to walk through each module automatically.`, 'happy');
+        }
+      }
+
+      /* Animated Guided Tour Sequence */
+      toggleGuidedTour() {
+        if (this.isTourRunning) {
+          this.stopGuidedTour();
+          ziggy.say(`Guided tour paused. Explore the sections at your own pace!`, 'neutral');
+        } else {
+          this.startGuidedTour();
+        }
+      }
+
+      startGuidedTour() {
+        this.isTourRunning = true;
+        document.getElementById('tour-icon').textContent = '⏹';
+        document.getElementById('tour-label').textContent = 'Stop Tour';
+        document.getElementById('tour-toggle-btn').classList.remove('bg-amber-100', 'text-amber-900', 'border-amber-300');
+        document.getElementById('tour-toggle-btn').classList.add('bg-rose-100', 'text-rose-900', 'border-rose-300');
+
+        const track = document.getElementById('tour-progress-track');
+        const meter = document.getElementById('tour-progress-meter');
+        track.classList.remove('hidden');
+
+        const runStep = (stepNum, duration, next) => {
+          if (!this.isTourRunning) return;
+          this.setStep(stepNum, true);
+          meter.style.transition = 'none';
+          meter.style.width = '0%';
+          void meter.offsetWidth;
+          meter.style.transition = `width ${duration}ms linear`;
+          meter.style.width = '100%';
+
+          this.tourTimeout = setTimeout(() => {
+            if (this.isTourRunning) next();
+          }, duration);
+        };
+
+        // Tour sequence: Step 1 (4.5s) -> Step 2 (5s) -> Step 3 (4.5s) -> All (Wrap up)
+        runStep(1, 4500, () => {
+          runStep(2, 5000, () => {
+            runStep(3, 4500, () => {
+              this.setStep(0, false);
+              this.stopGuidedTour();
+              sound.playSuccess();
+              ziggy.say(`🎉 Tour complete! Try 'Memorize Mode' now to test active recall of the script!`, 'happy');
+            });
+          });
+        });
+      }
+
+      stopGuidedTour() {
+        this.isTourRunning = false;
+        clearTimeout(this.tourTimeout);
+        const icon = document.getElementById('tour-icon');
+        const label = document.getElementById('tour-label');
+        const btn = document.getElementById('tour-toggle-btn');
+        const track = document.getElementById('tour-progress-track');
+        if (icon) icon.textContent = '▶';
+        if (label) label.textContent = 'Guided Tour';
+        if (btn) {
+          btn.classList.add('bg-amber-100', 'text-amber-900', 'border-amber-300');
+          btn.classList.remove('bg-rose-100', 'text-rose-900', 'border-rose-300');
+        }
+        if (track) track.classList.add('hidden');
+      }
+
+      /* Active Recall Cloze Memorization Mode */
+      toggleMemorizeMode() {
+        this.memorizeMode = !this.memorizeMode;
+        sound.playStepClick();
+        const btn = document.getElementById('cloze-toggle-btn');
+        const label = document.getElementById('cloze-label');
+        const hint = document.getElementById('cloze-hint-banner');
+
+        if (this.memorizeMode) {
+          btn.classList.remove('bg-brand-50', 'text-brand-700', 'border-brand-200');
+          btn.classList.add('bg-purple-600', 'text-white', 'border-purple-700');
+          label.textContent = 'Active Recall ON';
+          hint.classList.remove('hidden');
+          ziggy.say(`🧠 Memorize Mode Active! The key persuasion words are blanked out. Tap each capsule to reveal!`, 'happy');
+        } else {
+          btn.classList.add('bg-brand-50', 'text-brand-700', 'border-brand-200');
+          btn.classList.remove('bg-purple-600', 'text-white', 'border-purple-700');
+          label.textContent = 'Memorize Mode';
+          hint.classList.add('hidden');
+          ziggy.say(`Memorize mode off. Full script displayed!`, 'neutral');
+        }
+
+        this.renderScriptArea();
+      }
+
+      renderScriptArea() {
+        const card = SALES_DECK[this.currentIndex];
+        const display = document.getElementById('card-script-display');
+        const badge = document.getElementById('cloze-score-badge');
+
+        if (!this.memorizeMode) {
+          // Normal mode with emphasized trigger words
+          let html = `"${card.fullScript}"`;
+          card.clozeTokens.forEach(token => {
+            const re = new RegExp(`(${token})`, 'gi');
+            html = html.replace(re, `<span class="text-emerald-300 font-black border-b border-emerald-500/50">$1</span>`);
+          });
+          display.innerHTML = html;
+          return;
+        }
+
+        // Cloze Active Recall mode
+        let html = `"${card.fullScript}"`;
+        let totalClozes = card.clozeTokens.length;
+
+        card.clozeTokens.forEach((token, idx) => {
+          const isRevealed = this.revealedClozes.has(token);
+          const re = new RegExp(`(${token})`, 'gi');
+
+          if (isRevealed) {
+            html = html.replace(re, `<span class="cloze-blank revealed">✓ $1</span>`);
+          } else {
+            html = html.replace(re, `<span onclick="event.stopPropagation(); flashcards.revealCloze('${token}')" class="cloze-blank" title="Tap to verify recall">[ ??? ]</span>`);
+          }
+        });
+
+        display.innerHTML = html;
+        if (badge) {
+          badge.textContent = `${this.revealedClozes.size} / ${totalClozes} Revealed`;
+        }
+      }
+
+      revealCloze(token) {
+        sound.playClozePop();
+        this.revealedClozes.add(token);
+        this.renderScriptArea();
+
+        const card = SALES_DECK[this.currentIndex];
+        if (this.revealedClozes.size === card.clozeTokens.length) {
+          sound.playSuccess();
+          app.addXP(10);
+          ziggy.say(`🎯 Excellent recall! You remembered every trigger in this script! (+10 XP)`, 'happy');
+          if (typeof confetti === 'function') confetti({ particleCount: 30, spread: 50 });
+        }
+      }
+
+      rate(success) {
+        this.stopGuidedTour();
+
+        if (success) {
+          sound.playSuccess();
+          app.addXP(15);
+          ziggy.say(`Nailed it! That psychological capability is now wired into your sales nervous system.`, 'happy');
+          app.markCardMastered(SALES_DECK[this.currentIndex].id);
+          this.sparkConfetti();
+        } else {
+          sound.playBuzzer();
+          ziggy.say(`No problem! Repetition builds persuasion reflexes. We'll cycle this card back soon.`, 'thinking');
+        }
+
+        setTimeout(() => {
+          this.currentIndex = (this.currentIndex + 1) % SALES_DECK.length;
+          this.loadCard();
+        }, 320);
+      }
+
+      sparkConfetti() {
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 35,
+            spread: 55,
+            origin: { y: 0.7 }
+          });
+        }
+      }
+
+      copyScript() {
+        const card = SALES_DECK[this.currentIndex];
+        const copyLabel = document.getElementById('copy-label');
+        const temp = document.createElement("textarea");
+        temp.value = card.fullScript;
+        temp.style.position = "fixed";
+        temp.style.opacity = "0";
+        document.body.appendChild(temp);
+        temp.select();
+        try {
+          document.execCommand('copy');
+          copyLabel.textContent = 'Copied!';
+          sound.playVoiceBlip(560);
+          setTimeout(() => copyLabel.textContent = 'Copy Script', 1500);
+        } catch (err) {
+          console.error(err);
+        }
+        document.body.removeChild(temp);
+      }
+    }
+
+    const flashcards = new FlashcardEngine();
+
+    /* =========================================================
+     * 6. SURPRISE TRIVIA CONTROLLER (ZIGGY'S SALES BLITZ)
+     * ========================================================= */
+    class TriviaBlitz {
+      constructor() {
+        this.isOpen = false;
+        this.timer = 15;
+        this.timerInterval = null;
+        this.currentQ = null;
+        this.answered = false;
+      }
+
+      triggerSurpriseQuiz() {
+        flashcards.stopGuidedTour();
+        this.isOpen = true;
+        this.answered = false;
+        this.timer = 15;
+        sound.playAlarm();
+
+        this.currentQ = TRIVIA_BANK[Math.floor(Math.random() * TRIVIA_BANK.length)];
+        ziggy.say(`🚨 SALES BLITZ! A tough buyer just dropped an objection. Choose the winning response!`, 'quiz');
+
+        document.getElementById('quiz-tag').textContent = this.currentQ.tag;
+        document.getElementById('quiz-question').textContent = this.currentQ.q;
+        document.getElementById('quiz-feedback-box').classList.add('hidden');
+        document.getElementById('quiz-continue-btn').classList.add('hidden');
+
+        const container = document.getElementById('quiz-options-container');
+        container.innerHTML = this.currentQ.options.map((opt, i) => `
+          <button onclick="trivia.pickOption(${i})" id="q-opt-${i}" class="tactile-btn w-full text-left p-3.5 rounded-2xl bg-slate-50 border-2 border-slate-200 hover:border-brand-500 font-bold text-xs sm:text-sm text-slate-800 flex items-center gap-3 transition-colors shadow-sm">
+            <span class="w-6 h-6 rounded-lg bg-white border border-slate-300 flex items-center justify-center text-xs font-black text-slate-600 flex-shrink-0">
+              ${i + 1}
+            </span>
+            <span class="flex-1">${opt}</span>
+          </button>
+        `).join('');
+
+        const modal = document.getElementById('trivia-modal');
+        const panel = document.getElementById('trivia-modal-panel');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+          panel.classList.remove('scale-95', 'opacity-0');
+          panel.classList.add('scale-100', 'opacity-100');
+        }, 10);
+
+        this.startTimer();
+      }
+
+      startTimer() {
+        clearInterval(this.timerInterval);
+        this.updateTimerUI();
+        this.timerInterval = setInterval(() => {
+          this.timer--;
+          this.updateTimerUI();
+          if (this.timer <= 0) {
+            clearInterval(this.timerInterval);
+            this.handleTimeout();
+          }
+        }, 1000);
+      }
+
+      updateTimerUI() {
+        const ring = document.getElementById('quiz-timer-ring');
+        const txt = document.getElementById('quiz-timer-text');
+        txt.textContent = this.timer;
+        const total = 100.5;
+        const offset = total - (this.timer / 15) * total;
+        ring.style.strokeDashoffset = offset;
+        ring.setAttribute('stroke', this.timer <= 4 ? '#ef4444' : '#8b5cf6');
+      }
+
+      pickOption(index) {
+        if (this.answered) return;
+        this.answered = true;
+        clearInterval(this.timerInterval);
+
+        const isCorrect = index === this.currentQ.correct;
+        const chosenBtn = document.getElementById(`q-opt-${index}`);
+        const correctBtn = document.getElementById(`q-opt-${this.currentQ.correct}`);
+
+        if (isCorrect) {
+          sound.playSuccess();
+          chosenBtn.classList.remove('bg-slate-50', 'border-slate-200');
+          chosenBtn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-950');
+          app.addXP(30);
+          ziggy.say(`🎯 BOOM! Exactly right! You just navigated that psychological defense like a master.`, 'happy');
+          if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 60 });
+        } else {
+          sound.playBuzzer();
+          if (chosenBtn) chosenBtn.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-950');
+          if (correctBtn) correctBtn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-950');
+          ziggy.say(`Ouch! Review the debrief below to see the neuro-psychology at play.`, 'thinking');
+        }
+
+        this.showDebrief(isCorrect);
+      }
+
+      handleTimeout() {
+        if (this.answered) return;
+        this.answered = true;
+        sound.playBuzzer();
+        const correctBtn = document.getElementById(`q-opt-${this.currentQ.correct}`);
+        if (correctBtn) correctBtn.classList.add('bg-emerald-100', 'border-emerald-500');
+        ziggy.say(`⏰ Time's up! In live sales calls, hesitation kills momentum. Here is the breakdown:`, 'thinking');
+        this.showDebrief(false);
+      }
+
+      showDebrief(isCorrect) {
+        const box = document.getElementById('quiz-feedback-box');
+        const title = document.getElementById('quiz-feedback-title');
+        const text = document.getElementById('quiz-feedback-text');
+        const btn = document.getElementById('quiz-continue-btn');
+
+        box.className = `p-4 rounded-2xl mb-4 border ${isCorrect ? 'bg-emerald-50 border-emerald-200 text-emerald-950' : 'bg-rose-50 border-rose-200 text-rose-950'}`;
+        title.textContent = isCorrect ? "✨ Psychological Edge Secured (+30 XP)" : "⚠️ Objection Mishandled";
+        text.textContent = this.currentQ.debrief;
+
+        box.classList.remove('hidden');
+        btn.classList.remove('hidden');
+      }
+
+      closeModal() {
+        const modal = document.getElementById('trivia-modal');
+        const panel = document.getElementById('trivia-modal-panel');
+        panel.classList.remove('scale-100', 'opacity-100');
+        panel.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+          modal.classList.add('hidden');
+          this.isOpen = false;
+        }, 150);
+      }
+    }
+
+    const trivia = new TriviaBlitz();
+
+    /* =========================================================
+     * 7. STATE ENGINE & XP TRACKER
+     * ========================================================= */
+    class AppState {
+      constructor() {
+        this.xp = parseInt(localStorage.getItem('cz_xp') || '0', 10);
+        this.streak = parseInt(localStorage.getItem('cz_streak') || '3', 10);
+        this.masteredCards = JSON.parse(localStorage.getItem('cz_mastered') || '[]');
+        this.updateUI();
+      }
+
+      addXP(pts) {
+        this.xp += pts;
+        localStorage.setItem('cz_xp', this.xp);
+        this.updateUI();
+      }
+
+      markCardMastered(id) {
+        if (!this.masteredCards.includes(id)) {
+          this.masteredCards.push(id);
+          localStorage.setItem('cz_mastered', JSON.stringify(this.masteredCards));
+        }
+      }
+
+      getRank() {
+        if (this.xp < 100) return { title: "Rookie Pitcher", desc: "Learning basic cognitive triggers and discovery hooks." };
+        if (this.xp < 250) return { title: "Rapport Specialist", desc: "Mastering mirror neurons and tactical empathy." };
+        if (this.xp < 500) return { title: "Cognitive Negotiator", desc: "Anchoring high-ticket contracts and de-escalating resistance." };
+        return { title: "Grandmaster of Persuasion", desc: "Subconsciously navigating any buyer objection with ease." };
+      }
+
+      updateUI() {
+        const xpEl = document.getElementById('xp-counter');
+        const streakEl = document.getElementById('streak-count');
+        if (xpEl) xpEl.textContent = `${this.xp} XP`;
+        if (streakEl) streakEl.textContent = this.streak;
+      }
+
+      showRankModal() {
+        sound.playVoiceBlip(520);
+        const rank = this.getRank();
+        document.getElementById('modal-rank-title').textContent = rank.title;
+        document.getElementById('modal-rank-desc').textContent = rank.desc;
+        document.getElementById('modal-total-xp').textContent = this.xp;
+        document.getElementById('modal-cards-mastered').textContent = `${this.masteredCards.length} / ${SALES_DECK.length}`;
+        document.getElementById('rank-modal').classList.remove('hidden');
+      }
+
+      closeRankModal() {
+        document.getElementById('rank-modal').classList.add('hidden');
+      }
+
+      showResetModal() {
+        sound.playVoiceBlip(400);
+        document.getElementById('reset-modal').classList.remove('hidden');
+      }
+
+      closeResetModal() {
+        document.getElementById('reset-modal').classList.add('hidden');
+      }
+
+      confirmReset() {
+        this.xp = 0;
+        this.masteredCards = [];
+        localStorage.setItem('cz_xp', '0');
+        localStorage.setItem('cz_mastered', '[]');
+        this.updateUI();
+        this.closeResetModal();
+        flashcards.currentIndex = 0;
+        flashcards.loadCard();
+        ziggy.say("Fresh slate! Let's build your sales persuasion instincts from scratch!", 'happy');
+      }
+    }
+
+    const app = new AppState();
+  </script>
+</body>
+</html>
