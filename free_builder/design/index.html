@@ -1,1456 +1,2377 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>SYNAPSE // The Art of Making - A Design Thinking Platformer</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- React 18 & ReactDOM -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  
-  <!-- Babel Standalone (runs JSX natively in browser) -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  
-  <!-- Canvas Confetti -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import {
+  Sparkles,
+  Volume2,
+  VolumeX,
+  RotateCcw,
+  BookOpen,
+  X,
+  ChevronRight,
+  Copy,
+  Check,
+  Award,
+  Play,
+  Activity,
+  Zap,
+  Gift,
+  Eye,
+  Lightbulb,
+  Radio,
+  Sliders,
+  Layers,
+  HeartHandshake,
+  Compass,
+  ArrowRight,
+  Flame,
+  Feather
+} from 'lucide-react';
 
-  <!-- Google Fonts: Inter & JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+class SynapseAudioEngine {
+  constructor() {
+    this.ctx = null;
+    this.muted = false;
+    this.droneOsc = null;
+    this.droneGain = null;
+  }
 
-  <style>
-    * {
-      box-sizing: border-box;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #07080d;
-      color: #f1f5f9;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      overflow: hidden;
-    }
-    code, pre, .font-mono {
-      font-family: 'JetBrains Mono', monospace;
-    }
-    /* Custom scrollbar for codex drawer */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.6);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(56, 189, 248, 0.25);
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(56, 189, 248, 0.5);
-    }
-  </style>
-</head>
-<body class="bg-[#07080d] text-slate-100 antialiased h-screen w-screen overflow-hidden">
-  <div id="root" class="h-full w-full"></div>
-
-  <script type="text/babel">
-    const { useState, useEffect, useRef } = React;
-
-    // --- SOUND SYNTHESIS ENGINE (Web Audio API - Zero External Audio Dependencies) ---
-    class AudioEngine {
-      constructor() {
-        this.ctx = null;
-        this.muted = false;
+  init() {
+    if (!this.ctx && typeof window !== 'undefined') {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) {
+        this.ctx = new AudioCtx();
+        this.startAmbientHum();
       }
-      init() {
-        if (!this.ctx) {
-          const AudioContext = window.AudioContext || window.webkitAudioContext;
-          this.ctx = new AudioContext();
+    }
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  }
+
+  startAmbientHum() {
+    if (this.muted || !this.ctx || this.droneOsc) return;
+    try {
+      this.droneOsc = this.ctx.createOscillator();
+      this.droneGain = this.ctx.createGain();
+      const filter = this.ctx.createBiquadFilter();
+
+      this.droneOsc.type = 'sine';
+      this.droneOsc.frequency.setValueAtTime(55, this.ctx.currentTime); // Sub-bass 55Hz A1
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(160, this.ctx.currentTime);
+
+      this.droneGain.gain.setValueAtTime(0.001, this.ctx.currentTime);
+      this.droneGain.gain.linearRampToValueAtTime(0.015, this.ctx.currentTime + 2.5);
+
+      this.droneOsc.connect(filter);
+      filter.connect(this.droneGain);
+      this.droneGain.connect(this.ctx.destination);
+      this.droneOsc.start();
+    } catch (e) {}
+  }
+
+  playTone(freq, duration = 0.2, type = 'sine', gainVal = 0.08, glideFreq = null) {
+    if (this.muted) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const filter = this.ctx.createBiquadFilter();
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(2600, this.ctx.currentTime);
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+      if (glideFreq) {
+        osc.frequency.exponentialRampToValueAtTime(glideFreq, this.ctx.currentTime + duration);
+      }
+
+      gain.gain.setValueAtTime(0.0001, this.ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(gainVal, this.ctx.currentTime + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start();
+      osc.stop(this.ctx.currentTime + duration);
+    } catch (e) {}
+  }
+
+  jump() {
+    this.playTone(340, 0.16, 'triangle', 0.07, 680);
+  }
+
+  dash() {
+    this.playTone(210, 0.18, 'sawtooth', 0.06, 60);
+  }
+
+  probePulse() {
+    this.playTone(440, 0.28, 'sine', 0.1, 880);
+    setTimeout(() => this.playTone(659.25, 0.35, 'sine', 0.08, 1046.5), 90);
+  }
+
+  bubbleBounce() {
+    this.playTone(280, 0.28, 'sine', 0.12, 620);
+    setTimeout(() => this.playTone(560, 0.22, 'triangle', 0.08, 840), 60);
+  }
+
+  bubblePop() {
+    this.playTone(740, 0.09, 'sine', 0.14, 1480);
+    setTimeout(() => this.playTone(980, 0.12, 'triangle', 0.08, 320), 40);
+  }
+
+  insightRevealed() {
+    const notes = [523.25, 659.25, 783.99, 1046.5, 1318.51];
+    notes.forEach((n, idx) => {
+      setTimeout(() => this.playTone(n, 0.32, 'sine', 0.09), idx * 60);
+    });
+  }
+
+  secretChime() {
+    const chord = [440, 554.37, 659.25, 880, 1108.73];
+    chord.forEach((n, idx) => {
+      setTimeout(() => this.playTone(n, 0.45, 'triangle', 0.08), idx * 80);
+    });
+  }
+
+  victoryFanfare() {
+    const victoryChord = [392.0, 493.88, 587.33, 783.99, 987.77, 1174.66];
+    victoryChord.forEach((n, idx) => {
+      setTimeout(() => this.playTone(n, 1.2, 'sine', 0.11), idx * 110);
+    });
+  }
+}
+
+const audio = new SynapseAudioEngine();
+
+const DESIGN_STAGES = [
+  {
+    id: 1,
+    code: '01',
+    phase: 'EMPATHIZE',
+    title: 'The Unspoken Resonance',
+    tagline: 'Loud complaints are often decoys. Probe deeper to reveal the user\'s true vulnerability.',
+    accent: '#8b5cf6', // Violet
+    secondary: '#c4b5fd',
+    actionHint: 'Approach users with [E / Probe Button] to dissolve surface decoys and extract Latent Needs.',
+    blueprint: {
+      framework: 'Contextual Shadowing & Latent Need Discovery',
+      metaphor: 'Loud user requests ("Give us 10 more export filters!") are usually coping mechanisms for anxiety or lack of confidence. When you actively probe with observational silence, the real latent friction surfaces.',
+      agenda: '1. Observe without pitching: Record users performing the routine in their own unvarnished software environment.\n2. Note awkward workarounds (e.g. copying into private spreadsheets, sticky notes on screens).\n3. Ask: "What feeling does this workaround evoke?" rather than "Do you want a feature?"'
+    }
+  },
+  {
+    id: 2,
+    code: '02',
+    phase: 'DEFINE',
+    title: 'The POV Convergence',
+    tagline: 'Align User, System Friction, and Root Insight to lock the light bridge across the chasm.',
+    accent: '#06b6d4', // Cyan
+    secondary: '#67e8f9',
+    actionHint: 'Probe the false requirement node to convert surface noise into a razor-sharp Point-of-View.',
+    blueprint: {
+      framework: 'The Anti-Assumption POV Formula & HMW Lens',
+      metaphor: 'Attempting to build before defining the single root constraint leads to falling into the void. A razor-sharp POV aligns the whole team into a single concentrated beam of energy.',
+      agenda: 'Fill the POV formula collaboratively:\n"[Specific User Persona] urgently needs a way to [Actionable Outcome] because surprisingly [Latent Human Root Insight]."\nConvert into 3 divergent "How Might We" sprint challenges.'
+    }
+  },
+  {
+    id: 3,
+    code: '03',
+    phase: 'IDEATE',
+    title: 'The Buoyant Canopy',
+    tagline: 'Weightless exploration. Ride kinetic idea bubbles, float on thermals, and shatter doubts.',
+    accent: '#f59e0b', // Amber
+    secondary: '#fcd34d',
+    actionHint: 'Hold UP / SPACE to float in the idea thermals. Pop skepticism barriers effortlessly.',
+    blueprint: {
+      framework: 'Crazy 8s & Idea Divergence Protocol',
+      metaphor: 'Early ideation must feel buoyant and safe. Sarcastic doubts ("We already tried that", "No budget") are fragile bubbles that pop the second they are exposed to bold creative exploration.',
+      agenda: 'Execute an 8-minute Crazy 8s sprint:\n- Fold paper into 8 panels. 60 seconds per sketch.\n- Strict ban on critique: No "Yeah, but..." allowed.\n- Silent dot-voting only after all ideas are hung simultaneously.'
+    }
+  },
+  {
+    id: 4,
+    code: '04',
+    phase: 'PROTOTYPE',
+    phaseName: 'PROTOTYPE',
+    title: 'The Fail-Forward Foundry',
+    tagline: 'Prototypes are disposable questions. Every failed jump leaves a permanent solid stepping stone.',
+    accent: '#10b981', // Emerald
+    secondary: '#6ee7b7',
+    actionHint: 'Deploy MVP Wireframe Blocks [Q / F] or leap into the void: each failure creates a climbable Ghost platform!',
+    blueprint: {
+      framework: 'The 4-Hour Disposable Prototype Experiment',
+      metaphor: 'The chasm is too wide for a single leap of intuition. Every failed prototype is not a catastrophe; it is physical terrain gained that allows the next iteration to climb higher.',
+      agenda: 'Disposable Experiment Rules:\n- Build low-fidelity prototypes in under 4 hours (paper, clickable Figma, or no-code mockup).\n- Treat early failure as telemetry, not deficiency.\n- Test specifically to falsify risky assumptions.'
+    }
+  },
+  {
+    id: 5,
+    code: '05',
+    phase: 'TEST',
+    title: 'The Validation Summit',
+    tagline: 'Embrace candid scrutiny. Ride user feedback currents to achieve Product-Market Fit.',
+    accent: '#ec4899', // Pink
+    secondary: '#f472b6',
+    actionHint: 'Navigate customer validation winds, gather 3 Delight Stars, and ascend to the summit beacon.',
+    blueprint: {
+      framework: 'The "I Like, I Wish, What If" Feedback Matrix',
+      metaphor: 'User feedback is not a hostile judgment—it is upward air currents that lift your product from average execution to market adoration.',
+      agenda: 'Conduct 3 silent walk-through interviews:\n- Give the user the prototype with zero hints.\n- Log verbatim observations into 3 columns: "I Like", "I Wish", and "What If".\n- Iterate the design before touching production code.'
+    }
+  }
+];
+
+const EASTER_EGGS_ARCHIVE = [
+  {
+    id: 'beginners_mind',
+    title: "The Beginner's Mind",
+    trigger: 'Walk backward into the mysterious ledge at the very start of Level 1',
+    quote: '"In the beginner\'s mind there are many possibilities; in the expert\'s mind there are few." — Shunryu Suzuki',
+    workplaceTip: 'Drop your industry tenure at the door. When starting user discovery, pretend you know nothing. Ask naive, open-ended questions that challenge organizational orthodoxies.',
+    unlocked: false
+  },
+  {
+    id: 'extreme_user',
+    title: 'The Extreme User (Edge Case)',
+    trigger: 'Balance precariously on a cliff precipice for 2.5 continuous seconds',
+    quote: '"Design for the extreme edges; the middle will naturally take care of itself." — IDEO Core Tenet',
+    workplaceTip: 'Mainstream average users will rarely articulate novel friction—they adapt with quiet resignation. Interview extreme outliers: the complete novice who refuses to use the app, and the power user who built 14 external spreadsheets to bypass it.',
+    unlocked: false
+  },
+  {
+    id: 'five_whys',
+    title: 'The 5 Whys Rabbit Hole',
+    trigger: 'Probe the dead-end wall 5 times in Level 2',
+    quote: '"Ask \'why\' five times about every problem to reveal systemic truth." — Sakichi Toyoda (Toyota)',
+    workplaceTip: 'When an executive demands: "We need an export to CSV button," ask why 5 times. You will almost always discover they have a broken weekly communication sync with finance, saving weeks of needless UI building.',
+    unlocked: false
+  },
+  {
+    id: 'worst_idea',
+    title: 'The "Worst Possible Idea" Inversion',
+    trigger: 'Embrace a void descent without fear in Stage 4',
+    quote: '"To get good ideas, you must generate bad ideas first." — Alex Osborn',
+    workplaceTip: 'Break team analysis paralysis with a 5-minute "Worst Possible Idea" session. Asking for catastrophically bad solutions strips away fear of judgment and sparks non-obvious breakthroughs.',
+    unlocked: false
+  },
+  {
+    id: 'parkinsons_law',
+    title: "Parkinson's Law of Meetings",
+    trigger: 'Float inside a kinetic idea bubble for 3.5 continuous seconds in Stage 3',
+    quote: '"Work expands to fill the time available for its completion." — C. Northcote Parkinson',
+    workplaceTip: 'Cut regular 60-minute ideation meetings to 22-minute rapid standups. Tight constraints enforce higher cognitive focus and eliminate meandering political debates.',
+    unlocked: false
+  }
+];
+
+const STAGE_WORLDS = [
+  // Stage 1: Empathize
+  {
+    worldWidth: 1750,
+    playerStart: { x: 70, y: 310 },
+    platforms: [
+      { x: 0, y: 380, w: 260, h: 60, type: 'solid' },
+      { x: 860, y: 380, w: 240, h: 60, type: 'solid' },
+      { x: 1450, y: 380, w: 300, h: 60, type: 'solid' },
+      // Hidden platforms only revealed when Latent Need is extracted
+      { x: 340, y: 330, w: 110, h: 16, type: 'revealed_bridge', revealed: false },
+      { x: 510, y: 270, w: 120, h: 16, type: 'revealed_bridge', revealed: false },
+      { x: 680, y: 220, w: 110, h: 16, type: 'revealed_bridge', revealed: false },
+      { x: 1160, y: 320, w: 120, h: 16, type: 'revealed_bridge', revealed: false },
+      { x: 1320, y: 260, w: 90, h: 16, type: 'revealed_bridge', revealed: false }
+    ],
+    // The User Persona with Surface Complaint vs Hidden Latent Need
+    persona: {
+      x: 190,
+      y: 350,
+      name: 'Maya, Operations Director',
+      surfaceRequest: '“Just build me 14 more custom filter buttons and weekly PDFs!”',
+      hiddenNeed: '“I feel anxious in front of the board. I need automated confidence, not more manual filters.”',
+      insightKey: 'Confidence over Complexity',
+      probed: false,
+      probeRadius: 160
+    },
+    // Interactive Flora that bloom when brushed against
+    flora: [
+      { x: 120, y: 380, color: '#a78bfa', stemHeight: 28, sway: 0, bloomed: false },
+      { x: 220, y: 380, color: '#38bdf8', stemHeight: 34, sway: 0, bloomed: false },
+      { x: 920, y: 380, color: '#34d399', stemHeight: 30, sway: 0, bloomed: false },
+      { x: 1520, y: 380, color: '#f472b6', stemHeight: 36, sway: 0, bloomed: false }
+    ],
+    sparks: [
+      { id: 's1_1', x: 400, y: 290, label: 'Unspoken Strain' },
+      { id: 's1_2', x: 735, y: 180, label: 'Contextual Reality' },
+      { id: 's1_3', x: 1360, y: 220, label: 'True Latent Value' }
+    ],
+    beacon: { x: 1620, y: 300, w: 32, h: 80 }
+  },
+
+  // Stage 2: Define
+  {
+    worldWidth: 1800,
+    playerStart: { x: 70, y: 310 },
+    platforms: [
+      { x: 0, y: 380, w: 260, h: 60, type: 'solid' },
+      { x: 380, y: 320, w: 100, h: 16, type: 'solid' },
+      { x: 570, y: 250, w: 110, h: 16, type: 'solid' },
+      { x: 760, y: 190, w: 110, h: 16, type: 'solid' },
+      { x: 1450, y: 380, w: 350, h: 60, type: 'solid' },
+      // Dead-end wall for Sakichi Toyoda 5 Whys Easter Egg
+      { x: 250, y: 220, w: 18, h: 160, type: 'wall_5whys', label: 'Superficial Wall' }
+    ],
+    // The Light Bridge across the chasm, activated when Surface Noise is probed into True POV
+    lightBridge: { x: 870, y: 260, w: 580, h: 14, active: false },
+    persona: {
+      x: 810,
+      y: 160,
+      name: 'Executive Stakeholder',
+      surfaceRequest: '“We must ship the competitor’s feature list immediately!”',
+      hiddenNeed: '“We are losing enterprise trust because our onboarding takes 3 weeks.”',
+      insightKey: 'POV: Time-to-Value > Feature Parity',
+      probed: false,
+      probeRadius: 150
+    },
+    flora: [
+      { x: 140, y: 380, color: '#38bdf8', stemHeight: 30, sway: 0, bloomed: false },
+      { x: 620, y: 250, color: '#818cf8', stemHeight: 24, sway: 0, bloomed: false },
+      { x: 1510, y: 380, color: '#06b6d4', stemHeight: 38, sway: 0, bloomed: false }
+    ],
+    sparks: [
+      { id: 's2_1', x: 430, y: 280, label: 'Latent User Friction' },
+      { id: 's2_2', x: 625, y: 210, label: 'Systemic Root Cause' }
+    ],
+    beacon: { x: 1640, y: 300, w: 32, h: 80 }
+  },
+
+  // Stage 3: Ideate (The Buoyant Canopy)
+  {
+    worldWidth: 2000,
+    playerStart: { x: 80, y: 280 },
+    platforms: [
+      { x: 0, y: 360, w: 220, h: 60, type: 'solid' },
+      { x: 1660, y: 340, w: 340, h: 80, type: 'solid' }
+    ],
+    safetyCloudFloor: { x: 0, y: 420, w: 2000, h: 50 },
+    updraftField: { x: 220, y: 20, w: 1440, h: 400 },
+    // Interactive kinetic bubbles that Kibo can ride or pop
+    bubbles: [
+      { id: 'b1', x: 380, y: 280, radius: 28, vx: 0.2, vy: -0.3, popped: false },
+      { id: 'b2', x: 680, y: 220, radius: 32, vx: -0.25, vy: -0.2, popped: false },
+      { id: 'b3', x: 1040, y: 260, radius: 30, vx: 0.3, vy: -0.25, popped: false },
+      { id: 'b4', x: 1380, y: 200, radius: 34, vx: -0.2, vy: -0.3, popped: false }
+    ],
+    doubtWalls: [
+      { id: 'dw1', x: 540, y: 120, w: 22, h: 200, label: '“Too Risky”', popped: false },
+      { id: 'dw2', x: 920, y: 100, w: 22, h: 220, label: '“No Budget”', popped: false },
+      { id: 'dw3', x: 1300, y: 120, w: 22, h: 200, label: '“Not Feasible”', popped: false }
+    ],
+    flora: [
+      { x: 100, y: 360, color: '#f59e0b', stemHeight: 36, sway: 0, bloomed: false },
+      { x: 1720, y: 340, color: '#fbbf24', stemHeight: 32, sway: 0, bloomed: false }
+    ],
+    sparks: [
+      { id: 's3_1', x: 440, y: 180, label: '💡 Wild Analogy' },
+      { id: 's3_2', x: 800, y: 150, label: '💡 Radical Inversion' },
+      { id: 's3_3', x: 1180, y: 170, label: '💡 Cross-Domain Mashup' }
+    ],
+    beacon: { x: 1820, y: 260, w: 40, h: 80 }
+  },
+
+  // Stage 4: Prototype (Fail Forward)
+  {
+    worldWidth: 1750,
+    playerStart: { x: 70, y: 310 },
+    platforms: [
+      { x: 0, y: 380, w: 240, h: 60, type: 'solid' },
+      { x: 1340, y: 160, w: 410, h: 280, type: 'solid' }
+    ],
+    flora: [
+      { x: 110, y: 380, color: '#10b981', stemHeight: 32, sway: 0, bloomed: false },
+      { x: 1420, y: 160, color: '#34d399', stemHeight: 36, sway: 0, bloomed: false }
+    ],
+    sparks: [
+      { id: 's4_1', x: 1480, y: 100, label: 'Validated Prototype' }
+    ],
+    beacon: { x: 1600, y: 80, w: 32, h: 80 }
+  },
+
+  // Stage 5: Test (Validation Summit)
+  {
+    worldWidth: 1900,
+    playerStart: { x: 70, y: 310 },
+    platforms: [
+      { x: 0, y: 380, w: 260, h: 60, type: 'solid' },
+      { x: 340, y: 320, w: 100, h: 16, type: 'solid' },
+      { x: 540, y: 260, w: 110, h: 16, type: 'solid' },
+      { x: 740, y: 200, w: 110, h: 16, type: 'solid' },
+      { x: 950, y: 280, w: 110, h: 16, type: 'solid' },
+      { x: 1160, y: 220, w: 120, h: 16, type: 'solid' },
+      { x: 1380, y: 160, w: 120, h: 16, type: 'solid' },
+      { x: 1580, y: 380, w: 320, h: 60, type: 'solid' }
+    ],
+    currents: [
+      { x: 660, y: 140, w: 70, h: 240, forceY: -0.72, label: 'Affirmative Signal' },
+      { x: 1280, y: 100, w: 80, h: 260, forceY: -0.8, label: 'Customer Delight' }
+    ],
+    flora: [
+      { x: 120, y: 380, color: '#ec4899', stemHeight: 34, sway: 0, bloomed: false },
+      { x: 790, y: 200, color: '#f472b6', stemHeight: 26, sway: 0, bloomed: false },
+      { x: 1640, y: 380, color: '#fb7185', stemHeight: 38, sway: 0, bloomed: false }
+    ],
+    sparks: [
+      { id: 's5_1', x: 590, y: 210, label: '⭐️ Usability Clarity' },
+      { id: 's5_2', x: 795, y: 150, label: '⭐️ Core Value Proof' },
+      { id: 's5_3', x: 1430, y: 110, label: '⭐️ Market Resonance' }
+    ],
+    beacon: { x: 1740, y: 300, w: 32, h: 80 }
+  }
+];
+
+export default function App() {
+  const [hasStarted, setHasStarted] = useState(false);
+  const [stageIndex, setStageIndex] = useState(0);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [ideaWings, setIdeaWings] = useState(false);
+  const [blueprintOpen, setBlueprintOpen] = useState(false);
+  const [activeBlueprintTab, setActiveBlueprintTab] = useState('easter_eggs');
+  const [stageClearModal, setStageClearModal] = useState(false);
+  const [gameCompleted, setGameCompleted] = useState(false);
+  const [toastBanner, setToastBanner] = useState(null);
+  const [copySuccessKey, setCopySuccessKey] = useState(null);
+
+  // Easter Eggs State
+  const [easterEggs, setEasterEggs] = useState(EASTER_EGGS_ARCHIVE);
+  const [activeEggModal, setActiveEggModal] = useState(null);
+
+  // Discovery & Telemetry State
+  const [unspokenRevealedModal, setUnspokenRevealedModal] = useState(null);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [iterationRetries, setIterationRetries] = useState(0);
+  const [practitionerName, setPractitionerName] = useState('Alex Rivera');
+
+  // Crazy 8s Sprint Timer State
+  const [sprintRound, setSprintRound] = useState(1);
+  const [sprintSeconds, setSprintSeconds] = useState(60);
+  const [sprintRunning, setSprintRunning] = useState(false);
+
+  const canvasRef = useRef(null);
+  const currentStage = DESIGN_STAGES[stageIndex];
+
+  const gameStateRef = useRef({
+    cameraX: 0,
+    screenShake: 0,
+    kibo: {
+      x: 70,
+      y: 310,
+      vx: 0,
+      vy: 0,
+      w: 24,
+      h: 30,
+      facing: 1,
+      grounded: false,
+      coyoteTime: 0,
+      jumpBuffer: 0,
+      onWall: 0,
+      isDashing: false,
+      dashTimer: 0,
+      dashCooldown: 0,
+      // Fluid Animation Variables
+      blinkTimer: 100,
+      isBlinking: false,
+      squashX: 1,
+      squashY: 1,
+      antennaFrequency: 0,
+      antennaDetecting: false,
+      // 4-Segment Trailing Bezier Scarf
+      scarfPoints: [
+        { x: 70, y: 310 },
+        { x: 65, y: 314 },
+        { x: 60, y: 318 },
+        { x: 55, y: 322 }
+      ],
+      trailGhosts: []
+    },
+    // Discovery & Heuristics Tracking
+    heuristics: {
+      edgeTimer: 0,
+      wallTapCount: 0,
+      lastWallTapTime: 0,
+      bubbleRidingTimer: 0
+    },
+    keys: {
+      left: false,
+      right: false,
+      up: false,
+      dash: false,
+      probe: false
+    },
+    world: null,
+    collectedSparks: {},
+    placedBlocks: [],
+    ghostPlatforms: [],
+    ambientParticles: [],
+    shockwaves: [],
+    burstConfetti: []
+  });
+
+  const showToast = useCallback((msg) => {
+    setToastBanner(msg);
+    setTimeout(() => {
+      setToastBanner((prev) => (prev === msg ? null : prev));
+    }, 3200);
+  }, []);
+
+  const unlockEasterEgg = useCallback((eggId) => {
+    setEasterEggs((prev) => {
+      const match = prev.find((e) => e.id === eggId);
+      if (match && !match.unlocked) {
+        audio.secretChime();
+        setActiveEggModal(match);
+        return prev.map((e) => (e.id === eggId ? { ...e, unlocked: true } : e));
+      }
+      return prev;
+    });
+  }, []);
+
+  const loadWorld = useCallback((index, isRetry = false) => {
+    const rawStage = STAGE_WORLDS[index];
+    const deepWorld = JSON.parse(JSON.stringify(rawStage));
+    const s = gameStateRef.current;
+
+    s.cameraX = 0;
+    s.screenShake = 0;
+    s.kibo = {
+      x: deepWorld.playerStart.x,
+      y: deepWorld.playerStart.y,
+      vx: 0,
+      vy: 0,
+      w: 24,
+      h: 30,
+      facing: 1,
+      grounded: false,
+      coyoteTime: 0,
+      jumpBuffer: 0,
+      onWall: 0,
+      isDashing: false,
+      dashTimer: 0,
+      dashCooldown: 0,
+      blinkTimer: 100,
+      isBlinking: false,
+      squashX: 1,
+      squashY: 1,
+      antennaFrequency: 0,
+      antennaDetecting: false,
+      scarfPoints: [
+        { x: deepWorld.playerStart.x, y: deepWorld.playerStart.y },
+        { x: deepWorld.playerStart.x - 5, y: deepWorld.playerStart.y + 4 },
+        { x: deepWorld.playerStart.x - 10, y: deepWorld.playerStart.y + 8 },
+        { x: deepWorld.playerStart.x - 15, y: deepWorld.playerStart.y + 12 }
+      ],
+      trailGhosts: []
+    };
+
+    s.world = deepWorld;
+    s.collectedSparks = {};
+    s.placedBlocks = [];
+    s.shockwaves = [];
+    s.burstConfetti = [];
+    s.heuristics = { edgeTimer: 0, wallTapCount: 0, lastWallTapTime: 0, bubbleRidingTimer: 0 };
+
+    if (!isRetry) {
+      s.ghostPlatforms = [];
+    }
+
+    setStageClearModal(false);
+    setUnspokenRevealedModal(null);
+  }, []);
+
+  useEffect(() => {
+    loadWorld(stageIndex);
+  }, [stageIndex, loadWorld]);
+
+  // Master Telemetry Stopwatch
+  useEffect(() => {
+    if (!hasStarted || gameCompleted) return;
+    const interval = setInterval(() => setElapsedTime((s) => s + 1), 1000);
+    return () => clearInterval(interval);
+  }, [hasStarted, gameCompleted]);
+
+  // Audio Sync
+  useEffect(() => {
+    audio.muted = !soundEnabled;
+    if (soundEnabled && hasStarted) {
+      audio.init();
+    }
+  }, [soundEnabled, hasStarted]);
+
+  // Crazy 8s Facilitation Timer Loop
+  useEffect(() => {
+    let t;
+    if (sprintRunning) {
+      t = setInterval(() => {
+        setSprintSeconds((prev) => {
+          if (prev <= 1) {
+            audio.bubbleBounce();
+            if (sprintRound < 8) {
+              setSprintRound((r) => r + 1);
+              return 60;
+            } else {
+              setSprintRunning(false);
+              audio.victoryFanfare();
+              return 0;
+            }
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(t);
+  }, [sprintRunning, sprintRound]);
+
+  const handleDeployMVPBlock = useCallback(() => {
+    const s = gameStateRef.current;
+    if (stageIndex !== 3) return;
+
+    if (s.placedBlocks.length >= 3) {
+      s.placedBlocks.shift();
+    }
+
+    const spawnX = s.kibo.facing === 1 ? s.kibo.x + 32 : s.kibo.x - 84;
+    const spawnY = Math.min(360, Math.max(140, s.kibo.y + 10));
+
+    s.placedBlocks.push({
+      x: spawnX,
+      y: spawnY,
+      w: 72,
+      h: 14,
+      type: 'wireframe',
+      life: 280
+    });
+
+    audio.playTone(180, 0.15, 'triangle', 0.08, 90);
+    showToast('MVP Wireframe Deployed! [Leap upon it to bridge the chasm]');
+  }, [stageIndex, showToast]);
+
+  const triggerActiveListeningProbe = useCallback(() => {
+    const s = gameStateRef.current;
+    const kibo = s.kibo;
+    const world = s.world;
+
+    audio.probePulse();
+    s.screenShake = 6;
+
+    // Burst sonic rings from Kibo
+    s.shockwaves.push({
+      x: kibo.x + kibo.w / 2,
+      y: kibo.y + kibo.h / 2,
+      radius: 4,
+      maxRadius: 180,
+      alpha: 0.85,
+      color: '#8b5cf6'
+    });
+
+    if (world && world.persona && !world.persona.probed) {
+      const dist = Math.hypot(
+        kibo.x + kibo.w / 2 - world.persona.x,
+        kibo.y + kibo.h / 2 - world.persona.y
+      );
+
+      if (dist < world.persona.probeRadius) {
+        world.persona.probed = true;
+        audio.insightRevealed();
+        setUnspokenRevealedModal(world.persona);
+
+        // Stage 1: Reveal latent bridge slabs
+        if (world.platforms) {
+          world.platforms.forEach((p) => {
+            if (p.type === 'revealed_bridge') p.revealed = true;
+          });
         }
-        if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume();
+
+        // Stage 2: Manifest Light Bridge
+        if (world.lightBridge) {
+          world.lightBridge.active = true;
+        }
+
+        // Burst celebratory insight confetti
+        for (let i = 0; i < 24; i++) {
+          s.burstConfetti.push({
+            x: world.persona.x,
+            y: world.persona.y - 20,
+            vx: (Math.random() - 0.5) * 8,
+            vy: (Math.random() - 0.7) * 8,
+            color: ['#8b5cf6', '#38bdf8', '#fbbf24', '#ffffff'][Math.floor(Math.random() * 4)],
+            alpha: 1,
+            size: Math.random() * 4 + 3
+          });
         }
       }
-      playTone(freq, type = 'sine', duration = 0.15, gainVal = 0.08) {
-        if (this.muted) return;
-        this.init();
-        if (!this.ctx) return;
-        try {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = type;
-          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start();
-          osc.stop(this.ctx.currentTime + duration);
-        } catch (e) {}
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!hasStarted) {
+        if (e.key === ' ' || e.key === 'Enter') {
+          audio.init();
+          setHasStarted(true);
+        }
+        return;
       }
-      jump() { this.playTone(330, 'sine', 0.12, 0.08); }
-      trampoline() {
-        this.playTone(440, 'triangle', 0.25, 0.12);
-        setTimeout(() => this.playTone(660, 'sine', 0.25, 0.1), 80);
+
+      if (stageClearModal || blueprintOpen || activeEggModal || unspokenRevealedModal) {
+        if (e.key === 'Escape') {
+          setActiveEggModal(null);
+          setUnspokenRevealedModal(null);
+        }
+        return;
       }
-      dash() { this.playTone(180, 'sawtooth', 0.18, 0.05); }
-      sonar() {
-        this.playTone(523.25, 'sine', 0.35, 0.07);
-        setTimeout(() => this.playTone(659.25, 'sine', 0.35, 0.05), 90);
+
+      const k = gameStateRef.current.keys;
+      const p = gameStateRef.current.kibo;
+
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') k.left = true;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') k.right = true;
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W' || e.key === ' ') {
+        e.preventDefault();
+        k.up = true;
+        p.jumpBuffer = 7;
       }
-      collect() {
-        this.playTone(587.33, 'triangle', 0.12, 0.09);
-        setTimeout(() => this.playTone(880, 'triangle', 0.2, 0.09), 80);
+      if (e.key === 'Shift' || e.key === 'j' || e.key === 'J') {
+        e.preventDefault();
+        k.dash = true;
       }
-      shatter() {
-        this.playTone(120, 'square', 0.18, 0.06);
-        setTimeout(() => this.playTone(90, 'sawtooth', 0.2, 0.05), 60);
+      if (e.key === 'e' || e.key === 'E') {
+        triggerActiveListeningProbe();
       }
-      placeBlock() { this.playTone(280, 'triangle', 0.15, 0.08); }
-      fail() { this.playTone(140, 'sine', 0.35, 0.08); }
-      easterEgg() {
-        [523, 659, 783, 1046].forEach((f, idx) => {
-          setTimeout(() => this.playTone(f, 'sine', 0.2, 0.09), idx * 70);
+      if (e.key === 'q' || e.key === 'Q' || e.key === 'f' || e.key === 'F') {
+        handleDeployMVPBlock();
+      }
+      if (e.key === 'r' || e.key === 'R') {
+        setIterationRetries((r) => r + 1);
+        loadWorld(stageIndex, true);
+        showToast('Iterating... Respawned at baseline.');
+      }
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        setBlueprintOpen((prev) => !prev);
+      }
+    };
+
+    const handleKeyUp = (e) => {
+      const k = gameStateRef.current.keys;
+      const p = gameStateRef.current.kibo;
+
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') k.left = false;
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') k.right = false;
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W' || e.key === ' ') {
+        k.up = false;
+        if (p.vy < -2.4 && stageIndex !== 2) p.vy *= 0.45;
+      }
+      if (e.key === 'Shift' || e.key === 'j' || e.key === 'J') k.dash = false;
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [
+    hasStarted,
+    stageClearModal,
+    blueprintOpen,
+    activeEggModal,
+    unspokenRevealedModal,
+    stageIndex,
+    loadWorld,
+    handleDeployMVPBlock,
+    triggerActiveListeningProbe,
+    showToast
+  ]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animId;
+
+    const V_W = 860;
+    const V_H = 460;
+
+    // Movement Tuning Constants
+    const GRAV = 0.42;
+    const RUN_ACCEL = 0.78;
+    const FRICTION = 0.82;
+    const MAX_RUN_SPEED = 4.6;
+    const JUMP_IMPULSE = -9.6;
+    const DASH_SPEED = 10.6;
+    const DASH_FRAMES = 10;
+
+    const loop = () => {
+      const gs = gameStateRef.current;
+      const { kibo, keys, world, collectedSparks, placedBlocks, ghostPlatforms, shockwaves, burstConfetti, heuristics } = gs;
+      const stage = DESIGN_STAGES[stageIndex];
+
+      if (!world) {
+        animId = requestAnimationFrame(loop);
+        return;
+      }
+
+      kibo.blinkTimer--;
+      if (kibo.blinkTimer <= 0) {
+        kibo.isBlinking = true;
+        if (kibo.blinkTimer <= -9) {
+          kibo.isBlinking = false;
+          kibo.blinkTimer = Math.floor(Math.random() * 180 + 100);
+        }
+      }
+      kibo.squashX += (1 - kibo.squashX) * 0.14;
+      kibo.squashY += (1 - kibo.squashY) * 0.14;
+
+      // Antenna Friction Frequency (Detecting Unspoken Needs)
+      if (world.persona && !world.persona.probed) {
+        const dist = Math.hypot(
+          kibo.x + kibo.w / 2 - world.persona.x,
+          kibo.y + kibo.h / 2 - world.persona.y
+        );
+        kibo.antennaDetecting = dist < world.persona.probeRadius;
+        kibo.antennaFrequency += kibo.antennaDetecting ? 0.18 : 0.04;
+      } else {
+        kibo.antennaDetecting = false;
+        kibo.antennaFrequency += 0.04;
+      }
+
+      // Update 4-Segment Trailing Bezier Scarf
+      const headAnchorX = kibo.facing === 1 ? kibo.x + 4 : kibo.x + kibo.w - 4;
+      const headAnchorY = kibo.y + 14;
+      kibo.scarfPoints[0] = { x: headAnchorX, y: headAnchorY };
+
+      for (let i = 1; i < kibo.scarfPoints.length; i++) {
+        const prev = kibo.scarfPoints[i - 1];
+        const cur = kibo.scarfPoints[i];
+        const windSway = Math.sin(Date.now() * 0.006 + i) * 1.5;
+        const targetX = prev.x - kibo.facing * 5 + windSway - (kibo.vx * 1.4);
+        const targetY = prev.y + 4 + (kibo.vy * 0.4);
+        cur.x += (targetX - cur.x) * 0.32;
+        cur.y += (targetY - cur.y) * 0.32;
+      }
+
+      if (kibo.dashCooldown > 0) kibo.dashCooldown--;
+
+      if (keys.dash && kibo.dashCooldown === 0 && !kibo.isDashing) {
+        kibo.isDashing = true;
+        kibo.dashTimer = DASH_FRAMES;
+        kibo.dashCooldown = 26;
+        kibo.vx = kibo.facing * DASH_SPEED;
+        kibo.vy = 0;
+        kibo.squashX = 1.45;
+        kibo.squashY = 0.65;
+        gs.screenShake = 5;
+        audio.dash();
+
+        shockwaves.push({
+          x: kibo.x + kibo.w / 2,
+          y: kibo.y + kibo.h / 2,
+          radius: 4,
+          maxRadius: 36,
+          alpha: 0.8,
+          color: stage.accent
         });
       }
-      win() {
-        [440, 554, 659, 880, 1108].forEach((f, idx) => {
-          setTimeout(() => this.playTone(f, 'triangle', 0.3, 0.1), idx * 90);
+
+      const isStage3 = stageIndex === 2;
+
+      if (kibo.isDashing) {
+        kibo.dashTimer--;
+        kibo.vy = 0;
+        kibo.trailGhosts.unshift({
+          x: kibo.x,
+          y: kibo.y,
+          alpha: 0.7,
+          facing: kibo.facing
         });
+        if (kibo.trailGhosts.length > 8) kibo.trailGhosts.pop();
+
+        if (kibo.dashTimer <= 0) {
+          kibo.isDashing = false;
+          kibo.vx *= 0.55;
+        }
+      } else {
+        kibo.trailGhosts.forEach((t) => (t.alpha *= 0.82));
+        kibo.trailGhosts = kibo.trailGhosts.filter((t) => t.alpha > 0.05);
+
+        // Run acceleration
+        if (keys.left) {
+          kibo.vx -= RUN_ACCEL;
+          kibo.facing = -1;
+        } else if (keys.right) {
+          kibo.vx += RUN_ACCEL;
+          kibo.facing = 1;
+        } else {
+          kibo.vx *= FRICTION;
+        }
+        kibo.vx = Math.max(-MAX_RUN_SPEED, Math.min(MAX_RUN_SPEED, kibo.vx));
+
+        // STAGE 3 SPECIAL FLOAT DYNAMICS / IDEA WINGS
+        if (isStage3) {
+          const inUpdraft = world.updraftField &&
+            kibo.x + kibo.w > world.updraftField.x &&
+            kibo.x < world.updraftField.x + world.updraftField.w;
+
+          if (ideaWings) {
+            kibo.vy = keys.up ? -4.5 : Math.sin(Date.now() * 0.005) * 0.4;
+          } else if (inUpdraft && keys.up) {
+            kibo.vy -= 0.65;
+            kibo.vy = Math.max(-5.2, kibo.vy);
+          } else {
+            kibo.vy += 0.22;
+            kibo.vy = Math.min(kibo.vy, 3.2); // Low floaty terminal velocity
+          }
+        } else {
+          // Standard Gravity & Currents (Stage 5)
+          let inCurrent = false;
+          if (world.currents) {
+            world.currents.forEach((c) => {
+              if (
+                kibo.x + kibo.w > c.x &&
+                kibo.x < c.x + c.w &&
+                kibo.y + kibo.h > c.y &&
+                kibo.y < c.y + c.h
+              ) {
+                inCurrent = true;
+                kibo.vy += c.forceY;
+                kibo.vy = Math.max(-7.6, kibo.vy);
+              }
+            });
+          }
+
+          if (!inCurrent) {
+            kibo.vy += GRAV;
+          }
+
+          // Wall slide friction
+          if (kibo.onWall !== 0 && !kibo.grounded && kibo.vy > 0) {
+            kibo.vy = Math.min(kibo.vy, 1.4);
+          }
+        }
       }
-    }
-    const audio = new AudioEngine();
 
-    // --- GAME STAGES DATA ---
-    const STAGES = [
-      {
-        id: 1,
-        code: "PHASE 01 // EMPATHIZE",
-        subtitle: "The Blind Spot",
-        directive: "Step into unfamiliar shoes. Invisible paths appear only when Sonar [E] is active.",
-        lore: "Assumptions obscure latent realities. Activate user perspective to expose what's hidden.",
-        walkthrough: "Press E or the Sonar button to reveal invisible bridges. Reach the cyan beacon.",
-        tool: "15-Minute Semi-Structured User Shadowing",
-        quote: "People don't want a quarter-inch drill; they want a quarter-inch hole.",
-        themeColor: "#38bdf8"
-      },
-      {
-        id: 2,
-        code: "PHASE 02 // DEFINE",
-        subtitle: "The Noise Chasm",
-        directive: "Filter decoy requests. Align the vibrating Core Insight node to anchor the light bridge.",
-        lore: "Surface-level complaints mislead. Seek the non-obvious systemic root friction.",
-        walkthrough: "Jump across to discover the genuine core insight node to bridge the chasm.",
-        tool: "Anti-Assumption POV Formula & Root-Cause Matrix",
-        quote: "If I had an hour to solve a problem, I'd spend 55 minutes thinking about the problem.",
-        themeColor: "#a855f7"
-      },
-      {
-        id: 3,
-        code: "PHASE 03 // IDEATE",
-        subtitle: "The Cloud Canopy",
-        directive: "Defy gravity. Float on updrafts, touch doubt walls to pop them, and collect divergent sparks.",
-        lore: "Judgment kills nascent brilliance. Defer criticism, think in extremes, and explore volume.",
-        walkthrough: "Hold UP/SPACE to float! Collect the 3 magnetic sparks and pop doubt walls effortlessly.",
-        tool: "Crazy 8s Speed Sketching & Worst Possible Idea Method",
-        quote: "The best way to get a good idea is to get lots of ideas.",
-        themeColor: "#eab308"
-      },
-      {
-        id: 4,
-        code: "PHASE 04 // PROTOTYPE",
-        subtitle: "The Fail-Forward Foundry",
-        directive: "Fail early to succeed sooner. Fall attempts solidify into physical stepping-stone ghosts.",
-        lore: "Every failed low-fidelity test is not a loss, but a tangible structural foundation.",
-        walkthrough: "Drop wireframe blocks [Q / Tap Block] or jump into the void to turn failures into bridges.",
-        tool: "1-Hour Paper & Clickable Low-Fidelity Wireframes",
-        quote: "If a picture is worth 1,000 words, a prototype is worth 1,000 meetings.",
-        themeColor: "#10b981"
-      },
-      {
-        id: 5,
-        code: "PHASE 05 // TEST",
-        subtitle: "Validation Summit",
-        directive: "Listen to real feedback currents. Collect 3 Delight Orbs to trigger Product-Market Fit.",
-        lore: "Don't sell your prototype. Observe unprompted friction and celebrate authentic discovery.",
-        walkthrough: "Ride the upward drafts, collect the 3 Delight Stars, and ascend to the summit beacon.",
-        tool: "I Like / I Wish / What If Feedback Grid",
-        quote: "Prototype as if you know you are right, but test as if you know you are wrong.",
-        themeColor: "#f43f5e"
+      if (isStage3 && world.bubbles) {
+        let isRidingBubble = false;
+        world.bubbles.forEach((bub) => {
+          if (!bub.popped) {
+            bub.x += bub.vx;
+            bub.y += bub.vy;
+            if (bub.y < 80 || bub.y > 340) bub.vy *= -1;
+            if (bub.x < 300 || bub.x > 1500) bub.vx *= -1;
+
+            const dist = Math.hypot(
+              kibo.x + kibo.w / 2 - bub.x,
+              kibo.y + kibo.h / 2 - bub.y
+            );
+
+            if (dist < bub.radius + 12) {
+              if (keys.dash) {
+                // Dash pops bubble into confetti
+                bub.popped = true;
+                audio.bubblePop();
+                gs.screenShake = 6;
+                for (let i = 0; i < 18; i++) {
+                  burstConfetti.push({
+                    x: bub.x,
+                    y: bub.y,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8,
+                    color: '#f59e0b',
+                    alpha: 1,
+                    size: Math.random() * 4 + 2
+                  });
+                }
+              } else {
+                // Kibo bounces or rides gently inside the bubble
+                kibo.vy = bub.vy - 1.2;
+                isRidingBubble = true;
+                heuristics.bubbleRidingTimer++;
+                if (heuristics.bubbleRidingTimer >= 140) {
+                  unlockEasterEgg('parkinsons_law');
+                }
+              }
+            }
+          }
+        });
+
+        if (!isRidingBubble) {
+          heuristics.bubbleRidingTimer = 0;
+        }
       }
-    ];
 
-    // --- EASTER EGGS DATA ---
-    const EASTER_EGGS_CATALOG = [
-      {
-        id: 'beginners_mind',
-        title: "The Beginner's Mind",
-        trigger: "Walk backward immediately at the start of Stage 1",
-        tip: "Shunryu Suzuki: 'In the beginner's mind there are many possibilities; in the expert's mind there are few.' When interviewing users, consciously forget your domain expertise to ask naive questions."
-      },
-      {
-        id: 'edge_case',
-        title: "The Extreme User",
-        trigger: "Linger on the precipice ledge for 2 seconds",
-        tip: "Extreme users (power users, disabled users, complete novices) amplify latent frictions that average users unconsciously tolerate. Solve for the extreme, and the core benefits automatically."
-      },
-      {
-        id: 'five_whys',
-        title: "Sakichi Toyoda's 5 Whys",
-        trigger: "Bump the dead-end wall 5 times in Stage 2",
-        tip: "Whenever a user demands a feature (e.g. 'add an export button'), ask 'Why?' 5 times in succession. You will almost always discover a root workflow failure rather than a need for more UI buttons."
-      },
-      {
-        id: 'worst_idea',
-        title: "The 'Worst Possible Idea' Inversion",
-        trigger: "Willingly dive into the void in Stage 4",
-        tip: "Stuck in analysis paralysis? Ask your team: 'How could we design the most disastrous, privacy-violating, counter-productive product possible?' Reversing the bad ideas yields breakthrough solutions."
-      },
-      {
-        id: 'quantity_chain',
-        title: "Quantity Breeds Quality",
-        trigger: "Perform a triple air bounce without landing in Stage 3",
-        tip: "Alex Osborn (inventor of Brainstorming): The first 15 ideas are obvious tropes already present in the industry. True market disruption almost universally emerges between ideas #30 and #50."
+      kibo.x += kibo.vx;
+      kibo.y += kibo.vy;
+
+      // Easter Egg 1: Beginner's Mind
+      if (stageIndex === 0 && kibo.x <= 15) {
+        unlockEasterEgg('beginners_mind');
       }
-    ];
 
-    // --- MAIN REACT GAME COMPONENT ---
-    function SynapseGame() {
-      const canvasRef = useRef(null);
-      const [gameState, setGameState] = useState('TITLE'); // 'TITLE', 'PLAYING', 'STAGE_CLEAR', 'VICTORY'
-      const [currentStageIdx, setCurrentStageIdx] = useState(0);
-      const [isMuted, setIsMuted] = useState(false);
-      const [ideaWingsEnabled, setIdeaWingsEnabled] = useState(false);
-      const [codexOpen, setCodexOpen] = useState(false);
-      const [discoveredEggs, setDiscoveredEggs] = useState([]);
-      const [activeToast, setActiveToast] = useState(null);
-      const [sonarActive, setSonarActive] = useState(false);
-      const [showStage3Banner, setShowStage3Banner] = useState(false);
-      const [timerRunning, setTimerRunning] = useState(false);
-      const [timerSeconds, setTimerSeconds] = useState(480); // 8 minutes
+      if (kibo.x < 10) {
+        kibo.x = 10;
+        kibo.vx = 0;
+      }
+      if (kibo.x + kibo.w > world.worldWidth - 10) {
+        kibo.x = world.worldWidth - 10 - kibo.w;
+        kibo.vx = 0;
+      }
 
-      const stage = STAGES[currentStageIdx];
+      // Coyote time & jump buffer
+      if (kibo.grounded) {
+        kibo.coyoteTime = 6;
+      } else if (kibo.coyoteTime > 0) {
+        kibo.coyoteTime--;
+      }
 
-      // Mutable Game Loop State
-      const gameRef = useRef({
-        player: {
-          x: 60,
-          y: 350,
-          vx: 0,
-          vy: 0,
-          w: 26,
-          h: 34,
-          grounded: false,
-          facing: 1,
-          coyoteTime: 0,
-          jumpBuffer: 0,
-          dashCooldown: 0,
-          dashTimer: 0,
-          squash: 1,
-          blinkTimer: 0,
-          isBlinking: false
-        },
-        keys: { left: false, right: false, up: false, down: false, dash: false, sonar: false },
-        camera: { x: 0, y: 0 },
-        platforms: [],
-        items: [],
-        doubtWalls: [],
-        ghostPlatforms: [],
-        particles: [],
-        comboBounces: 0,
-        bumpCount: 0,
-        edgeTimer: 0,
-        hasWalkedBackward: false,
-        sparksCollected: 0,
-        delightCollected: 0,
-        screenshake: 0
+      if (kibo.jumpBuffer > 0) kibo.jumpBuffer--;
+
+      kibo.grounded = false;
+      kibo.onWall = 0;
+
+      // Gather active platforms
+      const activePlatforms = [...world.platforms.filter((p) => p.type === 'solid' || (p.type === 'revealed_bridge' && p.revealed))];
+
+      if (world.lightBridge && world.lightBridge.active) {
+        activePlatforms.push(world.lightBridge);
+      }
+
+      activePlatforms.push(...placedBlocks);
+      activePlatforms.push(...ghostPlatforms);
+
+      let onPrecariousEdge = false;
+
+      activePlatforms.forEach((plat) => {
+        // Landing on top
+        if (
+          kibo.x + kibo.w > plat.x &&
+          kibo.x < plat.x + plat.w &&
+          kibo.y + kibo.h >= plat.y &&
+          kibo.y + kibo.h <= plat.y + 16 &&
+          kibo.vy >= 0
+        ) {
+          kibo.y = plat.y - kibo.h;
+          kibo.vy = 0;
+          kibo.grounded = true;
+          kibo.squashX = 1.35;
+          kibo.squashY = 0.72;
+
+          const distLeft = Math.abs(kibo.x - plat.x);
+          const distRight = Math.abs(kibo.x + kibo.w - (plat.x + plat.w));
+          if (distLeft < 8 || distRight < 8) {
+            onPrecariousEdge = true;
+          }
+        }
+
+        // Wall latching
+        if (kibo.y + kibo.h > plat.y && kibo.y < plat.y + plat.h) {
+          if (kibo.x <= plat.x + plat.w && kibo.x >= plat.x + plat.w - 8 && kibo.vx <= 0) {
+            kibo.onWall = -1;
+          }
+          if (kibo.x + kibo.w >= plat.x && kibo.x + kibo.w <= plat.x + 8 && kibo.vx >= 0) {
+            kibo.onWall = 1;
+          }
+        }
       });
 
-      // Crazy 8s Facilitation Timer
-      useEffect(() => {
-        let interval = null;
-        if (timerRunning && timerSeconds > 0) {
-          interval = setInterval(() => {
-            setTimerSeconds(prev => {
-              if (prev % 60 === 0 && prev !== 480) audio.collect();
-              if (prev <= 1) {
-                audio.win();
-                return 0;
+      // Special Wall for 5 Whys Easter Egg (Stage 2)
+      if (stageIndex === 1) {
+        const wall = world.platforms.find((p) => p.type === 'wall_5whys');
+        if (wall) {
+          if (
+            kibo.x + kibo.w >= wall.x &&
+            kibo.x <= wall.x + wall.w &&
+            kibo.y + kibo.h > wall.y &&
+            kibo.y < wall.y + wall.h
+          ) {
+            kibo.x = wall.x - kibo.w;
+            kibo.vx = 0;
+            if (Date.now() - heuristics.lastWallTapTime > 300) {
+              heuristics.wallTapCount++;
+              heuristics.lastWallTapTime = Date.now();
+              audio.jump();
+              showToast(`Asked "Why?" [${heuristics.wallTapCount}/5 times]`);
+              if (heuristics.wallTapCount >= 5) {
+                unlockEasterEgg('five_whys');
               }
-              return prev - 1;
-            });
-          }, 1000);
-        }
-        return () => clearInterval(interval);
-      }, [timerRunning, timerSeconds]);
-
-      // Trigger Design Thinking Easter Egg Notification
-      const triggerEasterEgg = (eggId) => {
-        if (!discoveredEggs.includes(eggId)) {
-          const egg = EASTER_EGGS_CATALOG.find(e => e.id === eggId);
-          if (egg) {
-            setDiscoveredEggs(prev => [...prev, eggId]);
-            audio.easterEgg();
-            setActiveToast(egg);
-            setTimeout(() => setActiveToast(null), 7000);
+            }
           }
         }
-      };
+      }
 
-      // Load Stages Level Geometry
-      const loadStage = (stageIndex) => {
-        const g = gameRef.current;
-        g.player.x = 80;
-        g.player.y = 300;
-        g.player.vx = 0;
-        g.player.vy = 0;
-        g.sparksCollected = 0;
-        g.delightCollected = 0;
-        g.comboBounces = 0;
-        g.bumpCount = 0;
-        g.edgeTimer = 0;
-        g.hasWalkedBackward = false;
-        g.platforms = [];
-        g.items = [];
-        g.doubtWalls = [];
-        g.particles = [];
-
-        if (stageIndex === 2) {
-          setShowStage3Banner(true);
-        } else {
-          setShowStage3Banner(false);
+      // Easter Egg 2: Extreme User Edge Case
+      if (kibo.grounded && onPrecariousEdge) {
+        heuristics.edgeTimer++;
+        if (heuristics.edgeTimer >= 110) {
+          unlockEasterEgg('extreme_user');
         }
+      } else {
+        heuristics.edgeTimer = 0;
+      }
 
-        // STAGE 1: EMPATHIZE (Invisible Bridges via Sonar)
-        if (stageIndex === 0) {
-          g.platforms = [
-            { x: 0, y: 440, w: 220, h: 60, type: 'solid' },
-            { x: 260, y: 410, w: 120, h: 20, type: 'sonar' }, // invisible unless sonar
-            { x: 440, y: 370, w: 130, h: 20, type: 'sonar' },
-            { x: 630, y: 330, w: 140, h: 20, type: 'sonar' },
-            { x: 840, y: 300, w: 300, h: 100, type: 'solid' }
-          ];
-          g.items = [
-            { x: 500, y: 320, type: 'persona', label: 'User Persona: Maya', radius: 18, collected: false }
-          ];
+      // Stage 3 Safety Cloud Trampoline Floor
+      if (isStage3 && world.safetyCloudFloor) {
+        const sc = world.safetyCloudFloor;
+        if (kibo.y + kibo.h >= sc.y) {
+          kibo.y = sc.y - kibo.h;
+          kibo.vy = -12.5; // High joyful cloud trampoline spring
+          kibo.squashX = 1.45;
+          kibo.squashY = 0.55;
+          gs.screenShake = 4;
+          audio.bubbleBounce();
+          showToast('☁️ Cloud Trampoline: Sprung high into the updrafts!');
         }
-        // STAGE 2: DEFINE (The POV Chasm & Decoy Nodes)
-        else if (stageIndex === 1) {
-          g.platforms = [
-            { x: 0, y: 440, w: 200, h: 60, type: 'solid' },
-            { x: 190, y: 260, w: 20, h: 180, type: 'deadend' }, // Wall for 5 Whys Easter Egg
-            { x: 300, y: 440, w: 90, h: 20, type: 'solid' },
-            { x: 470, y: 410, w: 90, h: 20, type: 'solid' },
-            { x: 640, y: 380, w: 90, h: 20, type: 'solid' },
-            { x: 850, y: 340, w: 320, h: 100, type: 'solid' }
-          ];
-          g.items = [
-            { x: 345, y: 390, type: 'decoy', label: 'Feature Request (Decoy)' },
-            { x: 515, y: 360, type: 'decoy', label: 'Vanity Metric (Decoy)' },
-            { x: 685, y: 330, type: 'core_insight', label: 'Core Root Insight' }
-          ];
-        }
-        // STAGE 3: IDEATE (Buoyant Playground, Hyper-magnetic sparks, Bubble walls)
-        else if (stageIndex === 2) {
-          g.platforms = [
-            { x: 0, y: 440, w: 240, h: 60, type: 'solid' },
-            { x: -50, y: 520, w: 1600, h: 40, type: 'trampoline_floor' }, // Bottom trampoline safety cloud
-            { x: 320, y: 380, w: 100, h: 20, type: 'solid' },
-            { x: 580, y: 340, w: 100, h: 20, type: 'solid' },
-            { x: 820, y: 300, w: 100, h: 20, type: 'solid' },
-            { x: 1060, y: 260, w: 300, h: 120, type: 'solid' }
-          ];
-          g.doubtWalls = [
-            { x: 460, y: 240, w: 18, h: 180, label: "Too Risky", popped: false },
-            { x: 720, y: 200, w: 18, h: 180, label: "No Budget", popped: false },
-            { x: 960, y: 160, w: 18, h: 180, label: "Not Logical", popped: false }
-          ];
-          g.items = [
-            { x: 260, y: 400, type: 'trampoline', radius: 18 },
-            { x: 370, y: 280, type: 'spark', label: 'Idea Spark 1', radius: 16, collected: false },
-            { x: 520, y: 370, type: 'trampoline', radius: 18 },
-            { x: 630, y: 240, type: 'spark', label: 'Idea Spark 2', radius: 16, collected: false },
-            { x: 760, y: 340, type: 'trampoline', radius: 18 },
-            { x: 880, y: 200, type: 'spark', label: 'Idea Spark 3', radius: 16, collected: false }
-          ];
-        }
-        // STAGE 4: PROTOTYPE (Fail-Forward Foundry)
-        else if (stageIndex === 3) {
-          g.platforms = [
-            { x: 0, y: 440, w: 220, h: 60, type: 'solid' },
-            { x: 880, y: 340, w: 320, h: 100, type: 'solid' }
-          ];
-          // User must drop blocks or fail into the void to generate ghost stairs across the 660px chasm!
-        }
-        // STAGE 5: TEST (Validation Summit)
-        else if (stageIndex === 4) {
-          g.platforms = [
-            { x: 0, y: 440, w: 220, h: 60, type: 'solid' },
-            { x: 280, y: 390, w: 110, h: 20, type: 'solid' },
-            { x: 460, y: 330, w: 110, h: 20, type: 'solid' },
-            { x: 660, y: 270, w: 110, h: 20, type: 'solid' },
-            { x: 880, y: 210, w: 320, h: 140, type: 'solid' }
-          ];
-          g.items = [
-            { x: 335, y: 330, type: 'delight', label: 'Delight Star A', collected: false },
-            { x: 515, y: 270, type: 'delight', label: 'Delight Star B', collected: false },
-            { x: 715, y: 210, type: 'delight', label: 'Delight Star C', collected: false }
-          ];
-        }
-      };
+      }
 
-      // Start Game
-      const startGame = () => {
-        audio.init();
-        setGameState('PLAYING');
-        setCurrentStageIdx(0);
-        loadStage(0);
-      };
-
-      // Advance Stage
-      const nextStage = () => {
-        if (currentStageIdx < STAGES.length - 1) {
-          const nextIdx = currentStageIdx + 1;
-          setCurrentStageIdx(nextIdx);
-          setGameState('PLAYING');
-          loadStage(nextIdx);
-        } else {
-          setGameState('VICTORY');
-          audio.win();
-          if (window.confetti) {
-            window.confetti({ particleCount: 160, spread: 80, origin: { y: 0.6 } });
-          }
-        }
-      };
-
-      // Restart Current Stage
-      const restartCurrentStage = () => {
-        loadStage(currentStageIdx);
-        setGameState('PLAYING');
-      };
-
-      // Keyboard Controls
-      useEffect(() => {
-        const handleKeyDown = (e) => {
-          if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
-            e.preventDefault();
-          }
-          const k = gameRef.current.keys;
-          if (e.code === 'ArrowLeft' || e.code === 'KeyA') k.left = true;
-          if (e.code === 'ArrowRight' || e.code === 'KeyD') k.right = true;
-          if (e.code === 'ArrowUp' || e.code === 'KeyW' || e.code === 'Space') {
-            k.up = true;
-            gameRef.current.player.jumpBuffer = 8;
-          }
-          if (e.code === 'ArrowDown' || e.code === 'KeyS') k.down = true;
-          if (e.code === 'ShiftLeft' || e.code === 'KeyJ') k.dash = true;
-          if (e.code === 'KeyE') {
-            k.sonar = !k.sonar;
-            setSonarActive(k.sonar);
-            if (k.sonar) audio.sonar();
-          }
-          if (e.code === 'KeyQ' || e.code === 'KeyF') {
-            // Drop Prototype Block in Stage 4
-            dropWireframeBlock();
-          }
-        };
-
-        const handleKeyUp = (e) => {
-          const k = gameRef.current.keys;
-          if (e.code === 'ArrowLeft' || e.code === 'KeyA') k.left = false;
-          if (e.code === 'ArrowRight' || e.code === 'KeyD') k.right = false;
-          if (e.code === 'ArrowUp' || e.code === 'KeyW' || e.code === 'Space') k.up = false;
-          if (e.code === 'ArrowDown' || e.code === 'KeyS') k.down = false;
-          if (e.code === 'ShiftLeft' || e.code === 'KeyJ') k.dash = false;
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        window.addEventListener('keyup', handleKeyUp);
-        return () => {
-          window.removeEventListener('keydown', handleKeyDown);
-          window.removeEventListener('keyup', handleKeyUp);
-        };
-      }, [currentStageIdx]);
-
-      // Drop Wireframe Prototype Block
-      const dropWireframeBlock = () => {
-        const p = gameRef.current.player;
-        if (currentStageIdx === 3) {
-          gameRef.current.ghostPlatforms.push({
-            x: Math.round((p.x + p.w / 2 - 45) / 10) * 10,
-            y: Math.round((p.y + p.h) / 10) * 10,
-            w: 90,
-            h: 16,
-            isGhost: false
+      // Jump execution
+      if ((keys.up || kibo.jumpBuffer > 0) && !kibo.isDashing && !isStage3) {
+        if (kibo.coyoteTime > 0) {
+          kibo.vy = JUMP_IMPULSE;
+          kibo.coyoteTime = 0;
+          kibo.jumpBuffer = 0;
+          kibo.grounded = false;
+          kibo.squashX = 0.78;
+          kibo.squashY = 1.35;
+          audio.jump();
+          shockwaves.push({
+            x: kibo.x + kibo.w / 2,
+            y: kibo.y + kibo.h,
+            radius: 4,
+            maxRadius: 32,
+            alpha: 0.8,
+            color: stage.accent
           });
-          audio.placeBlock();
-          p.squash = 0.8;
-        }
-      };
-
-      // Main 60FPS Game Loop
-      useEffect(() => {
-        let animationFrameId;
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-
-        const loop = () => {
-          if (gameState === 'PLAYING') {
-            updatePhysics();
-          }
-          render(ctx);
-          animationFrameId = requestAnimationFrame(loop);
-        };
-
-        animationFrameId = requestAnimationFrame(loop);
-        return () => cancelAnimationFrame(animationFrameId);
-      }, [gameState, currentStageIdx, sonarActive, ideaWingsEnabled]);
-
-      // --- GAME PHYSICS & COLLISION UPDATE ---
-      const updatePhysics = () => {
-        const g = gameRef.current;
-        const p = g.player;
-        const keys = g.keys;
-
-        // Easter Egg 1: Beginner's Mind (walking backward at start of stage 1)
-        if (currentStageIdx === 0 && !g.hasWalkedBackward && keys.left && p.x <= 85) {
-          g.hasWalkedBackward = true;
-          triggerEasterEgg('beginners_mind');
-        }
-
-        // Easter Egg 2: Linger at cliff edge
-        if (p.x > 180 && p.x < 210 && p.grounded) {
-          g.edgeTimer++;
-          if (g.edgeTimer > 110) {
-            triggerEasterEgg('edge_case');
-          }
-        } else {
-          g.edgeTimer = 0;
-        }
-
-        // Blinking mechanics for Kibo
-        p.blinkTimer++;
-        if (p.blinkTimer > 180 && Math.random() < 0.05) {
-          p.isBlinking = true;
-          if (p.blinkTimer > 192) {
-            p.isBlinking = false;
-            p.blinkTimer = 0;
-          }
-        }
-
-        // Gravity modifier (Ideate has buoyant gravity)
-        let gravity = 0.55;
-        let maxFallSpeed = 12;
-        let moveAccel = 0.8;
-        let maxRunSpeed = 5.2;
-
-        if (currentStageIdx === 2) {
-          gravity = ideaWingsEnabled ? 0.08 : 0.28; // Buoyant updrafts
-          maxFallSpeed = 6;
-          maxRunSpeed = 6.2;
-          if (keys.up || ideaWingsEnabled) {
-            p.vy -= 0.65; // continuous balloon floating
-          }
-        }
-
-        // Horizontal Movement
-        if (keys.left) {
-          p.vx -= moveAccel;
-          p.facing = -1;
-        } else if (keys.right) {
-          p.vx += moveAccel;
-          p.facing = 1;
-        } else {
-          p.vx *= 0.78; // friction
-        }
-
-        // Clamp run speed
-        p.vx = Math.max(-maxRunSpeed, Math.min(maxRunSpeed, p.vx));
-
-        // Dash Mechanic
-        if (keys.dash && p.dashCooldown <= 0) {
-          p.vx = p.facing * 14;
-          p.vy = 0;
-          p.dashCooldown = 35;
-          p.dashTimer = 10;
-          p.squash = 1.35;
-          audio.dash();
-        }
-        if (p.dashCooldown > 0) p.dashCooldown--;
-        if (p.dashTimer > 0) {
-          p.dashTimer--;
-          p.vy = 0; // suspend gravity briefly during dash
-        } else {
-          p.vy += gravity;
-          p.vy = Math.min(p.vy, maxFallSpeed);
-        }
-
-        // Coyote Time & Jump Buffering
-        if (p.grounded) {
-          p.coyoteTime = 8;
-        } else if (p.coyoteTime > 0) {
-          p.coyoteTime--;
-        }
-
-        if (p.jumpBuffer > 0) p.jumpBuffer--;
-
-        // Execute Jump
-        if (p.jumpBuffer > 0 && p.coyoteTime > 0) {
-          p.vy = currentStageIdx === 2 ? -9.5 : -11.5;
-          p.grounded = false;
-          p.coyoteTime = 0;
-          p.jumpBuffer = 0;
-          p.squash = 1.4;
+        } else if (kibo.onWall !== 0) {
+          kibo.vy = -8.6;
+          kibo.vx = -kibo.onWall * 5.2;
+          kibo.facing = -kibo.onWall;
+          kibo.jumpBuffer = 0;
           audio.jump();
         }
+      }
 
-        // Air squashing decay
-        p.squash += (1 - p.squash) * 0.12;
-
-        // Apply velocities
-        p.x += p.vx;
-        p.y += p.vy;
-
-        // Collect all active platforms
-        let allPlatforms = [...g.platforms, ...g.ghostPlatforms];
-        if (currentStageIdx === 0 && !sonarActive) {
-          allPlatforms = allPlatforms.filter(plat => plat.type !== 'sonar');
-        }
-
-        p.grounded = false;
-
-        // Platform Collisions
-        allPlatforms.forEach(plat => {
-          // Bumping dead-end wall in Stage 2 (Easter Egg: 5 Whys)
-          if (plat.type === 'deadend') {
-            if (p.x + p.w >= plat.x && p.x <= plat.x + plat.w && p.y + p.h > plat.y && p.y < plat.y + plat.h) {
-              if (p.vx > 0) {
-                p.x = plat.x - p.w;
-                p.vx = 0;
-                g.bumpCount++;
-                audio.dash();
-                if (g.bumpCount >= 5) triggerEasterEgg('five_whys');
-              }
+      if (world.flora) {
+        world.flora.forEach((flower) => {
+          const dist = Math.abs(kibo.x + kibo.w / 2 - flower.x);
+          if (dist < 28) {
+            flower.sway = kibo.facing * 8;
+            if (!flower.bloomed) {
+              flower.bloomed = true;
+              audio.playTone(520 + Math.random() * 200, 0.15, 'sine', 0.04);
             }
-            return;
-          }
-
-          // Safety Cloud Floor Trampoline in Stage 3
-          if (plat.type === 'trampoline_floor') {
-            if (p.y + p.h >= plat.y && p.y < plat.y + plat.h && p.x + p.w > plat.x && p.x < plat.x + plat.w) {
-              p.y = plat.y - p.h;
-              p.vy = -12;
-              p.grounded = false;
-              audio.trampoline();
-              g.screenshake = 5;
-            }
-            return;
-          }
-
-          // Solid and Sonar Platform Standing Collision
-          if (
-            p.x + p.w > plat.x &&
-            p.x < plat.x + plat.w &&
-            p.y + p.h >= plat.y &&
-            p.y + p.h <= plat.y + plat.h + p.vy + 4 &&
-            p.vy >= 0
-          ) {
-            p.y = plat.y - p.h;
-            p.vy = 0;
-            p.grounded = true;
+          } else {
+            flower.sway *= 0.88;
           }
         });
+      }
 
-        // Interactive Stage Items Collision & Hyper Magnetism
-        g.items.forEach(item => {
-          if (item.collected) return;
-
-          // Magnetism for Stage 3 Idea Sparks
-          if (item.type === 'spark') {
-            const dx = (p.x + p.w / 2) - item.x;
-            const dy = (p.y + p.h / 2) - item.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            // 220px magnetic pull radius
-            if (dist < 220) {
-              item.x += dx * 0.12;
-              item.y += dy * 0.12;
-            }
-
-            if (dist < 32) {
-              item.collected = true;
-              g.sparksCollected++;
-              audio.collect();
-              // Spawn burst particles
-              for (let i = 0; i < 16; i++) {
-                g.particles.push({
-                  x: item.x,
-                  y: item.y,
+      if (isStage3 && world.doubtWalls) {
+        world.doubtWalls.forEach((dw) => {
+          if (!dw.popped) {
+            if (
+              kibo.x + kibo.w > dw.x &&
+              kibo.x < dw.x + dw.w &&
+              kibo.y + kibo.h > dw.y &&
+              kibo.y < dw.y + dw.h
+            ) {
+              dw.popped = true;
+              audio.bubblePop();
+              gs.screenShake = 6;
+              for (let i = 0; i < 20; i++) {
+                burstConfetti.push({
+                  x: dw.x + dw.w / 2,
+                  y: dw.y + dw.h / 2,
                   vx: (Math.random() - 0.5) * 8,
                   vy: (Math.random() - 0.5) * 8,
-                  color: '#fbbf24',
-                  life: 25
+                  color: '#f59e0b',
+                  alpha: 1,
+                  size: Math.random() * 5 + 2
                 });
               }
-            }
-          }
-
-          // Stage 3 Trampolines
-          if (item.type === 'trampoline') {
-            const dx = (p.x + p.w / 2) - item.x;
-            const dy = (p.y + p.h) - item.y;
-            if (Math.abs(dx) < 26 && Math.abs(dy) < 18 && p.vy > 0) {
-              p.vy = -14;
-              p.grounded = false;
-              audio.trampoline();
-              g.comboBounces++;
-              if (g.comboBounces >= 3) triggerEasterEgg('quantity_chain');
-            }
-          }
-
-          // Core Insight Node in Stage 2
-          if (item.type === 'core_insight') {
-            const dx = (p.x + p.w / 2) - item.x;
-            const dy = (p.y + p.h / 2) - item.y;
-            if (Math.sqrt(dx * dx + dy * dy) < 32) {
-              item.collected = true;
-              audio.collect();
-              // Manifest permanent light bridge across chasm
-              g.platforms.push({ x: 200, y: 390, w: 660, h: 14, type: 'solid' });
-            }
-          }
-
-          // Stage 5 Delight Stars
-          if (item.type === 'delight') {
-            const dx = (p.x + p.w / 2) - item.x;
-            const dy = (p.y + p.h / 2) - item.y;
-            if (Math.sqrt(dx * dx + dy * dy) < 30) {
-              item.collected = true;
-              g.delightCollected++;
-              audio.collect();
+              showToast(`🎉 Popped Skepticism Barrier: ${dw.label}!`);
             }
           }
         });
+      }
 
-        // Stage 3 Doubt Walls (Bubble Fragile)
-        if (currentStageIdx === 2) {
-          g.doubtWalls.forEach(wall => {
-            if (wall.popped) return;
-            if (p.x + p.w >= wall.x && p.x <= wall.x + wall.w && p.y + p.h >= wall.y && p.y <= wall.y + wall.h) {
-              wall.popped = true;
-              audio.shatter();
-              g.screenshake = 6;
-              // Burst into colorful sparks
-              for (let i = 0; i < 20; i++) {
-                g.particles.push({
-                  x: wall.x,
-                  y: wall.y + Math.random() * wall.h,
-                  vx: (Math.random() - 0.5) * 9,
-                  vy: (Math.random() - 0.5) * 9,
-                  color: '#f43f5e',
-                  life: 30
-                });
-              }
+      if (world.sparks) {
+        const magnetDist = isStage3 ? 220 : 85;
+        world.sparks.forEach((spk) => {
+          if (!collectedSparks[spk.id]) {
+            const dx = kibo.x + kibo.w / 2 - spk.x;
+            const dy = kibo.y + kibo.h / 2 - spk.y;
+            const dist = Math.hypot(dx, dy);
+
+            if (dist < magnetDist) {
+              const pull = isStage3 ? 6.2 : 3.8;
+              spk.x += (dx / dist) * pull;
+              spk.y += (dy / dist) * pull;
             }
+
+            if (dist < 28) {
+              collectedSparks[spk.id] = true;
+              audio.bubbleBounce();
+              showToast(`Synthesized Spark: ${spk.label}`);
+            }
+          }
+        });
+      }
+
+      if (kibo.y > V_H + 40 && !isStage3) {
+        setIterationRetries((r) => r + 1);
+
+        if (stageIndex === 3) {
+          unlockEasterEgg('worst_idea');
+          const ghostX = Math.max(220, Math.min(1280, kibo.x - 30));
+          const ghostY = Math.max(160, Math.min(360, kibo.y - 80));
+          ghostPlatforms.push({
+            x: ghostX,
+            y: ghostY,
+            w: 80,
+            h: 14,
+            isGhost: true,
+            iteration: ghostPlatforms.length + 1
           });
+          audio.playTone(130, 0.4, 'triangle', 0.12, 220);
+          gs.screenShake = 7;
+          showToast(`MVP #${ghostPlatforms.length} failed fast. Solidified as Ghost Staircase!`);
+        } else {
+          showToast('Iteration reset. Retrying leap...');
         }
 
-        // Particle System Decay
-        g.particles.forEach(pt => {
-          pt.x += pt.vx;
-          pt.y += pt.vy;
-          pt.life--;
-        });
-        g.particles = g.particles.filter(pt => pt.life > 0);
+        kibo.x = world.playerStart.x;
+        kibo.y = world.playerStart.y;
+        kibo.vx = 0;
+        kibo.vy = 0;
+        kibo.isDashing = false;
+      }
 
-        // Stage 4 Prototype "Fail-Forward" Void Fall Mechanic
-        if (p.y > 540) {
-          if (currentStageIdx === 3) {
-            // Transform failed leap into a permanent iteration stepping stone
-            g.ghostPlatforms.push({
-              x: Math.round(p.x / 10) * 10 - 25,
-              y: Math.min(480, Math.round(p.y / 10) * 10 - 60),
-              w: 75,
-              h: 16,
-              isGhost: true
-            });
-            triggerEasterEgg('worst_idea');
-            audio.fail();
-            // Respawn at beginning
-            p.x = 80;
-            p.y = 300;
-            p.vx = 0;
-            p.vy = 0;
-          } else if (currentStageIdx === 2) {
-            // ideate safety floor handles it
-            p.y = 480;
-            p.vy = -12;
-          } else {
-            // standard stage respawn
-            audio.fail();
-            p.x = 80;
-            p.y = 300;
-            p.vx = 0;
-            p.vy = 0;
+      const b = world.beacon;
+      if (
+        kibo.x + kibo.w >= b.x &&
+        kibo.x <= b.x + b.w &&
+        kibo.y + kibo.h >= b.y
+      ) {
+        if (!stageClearModal) {
+          audio.victoryFanfare();
+          setStageClearModal(true);
+          if (stageIndex === DESIGN_STAGES.length - 1) {
+            setGameCompleted(true);
           }
         }
+      }
 
-        // Stage Clear Trigger (Reaching the Right-Hand Summit Beacon)
-        if (p.x >= 920 && p.y <= 380) {
-          audio.win();
-          setGameState('STAGE_CLEAR');
-        }
+      // Camera Lerp
+      const targetCam = kibo.x - 260;
+      gs.cameraX += (targetCam - gs.cameraX) * 0.08;
+      gs.cameraX = Math.max(0, Math.min(world.worldWidth - V_W, gs.cameraX));
 
-        // Smooth Camera Lerp
-        const targetCamX = p.x - 280;
-        g.camera.x += (targetCamX - g.camera.x) * 0.08;
-        if (g.camera.x < 0) g.camera.x = 0;
+      let shakeX = 0;
+      let shakeY = 0;
+      if (gs.screenShake > 0) {
+        shakeX = (Math.random() - 0.5) * gs.screenShake;
+        shakeY = (Math.random() - 0.5) * gs.screenShake;
+        gs.screenShake *= 0.88;
+        if (gs.screenShake < 0.2) gs.screenShake = 0;
+      }
 
-        // Screenshake decay
-        if (g.screenshake > 0) g.screenshake *= 0.85;
-      };
+      ctx.clearRect(0, 0, V_W, V_H);
+      ctx.save();
+      ctx.translate(-Math.floor(gs.cameraX) + shakeX, shakeY);
 
-      // --- 60FPS VECTOR CANVAS RENDERER ---
-      const render = (ctx) => {
-        const g = gameRef.current;
-        const p = g.player;
-        const camX = g.camera.x;
-        const shake = (Math.random() - 0.5) * g.screenshake;
+      // Celestial Obsidian Dark Background
+      const bgGrad = ctx.createLinearGradient(gs.cameraX, 0, gs.cameraX, V_H);
+      bgGrad.addColorStop(0, '#090a12');
+      bgGrad.addColorStop(1, '#05060a');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(gs.cameraX, 0, V_W, V_H);
 
+      // Parallax Distant Stars
+      for (let sIdx = 0; sIdx < 40; sIdx++) {
+        const starX = (sIdx * 54 + (gs.cameraX * 0.2)) % (world.worldWidth);
+        const starY = (sIdx * 37) % (V_H - 100);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.fillRect(starX, starY, 1.5, 1.5);
+      }
+
+      // Whisper-Quiet Coordinate Grid
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+      ctx.lineWidth = 1;
+      for (let gx = 0; gx < world.worldWidth; gx += 40) {
+        ctx.beginPath();
+        ctx.moveTo(gx, 0);
+        ctx.lineTo(gx, V_H);
+        ctx.stroke();
+      }
+
+      if (world.persona) {
+        const p = world.persona;
+        const pulse = Math.sin(Date.now() * 0.003) * 6;
+
+        // Probing Radar Field
         ctx.save();
-        ctx.translate(-camX + shake, shake);
-
-        // Clear Canvas
-        ctx.fillStyle = '#07080d';
-        ctx.fillRect(camX - 20, -20, 1000, 600);
-
-        // Ambient Stage Aura Gradient
-        const grad = ctx.createLinearGradient(camX, 0, camX + 800, 500);
-        grad.addColorStop(0, 'rgba(15, 23, 42, 0.4)');
-        grad.addColorStop(1, `${stage.themeColor}12`);
-        ctx.fillStyle = grad;
-        ctx.fillRect(camX, 0, 850, 500);
-
-        // Background Depth Grid
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
-        ctx.lineWidth = 1;
-        for (let x = 0; x < 1500; x += 60) {
-          ctx.beginPath();
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x, 500);
-          ctx.stroke();
-        }
-
-        // Stage 3 Golden Sine Breadcrumb Flight Path
-        if (currentStageIdx === 2) {
-          ctx.save();
-          ctx.strokeStyle = 'rgba(251, 191, 36, 0.4)';
-          ctx.lineWidth = 3;
-          ctx.setLineDash([8, 12]);
-          ctx.beginPath();
-          for (let bx = 120; bx <= 980; bx += 10) {
-            const by = 260 + Math.sin(bx * 0.015) * 70;
-            if (bx === 120) ctx.moveTo(bx, by);
-            else ctx.lineTo(bx, by);
-          }
-          ctx.stroke();
-          ctx.restore();
-        }
-
-        // Draw Platforms
-        g.platforms.forEach(plat => {
-          if (plat.type === 'sonar' && !sonarActive) return;
-
-          if (plat.type === 'sonar') {
-            ctx.fillStyle = 'rgba(56, 189, 248, 0.25)';
-            ctx.strokeStyle = '#38bdf8';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([4, 4]);
-            ctx.strokeRect(plat.x, plat.y, plat.w, plat.h);
-            ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
-            ctx.setLineDash([]);
-          } else if (plat.type === 'trampoline_floor') {
-            ctx.fillStyle = 'rgba(251, 191, 36, 0.15)';
-            ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
-            ctx.strokeStyle = '#eab308';
-            ctx.strokeRect(plat.x, plat.y, plat.w, 4);
-          } else if (plat.type === 'deadend') {
-            ctx.fillStyle = '#1e293b';
-            ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
-            ctx.fillStyle = '#64748b';
-            ctx.font = '10px monospace';
-            ctx.fillText('WHY?', plat.x - 2, plat.y + 40);
-          } else {
-            ctx.fillStyle = '#0f172a';
-            ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
-            ctx.strokeStyle = stage.themeColor;
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(plat.x, plat.y);
-            ctx.lineTo(plat.x + plat.w, plat.y);
-            ctx.stroke();
-          }
-        });
-
-        // Draw Ghost Prototype Platforms in Stage 4
-        g.ghostPlatforms.forEach((gplat, idx) => {
-          ctx.save();
-          ctx.fillStyle = gplat.isGhost ? 'rgba(16, 185, 129, 0.18)' : 'rgba(56, 189, 248, 0.25)';
-          ctx.strokeStyle = gplat.isGhost ? '#10b981' : '#38bdf8';
-          ctx.lineWidth = 1.5;
-          ctx.setLineDash([3, 3]);
-          ctx.fillRect(gplat.x, gplat.y, gplat.w, gplat.h);
-          ctx.strokeRect(gplat.x, gplat.y, gplat.w, gplat.h);
-          ctx.font = '9px monospace';
-          ctx.fillStyle = gplat.isGhost ? '#6ee7b7' : '#7dd3fc';
-          ctx.fillText(`MVP v${idx + 1}`, gplat.x + 8, gplat.y + 11);
-          ctx.restore();
-        });
-
-        // Draw Interactive Items
-        g.items.forEach(item => {
-          if (item.collected) return;
-
-          // Stage 3 Sparks
-          if (item.type === 'spark') {
-            ctx.save();
-            ctx.fillStyle = '#fbbf24';
-            ctx.shadowColor = '#f59e0b';
-            ctx.shadowBlur = 15;
-            ctx.beginPath();
-            ctx.arc(item.x, item.y, 8, 0, Math.PI * 2);
-            ctx.fill();
-            // Radiating pulse halo
-            ctx.strokeStyle = 'rgba(251, 191, 36, 0.4)';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.arc(item.x, item.y, 14 + Math.sin(Date.now() * 0.008) * 4, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.restore();
-          }
-
-          // Stage 3 Trampolines
-          if (item.type === 'trampoline') {
-            ctx.fillStyle = '#f59e0b';
-            ctx.beginPath();
-            ctx.arc(item.x, item.y, 14, 0, Math.PI, true);
-            ctx.fill();
-            ctx.strokeStyle = '#fef08a';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-          }
-
-          // Core Insight
-          if (item.type === 'core_insight') {
-            ctx.save();
-            ctx.fillStyle = '#c084fc';
-            ctx.shadowColor = '#a855f7';
-            ctx.shadowBlur = 18;
-            ctx.beginPath();
-            ctx.arc(item.x, item.y, 12, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.font = '10px monospace';
-            ctx.fillStyle = '#f3e8ff';
-            ctx.fillText('ROOT CAUSE', item.x - 30, item.y - 18);
-            ctx.restore();
-          }
-
-          // Delight Stars in Stage 5
-          if (item.type === 'delight') {
-            ctx.save();
-            ctx.fillStyle = '#fb7185';
-            ctx.shadowColor = '#f43f5e';
-            ctx.shadowBlur = 15;
-            ctx.beginPath();
-            ctx.arc(item.x, item.y, 10, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.font = '10px monospace';
-            ctx.fillStyle = '#ffe4e6';
-            ctx.fillText('DELIGHT', item.x - 22, item.y - 16);
-            ctx.restore();
-          }
-        });
-
-        // Stage 3 Bubble Doubt Walls
-        if (currentStageIdx === 2) {
-          g.doubtWalls.forEach(wall => {
-            if (wall.popped) return;
-            ctx.save();
-            ctx.fillStyle = 'rgba(244, 63, 94, 0.2)';
-            ctx.strokeStyle = '#f43f5e';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(wall.x, wall.y, wall.w, wall.h);
-            ctx.fillRect(wall.x, wall.y, wall.w, wall.h);
-            ctx.fillStyle = '#fda4af';
-            ctx.font = '10px monospace';
-            ctx.save();
-            ctx.translate(wall.x + 12, wall.y + wall.h / 2);
-            ctx.rotate(-Math.PI / 2);
-            ctx.fillText(`[ ${wall.label} ]`, -35, 0);
-            ctx.restore();
-            ctx.restore();
-          });
-        }
-
-        // Draw Stage Goal Beacon
-        ctx.save();
-        ctx.fillStyle = 'rgba(56, 189, 248, 0.15)';
-        ctx.strokeStyle = stage.themeColor;
-        ctx.lineWidth = 3;
-        ctx.shadowColor = stage.themeColor;
-        ctx.shadowBlur = 20;
-        ctx.strokeRect(920, 240, 45, 100);
-        ctx.fillRect(920, 240, 45, 100);
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '11px monospace';
-        ctx.fillText('STAGE EXIT ➔', 885, 225);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y - 10, p.probeRadius + pulse, 0, Math.PI * 2);
+        ctx.fillStyle = p.probed ? 'rgba(56, 189, 248, 0.04)' : 'rgba(139, 92, 246, 0.04)';
+        ctx.fill();
+        ctx.strokeStyle = p.probed ? 'rgba(56, 189, 248, 0.2)' : 'rgba(139, 92, 246, 0.2)';
+        ctx.setLineDash([4, 6]);
+        ctx.stroke();
         ctx.restore();
 
-        // Draw Particles
-        g.particles.forEach(pt => {
-          ctx.fillStyle = pt.color;
-          ctx.fillRect(pt.x, pt.y, 3, 3);
-        });
-
-        // --- DRAW PROTAGONIST "KIBO" ---
-        ctx.save();
-        ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
-        ctx.scale(p.facing * (2 - p.squash), p.squash);
-
-        // Kibo Stage 3 Lightbulb Halo
-        if (currentStageIdx === 2) {
-          ctx.strokeStyle = '#fde047';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.arc(0, -26, 7, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-
-        // Kibo Body
-        ctx.fillStyle = '#0f172a';
-        ctx.strokeStyle = stage.themeColor;
-        ctx.lineWidth = 2.5;
-        ctx.shadowColor = stage.themeColor;
-        ctx.shadowBlur = 10;
+        // Persona Avatar Silhouette
+        ctx.fillStyle = p.probed ? '#38bdf8' : '#a78bfa';
         ctx.beginPath();
-        ctx.roundRect(-p.w / 2, -p.h / 2, p.w, p.h, 7);
+        ctx.arc(p.x, p.y - 20, 10, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillRect(p.x - 8, p.y - 8, 16, 22);
+
+        // Dialogue Box: Surface Decoy vs Revealed Latent Need
+        ctx.save();
+        const bubbleY = p.y - 60;
+        ctx.fillStyle = p.probed ? 'rgba(6, 182, 212, 0.15)' : 'rgba(239, 68, 68, 0.12)';
+        ctx.strokeStyle = p.probed ? '#06b6d4' : '#f87171';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.roundRect(p.x - 130, bubbleY - 14, 260, 34, 8);
         ctx.fill();
         ctx.stroke();
 
-        // Expressive Neon Eyes
-        ctx.fillStyle = '#ffffff';
-        if (p.isBlinking) {
-          // Blinking slit
-          ctx.fillRect(2, -4, 6, 2);
+        ctx.fillStyle = p.probed ? '#67e8f9' : '#fca5a5';
+        ctx.font = 'bold 9px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        if (p.probed) {
+          ctx.fillText(`✨ TRUE LATENT NEED: ${p.insightKey}`, p.x, bubbleY + 6);
         } else {
-          // Normal open eyes looking forward
+          ctx.fillText(`🚨 SURFACE DECOY: ${p.surfaceRequest.slice(0, 38)}...`, p.x, bubbleY + 2);
+          ctx.fillStyle = '#cbd5e1';
+          ctx.font = '8px monospace';
+          ctx.fillText('[Approach & Press E to Probe Latent Need]', p.x, bubbleY + 12);
+        }
+        ctx.restore();
+      }
+
+      if (world.flora) {
+        world.flora.forEach((flower) => {
+          ctx.save();
+          ctx.strokeStyle = '#334155';
+          ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.arc(4, -4, 3, 0, Math.PI * 2);
+          ctx.moveTo(flower.x, flower.y);
+          ctx.quadraticCurveTo(flower.x + flower.sway, flower.y - flower.stemHeight / 2, flower.x + flower.sway, flower.y - flower.stemHeight);
+          ctx.stroke();
+
+          // Flower Blossom Head
+          ctx.fillStyle = flower.bloomed ? flower.color : '#64748b';
+          ctx.shadowColor = flower.bloomed ? flower.color : 'transparent';
+          ctx.shadowBlur = flower.bloomed ? 10 : 0;
+          ctx.beginPath();
+          ctx.arc(flower.x + flower.sway, flower.y - flower.stemHeight, flower.bloomed ? 5 : 3, 0, Math.PI * 2);
           ctx.fill();
+          ctx.restore();
+        });
+      }
+
+      activePlatforms.forEach((plat) => {
+        if (plat.isGhost) {
+          ctx.strokeStyle = '#10b981';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(plat.x, plat.y, plat.w, plat.h);
+          ctx.fillStyle = 'rgba(16, 185, 129, 0.16)';
+          ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
+          ctx.fillStyle = '#6ee7b7';
+          ctx.font = 'bold 8px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(`MVP #${plat.iteration}`, plat.x + plat.w / 2, plat.y + 10);
+        } else if (plat.type === 'wireframe') {
+          ctx.strokeStyle = '#34d399';
+          ctx.setLineDash([4, 4]);
+          ctx.strokeRect(plat.x, plat.y, plat.w, plat.h);
+          ctx.setLineDash([]);
+          ctx.fillStyle = 'rgba(52, 211, 153, 0.2)';
+          ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
+        } else if (plat === world.lightBridge) {
+          ctx.fillStyle = '#06b6d4';
+          ctx.shadowColor = '#06b6d4';
+          ctx.shadowBlur = 14;
+          ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
+          ctx.shadowBlur = 0;
+        } else {
+          // Architectural Obsidian Slabs
+          ctx.fillStyle = '#141622';
+          ctx.beginPath();
+          ctx.roundRect(plat.x, plat.y, plat.w, plat.h, 4);
+          ctx.fill();
+
+          ctx.fillStyle = stage.accent;
+          ctx.fillRect(plat.x, plat.y, plat.w, 2);
+        }
+      });
+
+      // Stage 2: 5 Whys Wall
+      if (stageIndex === 1) {
+        const wall = world.platforms.find((p) => p.type === 'wall_5whys');
+        if (wall) {
+          ctx.fillStyle = '#1e293b';
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(wall.x, wall.y, wall.w, wall.h);
+          ctx.fillRect(wall.x, wall.y, wall.w, wall.h);
+
+          ctx.save();
+          ctx.translate(wall.x + wall.w / 2, wall.y + wall.h / 2);
+          ctx.rotate(-Math.PI / 2);
+          ctx.fillStyle = '#38bdf8';
+          ctx.font = 'bold 9px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText('WHY? WHY? WHY?', 0, 3);
+          ctx.restore();
+        }
+      }
+
+      if (isStage3) {
+        // Updraft Field visual glow
+        const uf = world.updraftField;
+        ctx.fillStyle = 'rgba(245, 158, 11, 0.03)';
+        ctx.fillRect(uf.x, uf.y, uf.w, uf.h);
+
+        // Kinetic Rideable Bubbles
+        if (world.bubbles) {
+          world.bubbles.forEach((bub) => {
+            if (!bub.popped) {
+              ctx.save();
+              ctx.fillStyle = 'rgba(245, 158, 11, 0.15)';
+              ctx.strokeStyle = '#fcd34d';
+              ctx.lineWidth = 1.5;
+              ctx.beginPath();
+              ctx.arc(bub.x, bub.y, bub.radius, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.stroke();
+
+              // Bubble Shimmer Highlight
+              ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+              ctx.beginPath();
+              ctx.arc(bub.x - bub.radius * 0.35, bub.y - bub.radius * 0.35, 4, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+            }
+          });
         }
 
-        // Trailing Cape Accent
-        ctx.fillStyle = `${stage.themeColor}88`;
+        // Fragile Doubt Walls
+        if (world.doubtWalls) {
+          world.doubtWalls.forEach((dw) => {
+            if (!dw.popped) {
+              ctx.save();
+              ctx.fillStyle = 'rgba(245, 158, 11, 0.18)';
+              ctx.strokeStyle = '#f59e0b';
+              ctx.lineWidth = 1.5;
+              ctx.setLineDash([4, 4]);
+              ctx.beginPath();
+              ctx.roundRect(dw.x, dw.y, dw.w, dw.h, 8);
+              ctx.fill();
+              ctx.stroke();
+              ctx.setLineDash([]);
+
+              ctx.save();
+              ctx.translate(dw.x + dw.w / 2, dw.y + dw.h / 2);
+              ctx.rotate(-Math.PI / 2);
+              ctx.fillStyle = '#fde68a';
+              ctx.font = 'bold 9px Inter, sans-serif';
+              ctx.textAlign = 'center';
+              ctx.fillText(`${dw.label} [TOUCH TO POP]`, 0, 3);
+              ctx.restore();
+              ctx.restore();
+            }
+          });
+        }
+      }
+
+      if (world.sparks) {
+        world.sparks.forEach((spk) => {
+          if (!collectedSparks[spk.id]) {
+            const t = Date.now() * 0.005;
+            const floatY = spk.y + Math.sin(t + spk.x) * 5;
+
+            ctx.save();
+            ctx.translate(spk.x, floatY);
+            ctx.rotate(t * 0.6);
+            ctx.fillStyle = stage.accent;
+            ctx.shadowColor = stage.accent;
+            ctx.shadowBlur = 12;
+            ctx.fillRect(-6, -6, 12, 12);
+            ctx.shadowBlur = 0;
+            ctx.restore();
+
+            ctx.fillStyle = '#e2e8f0';
+            ctx.font = 'bold 9px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(spk.label, spk.x, floatY - 14);
+          }
+        });
+      }
+
+      // Exit Beacon
+      ctx.fillStyle = stage.accent;
+      ctx.shadowColor = stage.accent;
+      ctx.shadowBlur = 18;
+      ctx.fillRect(b.x, b.y, b.w, b.h);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(b.x + 8, b.y + 6, b.w - 16, b.h - 12);
+      ctx.shadowBlur = 0;
+
+      // Motion Dash Trail Ghosts
+      kibo.trailGhosts.forEach((tg) => {
+        ctx.fillStyle = `${stage.accent}${Math.floor(tg.alpha * 255)
+          .toString(16)
+          .padStart(2, '0')}`;
         ctx.beginPath();
-        ctx.moveTo(-p.w / 2, -2);
-        ctx.lineTo(-p.w / 2 - 8, p.h / 2 - 2);
-        ctx.lineTo(-p.w / 2, p.h / 2);
+        ctx.roundRect(tg.x, tg.y, kibo.w, kibo.h, 6);
+        ctx.fill();
+      });
+
+      // Draw Trailing Fluid Bezier Scarf
+      ctx.save();
+      ctx.strokeStyle = stage.secondary;
+      ctx.lineWidth = 4;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(kibo.scarfPoints[0].x, kibo.scarfPoints[0].y);
+      for (let i = 1; i < kibo.scarfPoints.length - 1; i++) {
+        const xc = (kibo.scarfPoints[i].x + kibo.scarfPoints[i + 1].x) / 2;
+        const yc = (kibo.scarfPoints[i].y + kibo.scarfPoints[i + 1].y) / 2;
+        ctx.quadraticCurveTo(kibo.scarfPoints[i].x, kibo.scarfPoints[i].y, xc, yc);
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      // Kibo Transformation Center
+      ctx.save();
+      const centerX = kibo.x + kibo.w / 2;
+      const centerY = kibo.y + kibo.h;
+      ctx.translate(centerX, centerY);
+      ctx.scale(kibo.squashX, kibo.squashY);
+
+      // Oscillating Magnetic Antenna
+      ctx.save();
+      const antennaTipX = Math.sin(kibo.antennaFrequency) * 5;
+      ctx.strokeStyle = kibo.antennaDetecting ? '#38bdf8' : '#94a3b8';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(0, -kibo.h);
+      ctx.lineTo(antennaTipX, -kibo.h - 12);
+      ctx.stroke();
+
+      // Antenna Glowing Tip (Pulses rapidly when near an unspoken need)
+      ctx.fillStyle = kibo.antennaDetecting ? '#38bdf8' : stage.accent;
+      ctx.shadowColor = kibo.antennaDetecting ? '#38bdf8' : stage.accent;
+      ctx.shadowBlur = kibo.antennaDetecting ? 14 : 4;
+      ctx.beginPath();
+      ctx.arc(antennaTipX, -kibo.h - 12, kibo.antennaDetecting ? 4.5 : 2.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // Kibo Outer Body
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowColor = stage.accent;
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      ctx.roundRect(-kibo.w / 2, -kibo.h, kibo.w, kibo.h, 7);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Inner Core Gradient Badge
+      ctx.fillStyle = stage.accent;
+      ctx.beginPath();
+      ctx.roundRect(-kibo.w / 2 + 4, -kibo.h + 13, kibo.w - 8, kibo.h - 18, 4);
+      ctx.fill();
+
+      // Expressive Dynamic Eyes
+      const lookOffset = kibo.facing === 1 ? 2.5 : -2.5;
+      const eyeY = -kibo.h + 8;
+
+      if (kibo.isBlinking) {
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(-4 + lookOffset, eyeY);
+        ctx.lineTo(-1 + lookOffset, eyeY);
+        ctx.moveTo(3 + lookOffset, eyeY);
+        ctx.lineTo(6 + lookOffset, eyeY);
+        ctx.stroke();
+      } else if (kibo.isDashing) {
+        // Squinting on high-speed air dash
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(-4 + lookOffset, eyeY - 1);
+        ctx.lineTo(-1 + lookOffset, eyeY + 1);
+        ctx.moveTo(3 + lookOffset, eyeY + 1);
+        ctx.lineTo(6 + lookOffset, eyeY - 1);
+        ctx.stroke();
+      } else {
+        // Dilating with curiosity when antenna detects hidden needs
+        const eyeRadius = kibo.antennaDetecting ? 4.2 : 3.2;
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(-3 + lookOffset, eyeY, eyeRadius, 0, Math.PI * 2);
+        ctx.arc(4 + lookOffset, eyeY, eyeRadius, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.restore();
-        ctx.restore();
-      };
+        // White specular eye shine
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(-3 + lookOffset + (kibo.facing * 0.8), eyeY - 1, 1.2, 0, Math.PI * 2);
+        ctx.arc(4 + lookOffset + (kibo.facing * 0.8), eyeY - 1, 1.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
 
-      return (
-        <div className="relative w-full h-screen bg-[#07080d] overflow-hidden flex flex-col justify-between">
-          
-          {/* TOP MINIMALIST HUD */}
-          <header className="z-20 flex items-center justify-between px-6 py-4 bg-[#0a0d17]/80 backdrop-blur-md border-b border-slate-800">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <span className="inline-block w-2.5 h-2.5 rounded-full animate-ping" style={{ backgroundColor: stage.themeColor }} />
-                <h1 className="font-mono text-sm font-semibold tracking-wider text-slate-200">
-                  {stage.code}
-                </h1>
-              </div>
-              <span className="text-xs text-slate-500 hidden sm:inline">|</span>
-              <span className="text-xs font-mono text-slate-400 hidden sm:inline">
-                {stage.subtitle}
+      // Expanding Sonic Shockwaves
+      for (let i = shockwaves.length - 1; i >= 0; i--) {
+        const sw = shockwaves[i];
+        sw.radius += 2.8;
+        sw.alpha *= 0.93;
+        if (sw.alpha <= 0.04 || sw.radius >= sw.maxRadius) {
+          shockwaves.splice(i, 1);
+        } else {
+          ctx.strokeStyle = sw.color;
+          ctx.globalAlpha = sw.alpha;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      }
+
+      // Celebratory & Doubt Burst Confetti
+      for (let i = burstConfetti.length - 1; i >= 0; i--) {
+        const cp = burstConfetti[i];
+        cp.x += cp.vx;
+        cp.y += cp.vy;
+        cp.vy += 0.2;
+        cp.alpha *= 0.95;
+        if (cp.alpha <= 0.05) {
+          burstConfetti.splice(i, 1);
+        } else {
+          ctx.fillStyle = cp.color;
+          ctx.globalAlpha = cp.alpha;
+          ctx.fillRect(cp.x, cp.y, cp.size, cp.size);
+          ctx.globalAlpha = 1;
+        }
+      }
+
+      ctx.restore();
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animId);
+  }, [stageIndex, ideaWings, stageClearModal, unlockEasterEgg]);
+
+  const handleCopy = (text, key) => {
+    navigator.clipboard.writeText(text);
+    setCopySuccessKey(key);
+    audio.bubbleBounce();
+    showToast('Copied actionable blueprint to clipboard!');
+    setTimeout(() => setCopySuccessKey(null), 2400);
+  };
+
+  const formatTimer = (totalSeconds) => {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const unlockedEasterEggsCount = useMemo(
+    () => easterEggs.filter((e) => e.unlocked).length,
+    [easterEggs]
+  );
+
+  return (
+    <div className="min-h-screen bg-[#07080d] text-slate-100 flex flex-col font-sans select-none antialiased">
+      {/* Toast Notification Banner */}
+      {toastBanner && (
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-[#12141f]/95 border border-slate-700 text-slate-100 px-4 py-2 rounded-xl text-xs font-mono shadow-2xl backdrop-blur-md flex items-center gap-2 animate-fade-in">
+          <Activity className="w-3.5 h-3.5 text-cyan-400" />
+          <span>{toastBanner}</span>
+        </div>
+      )}
+
+      {/* Atmospheric Header & Telemetry */}
+      <header className="border-b border-slate-800/80 bg-[#07080d]/80 backdrop-blur-md px-4 sm:px-8 py-2.5 sticky top-0 z-40">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-xs tracking-widest text-slate-400 font-bold uppercase">SYNAPSE</span>
+            <span className="text-slate-600">//</span>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full animate-ping" style={{ backgroundColor: currentStage.accent }} />
+              <span className="font-mono text-xs uppercase tracking-wider text-slate-200">
+                {currentStage.code} // {currentStage.phase}
               </span>
             </div>
+          </div>
 
-            {/* Stage Quick Navigation Pills */}
-            <div className="flex items-center space-x-1.5">
-              {STAGES.map((s, idx) => (
-                <button
-                  key={s.id}
-                  onClick={() => {
-                    setCurrentStageIdx(idx);
-                    setGameState('PLAYING');
-                    loadStage(idx);
-                  }}
-                  className={`w-7 h-7 rounded-lg text-xs font-mono font-semibold transition-all ${
-                    idx === currentStageIdx
-                      ? 'bg-slate-100 text-slate-900 shadow-md scale-105'
-                      : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700'
-                  }`}
-                  title={s.subtitle}
-                >
-                  0{s.id}
-                </button>
-              ))}
+          <div className="hidden sm:flex items-center gap-6 font-mono text-xs text-slate-400">
+            <div>
+              TIME <span className="text-slate-100 font-bold">{formatTimer(elapsedTime)}</span>
             </div>
+            <div>
+              ITERATIONS <span className="text-slate-100 font-bold">#{iterationRetries}</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-amber-400">
+              <Gift className="w-3.5 h-3.5" />
+              <span>EASTER EGGS {unlockedEasterEggsCount}/5</span>
+            </div>
+          </div>
 
-            {/* Quick Action Toggles */}
-            <div className="flex items-center space-x-3">
-              {/* Stage 3 Idea Wings Toggle */}
-              {currentStageIdx === 2 && (
-                <button
-                  onClick={() => setIdeaWingsEnabled(!ideaWingsEnabled)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all border ${
-                    ideaWingsEnabled
-                      ? 'bg-amber-500/20 text-amber-300 border-amber-400/50 shadow-md'
-                      : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'
-                  }`}
-                >
-                  🪽 Idea Wings: {ideaWingsEnabled ? 'ON' : 'OFF'}
-                </button>
-              )}
-
-              {/* Stage 1 Sonar Perspective Toggle */}
-              {currentStageIdx === 0 && (
-                <button
-                  onClick={() => {
-                    const next = !sonarActive;
-                    setSonarActive(next);
-                    gameRef.current.keys.sonar = next;
-                    if (next) audio.sonar();
-                  }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all border ${
-                    sonarActive
-                      ? 'bg-sky-500/20 text-sky-300 border-sky-400/50 shadow-md'
-                      : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'
-                  }`}
-                >
-                  👁️ Sonar [E]: {sonarActive ? 'ACTIVE' : 'OFF'}
-                </button>
-              )}
-
-              {/* Mute Toggle */}
+          <div className="flex items-center gap-2.5">
+            {stageIndex === 2 && (
               <button
                 onClick={() => {
-                  audio.muted = !isMuted;
-                  setIsMuted(!isMuted);
+                  setIdeaWings((prev) => !prev);
+                  audio.bubbleBounce();
+                  showToast(ideaWings ? 'Idea Wings OFF' : '🪽 Idea Wings ON: Infinite gentle hover glide!');
                 }}
-                className="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700"
-                title="Toggle Sound"
+                className={`px-2.5 py-1 rounded-lg text-xs font-mono border transition flex items-center gap-1.5 ${
+                  ideaWings
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold shadow-md'
+                    : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-slate-200'
+                }`}
+                title="Toggle Infinite Glide Assist Mode"
               >
-                {isMuted ? '🔇' : '🔊'}
+                <Feather className="w-3.5 h-3.5" />
+                <span>Idea Wings: {ideaWings ? 'ON' : 'OFF'}</span>
               </button>
+            )}
 
-              {/* Field Codex Drawer Trigger */}
+            <button
+              onClick={() => {
+                setIterationRetries((r) => r + 1);
+                loadWorld(stageIndex, true);
+                showToast('Reset stage iteration.');
+              }}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition"
+              title="Reset Stage (R)"
+            >
+              <RotateCcw className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={() => setSoundEnabled(!soundEnabled)}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition"
+              title={soundEnabled ? 'Mute Audio' : 'Unmute Audio'}
+            >
+              {soundEnabled ? <Volume2 className="w-4 h-4 text-emerald-400" /> : <VolumeX className="w-4 h-4 text-slate-500" />}
+            </button>
+
+            <button
+              onClick={() => {
+                audio.bubbleBounce();
+                setBlueprintOpen(true);
+              }}
+              className="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-lg text-xs font-mono border border-slate-700/80 flex items-center gap-1.5 transition"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-violet-400" />
+              <span>[Field Codex & Secrets]</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Game Stage */}
+      <main className="flex-1 max-w-6xl w-full mx-auto p-3 sm:p-5 flex flex-col justify-between">
+        {/* Stage Tabs & Guidance Cue */}
+        <div className="flex items-center justify-between pb-2.5">
+          <div className="flex items-center gap-1.5 overflow-x-auto">
+            {DESIGN_STAGES.map((s, idx) => (
               <button
-                onClick={() => setCodexOpen(true)}
-                className="px-3 py-1.5 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 text-sky-300 font-mono text-xs font-medium transition-all"
+                key={s.id}
+                onClick={() => {
+                  audio.jump();
+                  setStageIndex(idx);
+                }}
+                className={`px-3 py-1 rounded-md text-xs font-mono transition border ${
+                  stageIndex === idx
+                    ? 'bg-slate-900 text-slate-100 border-slate-600 font-semibold shadow-sm'
+                    : 'text-slate-500 border-transparent hover:text-slate-300'
+                }`}
               >
-                📖 Codex ({discoveredEggs.length}/5)
+                {s.code}. {s.phase}
               </button>
-            </div>
-          </header>
+            ))}
+          </div>
 
-          {/* MAIN INTERACTIVE CANVAS VIEWPORT */}
-          <main className="relative flex-1 w-full h-full flex items-center justify-center">
-            <canvas
-              ref={canvasRef}
-              width={800}
-              height={480}
-              tabIndex={0}
-              className="w-full max-w-5xl h-auto max-h-[85vh] bg-[#07080d] rounded-2xl shadow-2xl border border-slate-800 focus:outline-none"
-            />
+          <span className="text-[11px] font-mono text-slate-400 hidden lg:block">
+            {currentStage.actionHint}
+          </span>
+        </div>
 
-            {/* STAGE 3 WALKTHROUGH OVERLAY */}
-            {showStage3Banner && gameState === 'PLAYING' && (
-              <div className="absolute top-6 left-1/2 -translate-x-1/2 bg-slate-900/90 border border-amber-500/40 rounded-xl px-6 py-3.5 shadow-2xl backdrop-blur-md max-w-lg text-center animate-fade-in z-10">
-                <div className="flex items-center justify-center space-x-2 text-amber-400 text-xs font-mono font-bold uppercase tracking-wider mb-1">
-                  <span>💡 Ideation Playground</span>
+        {/* Canvas Game Area with Atmospheric Overlays */}
+        <div className="relative rounded-2xl overflow-hidden border border-slate-800 bg-[#07080d] shadow-2xl flex flex-col items-center">
+          <canvas
+            ref={canvasRef}
+            width={860}
+            height={460}
+            className="w-full h-auto max-h-[500px] aspect-[860/460] block"
+          />
+
+          {/* Intro Screen - Zero Login Required */}
+          {!hasStarted && (
+            <div className="absolute inset-0 bg-[#07080d]/92 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-30 animate-fade-in">
+              <div className="max-w-md space-y-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-950/60 border border-violet-800/80 text-[11px] font-mono text-violet-300">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>The Design Thinking Odyssey</span>
                 </div>
-                <p className="text-xs text-slate-200 leading-relaxed mb-2">
-                  <strong className="text-white">Hold UP / SPACE to float like a balloon.</strong> Touch doubt walls to pop them into confetti. Idea sparks will fly straight to you!
+                <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+                  SYNAPSE
+                </h1>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Surface requests are noise. Probe latent human needs, float on kinetic idea bubbles, and build stepping stones from rapid failure.
                 </p>
-                <button
-                  onClick={() => setShowStage3Banner(false)}
-                  className="px-3 py-1 rounded bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-semibold"
-                >
-                  Got It!
-                </button>
-              </div>
-            )}
-
-            {/* EASTER EGG POPUP TOAST */}
-            {activeToast && (
-              <div className="absolute bottom-16 left-1/2 -translate-x-1/2 bg-slate-900/95 border border-emerald-500/50 rounded-xl px-5 py-4 shadow-2xl backdrop-blur-md max-w-md w-full animate-bounce z-30">
-                <div className="flex items-center space-x-2 text-emerald-400 text-xs font-mono font-bold tracking-wider mb-1">
-                  <span>🐣 EASTER EGG UNLOCKED:</span>
-                  <span>{activeToast.title}</span>
-                </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  {activeToast.tip}
-                </p>
-              </div>
-            )}
-
-            {/* START SCREEN OVERLAY */}
-            {gameState === 'TITLE' && (
-              <div className="absolute inset-0 bg-[#07080d]/95 backdrop-blur-lg flex flex-col items-center justify-center p-6 text-center z-30">
-                <div className="max-w-md space-y-6">
-                  <div className="space-y-2">
-                    <span className="text-xs font-mono tracking-widest text-sky-400 uppercase">Interactive Learning Odyssey</span>
-                    <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">SYNAPSE</h1>
-                    <p className="text-sm text-slate-400">Master Design Thinking through genuine indie platforming mechanics. No buzzwords. Zero forced logins.</p>
-                  </div>
-
-                  <div className="bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-left space-y-2 font-mono text-xs text-slate-300">
-                    <div className="flex justify-between"><span className="text-slate-500">Move:</span> <span>A / D or Arrow Keys</span></div>
-                    <div className="flex justify-between"><span className="text-slate-500">Jump / Float:</span> <span>W / Space / Up</span></div>
-                    <div className="flex justify-between"><span className="text-slate-500">Air Dash:</span> <span>Shift or J</span></div>
-                    <div className="flex justify-between"><span className="text-slate-500">User Perspective:</span> <span>E (Empathy Sonar)</span></div>
-                    <div className="flex justify-between"><span className="text-slate-500">Drop Prototype:</span> <span>Q / F (In Stage 4)</span></div>
-                  </div>
-
-                  <button
-                    onClick={startGame}
-                    className="w-full py-3.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold rounded-xl shadow-lg transition-all transform hover:scale-[1.02] active:scale-[0.98]"
-                  >
-                    DIVE IN ➔
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* STAGE CLEAR MODAL */}
-            {gameState === 'STAGE_CLEAR' && (
-              <div className="absolute inset-0 bg-[#07080d]/90 backdrop-blur-md flex items-center justify-center p-6 z-30">
-                <div className="max-w-lg w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-5 shadow-2xl">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <span className="font-mono text-xs text-slate-400">{stage.code} COMPLETE</span>
-                    <span className="text-xs px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Verified</span>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h2 className="text-2xl font-bold text-white">{stage.subtitle}</h2>
-                    <blockquote className="border-l-2 border-sky-500 pl-3 text-xs italic text-slate-300">
-                      "{stage.quote}"
-                    </blockquote>
-                  </div>
-
-                  <div className="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-2">
-                    <div className="text-xs font-mono text-sky-400 font-medium">WORKPLACE APPLICATION:</div>
-                    <div className="text-sm font-semibold text-slate-100">{stage.tool}</div>
-                    <p className="text-xs text-slate-400 leading-relaxed">{stage.lore}</p>
-                  </div>
-
-                  <div className="flex space-x-3 pt-2">
-                    <button
-                      onClick={restartCurrentStage}
-                      className="w-1/3 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-medium transition"
-                    >
-                      Replay
-                    </button>
-                    <button
-                      onClick={nextStage}
-                      className="w-2/3 py-2.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold rounded-xl text-xs transition"
-                    >
-                      CONTINUE ODYSSEY ➔
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* FINAL VICTORY MODAL */}
-            {gameState === 'VICTORY' && (
-              <div className="absolute inset-0 bg-[#07080d]/95 backdrop-blur-lg flex items-center justify-center p-6 z-30">
-                <div className="max-w-lg w-full bg-slate-900 border border-emerald-500/30 rounded-2xl p-8 text-center space-y-6 shadow-2xl">
-                  <div className="inline-block p-4 rounded-full bg-emerald-500/20 text-emerald-300 text-3xl">
-                    🏆
-                  </div>
-                  <div className="space-y-2">
-                    <h2 className="text-3xl font-extrabold text-white">Product-Market Fit Attained</h2>
-                    <p className="text-xs text-slate-300">
-                      You navigated all 5 phases of Design Thinking, transformed user friction into actionable insights, and turned disposable failures into product success.
-                    </p>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-left space-y-2 font-mono text-xs">
-                    <div className="text-emerald-400 font-semibold">ODYSSEY CREDENTIAL:</div>
-                    <div className="text-slate-300">Practitioner: Autonomous Innovator</div>
-                    <div className="text-slate-400">Easter Eggs Discovered: {discoveredEggs.length} / 5</div>
-                  </div>
-
+                <div className="pt-2">
                   <button
                     onClick={() => {
-                      setCurrentStageIdx(0);
-                      setGameState('PLAYING');
-                      loadStage(0);
+                      audio.init();
+                      setHasStarted(true);
                     }}
-                    className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition"
+                    className="px-6 py-3 bg-white hover:bg-slate-200 text-slate-950 font-bold rounded-xl text-xs font-mono tracking-wide transition shadow-lg flex items-center justify-center gap-2 mx-auto"
                   >
-                    PLAY AGAIN
-                  </button>
-                </div>
-              </div>
-            )}
-          </main>
-
-          {/* BOTTOM MINIMAL CONTROL BAR (MOBILE / TOUCH FRIENDLY) */}
-          <footer className="z-20 px-6 py-3 bg-[#0a0d17]/80 backdrop-blur-md border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
-            <div className="flex items-center space-x-2">
-              <span className="font-mono text-slate-500">Current Directive:</span>
-              <span className="text-slate-300">{stage.directive}</span>
-            </div>
-
-            {/* Mobile Touch Action Buttons */}
-            <div className="flex items-center space-x-2 sm:hidden">
-              <button
-                onTouchStart={() => { gameRef.current.keys.left = true; }}
-                onTouchEnd={() => { gameRef.current.keys.left = false; }}
-                className="w-10 h-10 rounded-lg bg-slate-800 active:bg-slate-700 text-white flex items-center justify-center text-lg"
-              >
-                ◀
-              </button>
-              <button
-                onTouchStart={() => { gameRef.current.keys.right = true; }}
-                onTouchEnd={() => { gameRef.current.keys.right = false; }}
-                className="w-10 h-10 rounded-lg bg-slate-800 active:bg-slate-700 text-white flex items-center justify-center text-lg"
-              >
-                ▶
-              </button>
-              <button
-                onTouchStart={() => {
-                  gameRef.current.keys.up = true;
-                  gameRef.current.player.jumpBuffer = 8;
-                }}
-                onTouchEnd={() => { gameRef.current.keys.up = false; }}
-                className="w-12 h-10 rounded-lg bg-sky-500 active:bg-sky-400 text-slate-950 font-bold flex items-center justify-center text-sm"
-              >
-                JUMP
-              </button>
-              {currentStageIdx === 3 && (
-                <button
-                  onClick={dropWireframeBlock}
-                  className="px-3 h-10 rounded-lg bg-emerald-600 active:bg-emerald-500 text-white font-mono text-xs flex items-center justify-center"
-                >
-                  BLOCK
-                </button>
-              )}
-            </div>
-          </footer>
-
-          {/* FIELD CODEX & WORKPLACE TOOLKIT SLIDE-OVER DRAWER */}
-          {codexOpen && (
-            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end">
-              <div className="w-full max-w-md bg-slate-900 border-l border-slate-800 h-full p-6 overflow-y-auto flex flex-col justify-between shadow-2xl">
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-                    <div>
-                      <h2 className="text-lg font-bold text-white">Maker's Field Codex</h2>
-                      <p className="text-xs font-mono text-sky-400">Design Thinking Playbook & Easter Eggs</p>
-                    </div>
-                    <button
-                      onClick={() => setCodexOpen(false)}
-                      className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"
-                    >
-                      ✕
-                    </button>
-                  </div>
-
-                  {/* Crazy 8s Facilitation Timer Widget */}
-                  <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-mono text-amber-400 font-semibold">CRAZY 8s SPRINT TIMER</span>
-                      <span className="font-mono text-sm text-slate-200">
-                        {Math.floor(timerSeconds / 60)}:{(timerSeconds % 60).toString().padStart(2, '0')}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-slate-400 leading-tight">
-                      Fold a paper into 8 rectangles. Sketch 1 wild idea per minute. Chimes sound every 60s.
-                    </p>
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => setTimerRunning(!timerRunning)}
-                        className={`flex-1 py-1.5 rounded-lg text-xs font-semibold ${
-                          timerRunning ? 'bg-rose-500 text-white' : 'bg-amber-500 text-slate-950'
-                        }`}
-                      >
-                        {timerRunning ? 'PAUSE' : 'START 8-MIN SPRINT'}
-                      </button>
-                      <button
-                        onClick={() => { setTimerRunning(false); setTimerSeconds(480); }}
-                        className="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-xs"
-                      >
-                        RESET
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Easter Egg Tracker */}
-                  <div className="space-y-3">
-                    <h3 className="text-xs font-mono text-slate-400 font-semibold tracking-wider">
-                      DISCOVERED DESIGN TRUTHS ({discoveredEggs.length} / 5)
-                    </h3>
-                    <div className="space-y-2">
-                      {EASTER_EGGS_CATALOG.map((egg) => {
-                        const isUnlocked = discoveredEggs.includes(egg.id);
-                        return (
-                          <div
-                            key={egg.id}
-                            className={`p-3 rounded-xl border text-xs transition-all ${
-                              isUnlocked
-                                ? 'bg-slate-950 border-emerald-500/40 text-slate-200'
-                                : 'bg-slate-950/40 border-slate-800/60 text-slate-500'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between font-mono mb-1">
-                              <span className={isUnlocked ? 'text-emerald-400 font-medium' : 'text-slate-600'}>
-                                {isUnlocked ? `🐣 ${egg.title}` : '🔒 Undiscovered Tip'}
-                              </span>
-                              <span className="text-[10px]">{isUnlocked ? 'UNLOCKED' : 'LOCKED'}</span>
-                            </div>
-                            <p className="text-[11px] leading-relaxed">
-                              {isUnlocked ? egg.tip : `Hint: ${egg.trigger}`}
-                            </p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-6 border-t border-slate-800 text-center">
-                  <button
-                    onClick={() => setCodexOpen(false)}
-                    className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium"
-                  >
-                    RETURN TO GAME
+                    <Play className="w-4 h-4 fill-current" />
+                    <span>PRESS SPACE / CLICK TO DIVE IN</span>
                   </button>
                 </div>
               </div>
             </div>
           )}
 
-        </div>
-      );
-    }
+          {/* UNSPOKEN LATENT NEED REVEALED MODAL */}
+          {unspokenRevealedModal && (
+            <div className="absolute inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 z-40 animate-fade-in">
+              <div className="max-w-md w-full bg-[#111322] border border-cyan-500/80 rounded-2xl p-6 shadow-2xl space-y-4 text-left">
+                <div className="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+                  <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs font-bold">
+                    <HeartHandshake className="w-4 h-4" />
+                    <span>ACTIVE LISTENING: LATENT NEED DISCOVERED!</span>
+                  </div>
+                  <button
+                    onClick={() => setUnspokenRevealedModal(null)}
+                    className="p-1 rounded bg-slate-800 text-slate-400 hover:text-white"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
 
-    // Render the React application into root
-    ReactDOM.createRoot(document.getElementById('root')).render(<SynapseGame />);
-  </script>
-</body>
-</html>
+                <div className="space-y-3">
+                  <div className="p-3 bg-rose-950/20 border border-rose-900/40 rounded-xl space-y-1">
+                    <span className="text-[10px] font-mono text-rose-400 uppercase tracking-wider block">
+                      Discarded Surface Decoy:
+                    </span>
+                    <p className="text-xs text-rose-200 line-through">
+                      {unspokenRevealedModal.surfaceRequest}
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-cyan-950/20 border border-cyan-900/50 rounded-xl space-y-1">
+                    <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-wider block">
+                      True Latent Emotional Need:
+                    </span>
+                    <p className="text-xs text-cyan-100 font-medium leading-relaxed">
+                      {unspokenRevealedModal.hiddenNeed}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-[#090b12] p-3 rounded-xl border border-slate-800 text-xs text-slate-300">
+                  <span className="text-[10px] font-mono text-violet-400 block font-bold mb-1 uppercase">
+                    Workplace Implication:
+                  </span>
+                  Users ask for more buttons when they feel insecure about their workflow. Do not build more filters—automate clarity and confidence.
+                </div>
+
+                <button
+                  onClick={() => setUnspokenRevealedModal(null)}
+                  className="w-full py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl text-xs font-bold font-mono transition"
+                >
+                  PROCEED WITH DISCOVERED PATHWAY ➔
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* EASTER EGG UNLOCKED MODAL */}
+          {activeEggModal && (
+            <div className="absolute inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in">
+              <div className="max-w-md w-full bg-[#121422] border border-amber-500/80 rounded-2xl p-6 shadow-2xl space-y-4 text-left">
+                <div className="flex items-center justify-between border-b border-amber-500/30 pb-3">
+                  <div className="flex items-center gap-2 text-amber-400 font-mono text-xs font-bold">
+                    <Gift className="w-4 h-4" />
+                    <span>SECRET DESIGN THINKING EPIPHANY!</span>
+                  </div>
+                  <button
+                    onClick={() => setActiveEggModal(null)}
+                    className="p-1 rounded bg-slate-800 text-slate-400 hover:text-white"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-white tracking-tight">{activeEggModal.title}</h3>
+                  <p className="text-[11px] font-mono text-slate-400 mt-0.5">{activeEggModal.trigger}</p>
+                  <p className="text-xs text-amber-300/90 italic font-mono mt-3 p-2.5 rounded-lg bg-amber-950/20 border border-amber-900/40">
+                    {activeEggModal.quote}
+                  </p>
+                </div>
+
+                <div className="bg-[#090b12] p-3.5 rounded-xl border border-slate-800 space-y-1">
+                  <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-wider block">
+                    HOW TO APPLY THIS AT WORK:
+                  </span>
+                  <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                    {activeEggModal.workplaceTip}
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setActiveEggModal(null)}
+                  className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-xs font-bold font-mono transition"
+                >
+                  RESUME ODYSSEY
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Stage Cleared Modal */}
+          {stageClearModal && !activeEggModal && !unspokenRevealedModal && (
+            <div className="absolute inset-0 bg-[#07080d]/92 backdrop-blur-md flex items-center justify-center p-4 z-40 animate-fade-in">
+              <div className="max-w-md w-full bg-[#12141e] border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4 text-left">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <span className="font-mono text-xs uppercase tracking-wider text-slate-400">
+                    STAGE {currentStage.code} // COMPLETE
+                  </span>
+                  <span
+                    className="w-2.5 h-2.5 rounded-full"
+                    style={{ backgroundColor: currentStage.accent }}
+                  />
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-white tracking-tight">{currentStage.title}</h3>
+                  <p className="text-xs text-slate-400 mt-1 italic font-mono">
+                    "{currentStage.tagline}"
+                  </p>
+                  <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                    {currentStage.blueprint.metaphor}
+                  </p>
+                </div>
+
+                <div className="bg-[#090a10] p-3.5 rounded-xl border border-slate-800/80">
+                  <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-wider block mb-1">
+                    WORKPLACE APPLICATION: {currentStage.blueprint.framework}
+                  </span>
+                  <p className="text-xs text-slate-300 whitespace-pre-line leading-relaxed font-mono">
+                    {currentStage.blueprint.agenda}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 pt-1">
+                  {stageIndex < DESIGN_STAGES.length - 1 ? (
+                    <button
+                      onClick={() => {
+                        audio.jump();
+                        setStageIndex(stageIndex + 1);
+                      }}
+                      className="flex-1 py-2.5 bg-white hover:bg-slate-200 text-slate-950 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-md"
+                    >
+                      <span>Advance to Stage 0{stageIndex + 2}</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        audio.victoryFanfare();
+                        setStageClearModal(false);
+                        setBlueprintOpen(true);
+                        setActiveBlueprintTab('cert');
+                      }}
+                      className="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-md"
+                    >
+                      <span>Claim Architect Credential</span>
+                      <Award className="w-4 h-4" />
+                    </button>
+                  )}
+                  <button
+                    onClick={() => loadWorld(stageIndex, true)}
+                    className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-mono transition"
+                  >
+                    Replay
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Minimalist Controls & Mobile Touch Pad */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#0d0f18]/60 p-2.5 rounded-xl border border-slate-800/70 text-xs mt-2.5">
+          <div className="flex items-center gap-4 text-slate-400 font-mono text-[11px]">
+            <span>
+              <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-200">A / D</kbd> Move
+            </span>
+            <span>
+              <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-200">
+                {stageIndex === 2 ? 'Hold UP / SPACE to Float' : 'Space Jump'}
+              </kbd>
+            </span>
+            <span>
+              <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-200">Shift / J</kbd> Dash
+            </span>
+            <span>
+              <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-violet-400">E</kbd> Probe Latent Need
+            </span>
+            {stageIndex === 3 && (
+              <span>
+                <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-emerald-400">Q / F</kbd> Deploy MVP
+              </span>
+            )}
+          </div>
+
+          {/* Touch Gamepad */}
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+            <div className="flex gap-1.5">
+              <button
+                onTouchStart={() => (gameStateRef.current.keys.left = true)}
+                onTouchEnd={() => (gameStateRef.current.keys.left = false)}
+                onMouseDown={() => (gameStateRef.current.keys.left = true)}
+                onMouseUp={() => (gameStateRef.current.keys.left = false)}
+                className="w-10 h-8 bg-slate-900 border border-slate-800 active:bg-slate-800 rounded-lg text-slate-200 font-mono flex items-center justify-center"
+              >
+                ←
+              </button>
+              <button
+                onTouchStart={() => (gameStateRef.current.keys.right = true)}
+                onTouchEnd={() => (gameStateRef.current.keys.right = false)}
+                onMouseDown={() => (gameStateRef.current.keys.right = true)}
+                onMouseUp={() => (gameStateRef.current.keys.right = false)}
+                className="w-10 h-8 bg-slate-900 border border-slate-800 active:bg-slate-800 rounded-lg text-slate-200 font-mono flex items-center justify-center"
+              >
+                →
+              </button>
+            </div>
+
+            <div className="flex gap-1.5">
+              <button
+                onClick={triggerActiveListeningProbe}
+                className="px-2.5 h-8 bg-violet-950/80 border border-violet-700 active:bg-violet-900 rounded-lg text-violet-200 text-xs font-mono"
+              >
+                PROBE
+              </button>
+              {stageIndex === 3 && (
+                <button
+                  onClick={handleDeployMVPBlock}
+                  className="px-2.5 h-8 bg-emerald-950/80 border border-emerald-700 active:bg-emerald-900 rounded-lg text-emerald-200 text-xs font-mono"
+                >
+                  DEPLOY MVP
+                </button>
+              )}
+              <button
+                onTouchStart={() => (gameStateRef.current.keys.dash = true)}
+                onTouchEnd={() => (gameStateRef.current.keys.dash = false)}
+                onMouseDown={() => (gameStateRef.current.keys.dash = true)}
+                onMouseUp={() => (gameStateRef.current.keys.dash = false)}
+                className="px-3 h-8 bg-slate-900 border border-slate-800 active:bg-slate-800 rounded-lg text-slate-300 text-xs font-mono"
+              >
+                DASH
+              </button>
+              <button
+                onTouchStart={() => {
+                  gameStateRef.current.keys.up = true;
+                  gameStateRef.current.kibo.jumpBuffer = 7;
+                }}
+                onTouchEnd={() => (gameStateRef.current.keys.up = false)}
+                onMouseDown={() => {
+                  gameStateRef.current.keys.up = true;
+                  gameStateRef.current.kibo.jumpBuffer = 7;
+                }}
+                onMouseUp={() => (gameStateRef.current.keys.up = false)}
+                className="px-4 h-8 bg-white active:bg-slate-200 text-slate-950 font-bold rounded-lg text-xs font-mono"
+              >
+                {stageIndex === 2 ? 'FLOAT' : 'JUMP'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Field Codex & Secret Drawer */}
+      {blueprintOpen && (
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex justify-end animate-fade-in">
+          <div className="w-full max-w-xl bg-[#090b12] border-l border-slate-800 h-full overflow-y-auto p-6 flex flex-col justify-between">
+            <div className="space-y-6">
+              {/* Drawer Top Header */}
+              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div>
+                  <span className="font-mono text-[10px] uppercase text-slate-500 tracking-widest">
+                    SYNAPSE FIELD ARCHIVE
+                  </span>
+                  <h2 className="text-lg font-bold text-white mt-0.5">The Maker's Field Codex</h2>
+                </div>
+                <button
+                  onClick={() => setBlueprintOpen(false)}
+                  className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Navigation Tabs */}
+              <div className="flex border-b border-slate-800 text-xs font-mono">
+                <button
+                  onClick={() => setActiveBlueprintTab('easter_eggs')}
+                  className={`pb-2 px-3 border-b-2 transition flex items-center gap-1.5 ${
+                    activeBlueprintTab === 'easter_eggs'
+                      ? 'border-amber-400 text-amber-300 font-bold'
+                      : 'border-transparent text-slate-500 hover:text-slate-300'
+                  }`}
+                >
+                  <Gift className="w-3.5 h-3.5" />
+                  <span>Easter Eggs ({unlockedEasterEggsCount}/5)</span>
+                </button>
+                <button
+                  onClick={() => setActiveBlueprintTab('protocols')}
+                  className={`pb-2 px-3 border-b-2 transition ${
+                    activeBlueprintTab === 'protocols'
+                      ? 'border-white text-white font-bold'
+                      : 'border-transparent text-slate-500 hover:text-slate-300'
+                  }`}
+                >
+                  Protocols
+                </button>
+                <button
+                  onClick={() => setActiveBlueprintTab('timer')}
+                  className={`pb-2 px-3 border-b-2 transition ${
+                    activeBlueprintTab === 'timer'
+                      ? 'border-white text-white font-bold'
+                      : 'border-transparent text-slate-500 hover:text-slate-300'
+                  }`}
+                >
+                  Crazy 8s Timer
+                </button>
+                <button
+                  onClick={() => setActiveBlueprintTab('cert')}
+                  className={`pb-2 px-3 border-b-2 transition ${
+                    activeBlueprintTab === 'cert'
+                      ? 'border-white text-white font-bold'
+                      : 'border-transparent text-slate-500 hover:text-slate-300'
+                  }`}
+                >
+                  Architect Card
+                </button>
+              </div>
+
+              {/* Tab 1: Secret Easter Eggs Archive */}
+              {activeBlueprintTab === 'easter_eggs' && (
+                <div className="space-y-3">
+                  <div className="p-3 bg-amber-950/20 border border-amber-900/50 rounded-xl text-xs text-amber-300 font-mono">
+                    Explore with curiosity. These secret heuristics reveal counter-intuitive truths about innovation.
+                  </div>
+
+                  {easterEggs.map((egg) => (
+                    <div
+                      key={egg.id}
+                      className={`p-4 rounded-xl border transition ${
+                        egg.unlocked
+                          ? 'bg-[#121422] border-amber-500/60 shadow-lg'
+                          : 'bg-[#0d0f18]/60 border-slate-800 opacity-60'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between font-mono text-xs">
+                        <span className={`font-bold flex items-center gap-1.5 ${egg.unlocked ? 'text-amber-300' : 'text-slate-400'}`}>
+                          {egg.unlocked ? <Gift className="w-3.5 h-3.5 text-amber-400" /> : <Gift className="w-3.5 h-3.5 text-slate-500" />}
+                          {egg.unlocked ? egg.title : 'Locked Secret Easter Egg'}
+                        </span>
+                        <span className={`text-[10px] px-2 py-0.5 rounded ${egg.unlocked ? 'bg-amber-500/20 text-amber-300' : 'bg-slate-800 text-slate-500'}`}>
+                          {egg.unlocked ? 'UNLOCKED' : 'FIND IN GAME'}
+                        </span>
+                      </div>
+
+                      {egg.unlocked ? (
+                        <div className="mt-2 space-y-2">
+                          <p className="text-xs text-slate-400 font-mono italic">
+                            {egg.quote}
+                          </p>
+                          <div className="bg-[#090b12] p-2.5 rounded-lg border border-slate-800 text-xs text-slate-300 leading-relaxed font-sans">
+                            <span className="text-[10px] font-mono text-cyan-400 block font-bold mb-0.5 uppercase">Workplace Application:</span>
+                            {egg.workplaceTip}
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-xs text-slate-500 mt-2 font-mono">
+                          Hint: {egg.trigger}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Tab 2: Mechanic ↔ Workplace Protocol */}
+              {activeBlueprintTab === 'protocols' && (
+                <div className="space-y-3">
+                  {DESIGN_STAGES.map((s) => (
+                    <div key={s.id} className="p-4 bg-[#11131e] rounded-xl border border-slate-800/80 space-y-2">
+                      <div className="flex items-center justify-between font-mono text-xs">
+                        <span className="font-bold text-slate-200">
+                          {s.code} // {s.title}
+                        </span>
+                        <span className="text-[10px] text-slate-400">{s.phase}</span>
+                      </div>
+                      <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                        {s.blueprint.metaphor}
+                      </p>
+                      <div className="pt-1">
+                        <span className="text-[10px] font-mono text-violet-400 uppercase tracking-wider block mb-1">
+                          Enterprise Protocol: {s.blueprint.framework}
+                        </span>
+                        <p className="text-xs text-slate-400 whitespace-pre-line leading-relaxed font-mono">
+                          {s.blueprint.agenda}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Tab 3: Interactive Crazy 8s Facilitation Timer */}
+              {activeBlueprintTab === 'timer' && (
+                <div className="p-5 bg-[#11131e] rounded-xl border border-slate-800 space-y-4 text-center">
+                  <span className="font-mono text-[10px] uppercase text-amber-400 tracking-wider">
+                    Interactive Ideation Facilitator
+                  </span>
+                  <div>
+                    <h3 className="text-base font-bold text-white">Crazy 8s Sprint Clock</h3>
+                    <p className="text-xs text-slate-400 mt-1">
+                      Fold a sheet of paper into 8 sections. Sketch 1 radical distinct concept every 60 seconds.
+                    </p>
+                  </div>
+
+                  <div className="py-4">
+                    <div className="text-5xl font-mono font-extrabold text-white tracking-tight">
+                      0:{sprintSeconds.toString().padStart(2, '0')}
+                    </div>
+                    <span className="text-xs font-mono text-slate-400 mt-1 block">
+                      ROUND {sprintRound} OF 8
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-center gap-2">
+                    <button
+                      onClick={() => {
+                        audio.jump();
+                        setSprintRunning(!sprintRunning);
+                      }}
+                      className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg text-xs font-mono transition"
+                    >
+                      {sprintRunning ? 'PAUSE SPRINT' : 'START 8-MINUTE SPRINT'}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSprintRunning(false);
+                        setSprintRound(1);
+                        setSprintSeconds(60);
+                      }}
+                      className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-mono transition"
+                    >
+                      RESET
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Tab 4: Design Architect Credential Card */}
+              {activeBlueprintTab === 'cert' && (
+                <div className="p-5 bg-[#11131e] border border-slate-800 rounded-xl space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[10px] text-slate-500 uppercase tracking-widest">
+                      SYNAPSE CREDENTIAL RECORD
+                    </span>
+                    <span className="text-xs font-mono text-emerald-400 flex items-center gap-1">
+                      <Check className="w-3.5 h-3.5" /> Certified Architect
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-xs text-slate-400 block mb-1">Architect Name:</span>
+                    <input
+                      type="text"
+                      value={practitionerName}
+                      onChange={(e) => setPractitionerName(e.target.value)}
+                      className="w-full bg-[#0a0c14] border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white font-mono focus:outline-none focus:border-slate-500"
+                    />
+                  </div>
+
+                  <div className="border-t border-slate-800/80 pt-3 text-xs font-mono text-slate-400 space-y-1">
+                    <div>PRACTITIONER: {practitionerName.toUpperCase()}</div>
+                    <div>TELEMETRY TIME: {formatTimer(elapsedTime)}</div>
+                    <div>FAILURES / ITERATIONS: #{iterationRetries}</div>
+                    <div>EASTER EGGS DISCOVERED: {unlockedEasterEggsCount} / 5</div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      const credentialText = `===========================================
+SYNAPSE // DESIGN ARCHITECT CREDENTIAL
+===========================================
+PRACTITIONER: ${practitionerName}
+SPEEDRUN TIME: ${formatTimer(elapsedTime)}
+ITERATION FAILURES: ${iterationRetries}
+EASTER EGGS DISCOVERED: ${unlockedEasterEggsCount} / 5
+CORE DESIGN THINKING COMPETENCIES:
+1. Empathize: Dissolved Surface Decoys via Active Listening [E]
+2. Define: Converged User Need & Root Friction into singular POV
+3. Ideate: Rode kinetic idea bubbles through skepticism barriers
+4. Prototype: Solidified fast failures into permanent ghost staircases
+5. Test: Rode customer validation currents to Product-Market Fit
+===========================================`;
+                      handleCopy(credentialText, 'card_copy');
+                    }}
+                    className="w-full py-2 bg-white hover:bg-slate-200 text-slate-950 font-bold rounded-lg text-xs font-mono transition flex items-center justify-center gap-1.5"
+                  >
+                    {copySuccessKey === 'card_copy' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                    Copy Credential
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="pt-4 border-t border-slate-800">
+              <button
+                onClick={() => setBlueprintOpen(false)}
+                className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-xl text-xs font-mono transition"
+              >
+                Return to Odyssey
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
