@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TERRA CQ • The Intercultural Atlas & Global Leadership Puzzle</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Leaflet.js: Free & Keyless Open GIS Engine -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Google Fonts: Space Grotesk, Outfit, Newsreader -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            atlas: {
+              void: '#040810',
+              abyss: '#08101D',
+              surface: '#0E192B',
+              glass: 'rgba(14, 25, 43, 0.75)',
+              border: 'rgba(255, 255, 255, 0.08)',
+              brass: '#D4A359',
+              gold: '#FBBF24',
+              verdigris: '#2DD4BF',
+              coral: '#FB7185',
+              ink: '#0F172A'
+            }
+          },
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+            mono: ['Space Grotesk', 'monospace'],
+            serif: ['Newsreader', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* 3D Flip Card Animation */
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; }
+    .backface-hidden { backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+
+    /* Keyless CSS Map Shaders */
+    .map-filter-midnight .leaflet-tile-pane {
+      filter: brightness(0.62) invert(1) contrast(2.2) hue-rotate(195deg) saturate(0.3);
+    }
+    .map-filter-parchment .leaflet-tile-pane {
+      filter: sepia(0.55) contrast(1.15) brightness(0.92) saturate(0.85);
+    }
+    .map-filter-satellite .leaflet-tile-pane {
+      filter: brightness(0.9) contrast(1.1);
+    }
+
+    /* Active Geodesic Corridor Flight Animation */
+    @keyframes corridorFlow {
+      to { stroke-dashoffset: -32; }
+    }
+    .leaflet-flight-corridor {
+      stroke-dasharray: 6, 6;
+      animation: corridorFlow 2s linear infinite;
+    }
+
+    /* Node Pulse */
+    @keyframes beaconPulse {
+      0% { transform: scale(0.9); opacity: 0.9; }
+      50% { transform: scale(2.2); opacity: 0.15; }
+      100% { transform: scale(2.6); opacity: 0; }
+    }
+    .sonar-ping {
+      animation: beaconPulse 2.4s ease-out infinite;
+    }
+
+    /* Button Glow Pulse */
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 15px rgba(212, 163, 89, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.2); }
+      50% { box-shadow: 0 0 25px rgba(212, 163, 89, 0.75), inset 0 0 14px rgba(255, 255, 255, 0.4); }
+    }
+    .animate-glow {
+      animation: glowPulse 2.2s infinite ease-in-out;
+    }
+
+    /* Sleek Puzzle Jigsaw Connectors (Tabs & Notches) */
+    .puzzle-piece {
+      position: relative;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .puzzle-piece::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 12px;
+      height: 12px;
+      background: inherit;
+      border-radius: 50%;
+      z-index: 2;
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    .puzzle-piece:last-child::after {
+      display: none;
+    }
+
+    /* Compact Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #040810; }
+    ::-webkit-scrollbar-thumb { background: #1a2a40; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d4a359; }
+
+    .leaflet-container {
+      background: #08101D !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+    }
+  </style>
+</head>
+
+<body class="bg-atlas-void text-slate-200 font-sans min-h-screen flex flex-col selection:bg-atlas-brass selection:text-atlas-void antialiased">
+
+  <!-- ========================================================================= -->
+  <!-- SLIM COCKPIT NAVIGATION BAR                                               -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-50 bg-atlas-abyss/90 backdrop-blur-xl border-b border-atlas-border">
+    <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+      
+      <!-- Brand & Compass -->
+      <div class="flex items-center space-x-3 cursor-pointer group" onclick="switchTab('atlas')">
+        <div class="w-8 h-8 rounded-lg bg-atlas-surface border border-atlas-brass/40 flex items-center justify-center text-atlas-brass shadow group-hover:border-atlas-brass transition">
+          <i data-lucide="compass" id="nav-compass" class="w-4 h-4 transition-transform duration-700 ease-out group-hover:rotate-180"></i>
+        </div>
+        <div class="leading-none">
+          <div class="flex items-center space-x-1.5">
+            <span class="font-mono text-sm font-extrabold tracking-wider text-white">TERRA<span class="text-atlas-brass">.CQ</span></span>
+            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-atlas-verdigris/15 text-atlas-verdigris font-semibold border border-atlas-verdigris/30">MNC</span>
+          </div>
+          <span class="text-[10px] text-slate-400 font-mono hidden sm:inline" id="current-coords">35.67° N, 139.65° E • TOKYO</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center bg-atlas-surface/80 p-0.5 rounded-lg border border-atlas-border text-xs font-mono">
+        <button id="tab-atlas" onclick="switchTab('atlas')" class="px-3 py-1.5 rounded-md flex items-center space-x-1.5 transition bg-atlas-brass text-atlas-void font-bold">
+          <i data-lucide="map" class="w-3.5 h-3.5"></i>
+          <span>ATLAS</span>
+          <span id="nav-puzzle-badge" class="bg-atlas-void text-atlas-brass px-1 rounded text-[9px]">0/8</span>
+        </button>
+
+        <button id="tab-sprints" onclick="switchTab('sprints')" class="px-3 py-1.5 rounded-md flex items-center space-x-1.5 transition text-slate-300 hover:text-white">
+          <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>SPRINTS</span>
+        </button>
+
+        <button id="tab-radar" onclick="switchTab('radar')" class="px-3 py-1.5 rounded-md flex items-center space-x-1.5 transition text-slate-300 hover:text-white">
+          <i data-lucide="activity" class="w-3.5 h-3.5 text-atlas-verdigris"></i>
+          <span>RADAR</span>
+        </button>
+
+        <button id="tab-passport" onclick="switchTab('passport')" class="px-3 py-1.5 rounded-md flex items-center space-x-1.5 transition text-slate-300 hover:text-white">
+          <i data-lucide="award" class="w-3.5 h-3.5 text-rose-400"></i>
+          <span>PASSPORT</span>
+        </button>
+      </nav>
+
+      <!-- Player HUD: Coins, Miles, Sound Toggle -->
+      <div class="flex items-center space-x-3 text-xs font-mono">
+        <div class="flex items-center space-x-2 bg-atlas-surface/60 px-2.5 py-1 rounded-md border border-atlas-border">
+          <span class="text-atlas-brass font-semibold">🪙 <span id="hud-coins">0</span></span>
+          <span class="text-slate-600">|</span>
+          <span class="text-atlas-verdigris font-semibold">✨ <span id="hud-xp">0</span> <span class="text-[10px] text-slate-400 font-normal">NM</span></span>
+        </div>
+
+        <button id="audio-toggle-btn" onclick="toggleAudio()" class="w-7 h-7 rounded-md bg-atlas-surface/60 border border-atlas-border flex items-center justify-center text-slate-400 hover:text-atlas-brass transition" title="Toggle Sonar Audio">
+          <i data-lucide="volume-2" class="w-3.5 h-3.5" id="audio-icon"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN WORKSPACE                                                            -->
+  <!-- ========================================================================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-3 z-10 flex flex-col">
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 1: HERO ATLAS & JIGSAW PUZZLE DOCK                               -->
+    <!-- ===================================================================== -->
+    <section id="view-atlas" class="space-y-3 flex-1 flex flex-col">
+
+      <!-- MAIN PROMINENT MAP CANVAS WITH FLOATING ON-MAP HUD -->
+      <div class="relative w-full h-[64vh] min-h-[480px] rounded-2xl overflow-hidden border border-atlas-border shadow-2xl bg-atlas-abyss">
+        
+        <!-- Real Leaflet Map -->
+        <div id="real-leaflet-map" class="w-full h-full z-0 map-filter-midnight"></div>
+
+        <!-- ================================================================= -->
+        <!-- FLOATING ON-MAP COMMAND BAR (PROMINENT CTA & CLEAR INSTRUCTION)   -->
+        <!-- ================================================================= -->
+        <div class="absolute top-3 inset-x-3 z-20 pointer-events-none flex flex-wrap items-center justify-between gap-2.5">
+          
+          <!-- Left: Map Style Selector -->
+          <div class="pointer-events-auto flex items-center space-x-1 bg-atlas-abyss/85 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-atlas-border text-xs font-mono shadow-xl">
+            <span class="text-slate-400 text-[10px] mr-1">LAYER:</span>
+            <button onclick="setMapShader('midnight')" id="btn-shader-midnight" class="px-2 py-0.5 rounded bg-atlas-brass text-atlas-void font-bold text-[10px] transition">MIDNIGHT</button>
+            <button onclick="setMapShader('parchment')" id="btn-shader-parchment" class="px-2 py-0.5 rounded bg-atlas-surface text-slate-400 hover:text-white text-[10px] transition">PARCHMENT</button>
+            <button onclick="setMapShader('satellite')" id="btn-shader-satellite" class="px-2 py-0.5 rounded bg-atlas-surface text-slate-400 hover:text-white text-[10px] transition">SATELLITE</button>
+          </div>
+
+          <!-- Center: Simple & Intuitive Instruction Pill (< 2 min to solve & unlock skill) -->
+          <div class="pointer-events-auto flex items-center space-x-2 bg-atlas-abyss/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-atlas-verdigris/40 text-xs font-mono shadow-2xl text-slate-200">
+            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-atlas-verdigris/20 text-atlas-verdigris text-[11px] font-bold">
+              ⚡
+            </span>
+            <span class="text-xs">
+              Take <strong class="text-atlas-verdigris font-semibold">&lt; 2 minutes</strong> to solve a workplace case & unlock an intercultural skill
+            </span>
+          </div>
+
+          <!-- Right: PROMINENT ON-MAP "PLAY NEXT BITE" BUTTON -->
+          <div class="pointer-events-auto">
+            <button onclick="focusRandomUnsolvedPiece()" class="animate-glow bg-gradient-to-r from-atlas-brass via-amber-400 to-atlas-brass text-atlas-void font-mono font-extrabold text-xs px-4 py-2 rounded-xl shadow-2xl flex items-center space-x-2 transition transform hover:scale-105 active:scale-95 border border-amber-200">
+              <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+              <span class="tracking-wide">PLAY NEXT BITE</span>
+              <span class="bg-atlas-void text-atlas-brass text-[9px] px-1.5 py-0.5 rounded font-mono font-bold">&lt; 2 MIN</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Floating Active Hover Card (Bottom Left of Map) -->
+        <div id="map-hover-preview" class="hidden absolute bottom-3 left-3 z-20 max-w-xs bg-atlas-abyss/90 backdrop-blur-md border border-atlas-brass/50 rounded-xl p-3 shadow-2xl space-y-1 font-mono pointer-events-none transition-all">
+          <div class="flex items-center justify-between text-[10px] text-atlas-brass">
+            <span id="preview-sector-id">SECTOR 01</span>
+            <span id="preview-status" class="text-atlas-verdigris">LOCKED</span>
+          </div>
+          <div id="preview-title" class="text-xs font-bold text-white truncate">The Vanishing Roadblock</div>
+          <div id="preview-hubs" class="text-[10px] text-slate-400">San Francisco ⇄ Bengaluru</div>
+        </div>
+
+        <!-- Completion Overlay Banner -->
+        <div id="grand-completion-banner" class="hidden absolute inset-0 z-30 bg-atlas-abyss/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center animate-fade-in">
+          <div class="w-14 h-14 rounded-full bg-atlas-brass/20 border-2 border-atlas-brass flex items-center justify-center text-atlas-brass mb-3 shadow-[0_0_30px_rgba(212,163,89,0.5)]">
+            <i data-lucide="globe" class="w-7 h-7"></i>
+          </div>
+          <span class="text-xs font-mono font-bold text-atlas-verdigris tracking-widest uppercase">THE WORLD ATLAS IS FULLY RESTORED</span>
+          <h2 class="text-2xl font-extrabold text-white mt-1">Intercultural Navigation Mastered!</h2>
+          <p class="text-xs text-slate-300 max-w-md mt-2 leading-relaxed">
+            All 8 flight corridors are active and harmonious. You have calibrated feedback, decoded airtime, bridged trust, and dissolved stereotyping.
+          </p>
+          <div class="flex items-center space-x-3 mt-4">
+            <button onclick="switchTab('passport')" class="bg-atlas-brass hover:bg-amber-400 text-atlas-void px-4 py-2 rounded-lg font-mono font-bold text-xs shadow-lg transition">
+              VIEW PASSPORT STAMPS
+            </button>
+            <button onclick="document.getElementById('grand-completion-banner').classList.add('hidden')" class="bg-atlas-surface hover:bg-slate-800 text-slate-300 px-3 py-2 rounded-lg font-mono text-xs border border-atlas-border transition">
+              EXPLORE ATLAS
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- PROMINENT & INTUITIVE INTERLOCKING PUZZLE DOCK                        -->
+      <!-- ===================================================================== -->
+      <div class="bg-atlas-surface/50 border border-atlas-border rounded-xl p-3 space-y-2">
+        <div class="flex items-center justify-between text-xs font-mono text-slate-400 px-1">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="puzzle" class="w-3.5 h-3.5 text-atlas-brass"></i>
+            <span class="text-white font-bold">8 CULTURAL PUZZLE SECTORS:</span>
+            <span class="text-[11px] text-slate-400 hidden sm:inline">(Click any piece to solve that 2-min dilemma & snap into map)</span>
+          </div>
+          <span id="puzzle-snapped-summary" class="text-atlas-brass font-bold">0 / 8 SNAPPED</span>
+        </div>
+
+        <!-- 8 Interlocking Jigsaw Strips Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2" id="puzzle-dock-grid">
+          <!-- Dynamically populated pieces with sleek tabs -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 2: 2-MINUTE MICRO-SPRINTS BROWSER                                -->
+    <!-- ===================================================================== -->
+    <section id="view-sprints" class="hidden space-y-4">
+      
+      <!-- Filter Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-atlas-surface/60 border border-atlas-border p-3 rounded-xl">
+        <div class="flex items-center space-x-2">
+          <i data-lucide="filter" class="w-3.5 h-3.5 text-atlas-brass"></i>
+          <span class="text-xs font-mono font-bold text-slate-300">SCENARIO TOPIC:</span>
+        </div>
+        <div class="flex flex-wrap gap-1.5 font-mono text-xs" id="filter-chips">
+          <button onclick="filterSprints('all')" class="sprint-filter-btn px-3 py-1 rounded-md bg-atlas-brass text-atlas-void font-bold" data-filter="all">ALL (8)</button>
+          <button onclick="filterSprints('hierarchy')" class="sprint-filter-btn px-3 py-1 rounded-md bg-atlas-surface text-slate-400 hover:text-white border border-atlas-border" data-filter="hierarchy">HIERARCHY & CANDOR</button>
+          <button onclick="filterSprints('silence')" class="sprint-filter-btn px-3 py-1 rounded-md bg-atlas-surface text-slate-400 hover:text-white border border-atlas-border" data-filter="silence">AIRTIME & SILENCE</button>
+          <button onclick="filterSprints('trust')" class="sprint-filter-btn px-3 py-1 rounded-md bg-atlas-surface text-slate-400 hover:text-white border border-atlas-border" data-filter="trust">TRUST & RELATIONSHIP</button>
+          <button onclick="filterSprints('time')" class="sprint-filter-btn px-3 py-1 rounded-md bg-atlas-surface text-slate-400 hover:text-white border border-atlas-border" data-filter="time">TIME & PERSUASION</button>
+        </div>
+      </div>
+
+      <!-- Sprints Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5" id="sprints-card-grid"></div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 3: CAPABILITY RADAR & METRICS COMPASS                           -->
+    <!-- ===================================================================== -->
+    <section id="view-radar" class="hidden space-y-4">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        
+        <!-- Radar Visualizer -->
+        <div class="lg:col-span-5 bg-atlas-surface/60 border border-atlas-border rounded-xl p-5 shadow-xl flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <span class="text-[10px] font-mono font-bold text-atlas-verdigris uppercase">Competency Diagnostic</span>
+                <h3 class="text-lg font-bold text-white">Your Intercultural Radar</h3>
+              </div>
+              <span class="text-xs font-mono bg-atlas-void px-2 py-0.5 rounded border border-atlas-border text-atlas-brass font-bold" id="radar-level-badge">LVL 1 NOVICE</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              CQ measures adaptive dexterity across opposing norms. Values update dynamically with every decision move you test.
+            </p>
+          </div>
+
+          <!-- Dynamic SVG Radar -->
+          <div class="relative w-full aspect-square max-w-[280px] mx-auto my-3">
+            <svg viewBox="0 0 300 300" class="w-full h-full drop-shadow-md">
+              <polygon points="150,30 264,113 220,247 80,247 36,113" fill="none" stroke="#1c2d44" stroke-width="1"/>
+              <polygon points="150,60 236,122 203,222 97,222 64,122" fill="none" stroke="#1c2d44" stroke-width="1"/>
+              <polygon points="150,90 207,131 185,198 115,198 93,131" fill="none" stroke="#1c2d44" stroke-width="1"/>
+              
+              <line x1="150" y1="150" x2="150" y2="30" stroke="#1c2d44" stroke-width="1"/>
+              <line x1="150" y1="150" x2="264" y2="113" stroke="#1c2d44" stroke-width="1"/>
+              <line x1="150" y1="150" x2="220" y2="247" stroke="#1c2d44" stroke-width="1"/>
+              <line x1="150" y1="150" x2="80" y2="247" stroke="#1c2d44" stroke-width="1"/>
+              <line x1="150" y1="150" x2="36" y2="113" stroke="#1c2d44" stroke-width="1"/>
+
+              <polygon id="radar-poly" points="150,110 185,135 170,180 125,185 110,135" fill="rgba(45, 212, 191, 0.2)" stroke="#2DD4BF" stroke-width="2" class="transition-all duration-700"/>
+              
+              <circle id="radar-p1" cx="150" cy="110" r="3.5" fill="#D4A359"/>
+              <circle id="radar-p2" cx="185" cy="135" r="3.5" fill="#D4A359"/>
+              <circle id="radar-p3" cx="170" cy="180" r="3.5" fill="#D4A359"/>
+              <circle id="radar-p4" cx="125" cy="185" r="3.5" fill="#D4A359"/>
+              <circle id="radar-p5" cx="110" cy="135" r="3.5" fill="#D4A359"/>
+
+              <text x="150" y="20" fill="#94A3B8" font-size="9" font-family="Space Grotesk" text-anchor="middle" font-weight="bold">HUMILITY</text>
+              <text x="272" y="115" fill="#94A3B8" font-size="9" font-family="Space Grotesk" text-anchor="start" font-weight="bold">SUBTEXT</text>
+              <text x="230" y="260" fill="#94A3B8" font-size="9" font-family="Space Grotesk" text-anchor="middle" font-weight="bold">FLEXIBILITY</text>
+              <text x="70" y="260" fill="#94A3B8" font-size="9" font-family="Space Grotesk" text-anchor="middle" font-weight="bold">CALIBRATION</text>
+              <text x="28" y="115" fill="#94A3B8" font-size="9" font-family="Space Grotesk" text-anchor="end" font-weight="bold">3RD-CULTURE</text>
+            </svg>
+          </div>
+
+          <div class="text-[10px] font-mono text-center text-slate-400">
+            Updated in real-time based on scenario moves
+          </div>
+        </div>
+
+        <!-- Capability Meters & Anti-Stereotyping Lenses -->
+        <div class="lg:col-span-7 space-y-3">
+          <div class="bg-atlas-surface/60 border border-atlas-border rounded-xl p-5 shadow-xl space-y-3">
+            <h4 class="font-mono text-xs font-bold text-white flex items-center space-x-2">
+              <i data-lucide="sliders" class="w-3.5 h-3.5 text-atlas-brass"></i>
+              <span>CAPABILITY GAUGES</span>
+            </h4>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs font-mono">
+                <span class="text-slate-300">1. Cultural Humility & Default Suspension</span>
+                <span class="text-atlas-verdigris font-bold" id="cap-val-1">20%</span>
+              </div>
+              <div class="w-full bg-atlas-void h-1.5 rounded-full overflow-hidden border border-atlas-border">
+                <div id="cap-bar-1" class="h-full bg-atlas-verdigris transition-all duration-500" style="width: 20%"></div>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs font-mono">
+                <span class="text-slate-300">2. Subtext & Silence Decoding (High vs Low Context)</span>
+                <span class="text-atlas-verdigris font-bold" id="cap-val-2">25%</span>
+              </div>
+              <div class="w-full bg-atlas-void h-1.5 rounded-full overflow-hidden border border-atlas-border">
+                <div id="cap-bar-2" class="h-full bg-atlas-verdigris transition-all duration-500" style="width: 25%"></div>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs font-mono">
+                <span class="text-slate-300">3. 3-Lenses Anti-Stereotype Flexibility</span>
+                <span class="text-atlas-verdigris font-bold" id="cap-val-3">15%</span>
+              </div>
+              <div class="w-full bg-atlas-void h-1.5 rounded-full overflow-hidden border border-atlas-border">
+                <div id="cap-bar-3" class="h-full bg-atlas-verdigris transition-all duration-500" style="width: 15%"></div>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs font-mono">
+                <span class="text-slate-300">4. Tone & Feedback Calibration (Up/Downgraders)</span>
+                <span class="text-atlas-verdigris font-bold" id="cap-val-4">30%</span>
+              </div>
+              <div class="w-full bg-atlas-void h-1.5 rounded-full overflow-hidden border border-atlas-border">
+                <div id="cap-bar-4" class="h-full bg-atlas-verdigris transition-all duration-500" style="width: 30%"></div>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs font-mono">
+                <span class="text-slate-300">5. Third-Culture Team Protocol Co-Creation</span>
+                <span class="text-atlas-verdigris font-bold" id="cap-val-5">20%</span>
+              </div>
+              <div class="w-full bg-atlas-void h-1.5 rounded-full overflow-hidden border border-atlas-border">
+                <div id="cap-bar-5" class="h-full bg-atlas-verdigris transition-all duration-500" style="width: 20%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Anti-Stereotyping Principle Core -->
+          <div class="bg-atlas-surface/40 border border-atlas-border rounded-xl p-4 space-y-2">
+            <div class="flex items-center space-x-2 text-atlas-brass font-mono text-xs font-bold uppercase">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+              <span>Anti-Stereotyping: The 3 Lenses of Interpretation</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Never attribute workplace behavior entirely to national culture. High CQ leaders deconstruct every friction through 3 distinct lenses:
+            </p>
+            <div class="grid grid-cols-3 gap-2 text-[10px] font-mono text-center pt-1">
+              <div class="bg-atlas-void p-2 rounded-lg border border-atlas-border">
+                <span class="text-atlas-brass font-bold block">LENS 1</span>
+                <span class="text-slate-400">Cultural Norms</span>
+              </div>
+              <div class="bg-atlas-void p-2 rounded-lg border border-atlas-border">
+                <span class="text-atlas-verdigris font-bold block">LENS 2</span>
+                <span class="text-slate-400">Power Asymmetry</span>
+              </div>
+              <div class="bg-atlas-void p-2 rounded-lg border border-atlas-border">
+                <span class="text-amber-400 font-bold block">LENS 3</span>
+                <span class="text-slate-400">Individual Person</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 4: PASSPORT, BADGES & COHORT LEADERBOARD                         -->
+    <!-- ===================================================================== -->
+    <section id="view-passport" class="hidden space-y-4">
+      
+      <!-- Passport Booklet -->
+      <div class="bg-atlas-surface/60 border border-atlas-border rounded-xl p-5 shadow-xl relative overflow-hidden">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-atlas-border pb-3 mb-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-lg bg-atlas-brass/20 border border-atlas-brass/40 flex items-center justify-center text-atlas-brass">
+              <i data-lucide="award" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="text-[10px] font-mono text-atlas-brass uppercase">MNC EXPEDITION CREDENTIAL</div>
+              <h3 class="text-base font-bold text-white">Intercultural Passport</h3>
+            </div>
+          </div>
+          <div class="text-right font-mono text-xs">
+            <span class="text-slate-400">STATUS:</span>
+            <span class="text-atlas-verdigris font-bold ml-1" id="passport-status">0 / 8 RESTORED</span>
+          </div>
+        </div>
+
+        <!-- 8 Stamped Badge Slots -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="badges-container"></div>
+      </div>
+
+      <!-- Cohort Leaderboard -->
+      <div class="bg-atlas-surface/60 border border-atlas-border rounded-xl p-4 shadow-xl">
+        <div class="flex items-center justify-between mb-3">
+          <div class="text-xs font-mono font-bold text-white">Global Cohort Leaderboard</div>
+          <div class="text-[11px] font-mono text-slate-400">Tap reaction buttons to cheer peers</div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left font-mono text-xs">
+            <thead>
+              <tr class="border-b border-atlas-border text-slate-400 text-[11px]">
+                <th class="py-2 px-2.5">RANK</th>
+                <th class="py-2 px-2.5">MANAGER</th>
+                <th class="py-2 px-2.5">LOCATION</th>
+                <th class="py-2 px-2.5">SECTORS</th>
+                <th class="py-2 px-2.5">MILES (NM)</th>
+                <th class="py-2 px-2.5 text-right">PEER KUDOS</th>
+              </tr>
+            </thead>
+            <tbody id="cohort-table-body" class="divide-y divide-atlas-border/50"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 5: STREAMLINED FLIP-CARD SPRINT MODAL                           -->
+    <!-- ===================================================================== -->
+    <section id="view-active-sprint" class="hidden fixed inset-0 z-50 bg-atlas-void/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+      
+      <div class="w-full max-w-2xl bg-atlas-surface border border-atlas-border rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        
+        <!-- Sprint Top Bar -->
+        <div class="bg-atlas-abyss px-4 py-2.5 border-b border-atlas-border flex items-center justify-between text-xs font-mono shrink-0">
+          <div class="flex items-center space-x-2">
+            <span id="active-sprint-num-badge" class="bg-atlas-brass text-atlas-void font-bold px-2 py-0.5 rounded text-[10px]">SECTOR 01</span>
+            <span id="active-sprint-hubs" class="text-slate-300 font-semibold hidden sm:inline text-xs">SAN FRANCISCO ⇄ BENGALURU</span>
+          </div>
+
+          <!-- Compact 2-Minute Timer Pill -->
+          <div class="flex items-center space-x-1.5 bg-atlas-surface px-2.5 py-0.5 rounded border border-atlas-border">
+            <i data-lucide="timer" class="w-3 h-3 text-amber-400"></i>
+            <span id="timer-display" class="font-bold text-amber-400 text-xs">02:00</span>
+            <button onclick="toggleTimer()" class="text-slate-400 hover:text-white" title="Pause/Resume">
+              <i data-lucide="pause" id="timer-icon" class="w-2.5 h-2.5"></i>
+            </button>
+          </div>
+
+          <!-- Step Dots -->
+          <div class="flex items-center space-x-1" id="step-dots-container">
+            <span class="w-2 h-2 rounded-full bg-atlas-brass step-dot" data-step="1"></span>
+            <span class="w-2 h-2 rounded-full bg-atlas-border step-dot" data-step="2"></span>
+            <span class="w-2 h-2 rounded-full bg-atlas-border step-dot" data-step="3"></span>
+            <span class="w-2 h-2 rounded-full bg-atlas-border step-dot" data-step="4"></span>
+            <span class="w-2 h-2 rounded-full bg-atlas-border step-dot" data-step="5"></span>
+          </div>
+
+          <!-- Close Button -->
+          <button onclick="closeActiveSprint()" class="text-slate-400 hover:text-white p-1 rounded transition">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Sprint Body -->
+        <div class="p-5 overflow-y-auto flex-1 space-y-4 text-xs" id="sprint-card-viewport">
+          
+          <!-- STEP 1: THE INCIDENT -->
+          <div id="step-1-card" class="step-pane space-y-3">
+            <div class="flex items-center justify-between font-mono text-[10px] text-slate-400">
+              <span class="text-atlas-brass font-bold">STEP 1 OF 5: WORKPLACE INCIDENT</span>
+              <span>Concrete Experience</span>
+            </div>
+            <h2 id="sprint-title" class="text-xl font-bold text-white tracking-tight">The Vanishing Roadblock</h2>
+            
+            <div class="bg-atlas-abyss border border-atlas-border rounded-xl p-3.5 space-y-2">
+              <div class="flex items-center space-x-1.5 font-mono text-[10px] text-slate-400 border-b border-atlas-border pb-1.5">
+                <i data-lucide="message-square" class="w-3 h-3 text-atlas-verdigris"></i>
+                <span id="sprint-context-tag">SLACK / ASYNC STANDUP TRANSCRIPT</span>
+              </div>
+              <div id="sprint-dialogue" class="font-sans space-y-2 text-slate-200"></div>
+            </div>
+
+            <div class="bg-atlas-void border-l-2 border-amber-400 p-2.5 rounded-r-lg text-slate-300">
+              <span class="font-bold text-white block">Manager Dilemma:</span>
+              <span id="sprint-dilemma-text">Work seems stalled, but nobody reported a problem. Why?</span>
+            </div>
+
+            <button onclick="nextStep(2)" class="w-full py-2.5 bg-atlas-brass hover:bg-amber-400 text-atlas-void font-mono font-bold text-xs rounded-lg transition flex items-center justify-center space-x-1.5">
+              <span>STEP 2: FLIP THE PERSPECTIVE MIRROR</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
+          <!-- STEP 2: PERSPECTIVE MIRROR -->
+          <div id="step-2-card" class="step-pane hidden space-y-3">
+            <div class="flex items-center justify-between font-mono text-[10px] text-slate-400">
+              <span class="text-atlas-verdigris font-bold">STEP 2 OF 5: DUAL PERSPECTIVE MIRROR</span>
+              <span>Click card to flip</span>
+            </div>
+            
+            <p class="text-slate-300">
+              Examine the gap between <strong class="text-white">Intent</strong> and <strong class="text-white">Felt Impact</strong>:
+            </p>
+
+            <div class="perspective-1000 w-full min-h-[220px] cursor-pointer" onclick="toggleCardFlip()">
+              <div id="perspective-flip-inner" class="relative w-full h-full transform-style-3d transition-transform duration-700">
+                
+                <!-- Front Side -->
+                <div class="w-full bg-atlas-abyss border border-atlas-border hover:border-atlas-brass/50 rounded-xl p-4 shadow-lg space-y-2 backface-hidden">
+                  <div class="flex items-center justify-between">
+                    <span class="bg-atlas-brass/20 text-atlas-brass font-mono text-[10px] px-2 py-0.5 rounded font-bold">SIDE A: INITIATOR PERSPECTIVE</span>
+                    <span class="text-[10px] font-mono text-slate-400 flex items-center"><i data-lucide="repeat" class="w-2.5 h-2.5 mr-1"></i> FLIP</span>
+                  </div>
+                  <h4 id="side-a-name" class="text-sm font-bold text-white">Alex (US Manager)</h4>
+                  <div class="bg-atlas-void p-3 rounded-lg border border-atlas-border font-serif text-xs text-slate-200 italic leading-relaxed" id="side-a-thought"></div>
+                  <div class="text-[10px] font-mono text-slate-400">Low-Context • Direct Transparency</div>
+                </div>
+
+                <!-- Back Side -->
+                <div class="absolute inset-0 w-full h-full bg-atlas-abyss border border-atlas-verdigris/50 rounded-xl p-4 shadow-lg space-y-2 transform-style-3d rotate-y-180 backface-hidden">
+                  <div class="flex items-center justify-between">
+                    <span class="bg-atlas-verdigris/20 text-atlas-verdigris font-mono text-[10px] px-2 py-0.5 rounded font-bold">SIDE B: COUNTERPART FELT REALITY</span>
+                    <span class="text-[10px] font-mono text-slate-400 flex items-center"><i data-lucide="repeat" class="w-2.5 h-2.5 mr-1"></i> FLIP</span>
+                  </div>
+                  <h4 id="side-b-name" class="text-sm font-bold text-white">Rohan (Senior Offshore Engineer)</h4>
+                  <div class="bg-atlas-void p-3 rounded-lg border border-atlas-border font-serif text-xs text-slate-200 italic leading-relaxed" id="side-b-thought"></div>
+                  <div class="text-[10px] font-mono text-slate-400">High-Context • Face Preservation</div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 pt-1">
+              <button onclick="nextStep(1)" class="w-1/3 py-2 bg-atlas-abyss hover:bg-atlas-surface text-slate-400 hover:text-white font-mono rounded-lg border border-atlas-border transition">
+                ← BACK
+              </button>
+              <button onclick="nextStep(3)" class="w-2/3 py-2 bg-atlas-verdigris hover:bg-teal-400 text-atlas-void font-mono font-bold rounded-lg shadow transition flex items-center justify-center space-x-1.5">
+                <span>STEP 3: MAKE YOUR MOVE</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 3: DECISION -->
+          <div id="step-3-card" class="step-pane hidden space-y-3">
+            <div class="flex items-center justify-between font-mono text-[10px] text-slate-400">
+              <span class="text-amber-400 font-bold">STEP 3 OF 5: MANAGERIAL INTERVENTION</span>
+              <span>Choose wisest action</span>
+            </div>
+
+            <h3 class="text-sm font-bold text-white">How do you unblock the team without triggering defensiveness or face loss?</h3>
+
+            <div class="space-y-2" id="choices-container"></div>
+
+            <div id="choice-feedback-box" class="hidden p-3 rounded-lg border transition-all space-y-1">
+              <div id="choice-feedback-title" class="font-bold font-mono"></div>
+              <p id="choice-feedback-desc" class="text-slate-200 leading-relaxed"></p>
+            </div>
+
+            <div class="flex items-center gap-2 pt-1">
+              <button onclick="nextStep(2)" class="w-1/3 py-2 bg-atlas-abyss hover:bg-atlas-surface text-slate-400 hover:text-white font-mono rounded-lg border border-atlas-border transition">
+                ← BACK
+              </button>
+              <button id="btn-to-step-4" onclick="nextStep(4)" disabled class="w-2/3 py-2 bg-slate-800 text-slate-500 font-mono font-bold rounded-lg transition cursor-not-allowed flex items-center justify-center space-x-1.5">
+                <span>STEP 4: DECODE 3 LENSES</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 4: 3-LENSES -->
+          <div id="step-4-card" class="step-pane hidden space-y-3">
+            <div class="flex items-center justify-between font-mono text-[10px] text-slate-400">
+              <span class="text-atlas-brass font-bold">STEP 4 OF 5: 3-LENSES REVEAL</span>
+              <span>Anti-Stereotyping Diagnostic</span>
+            </div>
+
+            <p class="text-slate-300">
+              Triangulate beyond lazy assumptions using the 3 lenses:
+            </p>
+
+            <div class="space-y-2" id="three-lenses-container">
+              <div class="bg-atlas-abyss border border-atlas-border p-2.5 rounded-lg space-y-1">
+                <span class="text-atlas-brass font-bold font-mono text-[10px] block">LENS 1: CULTURAL DEFAULT</span>
+                <p id="lens-1-text" class="text-slate-300"></p>
+              </div>
+
+              <div class="bg-atlas-abyss border border-atlas-border p-2.5 rounded-lg space-y-1">
+                <span class="text-atlas-verdigris font-bold font-mono text-[10px] block">LENS 2: POWER ASYMMETRY</span>
+                <p id="lens-2-text" class="text-slate-300"></p>
+              </div>
+
+              <div class="bg-atlas-abyss border border-atlas-border p-2.5 rounded-lg space-y-1">
+                <span class="text-amber-400 font-bold font-mono text-[10px] block">LENS 3: INDIVIDUAL PERSON</span>
+                <p id="lens-3-text" class="text-slate-300"></p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 pt-1">
+              <button onclick="nextStep(3)" class="w-1/3 py-2 bg-atlas-abyss hover:bg-atlas-surface text-slate-400 hover:text-white font-mono rounded-lg border border-atlas-border transition">
+                ← BACK
+              </button>
+              <button onclick="nextStep(5)" class="w-2/3 py-2 bg-atlas-brass hover:bg-amber-400 text-atlas-void font-mono font-bold rounded-lg shadow transition flex items-center justify-center space-x-1.5">
+                <span>STEP 5: SNAP PIECE & GET SCRIPT</span>
+                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 5: SCRIPT & SNAP -->
+          <div id="step-5-card" class="step-pane hidden space-y-3 text-center">
+            
+            <div class="w-11 h-11 rounded-full bg-atlas-verdigris/20 text-atlas-verdigris border border-atlas-verdigris flex items-center justify-center mx-auto">
+              <i data-lucide="puzzle" class="w-5 h-5"></i>
+            </div>
+
+            <div>
+              <span class="text-[10px] font-mono font-bold text-atlas-verdigris uppercase">SECTOR RESTORED!</span>
+              <h3 class="text-base font-bold text-white" id="completion-sprint-title">Flight Corridor Activated</h3>
+              <p class="text-slate-300 text-[11px] mt-0.5">
+                Earned <span class="text-atlas-brass font-mono font-bold">+120 NM</span> and <span class="text-atlas-verdigris font-mono font-bold">+40 Coins</span>. Copy your 1-on-1 script:
+              </p>
+            </div>
+
+            <div class="bg-atlas-abyss border border-atlas-border rounded-xl p-3 text-left space-y-2">
+              <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 border-b border-atlas-border pb-1.5">
+                <span class="flex items-center"><i data-lucide="terminal" class="w-3 h-3 mr-1 text-atlas-brass"></i> TESTED MANAGER SCRIPT</span>
+                <button onclick="copyPocketScript()" id="copy-script-btn" class="bg-atlas-surface hover:bg-atlas-brass hover:text-atlas-void text-slate-300 px-2 py-0.5 rounded transition flex items-center space-x-1 text-[10px]">
+                  <i data-lucide="copy" class="w-2.5 h-2.5"></i>
+                  <span>1-CLICK COPY</span>
+                </button>
+              </div>
+              <p id="pocket-script-content" class="text-xs font-mono text-slate-200 bg-atlas-void p-2.5 rounded border border-atlas-border/50 select-all leading-relaxed"></p>
+            </div>
+
+            <button onclick="finalizeSprintCompletion()" class="w-full py-2.5 bg-gradient-to-r from-atlas-brass to-amber-500 hover:from-amber-400 hover:to-amber-500 text-atlas-void font-mono font-bold text-xs rounded-lg shadow-lg transition flex items-center justify-center space-x-1.5">
+              <i data-lucide="map" class="w-3.5 h-3.5"></i>
+              <span>SNAP INTO ATLAS & VIEW MAP</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-[100]"></canvas>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT: STATE, FREE GIS ENGINE & PUZZLE INTERACTION                   -->
+  <!-- ========================================================================= -->
+  <script>
+    /* Audio Synthesizer (Pure Web Audio) */
+    class AudioSynthesizer {
+      constructor() { this.ctx = null; this.enabled = true; }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+      }
+      playRadarPing() {
+        if (!this.enabled) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1600, this.ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.06, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.25);
+      }
+      playSnapSound() {
+        if (!this.enabled) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(280, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(90, this.ctx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.16);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.16);
+      }
+      playCoinTone() {
+        if (!this.enabled) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        [987.77, 1318.51].forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.1, now + i * 0.07);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.2);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + i * 0.07);
+          osc.stop(now + i * 0.07 + 0.2);
+        });
+      }
+    }
+    const sound = new AudioSynthesizer();
+
+    function toggleAudio() {
+      sound.enabled = !sound.enabled;
+      const icon = document.getElementById('audio-icon');
+      if (sound.enabled) {
+        icon.setAttribute('data-lucide', 'volume-2');
+        sound.playRadarPing();
+      } else {
+        icon.setAttribute('data-lucide', 'volume-x');
+      }
+      lucide.createIcons();
+    }
+
+    /* 8 Comprehensive Sprints */
+    const SPRINTS_DATA = [
+      {
+        id: 1,
+        title: "The Vanishing Roadblock",
+        category: "hierarchy",
+        hubs: "San Francisco ⇄ Bengaluru",
+        cityA: { name: "San Francisco", latlng: [37.7749, -122.4194] },
+        cityB: { name: "Bengaluru", latlng: [12.9716, 77.5946] },
+        coords: "12.97° N, 77.59° E",
+        time: "120s",
+        contextTag: "Power Distance • Face Preservation • Async Standup",
+        dialogue: [
+          { speaker: "Alex (US Manager)", text: "Hey team, shipping the auth service tomorrow. Any blockers on the microservices?" },
+          { speaker: "Rohan (Lead Dev, India)", text: "Team is actively analyzing the payload flows. All good on our end." },
+          { speaker: "Alex (Next Day)", text: "Wait, the build broke on legacy schema dependencies! Why was this not flagged yesterday?" },
+          { speaker: "Rohan", text: "We were working through the night to resolve the upstream schema issue without alarming client leadership." }
+        ],
+        dilemma: "Alex feels blind-sided. Rohan felt he was displaying extreme ownership by attempting to shield leadership from anxiety.",
+        sideA: {
+          name: "Alex (US Manager)",
+          thought: "\"I asked directly for roadblocks. If you don't raise your hand immediately, you're hiding risk from stakeholders. Bad news early is good news!\""
+        },
+        sideB: {
+          name: "Rohan (Senior Lead, India)",
+          thought: "\"Saying 'we have a blocker' directly in an open channel makes it sound like we cannot handle our work or that Alex's timeline was flawed. I gave subtle hints in my cadence.\""
+        },
+        choices: [
+          {
+            id: 'A',
+            text: "Post in all-hands: 'Never say All Good if there is even a 5% chance of dependency failure.'",
+            correct: false,
+            feedback: "Causes severe loss of face and drives offshore engineers deeper into defensive underground reporting."
+          },
+          {
+            id: 'B',
+            text: "Hold a private 1-on-1: Reframe 'blockers' into 'upstream dependencies I can remove for you'.",
+            correct: true,
+            feedback: "Spot on! In hierarchical settings, leaders who explicitly take personal responsibility for clearing external friction make it safe to disclose risks."
+          },
+          {
+            id: 'C',
+            text: "Assign an onshore technical coordinator to supervise all tickets hourly.",
+            correct: false,
+            feedback: "Micro-management signals complete distrust and increases offshore attrition."
+          }
+        ],
+        lenses: {
+          l1: "High Power Distance cultures treat leaders with deference; bringing an unresolved problem to authority feels disrespectful or incompetent.",
+          l2: "Vendor-contract asymmetry makes remote workers fear contract termination if they admit flaws.",
+          l3: "Rohan takes immense pride in technical craftsmanship and did not want his junior engineers scolded."
+        },
+        script: "\"Hey Rohan, my primary job as your manager is to clear external blockers for your engineers. What is one upstream dependency outside your control that I can personally push through today?\"",
+        badge: { name: "Subcontinent Bridge", icon: "shield-check" }
+      },
+      {
+        id: 2,
+        title: "The Blunt PR Review",
+        category: "hierarchy",
+        hubs: "Stockholm ⇄ São Paulo",
+        cityA: { name: "Stockholm", latlng: [59.3293, 18.0686] },
+        cityB: { name: "São Paulo", latlng: [-23.5505, -46.6333] },
+        coords: "23.55° S, 46.63° W",
+        time: "120s",
+        contextTag: "Direct vs Indirect Feedback • Upgraders & Downgraders",
+        dialogue: [
+          { speaker: "Lars (Staff Eng, Sweden)", text: "PR Review: 'This implementation is completely unacceptable. Scrap the ORM query pattern and rewrite it from scratch.'" },
+          { speaker: "Thiago (Sr Dev, Brazil)", text: "...Acknowledged." },
+          { speaker: "Lars (Later)", text: "Why is Thiago quiet on Slack and avoiding PR discussions all week?" }
+        ],
+        dilemma: "Lars thought he was just being objective with code facts. Thiago felt personally degraded and insulted.",
+        sideA: {
+          name: "Lars (Sweden)",
+          thought: "\"Code is not a person. Calling bad code 'unacceptable' saves hours of iteration. Personal feelings shouldn't interfere with code quality!\""
+        },
+        sideB: {
+          name: "Thiago (Brazil)",
+          thought: "\"He didn't acknowledge a single line of hard work, gave zero warmth, and used harsh upgraders ('completely unacceptable'). In Brazil, if you treat colleagues like this, you have no respect for them.\""
+        },
+        choices: [
+          {
+            id: 'A',
+            text: "Tell Thiago to develop thicker skin because Swedish engineering cultures are direct.",
+            correct: false,
+            feedback: "Cultural imperialism. Forcing low-context candor onto relational cultures destroys psychological safety."
+          },
+          {
+            id: 'B',
+            text: "Adopt downgraders in feedback: Validate architecture intent first, frame alternatives collaboratively.",
+            correct: true,
+            feedback: "Masterful calibration! Replacing harsh upgraders ('completely unacceptable') with relational framing preserves both rapport and standards."
+          },
+          {
+            id: 'C',
+            text: "Stop writing PR reviews and have an AI approve PRs instead.",
+            correct: false,
+            feedback: "Avoids the communication muscle required for senior engineering leadership."
+          }
+        ],
+        lenses: {
+          l1: "Latin American communication values simpatía (warmth and relational harmony); Nordic cultures use direct, unadorned feedback upgraders.",
+          l2: "Thiago works in an offshore time zone without daily face-to-face rapport, magnifying the perceived hostility of written text.",
+          l3: "Lars is on the introversion spectrum and prefers strict algebraic conciseness."
+        },
+        script: "\"Thiago, I appreciate the massive lift on this PR! The schema foundation looks solid. I have a concern on the ORM query latency under peak load—could we jump on a 5-min huddle to explore a leaner query path together?\"",
+        badge: { name: "Atlantic Feedback Arc", icon: "heart-handshake" }
+      },
+      {
+        id: 3,
+        title: "The 4-Second Silence",
+        category: "silence",
+        hubs: "London ⇄ Tokyo",
+        cityA: { name: "London", latlng: [51.5074, -0.1278] },
+        cityB: { name: "Tokyo", latlng: [35.6762, 139.6503] },
+        coords: "35.67° N, 139.65° E",
+        time: "120s",
+        contextTag: "Airtime • Turn-Taking Rhythm • Silence as Contemplation",
+        dialogue: [
+          { speaker: "Harry (Director, UK)", text: "Does anyone have objections to deprecating the legacy GraphQL schema next month?" },
+          { speaker: "Kenji (Architect, Japan)", text: "(Pauses for 3 seconds, unmutes breathing...)" },
+          { speaker: "Harry (Jumping in)", text: "Awesome, silence is consensus! Moving on to item 2!" },
+          { speaker: "Kenji", text: "(Silently re-mutes. Three days later, Tokyo operations flags a critical disruption)." }
+        ],
+        dilemma: "Harry mistook Kenji's thoughtful silence for consent. Kenji was waiting for a respectful pause to formulate disagreement.",
+        sideA: {
+          name: "Harry (UK)",
+          thought: "\"On Zoom, silence is dead air. If nobody interrupts me within two seconds, that means everybody agrees.\""
+        },
+        sideB: {
+          name: "Kenji (Japan)",
+          thought: "\"In Japan, ma (silence) indicates deep respect and mental deliberation. Interrupting after 2 seconds meant Harry didn't want discussion. Disagreeing openly would disrupt the call's harmony.\""
+        },
+        choices: [
+          {
+            id: 'A',
+            text: "Declare that all future votes must be typed into Zoom chat instantly as '+1'.",
+            correct: false,
+            feedback: "Forces high-context communicators into rapid pressure cooker answers without contemplation."
+          },
+          {
+            id: 'B',
+            text: "Implement the '7-Second Wait Rule' and direct nominated airtime: 'Kenji, I want to leave room for your team's perspective on this schema.'",
+            correct: true,
+            feedback: "Brilliant! High-context and non-native speakers need an explicit invitation and an unfilled silence buffer to step into conversational space."
+          },
+          {
+            id: 'C',
+            text: "Stop having Japanese engineers on UK design calls.",
+            correct: false,
+            feedback: "Severe breakdown in global integration."
+          }
+        ],
+        lenses: {
+          l1: "East Asian communication respects silence ('Ma') as wisdom and collective care; Anglo-Saxon conversations operate like ping-pong with zero-gap turns.",
+          l2: "Kenji was presenting in his second language, requiring a 3-second mental buffer to translate technical nuances.",
+          l3: "Harry has an anxious speaking habit where pause triggers his need to fill space."
+        },
+        script: "\"I want to pause here for 10 seconds of silence so everyone can reflect. Kenji, when you're ready, I would love to hear any edge cases your Tokyo team is anticipating.\"",
+        badge: { name: "Archipelago of Silence", icon: "mic-off" }
+      },
+      {
+        id: 4,
+        title: "The Cold Ping",
+        category: "trust",
+        hubs: "Munich ⇄ Mexico City",
+        cityA: { name: "Munich", latlng: [48.1351, 11.5820] },
+        cityB: { name: "Mexico City", latlng: [19.4326, -99.1332] },
+        coords: "19.43° N, 99.13° W",
+        time: "120s",
+        contextTag: "Task-Based vs Relational Trust • Human Connection",
+        dialogue: [
+          { speaker: "Stefan (PM, Munich)", text: "9:02 AM: 'Carlos, send the API documentation payload now. We are past the deadline.'" },
+          { speaker: "Carlos (Lead, Mexico City)", text: "..." },
+          { speaker: "Stefan (Next Day)", text: "'Carlos, did you receive my message? Why have you not sent it?'" },
+          { speaker: "Carlos", text: "'Hola Stefan. We are reviewing it.'" }
+        ],
+        dilemma: "Stefan views speed as professional respect. Carlos views Stefan's curt ping as robotic and emotionally indifferent.",
+        sideA: {
+          name: "Stefan (Germany)",
+          thought: "\"I am respecting Carlos's time by getting straight to business with no fluff. Professionalism means completing tasks rapidly!\""
+        },
+        sideB: {
+          name: "Carlos (Mexico)",
+          thought: "\"He treats me like an API endpoint instead of a human teammate. Not even a 'Good morning' or 'How was your weekend?'. If you don't care about the relationship, you don't get emergency favors.\""
+        },
+        choices: [
+          {
+            id: 'A',
+            text: "Escalate Carlos to the Regional VP for insubordination.",
+            correct: false,
+            feedback: "Permanently incinerates trust across Latin American business partners."
+          },
+          {
+            id: 'B',
+            text: "Invest 60 seconds into personal relational greeting before diving into tasks (Affective Bridge).",
+            correct: true,
+            feedback: "Perfect! In relationship-first cultures, trust precedes transactions. A 30-second inquiry about family or health unlocks 10x collaboration speed."
+          },
+          {
+            id: 'C',
+            text: "Automate all reminder messages via a bot so Stefan doesn't talk to Carlos.",
+            correct: false,
+            feedback: "Further depersonalizes the team dynamic."
+          }
+        ],
+        lenses: {
+          l1: "Cognitive task trust relies on contracts and reliability; Affective trust is built over shared meals and human warmth.",
+          l2: "Carlos's local engineering team experienced an earthquake the night before which Stefan was unaware of because he skipped personal check-ins.",
+          l3: "Stefan was under immense pressure from the Munich steering committee."
+        },
+        script: "\"¡Hola Carlos! How did your daughter's soccer match go this weekend? Hope your family is doing well! Whenever you have 5 minutes today, could we look over the API payload together?\"",
+        badge: { name: "Relational Cordillera", icon: "coffee" }
+      },
+      {
+        id: 5,
+        title: "The 'Yes' That Meant 'No'",
+        category: "silence",
+        hubs: "Sydney ⇄ Hanoi",
+        cityA: { name: "Sydney", latlng: [-33.8688, 151.2093] },
+        cityB: { name: "Hanoi", latlng: [21.0285, 105.8542] },
+        coords: "21.02° N, 105.85° E",
+        time: "120s",
+        contextTag: "Decoding Assent • Avoiding the Closed-Question Trap",
+        dialogue: [
+          { speaker: "Liam (Sydney PM)", text: "'Can you commit to delivering this migration by October 15th? Is that possible?'" },
+          { speaker: "Linh (Engineering Lead, Hanoi)", text: "'Yes... we will do our best.'" },
+          { speaker: "Liam (October 16th)", text: "'It's not deployed?! You told me Yes!'" },
+          { speaker: "Linh", text: "'I said yes, I hear your goal and we will do our best. But the scope was technically unfeasible without external microservices.'" }
+        ],
+        dilemma: "Liam heard 'Yes' as a binding contract. Linh used 'Yes' as empathetic acknowledgment of Liam's ambition while signaling doubt.",
+        sideA: {
+          name: "Liam (Australia)",
+          thought: "\"Yes means Yes. If it wasn't possible, she should have said 'No, Liam, that deadline is impossible.'\""
+        },
+        sideB: {
+          name: "Linh (Vietnam)",
+          thought: "\"Saying 'No' directly to a client manager's face is harsh and impolite. My tone and the phrase 'we will do our best' was clear warning that the timeline was unrealistic.\""
+        },
+        choices: [
+          {
+            id: 'A',
+            text: "Demand signed contracts in writing for every deadline.",
+            correct: false,
+            feedback: "Adds bureaucratic drag without fixing the fundamental conversational trap."
+          },
+          {
+            id: 'B',
+            text: "Ban closed 'Can you do this?' questions; use open inquiry: 'What would need to be true for us to hit October 15th?'",
+            correct: true,
+            feedback: "Exceptional! Open questions remove the awkwardness of saying 'No' and invite the engineer to describe dependencies and risks safely."
+          },
+          {
+            id: 'C',
+            text: "Pad all offshore estimates by 300% arbitrarily.",
+            correct: false,
+            feedback: "Lazy management that destroys team velocity."
+          }
+        ],
+        lenses: {
+          l1: "In Southeast and East Asia, saying 'No' directly causes mutual embarrassment. Assent ('I hear you') is often mistaken for agreement.",
+          l2: "Liam held budget sign-off power over Linh's contract.",
+          l3: "Linh is conflict-averse by nature and was newly promoted to team lead."
+        },
+        script: "\"Linh, if we were to target October 15th, what are the three biggest dependencies that would need to go 100% smoothly? What trade-offs would you recommend we make?\"",
+        badge: { name: "Monsoon Protocol", icon: "help-circle" }
+      },
+      {
+        id: 6,
+        title: "The Heated Debate",
+        category: "trust",
+        hubs: "Paris ⇄ Singapore",
+        cityA: { name: "Paris", latlng: [48.8566, 2.3522] },
+        cityB: { name: "Singapore", latlng: [1.3521, 103.8198] },
+        coords: "1.35° N, 103.82° E",
+        time: "120s",
+        contextTag: "Confrontational Debate vs Relationship Preservation",
+        dialogue: [
+          { speaker: "Camille (Design Lead, France)", text: "'I completely disagree with this user journey! Your thesis makes zero logical sense!'" },
+          { speaker: "Wei (PM, Singapore)", text: "(Freezes, face falls, answers in one-syllable sentences for the rest of the sprint)." },
+          { speaker: "Camille (at drinks)", text: "'Wei, come grab a glass of wine! That was such a fun, lively debate!'" }
+        ],
+        dilemma: "Camille views debate as intellectual sport. Wei experienced the public confrontation as an aggressive personal assault.",
+        sideA: {
+          name: "Camille (France)",
+          thought: "\"Debating vigorously is how we show passion! We attack the idea, not the human. When the meeting ends, we are best friends at the bistro!\""
+        },
+        sideB: {
+          name: "Wei (Singapore)",
+          thought: "\"Attacking my logic publicly with words like 'zero logical sense' is a deliberate attack on my professional face. You can't humiliate someone and then ask them for wine.\""
+        },
+        choices: [
+          {
+            id: 'A',
+            text: "Pre-brief cross-cultural debate rules: Establish structured silent brainstorming before verbal critique.",
+            correct: true,
+            feedback: "Outstanding! Creating structured asynchronous mechanisms allows ideas to be examined without interpersonal theater."
+          },
+          {
+            id: 'B',
+            text: "Tell Wei he must learn French debate culture if he wants to advance.",
+            correct: false,
+            feedback: "Alienates Asian regional hubs and damages morale."
+          },
+          {
+            id: 'C',
+            text: "Ban all disagreement in design meetings completely.",
+            correct: false,
+            feedback: "Leads to mediocre products and unaddressed defects."
+          }
+        ],
+        lenses: {
+          l1: "French culture cultivates intellectual sparring; Singaporean and Confucian communication protects collective cohesion and face.",
+          l2: "Camille is at global HQ, holding informal organizational influence over Wei's regional promotion.",
+          l3: "Wei had spent two weeks preparing the presentation while caring for a sick parent."
+        },
+        script: "\"Wei, let's look at where our user pathways diverge. If we test your thesis alongside this alternative, what edge-case behaviors can we measure in user tests?\"",
+        badge: { name: "Dialectic Meridian", icon: "swords" }
+      },
+      {
+        id: 7,
+        title: "The Elastic Deadline",
+        category: "time",
+        hubs: "Zurich ⇄ Rome",
+        cityA: { name: "Zurich", latlng: [47.3769, 8.5417] },
+        cityB: { name: "Rome", latlng: [41.9028, 12.4964] },
+        coords: "41.90° N, 12.49° E",
+        time: "120s",
+        contextTag: "Monochronic Linear Time vs Polychronic Flexible Time",
+        dialogue: [
+          { speaker: "Beat (Logistics, Zurich)", text: "'Our factory delivery slot was locked for Friday 09:00 sharp. Your trucks arrived Tuesday at 14:00.'" },
+          { speaker: "Matteo (Operations, Rome)", text: "'A tier-1 customer had a plant breakdown on Thursday. We pivoted all staff to resolve their emergency first! We solved their crisis and delivered today!'" },
+          { speaker: "Beat", text: "'You completely broke our schedule. In Zurich, Friday 09:00 means Friday 09:00.'" }
+        ],
+        dilemma: "Beat views time as a sacred contract. Matteo views time as an elastic tool to manage urgent human relationships.",
+        sideA: {
+          name: "Beat (Switzerland)",
+          thought: "\"If deadlines are elastic, our entire supply chain collapses. Punctuality is the supreme form of respect.\""
+        },
+        sideB: {
+          name: "Matteo (Italy)",
+          thought: "\"A loyal customer was dying! Being rigid about an internal factory slot while a human client suffers is heartless. Flexibility is real customer service.\""
+        },
+        choices: [
+          {
+            id: 'A',
+            text: "Impose financial penalties on the Rome office for every hour late.",
+            correct: false,
+            feedback: "Breaks team alignment and encourages Italian teams to conceal logistical problems."
+          },
+          {
+            id: 'B',
+            text: "Establish 'Hard Buffer' vs 'Dynamic Window' milestones in shared planning.",
+            correct: true,
+            feedback: "Excellent! Distinguishing fixed infrastructure gates from flexible relational buffers creates third-culture clarity."
+          },
+          {
+            id: 'C',
+            text: "Accept that Italians never respect time.",
+            correct: false,
+            feedback: "Stereotype trap! Italian teams are fiercely punctual when the relationship and consequences are aligned."
+          }
+        ],
+        lenses: {
+          l1: "Linear-time cultures view schedules as promises; Flexible-time cultures view time as fluid and subordinate to immediate emergencies.",
+          l2: "Beat's automated ERP system had strict automated penalties for dock delays.",
+          l3: "Matteo personally drove to the customer's warehouse on Sunday to ensure the parts worked."
+        },
+        script: "\"Matteo, heroic effort rescuing that client! For this Swiss hub, dock schedule changes cascade into 3 other plants. When a customer crisis hits, can we agree on an automated 1-hour alert so we can shift dock windows proactively?\"",
+        badge: { name: "Alpine Pendulum", icon: "clock" }
+      },
+      {
+        id: 8,
+        title: "The 'Why First' Rebellion",
+        category: "time",
+        hubs: "Paris ⇄ New York",
+        cityA: { name: "Paris", latlng: [48.8566, 2.3522] },
+        cityB: { name: "New York", latlng: [40.7128, -74.0060] },
+        coords: "40.71° N, 74.00° W",
+        time: "120s",
+        contextTag: "Principles-First (Deductive) vs Applications-First (Inductive)",
+        dialogue: [
+          { speaker: "Brad (VP Product, US)", text: "'Team, here is our new CRM! Look at these 3 case studies of teams hitting 40% higher close rates! Let's get onboarded by Friday!'" },
+          { speaker: "Elodie (Country Lead, France)", text: "'Wait. Why this vendor? What architectural philosophy supports this data model? Where is the root methodology?'" },
+          { speaker: "Brad (Privately)", text: "'Why does French leadership always philosophize and push back on practical tools that work?'" }
+        ],
+        dilemma: "Brad is applications-first (show me ROI and examples). Elodie is principles-first (explain theoretical concepts before examples).",
+        sideA: {
+          name: "Brad (US)",
+          thought: "\"Get to the point! Don't bore people with 20 slides of philosophy. Show me the practical tool and results!\""
+        },
+        sideB: {
+          name: "Elodie (France)",
+          thought: "\"If the underlying conceptual framework is flawed, all your case studies are just temporary luck. Convince my intellect with rigorous methodology first.\""
+        },
+        choices: [
+          {
+            id: 'A',
+            text: "Order Elodie's region to adopt the tool or lose their tech budget.",
+            correct: false,
+            feedback: "Guarantees passive-aggressive non-compliance and widespread bypass tools."
+          },
+          {
+            id: 'B',
+            text: "Structure presentations in dual-mode: 5 minutes on the conceptual framework ('Why'), followed by practical use cases ('How').",
+            correct: true,
+            feedback: "Masterclass! Principles-first leaders need the conceptual foundation first; applications-first audiences get restless without practical proof."
+          },
+          {
+            id: 'C',
+            text: "Let French teams build their own rogue CRM.",
+            correct: false,
+            feedback: "Causes costly tech debt and organizational fragmentation."
+          }
+        ],
+        lenses: {
+          l1: "Anglo-Saxon management education focuses on practical case studies (inductive); Continental European schools focus on theoretical foundations (deductive).",
+          l2: "Brad presented directly from HQ with minimal local European consultation.",
+          l3: "Elodie has an engineering background and deeply values data hygiene."
+        },
+        script: "\"Elodie, before we jump into the UI walkthrough, let me spend 4 minutes walking through the architectural framework and why our security committee chose this data model over the alternatives.\"",
+        badge: { name: "Cartesian Gateway", icon: "git-branch" }
+      }
+    ];
+
+    /* Application State */
+    const STORAGE_KEY = 'TERRA_CQ_SLIM_V6';
+    let appState = {
+      coins: 0,
+      xp: 0,
+      completedSprints: [],
+      currentSprintId: null,
+      currentSprintStep: 1,
+      selectedChoice: null,
+      timerSeconds: 120,
+      timerInterval: null,
+      timerRunning: false,
+      mapShader: 'midnight',
+      capabilities: { humility: 20, subtext: 25, flexibility: 15, calibration: 30, thirdCulture: 20 },
+      peerKudos: { 'Sophia': 14, 'Yuki': 28, 'Deepak': 19, 'Camila': 22 }
+    };
+
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try { Object.assign(appState, JSON.parse(saved)); } catch (e) {}
+      }
+      updateUI();
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        coins: appState.coins,
+        xp: appState.xp,
+        completedSprints: appState.completedSprints,
+        mapShader: appState.mapShader,
+        capabilities: appState.capabilities,
+        peerKudos: appState.peerKudos
+      }));
+      updateUI();
+    }
+
+    /* GIS Real World Map Setup (100% Free & Keyless) */
+    let gMap = null;
+    let gOsmLayer = null;
+    let gSatLayer = null;
+    let gFlightLayers = [];
+    let gMarkerLayers = [];
+
+    function initRealWorldMap() {
+      if (gMap) return;
+      const el = document.getElementById('real-leaflet-map');
+      if (!el) return;
+
+      gMap = L.map('real-leaflet-map', {
+        center: [22, 10],
+        zoom: 2,
+        minZoom: 1.5,
+        maxZoom: 7,
+        zoomControl: false,
+        attributionControl: false
+      });
+
+      L.control.zoom({ position: 'bottomright' }).addTo(gMap);
+
+      gOsmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 });
+      gSatLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 });
+
+      if (appState.mapShader === 'satellite') gSatLayer.addTo(gMap);
+      else gOsmLayer.addTo(gMap);
+
+      setMapShader(appState.mapShader, false);
+
+      gMap.on('mousemove', (e) => {
+        const lat = e.latlng.lat.toFixed(2);
+        const lng = e.latlng.lng.toFixed(2);
+        const latDir = lat >= 0 ? 'N' : 'S';
+        const lngDir = lng >= 0 ? 'E' : 'W';
+        document.getElementById('current-coords').textContent = `${Math.abs(lat)}° ${latDir}, ${Math.abs(lng)}° ${lngDir}`;
+      });
+
+      renderRealMapRoutes();
+    }
+
+    function setMapShader(mode, playAudio = true) {
+      if (playAudio) sound.playRadarPing();
+      appState.mapShader = mode;
+      const mapEl = document.getElementById('real-leaflet-map');
+      mapEl.classList.remove('map-filter-midnight', 'map-filter-parchment', 'map-filter-satellite');
+
+      const btnMid = document.getElementById('btn-shader-midnight');
+      const btnParch = document.getElementById('btn-shader-parchment');
+      const btnSat = document.getElementById('btn-shader-satellite');
+
+      [btnMid, btnParch, btnSat].forEach(b => {
+        b.className = 'px-2 py-0.5 rounded bg-atlas-surface text-slate-400 hover:text-white text-[10px] transition';
+      });
+
+      if (mode === 'midnight') {
+        mapEl.classList.add('map-filter-midnight');
+        btnMid.className = 'px-2 py-0.5 rounded bg-atlas-brass text-atlas-void font-bold text-[10px] transition';
+        if (gMap && gSatLayer && gOsmLayer) {
+          if (gMap.hasLayer(gSatLayer)) gMap.removeLayer(gSatLayer);
+          if (!gMap.hasLayer(gOsmLayer)) gOsmLayer.addTo(gMap);
+        }
+      } else if (mode === 'parchment') {
+        mapEl.classList.add('map-filter-parchment');
+        btnParch.className = 'px-2 py-0.5 rounded bg-atlas-brass text-atlas-void font-bold text-[10px] transition';
+        if (gMap && gSatLayer && gOsmLayer) {
+          if (gMap.hasLayer(gSatLayer)) gMap.removeLayer(gSatLayer);
+          if (!gMap.hasLayer(gOsmLayer)) gOsmLayer.addTo(gMap);
+        }
+      } else if (mode === 'satellite') {
+        mapEl.classList.add('map-filter-satellite');
+        btnSat.className = 'px-2 py-0.5 rounded bg-atlas-verdigris text-atlas-void font-bold text-[10px] transition';
+        if (gMap && gSatLayer && gOsmLayer) {
+          if (gMap.hasLayer(gOsmLayer)) gMap.removeLayer(gOsmLayer);
+          if (!gMap.hasLayer(gSatLayer)) gSatLayer.addTo(gMap);
+        }
+      }
+      saveState();
+    }
+
+    function computeArcPoints(ll1, ll2, curvature = 0.2) {
+      const lat1 = ll1[0], lng1 = ll1[1];
+      const lat2 = ll2[0], lng2 = ll2[1];
+      const midLat = (lat1 + lat2) / 2;
+      const midLng = (lng1 + lng2) / 2;
+      const dLat = lat2 - lat1;
+      const dLng = lng2 - lng1;
+      const dist = Math.sqrt(dLat * dLat + dLng * dLng) || 1;
+
+      const ctrlLat = midLat - (dLng / dist) * (dist * curvature);
+      const ctrlLng = midLng + (dLat / dist) * (dist * curvature);
+
+      const points = [];
+      for (let t = 0; t <= 1; t += 0.04) {
+        const lat = (1 - t) * (1 - t) * lat1 + 2 * (1 - t) * t * ctrlLat + t * t * lat2;
+        const lng = (1 - t) * (1 - t) * lng1 + 2 * (1 - t) * t * ctrlLng + t * t * lng2;
+        points.push([lat, lng]);
+      }
+      return points;
+    }
+
+    function renderRealMapRoutes() {
+      if (!gMap) return;
+      gFlightLayers.forEach(l => gMap.removeLayer(l));
+      gMarkerLayers.forEach(m => gMap.removeLayer(m));
+      gFlightLayers = [];
+      gMarkerLayers = [];
+
+      SPRINTS_DATA.forEach(sprint => {
+        const isDone = appState.completedSprints.includes(sprint.id);
+        const cityA = sprint.cityA;
+        const cityB = sprint.cityB;
+        const points = computeArcPoints(cityA.latlng, cityB.latlng);
+
+        if (isDone) {
+          const corridor = L.polyline(points, {
+            color: '#2DD4BF',
+            weight: 3,
+            opacity: 0.95,
+            className: 'leaflet-flight-corridor'
+          }).addTo(gMap);
+          gFlightLayers.push(corridor);
+
+          [cityA, cityB].forEach(city => {
+            const iconHtml = `
+              <div class="relative w-5 h-5 flex items-center justify-center -translate-x-2.5 -translate-y-2.5 cursor-pointer">
+                <div class="absolute inset-0 rounded-full bg-atlas-verdigris sonar-ping"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-atlas-brass border border-atlas-void z-10 shadow"></div>
+              </div>
+            `;
+            const customIcon = L.divIcon({ html: iconHtml, className: 'c-sonar', iconSize: [20, 20] });
+            const marker = L.marker(city.latlng, { icon: customIcon }).addTo(gMap);
+            marker.bindPopup(`<span class="font-mono text-xs text-slate-900 font-bold">${city.name}</span>`);
+            gMarkerLayers.push(marker);
+          });
+        } else {
+          // Subtle dashed preview line for locked corridors
+          const corridor = L.polyline(points, {
+            color: '#D4A359',
+            weight: 1.5,
+            opacity: 0.35,
+            dashArray: '3, 6'
+          }).addTo(gMap);
+          gFlightLayers.push(corridor);
+        }
+      });
+    }
+
+    /* Prominent Interlocking Puzzle Dock */
+    function renderPuzzleDock() {
+      const container = document.getElementById('puzzle-dock-grid');
+      container.innerHTML = '';
+
+      SPRINTS_DATA.forEach((sprint) => {
+        const isDone = appState.completedSprints.includes(sprint.id);
+        const piece = document.createElement('button');
+        piece.onclick = () => launchSprint(sprint.id);
+        piece.onmouseenter = () => showMapPreview(sprint);
+        piece.onmouseleave = hideMapPreview;
+
+        piece.className = `puzzle-piece p-2 rounded-lg text-left transition flex flex-col justify-between h-16 ${
+          isDone
+            ? 'bg-atlas-brass/15 border border-atlas-brass text-white shadow-sm'
+            : 'bg-atlas-surface/80 border border-atlas-border text-slate-400 hover:border-slate-400 hover:text-white'
+        }`;
+
+        piece.innerHTML = `
+          <div class="flex items-center justify-between w-full font-mono text-[9px]">
+            <span class="font-bold ${isDone ? 'text-atlas-brass' : 'text-slate-400'}">#0${sprint.id}</span>
+            <i data-lucide="${isDone ? 'check' : 'lock'}" class="w-3 h-3 ${isDone ? 'text-atlas-verdigris' : 'text-slate-500'}"></i>
+          </div>
+          <div class="text-[11px] font-sans font-semibold leading-tight truncate w-full">${sprint.title}</div>
+          <div class="text-[9px] font-mono text-slate-400 truncate">${sprint.hubs.split('⇄')[0].trim()}</div>
+        `;
+        container.appendChild(piece);
+      });
+
+      const count = appState.completedSprints.length;
+      document.getElementById('puzzle-snapped-summary').textContent = `${count} / ${SPRINTS_DATA.length} SNAPPED`;
+      document.getElementById('nav-puzzle-badge').textContent = `${count}/${SPRINTS_DATA.length}`;
+
+      if (count === SPRINTS_DATA.length) {
+        document.getElementById('grand-completion-banner').classList.remove('hidden');
+      }
+
+      lucide.createIcons();
+    }
+
+    function showMapPreview(sprint) {
+      const isDone = appState.completedSprints.includes(sprint.id);
+      const preview = document.getElementById('map-hover-preview');
+      document.getElementById('preview-sector-id').textContent = `SECTOR 0${sprint.id}`;
+      document.getElementById('preview-status').textContent = isDone ? 'RESTORED' : 'LOCKED';
+      document.getElementById('preview-status').className = isDone ? 'text-atlas-verdigris font-bold' : 'text-amber-400 font-bold';
+      document.getElementById('preview-title').textContent = sprint.title;
+      document.getElementById('preview-hubs').textContent = sprint.hubs;
+      preview.classList.remove('hidden');
+    }
+
+    function hideMapPreview() {
+      document.getElementById('map-hover-preview').classList.add('hidden');
+    }
+
+    function getNextUnsolvedSprintId() {
+      const unsolved = SPRINTS_DATA.find(s => !appState.completedSprints.includes(s.id));
+      return unsolved ? unsolved.id : 1;
+    }
+
+    function focusRandomUnsolvedPiece() {
+      launchSprint(getNextUnsolvedSprintId());
+    }
+
+    /* Sprints List */
+    let currentFilter = 'all';
+
+    function filterSprints(cat) {
+      sound.playRadarPing();
+      currentFilter = cat;
+      document.querySelectorAll('.sprint-filter-btn').forEach(btn => {
+        if (btn.getAttribute('data-filter') === cat) {
+          btn.classList.add('bg-atlas-brass', 'text-atlas-void', 'font-bold');
+          btn.classList.remove('bg-atlas-surface', 'text-slate-400');
+        } else {
+          btn.classList.remove('bg-atlas-brass', 'text-atlas-void', 'font-bold');
+          btn.classList.add('bg-atlas-surface', 'text-slate-400');
+        }
+      });
+      renderSprintsGrid();
+    }
+
+    function renderSprintsGrid() {
+      const grid = document.getElementById('sprints-card-grid');
+      grid.innerHTML = '';
+      const list = SPRINTS_DATA.filter(s => currentFilter === 'all' || s.category === currentFilter);
+
+      list.forEach(s => {
+        const isDone = appState.completedSprints.includes(s.id);
+        const card = document.createElement('div');
+        card.className = `bg-atlas-surface/60 border ${isDone ? 'border-atlas-brass/50' : 'border-atlas-border'} rounded-xl p-4 flex flex-col justify-between hover:border-atlas-brass transition`;
+        card.innerHTML = `
+          <div class="space-y-2">
+            <div class="flex items-center justify-between font-mono text-[10px]">
+              <span class="px-1.5 py-0.2 rounded font-bold ${isDone ? 'bg-atlas-brass/20 text-atlas-brass' : 'bg-atlas-void text-slate-400'}">SECTOR 0${s.id}</span>
+              <span class="text-slate-400">${s.time}</span>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-white">${s.title}</h3>
+              <p class="text-[11px] text-slate-400 font-mono">${s.hubs}</p>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">${s.dilemma}</p>
+          </div>
+
+          <div class="pt-3 border-t border-atlas-border mt-3 flex items-center justify-between">
+            <span class="text-[10px] font-mono ${isDone ? 'text-atlas-verdigris font-bold' : 'text-slate-400'}">
+              ${isDone ? '✓ RESTORED' : '+120 NM'}
+            </span>
+            <button onclick="launchSprint(${s.id})" class="px-2.5 py-1 rounded text-xs font-mono font-bold transition flex items-center space-x-1 ${
+              isDone ? 'bg-atlas-void hover:bg-slate-800 text-slate-200' : 'bg-atlas-brass hover:bg-amber-400 text-atlas-void'
+            }">
+              <span>${isDone ? 'REPLAY' : 'START'}</span>
+              <i data-lucide="arrow-right" class="w-3 h-3"></i>
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    /* Active Step-by-Step Sprint Modal */
+    function launchSprint(sprintId) {
+      sound.playRadarPing();
+      appState.currentSprintId = sprintId;
+      appState.currentSprintStep = 1;
+      appState.selectedChoice = null;
+
+      const sprint = SPRINTS_DATA.find(s => s.id === sprintId);
+      if (!sprint) return;
+
+      if (gMap && sprint.cityB) {
+        gMap.flyTo(sprint.cityB.latlng, 3.2, { duration: 1 });
+      }
+
+      document.getElementById('active-sprint-num-badge').textContent = `SECTOR 0${sprint.id}`;
+      document.getElementById('active-sprint-hubs').textContent = sprint.hubs;
+      document.getElementById('sprint-title').textContent = sprint.title;
+      document.getElementById('sprint-context-tag').textContent = sprint.contextTag;
+      document.getElementById('sprint-dilemma-text').textContent = sprint.dilemma;
+
+      const dBox = document.getElementById('sprint-dialogue');
+      dBox.innerHTML = '';
+      sprint.dialogue.forEach(d => {
+        const row = document.createElement('div');
+        row.className = 'p-2 rounded bg-atlas-surface/60 border border-atlas-border text-xs';
+        row.innerHTML = `<strong class="text-atlas-brass">${d.speaker}:</strong> <span class="text-slate-200">${d.text}</span>`;
+        dBox.appendChild(row);
+      });
+
+      document.getElementById('side-a-name').textContent = sprint.sideA.name;
+      document.getElementById('side-a-thought').textContent = sprint.sideA.thought;
+      document.getElementById('side-b-name').textContent = sprint.sideB.name;
+      document.getElementById('side-b-thought').textContent = sprint.sideB.thought;
+      document.getElementById('perspective-flip-inner').classList.remove('rotate-y-180');
+
+      const cBox = document.getElementById('choices-container');
+      cBox.innerHTML = '';
+      sprint.choices.forEach(ch => {
+        const btn = document.createElement('button');
+        btn.className = `w-full text-left p-3 rounded-lg border border-atlas-border bg-atlas-abyss hover:border-atlas-brass/50 text-xs transition flex items-start space-x-2.5 choice-btn`;
+        btn.id = `choice-btn-${ch.id}`;
+        btn.onclick = () => selectChoice(ch.id);
+        btn.innerHTML = `
+          <span class="w-5 h-5 rounded bg-atlas-surface border border-atlas-border font-mono font-bold flex items-center justify-center text-slate-300 shrink-0 text-[10px] mt-0.5">${ch.id}</span>
+          <span class="text-slate-200 flex-1 leading-relaxed">${ch.text}</span>
+        `;
+        cBox.appendChild(btn);
+      });
+      document.getElementById('choice-feedback-box').classList.add('hidden');
+      const nextBtn = document.getElementById('btn-to-step-4');
+      nextBtn.disabled = true;
+      nextBtn.classList.add('bg-slate-800', 'text-slate-500', 'cursor-not-allowed');
+      nextBtn.classList.remove('bg-atlas-verdigris', 'text-atlas-void', 'hover:bg-teal-400');
+
+      document.getElementById('lens-1-text').textContent = sprint.lenses.l1;
+      document.getElementById('lens-2-text').textContent = sprint.lenses.l2;
+      document.getElementById('lens-3-text').textContent = sprint.lenses.l3;
+
+      document.getElementById('completion-sprint-title').textContent = `${sprint.title} Restored`;
+      document.getElementById('pocket-script-content').textContent = sprint.script;
+
+      startTimer();
+      showStepPane(1);
+      document.getElementById('view-active-sprint').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function showStepPane(stepNum) {
+      appState.currentSprintStep = stepNum;
+      for (let i = 1; i <= 5; i++) {
+        const p = document.getElementById(`step-${i}-card`);
+        if (i === stepNum) p.classList.remove('hidden');
+        else p.classList.add('hidden');
+      }
+
+      document.querySelectorAll('.step-dot').forEach(dot => {
+        const dStep = parseInt(dot.getAttribute('data-step'));
+        if (dStep <= stepNum) {
+          dot.classList.remove('bg-atlas-border');
+          dot.classList.add('bg-atlas-brass');
+        } else {
+          dot.classList.remove('bg-atlas-brass');
+          dot.classList.add('bg-atlas-border');
+        }
+      });
+      document.getElementById('sprint-card-viewport').scrollTop = 0;
+    }
+
+    function nextStep(num) {
+      sound.playRadarPing();
+      showStepPane(num);
+    }
+
+    function toggleCardFlip() {
+      sound.playRadarPing();
+      document.getElementById('perspective-flip-inner').classList.toggle('rotate-y-180');
+    }
+
+    function selectChoice(choiceId) {
+      appState.selectedChoice = choiceId;
+      const sprint = SPRINTS_DATA.find(s => s.id === appState.currentSprintId);
+      const choice = sprint.choices.find(c => c.id === choiceId);
+
+      document.querySelectorAll('.choice-btn').forEach(b => {
+        b.classList.remove('border-atlas-verdigris', 'bg-atlas-verdigris/10', 'border-rose-500', 'bg-rose-500/10');
+      });
+
+      const btn = document.getElementById(`choice-btn-${choiceId}`);
+      const fbBox = document.getElementById('choice-feedback-box');
+      const fbTitle = document.getElementById('choice-feedback-title');
+      const fbDesc = document.getElementById('choice-feedback-desc');
+
+      if (choice.correct) {
+        sound.playCoinTone();
+        btn.classList.add('border-atlas-verdigris', 'bg-atlas-verdigris/10');
+        fbBox.className = 'p-3 rounded-lg border border-atlas-verdigris/50 bg-atlas-verdigris/10 space-y-1';
+        fbTitle.className = 'font-bold font-mono text-atlas-verdigris text-[11px]';
+        fbTitle.textContent = '✓ HIGH CQ RESPONSE';
+      } else {
+        sound.playRadarPing();
+        btn.classList.add('border-rose-500', 'bg-rose-500/10');
+        fbBox.className = 'p-3 rounded-lg border border-rose-500/50 bg-rose-500/10 space-y-1';
+        fbTitle.className = 'font-bold font-mono text-rose-300 text-[11px]';
+        fbTitle.textContent = '⚠ SUB-OPTIMAL CULTURAL MOVE';
+      }
+
+      fbDesc.textContent = choice.feedback;
+      fbBox.classList.remove('hidden');
+
+      const nextBtn = document.getElementById('btn-to-step-4');
+      nextBtn.disabled = false;
+      nextBtn.classList.remove('bg-slate-800', 'text-slate-500', 'cursor-not-allowed');
+      nextBtn.classList.add('bg-atlas-verdigris', 'text-atlas-void', 'hover:bg-teal-400');
+    }
+
+    function copyPocketScript() {
+      const txt = document.getElementById('pocket-script-content').textContent;
+      navigator.clipboard.writeText(txt).then(() => {
+        sound.playCoinTone();
+        const btn = document.getElementById('copy-script-btn');
+        btn.innerHTML = `<i data-lucide="check" class="w-2.5 h-2.5 text-atlas-verdigris"></i><span>COPIED!</span>`;
+        lucide.createIcons();
+        setTimeout(() => {
+          btn.innerHTML = `<i data-lucide="copy" class="w-2.5 h-2.5"></i><span>1-CLICK COPY</span>`;
+          lucide.createIcons();
+        }, 2200);
+      });
+    }
+
+    function finalizeSprintCompletion() {
+      const sId = appState.currentSprintId;
+      if (!appState.completedSprints.includes(sId)) {
+        appState.completedSprints.push(sId);
+        appState.xp += 120;
+        appState.coins += 40;
+
+        appState.capabilities.humility = Math.min(100, appState.capabilities.humility + 10);
+        appState.capabilities.subtext = Math.min(100, appState.capabilities.subtext + 10);
+        appState.capabilities.flexibility = Math.min(100, appState.capabilities.flexibility + 10);
+        appState.capabilities.calibration = Math.min(100, appState.capabilities.calibration + 10);
+        appState.capabilities.thirdCulture = Math.min(100, appState.capabilities.thirdCulture + 10);
+
+        sound.playSnapSound();
+        triggerConfetti();
+        saveState();
+      }
+      closeActiveSprint();
+      switchTab('atlas');
+    }
+
+    function closeActiveSprint() {
+      stopTimer();
+      document.getElementById('view-active-sprint').classList.add('hidden');
+    }
+
+    /* Timer */
+    function startTimer() {
+      stopTimer();
+      appState.timerSeconds = 120;
+      appState.timerRunning = true;
+      updateTimerDisplay();
+
+      appState.timerInterval = setInterval(() => {
+        if (appState.timerRunning) {
+          appState.timerSeconds--;
+          updateTimerDisplay();
+          if (appState.timerSeconds <= 0) stopTimer();
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (appState.timerInterval) clearInterval(appState.timerInterval);
+      appState.timerRunning = false;
+    }
+
+    function toggleTimer() {
+      appState.timerRunning = !appState.timerRunning;
+      const icon = document.getElementById('timer-icon');
+      icon.setAttribute('data-lucide', appState.timerRunning ? 'pause' : 'play');
+      lucide.createIcons();
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(appState.timerSeconds / 60);
+      const secs = appState.timerSeconds % 60;
+      const el = document.getElementById('timer-display');
+      el.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      if (appState.timerSeconds <= 20) {
+        el.classList.add('text-rose-400');
+        el.classList.remove('text-amber-400');
+      } else {
+        el.classList.remove('text-rose-400');
+        el.classList.add('text-amber-400');
+      }
+    }
+
+    /* Navigation */
+    function switchTab(tabId) {
+      sound.playRadarPing();
+      ['atlas', 'sprints', 'radar', 'passport'].forEach(t => {
+        const view = document.getElementById(`view-${t}`);
+        const btn = document.getElementById(`tab-${t}`);
+        if (t === tabId) {
+          view.classList.remove('hidden');
+          btn.classList.add('bg-atlas-brass', 'text-atlas-void', 'font-bold');
+          btn.classList.remove('text-slate-300');
+        } else {
+          view.classList.add('hidden');
+          btn.classList.remove('bg-atlas-brass', 'text-atlas-void', 'font-bold');
+          btn.classList.add('text-slate-300');
+        }
+      });
+
+      const compass = document.getElementById('nav-compass');
+      const degrees = { atlas: 0, sprints: 90, radar: 180, passport: 270 }[tabId] || 0;
+      compass.style.transform = `rotate(${degrees}deg)`;
+
+      if (tabId === 'atlas') {
+        if (!gMap) initRealWorldMap();
+        else setTimeout(() => gMap.invalidateSize(), 150);
+        renderPuzzleDock();
+        renderRealMapRoutes();
+      } else if (tabId === 'radar') {
+        renderRadar();
+      } else if (tabId === 'passport') {
+        renderPassport();
+      } else if (tabId === 'sprints') {
+        renderSprintsGrid();
+      }
+    }
+
+    /* Radar View */
+    function renderRadar() {
+      const c = appState.capabilities;
+      document.getElementById('cap-val-1').textContent = `${c.humility}%`;
+      document.getElementById('cap-val-2').textContent = `${c.subtext}%`;
+      document.getElementById('cap-val-3').textContent = `${c.flexibility}%`;
+      document.getElementById('cap-val-4').textContent = `${c.calibration}%`;
+      document.getElementById('cap-val-5').textContent = `${c.thirdCulture}%`;
+
+      document.getElementById('cap-bar-1').style.width = `${c.humility}%`;
+      document.getElementById('cap-bar-2').style.width = `${c.subtext}%`;
+      document.getElementById('cap-bar-3').style.width = `${c.flexibility}%`;
+      document.getElementById('cap-bar-4').style.width = `${c.calibration}%`;
+      document.getElementById('cap-bar-5').style.width = `${c.thirdCulture}%`;
+
+      const center = 150, maxR = 110;
+      const getCoord = (pct, deg) => {
+        const rad = (deg * Math.PI) / 180;
+        const r = (pct / 100) * maxR;
+        return { x: Math.round(center + r * Math.cos(rad)), y: Math.round(center + r * Math.sin(rad)) };
+      };
+
+      const p1 = getCoord(c.humility, -90);
+      const p2 = getCoord(c.subtext, -18);
+      const p3 = getCoord(c.flexibility, 54);
+      const p4 = getCoord(c.calibration, 126);
+      const p5 = getCoord(c.thirdCulture, 198);
+
+      document.getElementById('radar-poly').setAttribute('points', `${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y} ${p4.x},${p4.y} ${p5.x},${p5.y}`);
+      document.getElementById('radar-p1').setAttribute('cx', p1.x); document.getElementById('radar-p1').setAttribute('cy', p1.y);
+      document.getElementById('radar-p2').setAttribute('cx', p2.x); document.getElementById('radar-p2').setAttribute('cy', p2.y);
+      document.getElementById('radar-p3').setAttribute('cx', p3.x); document.getElementById('radar-p3').setAttribute('cy', p3.y);
+      document.getElementById('radar-p4').setAttribute('cx', p4.x); document.getElementById('radar-p4').setAttribute('cy', p4.y);
+      document.getElementById('radar-p5').setAttribute('cx', p5.x); document.getElementById('radar-p5').setAttribute('cy', p5.y);
+    }
+
+    /* Passport & Cohort */
+    function renderPassport() {
+      const container = document.getElementById('badges-container');
+      container.innerHTML = '';
+
+      SPRINTS_DATA.forEach(s => {
+        const isUnlocked = appState.completedSprints.includes(s.id);
+        const stamp = document.createElement('div');
+        stamp.className = `p-3 rounded-lg border text-center flex flex-col items-center justify-between min-h-[120px] transition ${
+          isUnlocked ? 'bg-atlas-surface border-atlas-brass shadow' : 'bg-atlas-void/50 border-atlas-border opacity-40'
+        }`;
+        stamp.innerHTML = `
+          <div class="text-[9px] font-mono ${isUnlocked ? 'text-atlas-verdigris font-bold' : 'text-slate-500'}">
+            ${isUnlocked ? 'RESTORED' : 'LOCKED'}
+          </div>
+          <div class="w-8 h-8 rounded-full flex items-center justify-center my-1 ${
+            isUnlocked ? 'bg-atlas-brass/20 text-atlas-brass border border-atlas-brass/50' : 'bg-atlas-surface text-slate-500'
+          }">
+            <i data-lucide="${s.badge.icon}" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white leading-tight">${s.badge.name}</div>
+            <div class="text-[9px] font-mono text-slate-400">${s.hubs.split('⇄')[0].trim()}</div>
+          </div>
+        `;
+        container.appendChild(stamp);
+      });
+
+      document.getElementById('passport-status').textContent = `${appState.completedSprints.length} / 8 RESTORED`;
+      renderCohortTable();
+      lucide.createIcons();
+    }
+
+    const COHORT_DATA = [
+      { name: "You (Manager)", location: "Home Base", pieces: 0, miles: 0, isUser: true },
+      { name: "Sophia Weber", location: "Munich, Germany", pieces: 6, miles: 720, isUser: false, id: 'Sophia' },
+      { name: "Yuki Tanaka", location: "Tokyo, Japan", pieces: 8, miles: 960, isUser: false, id: 'Yuki' },
+      { name: "Deepak Sharma", location: "Bengaluru, India", pieces: 5, miles: 600, isUser: false, id: 'Deepak' },
+      { name: "Camila Ortiz", location: "São Paulo, Brazil", pieces: 7, miles: 840, isUser: false, id: 'Camila' }
+    ];
+
+    function renderCohortTable() {
+      const tbody = document.getElementById('cohort-table-body');
+      tbody.innerHTML = '';
+      COHORT_DATA[0].pieces = appState.completedSprints.length;
+      COHORT_DATA[0].miles = appState.xp;
+
+      const sorted = [...COHORT_DATA].sort((a, b) => b.miles - a.miles);
+      sorted.forEach((item, idx) => {
+        const row = document.createElement('tr');
+        row.className = item.isUser ? 'bg-atlas-brass/10 border-atlas-brass/40 font-bold text-white' : 'text-slate-300';
+        row.innerHTML = `
+          <td class="py-2 px-2.5 font-mono text-[11px]">${idx + 1}</td>
+          <td class="py-2 px-2.5 flex items-center space-x-1.5">
+            <span>${item.name}</span>
+            ${item.isUser ? '<span class="bg-atlas-brass text-atlas-void text-[9px] px-1 rounded font-bold">YOU</span>' : ''}
+          </td>
+          <td class="py-2 px-2.5 text-slate-400 text-[11px]">${item.location}</td>
+          <td class="py-2 px-2.5 font-mono text-atlas-brass text-[11px]">${item.pieces} / 8</td>
+          <td class="py-2 px-2.5 font-mono text-atlas-verdigris text-[11px]">${item.miles}</td>
+          <td class="py-2 px-2.5 text-right font-mono text-[11px]">
+            ${item.isUser ? '<span class="text-slate-500">—</span>' : `
+              <div class="inline-flex items-center space-x-1">
+                <button onclick="sendKudos('${item.id}', '☕')" class="hover:scale-125 transition">☕</button>
+                <button onclick="sendKudos('${item.id}', '🙌')" class="hover:scale-125 transition">🙌</button>
+                <button onclick="sendKudos('${item.id}', '🔥')" class="hover:scale-125 transition">🔥</button>
+                <span class="text-atlas-brass ml-1 text-[10px]" id="kudos-${item.id}">${appState.peerKudos[item.id] || 0}</span>
+              </div>
+            `}
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function sendKudos(id, emoji) {
+      sound.playCoinTone();
+      appState.peerKudos[id] = (appState.peerKudos[id] || 0) + 1;
+      const el = document.getElementById(`kudos-${id}`);
+      if (el) el.textContent = appState.peerKudos[id];
+      saveState();
+    }
+
+    function updateUI() {
+      document.getElementById('hud-coins').textContent = appState.coins;
+      document.getElementById('hud-xp').textContent = appState.xp;
+      renderPuzzleDock();
+    }
+
+    /* Confetti */
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#D4A359', '#2DD4BF', '#FBBF24', '#FB7185', '#FFFFFF'];
+
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 14,
+          vy: (Math.random() - 0.7) * 14,
+          size: Math.random() * 6 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          vRot: (Math.random() - 0.5) * 8,
+          alpha: 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.22;
+          p.rotation += p.vRot;
+          p.alpha -= 0.018;
+
+          if (p.alpha > 0) {
+            alive = true;
+            ctx.save();
+            ctx.globalAlpha = p.alpha;
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+            ctx.restore();
+          }
+        });
+
+        if (alive) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(animate);
+    }
+
+    // Page Load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      initRealWorldMap();
+      switchTab('atlas');
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
