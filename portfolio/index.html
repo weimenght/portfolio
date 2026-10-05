@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">WEI MENG — Playable Prototypes & Simulation Artifacts</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: #FAFAFA;
+      color: #18181B;
+    }
+
+    .font-syne {
+      font-family: 'Syne', sans-serif;
+    }
+
+    .font-mono {
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* Monogram */
+    .monogram-w {
+      display: inline-block;
+      clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 15% 100%);
+    }
+    .monogram-m {
+      display: inline-block;
+      clip-path: polygon(0% 0%, 85% 0%, 85% 100%, 0% 100%);
+    }
+
+    /* Subtle fine-line grid */
+    .bg-grid-subtle {
+      background-size: 40px 40px;
+      background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+    }
+
+    /* Segmented pill active state */
+    .lang-btn.active {
+      background-color: #18181B;
+      color: #FFFFFF;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+    .lang-btn:not(.active) {
+      color: #71717A;
+    }
+    .lang-btn:not(.active):hover {
+      color: #18181B;
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+
+    /* Card Micro-Interaction transitions */
+    .interactive-card {
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.2s ease;
+    }
+    .interactive-card:hover {
+      transform: translateY(-4px);
+    }
+
+    /* Redaction Glitch Animation */
+    .redacted-box {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .redacted-box.unredacted {
+      background-color: #18181B;
+      color: #34D399;
+    }
+  </style>
+</head>
+<body class="bg-[#FAFAFA] text-[#18181B] bg-grid-subtle min-h-screen antialiased selection:bg-neutral-900 selection:text-white">
+
+  <!-- EASTER EGG MODAL: "THE 60-SLIDE COMPLIANCE SIMULATOR" -->
+  <!-- Demonstrates the problem (monotonous corporate decks) through satire instead of preaching -->
+  <div id="compliance-hell-modal" class="fixed inset-0 z-50 bg-neutral-950/85 backdrop-blur-sm hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true">
+    <div class="bg-white border-2 border-neutral-300 rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 text-left">
+      <div class="flex items-center justify-between border-b border-neutral-200 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-amber-500 animate-ping"></span>
+          <span class="font-mono text-xs font-bold uppercase tracking-wider text-neutral-500" data-i18n="easterEggTop">
+            Corporate Mandatory Deck // Sim 2026
+          </span>
+        </div>
+        <span class="text-xs font-mono bg-neutral-100 px-2 py-0.5 rounded text-neutral-600">Slide 1 of 62</span>
+      </div>
+
+      <div class="space-y-3 bg-neutral-50 p-5 rounded-xl border border-neutral-200">
+        <h4 class="font-syne text-lg font-bold text-neutral-900" data-i18n="easterEggSlideTitle">
+          Module 1.1: Synergy Paradigms & Policy Compliance
+        </h4>
+        <p class="text-xs text-neutral-600 leading-relaxed font-serif italic" data-i18n="easterEggSlideText">
+          "All personnel must optimize interdepartmental synchronization through asynchronous documentation workflows. Please avoid interaction until this timer expires."
+        </p>
+        <div class="pt-2 flex items-center justify-between text-xs font-mono text-neutral-400">
+          <span>Speaker: Monotone AI Voice [Muted]</span>
+          <span class="text-amber-600 font-bold" id="lock-timer">Locked: 00:44 remaining</span>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <button type="button" disabled class="w-full py-3 rounded-xl bg-neutral-200 text-neutral-400 text-xs font-mono cursor-not-allowed flex items-center justify-center gap-2">
+          <span>Next Slide [Disabled]</span>
+          <span>🔒</span>
+        </button>
+        
+        <button type="button" onclick="closeComplianceModal()" class="w-full py-3 rounded-xl bg-neutral-900 text-emerald-400 hover:bg-neutral-800 text-xs font-mono font-bold transition-all shadow-md flex items-center justify-center gap-2">
+          <span data-i18n="easterEggEject">⚡ Eject to Cognitive Dignity (Back to Work)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIDEO MODAL (Case 01 Lightbox) -->
+  <div id="video-modal" class="fixed inset-0 z-50 bg-neutral-950/85 backdrop-blur-md hidden items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300" onclick="handleModalBackdrop(event)" role="dialog" aria-modal="true">
+    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-4xl w-full p-5 sm:p-7 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-4 mb-4 border-b border-neutral-800">
+        <div class="flex items-center gap-3">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <h3 class="font-syne text-base sm:text-lg font-bold text-white tracking-tight" data-i18n="modalTitle">
+            Corporate Survival Drama // Live Preview
+          </h3>
+        </div>
+        <button type="button" onclick="closeVideoModal()" class="w-8 h-8 rounded-full bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white flex items-center justify-center transition-colors font-mono text-sm" aria-label="Close modal">
+          ✕
+        </button>
+      </div>
+
+      <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-black border border-neutral-800">
+        <video id="demo-video-player" class="w-full h-full object-contain" controls playsinline preload="metadata">
+          <source src="https://media.wei-meng.org/hovercraft.mp4" type="video/mp4">
+          Your browser does not support HTML5 video.
+        </video>
+      </div>
+
+      <div class="mt-4 flex items-center justify-between text-xs font-mono text-neutral-500">
+        <span>EPISODE 01: THE UNTOLD REVENUE LEAK</span>
+        <span class="hidden sm:inline" data-i18n="modalEscHint">Press ESC or click outside to dismiss</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STICKY HEADER -->
+  <header class="sticky top-0 z-40 bg-[#FAFAFA]/95 backdrop-blur-md border-b border-neutral-200/80 px-4 sm:px-12 py-3 sm:py-4 transition-all">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+
+      <!-- Identity Lockup -->
+      <a href="https://wei-meng.org" class="flex items-center gap-2.5 sm:gap-3.5 group flex-shrink-0" aria-label="Wei MENG Home">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-neutral-900 text-white flex items-center justify-center transition-transform group-hover:scale-105 shadow-sm flex-shrink-0">
+          <div class="flex items-center justify-center font-syne font-bold text-sm sm:text-base tracking-tight text-white select-none">
+            <span class="monogram-w">W</span>
+            <span class="text-[10px] font-mono opacity-40 mx-[1px]">/</span>
+            <span class="monogram-m">M</span>
+          </div>
+        </div>
+        <div>
+          <div class="font-syne font-bold text-sm sm:text-base tracking-tight leading-none text-neutral-900">
+            WEI MENG
+          </div>
+          <p class="text-[11px] sm:text-xs text-neutral-500 mt-0.5 sm:mt-1 hidden sm:block" data-i18n="headerSubtitle">
+            L&D Architect | Experience Designer
+          </p>
+        </div>
+      </a>
+
+      <!-- Right Controls: Easter Egg Trigger + Multi-Language + Home -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- The "Anti-Compliance" Satire Easter Egg Pill -->
+        <button 
+          type="button" 
+          onclick="openComplianceModal()"
+          class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-dashed border-amber-300 bg-amber-50/70 hover:bg-amber-100 text-amber-900 text-[11px] font-mono font-medium transition-all group"
+          title="Click to see what happens when training ignores cognitive dignity"
+        >
+          <span class="text-amber-500 group-hover:rotate-12 transition-transform">⚠️</span>
+          <span data-i18n="navEasterEgg">Standard 60-Slide Deck?</span>
+        </button>
+
+        <!-- Segmented Language Switcher -->
+        <div class="inline-flex items-center bg-neutral-200/70 p-0.5 rounded-lg text-xs font-mono font-medium" role="group" aria-label="Language selection">
+          <button type="button" onclick="setLanguage('en')" class="lang-btn px-2 py-1 rounded transition-all" data-lang="en">EN</button>
+          <button type="button" onclick="setLanguage('zh')" class="lang-btn px-2 py-1 rounded transition-all" data-lang="zh">中文</button>
+          <button type="button" onclick="setLanguage('es')" class="lang-btn px-2 py-1 rounded transition-all" data-lang="es">ES</button>
+        </div>
+
+        <!-- Back to main -->
+        <a href="https://wei-meng.org" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold transition-all shadow-sm flex-shrink-0" data-i18n="backHome">
+          Main Site ↗
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN VIEWPORT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-8 py-10 sm:py-16 space-y-12 sm:space-y-16">
+
+    <!-- ULTRA-MINIMAL HERO (SHOW, DON'T TELL) -->
+    <section class="max-w-3xl space-y-4">
+      <div class="inline-flex items-center gap-2 text-xs font-mono tracking-wider uppercase text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full border border-neutral-200">
+        <span class="text-emerald-500">●</span>
+        <span data-i18n="heroPill">Playable Proof // 06 Live Systems</span>
+      </div>
+
+      <h1 class="font-syne text-3xl sm:text-5xl font-bold tracking-tight text-neutral-900 leading-[1.12]" data-i18n-html="heroTitle">
+        Zero slide monologues. <br class="hidden sm:inline">
+        Click to play the <span class="text-neutral-500 font-normal italic font-serif">antidotes</span>.
+      </h1>
+
+      <p class="text-sm sm:text-base text-neutral-600 leading-relaxed font-normal" data-i18n="heroDesc">
+        Interact with the live teasers below. Each card is an active miniature playground designed with emotional friction, safe-to-fail stakes, and adult cognitive dignity.
+      </p>
+    </section>
+
+    <!-- THE 6 CASES: HEROIC, TACTILE & CLICKABLE -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+
+      <!-- CASE 01: Corporate Survival Drama (Video Lightbox) -->
+      <article class="interactive-card bg-white rounded-3xl p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
+        <div class="space-y-4">
+          <!-- Clickable Video Preview -->
+          <div class="relative h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 cursor-pointer" onclick="openVideoModal()">
+            <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=800&q=80" alt="Corporate Survival Drama" class="w-full h-full object-cover opacity-80 group-hover:opacity-95 group-hover:scale-105 transition-all duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent"></div>
+            
+            <!-- Hover Play Button -->
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-14 h-14 rounded-full bg-white text-neutral-900 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+                <span class="ml-1 text-lg">▶</span>
+              </div>
+            </div>
+
+            <!-- Streaming Tag -->
+            <span class="absolute top-3 left-3 text-[10px] font-mono font-bold uppercase tracking-wider bg-rose-600 text-white px-2.5 py-1 rounded-full shadow-sm" data-i18n="case1Badge">
+              ● Episodic Series
+            </span>
+
+            <!-- Cliffhanger Teaser on Hover -->
+            <div class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-neutral-300 truncate">
+              <span class="text-white font-bold">EP.01:</span> "Sign the audit waiver, or lose the account."
+            </div>
+          </div>
+
+          <div class="space-y-1">
+            <div class="text-[11px] font-mono uppercase text-neutral-400" data-i18n="case1Category">Narrative Drama // AI Media</div>
+            <h2 class="font-syne text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors cursor-pointer" onclick="openVideoModal()" data-i18n="case1Title">
+              Corporate Survival Drama
+            </h2>
+          </div>
+
+          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed" data-i18n="case1Desc">
+            Vertical mini-series confronting raw workplace dilemmas. No stock smiles or corporate clichés—just high-stakes decisions where every choice carries career fallout.
+          </p>
+        </div>
+
+        <!-- Micro-Interaction Footer -->
+        <div class="pt-4 mt-6 border-t border-neutral-100 flex items-center justify-between">
+          <button type="button" onclick="openVideoModal()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold font-mono transition-all">
+            <span data-i18n="case1Action">Play Trailer</span>
+            <span>▶</span>
+          </button>
+          <span class="text-[11px] font-mono text-neutral-400">01:42 Min Preview</span>
+        </div>
+      </article>
+
+      <!-- CASE 02: Immersive Onboarding Universe (Project Sunrise) -->
+      <article class="interactive-card bg-white rounded-3xl p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
+        <div class="space-y-4">
+          <!-- Thumbnail with Launch link -->
+          <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" class="relative h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80" alt="Project Sunrise" class="w-full h-full object-cover opacity-85 group-hover:opacity-95 group-hover:scale-105 transition-all duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent"></div>
+            
+            <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 text-neutral-900 flex items-center justify-center font-mono text-xs shadow-md group-hover:scale-110 transition-transform">
+              ↗
+            </div>
+            
+            <span class="absolute top-3 left-3 text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-500 text-neutral-950 px-2.5 py-1 rounded-full shadow-sm" data-i18n="case2Badge">
+              Forensic Mystery
+            </span>
+
+            <div class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-neutral-300 truncate">
+              M&A Due Diligence // Node 01-03
+            </div>
+          </a>
+
+          <div class="space-y-1">
+            <div class="text-[11px] font-mono uppercase text-neutral-400" data-i18n="case2Category">Forensic Onboarding // Simulation</div>
+            <h2 class="font-syne text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
+              <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" data-i18n="case2Title">
+                Immersive Onboarding Universe
+              </a>
+            </h2>
+          </div>
+
+          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed" data-i18n="case2Desc">
+            New hires become forensic auditors decoding an unapproved $22M offshore wire. Culture and ethics learned through discovery, not policy handouts.
+          </p>
+
+          <!-- SHOW DON'T TELL EASTER EGG: Interactive Decryption Snippet -->
+          <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-1.5">
+            <div class="flex items-center justify-between text-[10px] font-mono text-neutral-400">
+              <span data-i18n="case2ClueTag">CLASSIFIED CLUE [TAP TO DECRYPT]</span>
+              <span>CONFIDENTIAL</span>
+            </div>
+            <button 
+              type="button" 
+              onclick="toggleRedaction(this)" 
+              class="redacted-box w-full text-left font-mono text-xs px-2.5 py-1.5 rounded bg-neutral-900 text-neutral-400 hover:text-white cursor-pointer select-none"
+              data-revealed="false"
+            >
+              ████████ $22,000,000 WIRE TO APEX ████
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-4 mt-6 border-t border-neutral-100 flex items-center justify-between">
+          <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold font-mono transition-all">
+            <span data-i18n="launchWeb">Enter Investigation</span>
+            <span>↗</span>
+          </a>
+          <span class="text-[11px] font-mono text-neutral-400">Node 01 // Live</span>
+        </div>
+      </article>
+
+      <!-- CASE 03: Sales Psychology Academy (Cognitive Retrieval) -->
+      <article class="interactive-card bg-white rounded-3xl p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
+        <div class="space-y-4">
+          <a href="https://wei-meng.org/free-builder/sales/" target="_blank" rel="noopener noreferrer" class="relative h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
+            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80" alt="Sales Psychology Academy" class="w-full h-full object-cover opacity-85 group-hover:opacity-95 group-hover:scale-105 transition-all duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent"></div>
+            
+            <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 text-neutral-900 flex items-center justify-center font-mono text-xs shadow-md group-hover:scale-110 transition-transform">
+              ↗
+            </div>
+
+            <span class="absolute top-3 left-3 text-[10px] font-mono font-bold uppercase tracking-wider bg-violet-600 text-white px-2.5 py-1 rounded-full shadow-sm" data-i18n="case3Badge">
+              Active Recall
+            </span>
+
+            <div class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-neutral-300 truncate">
+              Kahneman • Cialdini • Voss Models
+            </div>
+          </a>
+
+          <div class="space-y-1">
+            <div class="text-[11px] font-mono uppercase text-neutral-400" data-i18n="case3Category">Neuro-Training // Tactical 3D</div>
+            <h2 class="font-syne text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
+              <a href="https://wei-meng.org/free-builder/sales/" target="_blank" rel="noopener noreferrer" data-i18n="case3Title">
+                Sales Psychology Academy
+              </a>
+            </h2>
+          </div>
+
+          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed" data-i18n="case3Desc">
+            Replaces multiple-choice quizzes with 3D tactile battlecards and timed objection blitzes using real-time procedural Web Audio.
+          </p>
+
+          <!-- SHOW DON'T TELL EASTER EGG: Mini Active Recall Flashcard -->
+          <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-1.5">
+            <div class="flex items-center justify-between text-[10px] font-mono text-neutral-400">
+              <span data-i18n="case3DrillTag">RECALL DRILL [TAP TO FLIP]</span>
+              <span>ACTIVE PRACTICE</span>
+            </div>
+            <button 
+              type="button" 
+              onclick="flipRecallCard(this)" 
+              class="w-full text-left font-mono text-xs p-2.5 rounded bg-white border border-neutral-200 hover:border-neutral-400 transition-all cursor-pointer select-none text-neutral-800"
+              data-flipped="false"
+            >
+              <span class="text-neutral-500 font-bold">Q:</span> Client says: "Your competitor charges 50% less."
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-4 mt-6 border-t border-neutral-100 flex items-center justify-between">
+          <a href="https://wei-meng.org/free-builder/sales/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold font-mono transition-all">
+            <span data-i18n="launchWeb">Open Simulator</span>
+            <span>↗</span>
+          </a>
+          <span class="text-[11px] font-mono text-neutral-400">Procedural Audio</span>
+        </div>
+      </article>
+
+      <!-- CASE 04: Corporate Coaching Co-Pilot (Safe-to-Fail Sandbox) -->
+      <article class="interactive-card bg-white rounded-3xl p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
+        <div class="space-y-4">
+          <a href="https://wei-meng.org/free-builder/coach/" target="_blank" rel="noopener noreferrer" class="relative h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
+            <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80" alt="LeadCraft Coaching Co-Pilot" class="w-full h-full object-cover opacity-85 group-hover:opacity-95 group-hover:scale-105 transition-all duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent"></div>
+            
+            <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 text-neutral-900 flex items-center justify-center font-mono text-xs shadow-md group-hover:scale-110 transition-transform">
+              ↗
+            </div>
+
+            <span class="absolute top-3 left-3 text-[10px] font-mono font-bold uppercase tracking-wider bg-indigo-600 text-white px-2.5 py-1 rounded-full shadow-sm" data-i18n="case4Badge">
+              Safe-to-Fail Sandbox
+            </span>
+
+            <div class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-neutral-300 truncate">
+              SCARF • SLII • Radical Candor
+            </div>
+          </a>
+
+          <div class="space-y-1">
+            <div class="text-[11px] font-mono uppercase text-neutral-400" data-i18n="case4Category">Leadership Sandbox // AI Personas</div>
+            <h2 class="font-syne text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
+              <a href="https://wei-meng.org/free-builder/coach/" target="_blank" rel="noopener noreferrer" data-i18n="case4Title">
+                Corporate Coaching Co-Pilot
+              </a>
+            </h2>
+          </div>
+
+          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed" data-i18n="case4Desc">
+            AI direct reports react in real-time to your management habits. Make conversational mistakes safely without burning team political capital.
+          </p>
+
+          <!-- SHOW DON'T TELL EASTER EGG: Live Micro Dilemma Sandbox -->
+          <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-2">
+            <div class="flex items-center justify-between text-[10px] font-mono text-neutral-400">
+              <span data-i18n="case4ScenarioTag">SAFE-TO-FAIL TEST // DIRECT REPORT IS LATE</span>
+              <span id="coach-status" class="text-neutral-500">READY</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+              <button type="button" onclick="testCoachResponse('micromanage', this)" class="p-2 rounded bg-white hover:bg-neutral-100 border border-neutral-200 text-left transition-colors">
+                [A] "Why is this late again?"
+              </button>
+              <button type="button" onclick="testCoachResponse('coach', this)" class="p-2 rounded bg-white hover:bg-neutral-100 border border-neutral-200 text-left transition-colors">
+                [B] "What's blocking the delivery?"
+              </button>
+            </div>
+            <div id="coach-feedback" class="text-[10px] font-mono text-neutral-500 italic hidden pt-1"></div>
+          </div>
+        </div>
+
+        <div class="pt-4 mt-6 border-t border-neutral-100 flex items-center justify-between">
+          <a href="https://wei-meng.org/free-builder/coach/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold font-mono transition-all">
+            <span data-i18n="launchWeb">Open Co-Pilot</span>
+            <span>↗</span>
+          </a>
+          <span class="text-[11px] font-mono text-neutral-400">SCARF Calibrated</span>
+        </div>
+      </article>
+
+      <!-- CASE 05: TERRA CQ Intercultural Atlas (Cultural Perspective Mirror) -->
+      <article class="interactive-card bg-white rounded-3xl p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
+        <div class="space-y-4">
+          <a href="https://wei-meng.org/free-builder/cq/" target="_blank" rel="noopener noreferrer" class="relative h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
+            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="TERRA CQ Intercultural Atlas" class="w-full h-full object-cover opacity-85 group-hover:opacity-95 group-hover:scale-105 transition-all duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent"></div>
+            
+            <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 text-neutral-900 flex items-center justify-center font-mono text-xs shadow-md group-hover:scale-110 transition-transform">
+              ↗
+            </div>
+
+            <span class="absolute top-3 left-3 text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-600 text-white px-2.5 py-1 rounded-full shadow-sm" data-i18n="case5Badge">
+              8 Global Corridors
+            </span>
+
+            <div class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-neutral-300 truncate">
+              San Francisco • London • Tokyo • São Paulo
+            </div>
+          </a>
+
+          <div class="space-y-1">
+            <div class="text-[11px] font-mono uppercase text-neutral-400" data-i18n="case5Category">Global Intelligence // Anti-Stereotyping</div>
+            <h2 class="font-syne text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
+              <a href="https://wei-meng.org/free-builder/cq/" target="_blank" rel="noopener noreferrer" data-i18n="case5Title">
+                Intercultural Atlas
+              </a>
+            </h2>
+          </div>
+
+          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed" data-i18n="case5Desc">
+            Simulates high-friction cross-border interactions. Replaces ethnic stereotypes with the 3-Lenses Model and dual-perspective reflection mirrors.
+          </p>
+
+          <!-- SHOW DON'T TELL EASTER EGG: Dual-Perspective Cultural Mirror -->
+          <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-2">
+            <div class="flex items-center justify-between text-[10px] font-mono text-neutral-400">
+              <span data-i18n="case5MirrorTag">DUAL-LENS MIRROR [TAP TO TOGGLE]</span>
+              <span id="lens-name" class="font-bold text-neutral-700">LOW-CONTEXT</span>
+            </div>
+            <button 
+              type="button" 
+              onclick="toggleCulturalLens(this)" 
+              class="w-full text-left font-mono text-xs p-2.5 rounded bg-white border border-neutral-200 hover:border-neutral-400 transition-all cursor-pointer select-none text-neutral-800"
+              data-lens="direct"
+            >
+              "This plan won't work. We need to completely rewrite section 3."
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-4 mt-6 border-t border-neutral-100 flex items-center justify-between">
+          <a href="https://wei-meng.org/free-builder/cq/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold font-mono transition-all">
+            <span data-i18n="launchWeb">Open Atlas</span>
+            <span>↗</span>
+          </a>
+          <span class="text-[11px] font-mono text-neutral-400">Adaptive Radar</span>
+        </div>
+      </article>
+
+      <!-- CASE 06: Design Thinking Odyssey (Tactile Sprint Bench) -->
+      <article class="interactive-card bg-white rounded-3xl p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
+        <div class="space-y-4">
+          <a href="https://wei-meng.org/free-builder/design/" target="_blank" rel="noopener noreferrer" class="relative h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
+            <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80" alt="Design Thinking Odyssey" class="w-full h-full object-cover opacity-85 group-hover:opacity-95 group-hover:scale-105 transition-all duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent"></div>
+            
+            <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 text-neutral-900 flex items-center justify-center font-mono text-xs shadow-md group-hover:scale-110 transition-transform">
+              ↗
+            </div>
+
+            <span class="absolute top-3 left-3 text-[10px] font-mono font-bold uppercase tracking-wider bg-cyan-600 text-white px-2.5 py-1 rounded-full shadow-sm" data-i18n="case6Badge">
+              Sprint Workbench
+            </span>
+
+            <div class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-neutral-300 truncate">
+              Empathize • Ideate • Crazy 8s • Test
+            </div>
+          </a>
+
+          <div class="space-y-1">
+            <div class="text-[11px] font-mono uppercase text-neutral-400" data-i18n="case6Category">Innovation Sprint // Rapid Prototyping</div>
+            <h2 class="font-syne text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
+              <a href="https://wei-meng.org/free-builder/design/" target="_blank" rel="noopener noreferrer" data-i18n="case6Title">
+                Design Thinking Odyssey
+              </a>
+            </h2>
+          </div>
+
+          <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed" data-i18n="case6Desc">
+            Eliminates whiteboard theory. Step straight into 48-hour disposable prototypes, un-biasing tests, and timed Crazy 8s sprint execution.
+          </p>
+
+          <!-- SHOW DON'T TELL EASTER EGG: Interactive Crazy 8s Sprint Timer -->
+          <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-2">
+            <div class="flex items-center justify-between text-[10px] font-mono text-neutral-400">
+              <span data-i18n="case6SprintTag">RAPID SPRINT PULSE</span>
+              <span id="crazy-status" class="text-neutral-600">READY</span>
+            </div>
+            <button 
+              type="button" 
+              onclick="triggerCrazySprint(this)" 
+              class="w-full py-2 px-3 rounded bg-white border border-neutral-200 hover:border-neutral-400 text-neutral-800 font-mono text-xs flex items-center justify-between transition-all"
+            >
+              <span id="crazy-label">⚡ Trigger 8-Second Idea Sprint</span>
+              <span id="crazy-count" class="font-bold text-cyan-600">08s</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-4 mt-6 border-t border-neutral-100 flex items-center justify-between">
+          <a href="https://wei-meng.org/free-builder/design/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold font-mono transition-all">
+            <span data-i18n="launchWeb">Start Sprint</span>
+            <span>↗</span>
+          </a>
+          <span class="text-[11px] font-mono text-neutral-400">Interactive Lab</span>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- MINIMAL ARCHITECTURAL FOOTNOTE BANNER -->
+    <section class="border border-neutral-200 rounded-3xl p-6 sm:p-10 bg-white shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+      <div class="space-y-1 max-w-xl">
+        <h3 class="font-syne text-xl font-bold text-neutral-900" data-i18n="bottomBannerTitle">
+          Building bespoke learning architectures that people choose to finish.
+        </h3>
+        <p class="text-xs sm:text-sm text-neutral-500" data-i18n="bottomBannerDesc">
+          Available for enterprise simulation engineering, AI persona design, and executive curriculum revamps.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3 flex-shrink-0">
+        <a href="mailto:weimeng@protonmail.com" class="px-5 py-3 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-mono font-bold transition-all shadow-sm">
+          ✉ weimeng@protonmail.com
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-neutral-200 mt-12 py-10 sm:py-12 px-6 sm:px-12 bg-white">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">      
+      <div class="flex items-center gap-6 text-xs font-mono text-neutral-500">
+        <span>© <span id="current-year"></span> Wei MENG</span>
+      </div>
+      <a href="https://wei-meng.org/free_builder" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 group font-mono text-xs hover:text-indigo-600 transition-colors">
+        <span>Designed with AI & <span class="text-rose-500 group-hover:scale-125 transition-transform inline-block">♥</span> by</span>
+        <span class="flex items-center gap-1.5 font-bold text-slate-900 group-hover:text-indigo-600">
+          <span class="grid grid-cols-2 gap-0.5 w-3.5 h-3.5 transform group-hover:rotate-90 transition-transform duration-300">
+            <span class="bg-slate-900 rounded-[1px] group-hover:bg-indigo-600"></span>
+            <span class="bg-slate-900 rounded-[1px] group-hover:bg-violet-600"></span>
+            <span class="bg-slate-900 rounded-[1px] group-hover:bg-rose-500"></span>
+            <span class="bg-indigo-600 rounded-[1px]"></span>
+          </span>
+          FREE//BUILDER
+        </span>
+      </a>
+    </div>
+  </footer>
+
+  <!-- SCRIPT: i18n & Micro-Interactions -->
+  <script>
+    const translations = {
+      en: {
+        pageTitle: "WEI MENG — Playable Prototypes & Simulation Artifacts",
+        headerSubtitle: "L&D Architect | Experience Designer",
+        backHome: "Main Site ↗",
+        navEasterEgg: "Standard 60-Slide Deck?",
+        heroPill: "Playable Proof // 06 Live Systems",
+        heroTitle: 'Zero slide monologues. <br class="hidden sm:inline">Click to play the <span class="text-neutral-500 font-normal italic font-serif">antidotes</span>.',
+        heroDesc: "Interact with the live teasers below. Each card is an active miniature playground designed with emotional friction, safe-to-fail stakes, and adult cognitive dignity.",
+
+        case1Badge: "● Episodic Series",
+        case1Category: "Narrative Drama // AI Media",
+        case1Title: "Corporate Survival Drama",
+        case1Desc: "Vertical mini-series confronting raw workplace dilemmas. No stock smiles or corporate clichés—just high-stakes decisions where every choice carries career fallout.",
+        case1Action: "Play Trailer",
+
+        case2Badge: "Forensic Mystery",
+        case2Category: "Forensic Onboarding // Simulation",
+        case2Title: "Immersive Onboarding Universe",
+        case2Desc: "New hires become forensic auditors decoding an unapproved $22M offshore wire. Culture and ethics learned through discovery, not policy handouts.",
+        case2ClueTag: "CLASSIFIED CLUE [TAP TO DECRYPT]",
+
+        case3Badge: "Active Recall",
+        case3Category: "Neuro-Training // Tactical 3D",
+        case3Title: "Sales Psychology Academy",
+        case3Desc: "Replaces multiple-choice quizzes with 3D tactile battlecards and timed objection blitzes using real-time procedural Web Audio.",
+        case3DrillTag: "RECALL DRILL [TAP TO FLIP]",
+
+        case4Badge: "Safe-to-Fail Sandbox",
+        case4Category: "Leadership Sandbox // AI Personas",
+        case4Title: "Corporate Coaching Co-Pilot",
+        case4Desc: "AI direct reports react in real-time to your management habits. Make conversational mistakes safely without burning team political capital.",
+        case4ScenarioTag: "SAFE-TO-FAIL TEST // DIRECT REPORT IS LATE",
+
+        case5Badge: "8 Global Corridors",
+        case5Category: "Global Intelligence // Anti-Stereotyping",
+        case5Title: "Intercultural Atlas",
+        case5Desc: "Simulates high-friction cross-border interactions. Replaces ethnic stereotypes with the 3-Lenses Model and dual-perspective reflection mirrors.",
+        case5MirrorTag: "DUAL-LENS MIRROR [TAP TO TOGGLE]",
+
+        case6Badge: "Sprint Workbench",
+        case6Category: "Innovation Sprint // Rapid Prototyping",
+        case6Title: "Design Thinking Odyssey",
+        case6Desc: "Eliminates whiteboard theory. Step straight into 48-hour disposable prototypes, un-biasing tests, and timed Crazy 8s sprint execution.",
+        case6SprintTag: "RAPID SPRINT PULSE",
+
+        launchWeb: "Open Simulator",
+        modalTitle: "Corporate Survival Drama // Live Preview",
+        modalEscHint: "Press ESC or click outside to dismiss",
+
+        easterEggTop: "Corporate Mandatory Deck // Sim 2026",
+        easterEggSlideTitle: "Module 1.1: Synergy Paradigms & Policy Compliance",
+        easterEggSlideText: '"All personnel must optimize interdepartmental synchronization through asynchronous documentation workflows. Please avoid interaction until this timer expires."',
+        easterEggEject: "⚡ Eject to Cognitive Dignity (Back to Work)",
+
+        bottomBannerTitle: "Building bespoke learning architectures that people choose to finish.",
+        bottomBannerDesc: "Available for enterprise simulation engineering, AI persona design, and executive curriculum revamps.",
+        footerNote: "Proof over slides."
+      },
+      zh: {
+        pageTitle: "孟伟 WEI MENG — 可运行仿真原型与体验产品",
+        headerSubtitle: "学习体验架构师 | 体验设计师",
+        backHome: "返回主站 ↗",
+        navEasterEgg: "体验传统60页合规PPT？",
+        heroPill: "拒绝说教 // 6大可交互系统",
+        heroTitle: '告别单向PPT灌输。<br class="hidden sm:inline">直接上手体验这些<span class="text-neutral-500 font-normal italic font-serif">解药原型</span>。',
+        heroDesc: "点击下方卡片中的微交互模块。每一个作品都是专为成年学员打造的实战微沙盒：拒绝幼稚说教，尊重认知尊严。",
+
+        case1Badge: "● 竖屏短剧",
+        case1Category: "叙事短剧 // AI视听",
+        case1Title: "职场生存大戏",
+        case1Desc: "直面真实管理雷区的微短剧。剥离温情假话与模板化说教，以真实职场张力与高风险抉择磨砺敏锐沟通直觉。",
+        case1Action: "播放预告片",
+
+        case2Badge: "商业法证悬疑",
+        case2Category: "法证破冰 // 仿真系统",
+        case2Title: "沉浸式入职元宇宙 (Project Sunrise)",
+        case2Desc: "新人化身法证审计员，抽丝剥茧调查一笔未经审批的2200万美元离岸电汇。在侦破谜局中自主吃透合规底线与组织文化。",
+        case2ClueTag: "机密线索 [点击解密]",
+
+        case3Badge: "主动回忆检索",
+        case3Category: "神经认知 // 3D战术卡牌",
+        case3Title: "销售心理学实战学院",
+        case3Desc: "告别走过场的单选题。将卡尼曼与西奥迪尼理论打造成3D触觉卡牌与高压突发异议防御，搭载纯程序化Web音效反馈。",
+        case3DrillTag: "主动回忆提取 [点击翻转]",
+
+        case4Badge: "零试错沙盒",
+        case4Category: "领导力演练 // AI角色扮演",
+        case4Title: "管理者 AI 领导力教练 (LeadCraft)",
+        case4Desc: "AI下属实时回应你的沟通方式。在零人际资本损耗的沙盒中自由碰壁试错，快速校准表达与同理心边界。",
+        case4ScenarioTag: "试错演练 // 下属再度交付延期",
+
+        case5Badge: "8大跨国航线",
+        case5Category: "跨文化智商 // 反刻板印象",
+        case5Title: "跨文化领导力图鉴 (Terra CQ)",
+        case5Desc: "深度模拟跨国团队协作摩擦。依托“三重视角”反刻板印象模型与双向透镜，透视彼此语言背后的真实语境。",
+        case5MirrorTag: "双重视角镜像 [点击切换]",
+
+        case6Badge: "敏捷冲刺工作台",
+        case6Category: "产品创新 // 极简原型验证",
+        case6Title: "设计思维探索实验室 (Synapse)",
+        case6Desc: "摒弃空洞白板理论。直接上手48小时极简原型验证、假设去偏模块与带动态音频节奏的 Crazy 8s 冲刺倒计时。",
+        case6SprintTag: "急速构想脉冲",
+
+        launchWeb: "进入实战系统",
+        modalTitle: "职场生存大戏 // 视频实录",
+        modalEscHint: "按 ESC 键或点击空白区域关闭",
+
+        easterEggTop: "企业传统强制合规课件 // 仿真",
+        easterEggSlideTitle: "第 1.1 节：跨部门协同范式与政策合规",
+        easterEggSlideText: "“全体员工必须通过异步文档工作流优化部门间的协同共振。在倒计时结束前，请勿进行任何交互操作。”",
+        easterEggEject: "⚡ 逃离合规噩梦 (回归尊重认知尊严的系统)",
+
+        bottomBannerTitle: "打造让人主动学完的组织学习架构。",
+        bottomBannerDesc: "专注于定制化组织仿真沙盒、AI角色演练系统开发与企业课程体系重塑。",
+        footerNote: "用作品证明，而非用PPT宣讲。"
+      },
+      es: {
+        pageTitle: "WEI MENG — Prototipos Jugables y Sistemas de Simulación",
+        headerSubtitle: "Arquitecto de L&D | Diseñador de Experiencias",
+        backHome: "Sitio Principal ↗",
+        navEasterEgg: "¿Presentación típica de 60 diapositivas?",
+        heroPill: "Pruebas Reales // 06 Sistemas Vivos",
+        heroTitle: 'Cero monólogos pasivos. <br class="hidden sm:inline">Pruebe directamente los <span class="text-neutral-500 font-normal italic font-serif">antídotos</span>.',
+        heroDesc: "Interactúe con los módulos interactivos a continuación. Cada tarjeta es un prototipo activo diseñado con tensión emocional, práctica sin riesgos y respeto cognitivo.",
+
+        case1Badge: "● Serie Episódica",
+        case1Category: "Drama Narrativo // Medios IA",
+        case1Title: "Drama de Supervivencia Corporativa",
+        case1Desc: "Miniserie en vertical con dilemas reales de gestión. Sin sonrisas artificiales ni clichés corporativos: decisiones de alto riesgo con consecuencias inmediatas.",
+        case1Action: "Ver Tráiler",
+
+        case2Badge: "Misterio Forense",
+        case2Category: "Onboarding Forense // Simulación",
+        case2Title: "Universo Inmersivo de Onboarding",
+        case2Desc: "Los nuevos colaboradores se convierten en auditores que descifran una transferencia no autorizada de $22M. Cultura aprendida mediante investigación activa.",
+        case2ClueTag: "PISTA CLASIFICADA [PULSAR PARA DESCIFRAR]",
+
+        case3Badge: "Recuerdo Activo",
+        case3Category: "Neuro-Entrenamiento // Táctico 3D",
+        case3Title: "Academia de Psicología de Ventas",
+        case3Desc: "Sustituye cuestionarios aburridos por tarjetas 3D táctiles y manejo de objeciones a contrarreloj con retroalimentación sonora procedural.",
+        case3DrillTag: "EJERCICIO DE RECUPERACIÓN [PULSAR PARA VOLTEAR]",
+
+        case4Badge: "Entorno Seguro",
+        case4Category: "Simulador de Liderazgo // Personajes IA",
+        case4Title: "Co-Piloto de Liderazgo con IA",
+        case4Desc: "Colaboradores con IA reaccionan a su estilo de gestión en tiempo real. Cometa errores conversacionales sin quemar capital político.",
+        case4ScenarioTag: "SIMULACIÓN // COLABORADOR ENTREGA TARDE",
+
+        case5Badge: "8 Corredores Globales",
+        case5Category: "Inteligencia Cultural // Anti-Estereotipos",
+        case5Title: "Atlas Intercultural (Terra CQ)",
+        case5Desc: "Simula fricciones entre equipos transnacionales. Sustituye estereotipos por el modelo de 3 lentes y espejos de doble perspectiva.",
+        case5MirrorTag: "ESPEJO DE DOBLE LENTE [PULSAR PARA CAMBIAR]",
+
+        case6Badge: "Mesa de Sprint",
+        case6Category: "Sprint de Innovación // Prototipado Rápido",
+        case6Title: "Odisea de Design Thinking",
+        case6Desc: "Elimina la teoría de pizarras. Pase directo a prototipos desechables de 48 horas y ejecución de rondas Crazy 8s con temporizador dinámico.",
+        case6SprintTag: "PULSO RÁPIDO DE IDEACIÓN",
+
+        launchWeb: "Abrir Simulador",
+        modalTitle: "Drama de Supervivencia Corporativa // Vista Previa",
+        modalEscHint: "Presione ESC o haga clic afuera para cerrar",
+
+        easterEggTop: "Capacitación Obligatoria Típica // Simulación",
+        easterEggSlideTitle: "Módulo 1.1: Sinergia de Paradigmas y Cumplimiento",
+        easterEggSlideText: '"Todo el personal debe optimizar la sincronización interdepartamental mediante flujos asíncronos. Por favor espere a que termine el temporizador."',
+        easterEggEject: "⚡ Salir hacia la Dignidad Cognitiva (Volver)",
+
+        bottomBannerTitle: "Construyendo arquitecturas de aprendizaje que la gente elige terminar.",
+        bottomBannerDesc: "Disponible para ingeniería de simulación corporativa, diseño de personajes IA y rediseño curricular.",
+        footerNote: "Pruebas tangibles sobre diapositivas."
+      }
+    };
+
+    let currentLang = 'en';
+
+    function setLanguage(lang) {
+      if (!translations[lang]) return;
+      currentLang = lang;
+
+      document.documentElement.lang = lang;
+      document.getElementById('page-title').textContent = translations[lang].pageTitle;
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key]) el.textContent = translations[lang][key];
+      });
+
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (translations[lang][key]) el.innerHTML = translations[lang][key];
+      });
+
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        if (btn.getAttribute('data-lang') === lang) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      try {
+        localStorage.setItem('wm_cases_lang', lang);
+      } catch (e) {}
+    }
+
+    // ==========================================
+    // EASTER EGG 1: REDACTION REVEAL (Case 02)
+    // ==========================================
+    function toggleRedaction(btn) {
+      const isRevealed = btn.getAttribute('data-revealed') === 'true';
+      if (!isRevealed) {
+        btn.classList.add('unredacted');
+        btn.textContent = "✓ UNCOVERED: $22,000,000 WIRE TO APEX LOGISTICS [UNAUDITED]";
+        btn.setAttribute('data-revealed', 'true');
+      } else {
+        btn.classList.remove('unredacted');
+        btn.textContent = "████████ $22,000,000 WIRE TO APEX ████";
+        btn.setAttribute('data-revealed', 'false');
+      }
+    }
+
+    // ==========================================
+    // EASTER EGG 2: ACTIVE RECALL FLIP (Case 03)
+    // ==========================================
+    function flipRecallCard(btn) {
+      const isFlipped = btn.getAttribute('data-flipped') === 'true';
+      if (!isFlipped) {
+        btn.innerHTML = `<span class="text-violet-600 font-bold">A:</span> Frame risk asymmetry: <em>"What is the cost to your company if you hire the cheaper provider and they fail?"</em>`;
+        btn.classList.add('bg-violet-50', 'border-violet-300');
+        btn.setAttribute('data-flipped', 'true');
+      } else {
+        btn.innerHTML = `<span class="text-neutral-500 font-bold">Q:</span> Client says: "Your competitor charges 50% less."`;
+        btn.classList.remove('bg-violet-50', 'border-violet-300');
+        btn.setAttribute('data-flipped', 'false');
+      }
+    }
+
+    // ==========================================
+    // EASTER EGG 3: SAFE-TO-FAIL DILEMMA (Case 04)
+    // ==========================================
+    function testCoachResponse(choice, btn) {
+      const fb = document.getElementById('coach-feedback');
+      const status = document.getElementById('coach-status');
+      fb.classList.remove('hidden');
+
+      if (choice === 'micromanage') {
+        status.textContent = "STATUS THREAT ⚠️";
+        status.className = "font-bold text-rose-500";
+        fb.innerHTML = `⚠️ <strong>SCARF Threat Triggered:</strong> Direct report feels blamed, closes laptop and retreats into defensive compliance. Safe-to-fail arena: try [B]!`;
+        fb.className = "text-[10px] font-mono text-rose-600 pt-1";
+      } else {
+        status.textContent = "AUTONOMY RESTORED ✓";
+        status.className = "font-bold text-emerald-600";
+        fb.innerHTML = `✓ <strong>Psychological Safety Opened:</strong> Direct report discloses that dependencies in Engineering are blocked. Coaching habit verified.`;
+        fb.className = "text-[10px] font-mono text-emerald-600 pt-1";
+      }
+    }
+
+    // ==========================================
+    // EASTER EGG 4: CULTURAL LENS MIRROR (Case 05)
+    // ==========================================
+    function toggleCulturalLens(btn) {
+      const current = btn.getAttribute('data-lens');
+      const lensLabel = document.getElementById('lens-name');
+
+      if (current === 'direct') {
+        btn.setAttribute('data-lens', 'highcontext');
+        lensLabel.textContent = "HIGH-CONTEXT (TOKYO / TO GO)";
+        btn.textContent = '"We find many positive aspects in this approach, though section 3 may present interesting considerations for further study."';
+        btn.classList.add('bg-amber-50', 'border-amber-300');
+      } else {
+        btn.setAttribute('data-lens', 'direct');
+        lensLabel.textContent = "LOW-CONTEXT (DIRECT / SF)";
+        btn.textContent = '"This plan won\'t work. We need to completely rewrite section 3."';
+        btn.classList.remove('bg-amber-50', 'border-amber-300');
+      }
+    }
+
+    // ==========================================
+    // EASTER EGG 5: CRAZY 8s SPRINT TIMER (Case 06)
+    // ==========================================
+    let timerRunning = false;
+    function triggerCrazySprint(btn) {
+      if (timerRunning) return;
+      timerRunning = true;
+      let left = 8;
+      const countEl = document.getElementById('crazy-count');
+      const statusEl = document.getElementById('crazy-status');
+      const labelEl = document.getElementById('crazy-label');
+
+      statusEl.textContent = "SKETCHING...";
+      statusEl.className = "font-bold text-cyan-600 animate-pulse";
+      labelEl.textContent = "⚡ Idea 1/8 in progress...";
+
+      // Procedural audio tick if audioContext available
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      const audio = AudioCtx ? new AudioCtx() : null;
+
+      const interval = setInterval(() => {
+        left--;
+        countEl.textContent = `0${left}s`;
+
+        if (audio && audio.state === 'running') {
+          const osc = audio.createOscillator();
+          const gain = audio.createGain();
+          osc.frequency.setValueAtTime(left === 0 ? 880 : 440, audio.currentTime);
+          gain.gain.setValueAtTime(0.04, audio.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + 0.08);
+          osc.connect(gain);
+          gain.connect(audio.destination);
+          osc.start();
+          osc.stop(audio.currentTime + 0.08);
+        }
+
+        if (left <= 0) {
+          clearInterval(interval);
+          statusEl.textContent = "DONE ✓";
+          statusEl.className = "font-bold text-emerald-600";
+          labelEl.textContent = "✓ 8-Second Idea Logged! Next card ready.";
+          countEl.textContent = "08s";
+          setTimeout(() => {
+            timerRunning = false;
+            statusEl.textContent = "READY";
+            statusEl.className = "text-neutral-600";
+            labelEl.textContent = "⚡ Trigger 8-Second Idea Sprint";
+          }, 3000);
+        }
+      }, 1000);
+    }
+
+    // ==========================================
+    // EASTER EGG 6: 60-SLIDE COMPLIANCE SIMULATOR
+    // ==========================================
+    const complianceModal = document.getElementById('compliance-hell-modal');
+    function openComplianceModal() {
+      complianceModal.classList.remove('hidden');
+      complianceModal.classList.add('flex');
+      setTimeout(() => {
+        complianceModal.classList.remove('opacity-0');
+        complianceModal.classList.add('opacity-100');
+      }, 10);
+    }
+    function closeComplianceModal() {
+      complianceModal.classList.remove('opacity-100');
+      complianceModal.classList.add('opacity-0');
+      setTimeout(() => {
+        complianceModal.classList.remove('flex');
+        complianceModal.classList.add('hidden');
+      }, 300);
+    }
+
+    // Video Modal
+    const videoModal = document.getElementById('video-modal');
+    const demoPlayer = document.getElementById('demo-video-player');
+
+    function openVideoModal() {
+      videoModal.classList.remove('hidden');
+      videoModal.classList.add('flex');
+      setTimeout(() => {
+        videoModal.classList.remove('opacity-0');
+        videoModal.classList.add('opacity-100');
+      }, 10);
+      if (demoPlayer) {
+        demoPlayer.currentTime = 0;
+        demoPlayer.play().catch(() => {});
+      }
+    }
+
+    function closeVideoModal() {
+      videoModal.classList.remove('opacity-100');
+      videoModal.classList.add('opacity-0');
+      if (demoPlayer) demoPlayer.pause();
+      setTimeout(() => {
+        videoModal.classList.remove('flex');
+        videoModal.classList.add('hidden');
+      }, 300);
+    }
+
+    function handleModalBackdrop(e) {
+      if (e.target.id === 'video-modal') closeVideoModal();
+      if (e.target.id === 'compliance-hell-modal') closeComplianceModal();
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeVideoModal();
+        closeComplianceModal();
+      }
+    });
+
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    // Auto-detect Language
+    (function initLanguage() {
+      let saved = null;
+      try {
+        saved = localStorage.getItem('wm_cases_lang') || localStorage.getItem('wm_preferred_lang');
+      } catch (e) {}
+
+      if (saved && ['en', 'zh', 'es'].includes(saved)) {
+        setLanguage(saved);
+        return;
+      }
+
+      const browser = (navigator.language || navigator.userLanguage || '').toLowerCase();
+      if (browser.startsWith('zh')) {
+        setLanguage('zh');
+      } else if (browser.startsWith('es')) {
+        setLanguage('es');
+      } else {
+        setLanguage('en');
+      }
+    })();
+  </script>
+</body>
+</html>
