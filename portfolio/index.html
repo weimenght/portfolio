@@ -18,6 +18,7 @@
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
       background-color: #FAFAFA;
       color: #18181B;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .font-syne {
@@ -46,20 +47,6 @@
         linear-gradient(to bottom, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
     }
 
-    /* Segmented pill active state */
-    .lang-btn.active {
-      background-color: #18181B;
-      color: #FFFFFF;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-    }
-    .lang-btn:not(.active) {
-      color: #71717A;
-    }
-    .lang-btn:not(.active):hover {
-      color: #18181B;
-      background-color: rgba(0, 0, 0, 0.04);
-    }
-
     /* Card Micro-Interaction transitions */
     .interactive-card {
       transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.2s ease;
@@ -81,9 +68,8 @@
 <body class="bg-[#FAFAFA] text-[#18181B] bg-grid-subtle min-h-screen antialiased selection:bg-neutral-900 selection:text-white">
 
   <!-- EASTER EGG MODAL: "THE 60-SLIDE COMPLIANCE SIMULATOR" -->
-  <!-- Demonstrates the problem (monotonous corporate decks) through satire instead of preaching -->
   <div id="compliance-hell-modal" class="fixed inset-0 z-50 bg-neutral-950/85 backdrop-blur-sm hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true">
-    <div class="bg-white border-2 border-neutral-300 rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 text-left">
+    <div class="bg-white border-2 border-neutral-300 rounded-2xl max-w-lg w-full p-5 sm:p-8 shadow-2xl space-y-5 sm:space-y-6 text-left">
       <div class="flex items-center justify-between border-b border-neutral-200 pb-3">
         <div class="flex items-center gap-2">
           <span class="w-3 h-3 rounded-full bg-amber-500 animate-ping"></span>
@@ -94,8 +80,8 @@
         <span class="text-xs font-mono bg-neutral-100 px-2 py-0.5 rounded text-neutral-600">Slide 1 of 62</span>
       </div>
 
-      <div class="space-y-3 bg-neutral-50 p-5 rounded-xl border border-neutral-200">
-        <h4 class="font-syne text-lg font-bold text-neutral-900" data-i18n="easterEggSlideTitle">
+      <div class="space-y-3 bg-neutral-50 p-4 sm:p-5 rounded-xl border border-neutral-200">
+        <h4 class="font-syne text-base sm:text-lg font-bold text-neutral-900" data-i18n="easterEggSlideTitle">
           Module 1.1: Synergy Paradigms & Policy Compliance
         </h4>
         <p class="text-xs text-neutral-600 leading-relaxed font-serif italic" data-i18n="easterEggSlideText">
@@ -107,13 +93,13 @@
         </div>
       </div>
 
-      <div class="space-y-3">
+      <div class="space-y-2.5 sm:space-y-3">
         <button type="button" disabled class="w-full py-3 rounded-xl bg-neutral-200 text-neutral-400 text-xs font-mono cursor-not-allowed flex items-center justify-center gap-2">
           <span>Next Slide [Disabled]</span>
           <span>🔒</span>
         </button>
         
-        <button type="button" onclick="closeComplianceModal()" class="w-full py-3 rounded-xl bg-neutral-900 text-emerald-400 hover:bg-neutral-800 text-xs font-mono font-bold transition-all shadow-md flex items-center justify-center gap-2">
+        <button type="button" onclick="closeComplianceModal()" class="w-full py-3 rounded-xl bg-neutral-900 text-emerald-400 hover:bg-neutral-800 active:scale-95 text-xs font-mono font-bold transition-all shadow-md flex items-center justify-center gap-2">
           <span data-i18n="easterEggEject">⚡ Eject to Cognitive Dignity (Back to Work)</span>
         </button>
       </div>
@@ -122,11 +108,11 @@
 
   <!-- VIDEO MODAL (Case 01 Lightbox) -->
   <div id="video-modal" class="fixed inset-0 z-50 bg-neutral-950/85 backdrop-blur-md hidden items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300" onclick="handleModalBackdrop(event)" role="dialog" aria-modal="true">
-    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-4xl w-full p-5 sm:p-7 shadow-2xl relative">
-      <div class="flex items-center justify-between pb-4 mb-4 border-b border-neutral-800">
-        <div class="flex items-center gap-3">
+    <div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-4xl w-full p-4 sm:p-7 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-3 sm:pb-4 mb-3 sm:mb-4 border-b border-neutral-800">
+        <div class="flex items-center gap-2.5 sm:gap-3">
           <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <h3 class="font-syne text-base sm:text-lg font-bold text-white tracking-tight" data-i18n="modalTitle">
+          <h3 class="font-syne text-sm sm:text-lg font-bold text-white tracking-tight" data-i18n="modalTitle">
             Corporate Survival Drama // Live Preview
           </h3>
         </div>
@@ -142,7 +128,7 @@
         </video>
       </div>
 
-      <div class="mt-4 flex items-center justify-between text-xs font-mono text-neutral-500">
+      <div class="mt-3 sm:mt-4 flex items-center justify-between text-xs font-mono text-neutral-500">
         <span>EPISODE 01: THE UNTOLD REVENUE LEAK</span>
         <span class="hidden sm:inline" data-i18n="modalEscHint">Press ESC or click outside to dismiss</span>
       </div>
@@ -151,7 +137,7 @@
 
   <!-- STICKY HEADER -->
   <header class="sticky top-0 z-40 bg-[#FAFAFA]/95 backdrop-blur-md border-b border-neutral-200/80 px-4 sm:px-12 py-3 sm:py-4 transition-all">
-    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-2 sm:gap-3">
 
       <!-- Identity Lockup -->
       <a href="https://wei-meng.org" class="flex items-center gap-2.5 sm:gap-3.5 group flex-shrink-0" aria-label="Wei MENG Home">
@@ -172,9 +158,9 @@
         </div>
       </a>
 
-      <!-- Right Controls: Easter Egg Trigger + Multi-Language + Home -->
+      <!-- Right Controls -->
       <div class="flex items-center gap-2 sm:gap-3">
-        <!-- The "Anti-Compliance" Satire Easter Egg Pill -->
+        <!-- Satire Easter Egg Pill -->
         <button 
           type="button" 
           onclick="openComplianceModal()"
@@ -185,15 +171,21 @@
           <span data-i18n="navEasterEgg">Standard 60-Slide Deck?</span>
         </button>
 
-        <!-- Segmented Language Switcher -->
-        <div class="inline-flex items-center bg-neutral-200/70 p-0.5 rounded-lg text-xs font-mono font-medium" role="group" aria-label="Language selection">
-          <button type="button" onclick="setLanguage('en')" class="lang-btn px-2 py-1 rounded transition-all" data-lang="en">EN</button>
-          <button type="button" onclick="setLanguage('zh')" class="lang-btn px-2 py-1 rounded transition-all" data-lang="zh">中文</button>
-          <button type="button" onclick="setLanguage('es')" class="lang-btn px-2 py-1 rounded transition-all" data-lang="es">ES</button>
-        </div>
+        <!-- Single Cycle Language Switcher Button -->
+        <button 
+          type="button" 
+          id="lang-toggle-btn"
+          onclick="cycleLanguage()" 
+          class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-neutral-200/70 hover:bg-neutral-300/80 active:scale-95 text-xs font-mono font-medium text-neutral-800 transition-all border border-neutral-300/40 select-none shadow-sm"
+          title="Switch language (EN / 中文 / ES)"
+          aria-label="Switch language"
+        >
+          <span class="text-neutral-500 text-[11px] leading-none">🌐</span>
+          <span id="lang-btn-label" class="font-bold">EN</span>
+        </button>
 
         <!-- Back to main -->
-        <a href="https://wei-meng.org" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold transition-all shadow-sm flex-shrink-0" data-i18n="backHome">
+        <a href="https://wei-meng.org" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-neutral-900 text-white hover:bg-neutral-800 active:scale-95 text-xs font-semibold transition-all shadow-sm flex-shrink-0" data-i18n="backHome">
           Main Site ↗
         </a>
       </div>
@@ -202,49 +194,45 @@
   </header>
 
   <!-- MAIN VIEWPORT -->
-  <main class="max-w-6xl mx-auto px-4 sm:px-8 py-10 sm:py-16 space-y-12 sm:space-y-16">
+  <main class="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 space-y-10 sm:space-y-16">
 
-    <!-- ULTRA-MINIMAL HERO (SHOW, DON'T TELL) -->
-    <section class="max-w-3xl space-y-4">
+    <!-- HERO -->
+    <section class="max-w-3xl space-y-3 sm:space-y-4">
       <div class="inline-flex items-center gap-2 text-xs font-mono tracking-wider uppercase text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full border border-neutral-200">
         <span class="text-emerald-500">●</span>
         <span data-i18n="heroPill">Playable Proof // 06 Live Systems</span>
       </div>
 
-      <h1 class="font-syne text-3xl sm:text-5xl font-bold tracking-tight text-neutral-900 leading-[1.12]" data-i18n-html="heroTitle">
+      <h1 class="font-syne text-2xl sm:text-5xl font-bold tracking-tight text-neutral-900 leading-[1.12]" data-i18n-html="heroTitle">
         Zero slide monologues. <br class="hidden sm:inline">
         Click to play the <span class="text-neutral-500 font-normal italic font-serif">antidotes</span>.
       </h1>
 
-      <p class="text-sm sm:text-base text-neutral-600 leading-relaxed font-normal" data-i18n="heroDesc">
+      <p class="text-xs sm:text-base text-neutral-600 leading-relaxed font-normal" data-i18n="heroDesc">
         Interact with the live teasers below. Each card is an active miniature playground designed with emotional friction, safe-to-fail stakes, and adult cognitive dignity.
       </p>
     </section>
 
-    <!-- THE 6 CASES: HEROIC, TACTILE & CLICKABLE -->
-    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+    <!-- THE 6 CASES -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
 
-      <!-- CASE 01: Corporate Survival Drama (Video Lightbox) -->
-      <article class="interactive-card bg-white rounded-3xl p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
+      <!-- CASE 01 -->
+      <article class="interactive-card bg-white rounded-3xl p-5 sm:p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
         <div class="space-y-4">
-          <!-- Clickable Video Preview -->
-          <div class="relative h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 cursor-pointer" onclick="openVideoModal()">
+          <div class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 cursor-pointer" onclick="openVideoModal()">
             <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=800&q=80" alt="Corporate Survival Drama" class="w-full h-full object-cover opacity-80 group-hover:opacity-95 group-hover:scale-105 transition-all duration-500">
             <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent"></div>
             
-            <!-- Hover Play Button -->
             <div class="absolute inset-0 flex items-center justify-center">
-              <div class="w-14 h-14 rounded-full bg-white text-neutral-900 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                <span class="ml-1 text-lg">▶</span>
+              <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white text-neutral-900 flex items-center justify-center shadow-xl group-hover:scale-110 active:scale-95 transition-transform">
+                <span class="ml-1 text-base sm:text-lg">▶</span>
               </div>
             </div>
 
-            <!-- Streaming Tag -->
             <span class="absolute top-3 left-3 text-[10px] font-mono font-bold uppercase tracking-wider bg-rose-600 text-white px-2.5 py-1 rounded-full shadow-sm" data-i18n="case1Badge">
               ● Episodic Series
             </span>
 
-            <!-- Cliffhanger Teaser on Hover -->
             <div class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-neutral-300 truncate">
               <span class="text-white font-bold">EP.01:</span> "Sign the audit waiver, or lose the account."
             </div>
@@ -252,7 +240,7 @@
 
           <div class="space-y-1">
             <div class="text-[11px] font-mono uppercase text-neutral-400" data-i18n="case1Category">Narrative Drama // AI Media</div>
-            <h2 class="font-syne text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors cursor-pointer" onclick="openVideoModal()" data-i18n="case1Title">
+            <h2 class="font-syne text-lg sm:text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors cursor-pointer" onclick="openVideoModal()" data-i18n="case1Title">
               Corporate Survival Drama
             </h2>
           </div>
@@ -262,9 +250,8 @@
           </p>
         </div>
 
-        <!-- Micro-Interaction Footer -->
-        <div class="pt-4 mt-6 border-t border-neutral-100 flex items-center justify-between">
-          <button type="button" onclick="openVideoModal()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold font-mono transition-all">
+        <div class="pt-4 mt-5 border-t border-neutral-100 flex items-center justify-between">
+          <button type="button" onclick="openVideoModal()" class="inline-flex items-center gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 active:scale-95 text-xs font-semibold font-mono transition-all">
             <span data-i18n="case1Action">Play Trailer</span>
             <span>▶</span>
           </button>
@@ -272,15 +259,14 @@
         </div>
       </article>
 
-      <!-- CASE 02: Immersive Onboarding Universe (Project Sunrise) -->
-      <article class="interactive-card bg-white rounded-3xl p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
+      <!-- CASE 02 -->
+      <article class="interactive-card bg-white rounded-3xl p-5 sm:p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
         <div class="space-y-4">
-          <!-- Thumbnail with Launch link -->
-          <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" class="relative h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
+          <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
             <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80" alt="Project Sunrise" class="w-full h-full object-cover opacity-85 group-hover:opacity-95 group-hover:scale-105 transition-all duration-500">
             <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent"></div>
             
-            <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 text-neutral-900 flex items-center justify-center font-mono text-xs shadow-md group-hover:scale-110 transition-transform">
+            <div class="absolute top-3 right-3 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 text-neutral-900 flex items-center justify-center font-mono text-xs shadow-md group-hover:scale-110 transition-transform">
               ↗
             </div>
             
@@ -295,7 +281,7 @@
 
           <div class="space-y-1">
             <div class="text-[11px] font-mono uppercase text-neutral-400" data-i18n="case2Category">Forensic Onboarding // Simulation</div>
-            <h2 class="font-syne text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
+            <h2 class="font-syne text-lg sm:text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
               <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" data-i18n="case2Title">
                 Immersive Onboarding Universe
               </a>
@@ -306,7 +292,6 @@
             New hires become forensic auditors decoding an unapproved $22M offshore wire. Culture and ethics learned through discovery, not policy handouts.
           </p>
 
-          <!-- SHOW DON'T TELL EASTER EGG: Interactive Decryption Snippet -->
           <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-1.5">
             <div class="flex items-center justify-between text-[10px] font-mono text-neutral-400">
               <span data-i18n="case2ClueTag">CLASSIFIED CLUE [TAP TO DECRYPT]</span>
@@ -315,7 +300,7 @@
             <button 
               type="button" 
               onclick="toggleRedaction(this)" 
-              class="redacted-box w-full text-left font-mono text-xs px-2.5 py-1.5 rounded bg-neutral-900 text-neutral-400 hover:text-white cursor-pointer select-none"
+              class="redacted-box w-full text-left font-mono text-xs px-2.5 py-1.5 rounded bg-neutral-900 text-neutral-400 hover:text-white active:scale-[0.98] cursor-pointer select-none"
               data-revealed="false"
             >
               ████████ $22,000,000 WIRE TO APEX ████
@@ -323,8 +308,8 @@
           </div>
         </div>
 
-        <div class="pt-4 mt-6 border-t border-neutral-100 flex items-center justify-between">
-          <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold font-mono transition-all">
+        <div class="pt-4 mt-5 border-t border-neutral-100 flex items-center justify-between">
+          <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 active:scale-95 text-xs font-semibold font-mono transition-all">
             <span data-i18n="launchWeb">Enter Investigation</span>
             <span>↗</span>
           </a>
@@ -332,14 +317,14 @@
         </div>
       </article>
 
-      <!-- CASE 03: Sales Psychology Academy (Cognitive Retrieval) -->
-      <article class="interactive-card bg-white rounded-3xl p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
+      <!-- CASE 03 -->
+      <article class="interactive-card bg-white rounded-3xl p-5 sm:p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
         <div class="space-y-4">
-          <a href="https://wei-meng.org/free-builder/sales/" target="_blank" rel="noopener noreferrer" class="relative h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
+          <a href="https://wei-meng.org/free-builder/sales/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
             <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80" alt="Sales Psychology Academy" class="w-full h-full object-cover opacity-85 group-hover:opacity-95 group-hover:scale-105 transition-all duration-500">
             <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent"></div>
             
-            <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 text-neutral-900 flex items-center justify-center font-mono text-xs shadow-md group-hover:scale-110 transition-transform">
+            <div class="absolute top-3 right-3 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 text-neutral-900 flex items-center justify-center font-mono text-xs shadow-md group-hover:scale-110 transition-transform">
               ↗
             </div>
 
@@ -354,7 +339,7 @@
 
           <div class="space-y-1">
             <div class="text-[11px] font-mono uppercase text-neutral-400" data-i18n="case3Category">Neuro-Training // Tactical 3D</div>
-            <h2 class="font-syne text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
+            <h2 class="font-syne text-lg sm:text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
               <a href="https://wei-meng.org/free-builder/sales/" target="_blank" rel="noopener noreferrer" data-i18n="case3Title">
                 Sales Psychology Academy
               </a>
@@ -365,7 +350,6 @@
             Replaces multiple-choice quizzes with 3D tactile battlecards and timed objection blitzes using real-time procedural Web Audio.
           </p>
 
-          <!-- SHOW DON'T TELL EASTER EGG: Mini Active Recall Flashcard -->
           <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-1.5">
             <div class="flex items-center justify-between text-[10px] font-mono text-neutral-400">
               <span data-i18n="case3DrillTag">RECALL DRILL [TAP TO FLIP]</span>
@@ -374,7 +358,7 @@
             <button 
               type="button" 
               onclick="flipRecallCard(this)" 
-              class="w-full text-left font-mono text-xs p-2.5 rounded bg-white border border-neutral-200 hover:border-neutral-400 transition-all cursor-pointer select-none text-neutral-800"
+              class="w-full text-left font-mono text-xs p-2.5 rounded bg-white border border-neutral-200 hover:border-neutral-400 active:scale-[0.98] transition-all cursor-pointer select-none text-neutral-800"
               data-flipped="false"
             >
               <span class="text-neutral-500 font-bold">Q:</span> Client says: "Your competitor charges 50% less."
@@ -382,8 +366,8 @@
           </div>
         </div>
 
-        <div class="pt-4 mt-6 border-t border-neutral-100 flex items-center justify-between">
-          <a href="https://wei-meng.org/free-builder/sales/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold font-mono transition-all">
+        <div class="pt-4 mt-5 border-t border-neutral-100 flex items-center justify-between">
+          <a href="https://wei-meng.org/free-builder/sales/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 active:scale-95 text-xs font-semibold font-mono transition-all">
             <span data-i18n="launchWeb">Open Simulator</span>
             <span>↗</span>
           </a>
@@ -391,14 +375,14 @@
         </div>
       </article>
 
-      <!-- CASE 04: Corporate Coaching Co-Pilot (Safe-to-Fail Sandbox) -->
-      <article class="interactive-card bg-white rounded-3xl p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
+      <!-- CASE 04 (Optimized for Mobile Grid) -->
+      <article class="interactive-card bg-white rounded-3xl p-5 sm:p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
         <div class="space-y-4">
-          <a href="https://wei-meng.org/free-builder/coach/" target="_blank" rel="noopener noreferrer" class="relative h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
+          <a href="https://wei-meng.org/free-builder/coach/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
             <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80" alt="LeadCraft Coaching Co-Pilot" class="w-full h-full object-cover opacity-85 group-hover:opacity-95 group-hover:scale-105 transition-all duration-500">
             <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent"></div>
             
-            <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 text-neutral-900 flex items-center justify-center font-mono text-xs shadow-md group-hover:scale-110 transition-transform">
+            <div class="absolute top-3 right-3 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 text-neutral-900 flex items-center justify-center font-mono text-xs shadow-md group-hover:scale-110 transition-transform">
               ↗
             </div>
 
@@ -413,7 +397,7 @@
 
           <div class="space-y-1">
             <div class="text-[11px] font-mono uppercase text-neutral-400" data-i18n="case4Category">Leadership Sandbox // AI Personas</div>
-            <h2 class="font-syne text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
+            <h2 class="font-syne text-lg sm:text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
               <a href="https://wei-meng.org/free-builder/coach/" target="_blank" rel="noopener noreferrer" data-i18n="case4Title">
                 Corporate Coaching Co-Pilot
               </a>
@@ -424,17 +408,17 @@
             AI direct reports react in real-time to your management habits. Make conversational mistakes safely without burning team political capital.
           </p>
 
-          <!-- SHOW DON'T TELL EASTER EGG: Live Micro Dilemma Sandbox -->
           <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-2">
             <div class="flex items-center justify-between text-[10px] font-mono text-neutral-400">
               <span data-i18n="case4ScenarioTag">SAFE-TO-FAIL TEST // DIRECT REPORT IS LATE</span>
-              <span id="coach-status" class="text-neutral-500">READY</span>
+              <span id="coach-status" class="text-neutral-500 font-bold">READY</span>
             </div>
-            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
-              <button type="button" onclick="testCoachResponse('micromanage', this)" class="p-2 rounded bg-white hover:bg-neutral-100 border border-neutral-200 text-left transition-colors">
+            <!-- Changed to 1 column on mobile, 2 columns on sm+ -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] font-mono">
+              <button type="button" onclick="testCoachResponse('micromanage', this)" class="p-2 rounded bg-white hover:bg-neutral-100 active:scale-[0.98] border border-neutral-200 text-left transition-colors">
                 [A] "Why is this late again?"
               </button>
-              <button type="button" onclick="testCoachResponse('coach', this)" class="p-2 rounded bg-white hover:bg-neutral-100 border border-neutral-200 text-left transition-colors">
+              <button type="button" onclick="testCoachResponse('coach', this)" class="p-2 rounded bg-white hover:bg-neutral-100 active:scale-[0.98] border border-neutral-200 text-left transition-colors">
                 [B] "What's blocking the delivery?"
               </button>
             </div>
@@ -442,8 +426,8 @@
           </div>
         </div>
 
-        <div class="pt-4 mt-6 border-t border-neutral-100 flex items-center justify-between">
-          <a href="https://wei-meng.org/free-builder/coach/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold font-mono transition-all">
+        <div class="pt-4 mt-5 border-t border-neutral-100 flex items-center justify-between">
+          <a href="https://wei-meng.org/free-builder/coach/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 active:scale-95 text-xs font-semibold font-mono transition-all">
             <span data-i18n="launchWeb">Open Co-Pilot</span>
             <span>↗</span>
           </a>
@@ -451,14 +435,14 @@
         </div>
       </article>
 
-      <!-- CASE 05: TERRA CQ Intercultural Atlas (Cultural Perspective Mirror) -->
-      <article class="interactive-card bg-white rounded-3xl p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
+      <!-- CASE 05 -->
+      <article class="interactive-card bg-white rounded-3xl p-5 sm:p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
         <div class="space-y-4">
-          <a href="https://wei-meng.org/free-builder/cq/" target="_blank" rel="noopener noreferrer" class="relative h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
+          <a href="https://wei-meng.org/free-builder/cq/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
             <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="TERRA CQ Intercultural Atlas" class="w-full h-full object-cover opacity-85 group-hover:opacity-95 group-hover:scale-105 transition-all duration-500">
             <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent"></div>
             
-            <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 text-neutral-900 flex items-center justify-center font-mono text-xs shadow-md group-hover:scale-110 transition-transform">
+            <div class="absolute top-3 right-3 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 text-neutral-900 flex items-center justify-center font-mono text-xs shadow-md group-hover:scale-110 transition-transform">
               ↗
             </div>
 
@@ -473,7 +457,7 @@
 
           <div class="space-y-1">
             <div class="text-[11px] font-mono uppercase text-neutral-400" data-i18n="case5Category">Global Intelligence // Anti-Stereotyping</div>
-            <h2 class="font-syne text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
+            <h2 class="font-syne text-lg sm:text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
               <a href="https://wei-meng.org/free-builder/cq/" target="_blank" rel="noopener noreferrer" data-i18n="case5Title">
                 Intercultural Atlas
               </a>
@@ -484,7 +468,6 @@
             Simulates high-friction cross-border interactions. Replaces ethnic stereotypes with the 3-Lenses Model and dual-perspective reflection mirrors.
           </p>
 
-          <!-- SHOW DON'T TELL EASTER EGG: Dual-Perspective Cultural Mirror -->
           <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-2">
             <div class="flex items-center justify-between text-[10px] font-mono text-neutral-400">
               <span data-i18n="case5MirrorTag">DUAL-LENS MIRROR [TAP TO TOGGLE]</span>
@@ -493,7 +476,7 @@
             <button 
               type="button" 
               onclick="toggleCulturalLens(this)" 
-              class="w-full text-left font-mono text-xs p-2.5 rounded bg-white border border-neutral-200 hover:border-neutral-400 transition-all cursor-pointer select-none text-neutral-800"
+              class="w-full text-left font-mono text-xs p-2.5 rounded bg-white border border-neutral-200 hover:border-neutral-400 active:scale-[0.98] transition-all cursor-pointer select-none text-neutral-800"
               data-lens="direct"
             >
               "This plan won't work. We need to completely rewrite section 3."
@@ -501,8 +484,8 @@
           </div>
         </div>
 
-        <div class="pt-4 mt-6 border-t border-neutral-100 flex items-center justify-between">
-          <a href="https://wei-meng.org/free-builder/cq/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold font-mono transition-all">
+        <div class="pt-4 mt-5 border-t border-neutral-100 flex items-center justify-between">
+          <a href="https://wei-meng.org/free-builder/cq/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 active:scale-95 text-xs font-semibold font-mono transition-all">
             <span data-i18n="launchWeb">Open Atlas</span>
             <span>↗</span>
           </a>
@@ -510,14 +493,14 @@
         </div>
       </article>
 
-      <!-- CASE 06: Design Thinking Odyssey (Tactile Sprint Bench) -->
-      <article class="interactive-card bg-white rounded-3xl p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
+      <!-- CASE 06 -->
+      <article class="interactive-card bg-white rounded-3xl p-5 sm:p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
         <div class="space-y-4">
-          <a href="https://wei-meng.org/free-builder/design/" target="_blank" rel="noopener noreferrer" class="relative h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
+          <a href="https://wei-meng.org/free-builder/design/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
             <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80" alt="Design Thinking Odyssey" class="w-full h-full object-cover opacity-85 group-hover:opacity-95 group-hover:scale-105 transition-all duration-500">
             <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent"></div>
             
-            <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 text-neutral-900 flex items-center justify-center font-mono text-xs shadow-md group-hover:scale-110 transition-transform">
+            <div class="absolute top-3 right-3 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 text-neutral-900 flex items-center justify-center font-mono text-xs shadow-md group-hover:scale-110 transition-transform">
               ↗
             </div>
 
@@ -532,7 +515,7 @@
 
           <div class="space-y-1">
             <div class="text-[11px] font-mono uppercase text-neutral-400" data-i18n="case6Category">Innovation Sprint // Rapid Prototyping</div>
-            <h2 class="font-syne text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
+            <h2 class="font-syne text-lg sm:text-xl font-bold text-neutral-900 group-hover:text-neutral-700 transition-colors">
               <a href="https://wei-meng.org/free-builder/design/" target="_blank" rel="noopener noreferrer" data-i18n="case6Title">
                 Design Thinking Odyssey
               </a>
@@ -543,16 +526,15 @@
             Eliminates whiteboard theory. Step straight into 48-hour disposable prototypes, un-biasing tests, and timed Crazy 8s sprint execution.
           </p>
 
-          <!-- SHOW DON'T TELL EASTER EGG: Interactive Crazy 8s Sprint Timer -->
           <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-2">
             <div class="flex items-center justify-between text-[10px] font-mono text-neutral-400">
               <span data-i18n="case6SprintTag">RAPID SPRINT PULSE</span>
-              <span id="crazy-status" class="text-neutral-600">READY</span>
+              <span id="crazy-status" class="text-neutral-600 font-bold">READY</span>
             </div>
             <button 
               type="button" 
               onclick="triggerCrazySprint(this)" 
-              class="w-full py-2 px-3 rounded bg-white border border-neutral-200 hover:border-neutral-400 text-neutral-800 font-mono text-xs flex items-center justify-between transition-all"
+              class="w-full py-2 px-3 rounded bg-white border border-neutral-200 hover:border-neutral-400 active:scale-[0.98] text-neutral-800 font-mono text-xs flex items-center justify-between transition-all"
             >
               <span id="crazy-label">⚡ Trigger 8-Second Idea Sprint</span>
               <span id="crazy-count" class="font-bold text-cyan-600">08s</span>
@@ -560,8 +542,8 @@
           </div>
         </div>
 
-        <div class="pt-4 mt-6 border-t border-neutral-100 flex items-center justify-between">
-          <a href="https://wei-meng.org/free-builder/design/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold font-mono transition-all">
+        <div class="pt-4 mt-5 border-t border-neutral-100 flex items-center justify-between">
+          <a href="https://wei-meng.org/free-builder/design/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 active:scale-95 text-xs font-semibold font-mono transition-all">
             <span data-i18n="launchWeb">Start Sprint</span>
             <span>↗</span>
           </a>
@@ -571,10 +553,10 @@
 
     </section>
 
-    <!-- MINIMAL ARCHITECTURAL FOOTNOTE BANNER -->
-    <section class="border border-neutral-200 rounded-3xl p-6 sm:p-10 bg-white shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+    <!-- FOOTNOTE BANNER -->
+    <section class="border border-neutral-200 rounded-3xl p-5 sm:p-10 bg-white shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 sm:gap-6">
       <div class="space-y-1 max-w-xl">
-        <h3 class="font-syne text-xl font-bold text-neutral-900" data-i18n="bottomBannerTitle">
+        <h3 class="font-syne text-lg sm:text-xl font-bold text-neutral-900" data-i18n="bottomBannerTitle">
           Building bespoke learning architectures that people choose to finish.
         </h3>
         <p class="text-xs sm:text-sm text-neutral-500" data-i18n="bottomBannerDesc">
@@ -582,8 +564,8 @@
         </p>
       </div>
 
-      <div class="flex items-center gap-3 flex-shrink-0">
-        <a href="mailto:weimeng@protonmail.com" class="px-5 py-3 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-mono font-bold transition-all shadow-sm">
+      <div class="flex items-center gap-3 flex-shrink-0 w-full sm:w-auto">
+        <a href="mailto:weimeng@protonmail.com" class="w-full sm:w-auto text-center px-5 py-3 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 active:scale-95 text-xs font-mono font-bold transition-all shadow-sm">
           ✉ weimeng@protonmail.com
         </a>
       </div>
@@ -592,8 +574,8 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="border-t border-neutral-200 mt-12 py-10 sm:py-12 px-6 sm:px-12 bg-white">
-    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">      
+  <footer class="border-t border-neutral-200 mt-12 py-8 sm:py-12 px-4 sm:px-12 bg-white">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">      
       <div class="flex items-center gap-6 text-xs font-mono text-neutral-500">
         <span>© <span id="current-year"></span> Wei MENG</span>
       </div>
@@ -612,7 +594,7 @@
     </div>
   </footer>
 
-  <!-- SCRIPT: i18n & Micro-Interactions -->
+  <!-- SCRIPT -->
   <script>
     const translations = {
       en: {
@@ -791,7 +773,14 @@
       }
     };
 
+    const supportedLangs = ['en', 'zh', 'es'];
+    const langLabels = { en: 'EN', zh: '中文', es: 'ES' };
     let currentLang = 'en';
+
+    function cycleLanguage() {
+      const nextIndex = (supportedLangs.indexOf(currentLang) + 1) % supportedLangs.length;
+      setLanguage(supportedLangs[nextIndex]);
+    }
 
     function setLanguage(lang) {
       if (!translations[lang]) return;
@@ -799,6 +788,11 @@
 
       document.documentElement.lang = lang;
       document.getElementById('page-title').textContent = translations[lang].pageTitle;
+
+      const langLabel = document.getElementById('lang-btn-label');
+      if (langLabel) {
+        langLabel.textContent = langLabels[lang] || lang.toUpperCase();
+      }
 
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
@@ -810,22 +804,13 @@
         if (translations[lang][key]) el.innerHTML = translations[lang][key];
       });
 
-      document.querySelectorAll('.lang-btn').forEach(btn => {
-        if (btn.getAttribute('data-lang') === lang) {
-          btn.classList.add('active');
-        } else {
-          btn.classList.remove('active');
-        }
-      });
-
       try {
         localStorage.setItem('wm_cases_lang', lang);
+        localStorage.setItem('wm_preferred_lang', lang);
       } catch (e) {}
     }
 
-    // ==========================================
-    // EASTER EGG 1: REDACTION REVEAL (Case 02)
-    // ==========================================
+    // --- Micro-Interactions ---
     function toggleRedaction(btn) {
       const isRevealed = btn.getAttribute('data-revealed') === 'true';
       if (!isRevealed) {
@@ -839,9 +824,6 @@
       }
     }
 
-    // ==========================================
-    // EASTER EGG 2: ACTIVE RECALL FLIP (Case 03)
-    // ==========================================
     function flipRecallCard(btn) {
       const isFlipped = btn.getAttribute('data-flipped') === 'true';
       if (!isFlipped) {
@@ -855,9 +837,6 @@
       }
     }
 
-    // ==========================================
-    // EASTER EGG 3: SAFE-TO-FAIL DILEMMA (Case 04)
-    // ==========================================
     function testCoachResponse(choice, btn) {
       const fb = document.getElementById('coach-feedback');
       const status = document.getElementById('coach-status');
@@ -876,9 +855,6 @@
       }
     }
 
-    // ==========================================
-    // EASTER EGG 4: CULTURAL LENS MIRROR (Case 05)
-    // ==========================================
     function toggleCulturalLens(btn) {
       const current = btn.getAttribute('data-lens');
       const lensLabel = document.getElementById('lens-name');
@@ -896,9 +872,6 @@
       }
     }
 
-    // ==========================================
-    // EASTER EGG 5: CRAZY 8s SPRINT TIMER (Case 06)
-    // ==========================================
     let timerRunning = false;
     function triggerCrazySprint(btn) {
       if (timerRunning) return;
@@ -912,7 +885,6 @@
       statusEl.className = "font-bold text-cyan-600 animate-pulse";
       labelEl.textContent = "⚡ Idea 1/8 in progress...";
 
-      // Procedural audio tick if audioContext available
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       const audio = AudioCtx ? new AudioCtx() : null;
 
@@ -941,16 +913,14 @@
           setTimeout(() => {
             timerRunning = false;
             statusEl.textContent = "READY";
-            statusEl.className = "text-neutral-600";
+            statusEl.className = "text-neutral-600 font-bold";
             labelEl.textContent = "⚡ Trigger 8-Second Idea Sprint";
           }, 3000);
         }
       }, 1000);
     }
 
-    // ==========================================
-    // EASTER EGG 6: 60-SLIDE COMPLIANCE SIMULATOR
-    // ==========================================
+    // --- Compliance Easter Egg Modal ---
     const complianceModal = document.getElementById('compliance-hell-modal');
     function openComplianceModal() {
       complianceModal.classList.remove('hidden');
@@ -969,7 +939,7 @@
       }, 300);
     }
 
-    // Video Modal
+    // --- Video Modal ---
     const videoModal = document.getElementById('video-modal');
     const demoPlayer = document.getElementById('demo-video-player');
 
@@ -1017,7 +987,7 @@
         saved = localStorage.getItem('wm_cases_lang') || localStorage.getItem('wm_preferred_lang');
       } catch (e) {}
 
-      if (saved && ['en', 'zh', 'es'].includes(saved)) {
+      if (saved && supportedLangs.includes(saved)) {
         setLanguage(saved);
         return;
       }
