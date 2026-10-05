@@ -38,7 +38,7 @@
       clip-path: polygon(0% 0%, 85% 0%, 85% 100%, 0% 100%);
     }
 
-    /* Subtle fine line grid */
+    /* Subtle fine-line grid */
     .bg-grid-subtle {
       background-size: 40px 40px;
       background-image: 
@@ -46,7 +46,7 @@
         linear-gradient(to bottom, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
     }
 
-    /* Segmented pill active states */
+    /* Language pill active state */
     .lang-btn.active {
       background-color: #18181B;
       color: #FFFFFF;
@@ -57,18 +57,41 @@
     }
     .lang-btn:not(.active):hover {
       color: #18181B;
-      background-color: rgba(0, 0, 0, 0.04);
+    }
+
+    /* 3D Flip Card */
+    .flip-viewport {
+      perspective: 1400px;
+    }
+    .flip-inner {
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-viewport.flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-face {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flip-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Carousel progress line */
+    .progress-bar-fill {
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
   </style>
 </head>
 <body class="bg-[#FAFAFA] text-[#18181B] bg-grid-subtle min-h-screen antialiased selection:bg-neutral-900 selection:text-white">
 
-  <!-- MAIN HEADER (Mobile Optimized) -->
-  <header class="sticky top-0 z-40 bg-[#FAFAFA]/95 backdrop-blur-md border-b border-neutral-200/80 px-4 sm:px-12 py-3 sm:py-4 transition-all">
-    <div class="max-w-5xl mx-auto flex items-center justify-between gap-2">
+  <!-- NAVIGATION -->
+  <header class="sticky top-0 z-40 bg-[#FAFAFA]/90 backdrop-blur-md border-b border-neutral-200/80 px-4 sm:px-12 py-3.5 transition-all">
+    <div class="max-w-5xl mx-auto flex items-center justify-between gap-3">
       
-      <!-- Brand & Identity Lockup -->
-      <a href="#hero" class="flex items-center gap-2.5 sm:gap-3.5 group flex-shrink-0" aria-label="Wei MENG Home">
+      <!-- Brand -->
+      <a href="#hero" class="flex items-center gap-3 group flex-shrink-0" aria-label="Wei MENG Home">
         <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-neutral-900 text-white flex items-center justify-center transition-transform group-hover:scale-105 shadow-sm">
           <div class="flex items-center justify-center font-syne font-bold text-sm sm:text-base tracking-tight text-white select-none">
             <span class="monogram-w">W</span>
@@ -80,28 +103,26 @@
           <div class="font-syne font-bold text-sm sm:text-base tracking-tight leading-none text-neutral-900">
             WEI MENG
           </div>
-          <p class="text-[11px] sm:text-xs text-neutral-500 mt-0.5 sm:mt-1 hidden sm:block" data-i18n="roleSubtitle">
+          <p class="text-[11px] sm:text-xs text-neutral-500 mt-0.5 hidden sm:block" data-i18n="roleSubtitle">
             L&D Architect | Experience Designer
           </p>
         </div>
       </a>
 
-      <!-- Controls & Navigation -->
-      <div class="flex items-center gap-2 sm:gap-5">
-        
-        <!-- Multi-language Switcher -->
-        <div class="inline-flex items-center bg-neutral-200/70 p-0.5 rounded-lg text-xs font-mono font-medium" role="group" aria-label="Language selection">
+      <!-- Controls -->
+      <div class="flex items-center gap-3 sm:gap-6">
+        <!-- Segmented Language Switcher -->
+        <div class="inline-flex items-center bg-neutral-200/70 p-0.5 rounded-lg text-xs font-mono font-medium" role="group">
           <button type="button" onclick="setLanguage('en')" class="lang-btn px-2 py-1 rounded transition-all" data-lang="en">EN</button>
           <button type="button" onclick="setLanguage('zh')" class="lang-btn px-2 py-1 rounded transition-all" data-lang="zh">中文</button>
           <button type="button" onclick="setLanguage('es')" class="lang-btn px-2 py-1 rounded transition-all" data-lang="es">ES</button>
         </div>
 
-        <!-- Navigation Links -->
         <nav class="flex items-center gap-4 text-xs sm:text-sm font-medium text-neutral-600">
           <a href="#identity" class="hover:text-neutral-900 transition-colors hidden md:inline" data-i18n="navWho">Who I Am</a>
           <a href="#methodology" class="hover:text-neutral-900 transition-colors hidden md:inline" data-i18n="navWhat">What I Do</a>
           <a href="#work" class="hover:text-neutral-900 transition-colors hidden sm:inline" data-i18n="navWork">Work</a>
-          <a href="#contact" class="px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold transition-all shadow-sm flex-shrink-0" data-i18n="navContact">
+          <a href="#contact" class="px-3.5 py-1.5 rounded-lg bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold transition-all shadow-sm flex-shrink-0" data-i18n="navContact">
             Contact
           </a>
         </nav>
@@ -110,12 +131,12 @@
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-24 space-y-20 sm:space-y-24">
+  <main class="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 space-y-20 sm:space-y-24">
 
-    <!-- HERO SECTION -->
+    <!-- HERO -->
     <section id="hero" class="space-y-6 sm:space-y-8">
       <div class="inline-flex items-center gap-2 text-xs font-mono tracking-wider uppercase text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full border border-neutral-200">
-        <span class="text-neutral-400">●</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
         <span data-i18n="heroBadge">Portfolio & Practice</span>
       </div>
 
@@ -129,170 +150,224 @@
         bingeable narrative dramas, safe-to-fail roleplay sandboxes, and interactive playgrounds that treat adult learners with cognitive dignity.
       </p>
 
-      <!-- Metric Strip (Stagger-proof Mobile Grid) -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 pt-4 border-t border-neutral-200/80">
-        <div class="space-y-0.5 p-2.5 sm:p-0 bg-white sm:bg-transparent rounded-xl border sm:border-0 border-neutral-200/70 sm:rounded-none flex flex-col justify-between min-h-[64px]">
+        <div class="p-3 sm:p-0 bg-white sm:bg-transparent rounded-xl border sm:border-0 border-neutral-200/70 flex flex-col justify-between min-h-[60px]">
           <div class="font-syne text-xl sm:text-2xl font-bold text-neutral-900" data-i18n="stat1Val">8+ Years</div>
           <div class="text-[11px] sm:text-xs text-neutral-500 font-medium leading-tight" data-i18n="stat1Label">Enterprise Tech L&D</div>
         </div>
-        <div class="space-y-0.5 p-2.5 sm:p-0 bg-white sm:bg-transparent rounded-xl border sm:border-0 border-neutral-200/70 sm:rounded-none flex flex-col justify-between min-h-[64px]">
+        <div class="p-3 sm:p-0 bg-white sm:bg-transparent rounded-xl border sm:border-0 border-neutral-200/70 flex flex-col justify-between min-h-[60px]">
           <div class="font-syne text-xl sm:text-2xl font-bold text-neutral-900" data-i18n="stat2Val">Multi-roles</div>
           <div class="text-[11px] sm:text-xs text-neutral-500 font-medium leading-tight" data-i18n="stat2Label">Facilitator, Trainer & Coach</div>
         </div>
-        <div class="space-y-0.5 p-2.5 sm:p-0 bg-white sm:bg-transparent rounded-xl border sm:border-0 border-neutral-200/70 sm:rounded-none flex flex-col justify-between min-h-[64px]">
+        <div class="p-3 sm:p-0 bg-white sm:bg-transparent rounded-xl border sm:border-0 border-neutral-200/70 flex flex-col justify-between min-h-[60px]">
           <div class="font-syne text-xl sm:text-2xl font-bold text-neutral-900" data-i18n="stat3Val">Multi-cultural</div>
           <div class="text-[11px] sm:text-xs text-neutral-500 font-medium leading-tight" data-i18n="stat3Label">English, Chinese & Spanish</div>
         </div>
-        <div class="space-y-0.5 p-2.5 sm:p-0 bg-white sm:bg-transparent rounded-xl border sm:border-0 border-neutral-200/70 sm:rounded-none flex flex-col justify-between min-h-[64px]">
+        <div class="p-3 sm:p-0 bg-white sm:bg-transparent rounded-xl border sm:border-0 border-neutral-200/70 flex flex-col justify-between min-h-[60px]">
           <div class="font-syne text-xl sm:text-2xl font-bold text-neutral-900" data-i18n="stat4Val">Multi-media</div>
           <div class="text-[11px] sm:text-xs text-neutral-500 font-medium leading-tight" data-i18n="stat4Label">Simulation Stack</div>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 01: IDENTITY -->
-    <section id="identity" class="scroll-mt-24 space-y-6 sm:space-y-8">
+    <!-- 01: WHO I AM (Interactive Flip Card) -->
+    <section id="identity" class="scroll-mt-24 space-y-5">
       <div class="border-b border-neutral-200 pb-3 flex items-center justify-between">
-        <span class="text-xs font-mono uppercase tracking-wider text-neutral-500" data-i18n="identityLabel">01 / Who I am</span>
+        <span class="text-xs font-mono uppercase tracking-wider text-neutral-500" data-i18n="identityLabel">01 / Who I Am</span>
+        
+        <!-- Intuitive View Toggle -->
+        <div class="inline-flex p-0.5 rounded-lg bg-neutral-200/70 text-xs font-mono">
+          <button 
+            type="button" 
+            id="tab-formal" 
+            onclick="setCardFace('formal')" 
+            class="px-3 py-1 rounded-md transition-all font-medium bg-neutral-900 text-white shadow-sm"
+            data-i18n="btnFormal"
+          >
+            Dossier
+          </button>
+          <button 
+            type="button" 
+            id="tab-reality" 
+            onclick="setCardFace('reality')" 
+            class="px-3 py-1 rounded-md transition-all font-medium text-neutral-600 hover:text-neutral-900"
+            data-i18n="btnReality"
+          >
+            Reality
+          </button>
+        </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-        <!-- Formal Intro Card -->
-        <div class="bg-white rounded-2xl p-6 sm:p-7 border border-neutral-200/90 shadow-sm flex flex-col justify-between space-y-4">
-          <div class="space-y-3">
-            <span class="text-xs font-mono uppercase font-semibold text-neutral-500 tracking-wide block" data-i18n="formalLabel">The Formal Dossier</span>
-            <h3 class="font-syne text-lg sm:text-xl font-bold text-neutral-900" data-i18n="formalTitle">
-              Strategic Learning Experience Architect
-            </h3>
-            <p class="text-sm text-neutral-600 leading-relaxed" data-i18n="formalDesc">
-              Over 8 years designing enterprise capability frameworks and scalable learning architectures for high-velocity technology teams. Grounded in adult learning methodologies and effectiveness evaluation.
-            </p>
-          </div>
-          <div class="pt-3 border-t border-neutral-100 flex flex-wrap gap-2 text-xs font-mono text-neutral-500">
-            <span class="bg-neutral-100 px-2.5 py-1 rounded-md" data-i18n="tag1">ADDIE / Agile ISD</span>
-            <span class="bg-neutral-100 px-2.5 py-1 rounded-md" data-i18n="tag2">Cognitive Ergonomics</span>
-            <span class="bg-neutral-100 px-2.5 py-1 rounded-md" data-i18n="tag3">Kirkpatrick L1-L4</span>
-          </div>
-        </div>
+      <!-- Flip Container -->
+      <div id="identity-viewport" class="flip-viewport relative min-h-[420px] sm:min-h-[340px] w-full cursor-pointer" onclick="toggleCardFace()">
+        <div class="flip-inner relative w-full h-full min-h-[420px] sm:min-h-[340px]">
 
-        <!-- Reality Card -->
-        <div class="bg-neutral-900 text-white rounded-2xl p-6 sm:p-7 shadow-sm flex flex-col justify-between space-y-4">
-          <div class="space-y-3">
-            <span class="text-xs font-mono uppercase font-semibold text-neutral-400 tracking-wide block" data-i18n="realityLabel">Who I Really Am</span>
-            <h3 class="font-syne text-lg sm:text-xl font-bold text-white" data-i18n="realityTitle">
-              The Workplace Attention-Heist Specialist
-            </h3>
-            <p class="text-sm text-neutral-300 leading-relaxed" data-i18n="realityDesc">
-              I have an allergic reaction to stock photos of models smiling in glass conference rooms. Adults never lose their appetite for learning—they just stop engaging when corporate training feels like a boring mandate. Emotion drives retention. If it doesn’t create curiosity or tension, it vanishes in a few hours.
-            </p>
+          <!-- Front (Formal) -->
+          <div class="flip-face absolute inset-0 bg-white rounded-3xl p-7 sm:p-9 border border-neutral-200/90 shadow-sm flex flex-col justify-between space-y-6">
+            <div class="space-y-3">
+              <span class="text-xs font-mono uppercase font-semibold text-neutral-400 tracking-wider block" data-i18n="formalLabel">The Formal Dossier</span>
+              <h3 class="font-syne text-2xl sm:text-3xl font-bold text-neutral-900" data-i18n="formalTitle">
+                Strategic Learning Experience Architect
+              </h3>
+              <p class="text-sm sm:text-base text-neutral-600 leading-relaxed max-w-2xl" data-i18n="formalDesc">
+                Over 8 years designing enterprise capability frameworks and scalable learning architectures for high-velocity technology teams. Grounded in adult learning methodologies, agile instructional systems design, and empirical effectiveness evaluation.
+              </p>
+            </div>
+            
+            <div class="pt-4 border-t border-neutral-100 flex flex-wrap gap-2 text-xs font-mono text-neutral-500">
+              <span class="bg-neutral-100 px-3 py-1.5 rounded-lg border border-neutral-200/40">ADDIE / Agile ISD</span>
+              <span class="bg-neutral-100 px-3 py-1.5 rounded-lg border border-neutral-200/40">Cognitive Ergonomics</span>
+              <span class="bg-neutral-100 px-3 py-1.5 rounded-lg border border-neutral-200/40">Kirkpatrick L1-L4</span>
+            </div>
           </div>
-          <div class="pt-3 border-t border-neutral-800 text-xs font-mono text-neutral-400" data-i18n="realityFooter">
-            Core thesis: Treat learners like discerning audiences, not captive delegates.
+
+          <!-- Back (Reality) -->
+          <div class="flip-face flip-back absolute inset-0 bg-neutral-950 text-white rounded-3xl p-7 sm:p-9 shadow-xl flex flex-col justify-between space-y-6 border border-neutral-800">
+            <div class="space-y-3">
+              <span class="text-xs font-mono uppercase font-semibold text-rose-400 tracking-wider block" data-i18n="realityLabel">Unvarnished Reality</span>
+              <h3 class="font-syne text-2xl sm:text-3xl font-bold text-white tracking-tight" data-i18n="realityTitle">
+                The Workplace Attention-Heist Specialist
+              </h3>
+              <p class="text-sm sm:text-base text-neutral-300 leading-relaxed max-w-2xl" data-i18n="realityDesc">
+                I have an allergic reaction to stock photos of models smiling in glass conference rooms. Adults never lose their appetite for learning—they just stop engaging when corporate training feels like an inert compliance mandate. Emotion drives retention. If it doesn’t create curiosity or dramatic tension, it vanishes before lunch.
+              </p>
+            </div>
+
+            <div class="pt-4 border-t border-neutral-800 text-xs font-mono text-neutral-400" data-i18n="realityFooter">
+              Thesis: Treat learners like discerning audiences, not captive delegates.
+            </div>
           </div>
+
         </div>
       </div>
     </section>
 
-    <!-- SECTION 02: WHAT I DO -->
-    <section id="methodology" class="scroll-mt-24 space-y-6 sm:space-y-8">
+    <!-- 02: WHAT I DO (Carousel) -->
+    <section id="methodology" class="scroll-mt-24 space-y-5">
       <div class="border-b border-neutral-200 pb-3 flex items-center justify-between">
         <span class="text-xs font-mono uppercase tracking-wider text-neutral-500" data-i18n="methodologyLabel">02 / What I Do</span>
+        
+        <!-- Step Indicators -->
+        <div class="flex items-center gap-1.5">
+          <button type="button" onclick="setSlide(0)" class="step-btn px-2.5 py-1 rounded-md text-xs font-mono transition-all bg-neutral-900 text-white" data-index="0">01</button>
+          <button type="button" onclick="setSlide(1)" class="step-btn px-2.5 py-1 rounded-md text-xs font-mono transition-all bg-neutral-100 text-neutral-500 hover:text-neutral-900" data-index="1">02</button>
+          <button type="button" onclick="setSlide(2)" class="step-btn px-2.5 py-1 rounded-md text-xs font-mono transition-all bg-neutral-100 text-neutral-500 hover:text-neutral-900" data-index="2">03</button>
+          <button type="button" onclick="setSlide(3)" class="step-btn px-2.5 py-1 rounded-md text-xs font-mono transition-all bg-neutral-100 text-neutral-500 hover:text-neutral-900" data-index="3">04</button>
+        </div>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+      <!-- Carousel Card -->
+      <div class="relative bg-white rounded-3xl p-7 sm:p-10 border border-neutral-200/90 shadow-sm overflow-hidden flex flex-col justify-between min-h-[300px] sm:min-h-[260px]">
         
-        <div class="bg-white rounded-2xl p-5 sm:p-6 border border-neutral-200/90 shadow-sm space-y-2">
-          <span class="text-xs font-mono text-neutral-400 font-medium" data-i18n="method1Code">01 // DIAGNOSTICS</span>
-          <h3 class="font-syne text-base font-bold text-neutral-900" data-i18n="method1Title">Studying Humans in Their Natural Habitat</h3>
-          <p class="text-sm text-neutral-600 leading-relaxed" data-i18n="method1Desc">
+        <!-- Top Thin Progress Indicator -->
+        <div class="absolute top-0 left-0 right-0 h-1 bg-neutral-100">
+          <div id="carousel-progress" class="progress-bar-fill h-full bg-neutral-900 w-1/4"></div>
+        </div>
+
+        <div id="slide-content" class="space-y-3 transition-opacity duration-200 pt-2">
+          <span id="slide-tag" class="text-xs font-mono text-neutral-400 font-semibold tracking-wider">01 // DIAGNOSTICS</span>
+          <h3 id="slide-title" class="font-syne text-xl sm:text-2xl font-bold text-neutral-900">
+            Studying Humans in Their Natural Habitat
+          </h3>
+          <p id="slide-desc" class="text-sm sm:text-base text-neutral-600 leading-relaxed max-w-2xl">
             When leadership asks for a "seminar on communication," they often need psychological safety or clear boundaries. I diagnose the actual root friction before drafting a single slide.
           </p>
         </div>
 
-        <div class="bg-white rounded-2xl p-5 sm:p-6 border border-neutral-200/90 shadow-sm space-y-2">
-          <span class="text-xs font-mono text-neutral-400 font-medium" data-i18n="method2Code">02 // NARRATIVE MEDIA</span>
-          <h3 class="font-syne text-base font-bold text-neutral-900" data-i18n="method2Title">Bingeable Short-Form Workplace Dramas</h3>
-          <p class="text-sm text-neutral-600 leading-relaxed" data-i18n="method2Desc">
-            Professionals happily watch 6 hours of high-tension series on weekends. I write vertical video mini-series with authentic workplace stakes that learners actually want to finish.
-          </p>
-        </div>
-
-        <div class="bg-white rounded-2xl p-5 sm:p-6 border border-neutral-200/90 shadow-sm space-y-2">
-          <span class="text-xs font-mono text-neutral-400 font-medium" data-i18n="method3Code">03 // SIMULATIONS</span>
-          <h3 class="font-syne text-base font-bold text-neutral-900" data-i18n="method3Title">Safe-to-Fail Sandboxes with AI Personas</h3>
-          <p class="text-sm text-neutral-600 leading-relaxed" data-i18n="method3Desc">
-            Reading about tough conversations doesn't build muscle memory. I design web-based AI sandboxes where managers can make mistakes, calibrate tone, and iterate safely.
-          </p>
-        </div>
-
-        <div class="bg-white rounded-2xl p-5 sm:p-6 border border-neutral-200/90 shadow-sm space-y-2">
-          <span class="text-xs font-mono text-neutral-400 font-medium" data-i18n="method4Code">04 // HABIT DESIGN</span>
-          <h3 class="font-syne text-base font-bold text-neutral-900" data-i18n="method4Title">Turning Chores into Dopamine Loops</h3>
-          <p class="text-sm text-neutral-600 leading-relaxed" data-i18n="method4Desc">
-            True gamification is never a digital badge stuck onto a 45-minute slide deck. I build intrinsic habit architectures with quick feedback, milestones, and autonomy.
-          </p>
+        <!-- Controls Bar -->
+        <div class="pt-6 mt-4 border-t border-neutral-100 flex items-center justify-between">
+          <span id="slide-counter" class="text-xs font-mono text-neutral-400">01 / 04</span>
+          
+          <div class="flex items-center gap-2">
+            <button 
+              type="button" 
+              onclick="stepSlide(-1)" 
+              class="w-9 h-9 rounded-lg border border-neutral-200 hover:bg-neutral-100 text-neutral-700 flex items-center justify-center transition-colors text-sm"
+              aria-label="Previous slide"
+            >
+              ←
+            </button>
+            <button 
+              type="button" 
+              onclick="stepSlide(1)" 
+              class="w-9 h-9 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white flex items-center justify-center transition-colors text-sm shadow-sm"
+              aria-label="Next slide"
+            >
+              →
+            </button>
+          </div>
         </div>
 
       </div>
     </section>
 
-    <!-- SECTION 03: ACTUAL WORK (SINGLE EXTERNAL LINK) -->
-    <section id="work" class="scroll-mt-24 space-y-6 sm:space-y-8">
+    <!-- 03: WORK (Magnetic Lab Portal) -->
+    <section id="work" class="scroll-mt-24 space-y-5">
       <div class="border-b border-neutral-200 pb-3 flex items-center justify-between">
         <span class="text-xs font-mono uppercase tracking-wider text-neutral-500" data-i18n="workLabel">03 / Actual Work</span>
+        <span class="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-700">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span data-i18n="workLive">Live Interactive Demos</span>
+        </span>
       </div>
 
-      <div class="bg-white rounded-3xl p-6 sm:p-12 border border-neutral-200/90 shadow-sm text-center space-y-6">
-        <div class="max-w-xl mx-auto space-y-3">
-          <h3 class="font-syne text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tight" data-i18n="workTitle">
-            Case Studies & Live Interactive Work
+      <!-- Showcase Action Card -->
+      <a 
+        href="https://www.wei-meng.org/portfolio" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="group block bg-neutral-900 hover:bg-neutral-950 text-white rounded-3xl p-8 sm:p-12 transition-all duration-300 shadow-md hover:shadow-xl relative overflow-hidden"
+      >
+        <div class="max-w-2xl space-y-4">
+          <div class="flex items-center gap-2 text-xs font-mono text-neutral-400 uppercase tracking-wider">
+            <span data-i18n="workStudio">Interactive Lab</span>
+            <span>•</span>
+            <span class="text-emerald-400">Online</span>
+          </div>
+
+          <h3 class="font-syne text-2xl sm:text-4xl font-bold tracking-tight text-white group-hover:text-neutral-100 transition-colors">
+            <span data-i18n="workTitle">Case Studies & Interactive Simulations</span>
+            <span class="inline-block transform group-hover:translate-x-1.5 group-hover:-translate-y-1.5 transition-transform duration-300">↗</span>
           </h3>
-          <p class="text-sm sm:text-base text-neutral-600 leading-relaxed" data-i18n="workDesc">
-            Explore live interactive sandboxes, episodic video scripts, onboarding quests, and enterprise behavioral systems on the dedicated project portal.
-          </p>
-        </div>
 
-        <!-- Touch-Friendly Full-Width Mobile CTA -->
-        <div class="pt-2 flex justify-center">
-          <a 
-            href="https://www.wei-meng.org/portfolio" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            class="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs sm:text-sm font-semibold tracking-wide transition-all shadow-sm hover:shadow group"
-          >
-            <span data-i18n="workBtn">View All Projects & Case Studies</span>
-            <span class="text-neutral-400 group-hover:text-white transition-colors">↗</span>
-          </a>
+          <p class="text-sm sm:text-base text-neutral-400 leading-relaxed" data-i18n="workDesc">
+            Explore live interactive sandboxes, episodic video scripts, corporate audit simulations, and enterprise behavioral systems on the dedicated project portal.
+          </p>
+
+          <div class="pt-4 flex items-center gap-3">
+            <span class="px-5 py-3 rounded-xl bg-white text-neutral-900 group-hover:bg-neutral-100 text-xs font-bold font-mono transition-colors shadow-sm inline-flex items-center gap-2">
+              <span data-i18n="workBtn">Open Lab Portal</span>
+              <span>→</span>
+            </span>
+          </div>
         </div>
-      </div>
+      </a>
     </section>
 
-    <!-- SECTION 04: CONTACT -->
-    <section id="contact" class="scroll-mt-12 pt-4 sm:pt-8">
-      <div class="bg-neutral-900 text-white rounded-3xl p-6 sm:p-12 space-y-6 shadow-sm">
+    <!-- 04: CONTACT -->
+    <section id="contact" class="scroll-mt-12 pt-4 sm:pt-6">
+      <div class="bg-white rounded-3xl p-7 sm:p-10 border border-neutral-200/90 space-y-6 shadow-sm">
         <div class="space-y-2 max-w-xl">
           <span class="text-xs font-mono uppercase tracking-wider text-neutral-400" data-i18n="contactLabel">Get In Touch</span>
-          <h2 class="font-syne text-2xl sm:text-3xl font-bold text-white tracking-tight" data-i18n="contactTitle">
+          <h2 class="font-syne text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tight" data-i18n="contactTitle">
             Let's build learning experiences people choose to finish.
           </h2>
-          <p class="text-sm text-neutral-400 leading-relaxed" data-i18n="contactDesc">
+          <p class="text-sm text-neutral-600 leading-relaxed" data-i18n="contactDesc">
             Available for L&D Architect roles, custom learning design, and curriculum transformation.
           </p>
         </div>
 
-        <!-- Full-Width Mobile Action Row -->
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
           <a 
             href="mailto:weimeng@protonmail.com" 
-            class="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-white text-neutral-900 hover:bg-neutral-100 text-xs font-bold font-mono transition-colors shadow-sm"
+            class="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-bold font-mono transition-colors shadow-sm"
           >
-            ✉️️ weimeng@protonmail.com
+            ✉ weimeng@protonmail.com
           </a>
           <button 
-            id="copy-btn"
             type="button"
             onclick="copyEmailAddress(this)" 
-            class="inline-flex items-center justify-center px-5 py-3.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white text-xs font-bold font-mono border border-neutral-700 transition-colors"
+            class="inline-flex items-center justify-center px-5 py-3.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-xs font-bold font-mono transition-colors border border-neutral-200"
             data-i18n="contactCopy"
           >
             Copy Email
@@ -304,7 +379,7 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="border-t border-neutral-200 mt-12 py-10 sm:py-12 px-6 sm:px-12 bg-white">
+  <footer class="border-t border-neutral-200 mt-16 py-10 px-6 sm:px-12 bg-white">
     <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">      
       <div class="flex items-center gap-6 text-xs font-mono text-neutral-500">
         <span>© <span id="current-year"></span> Wei MENG</span>
@@ -324,7 +399,7 @@
     </div>
   </footer>
 
-  <!-- SCRIPT: i18n Dictionary & Functionality -->
+  <!-- SCRIPT -->
   <script>
     const translations = {
       en: {
@@ -345,34 +420,45 @@
         stat3Label: "English, Chinese & Spanish",
         stat4Val: "Multi-media",
         stat4Label: "Simulation Stack",
-        identityLabel: "01 / Who I am",
+        identityLabel: "01 / Who I Am",
+        btnFormal: "Dossier",
+        btnReality: "Reality",
         formalLabel: "The Formal Dossier",
         formalTitle: "Strategic Learning Experience Architect",
-        formalDesc: "Over 8 years designing enterprise capability frameworks and scalable learning architectures for high-velocity technology teams. Grounded in adult learning methodologies and effectiveness evaluation.",
-        tag1: "ADDIE / Agile ISD",
-        tag2: "Cognitive Ergonomics",
-        tag3: "Kirkpatrick L1-L4",
-        realityLabel: "Who I Really Am",
+        formalDesc: "Over 8 years designing enterprise capability frameworks and scalable learning architectures for high-velocity technology teams. Grounded in adult learning methodologies, agile instructional systems design, and empirical effectiveness evaluation.",
+        realityLabel: "Unvarnished Reality",
         realityTitle: "The Workplace Attention-Heist Specialist",
-        realityDesc: "I have an allergic reaction to stock photos of models smiling in glass conference rooms. Adults never lose their appetite for learning—they just stop engaging when corporate training feels like a boring mandate. Emotion drives retention. If it doesn’t create curiosity or tension, it vanishes in a few hours.",
-        realityFooter: "Core thesis: Treat learners like discerning audiences, not captive delegates.",
+        realityDesc: "I have an allergic reaction to stock photos of models smiling in glass conference rooms. Adults never lose their appetite for learning—they just stop engaging when corporate training feels like an inert compliance mandate. Emotion drives retention. If it doesn’t create curiosity or dramatic tension, it vanishes before lunch.",
+        realityFooter: "Thesis: Treat learners like discerning audiences, not captive delegates.",
         methodologyLabel: "02 / What I Do",
-        method1Code: "01 // DIAGNOSTICS",
-        method1Title: "Studying Humans in Their Natural Habitat",
-        method1Desc: "When leadership asks for a \"seminar on communication,\" they often need psychological safety or clear boundaries. I diagnose the actual root friction before drafting a single slide.",
-        method2Code: "02 // NARRATIVE MEDIA",
-        method2Title: "Bingeable Short-Form Workplace Dramas",
-        method2Desc: "Professionals happily watch 6 hours of high-tension series on weekends. I write vertical video mini-series with authentic workplace stakes that learners actually want to finish.",
-        method3Code: "03 // SIMULATIONS",
-        method3Title: "Safe-to-Fail Sandboxes with AI Personas",
-        method3Desc: "Reading about tough conversations doesn't build muscle memory. I design web-based AI sandboxes where managers can make mistakes, calibrate tone, and iterate safely.",
-        method4Code: "04 // HABIT DESIGN",
-        method4Title: "Turning Chores into Dopamine Loops",
-        method4Desc: "True gamification is never a digital badge stuck onto a 45-minute slide deck. I build intrinsic habit architectures with quick feedback, milestones, and autonomy.",
+        protocols: [
+          {
+            tag: "01 // DIAGNOSTICS",
+            title: "Studying Humans in Their Natural Habitat",
+            desc: "When leadership asks for a 'seminar on communication,' they often need psychological safety or clear boundaries. I diagnose the actual root friction before drafting a single slide."
+          },
+          {
+            tag: "02 // NARRATIVE MEDIA",
+            title: "Bingeable Short-Form Workplace Dramas",
+            desc: "Professionals happily watch 6 hours of high-tension series on weekends. I write vertical video mini-series with authentic workplace stakes that learners actually want to finish."
+          },
+          {
+            tag: "03 // SIMULATIONS",
+            title: "Safe-to-Fail Sandboxes with AI Personas",
+            desc: "Reading about tough conversations doesn't build muscle memory. I design web-based AI sandboxes where managers can make mistakes, calibrate tone, and iterate safely."
+          },
+          {
+            tag: "04 // HABIT DESIGN",
+            title: "Turning Chores into Dopamine Loops",
+            desc: "True gamification is never a digital badge stuck onto a 45-minute slide deck. I build intrinsic habit architectures with quick feedback, milestones, and genuine autonomy."
+          }
+        ],
         workLabel: "03 / Actual Work",
-        workTitle: "Case Studies & Live Interactive Work",
-        workDesc: "Explore live interactive sandboxes, episodic video scripts, onboarding quests, and enterprise behavioral systems on the dedicated project portal.",
-        workBtn: "View All Projects & Case Studies",
+        workLive: "Live Interactive Demos",
+        workStudio: "Interactive Lab",
+        workTitle: "Case Studies & Interactive Simulations",
+        workDesc: "Explore live interactive sandboxes, episodic video scripts, corporate audit simulations, and enterprise behavioral systems on the dedicated project portal.",
+        workBtn: "Open Lab Portal",
         contactLabel: "Get In Touch",
         contactTitle: "Let's build learning experiences people choose to finish.",
         contactDesc: "Available for L&D Architect roles, custom learning design, and curriculum transformation.",
@@ -388,7 +474,7 @@
         navContact: "联系我",
         heroBadge: "实践与作品集",
         heroTitle: '让职场学习体验，<br class="hidden sm:inline"><span class="text-neutral-500 font-normal italic font-serif">无法被忽视</span>。',
-        heroDesc: "大多数企业培训不过是一份静音播放的60页合规课件。我打造它的解药：引人入胜的微短剧、零试错成本的角色演练沙盒，以及给予成年学习者充分认知尊严的互动实验场。",
+        heroDesc: "大多数企业培训不过是一份静音播放的60页合规课件。我打造的是它的解药：引人入胜的微短剧、零试错成本的角色演练沙盒，以及给予成年学习者充分认知尊严的互动实验场。",
         stat1Val: "8+ 年",
         stat1Label: "企业科技与业务效能培训",
         stat2Val: "多重角色",
@@ -398,35 +484,46 @@
         stat4Val: "复合媒介",
         stat4Label: "数字化仿真演练技术栈",
         identityLabel: "01 / 关于我",
+        btnFormal: "履历",
+        btnReality: "底色",
         formalLabel: "官方履历",
         formalTitle: "战略级学习体验架构师",
         formalDesc: "8年以上为高成长技术与业务团队构建组织能力模型和规模化学习架构的经验。深植于成人学习理论、敏捷课程开发与培训有效性评估机制。",
-        tag1: "ADDIE / 敏捷课程开发",
-        tag2: "认知工效学",
-        tag3: "柯氏评估 L1-L4",
         realityLabel: "真实底色",
-        realityTitle: "职场注意力“奇劫”专家",
+        realityTitle: "职场注意力“掠夺”专家",
         realityDesc: "我对玻璃会议室里职业假笑的通俗图库图片极度过敏。成人的学习天性从未磨灭——他们只是对机械填鸭式的说教丧失了耐心。情绪驱动记忆；如果一个学习项目无法引发好奇心或建立戏剧张力，它将在几小时内被彻底遗忘。",
-        realityFooter: "核心理念：将学习者视为挑剔的观众，而非被动受训的俘虏。",
+        realityFooter: "理念：将学习者视为挑剔的观众，而非被动受训的俘虏。",
         methodologyLabel: "02 / 核心能力与实践",
-        method1Code: "01 // 根因诊断",
-        method1Title: "观察工作场景下的真实人性",
-        method1Desc: "当管理层要求举办一场“沟通技能工作坊”时，组织真正缺失的往往是心理安全感或明确的工作边界。在动手写一页PPT之前，我首先诊断出深层的摩擦根源。",
-        method2Code: "02 // 叙事媒介",
-        method2Title: "欲罢不能的竖屏微短剧",
-        method2Desc: "职场人周末可以一口气刷6小时高能悬疑剧。我撰写真实呈现职场博弈与人性张力的微短剧剧本，让学员主动看完全部内容。",
-        method3Code: "03 // 仿真沙盒",
-        method3Title: "搭载AI角色的无风险演练场",
-        method3Desc: "仅靠阅读讲义无法练就关键对话的肌肉记忆。我构建基于Web端的高仿真AI沙盒，供管理者在安全试错中校准表达、磨砺沟通直觉。",
-        method4Code: "04 // 习惯设计",
-        method4Title: "把日常任务重塑为多巴胺飞轮",
-        method4Desc: "真正的游戏化绝不是在45分钟的课件后贴上一个电子徽章。我运用即时反馈、里程碑和自主权建立内在驱动习惯模型。",
+        protocols: [
+          {
+            tag: "01 // 根因诊断",
+            title: "观察工作场景下的真实人性",
+            desc: "当管理层要求举办一场“沟通技能工作坊”时，组织真正缺失的往往是心理安全感或明确的工作边界。在动手写一页PPT之前，我首先诊断出深层的摩擦根源。"
+          },
+          {
+            tag: "02 // 叙事媒介",
+            title: "欲罢不能的竖屏微短剧",
+            desc: "职场人周末可以一口气刷6小时高能悬疑剧。我撰写真实呈现职场博弈与人性张力的微短剧剧本，让学员主动看完全部内容。"
+          },
+          {
+            tag: "03 // 仿真沙盒",
+            title: "搭载AI角色的无风险演练场",
+            desc: "仅靠阅读讲义无法练就关键对话的肌肉记忆。我构建基于Web端的高仿真AI沙盒，供管理者在安全试错中校准表达、磨砺沟通直觉。"
+          },
+          {
+            tag: "04 // 习惯设计",
+            title: "把日常任务重塑为多巴胺飞轮",
+            desc: "真正的游戏化绝不是在45分钟的课件后贴上一个电子徽章。我运用即时反馈、里程碑和自主权建立内在驱动习惯模型。"
+          }
+        ],
         workLabel: "03 / 实战项目",
+        workLive: "在线交互原型就绪",
+        workStudio: "实战交互实验室",
         workTitle: "真实案例与在线交互项目",
-        workDesc: "在专属作品展示中心探索在线交互沙盒、剧情短剧脚本、新人破冰任务线与企业组织行为学系统。",
-        workBtn: "查看所有项目与实战案例",
+        workDesc: "探索在线交互沙盒、剧情短剧脚本、企业反舞弊审计模拟以及企业组织行为学系统原型。",
+        workBtn: "进入实战实验室",
         contactLabel: "取得联系",
-        contactTitle: "携手打造令人主动沉浸的学习体验。",
+        contactTitle: "携手打造让人主动沉浸的学习体验。",
         contactDesc: "开放沟通学习架构顾问、定制化学习产品开发与课程体系重塑合作。",
         contactCopy: "复制邮箱",
         copiedText: "✓ 已复制！"
@@ -450,33 +547,44 @@
         stat4Val: "Multimedia",
         stat4Label: "Pila de Simulación",
         identityLabel: "01 / Quién soy",
+        btnFormal: "Dossier",
+        btnReality: "Realidad",
         formalLabel: "El Dossier Formal",
         formalTitle: "Arquitecto Estratégico de Aprendizaje",
         formalDesc: "Más de 8 años diseñando marcos de competencias y arquitecturas de aprendizaje escalables para equipos tecnológicos de alta velocidad. Basado en metodologías de educación de adultos y evaluación de impacto.",
-        tag1: "ADDIE / Agile ISD",
-        tag2: "Ergonomía Cognitiva",
-        tag3: "Kirkpatrick L1-L4",
-        realityLabel: "Quién soy en realidad",
+        realityLabel: "La Realidad Sin Filtro",
         realityTitle: "Especialista en Captar la Atención Laboral",
-        realityDesc: "Tengo una reacción alérgica a las fotos genéricas de modelos sonriendo en salas de cristal. Los adultos nunca pierden las ganas de aprender: solo desconectan cuando la formación se siente como un trámite aburrido. La emoción impulsa la retención; sin curiosidad ni tensión, se evapora en horas.",
-        realityFooter: "Tesis central: Tratar a los participantes como audiencias exigentes, no como delegados cautivos.",
+        realityDesc: "Tengo una reacción alérgica a las fotos genéricas de modelos sonriendo en salas de cristal. Los adultos nunca pierden las ganas de aprender: solo desconectan cuando la formación se siente como un trámite aburrido. La emoción impulsa la retención; sin curiosidad ni tensión, se evapora antes del almuerzo.",
+        realityFooter: "Tesis: Tratar a los participantes como audiencias exigentes, no como delegados cautivos.",
         methodologyLabel: "02 / Qué hago",
-        method1Code: "01 // DIAGNÓSTICO",
-        method1Title: "Observar al ser humano en su entorno natural",
-        method1Desc: "Cuando la dirección solicita un \"seminario de comunicación\", a menudo lo que falta es seguridad psicológica o límites claros. Diagnostico la fricción real antes de diseñar una sola diapositiva.",
-        method2Code: "02 // MEDIOS NARRATIVOS",
-        method2Title: "Dramas breves de alta inmersión",
-        method2Desc: "Los profesionales disfrutan maratoneando series de alta tensión el fin de semana. Escribo miniseries en formato vertical con dilemas reales que la gente realmente quiere ver hasta el final.",
-        method3Code: "03 // SIMULACIONES",
-        method3Title: "Entornos de Práctica Segura con IA",
-        method3Desc: "Leer sobre conversaciones difíciles no genera memoria muscular. Construyo simuladores web con personajes de IA donde los líderes pueden equivocarse, calibrar el tono e iterar con seguridad.",
-        method4Code: "04 // DISEÑO DE HÁBITOS",
-        method4Title: "Transformar rutinas en bucles de dopamina",
-        method4Desc: "La auténtica gamificación nunca es una insignia digital pegada a un archivo PPT. Construyo arquitecturas de hábitos intrínsecos basadas en retroalimentación inmediata, hitos y autonomía.",
+        protocols: [
+          {
+            tag: "01 // DIAGNÓSTICO",
+            title: "Observar al ser humano en su entorno natural",
+            desc: "Cuando la dirección solicita un 'seminario de comunicación', a menudo lo que falta es seguridad psicológica o límites claros. Diagnostico la fricción real antes de diseñar una sola diapositiva."
+          },
+          {
+            tag: "02 // MEDIOS NARRATIVOS",
+            title: "Dramas breves de alta inmersión",
+            desc: "Los profesionales disfrutan maratoneando series de alta tensión el fin de semana. Escribo miniseries en formato vertical con dilemas reales que la gente realmente quiere ver hasta el final."
+          },
+          {
+            tag: "03 // SIMULACIONES",
+            title: "Entornos de Práctica Segura con IA",
+            desc: "Leer sobre conversaciones difíciles no genera memoria muscular. Construyo simuladores web con personajes de IA donde los líderes pueden equivocarse, calibrar el tono e iterar con seguridad."
+          },
+          {
+            tag: "04 // DISEÑO DE HÁBITOS",
+            title: "Transformar rutinas en bucles de dopamina",
+            desc: "La auténtica gamificación nunca es una insignia digital pegada a un archivo PPT. Construyo arquitecturas de hábitos intrínsecos basadas en retroalimentación inmediata, hitos y autonomía."
+          }
+        ],
         workLabel: "03 / Proyectos Reales",
-        workTitle: "Casos de Estudio y Proyectos Interactivos",
-        workDesc: "Explore simuladores interactivos en vivo, guiones de ficción laboral, recorridos de onboarding y sistemas conductuales corporativos en el portal dedicado.",
-        workBtn: "Ver todos los proyectos y casos",
+        workLive: "Demos Interactivas en Vivo",
+        workStudio: "Laboratorio Interactivo",
+        workTitle: "Casos de Estudio y Simulaciones",
+        workDesc: "Explore simuladores interactivos, guiones de ficción laboral, auditorías simuladas y motores de aprendizaje conductual en el portal dedicado.",
+        workBtn: "Abrir Laboratorio",
         contactLabel: "Contactar",
         contactTitle: "Creemos experiencias de aprendizaje que la gente elija completar.",
         contactDesc: "Disponible para roles de Arquitecto de L&D, diseño de aprendizaje a medida y transformación curricular.",
@@ -486,114 +594,134 @@
     };
 
     let currentLang = 'en';
+    let isFlipped = false;
+    let currentSlide = 0;
 
+    // --- Section 01: Flip Logic ---
+    function setCardFace(face) {
+      isFlipped = (face === 'reality');
+      const viewport = document.getElementById('identity-viewport');
+      const tabFormal = document.getElementById('tab-formal');
+      const tabReality = document.getElementById('tab-reality');
+
+      if (isFlipped) {
+        viewport.classList.add('flipped');
+        tabReality.className = 'px-3 py-1 rounded-md transition-all font-medium bg-neutral-900 text-white shadow-sm';
+        tabFormal.className = 'px-3 py-1 rounded-md transition-all font-medium text-neutral-600 hover:text-neutral-900';
+      } else {
+        viewport.classList.remove('flipped');
+        tabFormal.className = 'px-3 py-1 rounded-md transition-all font-medium bg-neutral-900 text-white shadow-sm';
+        tabReality.className = 'px-3 py-1 rounded-md transition-all font-medium text-neutral-600 hover:text-neutral-900';
+      }
+    }
+
+    function toggleCardFace() {
+      setCardFace(isFlipped ? 'formal' : 'reality');
+    }
+
+    // --- Section 02: Carousel Logic ---
+    function renderSlide() {
+      const p = translations[currentLang].protocols[currentSlide];
+      const content = document.getElementById('slide-content');
+      
+      content.style.opacity = '0';
+      setTimeout(() => {
+        document.getElementById('slide-tag').textContent = p.tag;
+        document.getElementById('slide-title').textContent = p.title;
+        document.getElementById('slide-desc').textContent = p.desc;
+        document.getElementById('slide-counter').textContent = `0${currentSlide + 1} / 04`;
+
+        // Progress bar width
+        document.getElementById('carousel-progress').style.width = `${((currentSlide + 1) / 4) * 100}%`;
+
+        // Step buttons
+        document.querySelectorAll('.step-btn').forEach((btn, idx) => {
+          if (idx === currentSlide) {
+            btn.className = 'step-btn px-2.5 py-1 rounded-md text-xs font-mono transition-all bg-neutral-900 text-white shadow-sm';
+          } else {
+            btn.className = 'step-btn px-2.5 py-1 rounded-md text-xs font-mono transition-all bg-neutral-100 text-neutral-500 hover:text-neutral-900';
+          }
+        });
+
+        content.style.opacity = '1';
+      }, 150);
+    }
+
+    function setSlide(index) {
+      currentSlide = index;
+      renderSlide();
+    }
+
+    function stepSlide(dir) {
+      currentSlide = (currentSlide + dir + 4) % 4;
+      renderSlide();
+    }
+
+    // --- i18n Engine ---
     function setLanguage(lang) {
       if (!translations[lang]) return;
       currentLang = lang;
-      
-      // Update document language & title
+
       document.documentElement.lang = lang;
       document.getElementById('page-title').textContent = translations[lang].pageTitle;
 
-      // Update text nodes
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (translations[lang][key]) {
-          el.textContent = translations[lang][key];
-        }
+        if (translations[lang][key]) el.textContent = translations[lang][key];
       });
 
-      // Update HTML formatted nodes
       document.querySelectorAll('[data-i18n-html]').forEach(el => {
         const key = el.getAttribute('data-i18n-html');
-        if (translations[lang][key]) {
-          el.innerHTML = translations[lang][key];
-        }
+        if (translations[lang][key]) el.innerHTML = translations[lang][key];
       });
 
-      // Update switcher active states
       document.querySelectorAll('.lang-btn').forEach(btn => {
-        if (btn.getAttribute('data-lang') === lang) {
-          btn.classList.add('active');
-        } else {
-          btn.classList.remove('active');
-        }
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
       });
 
-      // Persist selection
+      renderSlide();
+
       try {
         localStorage.setItem('wm_preferred_lang', lang);
-      } catch (e) {
-        // Local storage inaccessible
-      }
+      } catch (e) {}
     }
 
-    // Dynamic Year
+    // Year
     document.getElementById('current-year').textContent = new Date().getFullYear();
 
-    // Clipboard Copy Helper with localized feedback
+    // Copy Email
     function copyEmailAddress(buttonElement) {
       const email = "weimeng@protonmail.com";
-      const currentSuccessText = translations[currentLang]?.copiedText || "✓ Copied!";
-      const originalText = translations[currentLang]?.contactCopy || "Copy Email";
+      const successText = translations[currentLang]?.copiedText || "✓ Copied!";
+      const defaultText = translations[currentLang]?.contactCopy || "Copy Email";
 
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(email).then(() => {
-          showFeedback(buttonElement, currentSuccessText, originalText);
-        }).catch(() => {
-          fallbackCopy(email, buttonElement, currentSuccessText, originalText);
-        });
-      } else {
-        fallbackCopy(email, buttonElement, currentSuccessText, originalText);
-      }
-    }
-
-    function fallbackCopy(text, buttonElement, successMsg, defaultMsg) {
-      const tempInput = document.createElement("input");
-      tempInput.style.position = "absolute";
-      tempInput.style.left = "-9999px";
-      document.body.appendChild(tempInput);
-      tempInput.value = text;
-      tempInput.select();
-      try {
+      navigator.clipboard.writeText(email).then(() => {
+        buttonElement.textContent = successText;
+        setTimeout(() => { buttonElement.textContent = defaultText; }, 2000);
+      }).catch(() => {
+        const input = document.createElement("input");
+        input.value = email;
+        document.body.appendChild(input);
+        input.select();
         document.execCommand("copy");
-        showFeedback(buttonElement, successMsg, defaultMsg);
-      } catch (err) {
-        buttonElement.textContent = "Error";
-        setTimeout(() => { buttonElement.textContent = defaultMsg; }, 2000);
-      }
-      document.body.removeChild(tempInput);
+        document.body.removeChild(input);
+        buttonElement.textContent = successText;
+        setTimeout(() => { buttonElement.textContent = defaultText; }, 2000);
+      });
     }
 
-    function showFeedback(btn, feedback, reset) {
-      btn.textContent = feedback;
-      btn.classList.add('bg-neutral-700');
-      setTimeout(() => {
-        btn.textContent = translations[currentLang]?.contactCopy || reset;
-        btn.classList.remove('bg-neutral-700');
-      }, 2000);
-    }
-
-    // Auto-detect Language Initialization
-    (function initLanguage() {
-      let savedLang = null;
-      try {
-        savedLang = localStorage.getItem('wm_preferred_lang');
-      } catch (e) {}
-
-      if (savedLang && ['en', 'zh', 'es'].includes(savedLang)) {
-        setLanguage(savedLang);
+    // Init
+    (function init() {
+      let saved = null;
+      try { saved = localStorage.getItem('wm_preferred_lang'); } catch (e) {}
+      if (saved && ['en', 'zh', 'es'].includes(saved)) {
+        setLanguage(saved);
         return;
       }
-
-      const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
-      if (browserLang.startsWith('zh')) {
-        setLanguage('zh');
-      } else if (browserLang.startsWith('es')) {
-        setLanguage('es');
-      } else {
-        setLanguage('en');
-      }
+      const b = (navigator.language || '').toLowerCase();
+      if (b.startsWith('zh')) setLanguage('zh');
+      else if (b.startsWith('es')) setLanguage('es');
+      else setLanguage('en');
     })();
   </script>
 </body>
