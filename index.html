@@ -70,12 +70,6 @@
     .progress-bar-fill {
       transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
-    /* Pixel art crisp rendering */
-    .pixelated {
-      image-rendering: pixelated;
-      shape-rendering: crispEdges;
-    }
   </style>
 </head>
 <body class="bg-[#FAFAFA] text-[#18181B] bg-grid-subtle min-h-screen antialiased selection:bg-neutral-900 selection:text-white">
@@ -108,7 +102,7 @@
         <!-- Single Cycle Language Switcher Button -->
         <button 
           type="button" 
-          id="lang-toggle-btn"
+          id="lang-toggle-btn" 
           onclick="cycleLanguage()" 
           class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-neutral-200/70 hover:bg-neutral-300/80 active:scale-95 text-xs font-mono font-medium text-neutral-800 transition-all border border-neutral-300/40 select-none shadow-sm"
           title="Switch language (EN / 中文 / ES)"
@@ -364,50 +358,58 @@
           >
             📧 weimeng@protonmail.com
           </a>
-          <button 
-            type="button" 
-            onclick="copyEmailAddress(this)" 
-            class="inline-flex items-center justify-center px-5 py-3.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 active:scale-95 text-neutral-800 text-xs font-bold font-mono transition-colors border border-neutral-200"
-            data-i18n="contactCopy"
-          >
-            Copy Email
-          </button>
-        </div>
+          
+          <div class="flex items-center gap-2.5 sm:gap-3">
+            <button 
+              type="button" 
+              onclick="copyEmailAddress(this)" 
+              class="flex-1 sm:flex-none inline-flex items-center justify-center px-5 py-3.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 active:scale-95 text-neutral-800 text-xs font-bold font-mono transition-colors border border-neutral-200"
+              data-i18n="contactCopy"
+            >
+              Copy Email
+            </button>
 
-        <!-- Pixel Drink Badge / Easter Egg -->
-        <div class="pt-4 border-t border-neutral-100 flex items-center">
-          <a 
-            href="https://wei-meng.org/bar" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            class="group inline-flex items-center gap-3 px-3.5 py-2.5 rounded-2xl bg-neutral-50 hover:bg-neutral-100/90 border border-neutral-200/80 hover:border-neutral-300 text-neutral-700 hover:text-neutral-900 transition-all select-none shadow-xs"
-            title="wei-meng.org/bar"
-          >
-            <!-- 16x16 Pixel Drink SVG -->
-            <svg class="w-5 h-5 shrink-0 pixelated transition-transform group-hover:scale-110 group-hover:-rotate-6" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Straw -->
-              <rect x="9" y="1" width="1" height="2" fill="#FACC15"/>
-              <rect x="8" y="2" width="1" height="2" fill="#EAB308"/>
-              <!-- Lemon slice garnish -->
-              <rect x="3" y="3" width="2" height="2" fill="#FDE047"/>
-              <rect x="2" y="4" width="1" height="1" fill="#CA8A04"/>
-              <!-- Glass Outline -->
-              <rect x="4" y="4" width="8" height="1" fill="#27272A"/>
-              <rect x="4" y="5" width="1" height="6" fill="#27272A"/>
-              <rect x="11" y="5" width="1" height="6" fill="#27272A"/>
-              <rect x="5" y="11" width="6" height="1" fill="#27272A"/>
-              <!-- Liquid Body -->
-              <rect x="5" y="5" width="6" height="6" fill="#F97316"/>
-              <!-- Ice & Highlights -->
-              <rect x="6" y="6" width="2" height="2" fill="#FEF08A"/>
-              <rect x="8" y="8" width="2" height="2" fill="#FED7AA"/>
-              <rect x="5" y="10" width="6" height="1" fill="#EA580C"/>
-            </svg>
-            <span class="text-xs font-mono font-medium tracking-tight" data-i18n="contactDrink">click here for a drink</span>
-            <span class="text-[11px] font-mono text-neutral-400 group-hover:text-neutral-800 group-hover:translate-x-0.5 transition-all">↗</span>
-          </a>
-        </div>
+            <!-- Pixel Drink Button with Hover Tooltip -->
+            <div class="relative group flex items-center justify-center flex-shrink-0">
+              <a 
+                href="https://wei-meng.org/bar" 
+                class="inline-flex items-center justify-center p-3 rounded-xl bg-neutral-100 hover:bg-neutral-200 active:scale-95 text-neutral-800 border border-neutral-200 transition-all shadow-sm"
+                aria-label="click here for a drink"
+                title="click here for a drink"
+              >
+                <!-- Crisp Pixel Art Drink SVG -->
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="shape-rendering: crispEdges;">
+                  <!-- Straw -->
+                  <rect x="14" y="2" width="2" height="2" fill="#F43F5E" />
+                  <rect x="13" y="4" width="2" height="2" fill="#F43F5E" />
+                  <rect x="12" y="6" width="2" height="2" fill="#F43F5E" />
+                  <!-- Lid / Rim -->
+                  <rect x="6" y="8" width="12" height="2" fill="#27272A" />
+                  <!-- Cup Outline -->
+                  <rect x="6" y="10" width="2" height="10" fill="#27272A" />
+                  <rect x="16" y="10" width="2" height="10" fill="#27272A" />
+                  <rect x="8" y="20" width="8" height="2" fill="#27272A" />
+                  <!-- Drink Liquid -->
+                  <rect x="8" y="10" width="8" height="10" fill="#FBBF24" />
+                  <rect x="8" y="15" width="8" height="5" fill="#F59E0B" />
+                  <!-- Ice Cube -->
+                  <rect x="9" y="11" width="3" height="3" fill="#FEF3C7" />
+                  <!-- Boba Pearls -->
+                  <rect x="9" y="17" width="2" height="2" fill="#78350F" />
+                  <rect x="13" y="17" width="2" height="2" fill="#78350F" />
+                </svg>
+              </a>
 
+              <!-- Hover Tooltip -->
+              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:flex flex-col items-center pointer-events-none z-30 transition-all">
+                <span class="px-2.5 py-1 bg-neutral-900 text-white text-[11px] font-mono rounded-md shadow-md whitespace-nowrap" data-i18n="drinkTooltip">
+                  click here for a drink
+                </span>
+                <span class="w-1.5 h-1.5 bg-neutral-900 rotate-45 -mt-0.5"></span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -497,8 +499,8 @@
         contactTitle: "Let's build learning experiences people choose to finish.",
         contactDesc: "Available for custom learning design and curriculum transformation.",
         contactCopy: "Copy Email",
-        contactDrink: "click here for a drink",
-        copiedText: "✓ Copied!"
+        copiedText: "✓ Copied!",
+        drinkTooltip: "click here for a drink"
       },
       zh: {
         pageTitle: "孟玮 — 学习体验架构师与体验设计师",
@@ -561,8 +563,8 @@
         contactTitle: "携手打造让人主动沉浸的学习体验。",
         contactDesc: "开放沟通定制化学习产品开发与课程体系重塑合作。",
         contactCopy: "复制邮箱",
-        contactDrink: "来喝一杯吧",
-        copiedText: "✓ 已复制！"
+        copiedText: "✓ 已复制！",
+        drinkTooltip: "来喝一杯吧"
       },
       es: {
         pageTitle: "WEI MENG — Arquitecto de Aprendizaje y Diseñador de Experiencias",
@@ -625,8 +627,8 @@
         contactTitle: "Creemos experiencias de aprendizaje que la gente elija completar.",
         contactDesc: "Disponible para diseño de aprendizaje a medida y transformación curricular.",
         contactCopy: "Copiar Email",
-        contactDrink: "haz clic aquí para tomar algo",
-        copiedText: "✓ ¡Copiado!"
+        copiedText: "✓ ¡Copiado!",
+        drinkTooltip: "toma una bebida"
       }
     };
 
@@ -722,7 +724,7 @@
       });
 
       document.querySelectorAll('[data-i18n-html]').forEach(el => {
-        const key = el.getAttribute('data-i18n-html');
+        const key = el.getAttribute('data-i18n');
         if (translations[lang][key]) el.innerHTML = translations[lang][key];
       });
 
