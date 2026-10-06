@@ -70,6 +70,12 @@
     .progress-bar-fill {
       transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
+    /* Pixel art crisp rendering */
+    .pixelated {
+      image-rendering: pixelated;
+      shape-rendering: crispEdges;
+    }
   </style>
 </head>
 <body class="bg-[#FAFAFA] text-[#18181B] bg-grid-subtle min-h-screen antialiased selection:bg-neutral-900 selection:text-white">
@@ -192,7 +198,7 @@
         </div>
       </div>
 
-      <!-- Flip Container: Mobile-safe min-height to prevent text overflow -->
+      <!-- Flip Container -->
       <div id="identity-viewport" class="flip-viewport relative min-h-[470px] sm:min-h-[340px] w-full cursor-pointer select-none" onclick="toggleCardFace()">
         <div class="flip-inner relative w-full h-full min-h-[470px] sm:min-h-[340px]">
 
@@ -367,6 +373,41 @@
             Copy Email
           </button>
         </div>
+
+        <!-- Pixel Drink Badge / Easter Egg -->
+        <div class="pt-4 border-t border-neutral-100 flex items-center">
+          <a 
+            href="https://wei-meng.org/bar" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="group inline-flex items-center gap-3 px-3.5 py-2.5 rounded-2xl bg-neutral-50 hover:bg-neutral-100/90 border border-neutral-200/80 hover:border-neutral-300 text-neutral-700 hover:text-neutral-900 transition-all select-none shadow-xs"
+            title="wei-meng.org/bar"
+          >
+            <!-- 16x16 Pixel Drink SVG -->
+            <svg class="w-5 h-5 shrink-0 pixelated transition-transform group-hover:scale-110 group-hover:-rotate-6" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Straw -->
+              <rect x="9" y="1" width="1" height="2" fill="#FACC15"/>
+              <rect x="8" y="2" width="1" height="2" fill="#EAB308"/>
+              <!-- Lemon slice garnish -->
+              <rect x="3" y="3" width="2" height="2" fill="#FDE047"/>
+              <rect x="2" y="4" width="1" height="1" fill="#CA8A04"/>
+              <!-- Glass Outline -->
+              <rect x="4" y="4" width="8" height="1" fill="#27272A"/>
+              <rect x="4" y="5" width="1" height="6" fill="#27272A"/>
+              <rect x="11" y="5" width="1" height="6" fill="#27272A"/>
+              <rect x="5" y="11" width="6" height="1" fill="#27272A"/>
+              <!-- Liquid Body -->
+              <rect x="5" y="5" width="6" height="6" fill="#F97316"/>
+              <!-- Ice & Highlights -->
+              <rect x="6" y="6" width="2" height="2" fill="#FEF08A"/>
+              <rect x="8" y="8" width="2" height="2" fill="#FED7AA"/>
+              <rect x="5" y="10" width="6" height="1" fill="#EA580C"/>
+            </svg>
+            <span class="text-xs font-mono font-medium tracking-tight" data-i18n="contactDrink">click here for a drink</span>
+            <span class="text-[11px] font-mono text-neutral-400 group-hover:text-neutral-800 group-hover:translate-x-0.5 transition-all">↗</span>
+          </a>
+        </div>
+
       </div>
     </section>
 
@@ -456,6 +497,7 @@
         contactTitle: "Let's build learning experiences people choose to finish.",
         contactDesc: "Available for custom learning design and curriculum transformation.",
         contactCopy: "Copy Email",
+        contactDrink: "click here for a drink",
         copiedText: "✓ Copied!"
       },
       zh: {
@@ -519,6 +561,7 @@
         contactTitle: "携手打造让人主动沉浸的学习体验。",
         contactDesc: "开放沟通定制化学习产品开发与课程体系重塑合作。",
         contactCopy: "复制邮箱",
+        contactDrink: "来喝一杯吧",
         copiedText: "✓ 已复制！"
       },
       es: {
@@ -582,6 +625,7 @@
         contactTitle: "Creemos experiencias de aprendizaje que la gente elija completar.",
         contactDesc: "Disponible para diseño de aprendizaje a medida y transformación curricular.",
         contactCopy: "Copiar Email",
+        contactDrink: "haz clic aquí para tomar algo",
         copiedText: "✓ ¡Copiado!"
       }
     };
