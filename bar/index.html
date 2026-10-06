@@ -220,8 +220,10 @@
             <span class="eq-bar"></span>
           </div>
           <span id="eq-mute-icon" class="text-xs">📻</span>
+          <!-- 
           <span id="bgm-genre-badge" class="font-mono text-[8px] px-1 bg-amber-950/80 border border-amber-700/50 text-amber-300">LO-FI</span>
           <span id="bgm-track-name" class="font-retro text-[11px] text-amber-200 hidden sm:inline max-w-[95px] md:max-w-[130px] truncate">Gulou Midnight</span>
+          -->
         </button>
         <button onclick="skipTrack(event)" class="pixel-btn h-7 px-1.5 bg-stone-950 border-l border-stone-800 hover:bg-stone-800 hover:text-amber-400 text-stone-300 text-[11px]" title="Skip to Next Track">
           ⏭️
@@ -231,18 +233,16 @@
       <!-- Atmosphere & Clock Drawer Trigger -->
       <button id="btn-atmo-trigger" onclick="toggleAtmosphereDrawer()" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-stone-200 flex items-center gap-1 text-xs" title="Atmosphere & Weather">
         <span id="weather-display-icon">🌧️</span>
-        <span id="time-display-badge" class="font-retro text-[11px] text-amber-400">22:30</span>
+        <!-- <span id="time-display-badge" class="font-retro text-[11px] text-amber-400">22:30</span> -->
       </button>
 
       <!-- Arcade Modal Trigger -->
       <button onclick="openEntertainmentHub()" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-amber-300 flex items-center gap-1 text-xs" title="Retro Pixel Games">
-        <span>🕹️</span>
         <span id="nav-arcade-label" class="hidden sm:inline font-retro text-[11px]">ARCADE</span>
       </button>
 
       <!-- Codex Album (Menu & Atelier) -->
       <button onclick="toggleCodexModal(true)" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-stone-200 flex items-center gap-1 text-xs" title="Cocktail/Coffee Menu">
-        <span>📖</span>
         <span id="nav-album-label" class="hidden sm:inline font-retro text-[11px]">MENU</span>
       </button>
 
