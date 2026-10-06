@@ -232,7 +232,7 @@
       <!-- Atmosphere & Clock Drawer Trigger -->
       <button id="btn-atmo-trigger" onclick="toggleAtmosphereDrawer()" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-stone-200 flex items-center gap-1 text-xs" title="Atmosphere & Weather">
         <span id="weather-display-icon">🌧️</span>
-        <!-- <span id="time-display-badge" class="font-retro text-[11px] text-amber-400">22:30</span> -->
+        <span id="time-display-badge" class="font-retro text-[11px] text-amber-400">22:30</span>
       </button>
 
       <!-- Arcade Modal Trigger -->
@@ -258,12 +258,11 @@
 
   <!-- ATMOSPHERE & TIME ADJUSTMENT DRAWER -->
   <div id="drawer-atmosphere" class="hidden absolute top-10 sm:top-11 right-2 left-2 sm:left-auto sm:w-84 z-50 bg-stone-950 border-2 border-stone-800 p-2.5 pixel-frame shadow-2xl">
-    <!--
     <div class="flex items-center justify-between pb-1.5 mb-2 border-b border-stone-800 text-[10px] font-retro text-stone-400">
+      <span id="drawer-title">ATMOSPHERE CONTROL</span>
       <button onclick="toggleAtmosphereDrawer()" class="hover:text-white">✕ CLOSE</button>
     </div>
-    -->
-
+    
     <!-- Weather Selector -->
     <div id="drawer-weather-header" class="text-[10px] text-stone-400 mb-1 font-retro">OUTDOOR WEATHER</div>
     <div class="grid grid-cols-5 gap-1 mb-2.5">
