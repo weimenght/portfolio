@@ -191,6 +191,7 @@
     <!-- RIGHT: Compact Navigation Controls -->
     <div class="flex items-center gap-1 sm:gap-2">
 
+      
       <!-- Distinct BGM Radio Engine Indicator -->
       <button id="btn-lofi" onclick="toggleBGM()" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-amber-400 flex items-center gap-1.5" title="Procedural Audio Player">
         <div id="eq-graphic" class="hidden items-end gap-0.5 h-3">
@@ -200,8 +201,10 @@
           <span class="eq-bar"></span>
         </div>
         <span id="eq-mute-icon" class="text-xs">📻</span>
+        <span id="bgm-genre-badge" class="hidden sm:inline font-mono text-[8px] px-1 bg-amber-950/80 border border-amber-700/50 text-amber-300">LOFI</span>
+        <span id="bgm-track-name" class="font-retro text-[11px] text-amber-200 hidden md:inline max-w-[110px] truncate">Radio Off</span>
       </button>
-
+      
       <!-- Atmosphere & Clock Drawer Trigger -->
       <button id="btn-atmo-trigger" onclick="toggleAtmosphereDrawer()" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-stone-200 flex items-center gap-1 text-xs" title="Atmosphere & Weather">
         <span id="weather-display-icon">🌧️</span>
