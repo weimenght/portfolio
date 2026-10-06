@@ -8,7 +8,7 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Retro Pixel Fonts -->
+  <!-- Retro Pixel and Serif Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Pixelify+Sans:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
@@ -81,7 +81,7 @@
       background-size: 100% 3px;
       z-index: 45;
       pointer-events: none;
-      opacity: 0.45;
+      opacity: 0.4;
     }
 
     .eq-bar {
@@ -147,11 +147,30 @@
       border: 1px solid #000;
     }
 
+    /* Fixed Barista Avatar Responsive Sizing */
+    #svg-wei-avatar {
+      width: 56px;
+      height: 63px;
+      min-width: 56px;
+      min-height: 63px;
+      display: block;
+      image-rendering: pixelated;
+    }
+    @media (min-width: 640px) {
+      #svg-wei-avatar {
+        width: 64px;
+        height: 72px;
+        min-width: 64px;
+        min-height: 72px;
+      }
+    }
+
     canvas {
       image-rendering: pixelated;
     }
   </style>
 </head>
+
 <body class="text-[#f5eedf] font-pixel h-full w-full relative flex flex-col justify-between overflow-hidden crt-overlay">
 
   <!-- Interactive Weather Canvas -->
@@ -188,22 +207,26 @@
       </div>
     </div>
 
-    <!-- RIGHT: Compact Navigation Controls -->
+    <!-- RIGHT: Compact Navigation & Dual BGM Radio Controls -->
     <div class="flex items-center gap-1 sm:gap-2">
-
       
-      <!-- Distinct BGM Radio Engine Indicator -->
-      <button id="btn-lofi" onclick="toggleBGM()" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-amber-400 flex items-center gap-1.5" title="Procedural Audio Player">
-        <div id="eq-graphic" class="hidden items-end gap-0.5 h-3">
-          <span class="eq-bar"></span>
-          <span class="eq-bar"></span>
-          <span class="eq-bar"></span>
-          <span class="eq-bar"></span>
-        </div>
-        <span id="eq-mute-icon" class="text-xs">📻</span>
-        <span id="bgm-genre-badge" class="hidden sm:inline font-mono text-[8px] px-1 bg-amber-950/80 border border-amber-700/50 text-amber-300">LOFI</span>
-        <span id="bgm-track-name" class="font-retro text-[11px] text-amber-200 hidden md:inline max-w-[110px] truncate">Radio Off</span>
-      </button>
+      <!-- Enhanced Audio Radio Hub with Play/Stop & Skip -->
+      <div class="flex items-center bg-stone-900 border border-stone-700 rounded-sm overflow-hidden">
+        <button id="btn-lofi" onclick="toggleBGM()" class="pixel-btn h-7 px-2 text-amber-400 flex items-center gap-1.5 hover:bg-stone-800" title="Play / Pause Procedural Radio">
+          <div id="eq-graphic" class="hidden items-end gap-0.5 h-3">
+            <span class="eq-bar"></span>
+            <span class="eq-bar"></span>
+            <span class="eq-bar"></span>
+            <span class="eq-bar"></span>
+          </div>
+          <span id="eq-mute-icon" class="text-xs">📻</span>
+          <span id="bgm-genre-badge" class="font-mono text-[8px] px-1 bg-amber-950/80 border border-amber-700/50 text-amber-300">LO-FI</span>
+          <span id="bgm-track-name" class="font-retro text-[11px] text-amber-200 hidden sm:inline max-w-[95px] md:max-w-[130px] truncate">Gulou Midnight</span>
+        </button>
+        <button onclick="skipTrack(event)" class="pixel-btn h-7 px-1.5 bg-stone-950 border-l border-stone-800 hover:bg-stone-800 hover:text-amber-400 text-stone-300 text-[11px]" title="Skip to Next Track">
+          ⏭️
+        </button>
+      </div>
       
       <!-- Atmosphere & Clock Drawer Trigger -->
       <button id="btn-atmo-trigger" onclick="toggleAtmosphereDrawer()" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-stone-200 flex items-center gap-1 text-xs" title="Atmosphere & Weather">
@@ -278,36 +301,33 @@
         </p>
       </div>
 
-      <!-- 24-Hour Retro Clock with Hour (0..24 full loop) & Minute (0..60) needles -->
+      <!-- 24-Hour Retro Clock with Hour & Minute needles -->
       <div class="relative w-52 h-52 sm:w-60 sm:h-60 rounded-full bg-stone-950 border-4 border-stone-800 shadow-2xl p-2 flex items-center justify-center pixel-frame my-auto select-none">
         
         <!-- Dial Inner Rim -->
         <div class="absolute inset-1 rounded-full border border-amber-900/40 pointer-events-none"></div>
 
-        <!-- 24-Hour Dial Markings (0/24 at 12 o'clock, 6 at 3 o'clock, 12 at 6 o'clock, 18 at 9 o'clock) -->
+        <!-- 24-Hour Dial Markings -->
         <div class="absolute inset-0 pointer-events-none text-stone-400 font-retro text-[10px] sm:text-xs">
-          <!-- Main Cardinal Numbers -->
           <span class="absolute top-1 left-1/2 -translate-x-1/2 text-amber-400 font-bold">24 / 0</span>
           <span class="absolute top-1/2 right-1.5 -translate-y-1/2">6</span>
           <span class="absolute bottom-1 left-1/2 -translate-x-1/2 text-amber-400 font-bold">12</span>
           <span class="absolute top-1/2 left-1.5 -translate-y-1/2">18</span>
 
-          <!-- Intermediate 3-Hour Markers -->
           <span class="absolute top-5 right-11 sm:top-6 sm:right-13 opacity-70">3</span>
           <span class="absolute bottom-6 right-11 sm:bottom-7 sm:right-13 opacity-70">9</span>
           <span class="absolute bottom-6 left-11 sm:bottom-7 sm:left-13 opacity-70">15</span>
           <span class="absolute top-5 left-11 sm:top-6 sm:left-13 opacity-70">21</span>
 
-          <!-- Tick Marks Ring -->
           <div class="absolute inset-4 rounded-full border border-dashed border-stone-700/60 pointer-events-none"></div>
         </div>
 
-        <!-- 24-Hour Hand (Golden Retro Arrow Needle - 360 deg per 24 hours) -->
+        <!-- 24-Hour Hand -->
         <div id="hour-needle" class="hand-indicator absolute w-1.5 h-16 sm:h-20 bg-amber-500 bottom-1/2 left-[calc(50%-3px)] rounded-t-sm shadow-md" style="transform: rotate(337.5deg);">
           <div class="w-2.5 h-2.5 -top-1.5 -left-0.5 absolute bg-amber-300 border border-black"></div>
         </div>
 
-        <!-- Minute Hand (Silver/White Needle - 360 deg per 60 mins) -->
+        <!-- Minute Hand -->
         <div id="minute-needle" class="hand-indicator absolute w-1 h-20 sm:h-24 bg-stone-200 bottom-1/2 left-[calc(50%-2px)] rounded-t-sm shadow-sm" style="transform: rotate(180deg);">
           <div class="w-1.5 h-1.5 -top-1 -left-0.5 absolute bg-white"></div>
         </div>
@@ -370,10 +390,10 @@
         </div>
 
         <!-- The Characters: Miso, Wei (Awake or Sleep State), Yuzu -->
-        <div class="relative z-10 flex items-end justify-around w-full mt-2">
+        <div class="relative z-10 flex items-end justify-around w-full mt-auto mb-0 shrink-0">
           
           <!-- Cat 1: Miso (Black Cat) -->
-          <div class="flex flex-col items-center cursor-pointer group" onclick="interactCat('miso')">
+          <div class="flex flex-col items-center cursor-pointer group shrink-0" onclick="interactCat('miso')">
             <div id="sprite-miso" class="text-2xl sm:text-3xl filter group-hover:scale-110 transition-transform">🐈‍⬛</div>
             <div class="text-[9px] font-retro text-stone-400 group-hover:text-amber-300 mt-0.5 flex items-center gap-1">
               <span>Miso</span>
@@ -382,11 +402,11 @@
           </div>
 
           <!-- HOST AVATAR CONTAINER: Wei (Bartender / Barista with Round Glasses & Sleep States) -->
-          <div class="flex flex-col items-center text-center cursor-pointer group" onclick="tapBartender()">
-            <div id="sprite-wei-container" class="relative group-hover:scale-105 transition-transform flex flex-col items-center sway-idle">
+          <div class="flex flex-col items-center text-center cursor-pointer group shrink-0" onclick="tapBartender()">
+            <div id="sprite-wei-container" class="relative group-hover:scale-105 transition-transform flex flex-col items-center sway-idle shrink-0">
               
-              <!-- SVG Pixel Avatar with Layer Groups for Awake & Sleep States -->
-              <svg id="svg-wei-avatar" class="w-13 h-15 sm:w-16 sm:h-18" viewBox="0 0 32 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="shape-rendering: crispEdges;">
+              <!-- Explicit width/height SVG preventing mobile layout collapse -->
+              <svg id="svg-wei-avatar" width="56" height="63" viewBox="0 0 32 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="shape-rendering: crispEdges;">
                 
                 <!-- Hair -->
                 <rect x="9" y="3" width="14" height="4" fill="#1c1917"/>
@@ -430,9 +450,8 @@
                   <rect x="14" y="16" width="4" height="1" fill="#b45309"/>
                 </g>
 
-                <!-- SLEEPING STATE GROUP (Closed eyes, glasses slipped down nose, relaxed mouth) -->
+                <!-- SLEEPING STATE GROUP -->
                 <g id="avatar-layer-sleeping" class="hidden">
-                  <!-- Closed Sleeping Eyes (Horizontal pixel dashes) -->
                   <rect x="10" y="10" width="4" height="1" fill="#78350f"/>
                   <rect x="18" y="10" width="4" height="1" fill="#78350f"/>
 
@@ -442,15 +461,12 @@
                   <rect x="10" y="16" width="4" height="1" fill="#f59e0b"/>
                   <rect x="9" y="13" width="1" height="3" fill="#f59e0b"/>
                   <rect x="14" y="13" width="1" height="3" fill="#f59e0b"/>
-
                   <rect x="15" y="14" width="2" height="1" fill="#f59e0b"/>
-
                   <rect x="18" y="13" width="4" height="3" fill="#0284c7" fill-opacity="0.2"/>
                   <rect x="18" y="12" width="4" height="1" fill="#f59e0b"/>
                   <rect x="18" y="16" width="4" height="1" fill="#f59e0b"/>
                   <rect x="17" y="13" width="1" height="3" fill="#f59e0b"/>
                   <rect x="22" y="13" width="1" height="3" fill="#f59e0b"/>
-
                   <rect x="8" y="12" width="2" height="1" fill="#d97706"/>
                   <rect x="22" y="12" width="2" height="1" fill="#d97706"/>
 
@@ -461,7 +477,7 @@
                 <!-- Neck -->
                 <rect x="13" y="19" width="6" height="2" fill="#fde68a"/>
 
-                <!-- OUTFIT LAYER A: BAR (Velvet Mahogany Vest, White Shirt, Bowtie) -->
+                <!-- OUTFIT LAYER A: BAR -->
                 <g id="outfit-bar">
                   <rect x="11" y="21" width="10" height="2" fill="#f8fafc"/>
                   <rect x="15" y="22" width="2" height="2" fill="#78350f"/>
@@ -472,7 +488,7 @@
                   <rect x="15" y="30" width="2" height="1" fill="#d97706"/>
                 </g>
 
-                <!-- OUTFIT LAYER B: CAFE (Barista Apron & Roastery Badge) -->
+                <!-- OUTFIT LAYER B: CAFE -->
                 <g id="outfit-cafe" class="hidden">
                   <rect x="11" y="21" width="10" height="2" fill="#fef3c7"/>
                   <rect x="8" y="23" width="16" height="11" fill="#78350f"/>
@@ -483,7 +499,6 @@
                   <rect x="15" y="26" width="2" height="1" fill="#bbf7d0"/>
                   <rect x="13" y="30" width="6" height="4" fill="#381a08"/>
                 </g>
-
               </svg>
 
               <!-- Floating ZZZ Particle Effects -->
@@ -501,7 +516,7 @@
           </div>
 
           <!-- Cat 2: Yuzu (Orange Cat) -->
-          <div class="flex flex-col items-center cursor-pointer group" onclick="interactCat('yuzu')">
+          <div class="flex flex-col items-center cursor-pointer group shrink-0" onclick="interactCat('yuzu')">
             <div id="sprite-yuzu" class="text-2xl sm:text-3xl filter group-hover:scale-110 transition-transform">🐈</div>
             <div class="text-[9px] font-retro text-stone-400 group-hover:text-amber-300 mt-0.5 flex items-center gap-1">
               <span>Yuzu</span>
@@ -528,8 +543,6 @@
           <div>
             <div class="flex items-center justify-between text-[10px] font-retro text-stone-400 mb-0.5">
               <span id="dialogue-speaker-tag" class="text-amber-400 uppercase">WEI • NIGHT OWL</span>
-              <div class="flex items-center gap-2">
-              </div>
             </div>
             <p id="dialogue-speech-text" class="text-stone-100 text-[11px] sm:text-xs font-pixel leading-snug">
               "The autumn breeze outside is sweeping yellow gingko leaves past the grey brick hutong walls. What brings you through Wei's door tonight?"
@@ -705,9 +718,8 @@
         <span id="game-score-display" class="text-amber-400 font-bold">SCORE: 0</span>
       </div>
 
-      <!-- On-Screen Retro Pixel D-Pad & Action Buttons for Mobile -->
+      <!-- On-Screen Controls for Mobile -->
       <div class="w-full flex items-center justify-between pt-1 mt-1 border-t border-stone-800 text-xs">
-        <!-- D-Pad -->
         <div class="grid grid-cols-3 gap-1 w-28 select-none">
           <div></div>
           <button onclick="pressGameKey('ArrowUp')" class="pixel-btn p-1.5 bg-stone-900 border border-stone-700 text-center active:bg-amber-600 text-xs font-bold">▲</button>
@@ -717,7 +729,6 @@
           <button onclick="pressGameKey('ArrowRight')" class="pixel-btn p-1.5 bg-stone-900 border border-stone-700 text-center active:bg-amber-600 text-xs font-bold">▶</button>
         </div>
 
-        <!-- Action Buttons (A & B) -->
         <div class="flex items-center gap-2 select-none">
           <div class="flex flex-col items-center">
             <button onclick="pressGameKey('KeyB')" class="pixel-btn w-9 h-9 rounded-full bg-stone-800 border-2 border-stone-600 active:bg-stone-500 text-stone-200 font-bold text-xs flex items-center justify-center">
@@ -763,7 +774,7 @@
         </button>
       </div>
 
-      <!-- TAB 1: Signature Items (Bar or Cafe) -->
+      <!-- TAB 1: Signature Items -->
       <div id="album-pane-gt" class="flex-1 overflow-y-auto pr-1 space-y-1.5 text-xs">
       </div>
 
@@ -804,12 +815,12 @@
         </div>
       </div>
 
-      <!-- TAB 3: Classic Ratios / Cafe Bakery Treats -->
+      <!-- TAB 3: Classic Ratios / Bakery -->
       <div id="album-pane-classic" class="hidden flex-1 overflow-y-auto pr-1 space-y-1.5 text-xs">
       </div>
 
       <div class="pt-2 border-t border-stone-800 flex justify-between items-center text-[9px] font-retro text-stone-500">
-        <span>ARCHIVE VOL. 8</span>
+        <span>ARCHIVE VOL. 9</span>
         <span>TAP ✕ TO CLOSE</span>
       </div>
 
@@ -817,7 +828,7 @@
   </div>
 
   <script>
-    /* DUAL PROCEDURAL AUDIO ENGINE (MORNING CAFE vs NIGHT SPEAKEASY) */
+    /* DUAL PROCEDURAL AUDIO ENGINE (MORNING BOSSA NOVA vs NIGHT CHILL LO-FI) */
     const SoundEngine = {
       ctx: null,
       bgmPlaying: false,
@@ -825,9 +836,8 @@
       vinylNoise: null,
       mode: 'bar', // 'bar' or 'cafe'
       currentTrackIndex: 0,
-      bpm: 70,
 
-      // Track catalogs for distinct Day & Night vibes
+      // Diverse Procedural Track Catalogs (5 Day Bossa Nova & 5 Night Lo-Fi)
       tracks: {
         cafe: [
           {
@@ -835,10 +845,10 @@
             bpm: 108,
             style: "bossa",
             progression: [
-              { chord: [349.23, 440.00, 523.25, 659.25], bass: 174.61 }, // Fmaj7
-              { chord: [392.00, 466.16, 587.33, 698.46], bass: 196.00 }, // Gm7
-              { chord: [440.00, 523.25, 659.25, 783.99], bass: 220.00 }, // Am7
-              { chord: [293.66, 369.99, 440.00, 523.25], bass: 146.83 }  // D7
+              { chord: [349.23, 440.00, 523.25, 659.25], bass: 174.61, chime: 880.00 }, // Fmaj7
+              { chord: [392.00, 466.16, 587.33, 698.46], bass: 196.00, chime: 783.99 }, // Gm7
+              { chord: [440.00, 523.25, 659.25, 783.99], bass: 220.00, chime: 880.00 }, // Am7
+              { chord: [293.66, 369.99, 440.00, 523.25], bass: 146.83, chime: 739.99 }  // D7
             ]
           },
           {
@@ -846,21 +856,43 @@
             bpm: 112,
             style: "bossa",
             progression: [
-              { chord: [261.63, 329.63, 392.00, 493.88], bass: 130.81 }, // Cmaj7
-              { chord: [329.63, 392.00, 493.88, 587.33], bass: 164.81 }, // Em7
-              { chord: [293.66, 349.23, 440.00, 523.25], bass: 146.83 }, // Dm7
-              { chord: [392.00, 493.88, 587.33, 698.46], bass: 196.00 }  // G7
+              { chord: [261.63, 329.63, 392.00, 493.88], bass: 130.81, chime: 659.25 }, // Cmaj7
+              { chord: [329.63, 392.00, 493.88, 587.33], bass: 164.81, chime: 783.99 }, // Em7
+              { chord: [293.66, 349.23, 440.00, 523.25], bass: 146.83, chime: 698.46 }, // Dm7
+              { chord: [392.00, 493.88, 587.33, 698.46], bass: 196.00, chime: 783.99 }  // G7
             ]
           },
           {
             name: "Hutong Courtyard Sunshine",
-            bpm: 104,
+            bpm: 106,
             style: "bossa",
             progression: [
-              { chord: [293.66, 369.99, 440.00, 554.37], bass: 146.83 }, // Dmaj7
-              { chord: [246.94, 293.66, 369.99, 440.00], bass: 123.47 }, // Bm7
-              { chord: [329.63, 392.00, 493.88, 587.33], bass: 164.81 }, // Em7
-              { chord: [440.00, 554.37, 659.25, 783.99], bass: 220.00 }  // A7
+              { chord: [293.66, 369.99, 440.00, 554.37], bass: 146.83, chime: 739.99 }, // Dmaj7
+              { chord: [246.94, 293.66, 369.99, 440.00], bass: 123.47, chime: 587.33 }, // Bm7
+              { chord: [329.63, 392.00, 493.88, 587.33], bass: 164.81, chime: 659.25 }, // Em7
+              { chord: [440.00, 554.37, 659.25, 783.99], bass: 220.00, chime: 880.00 }  // A7
+            ]
+          },
+          {
+            name: "Ipanema Hutong Breeze",
+            bpm: 114,
+            style: "bossa",
+            progression: [
+              { chord: [311.13, 392.00, 466.16, 587.33], bass: 155.56, chime: 783.99 }, // Ebmaj7
+              { chord: [349.23, 415.30, 523.25, 622.25], bass: 174.61, chime: 698.46 }, // Fm7
+              { chord: [392.00, 466.16, 587.33, 698.46], bass: 196.00, chime: 783.99 }, // Gm7
+              { chord: [466.16, 587.33, 698.46, 830.61], bass: 233.08, chime: 932.33 }  // Bb7
+            ]
+          },
+          {
+            name: "Barceloneta Morning Sun",
+            bpm: 110,
+            style: "bossa",
+            progression: [
+              { chord: [349.23, 440.00, 523.25, 659.25], bass: 174.61, chime: 880.00 }, // Fmaj7
+              { chord: [293.66, 349.23, 440.00, 523.25], bass: 146.83, chime: 698.46 }, // Dm7
+              { chord: [392.00, 466.16, 587.33, 698.46], bass: 196.00, chime: 783.99 }, // Gm7
+              { chord: [261.63, 329.63, 392.00, 466.16], bass: 130.81, chime: 659.25 }  // C7
             ]
           }
         ],
@@ -870,32 +902,54 @@
             bpm: 68,
             style: "lofi",
             progression: [
-              { chord: [146.83, 220.00, 261.63, 329.63, 392.00], bass: 73.42 }, // Dm9
-              { chord: [196.00, 246.94, 293.66, 329.63, 440.00], bass: 98.00 }, // G13
-              { chord: [130.81, 196.00, 246.94, 329.63, 392.00], bass: 65.41 }, // Cmaj9
-              { chord: [220.00, 261.63, 329.63, 392.00, 493.88], bass: 110.00 } // Am9
+              { chord: [146.83, 220.00, 261.63, 329.63, 392.00], bass: 73.42, arpeg: [392.00, 329.63, 261.63] }, // Dm9
+              { chord: [196.00, 246.94, 293.66, 329.63, 440.00], bass: 98.00, arpeg: [440.00, 329.63, 293.66] }, // G13
+              { chord: [130.81, 196.00, 246.94, 329.63, 392.00], bass: 65.41, arpeg: [392.00, 329.63, 246.94] }, // Cmaj9
+              { chord: [220.00, 261.63, 329.63, 392.00, 493.88], bass: 110.00, arpeg: [493.88, 392.00, 329.63] } // Am9
             ]
           },
           {
             name: "Rainy Hutong Tape Deck",
-            bpm: 64,
+            bpm: 62,
             style: "lofi",
             progression: [
-              { chord: [155.56, 233.08, 277.18, 349.23, 415.30], bass: 77.78 }, // Ebm9
-              { chord: [207.65, 261.63, 311.13, 349.23, 466.16], bass: 103.83 }, // Ab13
-              { chord: [138.59, 207.65, 261.63, 349.23, 415.30], bass: 69.30 }, // Dbmaj9
-              { chord: [233.08, 277.18, 349.23, 415.30, 523.25], bass: 116.54 } // Bbm9
+              { chord: [155.56, 233.08, 277.18, 349.23, 415.30], bass: 77.78, arpeg: [415.30, 349.23, 277.18] }, // Ebm9
+              { chord: [207.65, 261.63, 311.13, 349.23, 466.16], bass: 103.83, arpeg: [466.16, 349.23, 311.13] }, // Ab13
+              { chord: [138.59, 207.65, 261.63, 349.23, 415.30], bass: 69.30, arpeg: [415.30, 349.23, 261.63] }, // Dbmaj9
+              { chord: [233.08, 277.18, 349.23, 415.30, 523.25], bass: 116.54, arpeg: [523.25, 415.30, 349.23] } // Bbm9
             ]
           },
           {
             name: "Catalan Amber Neon",
-            bpm: 72,
+            bpm: 70,
             style: "lofi",
             progression: [
-              { chord: [174.61, 220.00, 261.63, 349.23, 440.00], bass: 87.31 }, // Fmaj7
-              { chord: [196.00, 246.94, 293.66, 392.00, 493.88], bass: 98.00 }, // G6
-              { chord: [130.81, 196.00, 246.94, 329.63, 392.00], bass: 65.41 }, // Cmaj9
-              { chord: [164.81, 220.00, 261.63, 329.63, 392.00], bass: 82.41 }  // Em7
+              { chord: [174.61, 220.00, 261.63, 349.23, 440.00], bass: 87.31, arpeg: [440.00, 349.23, 261.63] }, // Fmaj7
+              { chord: [196.00, 246.94, 293.66, 392.00, 493.88], bass: 98.00, arpeg: [493.88, 392.00, 293.66] }, // G6
+              { chord: [130.81, 196.00, 246.94, 329.63, 392.00], bass: 65.41, arpeg: [392.00, 329.63, 246.94] }, // Cmaj9
+              { chord: [164.81, 220.00, 261.63, 329.63, 392.00], bass: 82.41, arpeg: [392.00, 329.63, 220.00] }  // Em7
+            ]
+          },
+          {
+            name: "Wudaoying Dusty Cassette",
+            bpm: 65,
+            style: "lofi",
+            progression: [
+              { chord: [220.00, 261.63, 329.63, 392.00, 493.88], bass: 110.00, arpeg: [493.88, 392.00, 329.63] }, // Am9
+              { chord: [174.61, 220.00, 261.63, 329.63, 440.00], bass: 87.31, arpeg: [440.00, 329.63, 261.63] }, // Fmaj7(#11)
+              { chord: [146.83, 220.00, 261.63, 329.63, 392.00], bass: 73.42, arpeg: [392.00, 329.63, 220.00] }, // Dm9
+              { chord: [164.81, 207.65, 246.94, 329.63, 392.00], bass: 82.41, arpeg: [392.00, 329.63, 246.94] }  // E7(#9)
+            ]
+          },
+          {
+            name: "Midnight Rain on Grey Tiles",
+            bpm: 58,
+            style: "lofi",
+            progression: [
+              { chord: [130.81, 196.00, 246.94, 311.13, 392.00], bass: 65.41, arpeg: [392.00, 311.13, 246.94] }, // Cm9
+              { chord: [174.61, 220.00, 261.63, 311.13, 392.00], bass: 87.31, arpeg: [392.00, 311.13, 261.63] }, // F9
+              { chord: [116.54, 174.61, 233.08, 293.66, 349.23], bass: 58.27, arpeg: [349.23, 293.66, 233.08] }, // Bbmaj9
+              { chord: [155.56, 196.00, 233.08, 293.66, 349.23], bass: 77.78, arpeg: [349.23, 293.66, 233.08] }  // Ebmaj9
             ]
           }
         ]
@@ -931,20 +985,31 @@
         this.updateTrackHUD();
       },
 
+      nextTrack() {
+        const list = this.tracks[this.mode];
+        this.currentTrackIndex = (this.currentTrackIndex + 1) % list.length;
+        if (this.bgmPlaying) {
+          this.stopBGM();
+          this.startBGM();
+        } else {
+          this.updateTrackHUD();
+        }
+      },
+
       updateTrackHUD() {
         const list = this.tracks[this.mode];
         const cur = list[this.currentTrackIndex];
         const badge = document.getElementById('bgm-genre-badge');
         const label = document.getElementById('bgm-track-name');
         if (badge && cur) {
-          badge.textContent = this.mode === 'cafe' ? 'CAFE UPBEAT' : 'BAR DUSK';
+          badge.textContent = this.mode === 'cafe' ? 'BOSSA' : 'LO-FI';
           badge.className = this.mode === 'cafe'
-            ? 'hidden sm:inline font-mono text-[8px] px-1 bg-amber-900 border border-amber-500 text-yellow-300'
-            : 'hidden sm:inline font-mono text-[8px] px-1 bg-stone-900 border border-stone-700 text-amber-400';
+            ? 'font-mono text-[8px] px-1 bg-amber-900 border border-amber-500 text-yellow-300'
+            : 'font-mono text-[8px] px-1 bg-stone-900 border border-stone-700 text-amber-400';
         }
         if (label && cur) {
           label.textContent = `${cur.name.split(' ')[0]} (${cur.bpm}BPM)`;
-          label.title = `${cur.name} - ${cur.bpm} BPM`;
+          label.title = `${cur.name} • ${cur.bpm} BPM`;
         }
       },
 
@@ -987,7 +1052,6 @@
         }
       },
 
-      // CAFE RHYTHM: Syncopated Bossa Nova Comping + Walking Plucked Bass + Coffee Shaker
       playCafeBeat(track) {
         let step = 0;
         const beatSec = 60 / track.bpm;
@@ -997,13 +1061,18 @@
           if (!this.bgmPlaying || !this.ctx) return;
           const now = this.ctx.currentTime;
           const curProg = track.progression[Math.floor(step / 8) % track.progression.length];
-          const subStep = step % 8; // 8 subdivisions per bar (two beats per chord)
+          const subStep = step % 8;
 
-          // 1. Shaker on all 8th notes with accent
+          // 1. Shaker on every 8th note with syncopated accent
           const isAccent = (subStep === 2 || subStep === 6);
-          this.triggerShaker(now, isAccent ? 0.04 : 0.02);
+          this.triggerShaker(now, isAccent ? 0.045 : 0.02);
 
-          // 2. Syncopated Bossa comping (on subStep 0, 3, 6)
+          // 2. Chime bell on chord change
+          if (subStep === 0 && curProg.chime) {
+            this.triggerBossaChime(now, curProg.chime);
+          }
+
+          // 3. Syncopated Bossa comping chords (subStep 0, 3, 6)
           if (subStep === 0 || subStep === 3 || subStep === 6) {
             curProg.chord.forEach((freq, i) => {
               const osc = this.ctx.createOscillator();
@@ -1012,7 +1081,7 @@
               osc.frequency.setValueAtTime(freq, now);
 
               gain.gain.setValueAtTime(0.001, now);
-              gain.gain.linearRampToValueAtTime(0.025 / curProg.chord.length, now + 0.02);
+              gain.gain.linearRampToValueAtTime(0.026 / curProg.chord.length, now + 0.02);
               gain.gain.exponentialRampToValueAtTime(0.0001, now + subSec * 1.4);
 
               osc.connect(gain);
@@ -1022,16 +1091,16 @@
             });
           }
 
-          // 3. Upbeat walking bassline (plucked acoustic style)
+          // 4. Plucked walking acoustic bassline (steps 0 and 4)
           if (subStep === 0 || subStep === 4) {
-            const bFreq = subStep === 0 ? curProg.bass : curProg.bass * 1.5; // root then fifth
+            const bFreq = subStep === 0 ? curProg.bass : curProg.bass * 1.5;
             const bOsc = this.ctx.createOscillator();
             const bGain = this.ctx.createGain();
             bOsc.type = 'triangle';
             bOsc.frequency.setValueAtTime(bFreq, now);
 
-            bGain.gain.setValueAtTime(0.06, now);
-            bGain.gain.exponentialRampToValueAtTime(0.001, now + subSec * 1.2);
+            bGain.gain.setValueAtTime(0.055, now);
+            bGain.gain.exponentialRampToValueAtTime(0.001, now + subSec * 1.25);
 
             bOsc.connect(bGain);
             bGain.connect(this.ctx.destination);
@@ -1046,33 +1115,32 @@
         tick();
       },
 
-      // BAR RHYTHM: Slow Lo-Fi minor 9th chords with wow-flutter + Sub Kick & Vinyl Rimshot
       playBarBeat(track) {
         let chordIdx = 0;
-        const chordDuration = (60 / track.bpm) * 4;
+        const beatSec = 60 / track.bpm;
+        const chordDuration = beatSec * 4;
 
         const tick = () => {
           if (!this.bgmPlaying || !this.ctx) return;
           const now = this.ctx.currentTime;
           const curProg = track.progression[chordIdx % track.progression.length];
 
-          // 1. Warm Lo-Fi Chords
+          // 1. Warm Tape-Flutter Lo-Fi Chords
           curProg.chord.forEach((freq, i) => {
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
             const filter = this.ctx.createBiquadFilter();
 
             osc.type = i % 2 === 0 ? 'sine' : 'triangle';
-            // Subtle tape flutter detune
-            const flutter = Math.sin(now * 3) * 2.5;
+            const flutter = Math.sin(now * 3.5) * 2.2;
             osc.frequency.setValueAtTime(freq + flutter, now);
 
             filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(680, now);
-            filter.frequency.exponentialRampToValueAtTime(280, now + chordDuration * 0.9);
+            filter.frequency.setValueAtTime(700, now);
+            filter.frequency.exponentialRampToValueAtTime(320, now + chordDuration * 0.9);
 
             gain.gain.setValueAtTime(0.001, now);
-            gain.gain.linearRampToValueAtTime(0.03 / curProg.chord.length, now + 0.18);
+            gain.gain.linearRampToValueAtTime(0.032 / curProg.chord.length, now + 0.18);
             gain.gain.exponentialRampToValueAtTime(0.0001, now + chordDuration - 0.1);
 
             osc.connect(filter);
@@ -1083,7 +1151,15 @@
             osc.stop(now + chordDuration);
           });
 
-          // 2. Sub-Bass
+          // 2. Gentle Arpeggio Drops
+          if (curProg.arpeg) {
+            curProg.arpeg.forEach((afreq, idx) => {
+              const aTime = now + (beatSec * (idx + 1));
+              this.triggerLoFiBell(aTime, afreq);
+            });
+          }
+
+          // 3. Sub-Bass
           const subOsc = this.ctx.createOscillator();
           const subGain = this.ctx.createGain();
           subOsc.type = 'sine';
@@ -1095,15 +1171,43 @@
           subOsc.start(now);
           subOsc.stop(now + chordDuration * 0.75);
 
-          // 3. Lo-Fi Kick on 1 and Rimshot on 3
+          // 4. Lo-Fi Kick on 1 and Rimshot on 3
           this.triggerLoFiKick(now);
-          this.triggerLoFiRimshot(now + (60 / track.bpm) * 2);
+          this.triggerLoFiRimshot(now + beatSec * 2);
 
           chordIdx++;
           this.timerId = setTimeout(tick, chordDuration * 1000);
         };
 
         tick();
+      },
+
+      triggerBossaChime(time, freq) {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, time);
+        gain.gain.setValueAtTime(0.015, time);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.45);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(time);
+        osc.stop(time + 0.5);
+      },
+
+      triggerLoFiBell(time, freq) {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, time);
+        gain.gain.setValueAtTime(0.018, time);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.55);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(time);
+        osc.stop(time + 0.6);
       },
 
       triggerShaker(time, vol = 0.03) {
@@ -1327,6 +1431,12 @@
         osc.stop(now + duration);
       }
     };
+
+    function skipTrack(e) {
+      if (e) e.stopPropagation();
+      SoundEngine.playClick();
+      SoundEngine.nextTrack();
+    }
   </script>
 
   <script>
@@ -1405,7 +1515,7 @@
         navAlbum: "单品图鉴",
         navArcade: "复古街机",
         catNap: "🐾 味噌和柚子正挤着打呼噜",
-        catFight: "⚠️️ 味噌和柚子打起喵喵拳了！",
+        catFight: "⚠ 味噌和柚子打起喵喵拳了！",
         catPlay: "🧶 柚子在扑咬味噌的黑尾巴",
         drawerTitle: "环境与天气调节",
         drawerWeatherHeader: "窗外天气",
@@ -1482,7 +1592,7 @@
   </script>
 
   <script>
-    /* BAR DIALOGUE POOL */
+    /* COMPREHENSIVE BAR DIALOGUE POOL (8 DIVERSE & WITTY SCENARIOS) */
     const BarTopicPool = [
       {
         id: "gulou_bells",
@@ -1523,6 +1633,10 @@
           {
             label: { en: "Give me something rebellious with a smokey bite.", zh: "给我来杯烟熏烈性、能击碎疲惫的特调。", es: "Dame algo rebelde con un toque ahumado." },
             deltaEnergy: -1, drink: "oldfashioned", nextMood: "sarcastic"
+          },
+          {
+            label: { en: "Pour whatever matches this melancholic drizzle.", zh: "随意倒一杯能配上窗外细雨的微苦小酒。", es: "Sirve lo que mejor combine con esta llovizna melancólica." },
+            deltaEnergy: -1, drink: "negroni", nextMood: "poetic"
           }
         ]
       },
@@ -1542,12 +1656,133 @@
           {
             label: { en: "Your round glasses look extra studious tonight, Wei.", zh: "Wei，你这副复古圆框眼镜今晚看起来格外睿智。", es: "Tus gafas redondas se ven muy sabias esta noche, Wei." },
             deltaEnergy: 0, drink: "paperplane", nextMood: "nightOwl"
+          },
+          {
+            label: { en: "I missed the subway on purpose. Hit me with high proof.", zh: "我是故意错过末班车的，给我来点够劲的。", es: "Perdí el metro a propósito. Sorpréndeme con alta graduación." },
+            deltaEnergy: -1, drink: "smoked_rosemary", nextMood: "sarcastic"
+          }
+        ]
+      },
+      {
+        id: "barcelona_gothic",
+        mood: "empath",
+        text: {
+          en: "\"A bottle of sweet herbal vermut just reminded me of the Gothic Quarter in Barcelona at 1:00 AM—stone arches, sea breeze, and acoustic guitars. Ever get nostalgic for a city you haven't seen in years?\"",
+          zh: "\"这瓶甜草本苦艾酒让我突然想起了巴塞罗那哥特区的深夜一点钟——石砌拱券、地中海的海风与吉他声。你也会怀念遥远异国的某条街巷吗？\"",
+          es: "\"El aroma de este vermut artesanal me recordó al Barrio Gótico de Barcelona a la una de la madrugada: arcos de piedra y guitarras. ¿Sientes nostalgia de algún rincón lejano?\""
+        },
+        options: [
+          {
+            label: { en: "Pour me a house vermut on the rock with an olive.", zh: "给我来杯老冰加橄榄与橙皮的加泰罗尼亚家常苦艾酒。", es: "Sírveme un vermut de la casa con hielo, naranja y oliva." },
+            deltaEnergy: 0, drink: "catalan_vermut", nextMood: "poetic"
+          },
+          {
+            label: { en: "Pair that Catalan nostalgia with Mediterranean gin.", zh: "把这份加泰罗尼亚的乡愁调进地中海玫瑰金酒里。", es: "Combina esa nostalgia con gin mediterráneo y rosas." },
+            deltaEnergy: -1, drink: "catalan", nextMood: "empath"
+          },
+          {
+            label: { en: "My only nostalgia tonight is for undisturbed sleep.", zh: "我现在唯独怀念一觉睡到大天亮的安稳觉。", es: "Mi única nostalgia esta noche es dormir sin alarmas." },
+            deltaEnergy: -1, drink: "kyoto", nextMood: "nightOwl"
+          }
+        ]
+      },
+      {
+        id: "ice_carving",
+        mood: "poetic",
+        text: {
+          en: "\"Notice this ice spear? Hand-carved from a 72-hour directional freeze block. Absolutely zero micro-bubbles. Regular cloudy ice melts fast and ruins the drink, like rushed conversations ruin relationships.\"",
+          zh: "\"瞧瞧这根手工手凿的长冰柱。72小时定向结晶，里面连一颗气泡都没有。浑浊的快融冰会稀释酒体，就像草率浮躁的谈话会毁掉一段关系。\"",
+          es: "\"¿Ves este prisma de hielo puro? Tallado a mano de un bloque de congelación lenta sin burbujas. El hielo turbio arruina el trago como las prisas arruinan las conversaciones.\""
+        },
+        options: [
+          {
+            label: { en: "That is surprisingly deep, Wei. Test it with your best cocktail.", zh: "这哲理挺有深度啊 Wei。用你最好的招牌酒来检验这块冰吧。", es: "Profundo, Wei. Pon a prueba ese hielo con tu mejor trago." },
+            deltaEnergy: -1, drink: "kyoto", nextMood: "poetic"
+          },
+          {
+            label: { en: "Did you just compare ice cubes to my dating life?", zh: "你刚刚是在拿冰块融化来隐喻我的恋爱经历吗？", es: "¿Acabas de comparar un cubo de hielo con mi vida amorosa?" },
+            deltaEnergy: 0, drink: "paperplane", nextMood: "sarcastic"
+          },
+          {
+            label: { en: "Chisel another block, let's toast to zero dilution.", zh: "再凿一块，为不被生活稀释的心境干一杯。", es: "Corta otro bloque; brindemos por cero dilución." },
+            deltaEnergy: -1, drink: "oldfashioned", nextMood: "nightOwl"
+          }
+        ]
+      },
+      {
+        id: "corporate_origami",
+        mood: "sarcastic",
+        text: {
+          en: "\"A regular left behind a 40-page corporate synergy deck earlier. I folded half of it into paper planes and Yuzu batted them into the recycling bin. Want a cocktail that dissolves corporate jargon?\"",
+          zh: "\"傍晚有个常客落下一份厚厚的‘业务赋能闭环战略方案’。我把前二十页折成了纸飞机，全被柚子一爪子拍进了废纸篓。来杯能洗涤职场黑话的鸡尾酒？\"",
+          es: "\"Un cliente olvidó un informe corporativo de sinergias. Doblé la mitad en avioncitos de papel y Yuzu los cazó al vuelo. ¿Quieres un trago para olvidar la jerga de oficina?\""
+        },
+        options: [
+          {
+            label: { en: "A Paper Plane cocktail, shaken aggressively.", zh: "来一杯猛烈摇荡的夜间纸飞机特调，把PPT都甩掉。", es: "Un Paper Plane agitado con furia para olvidar los PowerPoints." },
+            deltaEnergy: -1, drink: "paperplane", nextMood: "baristaJoy"
+          },
+          {
+            label: { en: "Let Yuzu review my résumé next time.", zh: "下回我也带份简历，让柚子猫总监亲自爪批一下。", es: "La próxima vez traeré mi currículum para que Yuzu lo revise." },
+            deltaEnergy: 0, drink: "catalan", nextMood: "sarcastic"
+          },
+          {
+            label: { en: "Just a classic Negroni. Equal parts bitter and real.", zh: "来杯经典内格罗尼吧。等比例的苦涩与真实。", es: "Solo un Negroni clásico: partes iguales de amargura y realidad." },
+            deltaEnergy: -1, drink: "negroni", nextMood: "empath"
+          }
+        ]
+      },
+      {
+        id: "vinyl_turntable",
+        mood: "nightOwl",
+        text: {
+          en: "\"Hear that soft 33 RPM crackle under the stylus? That's an analog warmth no digital codec can fake. The needle vibrates, the tube warms up, and midnight suddenly feels three-dimensional.\"",
+          zh: "\"听见黑胶唱针压在唱片上的轻微沙沙声了吗？这是任何数字算法都调不出来的模拟温度。电子管一热，整个胡同子夜都变得立体了。\"",
+          es: "\"¿Oyes el suave chasquido del vinilo a 33 RPM? Es una calidez analógica irrepetible. La aguja vibra, las válvulas calientan y la noche cobra otra dimensión.\""
+        },
+        options: [
+          {
+            label: { en: "Pour an Islay highball with smoked rosemary.", zh: "给我来杯浸透艾雷岛泥煤与烟熏迷迭香的嗨棒。", es: "Un highball con notas ahumadas y romero tostado." },
+            deltaEnergy: -1, drink: "smoked_rosemary", nextMood: "poetic"
+          },
+          {
+            label: { en: "Spin something Bossa next when morning comes.", zh: "等破晓天亮，记得换上一张明亮的巴萨诺瓦唱片。", es: "Cuando amanezca, pon un disco alegre de Bossa Nova." },
+            deltaEnergy: 0, drink: "jasmine_gulou", nextMood: "baristaJoy"
+          },
+          {
+            label: { en: "Turn the volume up a hair, Wei. It's safe here.", zh: "Wei，把音量拧大半格吧。在这间小酒馆里很安全。", es: "Sube un punto el volumen, Wei. Aquí estamos a salvo del mundo." },
+            deltaEnergy: 0, drink: "oldfashioned", nextMood: "empath"
+          }
+        ]
+      },
+      {
+        id: "midnight_confessions",
+        mood: "empath",
+        text: {
+          en: "\"They say bartenders know more secrets than city confessors. Don't worry, Wei's mahogany counter is soundproofed by good gin and discretion. What's weighing on your mind?\"",
+          zh: "\"人们常说调酒师听过的秘密比告解室还多。放轻松，这方老红木吧台自带着金酒的宽容与守口如瓶。今晚有什么心事想放下的？\"",
+          es: "\"Dicen que los bartenders guardan más secretos que nadie. Tranquilo, esta barra de caoba es discreta y comprensiva. ¿Qué carga llevas en mente?\""
+        },
+        options: [
+          {
+            label: { en: "Just tired of being polite to people I don't respect.", zh: "只是讨厌在工作中不得不对不值得尊敬的人假笑。", es: "Cansado de ser cortés con personas que no respeto." },
+            deltaEnergy: -1, drink: "oldfashioned", nextMood: "sarcastic"
+          },
+          {
+            label: { en: "Nothing heavy. Just glad this warm light exists.", zh: "倒也没什么沉重的，只是庆幸胡同尽头还有这样一盏灯。", es: "Nada grave. Solo me alegra que este rincón cálido exista." },
+            deltaEnergy: 0, drink: "jasmine_gulou", nextMood: "poetic"
+          },
+          {
+            label: { en: "I came to pet Miso and drink vermut, not introspect!", zh: "我是来摸小黑猫味噌和喝苦艾酒的，可不是来做心理剖析的！", es: "¡Vine a acariciar a Miso y beber vermut, no a psicoanalizarme!" },
+            deltaEnergy: 0, drink: "catalan_vermut", nextMood: "baristaJoy"
           }
         ]
       }
     ];
+  </script>
 
-    /* CAFE DIALOGUE POOL */
+  <script>
+    /* COMPREHENSIVE CAFE DIALOGUE POOL (8 DIVERSE & WITTY SCENARIOS) */
     const CafeTopicPool = [
       {
         id: "gesha_morning",
@@ -1586,16 +1821,160 @@
             deltaEnergy: 0, drink: "coldbrew_tonic", nextMood: "poetic"
           },
           {
+            label: { en: "Fast and fiery: Double Yunnan espresso straight up.", zh: "极速唤醒：双份云南水洗浓缩，一饮而尽。", es: "Rápido e intenso: Doble espresso de Yunnan directo." },
+            deltaEnergy: 1, drink: "dirty_espresso", nextMood: "baristaJoy"
+          },
+          {
             label: { en: "Wei, did Miso and Yuzu steal coffee beans again?", zh: "Wei，味噌和柚子刚才是不是又想扒拉咖啡生豆麻袋？", es: "Wei, ¿Miso y Yuzu volvieron a jugar con los sacos de café?" },
             deltaEnergy: 0, drink: "einspanner", nextMood: "baristaJoy"
           }
         ]
+      },
+      {
+        id: "ek43_hyperfixation",
+        mood: "sarcastic",
+        text: {
+          en: "\"I spent two hours before dawn aligning the titanium burrs on my grinder down to 15 microns. My friends say I need therapy; I say their extraction yield is sub-optimal. Who is right?\"",
+          zh: "\"凌晨五点我花了整整两小时校准这台磨豆机的钛金刀盘间隙，精确到15微米。朋友说我需要看心理医生；我说他们的萃取率不及格。你评评理？\"",
+          es: "\"Pasé dos horas alineando las muelas de titanio del molino a 15 micras exactas. Mis amigos dicen que necesito terapia; yo digo que su café está sub-extraído. ¿Quién tiene razón?\""
+        },
+        options: [
+          {
+            label: { en: "You are absolutely right. Give me a Baoshan honey pour-over.", zh: "你绝对是对的！给我来杯高萃取率的云南保山日晒手冲。", es: "Tienes toda la razón. Sírveme un café de filtro de Baoshan." },
+            deltaEnergy: 1, drink: "yunnan_honey_pour", nextMood: "baristaJoy"
+          },
+          {
+            label: { en: "Both things can be true, Wei. Drink some water.", zh: "这两件事并不冲突，Wei。你也该喝口温水了。", es: "Ambas cosas pueden ser ciertas, Wei. Bebe un vaso de agua." },
+            deltaEnergy: 0, drink: "croissant_combo", nextMood: "empath"
+          },
+          {
+            label: { en: "Does all that math make the crema taste like caramel?", zh: "那么复杂的微米物理学，能让咖啡油脂尝起来像焦糖吗？", es: "¿Tanta física hace que la crema sepa a caramelo?" },
+            deltaEnergy: 0, drink: "dirty_espresso", nextMood: "poetic"
+          }
+        ]
+      },
+      {
+        id: "microfoam_theology",
+        mood: "poetic",
+        text: {
+          en: "\"Watch this steamed milk: glossy like wet white paint, velvety microfoam with zero coarse bubbles. Milk steaming is pure physics meeting morning patience.\"",
+          zh: "\"看这打发好的奶泡：像湿润的白油漆一样反光，细密如绸缎，没有半颗粗气泡。蒸汽打奶泡是流体力学与清晨耐心的完美融合。\"",
+          es: "\"Observa esta leche emulsionada: brillante como pintura fresca, microespuma sedosa sin burbujas. Es física pura combinada con paciencia matutina.\""
+        },
+        options: [
+          {
+            label: { en: "Pour that velvet foam into a Barceloneta cortado.", zh: "把这份丝滑奶泡注入一杯巴塞罗那式橙花蜂蜜考塔朵。", es: "Vierte esa microespuma en un cortado con miel y azahar." },
+            deltaEnergy: 1, drink: "barceloneta_cortado", nextMood: "baristaJoy"
+          },
+          {
+            label: { en: "Show off some latte art! A tulip or a cat paw?", zh: "秀一手拉花吧！是九层郁金香还是小猫肉垫？", es: "¡Luce tu latte art! ¿Un tulipán o una patita de gato?" },
+            deltaEnergy: 1, drink: "croissant_combo", nextMood: "empath"
+          },
+          {
+            label: { en: "Crown an iced Einspänner with hand-whipped cream instead.", zh: "不如在冰美式上打一朵香草维也纳厚奶油雪顶。", es: "Prefiero una nube de nata montada sobre un Einspänner." },
+            deltaEnergy: 0, drink: "einspanner", nextMood: "poetic"
+          }
+        ]
+      },
+      {
+        id: "gaudi_courtyard",
+        mood: "baristaJoy",
+        text: {
+          en: "\"The morning shadows across our hutong courtyard tiles resemble the mosaic trencadís of Park Güell in Barcelona. There's a sunny Catalan warmth in the air today.\"",
+          zh: "\"清晨斜照在院子地砖上的树影，倒真有点像巴塞罗那奎尔公园里的彩色马赛克拼贴。今天四合院里有种地中海阳光般的明媚感。\"",
+          es: "\"Las sombras matutinas en el patio parecen el trencadís de Gaudí en Barcelona. Hay una calidez luminosa y mediterránea en el ambiente hoy.\""
+        },
+        options: [
+          {
+            label: { en: "A Barceloneta Honey Cortado with orange zest.", zh: "来一杯带着鲜橙皮油香气的巴塞罗那蜂蜜考塔朵。", es: "Un Cortado Barceloneta con ralladura de naranja y miel." },
+            deltaEnergy: 1, drink: "barceloneta_cortado", nextMood: "baristaJoy"
+          },
+          {
+            label: { en: "A floral Gesha to match the Gaudí mosaic vibes.", zh: "手冲一杯花香四溢的瑰夏，正配这份斑斓朝阳。", es: "Un Gesha floral para armonizar con ese mosaico de sol." },
+            deltaEnergy: 1, drink: "gesha_pourover", nextMood: "poetic"
+          },
+          {
+            label: { en: "Let Yuzu nap on the sunniest courtyard stone.", zh: "让大橘猫柚子独占院子里那块晒得最暖和的石阶吧。", es: "Deja que Yuzu duerma en la piedra más soleada del patio." },
+            deltaEnergy: 0, drink: "croissant_combo", nextMood: "empath"
+          }
+        ]
+      },
+      {
+        id: "cat_burlap_inspection",
+        mood: "sarcastic",
+        text: {
+          en: "\"A fresh shipment of Huila Colombia washed beans arrived at 7 AM. Miso immediately slept on top of the burlap sack, while Yuzu inspected every corner. Certified quality control!\"",
+          zh: "\"清晨七点刚运到一麻袋哥伦比亚蕙兰水洗咖啡生豆。味噌立马盘踞在麻袋上补觉，柚子则仔细把生豆嗅了一遍。真正的‘猫爪质检’！\"",
+          es: "\"A las siete llegó un saco de café de Huila, Colombia. Miso se acostó de inmediato encima y Yuzu olió cada grano. ¡Control de calidad certificado por felinos!\""
+        },
+        options: [
+          {
+            label: { en: "Brew whatever bean the cats gave their blessing to.", zh: "冲一杯猫咪质检员盖章认证的单一产区手冲。", es: "Prepara el grano que los gatos hayan aprobado." },
+            deltaEnergy: 1, drink: "yunnan_honey_pour", nextMood: "baristaJoy"
+          },
+          {
+            label: { en: "Feed Miso and Yuzu some treats for their hard work.", zh: "替这两位辛勤巡检的猫咪员工加一勺冻干小零食。", es: "Premia a Miso y Yuzu por su duro trabajo de inspección." },
+            deltaEnergy: 0, drink: "coldbrew_tonic", nextMood: "empath"
+          },
+          {
+            label: { en: "I'll take a Vienna Einspänner while the cats sleep.", zh: "趁小猫在生豆上打呼噜，给我上一杯焦糖维也纳咖啡吧。", es: "Tomaré un Einspänner mientras los gatos descansan." },
+            deltaEnergy: 0, drink: "einspanner", nextMood: "poetic"
+          }
+        ]
+      },
+      {
+        id: "corporate_refuge",
+        mood: "empath",
+        text: {
+          en: "\"It's 8:45 AM. Out on the main road, commuters are sprinting toward the subway with dread in their eyes. Take your time behind this wooden door—work can wait fifteen minutes.\"",
+          zh: "\"现在是差一刻钟九点。外头大街上赶地铁的人脚步匆匆、眼神紧绷。在这扇木门后多坐一会儿吧——工作总能等个十五分钟的。\"",
+          es: "\"Son las 8:45. Fuera, la gente corre al metro con prisa y estrés. Tómate tu tiempo aquí detrás de la madera: el trabajo puede esperar quince minutos.\""
+        },
+        options: [
+          {
+            label: { en: "Thank you, Wei. An Oat Dirty to anchor my morning.", zh: "谢谢你 Wei。来一杯浓醇燕麦Dirty稳住心神。", es: "Gracias, Wei. Un Dirty de avena para anclar mi mañana." },
+            deltaEnergy: 0, drink: "dirty_espresso", nextMood: "empath"
+          },
+          {
+            label: { en: "A warm butter croissant and ceremonial matcha.", zh: "一只温热蜂巢可颂，配上一碗现点宇治云朵抹茶。", es: "Un croissant tibio de mantequilla y matcha ceremonial." },
+            deltaEnergy: 1, drink: "matcha_cloud", nextMood: "poetic"
+          },
+          {
+            label: { en: "I'm setting my Slack status to 'In Hutong Meditation'.", zh: "我先把工作状态改成‘胡同深度冥想中’再说。", es: "Pondré mi estado de Slack en 'Meditando en el Hutong'." },
+            deltaEnergy: 0, drink: "gesha_pourover", nextMood: "sarcastic"
+          }
+        ]
+      },
+      {
+        id: "yunnan_honey_roast",
+        mood: "baristaJoy",
+        text: {
+          en: "\"This Yunnan Baoshan Honey lot was roasted just four days ago. It has this incredible sweetness like dried persimmon, wild honey, and mountain wood smoke. Want to smell the dry grounds?\"",
+          zh: "\"这批云南保山日晒黄蜜处理是四天前刚烘好的。干香带着极其惊艳的柿饼甜香、野山蜂蜜与高山木质香。要先闻闻干香气吗？\"",
+          es: "\"Este lote honey de Baoshan, Yunnan, se tostó hace apenas cuatro días. Tiene una dulzura fantástica a caqui seco, miel silvestre y notas amaderadas. ¿Quieres oler la molienda?\""
+        },
+        options: [
+          {
+            label: { en: "Yes! Grind and brew it in the ceramic V60.", zh: "太香了！用有田烧陶瓷滤杯冲出它的层次感吧。", es: "¡Sí! Muélelo y extráelo en el V60 cerámico." },
+            deltaEnergy: 1, drink: "yunnan_honey_pour", nextMood: "baristaJoy"
+          },
+          {
+            label: { en: "Can we make a sparkling citrus cold brew with it?", zh: "能用它调制一杯带气泡的清爽柑橘冰汤力吗？", es: "¿Podemos hacer un cold brew tónica cítrico con ese café?" },
+            deltaEnergy: 0, drink: "coldbrew_tonic", nextMood: "poetic"
+          },
+          {
+            label: { en: "Pack a tin of whole beans for me to take home.", zh: "给我称一罐新鲜烘焙的整颗咖啡豆带走。", es: "Empácame una lata de granos enteros para llevar a casa." },
+            deltaEnergy: 1, drink: "croissant_combo", nextMood: "empath"
+          }
+        ]
       }
     ];
+  </script>
 
-    /* DRINK & COFFEE MENU MANIFEST */
+  <script>
+    /* EXPANDED DRINK & COFFEE MENU MANIFEST */
     const DrinkManifest = {
-      // Cocktails
+      // Cocktails (Bar Mode)
       jasmine_gulou: {
         type: 'bar',
         name: { en: "Gulou Belltower Jasmine G&T", zh: "鼓楼夜钟茉莉金汤力", es: "G&T Jazmín de la Torre Gulou" },
@@ -1611,6 +1990,14 @@
         desc: { en: "\"Mediterranean rosemary, arbequina olive notes, and floating Sant Jordi red rose petals.\"", zh: "\"融汇巴塞罗那迷迭香、阿贝金娜橄榄微咸与圣乔治红玫瑰花瓣，回味如同漫步海港薄暮。\"", es: "\"Romero mediterráneo, tónica de alta montaña y pétalos carmesí de Sant Jordi.\"" },
         formula: "45ml Catalan Gin • 120ml Med Tonic • Rose Petals • Bay Leaf",
         icon: "🌹"
+      },
+      catalan_vermut: {
+        type: 'bar',
+        name: { en: "Barcelona Gothic House Vermut", zh: "巴塞罗那哥特区家酿苦艾酒", es: "Vermut Artesanal de Barcelona" },
+        sub: { en: "Sweet Herbal Vermouth • Stuffed Gordal Olive • Orange Slice", zh: "加泰罗尼亚草本红苦艾 • 戈达尔大橄榄 • 鲜切厚橙片", es: "Vermut Rojo Artesano • Oliva Gordal • Rodaja de Naranja" },
+        desc: { en: "\"Rich artisan red vermouth poured over a single clear ice block with an orange wedge and olive spear.\"", zh: "\"浓厚甘冽的红苦艾酒注入大方冰，串起一颗西班牙戈达尔大橄榄与多汁橙角，微甜微苦，海风拂面。\"", es: "\"Vermut rojo artesanal servido sobre roca con aceituna gordal y naranja fresca.\"" },
+        formula: "90ml Catalan Red Vermut • Siphon Soda Splash • Gordal Olive • Orange",
+        icon: "🍷"
       },
       kyoto: {
         type: 'bar',
@@ -1634,7 +2021,7 @@
         sub: { en: "Bittersweet 1:1:1 • Campari & Vermouth", zh: "金巴利苦酒 • 甜味美思 • 伦敦干金 搅拌35次", es: "Agridulce Equilibrado • Campari & Vermouth" },
         desc: { en: "\"Equal parts London dry, Italian bitter aperitif, and sweet vermouth stirred over rock.\"", zh: "\"等比例的英格兰干金、意大利金巴利与都灵甜味美思，在老冰上顺畅旋转35周。\"", es: "\"Partes iguales de gin seco, aperitivo amargo y vermouth dulce removido sobre roca.\"" },
         formula: "30ml Gin • 30ml Campari • 30ml Carpano Antica",
-        icon: "🍷"
+        icon: "🍹"
       },
       paperplane: {
         type: 'bar',
@@ -1644,8 +2031,16 @@
         formula: "22.5ml Bourbon • 22.5ml Aperol • 22.5ml Nonino • 22.5ml Lemon",
         icon: "✈️"
       },
+      smoked_rosemary: {
+        type: 'bar',
+        name: { en: "Smoked Rosemary Islay Highball", zh: "泥煤烟熏迷迭香高球", es: "Highball de Islay y Romero Ahumado" },
+        sub: { en: "Laphroaig 10 • Torched Herb Smoke • Mountain Soda", zh: "拉弗格10年泥煤 • 喷枪炙烤迷迭香 • 高气泡苏打水", es: "Islay Peated Whisky • Romero Tostado • Soda de Alta Presión" },
+        desc: { en: "\"Smoky Islay scotch charged with super-carbonated soda and perfumed with charred garden rosemary.\"", zh: "\"重泥煤苏格兰单一麦芽威士忌搭配强气泡苏打，杯口以喷枪炙烤一簇新鲜迷迭香，烟火气十足。\"", es: "\"Scotch ahumado con soda extra burbujeante y una ramita de romero tostada en directo.\"" },
+        formula: "45ml Islay Scotch • 135ml High-Pressure Soda • Flamed Rosemary Sprig",
+        icon: "🔥"
+      },
 
-      // Specialty Coffee
+      // Specialty Coffee (Cafe Mode)
       gesha_pourover: {
         type: 'cafe',
         name: { en: "Anaerobic Natural Gesha (V60)", zh: "厌氧日晒瑰夏手冲 (V60)", es: "Gesha Natural Anaeróbico (V60)" },
@@ -1661,6 +2056,22 @@
         desc: { en: "\"Hot dark chocolate espresso extracted straight over icy dense oat cream. Layers melt together sip by sip.\"", zh: "\"现压滚烫浓缩直落于冰冷厚实燕麦奶层上，一口大口喝下，感受冷与热、苦甜与坚果奶香的奇妙交融。\"", es: "\"Espresso caliente vertido sobre crema densa y fría de avena. Capas contrastantes en cada sorbo.\"" },
         formula: "30ml Double Ristretto • 120ml Chilled Dense Oat Cream • Zero Ice",
         icon: "🥛"
+      },
+      barceloneta_cortado: {
+        type: 'cafe',
+        name: { en: "Barceloneta Honey Orange Cortado", zh: "巴塞罗那橙皮蜂蜜考塔朵", es: "Cortado Barceloneta con Miel" },
+        sub: { en: "Wildflower Honey • Espresso 1:1 Steamed Milk • Orange Oil", zh: "野花蜂蜜 • 1:1等比微奶泡 • 西班牙甜橙精油", es: "Miel Silvestre • Proporción 1:1 • Aceite de Naranja" },
+        desc: { en: "\"Spanish style cortado layered over artisan wildflower honey, expressing bright citrus zest in velvety microfoam.\"", zh: "\"加泰罗尼亚经典考塔朵，底部垫有野花蜂蜜，萃取双份意式浓缩并注入等量微奶泡，刮擦新鲜甜橙皮油。\"", es: "\"Cortado español sobre miel de flores silvestres con microespuma perfumada a naranja fresca.\"" },
+        formula: "40ml Espresso • 10ml Raw Honey • 40ml Microfoam • Flamed Orange Peel",
+        icon: "🍊"
+      },
+      yunnan_honey_pour: {
+        type: 'cafe',
+        name: { en: "Yunnan Baoshan Honey Pour-Over", zh: "云南保山精品黄蜜手冲", es: "Filtro Yunnan Honey de Baoshan" },
+        sub: { en: "Baoshan 1800m • Dried Persimmon • Wild Honeycomb & Cacao", zh: "海拔1800米 • 柿饼蜜甜 • 野生蜂巢与生可可", es: "Altitud 1800m • Caqui Dulce • Miel y Cacao Puro" },
+        desc: { en: "\"Honey processed specialty lot from Baoshan, Yunnan. Deep lingering sweetness resembling dried persimmons and wild honey.\"", zh: "\"来自云南保山高海拔产区的优质黄蜜微批次。饱满的柿饼与烤坚果香气，尾韵有着绵长的野生蜂蜜甜感。\"", es: "\"Proceso honey de alta montaña en Yunnan. Dulzura prolongada a frutas deshidratadas y miel.\"" },
+        formula: "16g Coffee • 250g Water • 92°C • Ratio 1:15.5 • 2m 20s",
+        icon: "🫘"
       },
       croissant_combo: {
         type: 'cafe',
@@ -1685,6 +2096,14 @@
         desc: { en: "\"Deep dark roast coffee crowned with a cloud of cold hand-whipped vanilla cream and cocoa dust.\"", zh: "\"浓黑醇苦的黑咖啡上方漂浮着一团厚厚的现打香草冷奶油，顶端撒满法芙娜可可粉。\"", es: "\"Café negro coronado con una densa nube de nata fría a la vainilla y cacao.\"" },
         formula: "120ml Long Black • 50ml Whipped Sweet Cream • Cocoa Dust",
         icon: "🍨"
+      },
+      matcha_cloud: {
+        type: 'cafe',
+        name: { en: "Uji Ceremonial Cloud Latte", zh: "宇治初摘云朵双层抹茶", es: "Latte de Matcha Ceremonial de Uji" },
+        sub: { en: "Stone-milled First Flush Uji • Silky Oat Milk • Bamboo Whisked", zh: "宇治石磨一番茶 • 浓厚燕麦奶 • 茶筅现点手打", es: "Primera Cosecha de Uji • Leche de Avena • Batido con Chasen" },
+        desc: { en: "\"First harvest ceremonial green tea hand-whisked into emerald foam, floated over chilled velvety oat milk.\"", zh: "\"选用宇治一番摘顶级石磨抹茶，以百本立竹茶筅现点打出细腻翡翠泡沫，轻柔悬浮于冰燕麦乳之上。\"", es: "\"Matcha ceremonial de Uji batido a mano en espuma esmeralda sobre leche fría de avena.\"" },
+        formula: "4g Ceremonial Matcha • 40ml 80°C Water • 140ml Chilled Oat Milk",
+        icon: "🍵"
       }
     };
 
@@ -1816,7 +2235,6 @@
             if (p.y < -20) { p.y = this.canvas.height + 20; p.x = Math.random() * this.canvas.width; }
           });
         } else {
-          // Clear Starlight / Sun Dust
           this.ctx.fillStyle = AppState.isBarOpen ? 'rgba(245, 158, 11, 0.2)' : 'rgba(253, 224, 71, 0.25)';
           this.particles.forEach(p => {
             this.ctx.fillRect(Math.floor(p.x), Math.floor(p.y), p.size * 1.4, p.size * 1.4);
@@ -1834,7 +2252,7 @@
       if (userClick) SoundEngine.playClick();
       AppState.weather = w;
       const icons = { rain: '🌧️', clear: '✨', snow: '❄️', fog: '🌫️', storm: '⚡' };
-      document.getElementById('weather-display-icon').textContent = icons[w] || '🌧️️';
+      document.getElementById('weather-display-icon').textContent = icons[w] || '🌧';
       WeatherSystem.createParticles();
       applyTimeWeatherPalette();
       if (userClick) toggleAtmosphereDrawer(false);
@@ -1892,9 +2310,7 @@
       AppState.hour = hourValue;
       AppState.isBarOpen = (hourValue >= 18 || hourValue < 4);
 
-      // 24-Hour Dial: 360 degrees = 24 hours (15 degrees per hour)
       const hDeg = (hourValue % 24) * 15;
-      // Minute Hand: 360 degrees = 60 minutes (6 degrees per minute)
       const mDeg = (hourValue % 1) * 360;
 
       const hHand = document.getElementById('hour-needle');
@@ -1927,9 +2343,7 @@
         btnEnter.textContent = t.btnEnterCoffee;
       }
 
-      // Propagate day/night mode to audio engine
       SoundEngine.setMode(AppState.isBarOpen);
-
       applyCafeOrBarEnvironment();
       evaluateWeiState();
       applyTimeWeatherPalette();
@@ -1951,11 +2365,9 @@
         const dx = clientX - cx;
         const dy = clientY - cy;
 
-        // Angle in degrees from 12 o'clock clockwise (0 to 360 deg)
         let angle = Math.atan2(dx, -dy) * (180 / Math.PI);
         if (angle < 0) angle += 360;
 
-        // Map 360 degrees directly to 0-24 hour dial
         let hour24 = (angle / 360) * 24;
         if (hour24 >= 24) hour24 = 23.99;
 
@@ -2052,7 +2464,6 @@
       const tag = document.getElementById('sprite-wei-tag');
       const moodPill = document.getElementById('host-mood-pill');
 
-      // Sleeping condition: Late night witching hour (02:30 - 04:00) or energy depleted
       const isSleepHour = (AppState.hour >= 2.5 && AppState.hour < 4.0);
       const isEnergyOut = (AppState.weiEnergy <= 0);
 
@@ -2352,12 +2763,11 @@
       tCols: 10,
       tRows: 14,
       tDropTimer: 0,
-      tClearAnim: null,
 
       // Game 3: Gomoku State (9x9)
       gBoard: [],
       gSize: 9,
-      gTurn: 1, // 1 = player, 2 = AI
+      gTurn: 1,
       gCursor: { r: 4, c: 4 },
 
       // Game 4: Super Cat Jumper State
@@ -2394,7 +2804,6 @@
         document.getElementById('game-score-display').textContent = `${t.gameScore}: ${this.score}`;
       },
 
-      // 1. COFFEE BEAN SNAKE
       initSnake() {
         this.snake = [{ x: 6, y: 7 }, { x: 5, y: 7 }, { x: 4, y: 7 }];
         this.snakeDir = { x: 1, y: 0 };
@@ -2446,7 +2855,6 @@
         this.ctx.fillStyle = '#0f0e0c';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Retro subtle grid
         this.ctx.strokeStyle = '#1a1815';
         this.ctx.lineWidth = 1;
         for (let i = 0; i <= this.gridSize; i++) {
@@ -2456,13 +2864,11 @@
           this.ctx.stroke();
         }
 
-        // Draw Roasted Coffee Bean Food
         this.ctx.fillStyle = '#b45309';
         this.ctx.fillRect(this.food.x * cell + 3, this.food.y * cell + 3, cell - 6, cell - 6);
         this.ctx.fillStyle = '#451a03';
         this.ctx.fillRect(this.food.x * cell + cell / 2 - 1, this.food.y * cell + 3, 2, cell - 6);
 
-        // Draw Snake
         this.snake.forEach((seg, i) => {
           this.ctx.fillStyle = i === 0 ? '#10b981' : '#059669';
           this.ctx.fillRect(seg.x * cell + 1, seg.y * cell + 1, cell - 2, cell - 2);
@@ -2473,7 +2879,6 @@
         });
       },
 
-      // 2. RETRO PIXEL TETRIS
       initTetris() {
         this.tGrid = Array(this.tRows).fill(null).map(() => Array(this.tCols).fill(0));
         this.spawnTetrisPiece();
@@ -2482,12 +2887,12 @@
 
       spawnTetrisPiece() {
         const shapes = [
-          { s: [[1, 1, 1, 1]], c: '#06b6d4' }, // I
-          { s: [[1, 1], [1, 1]], c: '#eab308' }, // O
-          { s: [[0, 1, 0], [1, 1, 1]], c: '#a855f7' }, // T
-          { s: [[1, 0, 0], [1, 1, 1]], c: '#f97316' }, // L
-          { s: [[0, 0, 1], [1, 1, 1]], c: '#3b82f6' }, // J
-          { s: [[0, 1, 1], [1, 1, 0]], c: '#22c55e' }  // S
+          { s: [[1, 1, 1, 1]], c: '#06b6d4' },
+          { s: [[1, 1], [1, 1]], c: '#eab308' },
+          { s: [[0, 1, 0], [1, 1, 1]], c: '#a855f7' },
+          { s: [[1, 0, 0], [1, 1, 1]], c: '#f97316' },
+          { s: [[0, 0, 1], [1, 1, 1]], c: '#3b82f6' },
+          { s: [[0, 1, 1], [1, 1, 0]], c: '#22c55e' }
         ];
         const pick = shapes[Math.floor(Math.random() * shapes.length)];
         this.tPiece = { shape: pick.s, color: pick.c, x: 3, y: 0 };
@@ -2600,7 +3005,6 @@
         }
       },
 
-      // 3. GOMOKU / GO (9x9 vs WEI AI)
       initGomoku() {
         this.gBoard = Array(this.gSize).fill(null).map(() => Array(this.gSize).fill(0));
         this.gTurn = 1;
@@ -2697,7 +3101,6 @@
           }
         }
 
-        // Target Cursor Indicator
         this.ctx.strokeStyle = '#f59e0b';
         this.ctx.lineWidth = 2;
         const curX = (this.gCursor.c + 1) * cell;
@@ -2705,7 +3108,6 @@
         this.ctx.strokeRect(curX - cell / 2, curY - cell / 2, cell, cell);
       },
 
-      // 4. SUPER CAT JUMPER (RUNNER)
       initRunner() {
         this.runnerCat = { y: 200, vy: 0, jumping: false };
         this.runnerObstacles = [{ x: 300, type: 'sack' }];
@@ -2733,7 +3135,6 @@
           const obs = this.runnerObstacles[i];
           obs.x -= 3.8;
 
-          // Collision check
           if (obs.x < 65 && obs.x > 25 && this.runnerCat.y > 175) {
             this.triggerGameOver();
             return;
@@ -2753,7 +3154,6 @@
         this.ctx.fillStyle = '#1c1917';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Parallax Hutong Silhouettes
         this.ctx.fillStyle = '#292524';
         for (let i = 0; i < 3; i++) {
           const rx = this.runnerBgX + i * 140;
@@ -2763,13 +3163,11 @@
           this.ctx.fill();
         }
 
-        // Cobblestone ground
         this.ctx.fillStyle = '#78350f';
         this.ctx.fillRect(0, 220, this.canvas.width, 60);
         this.ctx.fillStyle = '#451a03';
         this.ctx.fillRect(0, 220, this.canvas.width, 4);
 
-        // Yuzu the Cat Sprite
         this.ctx.fillStyle = '#f59e0b';
         this.ctx.fillRect(35, this.runnerCat.y - 18, 24, 18);
         this.ctx.fillStyle = '#d97706';
@@ -2777,7 +3175,6 @@
         this.ctx.fillRect(52, this.runnerCat.y - 23, 4, 6);
         this.ctx.fillRect(30, this.runnerCat.y - 12, 6, 4);
 
-        // Obstacles (Coffee Sack or Barrel)
         this.runnerObstacles.forEach(obs => {
           this.ctx.fillStyle = obs.type === 'sack' ? '#78350f' : '#b45309';
           this.ctx.fillRect(obs.x, 196, 20, 24);
@@ -2876,7 +3273,6 @@
       if (ArcadeGame.loopId) cancelAnimationFrame(ArcadeGame.loopId);
     }
 
-    // Direct Canvas Click for Gomoku
     window.addEventListener('DOMContentLoaded', () => {
       const c = document.getElementById('arcade-canvas');
       if (c) {
@@ -2931,32 +3327,35 @@
       if (isBar) {
         selBase.innerHTML = `
           <option value="Beijing Jasmine Tea Gin">Beijing Jasmine Tea Gin</option>
+          <option value="Catalan Mediterranean Gin">Catalan Mediterranean Gin</option>
           <option value="Ki No Bi Kyoto Gin">Ki No Bi Kyoto Gin</option>
           <option value="Monkey 47 Black Forest">Monkey 47 Gin</option>
           <option value="Cask Rye Bourbon">Cask Rye Bourbon</option>
         `;
         selMod.innerHTML = `
           <option value="Beijing Osmanthus Soda">Beijing Osmanthus Soda</option>
+          <option value="Catalan Sweet Herbal Vermut">Catalan Sweet Vermut</option>
           <option value="Mediterranean Tonic">Mediterranean Herbal Tonic</option>
           <option value="Japanese Yuzu Tonic">Japanese Yuzu Tonic</option>
         `;
         selGarnish.innerHTML = `
           <option value="Golden Gingko Leaf & Hawthorn">Golden Gingko Leaf & Hawthorn</option>
+          <option value="Torched Sprig of Rosemary">Torched Rosemary</option>
           <option value="Slapped Shiso & Sansho">Slapped Shiso & Sansho</option>
           <option value="Sant Jordi Rose Petals">Sant Jordi Rose Petals</option>
         `;
       } else {
         selBase.innerHTML = `
           <option value="Anaerobic Natural Gesha">Anaerobic Natural Gesha</option>
-          <option value="Washed Yunnan Catimor">Washed Yunnan Catimor</option>
-          <option value="Kenya Nyeri Peaberry">Kenya Nyeri Peaberry</option>
-          <option value="Mandheling Dark Roast">Mandheling Dark Roast</option>
+          <option value="Yunnan Baoshan Honey Lot">Yunnan Baoshan Honey Lot</option>
+          <option value="Washed Colombia Huila">Washed Colombia Huila</option>
+          <option value="Uji Ceremonial Stone Matcha">Uji Ceremonial Matcha</option>
         `;
         selMod.innerHTML = `
           <option value="Chilled Dense Oat Cream">Chilled Dense Oat Cream</option>
           <option value="Velvety Steamed Milk">Velvety Steamed Milk</option>
-          <option value="Sparkling Tonic Water">Sparkling Tonic Water</option>
-          <option value="Pure Mountain Water (V60)">Pure Mountain Water (V60)</option>
+          <option value="Wildflower Honey & Orange Oil">Honey & Orange Oil</option>
+          <option value="Sparkling Citrus Tonic">Sparkling Citrus Tonic</option>
         `;
         selGarnish.innerHTML = `
           <option value="Torched Cinnamon Stick">Torched Cinnamon Stick</option>
@@ -3104,19 +3503,16 @@
       SoundEngine.playClick();
       AppState.inSanctuary = true;
 
-      // 1. Randomize Outdoor Weather on Every Entry
       const weathers = ['rain', 'clear', 'snow', 'fog', 'storm'];
       const randomWeather = weathers[Math.floor(Math.random() * weathers.length)];
       setWeather(randomWeather, false);
 
-      // 2. Randomize BGM Track according to current mode
       SoundEngine.setMode(AppState.isBarOpen);
       SoundEngine.randomizeTrack();
       if (!SoundEngine.bgmPlaying) {
         toggleBGM();
       }
 
-      // 3. Randomize Host's Mood & Energy
       const barMoods = ['nightOwl', 'sarcastic', 'empath', 'poetic'];
       const cafeMoods = ['baristaJoy', 'poetic', 'empath'];
       const currentMoodPool = AppState.isBarOpen ? barMoods : cafeMoods;
