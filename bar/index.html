@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Wei's Bar & Coffee</title>
-  
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Fonts: Pixelify Sans, VT323 Monospace, Cinzel Serif -->
+
+  <!-- Retro Pixel Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Pixelify+Sans:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
@@ -27,6 +27,9 @@
             amberGlow: '#F59E0B',
             copperDark: '#78350F',
             velvetNight: '#0D0907',
+            cafeCream: '#FFFBEB',
+            cafeRoast: '#451A03',
+            cafeWarm: '#7C2D12'
           }
         }
       }
@@ -74,25 +77,26 @@
       display: block;
       position: absolute;
       top: 0; left: 0; bottom: 0; right: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.24) 50%);
       background-size: 100% 3px;
       z-index: 45;
       pointer-events: none;
-      opacity: 0.55;
+      opacity: 0.45;
     }
 
     .eq-bar {
       width: 3px;
       background-color: #f59e0b;
       display: inline-block;
-      animation: eqPulse 0.9s ease-in-out infinite alternate;
+      animation: eqPulse 0.8s ease-in-out infinite alternate;
     }
-    .eq-bar:nth-child(1) { height: 10px; animation-delay: 0.1s; }
-    .eq-bar:nth-child(2) { height: 16px; animation-delay: 0.35s; }
-    .eq-bar:nth-child(3) { height: 8px; animation-delay: 0.2s; }
+    .eq-bar:nth-child(1) { height: 8px; animation-delay: 0.1s; }
+    .eq-bar:nth-child(2) { height: 16px; animation-delay: 0.3s; }
+    .eq-bar:nth-child(3) { height: 11px; animation-delay: 0.2s; }
+    .eq-bar:nth-child(4) { height: 14px; animation-delay: 0.4s; }
     @keyframes eqPulse {
-      0% { transform: scaleY(0.25); }
-      100% { transform: scaleY(1.15); }
+      0% { transform: scaleY(0.2); }
+      100% { transform: scaleY(1.2); }
     }
 
     .hand-indicator {
@@ -102,6 +106,7 @@
 
     ::-webkit-scrollbar {
       width: 4px;
+      height: 4px;
     }
     ::-webkit-scrollbar-track {
       background: #14100d;
@@ -118,11 +123,32 @@
       animation: gentleSway 3s ease-in-out infinite;
     }
 
+    @keyframes sleepBreathing {
+      0%, 100% { transform: translateY(3px) scaleY(0.96); }
+      50% { transform: translateY(0) scaleY(1.02); }
+    }
+    .sleep-breathing {
+      animation: sleepBreathing 3.6s ease-in-out infinite;
+    }
+
+    @keyframes floatZzz {
+      0% { opacity: 0; transform: translate(0, 0) scale(0.7); }
+      40% { opacity: 1; }
+      100% { opacity: 0; transform: translate(14px, -24px) scale(1.35); }
+    }
+    .zzz-particle-1 { animation: floatZzz 2.8s ease-in-out infinite; }
+    .zzz-particle-2 { animation: floatZzz 2.8s ease-in-out infinite 0.9s; }
+    .zzz-particle-3 { animation: floatZzz 2.8s ease-in-out infinite 1.8s; }
+
     .energy-pip {
       width: 6px;
       height: 6px;
       display: inline-block;
       border: 1px solid #000;
+    }
+
+    canvas {
+      image-rendering: pixelated;
     }
   </style>
 </head>
@@ -131,11 +157,11 @@
   <!-- Interactive Weather Canvas -->
   <canvas id="weather-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
 
-  <!-- Ambient Weather & Time Chromatic Aura -->
+  <!-- Ambient Chromatic Aura -->
   <div id="ambient-aura" class="absolute inset-0 pointer-events-none z-0 opacity-40 transition-all duration-1000"></div>
 
   <!-- NAVBAR -->
-  <header class="relative z-40 w-full px-2.5 sm:px-4 py-1.5 border-b border-stone-800/90 bg-stone-950/90 backdrop-blur-md flex items-center justify-between">
+  <header class="relative z-40 w-full px-2 sm:px-4 py-1.5 border-b border-stone-800/90 bg-stone-950/90 backdrop-blur-md flex items-center justify-between">
     
     <!-- LEFT: Brand Monogram + Status Badge -->
     <div class="flex items-center gap-2 cursor-pointer group" onclick="tapLogo()" title="Wei's Insignia">
@@ -162,18 +188,20 @@
       </div>
     </div>
 
-    <!-- RIGHT: Compact Controls -->
+    <!-- RIGHT: Compact Navigation Controls -->
     <div class="flex items-center gap-1 sm:gap-2">
 
-      <!-- Lo-Fi Music Toggle & Randomizer -->
-      <button id="btn-lofi" onclick="toggleLoFiBGM()" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-amber-400 flex items-center gap-1.5" title="Procedural Lo-Fi Beats">
+      <!-- Distinct BGM Radio Engine Indicator -->
+      <button id="btn-lofi" onclick="toggleBGM()" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-amber-400 flex items-center gap-1.5" title="Procedural Audio Player">
         <div id="eq-graphic" class="hidden items-end gap-0.5 h-3">
+          <span class="eq-bar"></span>
           <span class="eq-bar"></span>
           <span class="eq-bar"></span>
           <span class="eq-bar"></span>
         </div>
         <span id="eq-mute-icon" class="text-xs">📻</span>
-        <span id="lofi-track-name" class="font-retro text-[10px] text-amber-300/80 hidden sm:inline max-w-[110px] truncate">Lofi Radio</span>
+        <span id="bgm-genre-badge" class="hidden sm:inline font-mono text-[8px] px-1 bg-amber-950/80 border border-amber-700/50 text-amber-300">LOFI</span>
+        <span id="bgm-track-name" class="font-retro text-[11px] text-amber-200 hidden md:inline max-w-[110px] truncate">Radio Off</span>
       </button>
 
       <!-- Atmosphere & Clock Drawer Trigger -->
@@ -182,13 +210,19 @@
         <span id="time-display-badge" class="font-retro text-[11px] text-amber-400">22:30</span>
       </button>
 
-      <!-- Codex Album Button -->
-      <button onclick="toggleCodexModal(true)" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-stone-200 flex items-center gap-1 text-xs" title="Cocktail Album & G&T Atelier">
-        <span>📖</span>
-        <span id="nav-album-label" class="hidden sm:inline font-retro text-[11px]">ALBUM</span>
+      <!-- Arcade Modal Trigger -->
+      <button onclick="openEntertainmentHub()" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-amber-300 flex items-center gap-1 text-xs" title="Retro Pixel Games">
+        <span>🕹️</span>
+        <span id="nav-arcade-label" class="hidden sm:inline font-retro text-[11px]">ARCADE</span>
       </button>
 
-      <!-- Language Selector Pill -->
+      <!-- Codex Album (Menu & Atelier) -->
+      <button onclick="toggleCodexModal(true)" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-stone-200 flex items-center gap-1 text-xs" title="Cocktail/Coffee Menu">
+        <span>📖</span>
+        <span id="nav-album-label" class="hidden sm:inline font-retro text-[11px]">MENU</span>
+      </button>
+
+      <!-- Language Selector -->
       <button onclick="cycleLanguage()" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-amber-300 font-mono text-[10px]" title="Change Language">
         <span id="lang-indicator">EN</span>
       </button>
@@ -197,14 +231,15 @@
 
   </header>
 
-  <!-- ATMOSPHERE & TIME ADJUSTMENT PANEL -->
+  <!-- ATMOSPHERE & TIME ADJUSTMENT DRAWER -->
   <div id="drawer-atmosphere" class="hidden absolute top-10 sm:top-11 right-2 left-2 sm:left-auto sm:w-84 z-50 bg-stone-950 border-2 border-stone-800 p-2.5 pixel-frame shadow-2xl">
     <div class="flex items-center justify-between pb-1.5 mb-2 border-b border-stone-800 text-[10px] font-retro text-stone-400">
+      <span id="drawer-title">ATMOSPHERE CONTROL</span>
       <button onclick="toggleAtmosphereDrawer()" class="hover:text-white">✕ CLOSE</button>
     </div>
 
-    <!-- Weather Selector Row -->
-    <div id="drawer-weather-header" class="text-[10px] text-stone-400 mb-1 font-retro">OUTDOOR WEATHER (BEIJING)</div>
+    <!-- Weather Selector -->
+    <div id="drawer-weather-header" class="text-[10px] text-stone-400 mb-1 font-retro">OUTDOOR WEATHER</div>
     <div class="grid grid-cols-5 gap-1 mb-2.5">
       <button onclick="setWeather('rain')" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-xs" title="Rain">🌧️</button>
       <button onclick="setWeather('clear')" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-xs" title="Clear Stars">✨</button>
@@ -213,11 +248,11 @@
       <button onclick="setWeather('storm')" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-xs" title="Electric Thunder">⚡</button>
     </div>
 
-    <!-- Quick Time Presets Row -->
-    <div id="drawer-presets-header" class="text-[10px] text-stone-400 mb-1 font-retro">TIME SELECTOR</div>
+    <!-- Quick Time Presets -->
+    <div id="drawer-presets-header" class="text-[10px] text-stone-400 mb-1 font-retro">TIME PRESETS</div>
     <div class="grid grid-cols-4 gap-1">
       <button onclick="setTimePreset(22.5)" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-[10px] font-retro text-amber-300">🌙 22:30 Bar</button>
-      <button onclick="setTimePreset(8.5)" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-[10px] font-retro text-stone-300">☕ 08:30 Cafe</button>
+      <button onclick="setTimePreset(8.5)" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-[10px] font-retro text-amber-200">☕ 08:30 Cafe</button>
       <button onclick="setTimePreset(3.25)" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-[10px] font-retro text-stone-300">😴 03:15 Sleep</button>
       <button onclick="syncBeijingWeatherAndClock()" class="p-1 bg-amber-950 border border-amber-700 text-center text-[10px] font-retro text-amber-300">⚡ Beijing Live</button>
     </div>
@@ -226,43 +261,63 @@
   <!-- MAIN WORKSPACE -->
   <main class="relative z-20 flex-1 w-full max-w-4xl mx-auto px-2 sm:px-4 py-1 flex flex-col justify-between overflow-hidden">
     
-    <!-- VIEW 1: ENTRY DOOR & 2-HAND CLOCK GATE -->
+    <!-- VIEW 1: ENTRY DOOR & 24-HOUR ANALOG RETRO CLOCK GATE -->
     <section id="view-door" class="w-full h-full flex flex-col justify-around items-center max-w-md mx-auto transition-all duration-300">
       
       <div class="text-center my-auto">
         <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-stone-900/90 border border-amber-500/40 text-amber-300 text-[10px] tracking-widest uppercase mb-1">
           <span class="w-1.5 h-1.5 bg-amber-400 animate-ping"></span>
-          <span id="clock-status-tag">DOORWAY • BEIJING TIME</span>
+          <span id="clock-status-tag">DOORWAY • 24H DIAL</span>
         </div>
         <h1 id="door-hero-text" class="text-base sm:text-lg text-stone-100 font-bold tracking-wide">
-          Spin the hand. Push the wood.
+          Spin the 24H hand. Push the wood.
         </h1>
         <p id="door-hero-sub" class="text-[11px] text-stone-400 font-retro">
           18:00—04:00 Wei's Bar • 04:00—18:00 Wei's Coffee
         </p>
       </div>
 
-      <!-- 2-Hand Interactive Analog Clock -->
-      <div class="relative w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-stone-950 border-4 border-stone-800 shadow-2xl p-2 flex items-center justify-center pixel-frame my-auto">
+      <!-- 24-Hour Retro Clock with Hour (0..24 full loop) & Minute (0..60) needles -->
+      <div class="relative w-52 h-52 sm:w-60 sm:h-60 rounded-full bg-stone-950 border-4 border-stone-800 shadow-2xl p-2 flex items-center justify-center pixel-frame my-auto select-none">
         
-        <div class="absolute inset-1 rounded-full border border-amber-900/30 pointer-events-none"></div>
-        <span class="absolute top-1 font-retro text-stone-400 text-xs">12</span>
-        <span class="absolute right-2 font-retro text-stone-400 text-xs">3</span>
-        <span class="absolute bottom-1 font-retro text-stone-400 text-xs">6</span>
-        <span class="absolute left-2 font-retro text-stone-400 text-xs">9</span>
+        <!-- Dial Inner Rim -->
+        <div class="absolute inset-1 rounded-full border border-amber-900/40 pointer-events-none"></div>
 
-        <!-- Hour Hand (Golden) -->
-        <div id="hour-needle" class="hand-indicator absolute w-1.5 h-14 sm:h-18 bg-amber-500 bottom-1/2 left-[calc(50%-3px)] rounded-t-sm shadow-md" style="transform: rotate(315deg);">
-          <div class="w-2.5 h-2.5 -top-1 -left-0.5 absolute bg-amber-300 border border-black"></div>
+        <!-- 24-Hour Dial Markings (0/24 at 12 o'clock, 6 at 3 o'clock, 12 at 6 o'clock, 18 at 9 o'clock) -->
+        <div class="absolute inset-0 pointer-events-none text-stone-400 font-retro text-[10px] sm:text-xs">
+          <!-- Main Cardinal Numbers -->
+          <span class="absolute top-1 left-1/2 -translate-x-1/2 text-amber-400 font-bold">24 / 0</span>
+          <span class="absolute top-1/2 right-1.5 -translate-y-1/2">6</span>
+          <span class="absolute bottom-1 left-1/2 -translate-x-1/2 text-amber-400 font-bold">12</span>
+          <span class="absolute top-1/2 left-1.5 -translate-y-1/2">18</span>
+
+          <!-- Intermediate 3-Hour Markers -->
+          <span class="absolute top-5 right-11 sm:top-6 sm:right-13 opacity-70">3</span>
+          <span class="absolute bottom-6 right-11 sm:bottom-7 sm:right-13 opacity-70">9</span>
+          <span class="absolute bottom-6 left-11 sm:bottom-7 sm:left-13 opacity-70">15</span>
+          <span class="absolute top-5 left-11 sm:top-6 sm:left-13 opacity-70">21</span>
+
+          <!-- Tick Marks Ring -->
+          <div class="absolute inset-4 rounded-full border border-dashed border-stone-700/60 pointer-events-none"></div>
         </div>
 
-        <!-- Minute Hand (Silver) -->
-        <div id="minute-needle" class="hand-indicator absolute w-1 h-18 sm:h-22 bg-stone-200 bottom-1/2 left-[calc(50%-2px)] rounded-t-sm shadow-sm" style="transform: rotate(180deg);">
+        <!-- 24-Hour Hand (Golden Retro Arrow Needle - 360 deg per 24 hours) -->
+        <div id="hour-needle" class="hand-indicator absolute w-1.5 h-16 sm:h-20 bg-amber-500 bottom-1/2 left-[calc(50%-3px)] rounded-t-sm shadow-md" style="transform: rotate(337.5deg);">
+          <div class="w-2.5 h-2.5 -top-1.5 -left-0.5 absolute bg-amber-300 border border-black"></div>
+        </div>
+
+        <!-- Minute Hand (Silver/White Needle - 360 deg per 60 mins) -->
+        <div id="minute-needle" class="hand-indicator absolute w-1 h-20 sm:h-24 bg-stone-200 bottom-1/2 left-[calc(50%-2px)] rounded-t-sm shadow-sm" style="transform: rotate(180deg);">
           <div class="w-1.5 h-1.5 -top-1 -left-0.5 absolute bg-white"></div>
         </div>
 
-        <div class="w-3.5 h-3.5 rounded-full bg-amber-400 border-2 border-black z-20 shadow-md"></div>
-        <div id="clock-touch-zone" class="absolute inset-0 rounded-full cursor-grab active:cursor-grabbing z-30" title="Touch & Drag to shift time"></div>
+        <!-- Center Pin -->
+        <div class="w-4 h-4 rounded-full bg-amber-400 border-2 border-black z-20 shadow-md flex items-center justify-center">
+          <div class="w-1 h-1 rounded-full bg-black"></div>
+        </div>
+
+        <!-- Rotary Touch/Drag Zone -->
+        <div id="clock-touch-zone" class="absolute inset-0 rounded-full cursor-grab active:cursor-grabbing z-30" title="Drag around the dial to shift 0-24h time"></div>
       </div>
 
       <!-- Door Transition Trigger -->
@@ -278,14 +333,14 @@
     <!-- VIEW 2: THE COUNTER & LIVING SANCTUARY -->
     <section id="view-sanctuary" class="hidden w-full h-full flex flex-col justify-between transition-all duration-300">
       
-      <!-- SUB-HEADER: Return, Energy & Live Cat Status -->
+      <!-- SUB-HEADER: Return, Energy & Cat Status -->
       <div class="flex items-center justify-between pb-1 border-b border-stone-800 text-[10px] font-retro">
         <button onclick="returnToDoor()" class="pixel-btn text-stone-400 hover:text-amber-300 flex items-center gap-1">
           <span>←</span>
           <span id="label-return-door">Door</span>
         </button>
 
-        <span id="cat-pair-status" class="text-amber-300/90 cursor-pointer hover:underline truncate max-w-[190px] sm:max-w-none" onclick="triggerCatEncounter()">
+        <span id="cat-pair-status" class="text-amber-300/90 cursor-pointer hover:underline truncate max-w-[170px] sm:max-w-none" onclick="triggerCatEncounter()">
           🐾 Miso & Yuzu are napping together
         </span>
 
@@ -303,20 +358,20 @@
         </div>
       </div>
 
-      <!-- COUNTER TOP STAGE: Bartender Wei with Round-Frame Glasses & 2 Cats -->
-      <div class="relative flex-1 min-h-[130px] max-h-[200px] bg-stone-950/80 border-2 border-stone-800 rounded-sm pixel-frame px-3 py-1 my-1 flex flex-col justify-between overflow-hidden">
+      <!-- COUNTER TOP STAGE: Host Avatar (Awake/Sleep), Cats & Back-shelf -->
+      <div id="stage-counter-box" class="relative flex-1 min-h-[145px] max-h-[210px] bg-stone-950/80 border-2 border-stone-800 rounded-sm pixel-frame px-3 py-1 my-1 flex flex-col justify-between overflow-hidden transition-colors duration-500">
         
-        <!-- Back Bar Background: Glassware & Cellar -->
-        <div class="absolute inset-x-2 top-1 flex justify-between opacity-30 select-none text-[10px] font-mono pointer-events-none">
-          <span>🍾🍷🍸🍶</span>
+        <!-- Back-shelf / Backdrop -->
+        <div class="absolute inset-x-2 top-1 flex justify-between opacity-40 select-none text-[10px] font-mono pointer-events-none">
+          <span id="shelf-icon-left">🍾🍷🍸🍶</span>
           <span id="cellar-banner-text" class="tracking-widest">[WEI'S BOTANICAL CELLAR]</span>
-          <span>🥃🍹🍵☕</span>
+          <span id="shelf-icon-right">🥃🍹🍵☕</span>
         </div>
 
-        <!-- The Characters: Miso, Wei (Round-Frame Glasses), Yuzu -->
+        <!-- The Characters: Miso, Wei (Awake or Sleep State), Yuzu -->
         <div class="relative z-10 flex items-end justify-around w-full mt-2">
           
-          <!-- Cat 1: Miso -->
+          <!-- Cat 1: Miso (Black Cat) -->
           <div class="flex flex-col items-center cursor-pointer group" onclick="interactCat('miso')">
             <div id="sprite-miso" class="text-2xl sm:text-3xl filter group-hover:scale-110 transition-transform">🐈‍⬛</div>
             <div class="text-[9px] font-retro text-stone-400 group-hover:text-amber-300 mt-0.5 flex items-center gap-1">
@@ -325,66 +380,117 @@
             </div>
           </div>
 
-          <!-- Bartender: Wei with Round-Frame Wire Glasses -->
-          <div class="flex flex-col items-center text-center cursor-pointer group sway-idle" onclick="tapBartender()">
-            <div id="sprite-wei-container" class="relative group-hover:scale-105 transition-transform flex flex-col items-center">
+          <!-- HOST AVATAR CONTAINER: Wei (Bartender / Barista with Round Glasses & Sleep States) -->
+          <div class="flex flex-col items-center text-center cursor-pointer group" onclick="tapBartender()">
+            <div id="sprite-wei-container" class="relative group-hover:scale-105 transition-transform flex flex-col items-center sway-idle">
               
-              <!-- Custom Pixel SVG Avatar of Bartender Wei wearing Round-Frame Glasses -->
-              <svg id="svg-wei-avatar" class="w-12 h-14 sm:w-14 sm:h-16" viewBox="0 0 32 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="shape-rendering: crispEdges;">
+              <!-- SVG Pixel Avatar with Layer Groups for Awake & Sleep States -->
+              <svg id="svg-wei-avatar" class="w-13 h-15 sm:w-16 sm:h-18" viewBox="0 0 32 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="shape-rendering: crispEdges;">
+                
                 <!-- Hair -->
                 <rect x="9" y="3" width="14" height="4" fill="#1c1917"/>
                 <rect x="7" y="5" width="4" height="5" fill="#1c1917"/>
                 <rect x="21" y="5" width="4" height="5" fill="#1c1917"/>
                 <rect x="11" y="2" width="10" height="2" fill="#292524"/>
 
-                <!-- Face -->
+                <!-- Face Base -->
                 <rect x="9" y="7" width="14" height="12" fill="#fde68a"/>
                 <rect x="8" y="10" width="1" height="4" fill="#fcd34d"/>
                 <rect x="23" y="10" width="1" height="4" fill="#fcd34d"/>
 
-                <!-- Round-Frame Glasses (Gold Wireframe) -->
-                <!-- Left Round Lens -->
-                <rect x="10" y="10" width="4" height="4" fill="#0284c7" fill-opacity="0.25"/>
-                <rect x="10" y="9" width="4" height="1" fill="#f59e0b"/>
-                <rect x="10" y="14" width="4" height="1" fill="#f59e0b"/>
-                <rect x="9" y="10" width="1" height="4" fill="#f59e0b"/>
-                <rect x="14" y="10" width="1" height="4" fill="#f59e0b"/>
-                <rect x="11" y="11" width="1" height="1" fill="#fff" fill-opacity="0.8"/> <!-- lens glint -->
-                <rect x="12" y="12" width="1" height="2" fill="#0f172a"/> <!-- eye pupil -->
+                <!-- AWAKE STATE GROUP -->
+                <g id="avatar-layer-awake">
+                  <!-- Round-Frame Glasses (Gold Wireframe) in Normal Upright Position -->
+                  <rect x="10" y="10" width="4" height="4" fill="#0284c7" fill-opacity="0.25"/>
+                  <rect x="10" y="9" width="4" height="1" fill="#f59e0b"/>
+                  <rect x="10" y="14" width="4" height="1" fill="#f59e0b"/>
+                  <rect x="9" y="10" width="1" height="4" fill="#f59e0b"/>
+                  <rect x="14" y="10" width="1" height="4" fill="#f59e0b"/>
+                  <rect x="11" y="10" width="1" height="1" fill="#fff" fill-opacity="0.8"/>
+                  <rect x="12" y="12" width="1" height="2" fill="#0f172a"/>
 
-                <!-- Glasses Nose Bridge -->
-                <rect x="15" y="11" width="2" height="1" fill="#f59e0b"/>
+                  <!-- Nose Bridge -->
+                  <rect x="15" y="11" width="2" height="1" fill="#f59e0b"/>
 
-                <!-- Right Round Lens -->
-                <rect x="18" y="10" width="4" height="4" fill="#0284c7" fill-opacity="0.25"/>
-                <rect x="18" y="9" width="4" height="1" fill="#f59e0b"/>
-                <rect x="18" y="14" width="4" height="1" fill="#f59e0b"/>
-                <rect x="17" y="10" width="1" height="4" fill="#f59e0b"/>
-                <rect x="22" y="10" width="1" height="4" fill="#f59e0b"/>
-                <rect x="19" y="11" width="1" height="1" fill="#fff" fill-opacity="0.8"/> <!-- lens glint -->
-                <rect x="20" y="12" width="1" height="2" fill="#0f172a"/> <!-- eye pupil -->
+                  <!-- Right Lens -->
+                  <rect x="18" y="10" width="4" height="4" fill="#0284c7" fill-opacity="0.25"/>
+                  <rect x="18" y="9" width="4" height="1" fill="#f59e0b"/>
+                  <rect x="18" y="14" width="4" height="1" fill="#f59e0b"/>
+                  <rect x="17" y="10" width="1" height="4" fill="#f59e0b"/>
+                  <rect x="22" y="10" width="1" height="4" fill="#f59e0b"/>
+                  <rect x="19" y="10" width="1" height="1" fill="#fff" fill-opacity="0.8"/>
+                  <rect x="20" y="12" width="1" height="2" fill="#0f172a"/>
 
-                <!-- Glasses Side Temples -->
-                <rect x="7" y="10" width="2" height="1" fill="#d97706"/>
-                <rect x="23" y="10" width="2" height="1" fill="#d97706"/>
+                  <!-- Temples -->
+                  <rect x="7" y="10" width="2" height="1" fill="#d97706"/>
+                  <rect x="23" y="10" width="2" height="1" fill="#d97706"/>
 
-                <!-- Cheerful Subtle Smile / Mouth -->
-                <rect x="14" y="16" width="4" height="1" fill="#b45309"/>
+                  <!-- Awake Smile -->
+                  <rect x="14" y="16" width="4" height="1" fill="#b45309"/>
+                </g>
 
-                <!-- Neck & Collar -->
+                <!-- SLEEPING STATE GROUP (Closed eyes, glasses slipped down nose, relaxed mouth) -->
+                <g id="avatar-layer-sleeping" class="hidden">
+                  <!-- Closed Sleeping Eyes (Horizontal pixel dashes) -->
+                  <rect x="10" y="10" width="4" height="1" fill="#78350f"/>
+                  <rect x="18" y="10" width="4" height="1" fill="#78350f"/>
+
+                  <!-- Round Glasses Slipped Down the Nose Tip -->
+                  <rect x="10" y="13" width="4" height="3" fill="#0284c7" fill-opacity="0.2"/>
+                  <rect x="10" y="12" width="4" height="1" fill="#f59e0b"/>
+                  <rect x="10" y="16" width="4" height="1" fill="#f59e0b"/>
+                  <rect x="9" y="13" width="1" height="3" fill="#f59e0b"/>
+                  <rect x="14" y="13" width="1" height="3" fill="#f59e0b"/>
+
+                  <rect x="15" y="14" width="2" height="1" fill="#f59e0b"/>
+
+                  <rect x="18" y="13" width="4" height="3" fill="#0284c7" fill-opacity="0.2"/>
+                  <rect x="18" y="12" width="4" height="1" fill="#f59e0b"/>
+                  <rect x="18" y="16" width="4" height="1" fill="#f59e0b"/>
+                  <rect x="17" y="13" width="1" height="3" fill="#f59e0b"/>
+                  <rect x="22" y="13" width="1" height="3" fill="#f59e0b"/>
+
+                  <rect x="8" y="12" width="2" height="1" fill="#d97706"/>
+                  <rect x="22" y="12" width="2" height="1" fill="#d97706"/>
+
+                  <!-- Soft Sleeping Open Mouth -->
+                  <rect x="15" y="17" width="2" height="1" fill="#9a3412"/>
+                </g>
+
+                <!-- Neck -->
                 <rect x="13" y="19" width="6" height="2" fill="#fde68a"/>
-                <rect x="11" y="21" width="10" height="2" fill="#f8fafc"/> <!-- White shirt collar -->
-                <rect x="15" y="22" width="2" height="2" fill="#78350f"/> <!-- Velvet Bowtie -->
 
-                <!-- Bartender Vest / Apron -->
-                <rect x="8" y="23" width="16" height="11" fill="#1c1917"/>
-                <rect x="12" y="23" width="8" height="10" fill="#451a03"/> <!-- Dark Mahogany Vest -->
-                <rect x="14" y="24" width="4" height="7" fill="#f8fafc"/> <!-- Shirt bib -->
-                <rect x="15" y="27" width="2" height="1" fill="#d97706"/> <!-- Button -->
-                <rect x="15" y="30" width="2" height="1" fill="#d97706"/> <!-- Button -->
+                <!-- OUTFIT LAYER A: BAR (Velvet Mahogany Vest, White Shirt, Bowtie) -->
+                <g id="outfit-bar">
+                  <rect x="11" y="21" width="10" height="2" fill="#f8fafc"/>
+                  <rect x="15" y="22" width="2" height="2" fill="#78350f"/>
+                  <rect x="8" y="23" width="16" height="11" fill="#1c1917"/>
+                  <rect x="12" y="23" width="8" height="10" fill="#451a03"/>
+                  <rect x="14" y="24" width="4" height="7" fill="#f8fafc"/>
+                  <rect x="15" y="27" width="2" height="1" fill="#d97706"/>
+                  <rect x="15" y="30" width="2" height="1" fill="#d97706"/>
+                </g>
+
+                <!-- OUTFIT LAYER B: CAFE (Barista Apron & Roastery Badge) -->
+                <g id="outfit-cafe" class="hidden">
+                  <rect x="11" y="21" width="10" height="2" fill="#fef3c7"/>
+                  <rect x="8" y="23" width="16" height="11" fill="#78350f"/>
+                  <rect x="12" y="23" width="8" height="11" fill="#542609"/>
+                  <rect x="10" y="23" width="1" height="11" fill="#b45309"/>
+                  <rect x="21" y="23" width="1" height="11" fill="#b45309"/>
+                  <rect x="14" y="25" width="4" height="3" fill="#15803d"/>
+                  <rect x="15" y="26" width="2" height="1" fill="#bbf7d0"/>
+                  <rect x="13" y="30" width="6" height="4" fill="#381a08"/>
+                </g>
+
               </svg>
 
-              <span id="wei-zzz" class="hidden absolute -top-2 -right-3 text-xs text-amber-400 font-retro animate-bounce font-bold">ZZZ...</span>
+              <!-- Floating ZZZ Particle Effects -->
+              <div id="wei-zzz-particles" class="hidden pointer-events-none">
+                <span class="zzz-particle-1 absolute -top-1 -right-3 text-xs text-amber-400 font-retro font-bold">Z</span>
+                <span class="zzz-particle-2 absolute -top-3 -right-4 text-xs text-amber-300 font-retro font-bold">z</span>
+                <span class="zzz-particle-3 absolute -top-5 -right-5 text-sm text-yellow-200 font-retro font-bold">Z</span>
+              </div>
             </div>
             
             <div class="text-[11px] font-bold text-amber-200 mt-0.5 flex items-center gap-1">
@@ -393,7 +499,7 @@
             </div>
           </div>
 
-          <!-- Cat 2: Yuzu -->
+          <!-- Cat 2: Yuzu (Orange Cat) -->
           <div class="flex flex-col items-center cursor-pointer group" onclick="interactCat('yuzu')">
             <div id="sprite-yuzu" class="text-2xl sm:text-3xl filter group-hover:scale-110 transition-transform">🐈</div>
             <div class="text-[9px] font-retro text-stone-400 group-hover:text-amber-300 mt-0.5 flex items-center gap-1">
@@ -421,7 +527,10 @@
           <div>
             <div class="flex items-center justify-between text-[10px] font-retro text-stone-400 mb-0.5">
               <span id="dialogue-speaker-tag" class="text-amber-400 uppercase">WEI • NIGHT OWL</span>
-              <span id="dialogue-vibe-tag" class="text-stone-500 font-retro">BEIJING NIGHT</span>
+              <div class="flex items-center gap-2">
+                <button onclick="promptJoke()" class="hover:text-amber-300 underline text-[9px]">💬 Joke</button>
+                <button onclick="openEntertainmentHub()" class="hover:text-amber-300 underline text-[9px]">🕹️ Mini-Game</button>
+              </div>
             </div>
             <p id="dialogue-speech-text" class="text-stone-100 text-[11px] sm:text-xs font-pixel leading-snug">
               "The autumn breeze outside is sweeping yellow gingko leaves past the grey brick hutong walls. What brings you through Wei's door tonight?"
@@ -433,15 +542,15 @@
           </div>
         </div>
 
-        <!-- Screen B: Sleeping Bartender Screen -->
+        <!-- Screen B: Sleeping Bartender / Barista Screen -->
         <div id="sleep-mode-screen" class="hidden w-full flex-1 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-[10px] font-retro text-amber-500 uppercase">
               <span id="sleep-header-title">LATE NIGHT COMPLICATION</span>
-              <span class="animate-pulse">😴 WEI SURRENDERED</span>
+              <span class="animate-pulse">😴 WEI SURRENDERED TO SLEEP</span>
             </div>
             <p id="sleep-story-text" class="text-[11px] sm:text-xs text-stone-200 mt-0.5">
-              *HONK-SHOO...* Wei fell fast asleep right over the cedar cutting board! His round glasses slipped halfway down his nose.
+              *HONK-SHOO...* Wei fell fast asleep right over the counter! His round wire glasses slipped down to the bridge of his nose.
             </p>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5 mt-2">
@@ -449,46 +558,46 @@
               🔔 <span id="sleep-btn-wake">Clink a glass to wake Wei</span>
             </button>
             <button onclick="askCatToBartend()" class="pixel-btn p-1.5 bg-stone-950 border border-stone-700 hover:border-amber-400 text-left text-[11px] text-amber-300">
-              🐾 <span id="sleep-btn-cats">Let Miso & Yuzu mix</span>
+              🐾 <span id="sleep-btn-cats">Let Miso & Yuzu serve</span>
             </button>
             <button onclick="openSneakMixer()" class="pixel-btn p-1.5 bg-stone-950 border border-stone-700 hover:border-amber-400 text-left text-[11px] text-amber-300">
-              🤫 <span id="sleep-btn-diy">Sneak behind the bar & DIY</span>
+              🤫 <span id="sleep-btn-diy">Sneak behind counter & DIY</span>
             </button>
           </div>
         </div>
 
-        <!-- Screen C: Sneak DIY Cocktail Mixer -->
+        <!-- Screen C: Sneak DIY Mixer -->
         <div id="sneak-mixer-screen" class="hidden w-full flex-1 flex flex-col justify-between">
           <div class="flex items-center justify-between text-[10px] font-retro text-amber-400">
-            <span id="sneak-header-title">UNAUTHORIZED DIY BAR MIXER</span>
+            <span id="sneak-header-title">UNAUTHORIZED DIY COUNTER MIXER</span>
             <button onclick="closeSneakMixer()" class="text-stone-400 hover:text-white">✕ Cancel</button>
           </div>
           <div class="grid grid-cols-3 gap-1.5 my-1 text-[11px]">
             <div>
-              <span class="text-[9px] font-retro text-stone-400 block" id="sneak-label-base">SPIRIT BASE</span>
+              <span class="text-[9px] font-retro text-stone-400 block" id="sneak-label-base">BASE SPIRIT / COFFEE</span>
               <select id="mix-base" class="w-full bg-stone-950 border border-stone-700 text-amber-200 p-0.5 text-[10px]">
                 <option value="Jasmine Green Tea Infused Gin">Jasmine Tea Gin</option>
                 <option value="Ki No Bi Kyoto Gin">Ki No Bi Gin</option>
                 <option value="Monkey 47 Gin">Monkey 47 Gin</option>
-                <option value="Beijing Red-Star Aged Sorghum">Aged Sorghum Spirit</option>
-                <option value="Cask Rye Bourbon">Cask Rye Bourbon</option>
+                <option value="Single Origin Ethiopian Gesha">Gesha Cold Brew</option>
+                <option value="Dark Roasted Yunnan Espresso">Yunnan Espresso</option>
               </select>
             </div>
             <div>
-              <span class="text-[9px] font-retro text-stone-400 block" id="sneak-label-mod">TONIC / MOD</span>
+              <span class="text-[9px] font-retro text-stone-400 block" id="sneak-label-mod">MODIFIER / TONIC</span>
               <select id="mix-mod" class="w-full bg-stone-950 border border-stone-700 text-amber-200 p-0.5 text-[10px]">
                 <option value="Beijing Autumn Osmanthus Soda">Osmanthus Soda</option>
                 <option value="Yuzu Botanical Tonic">Yuzu Tonic</option>
-                <option value="Mediterranean Tonic">Med Herbal Tonic</option>
-                <option value="Dry Bitter Lemon">Bitter Lemon</option>
+                <option value="Creamy Steamed Oat Milk">Velvet Oat Milk</option>
+                <option value="Sparkling Tonic Water">Sparkling Tonic</option>
               </select>
             </div>
             <div>
-              <span class="text-[9px] font-retro text-stone-400 block" id="sneak-label-garnish">GARNISH</span>
+              <span class="text-[9px] font-retro text-stone-400 block" id="sneak-label-garnish">GARNISH / AROMA</span>
               <select id="mix-secret" class="w-full bg-stone-950 border border-stone-700 text-amber-200 p-0.5 text-[10px]">
                 <option value="Golden Gingko Leaf & Hawthorn">Gingko Leaf & Hawthorn</option>
                 <option value="Slapped Shiso & Sansho">Slapped Shiso</option>
-                <option value="Torched Rosemary">Torched Rosemary</option>
+                <option value="Dusted Cinnamon & Orange">Dusted Cinnamon</option>
                 <option value="Sant Jordi Rose Petals">Rose Petals</option>
               </select>
             </div>
@@ -513,7 +622,7 @@
             </button>
           </div>
           <p id="res-description" class="text-[10px] sm:text-[11px] text-stone-300 font-pixel italic my-1">
-            "Served in a chilled fluted tumbler. Fragrant jasmine blossoms float atop slow-melting crystal ice."
+            "Served in a chilled fluted tumbler. Fragrant blossoms float atop crystal slow-melting ice."
           </p>
           <div class="flex items-center justify-between pt-1 border-t border-stone-800 text-[9px] font-retro">
             <span id="res-formula" class="text-stone-400 truncate max-w-[200px] sm:max-w-none">45ml Jasmine Gin • 120ml Osmanthus Tonic • Dried Hawthorn</span>
@@ -529,9 +638,109 @@
 
   </main>
 
-  <!-- MODAL: G&T ALBUM & ATELIER -->
+  <!-- MODAL 1: JOKES POP-UP -->
+  <div id="joke-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
+    <div class="bg-stone-950 border-2 border-amber-600 rounded-sm pixel-frame max-w-sm w-full p-3.5 flex flex-col justify-between shadow-2xl">
+      <div class="flex items-center justify-between pb-1.5 border-b border-stone-800">
+        <div class="flex items-center gap-1.5">
+          <span class="text-sm">🎭</span>
+          <span class="text-xs font-bold text-amber-300" id="joke-modal-title">Wei's Dry Banter</span>
+        </div>
+        <button onclick="closeJokeModal()" class="pixel-btn text-stone-400 hover:text-amber-300 font-mono text-sm">✕</button>
+      </div>
+
+      <div class="py-4 text-center">
+        <p id="joke-body-text" class="text-stone-100 text-xs sm:text-sm font-pixel leading-relaxed">
+          "Why did the espresso file a police report? ...Because it got mugged in the hutong!"
+        </p>
+        <div id="joke-reaction" class="text-lg mt-2 animate-bounce">☕</div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2 border-t border-stone-800">
+        <button onclick="nextJoke()" class="pixel-btn flex-1 py-1.5 bg-amber-500 hover:bg-amber-400 text-black font-bold text-[10px] uppercase" id="joke-next-btn">
+          Another One ↺
+        </button>
+        <button onclick="closeJokeModal()" class="pixel-btn px-3 py-1.5 bg-stone-900 border border-stone-700 text-stone-300 text-[10px]">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: PLAYABLE RETRO PIXEL GAMES POP-UP -->
+  <div id="game-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4">
+    <div class="bg-stone-950 border-2 border-amber-600 rounded-sm pixel-frame max-w-md w-full max-h-[96vh] flex flex-col justify-between p-2.5 sm:p-3 overflow-hidden shadow-2xl">
+      
+      <!-- Arcade Header & Controls -->
+      <div class="flex items-center justify-between pb-1 border-b border-stone-800">
+        <div class="flex items-center gap-1.5">
+          <span class="text-sm">🕹️</span>
+          <span class="text-xs font-bold text-amber-300 font-retro tracking-wide" id="game-modal-title">RETRO PIXEL ARCADE</span>
+        </div>
+        <button onclick="closeGameModal()" class="pixel-btn text-stone-400 hover:text-amber-300 font-mono text-sm">✕</button>
+      </div>
+
+      <!-- Game Selection Tabs -->
+      <div class="flex items-center gap-1 my-1.5 border-b border-stone-800 pb-1 text-[10px] font-retro overflow-x-auto">
+        <button id="tab-game-snake" onclick="switchGame('snake')" class="px-2 py-0.5 bg-amber-950 border border-amber-700 text-amber-300">🐍 COFFEE SNAKE</button>
+        <button id="tab-game-tetris" onclick="switchGame('tetris')" class="px-2 py-0.5 bg-stone-900 border border-stone-800 text-stone-400">🧱 RETRO TETRIS</button>
+        <button id="tab-game-gomoku" onclick="switchGame('gomoku')" class="px-2 py-0.5 bg-stone-900 border border-stone-800 text-stone-400">⚪ GOMOKU</button>
+        <button id="tab-game-runner" onclick="switchGame('runner')" class="px-2 py-0.5 bg-stone-900 border border-stone-800 text-stone-400">🐱 CAT JUMPER</button>
+      </div>
+
+      <!-- Authentic Pixel Arcade Screen -->
+      <div class="relative w-full aspect-square max-w-[280px] sm:max-w-[300px] mx-auto bg-stone-900 border-2 border-stone-800 flex items-center justify-center overflow-hidden pixel-frame">
+        <canvas id="arcade-canvas" width="280" height="280" class="w-full h-full block bg-black"></canvas>
+        
+        <!-- Game Over / Victory Overlay -->
+        <div id="game-overlay" class="hidden absolute inset-0 bg-black/85 flex flex-col items-center justify-center p-3 text-center">
+          <h4 id="game-overlay-title" class="text-amber-400 font-bold text-sm mb-1">GAME OVER</h4>
+          <p id="game-overlay-score" class="text-stone-300 text-xs font-retro mb-2.5">Score: 0</p>
+          <button onclick="restartCurrentGame()" class="pixel-btn px-3 py-1 bg-amber-500 text-black font-bold text-xs uppercase">Play Again ↺</button>
+        </div>
+      </div>
+
+      <!-- Game Status & Score -->
+      <div class="flex items-center justify-between text-[11px] font-retro text-stone-400 px-1 mt-1">
+        <span id="game-status-label">Keyboard or On-Screen D-Pad</span>
+        <span id="game-score-display" class="text-amber-400 font-bold">SCORE: 0</span>
+      </div>
+
+      <!-- On-Screen Retro Pixel D-Pad & Action Buttons for Mobile -->
+      <div class="w-full flex items-center justify-between pt-1 mt-1 border-t border-stone-800 text-xs">
+        <!-- D-Pad -->
+        <div class="grid grid-cols-3 gap-1 w-28 select-none">
+          <div></div>
+          <button onclick="pressGameKey('ArrowUp')" class="pixel-btn p-1.5 bg-stone-900 border border-stone-700 text-center active:bg-amber-600 text-xs font-bold">▲</button>
+          <div></div>
+          <button onclick="pressGameKey('ArrowLeft')" class="pixel-btn p-1.5 bg-stone-900 border border-stone-700 text-center active:bg-amber-600 text-xs font-bold">◀</button>
+          <button onclick="pressGameKey('ArrowDown')" class="pixel-btn p-1.5 bg-stone-900 border border-stone-700 text-center active:bg-amber-600 text-xs font-bold">▼</button>
+          <button onclick="pressGameKey('ArrowRight')" class="pixel-btn p-1.5 bg-stone-900 border border-stone-700 text-center active:bg-amber-600 text-xs font-bold">▶</button>
+        </div>
+
+        <!-- Action Buttons (A & B) -->
+        <div class="flex items-center gap-2 select-none">
+          <div class="flex flex-col items-center">
+            <button onclick="pressGameKey('KeyB')" class="pixel-btn w-9 h-9 rounded-full bg-stone-800 border-2 border-stone-600 active:bg-stone-500 text-stone-200 font-bold text-xs flex items-center justify-center">
+              B
+            </button>
+            <span class="text-[8px] font-retro text-stone-500 mt-0.5">DROP</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <button onclick="pressGameKey('Space')" class="pixel-btn w-10 h-10 rounded-full bg-amber-600 border-2 border-amber-400 active:bg-amber-300 text-black font-bold text-xs flex items-center justify-center">
+              A
+            </button>
+            <span class="text-[8px] font-retro text-stone-500 mt-0.5">ACTION</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL 3: CODEX MENU & ATELIER (DYNAMIC BAR & CAFE) -->
   <div id="codex-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4">
-    <div class="bg-stone-950 border-2 border-amber-600/80 rounded-sm pixel-frame max-w-lg w-full max-h-[90vh] flex flex-col justify-between overflow-hidden p-3">
+    <div class="bg-stone-950 border-2 border-amber-600/80 rounded-sm pixel-frame max-w-lg w-full max-h-[90vh] flex flex-col justify-between overflow-hidden p-3 shadow-2xl">
       
       <!-- Modal Header -->
       <div class="flex items-center justify-between pb-1.5 border-b border-stone-800">
@@ -545,203 +754,153 @@
       <!-- Navigation Tabs -->
       <div class="flex items-center gap-1 my-1.5 border-b border-stone-800 pb-1 text-[10px] font-retro">
         <button id="tab-btn-gt" onclick="switchAlbumTab('gt')" class="px-2 py-0.5 bg-amber-950 border border-amber-700 text-amber-300">
-          <span id="tab-label-flight">FLIGHTS</span>
+          <span id="tab-label-flight">SIGNATURES</span>
         </button>
         <button id="tab-btn-custom" onclick="switchAlbumTab('custom')" class="px-2 py-0.5 bg-stone-900 border border-stone-800 text-stone-400">
           <span id="tab-label-atelier">ATELIER BUILDER</span>
         </button>
         <button id="tab-btn-classic" onclick="switchAlbumTab('classic')" class="px-2 py-0.5 bg-stone-900 border border-stone-800 text-stone-400">
-          <span id="tab-label-classic">CLASSIC RATIOS</span>
+          <span id="tab-label-classic">CLASSICS / BAKERY</span>
         </button>
       </div>
 
-      <!-- TAB 1: Variations -->
+      <!-- TAB 1: Signature Items (Bar or Cafe) -->
       <div id="album-pane-gt" class="flex-1 overflow-y-auto pr-1 space-y-1.5 text-xs">
-        
-        <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
-          <div class="flex justify-between font-bold text-amber-300 text-[11px]">
-            <span>1. Gulou Belltower Jasmine (鼓楼夜钟茉莉)</span>
-            <span class="font-retro text-stone-400">43% ABV</span>
-          </div>
-          <p class="text-[10px] text-stone-300 mt-0.5" id="album-desc-1">Beijing Jasmine tea steeped artisan gin, Osmanthus floral tonic, crystallized hawthorn slice & fragrant dried silver needle blossoms.</p>
-        </div>
-
-        <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
-          <div class="flex justify-between font-bold text-amber-300 text-[11px]">
-            <span>2. The Catalan Rose & Sea (加泰罗尼亚玫瑰)</span>
-            <span class="font-retro text-stone-400">42.7% ABV</span>
-          </div>
-          <p class="text-[10px] text-stone-300 mt-0.5" id="album-desc-2">Barcelona Mediterranean botanicals, kaffir lime, Fever-Tree Med tonic, fresh bay leaf & Sant Jordi rose petals.</p>
-        </div>
-
-        <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
-          <div class="flex justify-between font-bold text-amber-300 text-[11px]">
-            <span>3. Kyoto Mist (京都竹雾)</span>
-            <span class="font-retro text-stone-400">45.7% ABV</span>
-          </div>
-          <p class="text-[10px] text-stone-300 mt-0.5" id="album-desc-3">Ki No Bi artisan gin, gyokuro green tea, bamboo distillate, yuzu tonic, slapped purple shiso & crushed sansho pepper.</p>
-        </div>
-
-        <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
-          <div class="flex justify-between font-bold text-amber-300 text-[11px]">
-            <span>4. The Black Forest Secret (黑森林秘境)</span>
-            <span class="font-retro text-stone-400">47% ABV</span>
-          </div>
-          <p class="text-[10px] text-stone-300 mt-0.5" id="album-desc-4">Monkey 47, tart lingonberries, Fever-Tree Indian tonic, fresh blackberry skewer & torched sage leaf.</p>
-        </div>
-
-        <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
-          <div class="flex justify-between font-bold text-amber-300 text-[11px]">
-            <span>5. Mediterranean Dusk (地中海薄暮)</span>
-            <span class="font-retro text-stone-400">42.7% ABV</span>
-          </div>
-          <p class="text-[10px] text-stone-300 mt-0.5" id="album-desc-5">Gin Mare, Arbequina black olive brine wash, garden thyme, 1724 high-altitude tonic & torched orange wheel.</p>
-        </div>
-
       </div>
 
       <!-- TAB 2: Interactive Atelier -->
       <div id="album-pane-custom" class="hidden flex-1 overflow-y-auto pr-1 space-y-2 text-xs">
         <div class="p-2.5 bg-stone-900 border border-stone-800">
-          <div class="font-bold text-amber-300 text-[11px] mb-1" id="atelier-title">GIN & TONIC PAIRING ATELIER</div>
-          <p class="text-[10px] text-stone-400 mb-2" id="atelier-sub">Build your bespoke G&T pairing and send it straight to Wei's counter:</p>
+          <div class="font-bold text-amber-300 text-[11px] mb-1" id="atelier-title">BOTANICAL & ROAST ATELIER</div>
+          <p class="text-[10px] text-stone-400 mb-2" id="atelier-sub">Build your bespoke beverage and send it straight to Wei's counter:</p>
 
           <div class="space-y-2 text-[10px]">
             <div>
-              <span class="text-stone-300 block mb-0.5 font-retro" id="atelier-step-1">1. CHOOSE BOTANICAL GIN BASE:</span>
-              <select id="atelier-gin" onchange="previewAtelierPairing()" class="w-full bg-stone-950 border border-stone-700 text-amber-200 p-1">
-                <option value="Beijing Jasmine Tea Gin">Beijing Jasmine Tea Gin (Fragrant & Crisp)</option>
-                <option value="Ki No Bi Kyoto (Tea & Bamboo)">Ki No Bi Kyoto (Tea & Bamboo)</option>
-                <option value="Monkey 47 Black Forest">Monkey 47 (47 Botanicals)</option>
-                <option value="Gin Mare (Olive & Thyme)">Gin Mare (Olive & Thyme)</option>
-                <option value="Isle of Harris (Sugar Kelp Saline)">Isle of Harris (Sugar Kelp Saline)</option>
+              <span class="text-stone-300 block mb-0.5 font-retro" id="atelier-step-1">1. CHOOSE BASE:</span>
+              <select id="atelier-base" onchange="previewAtelierPairing()" class="w-full bg-stone-950 border border-stone-700 text-amber-200 p-1">
               </select>
             </div>
 
             <div>
-              <span class="text-stone-300 block mb-0.5 font-retro" id="atelier-step-2">2. CHOOSE TONIC WATER:</span>
-              <select id="atelier-tonic" onchange="previewAtelierPairing()" class="w-full bg-stone-950 border border-stone-700 text-amber-200 p-1">
-                <option value="Beijing Osmanthus Soda">Beijing Autumn Osmanthus Soda</option>
-                <option value="Mediterranean Herbal Tonic">Mediterranean Herbal Tonic</option>
-                <option value="Japanese Yuzu Citrus Tonic">Japanese Yuzu Citrus Tonic</option>
-                <option value="Extra Dry Indian Tonic">Extra Dry Indian Tonic</option>
+              <span class="text-stone-300 block mb-0.5 font-retro" id="atelier-step-2">2. CHOOSE MODIFIER:</span>
+              <select id="atelier-mod" onchange="previewAtelierPairing()" class="w-full bg-stone-950 border border-stone-700 text-amber-200 p-1">
               </select>
             </div>
 
             <div>
-              <span class="text-stone-300 block mb-0.5 font-retro" id="atelier-step-3">3. AROMATIC GARNISH:</span>
+              <span class="text-stone-300 block mb-0.5 font-retro" id="atelier-step-3">3. AROMATIC TOPPING:</span>
               <select id="atelier-garnish" onchange="previewAtelierPairing()" class="w-full bg-stone-950 border border-stone-700 text-amber-200 p-1">
-                <option value="Golden Gingko Leaf & Hawthorn">Golden Gingko Leaf & Hawthorn</option>
-                <option value="Slapped Shiso & Sansho Pepper">Slapped Shiso & Sansho Pepper</option>
-                <option value="Sant Jordi Rose Petals">Sant Jordi Rose Petals</option>
-                <option value="Torched Rosemary & Olive">Torched Rosemary & Olive</option>
               </select>
             </div>
           </div>
 
           <div id="atelier-preview-box" class="mt-3 p-2 bg-stone-950 border border-amber-800/60 text-[10px] text-stone-300">
-            <span class="text-amber-400 font-bold block" id="atelier-custom-name">Bespoke Flight: Jasmine & Osmanthus</span>
-            <span id="atelier-custom-desc" class="text-stone-400 text-[9px] block">A contemplative Hutong twilight pairing steeped with northern flowers and fine bubbles.</span>
+            <span class="text-amber-400 font-bold block" id="atelier-custom-name">Bespoke Flight</span>
+            <span id="atelier-custom-desc" class="text-stone-400 text-[9px] block">Crafted with care at the hutong counter.</span>
           </div>
 
           <button onclick="orderAtelierDrink()" class="pixel-btn w-full mt-2.5 py-1.5 bg-amber-500 text-black font-bold text-[10px] uppercase tracking-wider" id="atelier-order-btn">
-            Slide This Custom G&T to Counter 🍸
+            Slide This Custom Creation to Counter 🍸
           </button>
         </div>
       </div>
 
-      <!-- TAB 3: Classic Ratios -->
+      <!-- TAB 3: Classic Ratios / Cafe Bakery Treats -->
       <div id="album-pane-classic" class="hidden flex-1 overflow-y-auto pr-1 space-y-1.5 text-xs">
-        <div class="p-2 bg-stone-900 border border-stone-800">
-          <span class="font-bold text-amber-300 text-[11px]">Old Fashioned</span>
-          <p class="text-[10px] text-stone-300 mt-0.5">60ml Rye, 5ml Demerara, 3 dashes Angostura, flamed orange oil. Heavy lowball & 60mm clear sphere.</p>
-        </div>
-        <div class="p-2 bg-stone-900 border border-stone-800">
-          <span class="font-bold text-amber-300 text-[11px]">Negroni Classico</span>
-          <p class="text-[10px] text-stone-300 mt-0.5">30ml London Dry Gin, 30ml Campari, 30ml Carpano Antica. Equal parts stirred 35 times over rock.</p>
-        </div>
-        <div class="p-2 bg-stone-900 border border-stone-800">
-          <span class="font-bold text-amber-300 text-[11px]">Paper Plane</span>
-          <p class="text-[10px] text-stone-300 mt-0.5">22.5ml Bourbon, 22.5ml Aperol, 22.5ml Amaro Nonino, 22.5ml Fresh Lemon. Hard shaken in coupe.</p>
-        </div>
       </div>
 
       <div class="pt-2 border-t border-stone-800 flex justify-between items-center text-[9px] font-retro text-stone-500">
-        <span>ARCHIVE VOL. 6</span>
+        <span>ARCHIVE VOL. 8</span>
         <span>TAP ✕ TO CLOSE</span>
       </div>
 
     </div>
   </div>
 
-  <!-- AUDIO ENGINE WITH EXPANDED LO-FI ENGINE & MULTIPLE RANDOM TRACKS -->
   <script>
+    /* DUAL PROCEDURAL AUDIO ENGINE (MORNING CAFE vs NIGHT SPEAKEASY) */
     const SoundEngine = {
       ctx: null,
       bgmPlaying: false,
       timerId: null,
-      noiseNode: null,
+      vinylNoise: null,
+      mode: 'bar', // 'bar' or 'cafe'
       currentTrackIndex: 0,
-      bpm: 72,
+      bpm: 70,
 
-      // Diverse Lo-Fi Tracks (Randomized on enter & manual shuffle)
-      tracks: [
-        {
-          name: "Gulou Midnight Breeze (鼓楼晚风)",
-          bpm: 72,
-          chords: [
-            [146.83, 220.00, 261.63, 329.63, 392.00], // Dm9
-            [196.00, 246.94, 293.66, 329.63, 440.00], // G13
-            [130.81, 196.00, 246.94, 329.63, 392.00], // Cmaj9
-            [220.00, 261.63, 329.63, 392.00, 493.88]  // Am9
-          ],
-          cutoff: 720
-        },
-        {
-          name: "Hutong Autumn Rain (胡同秋雨)",
-          bpm: 68,
-          chords: [
-            [155.56, 233.08, 277.18, 349.23, 415.30], // Ebm9
-            [207.65, 261.63, 311.13, 349.23, 466.16], // Ab13
-            [138.59, 207.65, 261.63, 349.23, 415.30], // Dbmaj9
-            [233.08, 277.18, 349.23, 415.30, 523.25]  // Bbm9
-          ],
-          cutoff: 650
-        },
-        {
-          name: "Beihai White Pagoda Ripples (北海微澜)",
-          bpm: 76,
-          chords: [
-            [174.61, 220.00, 261.63, 329.63, 392.00], // Fmaj9
-            [130.81, 196.00, 246.94, 293.66, 349.23], // Em7
-            [146.83, 220.00, 261.63, 349.23, 440.00], // Dm9
-            [196.00, 246.94, 293.66, 392.00, 440.00]  // G9sus4
-          ],
-          cutoff: 820
-        },
-        {
-          name: "Line 2 Last Train (二号线末班车)",
-          bpm: 70,
-          chords: [
-            [110.00, 164.81, 220.00, 261.63, 329.63], // Am9
-            [130.81, 196.00, 246.94, 329.63, 392.00], // Cmaj7
-            [87.31,  130.81, 174.61, 220.00, 261.63], // Fmaj7
-            [98.00,  146.83, 196.00, 246.94, 293.66]  // G7
-          ],
-          cutoff: 680
-        },
-        {
-          name: "Catalan Dusk & Amber Gin (加泰罗尼亚薄暮)",
-          bpm: 75,
-          chords: [
-            [174.61, 220.00, 261.63, 349.23, 440.00], // Fmaj7
-            [196.00, 246.94, 293.66, 392.00, 493.88], // G6
-            [130.81, 196.00, 246.94, 329.63, 392.00], // Cmaj9
-            [164.81, 220.00, 261.63, 329.63, 392.00]  // Em7
-          ],
-          cutoff: 750
-        }
-      ],
+      // Track catalogs for distinct Day & Night vibes
+      tracks: {
+        cafe: [
+          {
+            name: "Sunrise Bossa Pour-Over",
+            bpm: 108,
+            style: "bossa",
+            progression: [
+              { chord: [349.23, 440.00, 523.25, 659.25], bass: 174.61 }, // Fmaj7
+              { chord: [392.00, 466.16, 587.33, 698.46], bass: 196.00 }, // Gm7
+              { chord: [440.00, 523.25, 659.25, 783.99], bass: 220.00 }, // Am7
+              { chord: [293.66, 369.99, 440.00, 523.25], bass: 146.83 }  // D7
+            ]
+          },
+          {
+            name: "Morning Cortado Bounce",
+            bpm: 112,
+            style: "bossa",
+            progression: [
+              { chord: [261.63, 329.63, 392.00, 493.88], bass: 130.81 }, // Cmaj7
+              { chord: [329.63, 392.00, 493.88, 587.33], bass: 164.81 }, // Em7
+              { chord: [293.66, 349.23, 440.00, 523.25], bass: 146.83 }, // Dm7
+              { chord: [392.00, 493.88, 587.33, 698.46], bass: 196.00 }  // G7
+            ]
+          },
+          {
+            name: "Hutong Courtyard Sunshine",
+            bpm: 104,
+            style: "bossa",
+            progression: [
+              { chord: [293.66, 369.99, 440.00, 554.37], bass: 146.83 }, // Dmaj7
+              { chord: [246.94, 293.66, 369.99, 440.00], bass: 123.47 }, // Bm7
+              { chord: [329.63, 392.00, 493.88, 587.33], bass: 164.81 }, // Em7
+              { chord: [440.00, 554.37, 659.25, 783.99], bass: 220.00 }  // A7
+            ]
+          }
+        ],
+        bar: [
+          {
+            name: "Gulou Midnight Velvet",
+            bpm: 68,
+            style: "lofi",
+            progression: [
+              { chord: [146.83, 220.00, 261.63, 329.63, 392.00], bass: 73.42 }, // Dm9
+              { chord: [196.00, 246.94, 293.66, 329.63, 440.00], bass: 98.00 }, // G13
+              { chord: [130.81, 196.00, 246.94, 329.63, 392.00], bass: 65.41 }, // Cmaj9
+              { chord: [220.00, 261.63, 329.63, 392.00, 493.88], bass: 110.00 } // Am9
+            ]
+          },
+          {
+            name: "Rainy Hutong Tape Deck",
+            bpm: 64,
+            style: "lofi",
+            progression: [
+              { chord: [155.56, 233.08, 277.18, 349.23, 415.30], bass: 77.78 }, // Ebm9
+              { chord: [207.65, 261.63, 311.13, 349.23, 466.16], bass: 103.83 }, // Ab13
+              { chord: [138.59, 207.65, 261.63, 349.23, 415.30], bass: 69.30 }, // Dbmaj9
+              { chord: [233.08, 277.18, 349.23, 415.30, 523.25], bass: 116.54 } // Bbm9
+            ]
+          },
+          {
+            name: "Catalan Amber Neon",
+            bpm: 72,
+            style: "lofi",
+            progression: [
+              { chord: [174.61, 220.00, 261.63, 349.23, 440.00], bass: 87.31 }, // Fmaj7
+              { chord: [196.00, 246.94, 293.66, 392.00, 493.88], bass: 98.00 }, // G6
+              { chord: [130.81, 196.00, 246.94, 329.63, 392.00], bass: 65.41 }, // Cmaj9
+              { chord: [164.81, 220.00, 261.63, 329.63, 392.00], bass: 82.41 }  // Em7
+            ]
+          }
+        ]
+      },
 
       init() {
         if (!this.ctx) {
@@ -753,15 +912,40 @@
         }
       },
 
+      setMode(isBarOpen) {
+        const newMode = isBarOpen ? 'bar' : 'cafe';
+        if (newMode !== this.mode) {
+          this.mode = newMode;
+          this.currentTrackIndex = 0;
+          if (this.bgmPlaying) {
+            this.stopBGM();
+            this.startBGM();
+          } else {
+            this.updateTrackHUD();
+          }
+        }
+      },
+
       randomizeTrack() {
-        this.currentTrackIndex = Math.floor(Math.random() * this.tracks.length);
-        const cur = this.tracks[this.currentTrackIndex];
-        this.bpm = cur.bpm + Math.floor(Math.random() * 5 - 2);
-        
-        const trackLabel = document.getElementById('lofi-track-name');
-        if (trackLabel) {
-          trackLabel.textContent = cur.name.split(' ')[0];
-          trackLabel.title = `${cur.name} (${this.bpm} BPM)`;
+        const list = this.tracks[this.mode];
+        this.currentTrackIndex = Math.floor(Math.random() * list.length);
+        this.updateTrackHUD();
+      },
+
+      updateTrackHUD() {
+        const list = this.tracks[this.mode];
+        const cur = list[this.currentTrackIndex];
+        const badge = document.getElementById('bgm-genre-badge');
+        const label = document.getElementById('bgm-track-name');
+        if (badge && cur) {
+          badge.textContent = this.mode === 'cafe' ? 'CAFE UPBEAT' : 'BAR DUSK';
+          badge.className = this.mode === 'cafe'
+            ? 'hidden sm:inline font-mono text-[8px] px-1 bg-amber-900 border border-amber-500 text-yellow-300'
+            : 'hidden sm:inline font-mono text-[8px] px-1 bg-stone-900 border border-stone-700 text-amber-400';
+        }
+        if (label && cur) {
+          label.textContent = `${cur.name.split(' ')[0]} (${cur.bpm}BPM)`;
+          label.title = `${cur.name} - ${cur.bpm} BPM`;
         }
       },
 
@@ -775,8 +959,8 @@
         for (let i = 0; i < bufferSize; i++) {
           const white = Math.random() * 2 - 1;
           last = (last + (0.02 * white)) / 1.02;
-          const pop = Math.random() > 0.9991 ? (Math.random() * 0.3) : 0;
-          data[i] = (last * 0.08) + pop;
+          const pop = Math.random() > 0.9991 ? (Math.random() * 0.25) : 0;
+          data[i] = (last * 0.07) + pop;
         }
 
         const noise = this.ctx.createBufferSource();
@@ -785,50 +969,111 @@
 
         const filter = this.ctx.createBiquadFilter();
         filter.type = 'lowpass';
-        filter.frequency.value = 1000;
+        filter.frequency.value = 1100;
 
         const gain = this.ctx.createGain();
-        gain.gain.value = 0.05;
+        gain.gain.value = 0.035;
 
         noise.connect(filter);
         filter.connect(gain);
         gain.connect(this.ctx.destination);
         noise.start();
-        this.noiseNode = noise;
+        this.vinylNoise = noise;
       },
 
-      startLoFiMusic() {
-        this.init();
-        if (this.bgmPlaying) return;
-        this.bgmPlaying = true;
-        this.startVinylCrackle();
+      stopVinylCrackle() {
+        if (this.vinylNoise) {
+          try { this.vinylNoise.stop(); } catch(e){}
+          this.vinylNoise = null;
+        }
+      },
 
-        const currentTrack = this.tracks[this.currentTrackIndex];
-        let chordIndex = 0;
+      // CAFE RHYTHM: Syncopated Bossa Nova Comping + Walking Plucked Bass + Coffee Shaker
+      playCafeBeat(track) {
+        let step = 0;
+        const beatSec = 60 / track.bpm;
+        const subSec = beatSec / 2; // 8th notes
 
-        const playChord = () => {
+        const tick = () => {
           if (!this.bgmPlaying || !this.ctx) return;
-          const chords = currentTrack.chords;
-          const chord = chords[chordIndex % chords.length];
           const now = this.ctx.currentTime;
-          const chordDuration = (60 / this.bpm) * 4;
+          const curProg = track.progression[Math.floor(step / 8) % track.progression.length];
+          const subStep = step % 8; // 8 subdivisions per bar (two beats per chord)
 
-          chord.forEach((freq, i) => {
+          // 1. Shaker on all 8th notes with accent
+          const isAccent = (subStep === 2 || subStep === 6);
+          this.triggerShaker(now, isAccent ? 0.04 : 0.02);
+
+          // 2. Syncopated Bossa comping (on subStep 0, 3, 6)
+          if (subStep === 0 || subStep === 3 || subStep === 6) {
+            curProg.chord.forEach((freq, i) => {
+              const osc = this.ctx.createOscillator();
+              const gain = this.ctx.createGain();
+              osc.type = i % 2 === 0 ? 'triangle' : 'sine';
+              osc.frequency.setValueAtTime(freq, now);
+
+              gain.gain.setValueAtTime(0.001, now);
+              gain.gain.linearRampToValueAtTime(0.025 / curProg.chord.length, now + 0.02);
+              gain.gain.exponentialRampToValueAtTime(0.0001, now + subSec * 1.4);
+
+              osc.connect(gain);
+              gain.connect(this.ctx.destination);
+              osc.start(now);
+              osc.stop(now + subSec * 1.5);
+            });
+          }
+
+          // 3. Upbeat walking bassline (plucked acoustic style)
+          if (subStep === 0 || subStep === 4) {
+            const bFreq = subStep === 0 ? curProg.bass : curProg.bass * 1.5; // root then fifth
+            const bOsc = this.ctx.createOscillator();
+            const bGain = this.ctx.createGain();
+            bOsc.type = 'triangle';
+            bOsc.frequency.setValueAtTime(bFreq, now);
+
+            bGain.gain.setValueAtTime(0.06, now);
+            bGain.gain.exponentialRampToValueAtTime(0.001, now + subSec * 1.2);
+
+            bOsc.connect(bGain);
+            bGain.connect(this.ctx.destination);
+            bOsc.start(now);
+            bOsc.stop(now + subSec * 1.3);
+          }
+
+          step++;
+          this.timerId = setTimeout(tick, subSec * 1000);
+        };
+
+        tick();
+      },
+
+      // BAR RHYTHM: Slow Lo-Fi minor 9th chords with wow-flutter + Sub Kick & Vinyl Rimshot
+      playBarBeat(track) {
+        let chordIdx = 0;
+        const chordDuration = (60 / track.bpm) * 4;
+
+        const tick = () => {
+          if (!this.bgmPlaying || !this.ctx) return;
+          const now = this.ctx.currentTime;
+          const curProg = track.progression[chordIdx % track.progression.length];
+
+          // 1. Warm Lo-Fi Chords
+          curProg.chord.forEach((freq, i) => {
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
             const filter = this.ctx.createBiquadFilter();
 
             osc.type = i % 2 === 0 ? 'sine' : 'triangle';
-            // Subtle lo-fi tape flutter
-            const detune = (Math.random() * 6 - 3);
-            osc.frequency.setValueAtTime(freq + (detune * 0.1), now);
+            // Subtle tape flutter detune
+            const flutter = Math.sin(now * 3) * 2.5;
+            osc.frequency.setValueAtTime(freq + flutter, now);
 
             filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(currentTrack.cutoff, now);
-            filter.frequency.exponentialRampToValueAtTime(300, now + (chordDuration * 0.88));
+            filter.frequency.setValueAtTime(680, now);
+            filter.frequency.exponentialRampToValueAtTime(280, now + chordDuration * 0.9);
 
             gain.gain.setValueAtTime(0.001, now);
-            gain.gain.linearRampToValueAtTime(0.035 / chord.length, now + 0.14);
+            gain.gain.linearRampToValueAtTime(0.03 / curProg.chord.length, now + 0.18);
             gain.gain.exponentialRampToValueAtTime(0.0001, now + chordDuration - 0.1);
 
             osc.connect(filter);
@@ -839,32 +1084,110 @@
             osc.stop(now + chordDuration);
           });
 
-          // Soft Lo-Fi Kick
-          const kick = this.ctx.createOscillator();
-          const kGain = this.ctx.createGain();
-          kick.frequency.setValueAtTime(70, now);
-          kick.frequency.exponentialRampToValueAtTime(28, now + 0.2);
-          kGain.gain.setValueAtTime(0.045, now);
-          kGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-          kick.connect(kGain);
-          kGain.connect(this.ctx.destination);
-          kick.start(now);
-          kick.stop(now + 0.22);
+          // 2. Sub-Bass
+          const subOsc = this.ctx.createOscillator();
+          const subGain = this.ctx.createGain();
+          subOsc.type = 'sine';
+          subOsc.frequency.setValueAtTime(curProg.bass, now);
+          subGain.gain.setValueAtTime(0.05, now);
+          subGain.gain.exponentialRampToValueAtTime(0.001, now + chordDuration * 0.7);
+          subOsc.connect(subGain);
+          subGain.connect(this.ctx.destination);
+          subOsc.start(now);
+          subOsc.stop(now + chordDuration * 0.75);
 
-          chordIndex++;
-          this.timerId = setTimeout(playChord, chordDuration * 1000);
+          // 3. Lo-Fi Kick on 1 and Rimshot on 3
+          this.triggerLoFiKick(now);
+          this.triggerLoFiRimshot(now + (60 / track.bpm) * 2);
+
+          chordIdx++;
+          this.timerId = setTimeout(tick, chordDuration * 1000);
         };
 
-        playChord();
+        tick();
       },
 
-      stopLoFiMusic() {
+      triggerShaker(time, vol = 0.03) {
+        if (!this.ctx) return;
+        const bufferSize = this.ctx.sampleRate * 0.04;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let j = 0; j < bufferSize; j++) data[j] = Math.random() * 2 - 1;
+
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.value = 4500;
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(vol, time);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.04);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start(time);
+      },
+
+      triggerLoFiKick(time) {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.frequency.setValueAtTime(80, time);
+        osc.frequency.exponentialRampToValueAtTime(32, time + 0.22);
+        gain.gain.setValueAtTime(0.05, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.22);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(time);
+        osc.stop(time + 0.24);
+      },
+
+      triggerLoFiRimshot(time) {
+        if (!this.ctx) return;
+        const bufferSize = this.ctx.sampleRate * 0.05;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let j = 0; j < bufferSize; j++) data[j] = Math.random() * 2 - 1;
+
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 2200;
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.04, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.05);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start(time);
+      },
+
+      startBGM() {
+        this.init();
+        if (this.bgmPlaying) return;
+        this.bgmPlaying = true;
+
+        const curTrack = this.tracks[this.mode][this.currentTrackIndex];
+        this.updateTrackHUD();
+
+        if (this.mode === 'bar') {
+          this.startVinylCrackle();
+          this.playBarBeat(curTrack);
+        } else {
+          this.stopVinylCrackle();
+          this.playCafeBeat(curTrack);
+        }
+      },
+
+      stopBGM() {
         this.bgmPlaying = false;
         if (this.timerId) clearTimeout(this.timerId);
-        if (this.noiseNode) {
-          try { this.noiseNode.stop(); } catch(e){}
-          this.noiseNode = null;
-        }
+        this.stopVinylCrackle();
       },
 
       playClick() {
@@ -881,6 +1204,69 @@
         gain.connect(this.ctx.destination);
         osc.start();
         osc.stop(this.ctx.currentTime + 0.04);
+      },
+
+      playClink() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc1.type = 'sine';
+        osc2.type = 'triangle';
+        osc1.frequency.setValueAtTime(2600, now);
+        osc1.frequency.exponentialRampToValueAtTime(2560, now + 0.7);
+        osc2.frequency.setValueAtTime(5200, now);
+
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.7);
+        osc2.stop(now + 0.7);
+      },
+
+      playShaker() {
+        this.init();
+        if (!this.ctx) return;
+        for (let i = 0; i < 3; i++) {
+          setTimeout(() => {
+            if (!this.ctx) return;
+            this.triggerShaker(this.ctx.currentTime, 0.05);
+          }, i * 90);
+        }
+      },
+
+      playCoffeeGrinder() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const bufferSize = this.ctx.sampleRate * 0.45;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let j = 0; j < bufferSize; j++) data[j] = (Math.random() * 2 - 1) * 0.3;
+
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(900, now);
+        filter.frequency.linearRampToValueAtTime(1400, now + 0.4);
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start();
       },
 
       playMeow(pitch = 1.0) {
@@ -905,30 +1291,6 @@
         osc.stop(now + 0.45);
       },
 
-      playCatHiss() {
-        this.init();
-        if (!this.ctx) return;
-        const bufferSize = this.ctx.sampleRate * 0.25;
-        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.18;
-
-        const noise = this.ctx.createBufferSource();
-        noise.buffer = buffer;
-        const filter = this.ctx.createBiquadFilter();
-        filter.type = 'highpass';
-        filter.frequency.value = 2400;
-
-        const gain = this.ctx.createGain();
-        gain.gain.setValueAtTime(0.06, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
-
-        noise.connect(filter);
-        filter.connect(gain);
-        gain.connect(this.ctx.destination);
-        noise.start();
-      },
-
       playSnore() {
         this.init();
         if (!this.ctx) return;
@@ -941,7 +1303,7 @@
         osc.frequency.linearRampToValueAtTime(75, now + 0.7);
 
         gain.gain.setValueAtTime(0.02, now);
-        gain.gain.linearRampToValueAtTime(0.05, now + 0.35);
+        gain.gain.linearRampToValueAtTime(0.045, now + 0.35);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.75);
 
         osc.connect(gain);
@@ -950,67 +1312,29 @@
         osc.stop(now + 0.8);
       },
 
-      playClink() {
+      playChiptune(freq = 440, type = 'square', duration = 0.08) {
         this.init();
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
-        const osc1 = this.ctx.createOscillator();
-        const osc2 = this.ctx.createOscillator();
+        const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
-
-        osc1.type = 'sine';
-        osc2.type = 'triangle';
-        osc1.frequency.setValueAtTime(2600, now);
-        osc1.frequency.exponentialRampToValueAtTime(2560, now + 0.7);
-        osc2.frequency.setValueAtTime(5200, now);
-
-        gain.gain.setValueAtTime(0.1, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
-
-        osc1.connect(gain);
-        osc2.connect(gain);
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        osc.connect(gain);
         gain.connect(this.ctx.destination);
-        osc1.start(now);
-        osc2.start(now);
-        osc1.stop(now + 0.7);
-        osc2.stop(now + 0.7);
-      },
-
-      playShaker() {
-        this.init();
-        if (!this.ctx) return;
-        for (let i = 0; i < 3; i++) {
-          setTimeout(() => {
-            const bufferSize = this.ctx.sampleRate * 0.07;
-            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let j = 0; j < bufferSize; j++) data[j] = Math.random() * 2 - 1;
-
-            const noise = this.ctx.createBufferSource();
-            noise.buffer = buffer;
-            const filter = this.ctx.createBiquadFilter();
-            filter.type = 'bandpass';
-            filter.frequency.value = 3400;
-
-            const gain = this.ctx.createGain();
-            gain.gain.setValueAtTime(0.06, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.07);
-
-            noise.connect(filter);
-            filter.connect(gain);
-            gain.connect(this.ctx.destination);
-            noise.start();
-          }, i * 100);
-        }
+        osc.start(now);
+        osc.stop(now + duration);
       }
     };
   </script>
 
-  <!-- APPLICATION STATE & FULL I18N SYSTEM -->
   <script>
+    /* APPLICATION CORE STATE */
     const AppState = {
       lang: 'en',
-      hour: 22.5,
+      hour: 22.5, // 0.0 to 24.0
       weather: 'rain',
       inSanctuary: false,
       isBarOpen: true,
@@ -1018,15 +1342,16 @@
       // Host State
       weiMood: 'nightOwl',
       weiEnergy: 4,
-      weiState: 'awake',
+      weiState: 'awake', // 'awake' or 'asleep'
       usedTopicIds: new Set(),
       currentTopic: null,
 
-      // Cats
-      misoAction: 'loaf',
-      yuzuAction: 'tail'
+      // Entertainment State
+      currentJokeIndex: 0,
+      activeGame: 'snake'
     };
 
+    /* COMPREHENSIVE I18N DICTIONARY */
     const i18n = {
       en: {
         venueBar: "BAR",
@@ -1034,33 +1359,41 @@
         doorSub: "18:00—04:00 Wei's Bar • 04:00—18:00 Wei's Coffee",
         btnEnterBar: "Enter Wei's Bar",
         btnEnterCoffee: "Enter Wei's Coffee",
-        doorHero: "Spin the hand. Push the wood.",
+        doorHero: "Spin the 24H hand. Push the wood.",
         returnDoor: "Door",
-        navAlbum: "ALBUM",
+        navAlbum: "MENU",
+        navArcade: "ARCADE",
         catNap: "🐾 Miso & Yuzu are napping together",
         catFight: "⚠️ Miso & Yuzu are in a slap fight!",
         catPlay: "🧶 Yuzu is chasing Miso's tail",
         drawerTitle: "ATMOSPHERE CONTROL",
-        drawerWeatherHeader: "OUTDOOR WEATHER (BEIJING)",
-        drawerPresetsHeader: "TIME SELECTOR",
+        drawerWeatherHeader: "OUTDOOR WEATHER",
+        drawerPresetsHeader: "TIME PRESETS",
         sleepHeaderTitle: "LATE NIGHT COMPLICATION",
-        sleepStoryText: "*HONK-SHOO...* Wei fell fast asleep right over the cedar cutting board! His round glasses slipped down his nose.",
+        sleepStoryText: "*HONK-SHOO...* Wei fell fast asleep right over the counter! His round wire glasses slipped down his nose.",
         sleepBtnWake: "Clink a glass to wake Wei",
-        sleepBtnCats: "Let Miso & Yuzu mix",
-        sleepBtnDiy: "Sneak behind the bar & DIY",
-        sneakHeaderTitle: "UNAUTHORIZED DIY BAR MIXER",
-        sneakLabelBase: "SPIRIT BASE",
-        sneakLabelMod: "TONIC / MOD",
-        sneakLabelGarnish: "GARNISH",
+        sleepBtnCats: "Let Miso & Yuzu serve",
+        sleepBtnDiy: "Sneak behind counter & DIY",
+        sneakHeaderTitle: "UNAUTHORIZED DIY COUNTER MIXER",
+        sneakLabelBase: "BASE SPIRIT / COFFEE",
+        sneakLabelMod: "MODIFIER / TONIC",
+        sneakLabelGarnish: "GARNISH / AROMA",
         sneakBtnPour: "Pour & Slide Over Counter",
         resBtnReorder: "New Order ↺",
         resBtnCheers: "🥂 Cheers!",
-        modalSub: "WEI'S BOTANICAL ARCHIVE",
-        modalMain: "The Gin & Tonic Variations",
-        tabFlight: "FLIGHTS",
+        modalSubBar: "WEI'S BOTANICAL ARCHIVE",
+        modalMainBar: "The Gin & Tonic Variations",
+        modalSubCafe: "WEI'S HUTONG ROASTERY",
+        modalMainCafe: "Artisan Pour-Overs & Roasts",
+        tabFlight: "SIGNATURES",
         tabAtelier: "ATELIER BUILDER",
-        tabClassic: "CLASSIC RATIOS",
-        cellarBanner: "[WEI'S BOTANICAL CELLAR]"
+        tabClassic: "CLASSICS / BAKERY",
+        cellarBannerBar: "[WEI'S BOTANICAL CELLAR]",
+        cellarBannerCafe: "[WEI'S HUTONG ROASTERY & ESPRESSO]",
+        jokeTitle: "Wei's Dry Banter",
+        jokeNext: "Another One ↺",
+        gameTitle: "RETRO PIXEL ARCADE",
+        gameScore: "SCORE"
       },
       zh: {
         venueBar: "酒吧",
@@ -1068,33 +1401,41 @@
         doorSub: "18:00—04:00 小酒馆 • 04:00—18:00 晨间咖啡",
         btnEnterBar: "推门进入小酒馆",
         btnEnterCoffee: "推门进入咖啡馆",
-        doorHero: "拨动表针，静听木门回响。",
+        doorHero: "拨动24小时表针，静听木门回响。",
         returnDoor: "门前",
-        navAlbum: "酒单图鉴",
+        navAlbum: "单品图鉴",
+        navArcade: "复古街机",
         catNap: "🐾 味噌和柚子正挤着打呼噜",
-        catFight: "⚠️ 味噌和柚子打起喵喵拳了！",
+        catFight: "⚠️️ 味噌和柚子打起喵喵拳了！",
         catPlay: "🧶 柚子在扑咬味噌的黑尾巴",
         drawerTitle: "环境与天气调节",
-        drawerWeatherHeader: "北京窗外天气",
+        drawerWeatherHeader: "窗外天气",
         drawerPresetsHeader: "时间预设与同步",
         sleepHeaderTitle: "深夜突发状况",
-        sleepStoryText: "*呼——呼噜……* Wei 趴在雪松吧台上睡得正香！圆框眼镜滑到了鼻尖。",
+        sleepStoryText: "*呼——呼噜……* Wei 趴在吧台上睡着了！复古圆框眼镜滑到了鼻尖。",
         sleepBtnWake: "轻碰酒杯唤醒 Wei",
-        sleepBtnCats: "让小猫味噌和柚子来调酒",
-        sleepBtnDiy: "悄悄溜进吧台自己倒一杯",
+        sleepBtnCats: "让小猫味噌和柚子来招待",
+        sleepBtnDiy: "悄悄溜进吧台自己来一杯",
         sneakHeaderTitle: "未经许可的自助吧台",
-        sneakLabelBase: "基酒选择",
-        sneakLabelMod: "气泡水 / 汤力",
+        sneakLabelBase: "基酒 / 咖啡基底",
+        sneakLabelMod: "汤力 / 鲜奶调配",
         sneakLabelGarnish: "风味点缀",
         sneakBtnPour: "轻推至吧台前 🍸",
         resBtnReorder: "再点一杯 ↺",
         resBtnCheers: "🥂 干杯！",
-        modalSub: "WEI 的植物草本典藏",
-        modalMain: "金汤力风味图鉴",
-        tabFlight: "特调酒单",
-        tabAtelier: "工坊定制",
-        tabClassic: "经典配比",
-        cellarBanner: "[WEI 的胡同草本酒窖]"
+        modalSubBar: "WEI 的胡同草本典藏",
+        modalMainBar: "金汤力风味图鉴",
+        modalSubCafe: "WEI 的胡同手冲烘焙工坊",
+        modalMainCafe: "单一产区手冲与特调",
+        tabFlight: "主打单品",
+        tabAtelier: "风味工坊",
+        tabClassic: "经典款 / 甜点烘焙",
+        cellarBannerBar: "[WEI 的胡同草本酒窖]",
+        cellarBannerCafe: "[WEI 的胡同烘焙与意式咖啡]",
+        jokeTitle: "Wei 的冷幽默",
+        jokeNext: "再来一个 ↺",
+        gameTitle: "像素复古街机",
+        gameScore: "积分"
       },
       es: {
         venueBar: "BAR",
@@ -1102,40 +1443,48 @@
         doorSub: "18:00—04:00 Bar de Wei • 04:00—18:00 Café de Wei",
         btnEnterBar: "Entrar al Bar",
         btnEnterCoffee: "Entrar al Café",
-        doorHero: "Gira la manecilla. Empuja la madera.",
+        doorHero: "Gira la manecilla de 24h. Empuja la madera.",
         returnDoor: "Puerta",
-        navAlbum: "ÁLBUM",
+        navAlbum: "MENÚ",
+        navArcade: "ARCADE",
         catNap: "🐾 Miso y Yuzu duermen acurrucados",
         catFight: "⚠️ ¡Pelea de patitas entre Miso y Yuzu!",
         catPlay: "🧶 Yuzu persigue la cola de Miso",
         drawerTitle: "CONTROL ATMOSFÉRICO",
-        drawerWeatherHeader: "CLIMA EXTERIOR (PEKÍN)",
+        drawerWeatherHeader: "CLIMA EXTERIOR",
         drawerPresetsHeader: "SELECTOR DE HORA",
         sleepHeaderTitle: "COMPLICACIÓN NOCTURNA",
         sleepStoryText: "*Zzz...* ¡Wei se quedó dormido sobre la barra! Sus gafas redondas resbalaron por su nariz.",
         sleepBtnWake: "Chocar una copa para despertar a Wei",
-        sleepBtnCats: "Dejar que Miso y Yuzu preparen",
+        sleepBtnCats: "Dejar que Miso y Yuzu atiendan",
         sleepBtnDiy: "Colarse tras la barra y hacer DIY",
         sneakHeaderTitle: "BARRA LIBRE NO AUTORIZADA",
-        sneakLabelBase: "BASE ESPIRITUOSA",
-        sneakLabelMod: "TÓNICA / MEZCLA",
-        sneakLabelGarnish: "ADORNOS",
+        sneakLabelBase: "BASE ESPIRITUOSA / CAFÉ",
+        sneakLabelMod: "TÓNICA / LECHE",
+        sneakLabelGarnish: "ADORNOS Y AROMA",
         sneakBtnPour: "Servir y deslizar a la barra",
-        resBtnReorder: "Otro trago ↺",
+        resBtnReorder: "Otro pedido ↺",
         resBtnCheers: "🥂 ¡Salud!",
-        modalSub: "ARCHIVO BOTÁNICO DE WEI",
-        modalMain: "Variaciones de Gin & Tonic",
-        tabFlight: "SELECCIÓN G&T",
+        modalSubBar: "ARCHIVO BOTÁNICO DE WEI",
+        modalMainBar: "Variaciones de Gin & Tonic",
+        modalSubCafe: "TOSTADURÍA ARTESANAL DE WEI",
+        modalMainCafe: "Café de Filtro & Especialidad",
+        tabFlight: "SELECCIÓN",
         tabAtelier: "TALLER CREATIVO",
-        tabClassic: "RATIOS CLÁSICOS",
-        cellarBanner: "[BODEGA BOTÁNICA DE WEI]"
+        tabClassic: "CLÁSICOS / REPOSTERÍA",
+        cellarBannerBar: "[BODEGA BOTÁNICA DE WEI]",
+        cellarBannerCafe: "[TOSTADURÍA & ESPRESSO DE WEI]",
+        jokeTitle: "Chistes Secos de Wei",
+        jokeNext: "Otro Chiste ↺",
+        gameTitle: "ARCADE RETRO PIXEL",
+        gameScore: "PUNTOS"
       }
     };
   </script>
 
-  <!-- EXPANDED DIALOGUE POOL WITH BEIJING ELEMENTS -->
   <script>
-    const TopicPool = [
+    /* BAR DIALOGUE POOL */
+    const BarTopicPool = [
       {
         id: "gulou_bells",
         mood: "nightOwl",
@@ -1151,10 +1500,10 @@
           },
           {
             label: { en: "Tell me about the stray cats around the Drum Tower.", zh: "跟我讲讲鼓楼附近那几只常来串门的小野猫吧。", es: "Cuéntame de los gatos callejeros de la Torre del Tambor." },
-            deltaEnergy: 0, drink: "catalan", nextMood: "gossip"
+            deltaEnergy: 0, drink: "catalan", nextMood: "sarcastic"
           },
           {
-            label: { en: "Just need silence, ice cubes, and a quiet stool.", zh: "只要一块老冰、高脚椅和安安静静的五分钟。", es: "Solo necesito hielo puro, una banqueta y silencio." },
+            label: { en: "Just need silence, clear ice, and a stool.", zh: "只要一块老冰、高脚椅和安安静静的五分钟。", es: "Solo necesito hielo puro, una banqueta y silencio." },
             deltaEnergy: -1, drink: "kyoto", nextMood: "poetic"
           }
         ]
@@ -1173,10 +1522,6 @@
             deltaEnergy: 0, drink: "jasmine_gulou", nextMood: "empath"
           },
           {
-            label: { en: "Chilled juniper and crystal clear river ice.", zh: "冷冽的杜松子与清澈的白塔湖面碎冰。", es: "Enebro frío y hielo cristalino del lago." },
-            deltaEnergy: -1, drink: "oceanic", nextMood: "nightOwl"
-          },
-          {
             label: { en: "Give me something rebellious with a smokey bite.", zh: "给我来杯烟熏烈性、能击碎疲惫的特调。", es: "Dame algo rebelde con un toque ahumado." },
             deltaEnergy: -1, drink: "oldfashioned", nextMood: "sarcastic"
           }
@@ -1193,243 +1538,194 @@
         options: [
           {
             label: { en: "My spreadsheet crashed at 21:59. Mercy please.", zh: "晚上九点五十九分表格崩溃了，需要精神急救。", es: "Mi hoja de cálculo se colgó a las 21:59. Piedad." },
-            deltaEnergy: -1, drink: "london1888", nextMood: "empath"
-          },
-          {
-            label: { en: "Pour me what the truly stubborn night wanderers drink.", zh: "倒一杯那些真正顽固的夜游人常喝的硬朗金酒。", es: "Sírveme lo que beben los caminantes obstinados." },
-            deltaEnergy: -1, drink: "negroni", nextMood: "nightOwl"
+            deltaEnergy: -1, drink: "negroni", nextMood: "empath"
           },
           {
             label: { en: "Your round glasses look extra studious tonight, Wei.", zh: "Wei，你这副复古圆框眼镜今晚看起来格外睿智。", es: "Tus gafas redondas se ven muy sabias esta noche, Wei." },
-            deltaEnergy: 0, drink: "paperplane", nextMood: "gossip"
-          }
-        ]
-      },
-      {
-        id: "beihai_white_pagoda",
-        mood: "poetic",
-        text: {
-          en: "\"Old locals say when mist rises over Beihai, the white pagoda floats between two skies. What thought are you letting dissolve in your glass?\"",
-          zh: "\"老北京人说，当北海湖面泛起轻雾，白塔就像悬在两个天空之间。你在杯子里融化的是哪件放不下的事？\"",
-          es: "\"Dicen que cuando la niebla sube sobre Beihai, la pagoda blanca flota entre dos cielos. ¿Qué pensamiento estás disolviendo?\""
-        },
-        options: [
-          {
-            label: { en: "Unfinished conversations from three autumns ago.", zh: "三年前那个深秋没能说完的半句话。", es: "Conversaciones que quedaron a medias hace tres otoños." },
-            deltaEnergy: -1, drink: "catalan", nextMood: "empath"
-          },
-          {
-            label: { en: "Just thirst and pure curiosity for botanical tonics.", zh: "没那么沉重，纯粹是想试试你窖藏的汤力水配方。", es: "Nada tan pesado: pura sed y curiosidad botánica." },
-            deltaEnergy: 0, drink: "blackforest", nextMood: "nightOwl"
-          },
-          {
-            label: { en: "Pour the Kyoto Mist and let the shiso speak.", zh: "倒一杯京都竹雾，让紫苏的香气替我说话。", es: "Sirve el Kyoto Mist y deja que el shiso hable." },
-            deltaEnergy: -1, drink: "kyoto", nextMood: "poetic"
-          }
-        ]
-      },
-      {
-        id: "late_hour_fatigue",
-        mood: "nightOwl",
-        text: {
-          en: "\"*Adjusts round glasses*... My eyes are telling me it's past 2 AM, but the ice cubes in my shaker are still carved razor-sharp. What's your order?\"",
-          zh: "\"*推了推圆框眼镜*……虽然表针已经快两点半了，但我手凿的透明冰柱依然棱角分明。今夜的终局想喝点什么？\"",
-          es: "\"*Se ajusta las gafas redondas*... Son más de las dos, pero el hielo tallado sigue perfecto. ¿Cuál es tu última orden?\""
-        },
-        options: [
-          {
-            label: { en: "A rapid Paper Plane before gravity claims your eyelids!", zh: "快来一杯酸爽明亮的纸飞机，在眼皮打架前碰个杯！", es: "¡Un Paper Plane rápido antes de que gane el sueño!" },
-            deltaEnergy: -1, drink: "paperplane", nextMood: "sarcastic"
-          },
-          {
-            label: { en: "Rest your head on the bar, Wei. You've been carving all night.", zh: "趴着歇会儿吧 Wei，你凿了一整晚冰了。", es: "Apoya la cabeza en la barra, Wei. Descansa un poco." },
-            deltaEnergy: -3, drink: "jasmine_gulou", nextMood: "nightOwl"
-          },
-          {
-            label: { en: "Classic Rye Old Fashioned with torched orange oil.", zh: "慢摇一杯经典黑麦老式，滴两滴火焰橙皮油。", es: "Un Old Fashioned de centeno con aceite de naranja." },
-            deltaEnergy: -1, drink: "oldfashioned", nextMood: "poetic"
+            deltaEnergy: 0, drink: "paperplane", nextMood: "nightOwl"
           }
         ]
       }
     ];
 
+    /* CAFE DIALOGUE POOL */
+    const CafeTopicPool = [
+      {
+        id: "gesha_morning",
+        mood: "baristaJoy",
+        text: {
+          en: "\"Good morning! The sun is spilling through the courtyard trellis. I just dialed in an anaerobic natural Gesha with notes of white peach and bergamot. Pour you a cup?\"",
+          zh: "\"早晨好！晨光正好透过四合院的葡萄架。我刚校准完一款厌氧日晒瑰夏，有着白桃与佛手柑的明亮花果香。给你手冲一杯？\"",
+          es: "\"¡Buenos días! El sol entra por el patio del hutong. Acabo de calibrar un Gesha natural con notas de melocotón blanco y bergamota. ¿Te sirvo una taza?\""
+        },
+        options: [
+          {
+            label: { en: "Yes please! Light extraction, bring out the flowers.", zh: "太好了！轻度萃取，多保留些花香与果酸。", es: "¡Sí, por favor! Extracción ligera para resaltar las flores." },
+            deltaEnergy: 1, drink: "gesha_pourover", nextMood: "baristaJoy"
+          },
+          {
+            label: { en: "I need dense caffeine: make it an Oat Milk Dirty.", zh: "我需要重度清醒：来一杯浓厚冰博克燕麦Dirty。", es: "Necesito cafeína pura: prepárame un Dirty con avena." },
+            deltaEnergy: 0, drink: "dirty_espresso", nextMood: "poetic"
+          },
+          {
+            label: { en: "Pair it with one of your freshly baked croissants.", zh: "再配上一只刚出炉、黄油酥脆的可颂可好？", es: "Acompáñalo con uno de tus croissants recién horneados." },
+            deltaEnergy: 1, drink: "croissant_combo", nextMood: "empath"
+          }
+        ]
+      },
+      {
+        id: "courtyard_sparrows",
+        mood: "poetic",
+        text: {
+          en: "\"Listen to the sparrows chirping on the grey roof tiles. Hutong mornings are the only time the city truly inhales. What speed do you want your morning to take?\"",
+          zh: "\"听听灰瓦屋檐上麻雀的清脆叫声。北京胡同的清晨是这座城市唯一定下心来呼吸的时刻。今天想以怎样的节奏开启？\"",
+          es: "\"Escucha a los gorriones en las tejas grises. Las mañanas en el hutong son el único momento en que la ciudad respira en paz. ¿A qué ritmo quieres empezar?\""
+        },
+        options: [
+          {
+            label: { en: "Slow and contemplative: Cold brew tonic with citrus.", zh: "慢节奏：来一杯冰爽提神的冷萃汤力配鲜橙皮。", es: "Lento y contemplativo: Cold brew con tónica y cítricos." },
+            deltaEnergy: 0, drink: "coldbrew_tonic", nextMood: "poetic"
+          },
+          {
+            label: { en: "Wei, did Miso and Yuzu steal coffee beans again?", zh: "Wei，味噌和柚子刚才是不是又想扒拉咖啡生豆麻袋？", es: "Wei, ¿Miso y Yuzu volvieron a jugar con los sacos de café?" },
+            deltaEnergy: 0, drink: "einspanner", nextMood: "baristaJoy"
+          }
+        ]
+      }
+    ];
+
+    /* DRINK & COFFEE MENU MANIFEST */
     const DrinkManifest = {
+      // Cocktails
       jasmine_gulou: {
-        name: {
-          en: "Gulou Belltower Jasmine G&T",
-          zh: "鼓楼夜钟茉莉金汤力",
-          es: "G&T Jazmín de la Torre Gulou"
-        },
-        sub: {
-          en: "Beijing Jasmine Tea • Osmanthus Mist • Crystal Clear Ice",
-          zh: "北京茉莉银针 • 金桂气泡水 • 手凿晶透长冰柱",
-          es: "Té de Jazmín de Pekín • Bruma de Osmanto • Hielo Cristalino"
-        },
-        desc: {
-          en: "\"Cold-infused Beijing jasmine green tea with artisan dry gin, effervescent osmanthus soda, and a sliver of dried sweet hawthorn.\"",
-          zh: "\"采用冷萃北京茉莉花茶基底，搭配植物金酒与清冽桂花气泡水，杯口饰有一片薄切糖霜山楂片。花香回甘，秋意沉静。\"",
-          es: "\"Gin infusionado en frío con té verde de jazmín de Pekín, soda efervescente de osmanto y una lámina de espino silvestre.\""
-        },
+        type: 'bar',
+        name: { en: "Gulou Belltower Jasmine G&T", zh: "鼓楼夜钟茉莉金汤力", es: "G&T Jazmín de la Torre Gulou" },
+        sub: { en: "Beijing Jasmine Tea • Osmanthus Mist • Crystal Clear Ice", zh: "北京茉莉银针 • 金桂气泡水 • 手凿长冰柱", es: "Té de Jazmín de Pekín • Bruma de Osmanto • Hielo Cristalino" },
+        desc: { en: "\"Cold-infused Beijing jasmine green tea with artisan dry gin and effervescent osmanthus soda.\"", zh: "\"冷萃北京茉莉花茶搭配杜松金酒与金桂气泡水，杯沿饰以糖霜山楂片。花香回甘，秋意沉静。\"", es: "\"Gin infusionado con té verde de jazmín, soda de osmanto y espino silvestre.\"" },
         formula: "45ml Jasmine Tea Gin • 120ml Osmanthus Soda • Hawthorn Crisp",
         icon: "🫖"
       },
       catalan: {
-        name: {
-          en: "The Catalan Rose & Sea",
-          zh: "加泰罗尼亚玫瑰与海",
-          es: "La Rosa y el Mar Catalán"
-        },
-        sub: {
-          en: "Barcelona Botanicals • Sant Jordi Petals • Mediterranean Tonic",
-          zh: "巴塞罗那地中海草本 • 圣乔治红玫瑰花瓣 • 柠檬叶",
-          es: "Botánicos de Barcelona • Pétalos de Sant Jordi • Tónica Med"
-        },
-        desc: {
-          en: "\"Mediterranean rosemary, arbequina olive notes, Fever-Tree tonic, and freshly floating Sant Jordi red rose petals.\"",
-          zh: "\"融汇巴塞罗那迷迭香、阿贝金娜橄榄微咸与圣乔治红玫瑰花瓣，回味如漫步在贝尔港的薄暮海风中。\"",
-          es: "\"Romero mediterráneo, tónica de alta montaña y pétalos carmesí de Sant Jordi flotando sobre hielo claro.\""
-        },
+        type: 'bar',
+        name: { en: "The Catalan Rose & Sea", zh: "加泰罗尼亚玫瑰与海", es: "La Rosa y el Mar Catalán" },
+        sub: { en: "Barcelona Botanicals • Sant Jordi Petals • Med Tonic", zh: "巴塞罗那草本 • 圣乔治红玫瑰花瓣 • 地中海汤力", es: "Botánicos de Barcelona • Pétalos de Sant Jordi • Tónica Med" },
+        desc: { en: "\"Mediterranean rosemary, arbequina olive notes, and floating Sant Jordi red rose petals.\"", zh: "\"融汇巴塞罗那迷迭香、阿贝金娜橄榄微咸与圣乔治红玫瑰花瓣，回味如同漫步海港薄暮。\"", es: "\"Romero mediterráneo, tónica de alta montaña y pétalos carmesí de Sant Jordi.\"" },
         formula: "45ml Catalan Gin • 120ml Med Tonic • Rose Petals • Bay Leaf",
         icon: "🌹"
       },
       kyoto: {
-        name: {
-          en: "Kyoto Mist Shiso G&T",
-          zh: "京都竹雾紫苏金汤力",
-          es: "Kyoto Mist Shiso G&T"
-        },
-        sub: {
-          en: "Ki No Bi Gin • Green Tea & Bamboo • Slapped Shiso",
-          zh: "季之美京都金酒 • 玉露竹林蒸馏 • 紫苏叶与山椒",
-          es: "Gin Ki No Bi • Té Gyokuro y Bambú • Shiso Morado"
-        },
-        desc: {
-          en: "\"Freshly slapped purple shiso leaf, green tea distillate, and crushed sansho pepper over clear crystal spear.\"",
-          zh: "\"拍醒的新鲜紫苏叶，交融京都玉露绿茶与竹叶蒸馏液，研磨山椒粉带来一丝清冽微辛。\"",
-          es: "\"Hoja de shiso morado despertada a mano, destilado de té verde y pimienta sansho sobre lanza de hielo.\""
-        },
+        type: 'bar',
+        name: { en: "Kyoto Mist Shiso G&T", zh: "京都竹雾紫苏金汤力", es: "Kyoto Mist Shiso G&T" },
+        sub: { en: "Ki No Bi Gin • Green Tea & Bamboo • Slapped Shiso", zh: "季之美京都金酒 • 玉露竹林蒸馏 • 紫苏叶与山椒", es: "Gin Ki No Bi • Té Gyokuro y Bambú • Shiso Morado" },
+        desc: { en: "\"Purple shiso leaf, green tea distillate, and crushed sansho pepper over crystal ice spear.\"", zh: "\"拍醒的新鲜紫苏叶，交融京都玉露绿茶与竹叶蒸馏液，研磨山椒粉带来一丝清冽微辛。\"", es: "\"Hoja de shiso morado despertada a mano, té verde y pimienta sansho sobre lanza de hielo.\"" },
         formula: "45ml Ki No Bi Gin • 120ml Yuzu Tonic • Shiso • Sansho",
         icon: "🌿"
       },
-      blackforest: {
-        name: {
-          en: "The Black Forest Secret",
-          zh: "黑森林47秘境金汤力",
-          es: "El Secreto de la Selva Negra"
-        },
-        sub: {
-          en: "Monkey 47 • Lingonberry & Pine • Torched Sage",
-          zh: "47种黑森林草本 • 越橘果酸 • 炙烤鼠尾草",
-          es: "Monkey 47 • Arándano Rojo y Pino • Salvia Tostada"
-        },
-        desc: {
-          en: "\"Monkey 47 with torched sage, frozen tart lingonberries, and classic Indian quinine bubbles.\"",
-          zh: "\"来自德国黑森林的47种植物精萃，搭配炙烤鼠尾草的松木烟香与微酸越橘，层次繁复深邃。\"",
-          es: "\"Monkey 47 con salvia flameada, arándanos rojos congelados y burbujas clásicas de quinina india.\""
-        },
-        formula: "45ml Monkey 47 • 120ml Indian Tonic • Sage • Lingonberry",
-        icon: "🌲"
-      },
-      oceanic: {
-        name: {
-          en: "The Oceanic Saline Drift",
-          zh: "高纬度潮汐冷海盐金汤力",
-          es: "Deriva Salina Oceánica"
-        },
-        sub: {
-          en: "Scottish Sugar Kelp • Sea Asparagus • Light Tonic",
-          zh: "苏格兰海带萃取 • 海芦笋微咸 • 粉红西柚月牙",
-          es: "Algas Escocesas • Salicornia • Pomelo Rosado"
-        },
-        desc: {
-          en: "\"Infused with Scottish sugar kelp and sea asparagus. Crisp, cold, and mineral-driven like high tide.\"",
-          zh: "\"汲取外赫布里底群岛的海带矿物风味与脆嫩海芦笋，冷洌如涨潮时拂过面颊的海雾。\"",
-          es: "\"Infusión de algas marinas de las Hébridas y espárrago de mar. Cristalino, frío y mineral.\""
-        },
-        formula: "45ml Isle of Harris • 120ml Light Tonic • Sea Asparagus • Pink Grapefruit",
-        icon: "🌊"
-      },
-      london1888: {
-        name: {
-          en: "The London Heritage 1888",
-          zh: "1888伦敦海军重度干金",
-          es: "Herencia de Londres 1888"
-        },
-        sub: {
-          en: "57.1% Navy Strength • Extra Dry • Cracked Coriander",
-          zh: "57.1度海军强度 • 极致超干型 • 压破青芫荽籽",
-          es: "57.1% Navy Strength • Extra Seco • Cilantro Verde"
-        },
-        desc: {
-          en: "\"Stiff naval proof dry gin with sharp extra dry tonic and cracked green coriander seed.\"",
-          zh: "\"57.1度原桶浓郁杜松烈度，配合超干奎宁与敲裂的芫荽籽，干脆利落直击灵魂。\"",
-          es: "\"Gin seco naval de alta graduación con tónica extra seca y semillas de cilantro machacadas.\""
-        },
-        formula: "50ml Navy Gin • 100ml Extra Dry Tonic • Lime • Cracked Coriander",
-        icon: "⚓"
-      },
       oldfashioned: {
-        name: {
-          en: "Cask-Strength Rye Old Fashioned",
-          zh: "原桶黑麦经典古典鸡尾酒",
-          es: "Old Fashioned de Centeno en Barrica"
-        },
-        sub: {
-          en: "Bitterness: 60% • Peat Level: High • Hand-cut Cube",
-          zh: "焦糖甜苦平衡 • 桶陈木质香 • 60mm整块透冰",
-          es: "Centeno Puro • Azúcar Demerara • Hielo Esférico"
-        },
-        desc: {
-          en: "\"Heavy lowball with flamed orange peel, demerara sugar syrup, and barrel-aged bitters.\"",
-          zh: "\"选用沉稳重底厚玻璃杯，以火燎香橙皮油喷香，德梅拉拉原蔗糖与桶陈安哥斯图拉苦精静静交融。\"",
-          es: "\"Vaso bajo pesado con piel de naranja flameada, almíbar demerara y amargos añejados en roble.\""
-        },
+        type: 'bar',
+        name: { en: "Cask Rye Old Fashioned", zh: "原桶黑麦经典老式", es: "Old Fashioned de Centeno" },
+        sub: { en: "Peat Level: Medium • Hand-cut Cube • Flamed Peel", zh: "焦糖甜苦平衡 • 桶陈木质香 • 60mm整块透冰", es: "Centeno Puro • Azúcar Demerara • Hielo Esférico" },
+        desc: { en: "\"Heavy lowball with flamed orange peel, demerara syrup, and barrel-aged bitters.\"", zh: "\"选用沉稳重底厚玻璃杯，以火燎香橙皮油喷香，德梅拉拉原蔗糖与桶陈苦精静静交融。\"", es: "\"Vaso bajo con piel de naranja flameada, almíbar demerara y amargos añejados.\"" },
         formula: "60ml Rye • 5ml Demerara • 3 dashes Angostura • Flamed Peel",
         icon: "🥃"
       },
       negroni: {
-        name: {
-          en: "Negroni Classico",
-          zh: "经典内格罗尼 1:1:1",
-          es: "Negroni Clásico"
-        },
-        sub: {
-          en: "Bittersweet 1:1:1 • Campari & Vermouth",
-          zh: "金巴利苦酒 • 甜味美思 • 伦敦干金 搅拌35次",
-          es: "Agridulce Equilibrado • Campari & Vermouth"
-        },
-        desc: {
-          en: "\"Equal parts London dry, Italian bitter aperitif, and sweet vermouth stirred over rock.\"",
-          zh: "\"等比例的英格兰干金、意大利金巴利与都灵甜味美思，在冰块上顺畅旋转35周，红宝石般深邃。\"",
-          es: "\"Partes iguales de gin seco, aperitivo amargo italiano y vermouth dulce removido sobre roca.\""
-        },
+        type: 'bar',
+        name: { en: "Negroni Classico", zh: "经典内格罗尼 1:1:1", es: "Negroni Clásico" },
+        sub: { en: "Bittersweet 1:1:1 • Campari & Vermouth", zh: "金巴利苦酒 • 甜味美思 • 伦敦干金 搅拌35次", es: "Agridulce Equilibrado • Campari & Vermouth" },
+        desc: { en: "\"Equal parts London dry, Italian bitter aperitif, and sweet vermouth stirred over rock.\"", zh: "\"等比例的英格兰干金、意大利金巴利与都灵甜味美思，在老冰上顺畅旋转35周。\"", es: "\"Partes iguales de gin seco, aperitivo amargo y vermouth dulce removido sobre roca.\"" },
         formula: "30ml Gin • 30ml Campari • 30ml Carpano Antica",
         icon: "🍷"
       },
       paperplane: {
-        name: {
-          en: "Paper Plane Nocturne",
-          zh: "夜间纸飞机 Paper Plane",
-          es: "Paper Plane Nocturno"
-        },
-        sub: {
-          en: "Crisp Acidity • Bourbon & Amaro Nonino",
-          zh: "明亮酸度 • 波本威士忌 • 诺尼诺草本利口",
-          es: "Acidez Viva • Bourbon & Amaro Nonino"
-        },
-        desc: {
-          en: "\"Shaken hard in coupe with fresh lemon, Aperol, and velvety herbal Amaro Nonino.\"",
-          zh: "\"猛烈摇荡，鲜柠檬汁与阿佩罗的果橙甜润中和了诺尼诺草本利口的微苦，轻盈得如同能滑翔破晓。\"",
-          es: "\"Agitado con fuerza en copa coupé con limón fresco, Aperol y el aterciopelado Amaro Nonino.\""
-        },
+        type: 'bar',
+        name: { en: "Paper Plane Nocturne", zh: "夜间纸飞机 Paper Plane", es: "Paper Plane Nocturno" },
+        sub: { en: "Crisp Acidity • Bourbon & Amaro Nonino", zh: "明亮酸度 • 波本威士忌 • 诺尼诺草本利口", es: "Acidez Viva • Bourbon & Amaro Nonino" },
+        desc: { en: "\"Shaken hard in coupe with fresh lemon, Aperol, and velvety herbal Amaro Nonino.\"", zh: "\"猛烈摇荡，鲜柠檬汁中和了草本利口的微苦，轻盈得如同能滑翔破晓。\"", es: "\"Agitado con fuerza en copa coupé con limón fresco, Aperol y Amaro Nonino.\"" },
         formula: "22.5ml Bourbon • 22.5ml Aperol • 22.5ml Nonino • 22.5ml Lemon",
         icon: "✈️"
+      },
+
+      // Specialty Coffee
+      gesha_pourover: {
+        type: 'cafe',
+        name: { en: "Anaerobic Natural Gesha (V60)", zh: "厌氧日晒瑰夏手冲 (V60)", es: "Gesha Natural Anaeróbico (V60)" },
+        sub: { en: "Ethiopia Guji • Jasmine Floral • White Peach & Bergamot", zh: "埃塞俄比亚谷吉 • 茉莉花香 • 白桃佛手柑", es: "Etiopía Guji • Floral de Jazmín • Melocotón Blanco" },
+        desc: { en: "\"Extracted through Japanese ceramic V60 at 91°C. Silky floral sweetness with crisp stone fruit acidity.\"", zh: "\"选用有田烧陶瓷V60滤杯于91度慢注冲煮。如丝绸般的茉莉花香与白桃多汁感在口腔绽放。\"", es: "\"Extraído en V60 cerámico a 91°C. Dulzura floral y acidez viva de melocotón blanco.\"" },
+        formula: "15g Coffee • 240g Water • 91°C • Ratio 1:16 • 2m 15s",
+        icon: "☕"
+      },
+      dirty_espresso: {
+        type: 'cafe',
+        name: { en: "Beijing Hutong Oat Milk Dirty", zh: "胡同浓郁冷热燕麦 Dirty", es: "Dirty de Avena Hutong" },
+        sub: { en: "Yunnan Double Ristretto • Chilled Dense Oat Cream", zh: "云南双份精萃Ristretto • 冰镇醇厚燕麦奶", es: "Ristretto Doble de Yunnan • Leche de Avena Helada" },
+        desc: { en: "\"Hot dark chocolate espresso extracted straight over icy dense oat cream. Layers melt together sip by sip.\"", zh: "\"现压滚烫浓缩直落于冰冷厚实燕麦奶层上，一口大口喝下，感受冷与热、苦甜与坚果奶香的奇妙交融。\"", es: "\"Espresso caliente vertido sobre crema densa y fría de avena. Capas contrastantes en cada sorbo.\"" },
+        formula: "30ml Double Ristretto • 120ml Chilled Dense Oat Cream • Zero Ice",
+        icon: "🥛"
+      },
+      croissant_combo: {
+        type: 'cafe',
+        name: { en: "Cultured Butter Croissant & Flat White", zh: "发酵黄油蜂巢可颂配澳白", es: "Croissant de Mantequilla & Flat White" },
+        sub: { en: "72 Layers Butter Flake • Velvety Microfoam", zh: "72层蜂巢起酥 • 丝滑微奶泡双份澳白", es: "72 Capas Hojaldradas • Microespuma Aterciopelada" },
+        desc: { en: "\"Freshly baked golden French butter croissant served with a velvety, chocolate-toned Flat White.\"", zh: "\"早晨在店里现场烤制的酥脆蜂巢可颂，配上一杯拉花精致、坚果巧克风味的澳白咖啡。\"", es: "\"Croissant francés crujiente servido con un Flat White sedoso de notas a cacao.\"" },
+        formula: "Warm Croissant • 180ml Flat White (Double Espresso + Microfoam)",
+        icon: "🥐"
+      },
+      coldbrew_tonic: {
+        type: 'cafe',
+        name: { en: "Cold Brew Sparkling Citrus Tonic", zh: "柑橘冷萃气泡冰汤力", es: "Cold Brew Tónica con Cítricos" },
+        sub: { en: "18-Hour Slow Steep • Yuzu Tonic • Dehydrated Grapefruit", zh: "18小时慢速冷萃 • 日本柚子汤力 • 烘干红柚轮", es: "Maceración Fría 18h • Tónica de Yuzu • Pomelo Seco" },
+        desc: { en: "\"18-hour cold brew infused with bubbly yuzu tonic water and charred citrus peel. Incredibly refreshing.\"", zh: "\"经18小时冰滴冷萃的单一产区咖啡，冲入冰凉柚子汤力汽水，气泡滋滋作响，清新醒神。\"", es: "\"Café infusionado en frío durante 18h con tónica de yuzu y cítricos asados.\"" },
+        formula: "60ml Cold Brew • 120ml Yuzu Tonic • Ice Spear • Grapefruit Wheel",
+        icon: "🧊"
+      },
+      einspanner: {
+        type: 'cafe',
+        name: { en: "Vienna Einspänner Caramel Cream", zh: "维也纳焦糖雪顶维也纳咖啡", es: "Einspänner Vienés con Crema" },
+        sub: { en: "Deep Americano • Whipped Fresh Vanilla Cream • Raw Sugar", zh: "浓郁美式基底 • 手打香草淡奶油雪顶 • 原蔗糖粒", es: "Americano Intenso • Nata Montada con Vainilla • Azúcar Moreno" },
+        desc: { en: "\"Deep dark roast coffee crowned with a cloud of cold hand-whipped vanilla cream and cocoa dust.\"", zh: "\"浓黑醇苦的黑咖啡上方漂浮着一团厚厚的现打香草冷奶油，顶端撒满法芙娜可可粉。\"", es: "\"Café negro coronado con una densa nube de nata fría a la vainilla y cacao.\"" },
+        formula: "120ml Long Black • 50ml Whipped Sweet Cream • Cocoa Dust",
+        icon: "🍨"
       }
     };
+
+    /* JOKES REPOSITORY */
+    const JokesCollection = [
+      {
+        en: "Why did the espresso file a police report? ...Because it got mugged in the hutong!",
+        zh: "浓缩咖啡为什么跑去胡同派出所报案？……因为他在胡同里被“打劫”（Mugged）了！",
+        es: "¿Por qué el espresso fue a la policía? ...¡Porque lo asaltaron (mugged) en el callejón!",
+        react: "☕"
+      },
+      {
+        en: "A carbon atom walks into Wei's bar and asks for a drink. Wei says: 'Are you sure?' The atom says: 'I'm positive!'",
+        zh: "一个碳原子走进吧台想要一杯酒。Wei 问：“你确定吗？” 原子答道：“我非常确定（Positive/带正电）！”",
+        es: "Un átomo entra al bar y pide un trago. Wei dice: '¿Estás seguro?' El átomo responde: '¡Soy positivo!'",
+        react: "⚛️"
+      },
+      {
+        en: "How does Moses make his morning coffee? Hebrews it.",
+        zh: "摩西每天早晨是怎么做咖啡的？答案是：他亲手“希伯来”（He-brews/他煮的）！",
+        es: "¿Cómo prepara Moisés su café por la mañana? Él lo 'Hebreos' (He brews).",
+        react: "📜"
+      },
+      {
+        en: "Why do programmers prefer drinking coffee in the dark? Because light attracts bugs!",
+        zh: "为什么程序员喝咖啡喜欢关掉所有的灯？因为有光的地方会招来“Bug”（飞虫/代码错误）！",
+        es: "¿Por qué los programadores toman café a oscuras? ¡Porque la luz atrae los bugs!",
+        react: "🐛"
+      },
+      {
+        en: "Wei asked the customer: 'How do you like your coffee?' The customer said: 'Like my soul—dark, bitter, and way too hot for comfort.'",
+        zh: "Wei 问客人：“你今天想要什么样的咖啡？” 客人说：“就像我的灵魂一样——漆黑、微苦、烫得难以接近。”",
+        es: "Wei preguntó al cliente: '¿Cómo le gusta el café?' El cliente dijo: 'Como mi alma: oscura, amarga y demasiado caliente.'",
+        react: "🖤"
+      }
+    ];
   </script>
 
-  <!-- WEATHER SYSTEM WITH BEIJING ATMOSPHERE SYNC -->
   <script>
+    /* WEATHER PARTICLE SYSTEM */
     const WeatherSystem = {
       canvas: null,
       ctx: null,
@@ -1456,7 +1752,7 @@
       createParticles() {
         this.particles = [];
         const w = AppState.weather;
-        let count = 55;
+        let count = 60;
         if (w === 'rain') count = 75;
         if (w === 'storm') count = 90;
         if (w === 'snow') count = 50;
@@ -1521,8 +1817,8 @@
             if (p.y < -20) { p.y = this.canvas.height + 20; p.x = Math.random() * this.canvas.width; }
           });
         } else {
-          // Clear Starlight
-          this.ctx.fillStyle = 'rgba(245, 158, 11, 0.2)';
+          // Clear Starlight / Sun Dust
+          this.ctx.fillStyle = AppState.isBarOpen ? 'rgba(245, 158, 11, 0.2)' : 'rgba(253, 224, 71, 0.25)';
           this.particles.forEach(p => {
             this.ctx.fillRect(Math.floor(p.x), Math.floor(p.y), p.size * 1.4, p.size * 1.4);
             p.y -= 0.35;
@@ -1539,7 +1835,7 @@
       if (userClick) SoundEngine.playClick();
       AppState.weather = w;
       const icons = { rain: '🌧️', clear: '✨', snow: '❄️', fog: '🌫️', storm: '⚡' };
-      document.getElementById('weather-display-icon').textContent = icons[w] || '🌧️';
+      document.getElementById('weather-display-icon').textContent = icons[w] || '🌧️️';
       WeatherSystem.createParticles();
       applyTimeWeatherPalette();
       if (userClick) toggleAtmosphereDrawer(false);
@@ -1564,26 +1860,24 @@
       const isDawn = (h >= 4 && h < 8);
       const isDay = (h >= 8 && h < 16);
       const isDusk = (h >= 16 && h < 19);
-      const isWitching = (h >= 1 && h < 4);
 
       if (isDawn) {
         bgGrad = (w === 'rain' || w === 'storm')
-          ? 'radial-gradient(circle at 50% 20%, #1c2126 0%, #0c0e11 95%)'
-          : 'radial-gradient(circle at 50% 20%, #292019 0%, #0e0a07 95%)';
-        auraGrad = 'linear-gradient(to bottom, rgba(251, 191, 36, 0.12), transparent)';
+          ? 'radial-gradient(circle at 50% 20%, #201c18 0%, #0d0a07 95%)'
+          : 'radial-gradient(circle at 50% 20%, #3d2616 0%, #150d08 95%)';
+        auraGrad = 'linear-gradient(to bottom, rgba(251, 191, 36, 0.16), transparent)';
       } else if (isDay) {
         bgGrad = (w === 'rain' || w === 'storm')
-          ? 'radial-gradient(circle at 50% 20%, #1e1e24 0%, #0d0c10 95%)'
-          : 'radial-gradient(circle at 50% 20%, #2b1f18 0%, #110c09 95%)';
-        auraGrad = 'linear-gradient(to bottom, rgba(245, 158, 11, 0.1), transparent)';
+          ? 'radial-gradient(circle at 50% 20%, #26221d 0%, #0e0c0a 95%)'
+          : 'radial-gradient(circle at 50% 20%, #362212 0%, #130a05 95%)';
+        auraGrad = 'linear-gradient(to bottom, rgba(245, 158, 11, 0.14), transparent)';
       } else if (isDusk) {
         bgGrad = 'radial-gradient(circle at 50% 20%, #2b160b 0%, #0d0703 95%)';
-        auraGrad = 'linear-gradient(to bottom, rgba(249, 115, 22, 0.14), transparent)';
-      } else if (isWitching) {
-        bgGrad = 'radial-gradient(circle at 50% 20%, #120907 0%, #050201 95%)';
-        auraGrad = 'linear-gradient(to bottom, rgba(217, 119, 6, 0.1), transparent)';
+        auraGrad = 'linear-gradient(to bottom, rgba(249, 115, 22, 0.16), transparent)';
       } else {
-        bgGrad = 'radial-gradient(circle at 50% 25%, #151a24 0%, #07090f 95%)';
+        bgGrad = (w === 'rain' || w === 'storm')
+          ? 'radial-gradient(circle at 50% 25%, #151a24 0%, #07090f 95%)'
+          : 'radial-gradient(circle at 50% 25%, #19120c 0%, #080605 95%)';
         auraGrad = 'linear-gradient(to bottom, rgba(14, 165, 233, 0.12), transparent)';
       }
 
@@ -1593,15 +1887,15 @@
     }
   </script>
 
-  <!-- 2-HAND ANALOG CLOCK & BEIJING TIME SYNC -->
   <script>
+    /* 24-HOUR RETRO ANALOG CLOCK ROTARY PHYSICS */
     function updateClockHands(hourValue) {
       AppState.hour = hourValue;
       AppState.isBarOpen = (hourValue >= 18 || hourValue < 4);
 
-      // Hour hand moves 30 deg per hour + minute fraction
-      const hDeg = (hourValue % 12) * 30;
-      // Minute hand moves 360 deg per full hour
+      // 24-Hour Dial: 360 degrees = 24 hours (15 degrees per hour)
+      const hDeg = (hourValue % 24) * 15;
+      // Minute Hand: 360 degrees = 60 minutes (6 degrees per minute)
       const mDeg = (hourValue % 1) * 360;
 
       const hHand = document.getElementById('hour-needle');
@@ -1616,8 +1910,8 @@
       document.getElementById('time-display-badge').textContent = timeStr;
       
       const tagText = AppState.isBarOpen 
-        ? `${timeStr} • BEIJING SPEAKEASY` 
-        : `${timeStr} • BEIJING CAFE`;
+        ? `${timeStr} SPEAKEASY` 
+        : `${timeStr} CAFE`;
       document.getElementById('clock-status-tag').textContent = tagText;
 
       const t = i18n[AppState.lang];
@@ -1630,10 +1924,14 @@
         btnEnter.textContent = t.btnEnterBar;
       } else {
         navPill.textContent = t.venueCoffee;
-        navPill.className = 'text-[9px] px-1 py-0.5 bg-stone-900 text-stone-300 border border-stone-700 font-mono tracking-tight';
+        navPill.className = 'text-[9px] px-1 py-0.5 bg-yellow-950 text-amber-300 border border-amber-600/70 font-mono tracking-tight';
         btnEnter.textContent = t.btnEnterCoffee;
       }
 
+      // Propagate day/night mode to audio engine
+      SoundEngine.setMode(AppState.isBarOpen);
+
+      applyCafeOrBarEnvironment();
       evaluateWeiState();
       applyTimeWeatherPalette();
     }
@@ -1654,16 +1952,15 @@
         const dx = clientX - cx;
         const dy = clientY - cy;
 
+        // Angle in degrees from 12 o'clock clockwise (0 to 360 deg)
         let angle = Math.atan2(dx, -dy) * (180 / Math.PI);
         if (angle < 0) angle += 360;
 
-        // Angle maps to 12-hour dial
-        const hourFromAngle = (angle / 360) * 12;
-        const wasPM = AppState.hour >= 12;
-        let finalH = wasPM ? (hourFromAngle + 12) : hourFromAngle;
-        if (finalH >= 24) finalH = 23.99;
+        // Map 360 degrees directly to 0-24 hour dial
+        let hour24 = (angle / 360) * 24;
+        if (hour24 >= 24) hour24 = 23.99;
 
-        updateClockHands(finalH);
+        updateClockHands(hour24);
       }
 
       surface.addEventListener('mousedown', (e) => { isDragging = true; SoundEngine.playClick(); onMove(e); });
@@ -1681,23 +1978,19 @@
       toggleAtmosphereDrawer(false);
     }
 
-    // Default Sync with Beijing Time (Asia/Shanghai) & Beijing Weather
     async function syncBeijingWeatherAndClock() {
-      // 1. Calculate precise Beijing (UTC+8) time
       try {
         const beijingTimeStr = new Date().toLocaleString("en-US", { timeZone: "Asia/Shanghai" });
         const bjDate = new Date(beijingTimeStr);
         const decHour = bjDate.getHours() + (bjDate.getMinutes() / 60);
         updateClockHands(decHour);
       } catch (err) {
-        // Fallback UTC calculation
         const now = new Date();
         const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
         const bj = new Date(utc + (3600000 * 8));
         updateClockHands(bj.getHours() + (bj.getMinutes() / 60));
       }
 
-      // 2. Fetch live Beijing weather via Open-Meteo
       try {
         const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=39.9042&longitude=116.4074&current=weather_code&timezone=Asia%2FShanghai");
         if (res.ok) {
@@ -1712,11 +2005,87 @@
           setWeather(w, false);
         }
       } catch (e) {
-        // Fallback to gentle speakeasy rain if network blocked
         setWeather('rain', false);
       }
 
       toggleAtmosphereDrawer(false);
+    }
+  </script>
+
+  <script>
+    /* ENVIRONMENT & BACK-SHELF ADAPTATION */
+    function applyCafeOrBarEnvironment() {
+      const isBar = AppState.isBarOpen;
+      const t = i18n[AppState.lang];
+
+      const stageBox = document.getElementById('stage-counter-box');
+      const cellarBanner = document.getElementById('cellar-banner-text');
+      const shelfLeft = document.getElementById('shelf-icon-left');
+      const shelfRight = document.getElementById('shelf-icon-right');
+      const outfitBar = document.getElementById('outfit-bar');
+      const outfitCafe = document.getElementById('outfit-cafe');
+
+      if (isBar) {
+        if (cellarBanner) cellarBanner.textContent = t.cellarBannerBar;
+        if (shelfLeft) shelfLeft.textContent = "🍾🍷🍸🍶";
+        if (shelfRight) shelfRight.textContent = "🥃🍹🍵☕";
+        if (outfitBar) outfitBar.classList.remove('hidden');
+        if (outfitCafe) outfitCafe.classList.add('hidden');
+        if (stageBox) stageBox.className = "relative flex-1 min-h-[145px] max-h-[210px] bg-stone-950/80 border-2 border-stone-800 rounded-sm pixel-frame px-3 py-1 my-1 flex flex-col justify-between overflow-hidden transition-colors duration-500";
+      } else {
+        if (cellarBanner) cellarBanner.textContent = t.cellarBannerCafe;
+        if (shelfLeft) shelfLeft.textContent = "☕🫖🥐🍰";
+        if (shelfRight) shelfRight.textContent = "🌾🥛🫘🍶";
+        if (outfitBar) outfitBar.classList.add('hidden');
+        if (outfitCafe) outfitCafe.classList.remove('hidden');
+        if (stageBox) stageBox.className = "relative flex-1 min-h-[145px] max-h-[210px] bg-[#1a120c]/90 border-2 border-amber-900/60 rounded-sm pixel-frame px-3 py-1 my-1 flex flex-col justify-between overflow-hidden transition-colors duration-500";
+      }
+
+      populateCodexContent();
+    }
+
+    /* HOST SLEEP AND AWAKE SYSTEM */
+    function evaluateWeiState() {
+      const awakeLayer = document.getElementById('avatar-layer-awake');
+      const sleepLayer = document.getElementById('avatar-layer-sleeping');
+      const zzzParticles = document.getElementById('wei-zzz-particles');
+      const weiContainer = document.getElementById('sprite-wei-container');
+      const tag = document.getElementById('sprite-wei-tag');
+      const moodPill = document.getElementById('host-mood-pill');
+
+      // Sleeping condition: Late night witching hour (02:30 - 04:00) or energy depleted
+      const isSleepHour = (AppState.hour >= 2.5 && AppState.hour < 4.0);
+      const isEnergyOut = (AppState.weiEnergy <= 0);
+
+      if (isSleepHour || isEnergyOut) {
+        AppState.weiState = 'asleep';
+        if (awakeLayer) awakeLayer.classList.add('hidden');
+        if (sleepLayer) sleepLayer.classList.remove('hidden');
+        if (zzzParticles) zzzParticles.classList.remove('hidden');
+        
+        if (weiContainer) {
+          weiContainer.classList.remove('sway-idle');
+          weiContainer.classList.add('sleep-breathing');
+        }
+
+        if (tag) tag.textContent = 'Asleep 💤';
+        if (moodPill) moodPill.textContent = 'Wei: Fast Asleep 💤';
+      } else {
+        AppState.weiState = 'awake';
+        if (awakeLayer) awakeLayer.classList.remove('hidden');
+        if (sleepLayer) sleepLayer.classList.add('hidden');
+        if (zzzParticles) zzzParticles.classList.add('hidden');
+
+        if (weiContainer) {
+          weiContainer.classList.add('sway-idle');
+          weiContainer.classList.remove('sleep-breathing');
+        }
+
+        if (tag) tag.textContent = AppState.isBarOpen ? 'Bartender' : 'Barista';
+        if (moodPill) moodPill.textContent = `Wei: ${AppState.weiMood}`;
+      }
+
+      updateEnergyPips();
     }
 
     function updateEnergyPips() {
@@ -1730,37 +2099,16 @@
         }
       }
     }
-
-    function evaluateWeiState() {
-      const zzz = document.getElementById('wei-zzz');
-      const tag = document.getElementById('sprite-wei-tag');
-      const moodPill = document.getElementById('host-mood-pill');
-
-      if ((AppState.hour >= 2.5 && AppState.hour < 4.0) || AppState.weiEnergy <= 0) {
-        AppState.weiState = 'asleep';
-        if (zzz) zzz.classList.remove('hidden');
-        if (tag) tag.textContent = 'Asleep';
-        if (moodPill) moodPill.textContent = 'Wei: Fast Asleep 💤';
-      } else {
-        AppState.weiState = 'awake';
-        if (zzz) zzz.classList.add('hidden');
-        if (tag) tag.textContent = AppState.isBarOpen ? 'Bartender' : 'Barista';
-        if (moodPill) moodPill.textContent = `Wei: ${AppState.weiMood}`;
-      }
-      updateEnergyPips();
-    }
   </script>
 
-  <!-- DIALOGUE & RPG INTERACTION ENGINE -->
   <script>
+    /* DIALOGUE & RPG INTERACTION ENGINE */
     function getNextUniqueTopic() {
-      let candidates = TopicPool.filter(t => !AppState.usedTopicIds.has(t.id) && t.mood === AppState.weiMood);
-      if (candidates.length === 0) {
-        candidates = TopicPool.filter(t => !AppState.usedTopicIds.has(t.id));
-      }
+      const pool = AppState.isBarOpen ? BarTopicPool : CafeTopicPool;
+      let candidates = pool.filter(t => !AppState.usedTopicIds.has(t.id));
       if (candidates.length === 0) {
         AppState.usedTopicIds.clear();
-        candidates = TopicPool;
+        candidates = pool;
       }
       const chosen = candidates[Math.floor(Math.random() * candidates.length)];
       AppState.usedTopicIds.add(chosen.id);
@@ -1790,16 +2138,14 @@
       const topic = AppState.currentTopic || getNextUniqueTopic();
       const lang = AppState.lang;
 
-      const speakerTags = {
-        en: { nightOwl: "WEI • NIGHT OWL", sarcastic: "WEI • WITTY HOST", empath: "WEI • GENTLE HOST", poetic: "WEI • TWILIGHT POET" },
-        zh: { nightOwl: "WEI • 夜猫子主理人", sarcastic: "WEI • 毒舌炼金术士", empath: "WEI • 温润倾听者", poetic: "WEI • 暮色吟游者" },
-        es: { nightOwl: "WEI • BÚHO NOCTURNO", sarcastic: "WEI • ANFITRIÓN IRÓNICO", empath: "WEI • ANFITRIÓN EMPÁTICO", poetic: "WEI • POETA DEL OCASO" }
+      const speakerTitles = {
+        en: AppState.isBarOpen ? `WEI • ${AppState.weiMood.toUpperCase()}` : `WEI • ARTISAN BARISTA`,
+        zh: AppState.isBarOpen ? `WEI • 夜间主理人` : `WEI • 晨间咖啡师`,
+        es: AppState.isBarOpen ? `WEI • BÚHO NOCTURNO` : `WEI • BARISTA ARTESANAL`
       };
 
-      const moodDict = speakerTags[lang] || speakerTags.en;
-      document.getElementById('dialogue-speaker-tag').textContent = moodDict[AppState.weiMood] || "WEI • HOST";
+      document.getElementById('dialogue-speaker-tag').textContent = speakerTitles[lang] || speakerTitles.en;
       document.getElementById('dialogue-speech-text').textContent = topic.text[lang] || topic.text.en;
-      document.getElementById('dialogue-vibe-tag').textContent = `PEK #${AppState.usedTopicIds.size} • UNREPEATED`;
 
       const grid = document.getElementById('rpg-options-grid');
       grid.innerHTML = '';
@@ -1811,7 +2157,6 @@
         btn.innerHTML = `<span>${labelText}</span><span class="text-[9px] font-retro text-amber-500 ml-1">→</span>`;
         btn.onclick = () => {
           SoundEngine.playClick();
-
           if (typeof opt.deltaEnergy === 'number') {
             AppState.weiEnergy = Math.max(0, AppState.weiEnergy + opt.deltaEnergy);
           }
@@ -1824,7 +2169,7 @@
           if (AppState.weiState === 'asleep') {
             renderCurrentDialogue();
           } else if (opt.drink) {
-            serveCocktailByKey(opt.drink);
+            serveItemByKey(opt.drink);
           } else {
             AppState.currentTopic = null;
             renderCurrentDialogue();
@@ -1834,9 +2179,14 @@
       });
     }
 
-    function serveCocktailByKey(key) {
-      SoundEngine.playShaker();
-      setTimeout(() => SoundEngine.playClink(), 500);
+    function serveItemByKey(key) {
+      if (AppState.isBarOpen) {
+        SoundEngine.playShaker();
+        setTimeout(() => SoundEngine.playClink(), 500);
+      } else {
+        SoundEngine.playCoffeeGrinder();
+        setTimeout(() => SoundEngine.playClink(), 600);
+      }
 
       const d = DrinkManifest[key] || DrinkManifest.jasmine_gulou;
       const lang = AppState.lang;
@@ -1859,8 +2209,6 @@
     function resetRpgConversation() {
       SoundEngine.playClick();
       AppState.currentTopic = null;
-      const moods = ['nightOwl', 'sarcastic', 'empath', 'poetic'];
-      AppState.weiMood = moods[Math.floor(Math.random() * moods.length)];
       document.getElementById('served-item-plate').classList.add('hidden');
       renderCurrentDialogue();
     }
@@ -1870,7 +2218,11 @@
         SoundEngine.playSnore();
       } else {
         SoundEngine.playClick();
-        resetRpgConversation();
+        if (Math.random() > 0.6) {
+          promptJoke();
+        } else {
+          resetRpgConversation();
+        }
       }
     }
 
@@ -1878,10 +2230,8 @@
       SoundEngine.playClink();
       AppState.weiState = 'awake';
       AppState.weiEnergy = 4;
-      AppState.hour = 22.0;
-      updateClockHands(22.0);
-      SoundEngine.playShaker();
-      AppState.weiMood = 'empath';
+      AppState.hour = AppState.isBarOpen ? 22.0 : 8.5;
+      updateClockHands(AppState.hour);
       evaluateWeiState();
       AppState.currentTopic = null;
       renderCurrentDialogue();
@@ -1900,14 +2250,14 @@
       const isEs = AppState.lang === 'es';
 
       document.getElementById('res-icon').textContent = "🐟";
-      document.getElementById('res-name').textContent = isZh ? "味噌和柚子的北京小沙丁马天尼" : (isEs ? "Martini de Sardinas de Miso y Yuzu" : "Miso & Yuzu's Beijing Sardine Martini");
-      document.getElementById('res-subtitle').textContent = isZh ? "小鱼干度: 100% • 零奎宁 • 经胡同猫咪认证" : (isEs ? "Pescado: 100% • Quinina: 0% • Aprobado por Gatos" : "Fishiness: 100% • Quinine: 0% • Hutong Cat Approved");
+      document.getElementById('res-name').textContent = isZh ? "味噌和柚子的北京小沙丁特调" : (isEs ? "Especial de Sardinas de Miso y Yuzu" : "Miso & Yuzu's Beijing Sardine Special");
+      document.getElementById('res-subtitle').textContent = isZh ? "小鱼干度: 100% • 零杂质 • 经猫咪肉垫认证" : (isEs ? "Pescado: 100% • Aprobado por Gatos" : "Fishiness: 100% • Hutong Cat Approved");
       document.getElementById('res-description').textContent = isZh 
-        ? "\"味噌用肉垫将高脚杯推过红木吧台，柚子把一片烘干的沙丁鱼脆片滚在杯沿。意外地顺滑细腻。\"" 
+        ? "\"味噌用粉嫩肉垫将杯子稳稳推过木吧台，柚子把一片香脆小鱼干轻靠在杯沿。格外温润醇香。\"" 
         : (isEs 
-          ? "\"Miso empujó la copa con su patita mientras Yuzu colocaba una sardina seca en el borde. Sorprendentemente sedoso.\"" 
-          : "\"Miso pushed the coupe glass across the mahogany while Yuzu rolled a dried sardine flake over the rim. Surprisingly velvety.\"");
-      document.getElementById('res-formula').textContent = "60ml London Dry • 15ml Sardine Brine • Fresh Catnip Leaf";
+          ? "\"Miso empujó la copa con su patita y Yuzu colocó una sardina crujiente en el borde. Sorprendentemente sedoso.\"" 
+          : "\"Miso slid the glass across the cedar wood while Yuzu rolled a dried sardine flake over the rim. Surprisingly velvety.\"");
+      document.getElementById('res-formula').textContent = "45ml Cold Brew / Gin • 15ml Sardine Brine • Fresh Catnip";
 
       const plate = document.getElementById('served-item-plate');
       plate.textContent = "🐟";
@@ -1941,101 +2291,714 @@
       const isZh = AppState.lang === 'zh';
       document.getElementById('res-icon').textContent = "🧪";
       document.getElementById('res-name').textContent = isZh 
-        ? `深夜私调: ${base.split(' ')[0]} 配 ${mod.split(' ')[0]}` 
-        : `Midnight Rogue: ${base.split(' ')[0]} & ${mod.split(' ')[0]}`;
+        ? `客串私调: ${base.split(' ')[0]} 配 ${mod.split(' ')[0]}` 
+        : `Secret Counter: ${base.split(' ')[0]} & ${mod.split(' ')[0]}`;
       document.getElementById('res-subtitle').textContent = isZh 
         ? "客串吧台 • 秘密风味点缀" 
         : "Unauthorized DIY • Secret Garnish";
       document.getElementById('res-description').textContent = isZh 
-        ? `\"你蹑手蹑脚溜进吧台，将 ${base} 与清冽的 ${mod} 调和，最后饰以 ${secret}。带着打破规则的刺激与香气。\"` 
-        : `\"You tiptoed behind Wei's bar and infused ${base} with ${mod}, crowned with ${secret}. It hits with a rebellious spark.\"`;
+        ? `\"你溜进吧台，将 ${base} 与 ${mod} 调和，最后饰以 ${secret}。带着打破规则的刺激与香气。\"` 
+        : `\"You tiptoed behind Wei's bar and infused ${base} with ${mod}, crowned with ${secret}. A delightful renegade mix.\"`;
       document.getElementById('res-formula').textContent = `45ml ${base} • 120ml ${mod} • ${secret}`;
 
       const plate = document.getElementById('served-item-plate');
       plate.textContent = "🧪";
       plate.classList.remove('hidden');
     }
-  </script>
 
-  <!-- CATS BEHAVIOR & INTERACTION -->
-  <script>
-    function interactCat(catName) {
-      const isZh = AppState.lang === 'zh';
-      const isEs = AppState.lang === 'es';
-
-      if (catName === 'miso') {
-        SoundEngine.playMeow(0.85);
-        const misoBadge = document.getElementById('miso-badge');
-        misoBadge.textContent = 'purr';
-        const ticker = document.getElementById('cat-pair-status');
-        ticker.textContent = isZh ? "🖤 味噌蹭了蹭你的手背，发出治愈的咕噜声。" : (isEs ? "🖤 Miso ronronea frotándose contra tu mano." : "🖤 Miso rubbed against your hand, purring contentedly.");
-        setTimeout(() => misoBadge.textContent = 'loaf', 2000);
-      } else {
-        SoundEngine.playMeow(1.3);
-        const yuzuBadge = document.getElementById('yuzu-badge');
-        yuzuBadge.textContent = 'pounce';
-        const ticker = document.getElementById('cat-pair-status');
-        ticker.textContent = isZh ? "🧡 柚子用软绵绵的爪子碰了碰你，尾巴晃得欢实。" : (isEs ? "🧡 Yuzu te dio un golpecito con la patita y movió la cola." : "🧡 Yuzu tapped your finger with a soft paw and swished her tail.");
-        setTimeout(() => yuzuBadge.textContent = 'tail', 2000);
-      }
+    function promptJoke() {
+      SoundEngine.playClick();
+      nextJoke();
+      document.getElementById('joke-modal').classList.remove('hidden');
     }
 
-    function triggerCatEncounter() {
-      const ticker = document.getElementById('cat-pair-status');
-      if (Math.random() > 0.5) {
-        SoundEngine.playCatHiss();
-        setTimeout(() => SoundEngine.playMeow(1.4), 150);
-        ticker.textContent = i18n[AppState.lang].catFight;
-        document.getElementById('sprite-miso').textContent = "😾";
-        document.getElementById('sprite-yuzu').textContent = "🙀";
-        setTimeout(() => {
-          document.getElementById('sprite-miso').textContent = "🐈‍⬛";
-          document.getElementById('sprite-yuzu').textContent = "🐈";
-          ticker.textContent = i18n[AppState.lang].catNap;
-        }, 3000);
-      } else {
-        SoundEngine.playMeow(1.1);
-        ticker.textContent = i18n[AppState.lang].catPlay;
-      }
+    function closeJokeModal() {
+      SoundEngine.playClick();
+      document.getElementById('joke-modal').classList.add('hidden');
+    }
+
+    function nextJoke() {
+      SoundEngine.playClick();
+      AppState.currentJokeIndex = (AppState.currentJokeIndex + 1) % JokesCollection.length;
+      const j = JokesCollection[AppState.currentJokeIndex];
+      const lang = AppState.lang;
+
+      document.getElementById('joke-body-text').textContent = j[lang] || j.en;
+      document.getElementById('joke-reaction').textContent = j.react || "☕";
+      SoundEngine.playChiptune(580, 'sine', 0.08);
     }
   </script>
 
-  <!-- SANCTUARY ENTRY & MODAL LOGIC -->
   <script>
-    function enterSanctuary() {
-      SoundEngine.playClick();
-      AppState.inSanctuary = true;
+    /* RETRO PIXEL ARCADE (4 FULLY PLAYABLE PIXEL GAMES) */
+    const ArcadeGame = {
+      canvas: null,
+      ctx: null,
+      current: 'snake',
+      loopId: null,
+      score: 0,
+      gameOver: false,
 
-      // 1. Randomize Lo-Fi Track on Every Enter
-      SoundEngine.randomizeTrack();
-      if (!SoundEngine.bgmPlaying) {
-        toggleLoFiBGM();
+      // Game 1: Snake State
+      snake: [],
+      snakeDir: { x: 1, y: 0 },
+      nextDir: { x: 1, y: 0 },
+      food: { x: 5, y: 5 },
+      gridSize: 14,
+      tickCounter: 0,
+
+      // Game 2: Tetris State
+      tGrid: [],
+      tPiece: null,
+      tCols: 10,
+      tRows: 14,
+      tDropTimer: 0,
+      tClearAnim: null,
+
+      // Game 3: Gomoku State (9x9)
+      gBoard: [],
+      gSize: 9,
+      gTurn: 1, // 1 = player, 2 = AI
+      gCursor: { r: 4, c: 4 },
+
+      // Game 4: Super Cat Jumper State
+      runnerCat: { y: 200, vy: 0, jumping: false },
+      runnerObstacles: [],
+      runnerTimer: 0,
+      runnerBgX: 0,
+
+      init() {
+        this.canvas = document.getElementById('arcade-canvas');
+        if (!this.canvas) return;
+        this.ctx = this.canvas.getContext('2d');
+        window.addEventListener('keydown', (e) => this.handleKey(e.code));
+      },
+
+      start(gameKey) {
+        if (this.loopId) cancelAnimationFrame(this.loopId);
+        this.current = gameKey;
+        this.score = 0;
+        this.gameOver = false;
+        document.getElementById('game-overlay').classList.add('hidden');
+        this.updateScoreUI();
+
+        if (gameKey === 'snake') this.initSnake();
+        else if (gameKey === 'tetris') this.initTetris();
+        else if (gameKey === 'gomoku') this.initGomoku();
+        else if (gameKey === 'runner') this.initRunner();
+
+        this.loop();
+      },
+
+      updateScoreUI() {
+        const t = i18n[AppState.lang];
+        document.getElementById('game-score-display').textContent = `${t.gameScore}: ${this.score}`;
+      },
+
+      // 1. COFFEE BEAN SNAKE
+      initSnake() {
+        this.snake = [{ x: 6, y: 7 }, { x: 5, y: 7 }, { x: 4, y: 7 }];
+        this.snakeDir = { x: 1, y: 0 };
+        this.nextDir = { x: 1, y: 0 };
+        this.placeSnakeFood();
+        this.tickCounter = 0;
+      },
+
+      placeSnakeFood() {
+        this.food = {
+          x: Math.floor(Math.random() * this.gridSize),
+          y: Math.floor(Math.random() * this.gridSize)
+        };
+      },
+
+      updateSnake() {
+        this.tickCounter++;
+        if (this.tickCounter % 7 !== 0) return;
+
+        this.snakeDir = this.nextDir;
+        const head = { x: this.snake[0].x + this.snakeDir.x, y: this.snake[0].y + this.snakeDir.y };
+
+        if (head.x < 0 || head.x >= this.gridSize || head.y < 0 || head.y >= this.gridSize) {
+          this.triggerGameOver();
+          return;
+        }
+
+        for (let seg of this.snake) {
+          if (seg.x === head.x && seg.y === head.y) {
+            this.triggerGameOver();
+            return;
+          }
+        }
+
+        this.snake.unshift(head);
+
+        if (head.x === this.food.x && head.y === this.food.y) {
+          this.score += 15;
+          this.updateScoreUI();
+          SoundEngine.playChiptune(680, 'square', 0.08);
+          this.placeSnakeFood();
+        } else {
+          this.snake.pop();
+        }
+      },
+
+      drawSnake() {
+        const cell = this.canvas.width / this.gridSize;
+        this.ctx.fillStyle = '#0f0e0c';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Retro subtle grid
+        this.ctx.strokeStyle = '#1a1815';
+        this.ctx.lineWidth = 1;
+        for (let i = 0; i <= this.gridSize; i++) {
+          this.ctx.beginPath();
+          this.ctx.moveTo(i * cell, 0); this.ctx.lineTo(i * cell, this.canvas.height);
+          this.ctx.moveTo(0, i * cell); this.ctx.lineTo(this.canvas.width, i * cell);
+          this.ctx.stroke();
+        }
+
+        // Draw Roasted Coffee Bean Food
+        this.ctx.fillStyle = '#b45309';
+        this.ctx.fillRect(this.food.x * cell + 3, this.food.y * cell + 3, cell - 6, cell - 6);
+        this.ctx.fillStyle = '#451a03';
+        this.ctx.fillRect(this.food.x * cell + cell / 2 - 1, this.food.y * cell + 3, 2, cell - 6);
+
+        // Draw Snake
+        this.snake.forEach((seg, i) => {
+          this.ctx.fillStyle = i === 0 ? '#10b981' : '#059669';
+          this.ctx.fillRect(seg.x * cell + 1, seg.y * cell + 1, cell - 2, cell - 2);
+          if (i === 0) {
+            this.ctx.fillStyle = '#000';
+            this.ctx.fillRect(seg.x * cell + 4, seg.y * cell + 4, 3, 3);
+          }
+        });
+      },
+
+      // 2. RETRO PIXEL TETRIS
+      initTetris() {
+        this.tGrid = Array(this.tRows).fill(null).map(() => Array(this.tCols).fill(0));
+        this.spawnTetrisPiece();
+        this.tDropTimer = 0;
+      },
+
+      spawnTetrisPiece() {
+        const shapes = [
+          { s: [[1, 1, 1, 1]], c: '#06b6d4' }, // I
+          { s: [[1, 1], [1, 1]], c: '#eab308' }, // O
+          { s: [[0, 1, 0], [1, 1, 1]], c: '#a855f7' }, // T
+          { s: [[1, 0, 0], [1, 1, 1]], c: '#f97316' }, // L
+          { s: [[0, 0, 1], [1, 1, 1]], c: '#3b82f6' }, // J
+          { s: [[0, 1, 1], [1, 1, 0]], c: '#22c55e' }  // S
+        ];
+        const pick = shapes[Math.floor(Math.random() * shapes.length)];
+        this.tPiece = { shape: pick.s, color: pick.c, x: 3, y: 0 };
+        if (this.checkTetrisCollision(this.tPiece, 0, 0)) {
+          this.triggerGameOver();
+        }
+      },
+
+      checkTetrisCollision(p, ox, oy) {
+        for (let r = 0; r < p.shape.length; r++) {
+          for (let c = 0; c < p.shape[r].length; c++) {
+            if (p.shape[r][c]) {
+              const nx = p.x + c + ox;
+              const ny = p.y + r + oy;
+              if (nx < 0 || nx >= this.tCols || ny >= this.tRows) return true;
+              if (ny >= 0 && this.tGrid[ny][nx]) return true;
+            }
+          }
+        }
+        return false;
+      },
+
+      mergeTetrisPiece() {
+        for (let r = 0; r < this.tPiece.shape.length; r++) {
+          for (let c = 0; c < this.tPiece.shape[r].length; c++) {
+            if (this.tPiece.shape[r][c]) {
+              const ny = this.tPiece.y + r;
+              const nx = this.tPiece.x + c;
+              if (ny >= 0) this.tGrid[ny][nx] = this.tPiece.color;
+            }
+          }
+        }
+
+        let cleared = 0;
+        for (let r = this.tRows - 1; r >= 0; r--) {
+          if (this.tGrid[r].every(v => v !== 0)) {
+            this.tGrid.splice(r, 1);
+            this.tGrid.unshift(Array(this.tCols).fill(0));
+            cleared++;
+            r++;
+          }
+        }
+
+        if (cleared > 0) {
+          this.score += cleared * 100;
+          this.updateScoreUI();
+          SoundEngine.playChiptune(880, 'triangle', 0.15);
+        } else {
+          SoundEngine.playChiptune(360, 'square', 0.05);
+        }
+
+        this.spawnTetrisPiece();
+      },
+
+      rotateTetrisPiece() {
+        const oldShape = this.tPiece.shape;
+        const newShape = oldShape[0].map((_, i) => oldShape.map(row => row[i]).reverse());
+        const rotated = { ...this.tPiece, shape: newShape };
+        if (!this.checkTetrisCollision(rotated, 0, 0)) {
+          this.tPiece.shape = newShape;
+          SoundEngine.playChiptune(480, 'square', 0.04);
+        }
+      },
+
+      hardDropTetris() {
+        while (!this.checkTetrisCollision(this.tPiece, 0, 1)) {
+          this.tPiece.y++;
+        }
+        this.mergeTetrisPiece();
+      },
+
+      updateTetris() {
+        this.tDropTimer++;
+        if (this.tDropTimer % 18 === 0) {
+          if (!this.checkTetrisCollision(this.tPiece, 0, 1)) {
+            this.tPiece.y++;
+          } else {
+            this.mergeTetrisPiece();
+          }
+        }
+      },
+
+      drawTetris() {
+        const cellW = this.canvas.width / this.tCols;
+        const cellH = this.canvas.height / this.tRows;
+
+        this.ctx.fillStyle = '#0f0e0c';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        for (let r = 0; r < this.tRows; r++) {
+          for (let c = 0; c < this.tCols; c++) {
+            if (this.tGrid[r][c]) {
+              this.ctx.fillStyle = this.tGrid[r][c];
+              this.ctx.fillRect(c * cellW + 1, r * cellH + 1, cellW - 2, cellH - 2);
+            }
+          }
+        }
+
+        if (this.tPiece) {
+          this.ctx.fillStyle = this.tPiece.color;
+          for (let r = 0; r < this.tPiece.shape.length; r++) {
+            for (let c = 0; c < this.tPiece.shape[r].length; c++) {
+              if (this.tPiece.shape[r][c]) {
+                const px = (this.tPiece.x + c) * cellW;
+                const py = (this.tPiece.y + r) * cellH;
+                this.ctx.fillRect(px + 1, py + 1, cellW - 2, cellH - 2);
+              }
+            }
+          }
+        }
+      },
+
+      // 3. GOMOKU / GO (9x9 vs WEI AI)
+      initGomoku() {
+        this.gBoard = Array(this.gSize).fill(null).map(() => Array(this.gSize).fill(0));
+        this.gTurn = 1;
+        this.gCursor = { r: 4, c: 4 };
+      },
+
+      placeGomokuStone(r, c) {
+        if (this.gameOver || this.gBoard[r][c] !== 0 || this.gTurn !== 1) return;
+        this.gBoard[r][c] = 1;
+        SoundEngine.playChiptune(640, 'triangle', 0.08);
+
+        if (this.checkGomokuWin(r, c, 1)) {
+          this.score += 500;
+          this.updateScoreUI();
+          this.triggerGameOver(true);
+          return;
+        }
+
+        this.gTurn = 2;
+        setTimeout(() => this.weiAIMove(), 350);
+      },
+
+      weiAIMove() {
+        if (this.gameOver) return;
+        const empties = [];
+        for (let r = 0; r < this.gSize; r++) {
+          for (let c = 0; c < this.gSize; c++) {
+            if (this.gBoard[r][c] === 0) empties.push({ r, c });
+          }
+        }
+
+        if (empties.length === 0) {
+          this.triggerGameOver();
+          return;
+        }
+
+        const pick = empties[Math.floor(Math.random() * empties.length)];
+        this.gBoard[pick.r][pick.c] = 2;
+        SoundEngine.playChiptune(420, 'sine', 0.08);
+
+        if (this.checkGomokuWin(pick.r, pick.c, 2)) {
+          this.triggerGameOver(false);
+          return;
+        }
+
+        this.gTurn = 1;
+      },
+
+      checkGomokuWin(r, c, player) {
+        const dirs = [[1, 0], [0, 1], [1, 1], [1, -1]];
+        for (let [dr, dc] of dirs) {
+          let count = 1;
+          for (let step = 1; step < 5; step++) {
+            const nr = r + dr * step, nc = c + dc * step;
+            if (nr >= 0 && nr < this.gSize && nc >= 0 && nc < this.gSize && this.gBoard[nr][nc] === player) count++;
+            else break;
+          }
+          for (let step = 1; step < 5; step++) {
+            const nr = r - dr * step, nc = c - dc * step;
+            if (nr >= 0 && nr < this.gSize && nc >= 0 && nc < this.gSize && this.gBoard[nr][nc] === player) count++;
+            else break;
+          }
+          if (count >= 5) return true;
+        }
+        return false;
+      },
+
+      drawGomoku() {
+        const cell = this.canvas.width / (this.gSize + 1);
+        this.ctx.fillStyle = '#b45309';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        this.ctx.strokeStyle = '#451a03';
+        this.ctx.lineWidth = 1.5;
+
+        for (let i = 1; i <= this.gSize; i++) {
+          this.ctx.beginPath();
+          this.ctx.moveTo(cell * i, cell); this.ctx.lineTo(cell * i, cell * this.gSize);
+          this.ctx.moveTo(cell, cell * i); this.ctx.lineTo(cell * this.gSize, cell * i);
+          this.ctx.stroke();
+        }
+
+        for (let r = 0; r < this.gSize; r++) {
+          for (let c = 0; c < this.gSize; c++) {
+            const val = this.gBoard[r][c];
+            if (val > 0) {
+              this.ctx.beginPath();
+              this.ctx.arc((c + 1) * cell, (r + 1) * cell, cell * 0.38, 0, Math.PI * 2);
+              this.ctx.fillStyle = val === 1 ? '#09090b' : '#f8fafc';
+              this.ctx.fill();
+              this.ctx.strokeStyle = '#27272a';
+              this.ctx.stroke();
+            }
+          }
+        }
+
+        // Target Cursor Indicator
+        this.ctx.strokeStyle = '#f59e0b';
+        this.ctx.lineWidth = 2;
+        const curX = (this.gCursor.c + 1) * cell;
+        const curY = (this.gCursor.r + 1) * cell;
+        this.ctx.strokeRect(curX - cell / 2, curY - cell / 2, cell, cell);
+      },
+
+      // 4. SUPER CAT JUMPER (RUNNER)
+      initRunner() {
+        this.runnerCat = { y: 200, vy: 0, jumping: false };
+        this.runnerObstacles = [{ x: 300, type: 'sack' }];
+        this.runnerTimer = 0;
+        this.runnerBgX = 0;
+      },
+
+      updateRunner() {
+        this.runnerTimer++;
+        this.runnerBgX = (this.runnerBgX - 1) % this.canvas.width;
+
+        if (this.runnerTimer % 75 === 0) {
+          this.runnerObstacles.push({ x: 300, type: Math.random() > 0.5 ? 'sack' : 'barrel' });
+        }
+
+        this.runnerCat.y += this.runnerCat.vy;
+        this.runnerCat.vy += 0.85;
+        if (this.runnerCat.y >= 200) {
+          this.runnerCat.y = 200;
+          this.runnerCat.vy = 0;
+          this.runnerCat.jumping = false;
+        }
+
+        for (let i = 0; i < this.runnerObstacles.length; i++) {
+          const obs = this.runnerObstacles[i];
+          obs.x -= 3.8;
+
+          // Collision check
+          if (obs.x < 65 && obs.x > 25 && this.runnerCat.y > 175) {
+            this.triggerGameOver();
+            return;
+          }
+
+          if (obs.x < -20) {
+            this.runnerObstacles.splice(i, 1);
+            i--;
+            this.score += 25;
+            this.updateScoreUI();
+            SoundEngine.playChiptune(720, 'triangle', 0.06);
+          }
+        }
+      },
+
+      drawRunner() {
+        this.ctx.fillStyle = '#1c1917';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Parallax Hutong Silhouettes
+        this.ctx.fillStyle = '#292524';
+        for (let i = 0; i < 3; i++) {
+          const rx = this.runnerBgX + i * 140;
+          this.ctx.fillRect(rx, 140, 80, 80);
+          this.ctx.beginPath();
+          this.ctx.moveTo(rx - 10, 140); this.ctx.lineTo(rx + 40, 110); this.ctx.lineTo(rx + 90, 140);
+          this.ctx.fill();
+        }
+
+        // Cobblestone ground
+        this.ctx.fillStyle = '#78350f';
+        this.ctx.fillRect(0, 220, this.canvas.width, 60);
+        this.ctx.fillStyle = '#451a03';
+        this.ctx.fillRect(0, 220, this.canvas.width, 4);
+
+        // Yuzu the Cat Sprite
+        this.ctx.fillStyle = '#f59e0b';
+        this.ctx.fillRect(35, this.runnerCat.y - 18, 24, 18);
+        this.ctx.fillStyle = '#d97706';
+        this.ctx.fillRect(38, this.runnerCat.y - 23, 4, 6);
+        this.ctx.fillRect(52, this.runnerCat.y - 23, 4, 6);
+        this.ctx.fillRect(30, this.runnerCat.y - 12, 6, 4);
+
+        // Obstacles (Coffee Sack or Barrel)
+        this.runnerObstacles.forEach(obs => {
+          this.ctx.fillStyle = obs.type === 'sack' ? '#78350f' : '#b45309';
+          this.ctx.fillRect(obs.x, 196, 20, 24);
+          this.ctx.fillStyle = '#451a03';
+          this.ctx.fillRect(obs.x + 3, 200, 14, 3);
+        });
+      },
+
+      loop() {
+        if (!this.gameOver) {
+          if (this.current === 'snake') { this.updateSnake(); this.drawSnake(); }
+          else if (this.current === 'tetris') { this.updateTetris(); this.drawTetris(); }
+          else if (this.current === 'gomoku') { this.drawGomoku(); }
+          else if (this.current === 'runner') { this.updateRunner(); this.drawRunner(); }
+          this.loopId = requestAnimationFrame(() => this.loop());
+        }
+      },
+
+      handleKey(code) {
+        if (this.current === 'snake') {
+          if ((code === 'ArrowUp' || code === 'KeyW') && this.snakeDir.y === 0) this.nextDir = { x: 0, y: -1 };
+          if ((code === 'ArrowDown' || code === 'KeyS') && this.snakeDir.y === 0) this.nextDir = { x: 0, y: 1 };
+          if ((code === 'ArrowLeft' || code === 'KeyA') && this.snakeDir.x === 0) this.nextDir = { x: -1, y: 0 };
+          if ((code === 'ArrowRight' || code === 'KeyD') && this.snakeDir.x === 0) this.nextDir = { x: 1, y: 0 };
+        } else if (this.current === 'tetris') {
+          if ((code === 'ArrowLeft' || code === 'KeyA') && !this.checkTetrisCollision(this.tPiece, -1, 0)) { this.tPiece.x--; SoundEngine.playChiptune(400, 'square', 0.04); }
+          if ((code === 'ArrowRight' || code === 'KeyD') && !this.checkTetrisCollision(this.tPiece, 1, 0)) { this.tPiece.x++; SoundEngine.playChiptune(400, 'square', 0.04); }
+          if (code === 'ArrowDown' || code === 'KeyS') { if (!this.checkTetrisCollision(this.tPiece, 0, 1)) this.tPiece.y++; }
+          if (code === 'ArrowUp' || code === 'Space') { this.rotateTetrisPiece(); }
+          if (code === 'KeyB') { this.hardDropTetris(); }
+        } else if (this.current === 'gomoku') {
+          if (code === 'ArrowUp' || code === 'KeyW') this.gCursor.r = Math.max(0, this.gCursor.r - 1);
+          if (code === 'ArrowDown' || code === 'KeyS') this.gCursor.r = Math.min(this.gSize - 1, this.gCursor.r + 1);
+          if (code === 'ArrowLeft' || code === 'KeyA') this.gCursor.c = Math.max(0, this.gCursor.c - 1);
+          if (code === 'ArrowRight' || code === 'KeyD') this.gCursor.c = Math.min(this.gSize - 1, this.gCursor.c + 1);
+          if (code === 'Space' || code === 'Enter') { this.placeGomokuStone(this.gCursor.r, this.gCursor.c); }
+        } else if (this.current === 'runner') {
+          if ((code === 'ArrowUp' || code === 'Space' || code === 'KeyW') && !this.runnerCat.jumping) {
+            this.runnerCat.vy = -12.5;
+            this.runnerCat.jumping = true;
+            SoundEngine.playChiptune(540, 'square', 0.08);
+          }
+        }
+      },
+
+      triggerGameOver(playerWon = false) {
+        this.gameOver = true;
+        SoundEngine.playChiptune(220, 'sawtooth', 0.3);
+        const overlay = document.getElementById('game-overlay');
+        const title = document.getElementById('game-overlay-title');
+        const score = document.getElementById('game-overlay-score');
+        overlay.classList.remove('hidden');
+
+        if (playerWon) {
+          title.textContent = "🏆 VICTORY!";
+          title.className = "text-emerald-400 font-bold text-sm mb-1";
+        } else {
+          title.textContent = "GAME OVER";
+          title.className = "text-amber-400 font-bold text-sm mb-1";
+        }
+        score.textContent = `Score: ${this.score}`;
       }
+    };
 
-      // 2. Randomize Mood & Energy
-      const moods = ['nightOwl', 'sarcastic', 'empath', 'poetic'];
-      AppState.weiMood = moods[Math.floor(Math.random() * moods.length)];
-      AppState.weiEnergy = Math.floor(Math.random() * 2) + 3;
+    function switchGame(key) {
+      SoundEngine.playClick();
+      const tabs = ['snake', 'tetris', 'gomoku', 'runner'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-game-${t}`);
+        if (btn) btn.className = t === key 
+          ? 'px-2 py-0.5 bg-amber-950 border border-amber-700 text-amber-300' 
+          : 'px-2 py-0.5 bg-stone-900 border border-stone-800 text-stone-400';
+      });
 
-      document.getElementById('view-door').classList.add('hidden');
-      document.getElementById('view-sanctuary').classList.remove('hidden');
-
-      evaluateWeiState();
-      AppState.currentTopic = null;
-      renderCurrentDialogue();
+      ArcadeGame.start(key);
     }
 
-    function returnToDoor() {
+    function pressGameKey(code) {
+      ArcadeGame.handleKey(code);
+    }
+
+    function restartCurrentGame() {
       SoundEngine.playClick();
-      AppState.inSanctuary = false;
-      document.getElementById('view-sanctuary').classList.add('hidden');
-      document.getElementById('view-door').classList.remove('hidden');
+      ArcadeGame.start(ArcadeGame.current);
+    }
+
+    function openEntertainmentHub() {
+      SoundEngine.playClick();
+      document.getElementById('game-modal').classList.remove('hidden');
+      switchGame(ArcadeGame.current || 'snake');
+    }
+
+    function closeGameModal() {
+      SoundEngine.playClick();
+      document.getElementById('game-modal').classList.add('hidden');
+      if (ArcadeGame.loopId) cancelAnimationFrame(ArcadeGame.loopId);
+    }
+
+    // Direct Canvas Click for Gomoku
+    window.addEventListener('DOMContentLoaded', () => {
+      const c = document.getElementById('arcade-canvas');
+      if (c) {
+        c.addEventListener('click', (e) => {
+          if (ArcadeGame.current !== 'gomoku') return;
+          const rect = c.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const cell = c.width / (ArcadeGame.gSize + 1);
+          const col = Math.round(x / cell) - 1;
+          const row = Math.round(y / cell) - 1;
+          if (row >= 0 && row < ArcadeGame.gSize && col >= 0 && col < ArcadeGame.gSize) {
+            ArcadeGame.placeGomokuStone(row, col);
+          }
+        });
+      }
+    });
+  </script>
+
+  <script>
+    /* DYNAMIC CODEX MENU & ATELIER */
+    function populateCodexContent() {
+      const isBar = AppState.isBarOpen;
+      const lang = AppState.lang;
+      const t = i18n[lang];
+
+      document.getElementById('modal-sub-title').textContent = isBar ? t.modalSubBar : t.modalSubCafe;
+      document.getElementById('modal-main-title').textContent = isBar ? t.modalMainBar : t.modalMainCafe;
+
+      const pane1 = document.getElementById('album-pane-gt');
+      pane1.innerHTML = '';
+
+      const items = Object.entries(DrinkManifest).filter(([_, d]) => d.type === (isBar ? 'bar' : 'cafe'));
+      items.forEach(([key, item]) => {
+        const div = document.createElement('div');
+        div.className = "p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60 cursor-pointer";
+        div.onclick = () => { toggleCodexModal(false); serveItemByKey(key); };
+        div.innerHTML = `
+          <div class="flex justify-between font-bold text-amber-300 text-[11px]">
+            <span>${item.icon} ${item.name[lang] || item.name.en}</span>
+            <span class="font-retro text-stone-400">${isBar ? 'G&T Flight' : 'Specialty'}</span>
+          </div>
+          <p class="text-[10px] text-stone-300 mt-0.5">${item.desc[lang] || item.desc.en}</p>
+        `;
+        pane1.appendChild(div);
+      });
+
+      const selBase = document.getElementById('atelier-base');
+      const selMod = document.getElementById('atelier-mod');
+      const selGarnish = document.getElementById('atelier-garnish');
+
+      if (isBar) {
+        selBase.innerHTML = `
+          <option value="Beijing Jasmine Tea Gin">Beijing Jasmine Tea Gin</option>
+          <option value="Ki No Bi Kyoto Gin">Ki No Bi Kyoto Gin</option>
+          <option value="Monkey 47 Black Forest">Monkey 47 Gin</option>
+          <option value="Cask Rye Bourbon">Cask Rye Bourbon</option>
+        `;
+        selMod.innerHTML = `
+          <option value="Beijing Osmanthus Soda">Beijing Osmanthus Soda</option>
+          <option value="Mediterranean Tonic">Mediterranean Herbal Tonic</option>
+          <option value="Japanese Yuzu Tonic">Japanese Yuzu Tonic</option>
+        `;
+        selGarnish.innerHTML = `
+          <option value="Golden Gingko Leaf & Hawthorn">Golden Gingko Leaf & Hawthorn</option>
+          <option value="Slapped Shiso & Sansho">Slapped Shiso & Sansho</option>
+          <option value="Sant Jordi Rose Petals">Sant Jordi Rose Petals</option>
+        `;
+      } else {
+        selBase.innerHTML = `
+          <option value="Anaerobic Natural Gesha">Anaerobic Natural Gesha</option>
+          <option value="Washed Yunnan Catimor">Washed Yunnan Catimor</option>
+          <option value="Kenya Nyeri Peaberry">Kenya Nyeri Peaberry</option>
+          <option value="Mandheling Dark Roast">Mandheling Dark Roast</option>
+        `;
+        selMod.innerHTML = `
+          <option value="Chilled Dense Oat Cream">Chilled Dense Oat Cream</option>
+          <option value="Velvety Steamed Milk">Velvety Steamed Milk</option>
+          <option value="Sparkling Tonic Water">Sparkling Tonic Water</option>
+          <option value="Pure Mountain Water (V60)">Pure Mountain Water (V60)</option>
+        `;
+        selGarnish.innerHTML = `
+          <option value="Torched Cinnamon Stick">Torched Cinnamon Stick</option>
+          <option value="Dehydrated Blood Orange Wheel">Blood Orange Wheel</option>
+          <option value="Valrhona Cocoa Dust">Valrhona Cocoa Dust</option>
+        `;
+      }
+
+      previewAtelierPairing();
+
+      const pane3 = document.getElementById('album-pane-classic');
+      if (isBar) {
+        pane3.innerHTML = `
+          <div class="p-2 bg-stone-900 border border-stone-800">
+            <span class="font-bold text-amber-300 text-[11px]">Old Fashioned</span>
+            <p class="text-[10px] text-stone-300 mt-0.5">60ml Rye, 5ml Demerara, 3 dashes Angostura, flamed orange peel.</p>
+          </div>
+          <div class="p-2 bg-stone-900 border border-stone-800">
+            <span class="font-bold text-amber-300 text-[11px]">Negroni Classico</span>
+            <p class="text-[10px] text-stone-300 mt-0.5">30ml London Dry Gin, 30ml Campari, 30ml Sweet Vermouth.</p>
+          </div>
+        `;
+      } else {
+        pane3.innerHTML = `
+          <div class="p-2 bg-stone-900 border border-stone-800">
+            <span class="font-bold text-amber-300 text-[11px]">Butter Croissant (蜂巢牛角可颂)</span>
+            <p class="text-[10px] text-stone-300 mt-0.5">72 layers French cultured butter, baked fresh daily in courtyard oven.</p>
+          </div>
+          <div class="p-2 bg-stone-900 border border-stone-800">
+            <span class="font-bold text-amber-300 text-[11px]">Basque Burnt Cheesecake (巴斯克焦香芝士)</span>
+            <p class="text-[10px] text-stone-300 mt-0.5">Rich caramelized molten cream cheese infused with vanilla beans.</p>
+          </div>
+        `;
+      }
     }
 
     function toggleCodexModal(show) {
       SoundEngine.playClick();
       const modal = document.getElementById('codex-modal');
       modal.classList.toggle('hidden', !show);
+      if (show) populateCodexContent();
     }
 
     function switchAlbumTab(tab) {
@@ -2058,50 +3021,135 @@
     }
 
     function previewAtelierPairing() {
-      const gin = document.getElementById('atelier-gin').value;
-      const tonic = document.getElementById('atelier-tonic').value;
+      const base = document.getElementById('atelier-base').value;
+      const mod = document.getElementById('atelier-mod').value;
       const garnish = document.getElementById('atelier-garnish').value;
 
-      document.getElementById('atelier-custom-name').textContent = `Atelier: ${gin.split(' ')[0]} + ${tonic.split(' ')[0]}`;
-      document.getElementById('atelier-custom-desc').textContent = `Harmonizing ${gin} with chilled ${tonic}, perfumed with ${garnish}.`;
+      document.getElementById('atelier-custom-name').textContent = `Atelier: ${base.split(' ')[0]} + ${mod.split(' ')[0]}`;
+      document.getElementById('atelier-custom-desc').textContent = `Combining ${base} with ${mod}, perfumed with ${garnish}.`;
     }
 
     function orderAtelierDrink() {
       toggleCodexModal(false);
-      SoundEngine.playShaker();
-      setTimeout(() => SoundEngine.playClink(), 600);
+      if (AppState.isBarOpen) {
+        SoundEngine.playShaker();
+        setTimeout(() => SoundEngine.playClink(), 600);
+      } else {
+        SoundEngine.playCoffeeGrinder();
+        setTimeout(() => SoundEngine.playClink(), 600);
+      }
 
-      const gin = document.getElementById('atelier-gin').value;
-      const tonic = document.getElementById('atelier-tonic').value;
+      const base = document.getElementById('atelier-base').value;
+      const mod = document.getElementById('atelier-mod').value;
       const garnish = document.getElementById('atelier-garnish').value;
 
       document.getElementById('rpg-dialogue-screen').classList.add('hidden');
       const served = document.getElementById('served-result-screen');
       served.classList.remove('hidden');
 
-      document.getElementById('res-icon').textContent = "🍸";
-      document.getElementById('res-name').textContent = `Atelier: ${gin.split(' ')[0]}`;
-      document.getElementById('res-subtitle').textContent = "Hand-Crafted Botanical Flight";
-      document.getElementById('res-description').textContent = `\"Wei crafted your custom pairing from the album: ${gin} topped with ${tonic} and ${garnish}.\"`;
-      document.getElementById('res-formula').textContent = `45ml ${gin} • 120ml ${tonic} • ${garnish}`;
+      document.getElementById('res-icon').textContent = AppState.isBarOpen ? "🍸" : "☕";
+      document.getElementById('res-name').textContent = `Atelier: ${base.split(' ')[0]}`;
+      document.getElementById('res-subtitle').textContent = "Hand-Crafted Custom Selection";
+      document.getElementById('res-description').textContent = `\"Wei crafted your bespoke beverage: ${base} paired with ${mod} and crowned with ${garnish}.\"`;
+      document.getElementById('res-formula').textContent = `${base} • ${mod} • ${garnish}`;
 
       const plate = document.getElementById('served-item-plate');
-      plate.textContent = "🍸";
+      plate.textContent = AppState.isBarOpen ? "🍸" : "☕";
       plate.classList.remove('hidden');
     }
+  </script>
 
-    function toggleLoFiBGM() {
+  <script>
+    /* CAT INTERACTIONS */
+    function interactCat(catName) {
+      const isZh = AppState.lang === 'zh';
+      const isEs = AppState.lang === 'es';
+
+      if (catName === 'miso') {
+        SoundEngine.playMeow(0.85);
+        const misoBadge = document.getElementById('miso-badge');
+        misoBadge.textContent = 'purr';
+        const ticker = document.getElementById('cat-pair-status');
+        ticker.textContent = isZh ? "🖤 味噌蹭了蹭你的手背，发出治愈的呼噜声。" : (isEs ? "🖤 Miso ronronea frotándose contra tu mano." : "🖤 Miso rubbed against your hand, purring contentedly.");
+        setTimeout(() => misoBadge.textContent = 'loaf', 2000);
+      } else {
+        SoundEngine.playMeow(1.3);
+        const yuzuBadge = document.getElementById('yuzu-badge');
+        yuzuBadge.textContent = 'pounce';
+        const ticker = document.getElementById('cat-pair-status');
+        ticker.textContent = isZh ? "🧡 柚子用软绵绵的爪子碰了碰你，尾巴晃得欢实。" : (isEs ? "🧡 Yuzu te dio un golpecito con la patita y movió la cola." : "🧡 Yuzu tapped your finger with a soft paw and swished her tail.");
+        setTimeout(() => yuzuBadge.textContent = 'tail', 2000);
+      }
+    }
+
+    function triggerCatEncounter() {
+      const ticker = document.getElementById('cat-pair-status');
+      if (Math.random() > 0.5) {
+        SoundEngine.playMeow(1.4);
+        ticker.textContent = i18n[AppState.lang].catFight;
+        document.getElementById('sprite-miso').textContent = "😾";
+        document.getElementById('sprite-yuzu').textContent = "🙀";
+        setTimeout(() => {
+          document.getElementById('sprite-miso').textContent = "🐈‍⬛";
+          document.getElementById('sprite-yuzu').textContent = "🐈";
+          ticker.textContent = i18n[AppState.lang].catNap;
+        }, 3000);
+      } else {
+        SoundEngine.playMeow(1.1);
+        ticker.textContent = i18n[AppState.lang].catPlay;
+      }
+    }
+
+    /* ENTRY TRANSITION WITH WEATHER & BGM RANDOMIZATION */
+    function enterSanctuary() {
+      SoundEngine.playClick();
+      AppState.inSanctuary = true;
+
+      // 1. Randomize Outdoor Weather on Every Entry
+      const weathers = ['rain', 'clear', 'snow', 'fog', 'storm'];
+      const randomWeather = weathers[Math.floor(Math.random() * weathers.length)];
+      setWeather(randomWeather, false);
+
+      // 2. Randomize BGM Track according to current mode
+      SoundEngine.setMode(AppState.isBarOpen);
+      SoundEngine.randomizeTrack();
+      if (!SoundEngine.bgmPlaying) {
+        toggleBGM();
+      }
+
+      // 3. Randomize Host's Mood & Energy
+      const barMoods = ['nightOwl', 'sarcastic', 'empath', 'poetic'];
+      const cafeMoods = ['baristaJoy', 'poetic', 'empath'];
+      const currentMoodPool = AppState.isBarOpen ? barMoods : cafeMoods;
+      AppState.weiMood = currentMoodPool[Math.floor(Math.random() * currentMoodPool.length)];
+      AppState.weiEnergy = Math.floor(Math.random() * 2) + 3;
+
+      document.getElementById('view-door').classList.add('hidden');
+      document.getElementById('view-sanctuary').classList.remove('hidden');
+
+      evaluateWeiState();
+      AppState.currentTopic = null;
+      renderCurrentDialogue();
+    }
+
+    function returnToDoor() {
+      SoundEngine.playClick();
+      AppState.inSanctuary = false;
+      document.getElementById('view-sanctuary').classList.add('hidden');
+      document.getElementById('view-door').classList.remove('hidden');
+    }
+
+    function toggleBGM() {
       const eqGraphic = document.getElementById('eq-graphic');
       const muteIcon = document.getElementById('eq-mute-icon');
 
       if (SoundEngine.bgmPlaying) {
-        SoundEngine.stopLoFiMusic();
+        SoundEngine.stopBGM();
         eqGraphic.classList.add('hidden');
         eqGraphic.classList.remove('flex');
         muteIcon.classList.remove('hidden');
       } else {
-        SoundEngine.randomizeTrack();
-        SoundEngine.startLoFiMusic();
+        SoundEngine.startBGM();
         eqGraphic.classList.remove('hidden');
         eqGraphic.classList.add('flex');
         muteIcon.classList.add('hidden');
@@ -2118,7 +3166,7 @@
       setTimeout(() => document.body.style.filter = "none", 120);
     }
 
-    // Complete i18n switcher
+    /* COMPLETE I18N SYSTEM */
     function cycleLanguage() {
       SoundEngine.playClick();
       const langs = ['en', 'zh', 'es'];
@@ -2128,15 +3176,13 @@
 
       const t = i18n[AppState.lang];
 
-      // Navbar & Door
       document.getElementById('nav-album-label').textContent = t.navAlbum;
+      document.getElementById('nav-arcade-label').textContent = t.navArcade;
       document.getElementById('label-return-door').textContent = t.returnDoor;
       document.getElementById('door-hero-text').textContent = t.doorHero;
       document.getElementById('door-hero-sub').textContent = t.doorSub;
       document.getElementById('cat-pair-status').textContent = t.catNap;
-      document.getElementById('cellar-banner-text').textContent = t.cellarBanner;
 
-      // Drawers & Modals
       document.getElementById('drawer-title').textContent = t.drawerTitle;
       document.getElementById('drawer-weather-header').textContent = t.drawerWeatherHeader;
       document.getElementById('drawer-presets-header').textContent = t.drawerPresetsHeader;
@@ -2153,22 +3199,27 @@
       document.getElementById('res-btn-reorder').textContent = t.resBtnReorder;
       document.getElementById('res-btn-cheers').textContent = t.resBtnCheers;
 
-      document.getElementById('modal-sub-title').textContent = t.modalSub;
-      document.getElementById('modal-main-title').textContent = t.modalMain;
       document.getElementById('tab-label-flight').textContent = t.tabFlight;
       document.getElementById('tab-label-atelier').textContent = t.tabAtelier;
       document.getElementById('tab-label-classic').textContent = t.tabClassic;
 
+      document.getElementById('joke-modal-title').textContent = t.jokeTitle;
+      document.getElementById('joke-next-btn').textContent = t.jokeNext;
+      document.getElementById('game-modal-title').textContent = t.gameTitle;
+
+      applyCafeOrBarEnvironment();
       updateClockHands(AppState.hour);
       if (AppState.inSanctuary) renderCurrentDialogue();
+      ArcadeGame.updateScoreUI();
     }
 
-    // App Initialization
+    /* INITIALIZATION */
     window.addEventListener('DOMContentLoaded', () => {
       WeatherSystem.init();
+      ArcadeGame.init();
       initClockDragging();
       SoundEngine.randomizeTrack();
-      syncBeijingWeatherAndClock(); // Default sync to Beijing (UTC+8) time and weather
+      syncBeijingWeatherAndClock();
     });
   </script>
 </body>
