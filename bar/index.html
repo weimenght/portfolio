@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Wei's Bar & Coffee</title>
+  <title>Wei's Bar & Coffee • 北京时间同步版</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -34,7 +34,6 @@
   </script>
 
   <style>
-    /* Strict Viewport Constraint: Never scroll the entire page */
     html, body {
       height: 100%;
       height: 100dvh;
@@ -49,7 +48,6 @@
       transition: background 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Pixel art shadow borders */
     .pixel-frame {
       box-shadow: 
         0 -2px 0 0 #000,
@@ -71,7 +69,6 @@
       transform: translate(1px, 2px);
     }
 
-    /* CRT scanline atmospheric texture */
     .crt-overlay::before {
       content: " ";
       display: block;
@@ -81,31 +78,28 @@
       background-size: 100% 3px;
       z-index: 45;
       pointer-events: none;
-      opacity: 0.6;
+      opacity: 0.55;
     }
 
-    /* Animated equalizer bars for procedural Lo-Fi BGM */
     .eq-bar {
       width: 3px;
       background-color: #f59e0b;
       display: inline-block;
-      animation: eqPulse 1s ease-in-out infinite alternate;
+      animation: eqPulse 0.9s ease-in-out infinite alternate;
     }
     .eq-bar:nth-child(1) { height: 10px; animation-delay: 0.1s; }
-    .eq-bar:nth-child(2) { height: 16px; animation-delay: 0.3s; }
+    .eq-bar:nth-child(2) { height: 16px; animation-delay: 0.35s; }
     .eq-bar:nth-child(3) { height: 8px; animation-delay: 0.2s; }
     @keyframes eqPulse {
-      0% { transform: scaleY(0.3); }
-      100% { transform: scaleY(1.1); }
+      0% { transform: scaleY(0.25); }
+      100% { transform: scaleY(1.15); }
     }
 
-    /* Hand indicators for 2-hand clock */
     .hand-indicator {
       transform-origin: 50% 100%;
       will-change: transform;
     }
 
-    /* Custom pixel scrollbars for recipes & modal */
     ::-webkit-scrollbar {
       width: 4px;
     }
@@ -116,7 +110,6 @@
       background: #78350f;
     }
 
-    /* Subtle breath animation for bartender */
     @keyframes gentleSway {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-2px); }
@@ -125,7 +118,6 @@
       animation: gentleSway 3s ease-in-out infinite;
     }
 
-    /* Energy bar indicator styling */
     .energy-pip {
       width: 6px;
       height: 6px;
@@ -136,21 +128,18 @@
 </head>
 <body class="text-[#f5eedf] font-pixel h-full w-full relative flex flex-col justify-between overflow-hidden crt-overlay">
 
-  <!-- Interactive Weather Canvas (Dynamic for Rain, Snow, Starlight, Fog & Thunder) -->
+  <!-- Interactive Weather Canvas -->
   <canvas id="weather-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
 
   <!-- Ambient Weather & Time Chromatic Aura -->
   <div id="ambient-aura" class="absolute inset-0 pointer-events-none z-0 opacity-40 transition-all duration-1000"></div>
 
-  <!-- ========================================================
-       STREAMLINED COMPACT MOBILE NAVBAR
-       ======================================================== -->
+  <!-- NAVBAR -->
   <header class="relative z-40 w-full px-2.5 sm:px-4 py-1.5 border-b border-stone-800/90 bg-stone-950/90 backdrop-blur-md flex items-center justify-between">
     
-    <!-- LEFT: Refined Brand Monogram + Status Badge -->
+    <!-- LEFT: Brand Monogram + Status Badge -->
     <div class="flex items-center gap-2 cursor-pointer group" onclick="tapLogo()" title="Wei's Insignia">
       <div class="w-7 h-7 sm:w-8 sm:h-8 bg-stone-900 border border-amber-600/80 p-0.5 flex items-center justify-center pixel-frame group-hover:border-amber-400">
-        <!-- Pixel Monogram Coupe & Dial SVG -->
         <svg class="w-full h-full text-amber-400" viewBox="0 0 16 16" fill="currentColor" style="shape-rendering: crispEdges;">
           <rect x="1" y="1" width="1" height="1" fill="#d97706"/>
           <rect x="14" y="1" width="1" height="1" fill="#d97706"/>
@@ -170,35 +159,37 @@
       <div class="leading-none flex items-center gap-1.5">
         <span id="nav-brand-title" class="text-xs sm:text-sm font-bold tracking-wider text-amber-300">WEI'S</span>
         <span id="nav-mode-pill" class="text-[9px] px-1 py-0.5 bg-amber-950 text-amber-400 border border-amber-700/60 font-mono tracking-tight">BAR</span>
+        <span id="nav-city-pill" class="hidden sm:inline text-[9px] px-1 py-0.5 bg-stone-900 text-stone-400 border border-stone-800 font-mono">PEK (UTC+8)</span>
       </div>
     </div>
 
-    <!-- RIGHT: Compact Control Buttons (No Overflow) -->
+    <!-- RIGHT: Compact Controls -->
     <div class="flex items-center gap-1 sm:gap-2">
 
-      <!-- 1. Lo-Fi Music Toggle -->
-      <button id="btn-lofi" onclick="toggleLoFiBGM()" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-amber-400 flex items-center gap-1.5" title="Procedural Lo-Fi Sound">
+      <!-- Lo-Fi Music Toggle & Randomizer -->
+      <button id="btn-lofi" onclick="toggleLoFiBGM()" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-amber-400 flex items-center gap-1.5" title="Procedural Lo-Fi Beats">
         <div id="eq-graphic" class="hidden items-end gap-0.5 h-3">
           <span class="eq-bar"></span>
           <span class="eq-bar"></span>
           <span class="eq-bar"></span>
         </div>
         <span id="eq-mute-icon" class="text-xs">📻</span>
+        <span id="lofi-track-name" class="font-retro text-[10px] text-amber-300/80 hidden sm:inline max-w-[110px] truncate">Lofi Radio</span>
       </button>
 
-      <!-- 2. Atmosphere & Clock Drawer Trigger -->
+      <!-- Atmosphere & Clock Drawer Trigger -->
       <button id="btn-atmo-trigger" onclick="toggleAtmosphereDrawer()" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-stone-200 flex items-center gap-1 text-xs" title="Atmosphere & Weather">
         <span id="weather-display-icon">🌧️</span>
         <span id="time-display-badge" class="font-retro text-[11px] text-amber-400">22:30</span>
       </button>
 
-      <!-- 3. Codex Album Button -->
+      <!-- Codex Album Button -->
       <button onclick="toggleCodexModal(true)" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-stone-200 flex items-center gap-1 text-xs" title="Cocktail Album & G&T Atelier">
         <span>📖</span>
-        <span class="hidden sm:inline font-retro text-[11px]">ALBUM</span>
+        <span id="nav-album-label" class="hidden sm:inline font-retro text-[11px]">ALBUM</span>
       </button>
 
-      <!-- 4. Language Selector Pill -->
+      <!-- Language Selector Pill -->
       <button onclick="cycleLanguage()" class="pixel-btn h-7 px-2 bg-stone-900 border border-stone-700 hover:border-amber-500 text-amber-300 font-mono text-[10px]" title="Change Language">
         <span id="lang-indicator">EN</span>
       </button>
@@ -208,44 +199,42 @@
   </header>
 
   <!-- ATMOSPHERE & TIME ADJUSTMENT PANEL -->
-  <div id="drawer-atmosphere" class="hidden absolute top-10 sm:top-11 right-2 left-2 sm:left-auto sm:w-80 z-50 bg-stone-950 border-2 border-stone-800 p-2.5 pixel-frame shadow-2xl">
+  <div id="drawer-atmosphere" class="hidden absolute top-10 sm:top-11 right-2 left-2 sm:left-auto sm:w-84 z-50 bg-stone-950 border-2 border-stone-800 p-2.5 pixel-frame shadow-2xl">
     <div class="flex items-center justify-between pb-1.5 mb-2 border-b border-stone-800 text-[10px] font-retro text-stone-400">
-      <span>ATMOSPHERE CONTROL</span>
+      <span id="drawer-title">ATMOSPHERE CONTROL</span>
       <button onclick="toggleAtmosphereDrawer()" class="hover:text-white">✕ CLOSE</button>
     </div>
 
     <!-- Weather Selector Row -->
-    <div class="text-[10px] text-stone-400 mb-1 font-retro">OUTDOOR WEATHER</div>
+    <div id="drawer-weather-header" class="text-[10px] text-stone-400 mb-1 font-retro">OUTDOOR WEATHER (BEIJING)</div>
     <div class="grid grid-cols-5 gap-1 mb-2.5">
       <button onclick="setWeather('rain')" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-xs" title="Rain">🌧️</button>
       <button onclick="setWeather('clear')" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-xs" title="Clear Stars">✨</button>
-      <button onclick="setWeather('snow')" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-xs" title="Snow">❄️️</button>
+      <button onclick="setWeather('snow')" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-xs" title="Snow">❄️</button>
       <button onclick="setWeather('fog')" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-xs" title="Fog / Mist">🌫️</button>
       <button onclick="setWeather('storm')" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-xs" title="Electric Thunder">⚡</button>
     </div>
 
     <!-- Quick Time Presets Row -->
-    <div class="text-[10px] text-stone-400 mb-1 font-retro">TIME SELECTOR</div>
+    <div id="drawer-presets-header" class="text-[10px] text-stone-400 mb-1 font-retro">TIME SELECTOR</div>
     <div class="grid grid-cols-4 gap-1">
       <button onclick="setTimePreset(22.5)" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-[10px] font-retro text-amber-300">🌙 22:30 Bar</button>
       <button onclick="setTimePreset(8.5)" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-[10px] font-retro text-stone-300">☕ 08:30 Cafe</button>
       <button onclick="setTimePreset(3.25)" class="p-1 bg-stone-900 border border-stone-700 text-center hover:border-amber-400 text-[10px] font-retro text-stone-300">😴 03:15 Sleep</button>
-      <button onclick="syncRealTime()" class="p-1 bg-amber-950 border border-amber-700 text-center text-[10px] font-retro text-amber-300">⚡ Live</button>
+      <button onclick="syncBeijingWeatherAndClock()" class="p-1 bg-amber-950 border border-amber-700 text-center text-[10px] font-retro text-amber-300">⚡ Beijing Live</button>
     </div>
   </div>
 
-  <!-- MAIN WORKSPACE: Fits 100% in viewport (Portrait & Landscape) -->
+  <!-- MAIN WORKSPACE -->
   <main class="relative z-20 flex-1 w-full max-w-4xl mx-auto px-2 sm:px-4 py-1 flex flex-col justify-between overflow-hidden">
     
-    <!-- ========================================================
-         VIEW 1: ENTRY DOOR & 2-HAND CLOCK GATE
-         ======================================================== -->
+    <!-- VIEW 1: ENTRY DOOR & 2-HAND CLOCK GATE -->
     <section id="view-door" class="w-full h-full flex flex-col justify-around items-center max-w-md mx-auto transition-all duration-300">
       
       <div class="text-center my-auto">
         <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-stone-900/90 border border-amber-500/40 text-amber-300 text-[10px] tracking-widest uppercase mb-1">
           <span class="w-1.5 h-1.5 bg-amber-400 animate-ping"></span>
-          <span id="clock-status-tag">DOORWAY • TWILIGHT GAUGE</span>
+          <span id="clock-status-tag">DOORWAY • BEIJING TIME</span>
         </div>
         <h1 id="door-hero-text" class="text-base sm:text-lg text-stone-100 font-bold tracking-wide">
           Spin the hand. Push the wood.
@@ -256,7 +245,7 @@
       </div>
 
       <!-- 2-Hand Interactive Analog Clock -->
-      <div class="relative w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-stone-950 border-4 border-stone-800 shadow-2xl p-2 flex items-center justify-center pixel-frame relative my-auto">
+      <div class="relative w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-stone-950 border-4 border-stone-800 shadow-2xl p-2 flex items-center justify-center pixel-frame my-auto">
         
         <div class="absolute inset-1 rounded-full border border-amber-900/30 pointer-events-none"></div>
         <span class="absolute top-1 font-retro text-stone-400 text-xs">12</span>
@@ -288,9 +277,7 @@
 
     </section>
 
-    <!-- ========================================================
-         VIEW 2: THE COUNTER & LIVING SANCTUARY
-         ======================================================== -->
+    <!-- VIEW 2: THE COUNTER & LIVING SANCTUARY -->
     <section id="view-sanctuary" class="hidden w-full h-full flex flex-col justify-between transition-all duration-300">
       
       <!-- SUB-HEADER: Return, Energy & Live Cat Status -->
@@ -318,7 +305,7 @@
         </div>
       </div>
 
-      <!-- COUNTER TOP STAGE: Bartender Wei & 2 Cats -->
+      <!-- COUNTER TOP STAGE: Bartender Wei with Round-Frame Glasses & 2 Cats -->
       <div class="relative flex-1 min-h-[130px] max-h-[200px] bg-stone-950/80 border-2 border-stone-800 rounded-sm pixel-frame px-3 py-1 my-1 flex flex-col justify-between overflow-hidden">
         
         <!-- Back Bar Background: Glassware & Cellar -->
@@ -328,10 +315,10 @@
           <span>🥃🍹🍵☕</span>
         </div>
 
-        <!-- The Characters: Miso, Wei, Yuzu -->
+        <!-- The Characters: Miso, Wei (Round-Frame Glasses), Yuzu -->
         <div class="relative z-10 flex items-end justify-around w-full mt-2">
           
-          <!-- Cat 1: Miso (Black Cat, Observant) -->
+          <!-- Cat 1: Miso -->
           <div class="flex flex-col items-center cursor-pointer group" onclick="interactCat('miso')">
             <div id="sprite-miso" class="text-2xl sm:text-3xl filter group-hover:scale-110 transition-transform">🐈‍⬛</div>
             <div class="text-[9px] font-retro text-stone-400 group-hover:text-amber-300 mt-0.5 flex items-center gap-1">
@@ -340,19 +327,75 @@
             </div>
           </div>
 
-          <!-- Bartender: Wei -->
+          <!-- Bartender: Wei with Round-Frame Wire Glasses -->
           <div class="flex flex-col items-center text-center cursor-pointer group sway-idle" onclick="tapBartender()">
-            <div id="sprite-wei" class="text-3xl sm:text-4xl filter group-hover:scale-105 transition-transform relative">
-              🧑‍🍳
-              <span id="wei-zzz" class="hidden absolute -top-3 -right-2 text-xs text-amber-400 font-retro animate-bounce font-bold">ZZZ...</span>
+            <div id="sprite-wei-container" class="relative group-hover:scale-105 transition-transform flex flex-col items-center">
+              
+              <!-- Custom Pixel SVG Avatar of Bartender Wei wearing Round-Frame Glasses -->
+              <svg id="svg-wei-avatar" class="w-12 h-14 sm:w-14 sm:h-16" viewBox="0 0 32 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="shape-rendering: crispEdges;">
+                <!-- Hair -->
+                <rect x="9" y="3" width="14" height="4" fill="#1c1917"/>
+                <rect x="7" y="5" width="4" height="5" fill="#1c1917"/>
+                <rect x="21" y="5" width="4" height="5" fill="#1c1917"/>
+                <rect x="11" y="2" width="10" height="2" fill="#292524"/>
+
+                <!-- Face -->
+                <rect x="9" y="7" width="14" height="12" fill="#fde68a"/>
+                <rect x="8" y="10" width="1" height="4" fill="#fcd34d"/>
+                <rect x="23" y="10" width="1" height="4" fill="#fcd34d"/>
+
+                <!-- Round-Frame Glasses (Gold Wireframe) -->
+                <!-- Left Round Lens -->
+                <rect x="10" y="10" width="4" height="4" fill="#0284c7" fill-opacity="0.25"/>
+                <rect x="10" y="9" width="4" height="1" fill="#f59e0b"/>
+                <rect x="10" y="14" width="4" height="1" fill="#f59e0b"/>
+                <rect x="9" y="10" width="1" height="4" fill="#f59e0b"/>
+                <rect x="14" y="10" width="1" height="4" fill="#f59e0b"/>
+                <rect x="11" y="11" width="1" height="1" fill="#fff" fill-opacity="0.8"/> <!-- lens glint -->
+                <rect x="12" y="12" width="1" height="2" fill="#0f172a"/> <!-- eye pupil -->
+
+                <!-- Glasses Nose Bridge -->
+                <rect x="15" y="11" width="2" height="1" fill="#f59e0b"/>
+
+                <!-- Right Round Lens -->
+                <rect x="18" y="10" width="4" height="4" fill="#0284c7" fill-opacity="0.25"/>
+                <rect x="18" y="9" width="4" height="1" fill="#f59e0b"/>
+                <rect x="18" y="14" width="4" height="1" fill="#f59e0b"/>
+                <rect x="17" y="10" width="1" height="4" fill="#f59e0b"/>
+                <rect x="22" y="10" width="1" height="4" fill="#f59e0b"/>
+                <rect x="19" y="11" width="1" height="1" fill="#fff" fill-opacity="0.8"/> <!-- lens glint -->
+                <rect x="20" y="12" width="1" height="2" fill="#0f172a"/> <!-- eye pupil -->
+
+                <!-- Glasses Side Temples -->
+                <rect x="7" y="10" width="2" height="1" fill="#d97706"/>
+                <rect x="23" y="10" width="2" height="1" fill="#d97706"/>
+
+                <!-- Cheerful Subtle Smile / Mouth -->
+                <rect x="14" y="16" width="4" height="1" fill="#b45309"/>
+
+                <!-- Neck & Collar -->
+                <rect x="13" y="19" width="6" height="2" fill="#fde68a"/>
+                <rect x="11" y="21" width="10" height="2" fill="#f8fafc"/> <!-- White shirt collar -->
+                <rect x="15" y="22" width="2" height="2" fill="#78350f"/> <!-- Velvet Bowtie -->
+
+                <!-- Bartender Vest / Apron -->
+                <rect x="8" y="23" width="16" height="11" fill="#1c1917"/>
+                <rect x="12" y="23" width="8" height="10" fill="#451a03"/> <!-- Dark Mahogany Vest -->
+                <rect x="14" y="24" width="4" height="7" fill="#f8fafc"/> <!-- Shirt bib -->
+                <rect x="15" y="27" width="2" height="1" fill="#d97706"/> <!-- Button -->
+                <rect x="15" y="30" width="2" height="1" fill="#d97706"/> <!-- Button -->
+              </svg>
+
+              <span id="wei-zzz" class="hidden absolute -top-2 -right-3 text-xs text-amber-400 font-retro animate-bounce font-bold">ZZZ...</span>
             </div>
+            
             <div class="text-[11px] font-bold text-amber-200 mt-0.5 flex items-center gap-1">
               <span>Wei</span>
               <span id="sprite-wei-tag" class="text-[8px] font-retro bg-amber-950 border border-amber-700/60 px-1 text-amber-400">Host</span>
             </div>
           </div>
 
-          <!-- Cat 2: Yuzu (Orange Tabby, Playful) -->
+          <!-- Cat 2: Yuzu -->
           <div class="flex flex-col items-center cursor-pointer group" onclick="interactCat('yuzu')">
             <div id="sprite-yuzu" class="text-2xl sm:text-3xl filter group-hover:scale-110 transition-transform">🐈</div>
             <div class="text-[9px] font-retro text-stone-400 group-hover:text-amber-300 mt-0.5 flex items-center gap-1">
@@ -372,24 +415,23 @@
 
       </div>
 
-      <!-- WITTY NON-REPETITIVE DIALOGUE / DIY CONSOLE -->
+      <!-- DIALOGUE / CONSOLE -->
       <div id="dialogue-box" class="bg-stone-900/95 border border-stone-800 rounded-sm p-2 sm:p-2.5 relative flex flex-col justify-between min-h-[145px] sm:min-h-[160px]">
         
-        <!-- Screen A: Dynamic Witty Non-Repeating Conversation -->
+        <!-- Screen A: Conversation Screen -->
         <div id="rpg-dialogue-screen" class="w-full flex-1 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-[10px] font-retro text-stone-400 mb-0.5">
               <span id="dialogue-speaker-tag" class="text-amber-400 uppercase">WEI • NIGHT OWL</span>
-              <span id="dialogue-vibe-tag" class="text-stone-500 font-retro">UNTOUCHED TOPIC</span>
+              <span id="dialogue-vibe-tag" class="text-stone-500 font-retro">BEIJING NIGHT</span>
             </div>
             <p id="dialogue-speech-text" class="text-stone-100 text-[11px] sm:text-xs font-pixel leading-snug">
-              "The mist off the bay tonight smells like chilled gin and forgotten conversations. What brought your coat through my door?"
+              "The autumn breeze outside is sweeping yellow gingko leaves past the grey brick hutong walls. What brings you through Wei's door tonight?"
             </p>
           </div>
 
-          <!-- Options Buttons: Clean non-wrapping grid -->
+          <!-- Options Buttons -->
           <div id="rpg-options-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-1.5 mt-1.5">
-            <!-- Dynamically populated from non-repeating deck -->
           </div>
         </div>
 
@@ -397,22 +439,22 @@
         <div id="sleep-mode-screen" class="hidden w-full flex-1 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-[10px] font-retro text-amber-500 uppercase">
-              <span>LATE NIGHT COMPLICATION</span>
+              <span id="sleep-header-title">LATE NIGHT COMPLICATION</span>
               <span class="animate-pulse">😴 WEI SURRENDERED</span>
             </div>
             <p id="sleep-story-text" class="text-[11px] sm:text-xs text-stone-200 mt-0.5">
-              *HONK-SHOO...* Wei fell fast asleep right over the cedar cutting board! The ice is melting in the shaker.
+              *HONK-SHOO...* Wei fell fast asleep right over the cedar cutting board! His round glasses slipped halfway down his nose.
             </p>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5 mt-2">
             <button onclick="wakeUpBartender()" class="pixel-btn p-1.5 bg-stone-950 border border-stone-700 hover:border-amber-400 text-left text-[11px] text-amber-300">
-              🔔 Clink a glass to wake Wei
+              🔔 <span id="sleep-btn-wake">Clink a glass to wake Wei</span>
             </button>
             <button onclick="askCatToBartend()" class="pixel-btn p-1.5 bg-stone-950 border border-stone-700 hover:border-amber-400 text-left text-[11px] text-amber-300">
-              🐾 Let Miso & Yuzu mix
+              🐾 <span id="sleep-btn-cats">Let Miso & Yuzu mix</span>
             </button>
             <button onclick="openSneakMixer()" class="pixel-btn p-1.5 bg-stone-950 border border-stone-700 hover:border-amber-400 text-left text-[11px] text-amber-300">
-              🤫 Sneak behind the bar & DIY
+              🤫 <span id="sleep-btn-diy">Sneak behind the bar & DIY</span>
             </button>
           </div>
         </div>
@@ -420,39 +462,40 @@
         <!-- Screen C: Sneak DIY Cocktail Mixer -->
         <div id="sneak-mixer-screen" class="hidden w-full flex-1 flex flex-col justify-between">
           <div class="flex items-center justify-between text-[10px] font-retro text-amber-400">
-            <span>UNAUTHORIZED DIY BAR MIXER</span>
+            <span id="sneak-header-title">UNAUTHORIZED DIY BAR MIXER</span>
             <button onclick="closeSneakMixer()" class="text-stone-400 hover:text-white">✕ Cancel</button>
           </div>
           <div class="grid grid-cols-3 gap-1.5 my-1 text-[11px]">
             <div>
-              <span class="text-[9px] font-retro text-stone-400 block">SPIRIT BASE</span>
+              <span class="text-[9px] font-retro text-stone-400 block" id="sneak-label-base">SPIRIT BASE</span>
               <select id="mix-base" class="w-full bg-stone-950 border border-stone-700 text-amber-200 p-0.5 text-[10px]">
-                <option value="Ki No Bi Kyoto Gin">Ki No Bi Kyoto Gin</option>
+                <option value="Jasmine Green Tea Infused Gin">Jasmine Tea Gin</option>
+                <option value="Ki No Bi Kyoto Gin">Ki No Bi Gin</option>
                 <option value="Monkey 47 Gin">Monkey 47 Gin</option>
+                <option value="Beijing Red-Star Aged Sorghum">Aged Sorghum Spirit</option>
                 <option value="Cask Rye Bourbon">Cask Rye Bourbon</option>
-                <option value="Smoky Oaxacan Mezcal">Smoky Mezcal</option>
               </select>
             </div>
             <div>
-              <span class="text-[9px] font-retro text-stone-400 block">TONIC / MOD</span>
+              <span class="text-[9px] font-retro text-stone-400 block" id="sneak-label-mod">TONIC / MOD</span>
               <select id="mix-mod" class="w-full bg-stone-950 border border-stone-700 text-amber-200 p-0.5 text-[10px]">
+                <option value="Beijing Autumn Osmanthus Soda">Osmanthus Soda</option>
                 <option value="Yuzu Botanical Tonic">Yuzu Tonic</option>
                 <option value="Mediterranean Tonic">Med Herbal Tonic</option>
                 <option value="Dry Bitter Lemon">Bitter Lemon</option>
-                <option value="Wild Elderflower">Elderflower Quinine</option>
               </select>
             </div>
             <div>
-              <span class="text-[9px] font-retro text-stone-400 block">GARNISH</span>
+              <span class="text-[9px] font-retro text-stone-400 block" id="sneak-label-garnish">GARNISH</span>
               <select id="mix-secret" class="w-full bg-stone-950 border border-stone-700 text-amber-200 p-0.5 text-[10px]">
+                <option value="Golden Gingko Leaf & Hawthorn">Gingko Leaf & Hawthorn</option>
                 <option value="Slapped Shiso & Sansho">Slapped Shiso</option>
                 <option value="Torched Rosemary">Torched Rosemary</option>
                 <option value="Sant Jordi Rose Petals">Rose Petals</option>
-                <option value="Secret Catnip Olive">Catnip Olive</option>
               </select>
             </div>
           </div>
-          <button onclick="craftCustomCocktail()" class="pixel-btn w-full py-1 bg-amber-500 text-black font-bold text-[10px] uppercase tracking-wider">
+          <button onclick="craftCustomCocktail()" class="pixel-btn w-full py-1 bg-amber-500 text-black font-bold text-[10px] uppercase tracking-wider" id="sneak-btn-pour">
             Pour & Slide Over Counter
           </button>
         </div>
@@ -463,20 +506,20 @@
             <div class="flex items-center gap-2">
               <span id="res-icon" class="text-xl">🍸</span>
               <div>
-                <h3 id="res-name" class="font-bold text-amber-300 text-xs sm:text-sm">Kyoto Mist Shiso G&T</h3>
-                <span id="res-subtitle" class="text-[9px] font-retro text-stone-400">Botanical: 90% • Tart: 40% • Hand-carved Spear</span>
+                <h3 id="res-name" class="font-bold text-amber-300 text-xs sm:text-sm">Gulou Belltower Jasmine Gin</h3>
+                <span id="res-subtitle" class="text-[9px] font-retro text-stone-400">Botanical: 90% • Autumn Jasmine • Beijing Ice Block</span>
               </div>
             </div>
             <button onclick="resetRpgConversation()" class="pixel-btn text-[9px] font-retro px-1.5 py-0.5 border border-stone-700 text-stone-300 hover:text-amber-400">
-              New Order ↺
+              <span id="res-btn-reorder">New Order ↺</span>
             </button>
           </div>
           <p id="res-description" class="text-[10px] sm:text-[11px] text-stone-300 font-pixel italic my-1">
-            "Served in an ultra-thin crystal balloon glass. Notes of chilled rain and green tea bamboo."
+            "Served in a chilled fluted tumbler. Fragrant jasmine blossoms float atop slow-melting crystal ice."
           </p>
           <div class="flex items-center justify-between pt-1 border-t border-stone-800 text-[9px] font-retro">
-            <span id="res-formula" class="text-stone-400 truncate max-w-[200px] sm:max-w-none">45ml Ki No Bi • 120ml Yuzu Tonic • Shiso</span>
-            <button onclick="playClinkSound()" class="pixel-btn px-2 py-0.5 bg-amber-600 text-black font-bold uppercase">
+            <span id="res-formula" class="text-stone-400 truncate max-w-[200px] sm:max-w-none">45ml Jasmine Gin • 120ml Osmanthus Tonic • Dried Hawthorn</span>
+            <button onclick="playClinkSound()" class="pixel-btn px-2 py-0.5 bg-amber-600 text-black font-bold uppercase" id="res-btn-cheers">
               🥂 Cheers!
             </button>
           </div>
@@ -488,17 +531,15 @@
 
   </main>
 
-  <!-- ========================================================
-       MODAL: 10 GIN & TONIC CODEX + INTERACTIVE ATELIER
-       ======================================================== -->
+  <!-- MODAL: G&T ALBUM & ATELIER -->
   <div id="codex-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4">
     <div class="bg-stone-950 border-2 border-amber-600/80 rounded-sm pixel-frame max-w-lg w-full max-h-[90vh] flex flex-col justify-between overflow-hidden p-3">
       
       <!-- Modal Header -->
       <div class="flex items-center justify-between pb-1.5 border-b border-stone-800">
         <div>
-          <span class="text-[9px] font-retro text-amber-500 uppercase">WEI'S BOTANICAL ARCHIVE</span>
-          <h2 class="text-xs sm:text-sm font-bold text-stone-100">The 10 Gin & Tonic Variations</h2>
+          <span class="text-[9px] font-retro text-amber-500 uppercase" id="modal-sub-title">WEI'S BOTANICAL ARCHIVE</span>
+          <h2 class="text-xs sm:text-sm font-bold text-stone-100" id="modal-main-title">The Gin & Tonic Variations</h2>
         </div>
         <button onclick="toggleCodexModal(false)" class="pixel-btn text-stone-400 hover:text-amber-300 text-sm font-mono p-1">✕</button>
       </div>
@@ -506,148 +547,106 @@
       <!-- Navigation Tabs -->
       <div class="flex items-center gap-1 my-1.5 border-b border-stone-800 pb-1 text-[10px] font-retro">
         <button id="tab-btn-gt" onclick="switchAlbumTab('gt')" class="px-2 py-0.5 bg-amber-950 border border-amber-700 text-amber-300">
-          10 G&T FLIGHT
+          <span id="tab-label-flight">FLIGHTS</span>
         </button>
         <button id="tab-btn-custom" onclick="switchAlbumTab('custom')" class="px-2 py-0.5 bg-stone-900 border border-stone-800 text-stone-400">
-          G&T ATELIER BUILDER
+          <span id="tab-label-atelier">ATELIER BUILDER</span>
         </button>
         <button id="tab-btn-classic" onclick="switchAlbumTab('classic')" class="px-2 py-0.5 bg-stone-900 border border-stone-800 text-stone-400">
-          CLASSIC RATIOS
+          <span id="tab-label-classic">CLASSIC RATIOS</span>
         </button>
       </div>
 
-      <!-- TAB 1: 10 Distinct Gin & Tonic Variations -->
+      <!-- TAB 1: Variations -->
       <div id="album-pane-gt" class="flex-1 overflow-y-auto pr-1 space-y-1.5 text-xs">
         
         <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
           <div class="flex justify-between font-bold text-amber-300 text-[11px]">
-            <span>1. The Catalan Rose & Sea</span>
-            <span class="font-retro text-stone-400">42.7% ABV</span>
+            <span>1. Gulou Belltower Jasmine (鼓楼夜钟茉莉)</span>
+            <span class="font-retro text-stone-400">43% ABV</span>
           </div>
-          <p class="text-[10px] text-stone-300 mt-0.5">Barcelona Mediterranean botanicals, kaffir lime, Fever-Tree Med tonic, fresh bay leaf & Sant Jordi rose petals.</p>
+          <p class="text-[10px] text-stone-300 mt-0.5" id="album-desc-1">Beijing Jasmine tea steeped artisan gin, Osmanthus floral tonic, crystallized hawthorn slice & fragrant dried silver needle blossoms.</p>
         </div>
 
         <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
           <div class="flex justify-between font-bold text-amber-300 text-[11px]">
-            <span>2. Kyoto Mist (Forest Whispers)</span>
+            <span>2. The Catalan Rose & Sea (加泰罗尼亚玫瑰)</span>
+            <span class="font-retro text-stone-400">42.7% ABV</span>
+          </div>
+          <p class="text-[10px] text-stone-300 mt-0.5" id="album-desc-2">Barcelona Mediterranean botanicals, kaffir lime, Fever-Tree Med tonic, fresh bay leaf & Sant Jordi rose petals.</p>
+        </div>
+
+        <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
+          <div class="flex justify-between font-bold text-amber-300 text-[11px]">
+            <span>3. Kyoto Mist (京都竹雾)</span>
             <span class="font-retro text-stone-400">45.7% ABV</span>
           </div>
-          <p class="text-[10px] text-stone-300 mt-0.5">Ki No Bi artisan gin, gyokuro green tea, bamboo distillate, yuzu tonic, slapped purple shiso & crushed sansho pepper.</p>
+          <p class="text-[10px] text-stone-300 mt-0.5" id="album-desc-3">Ki No Bi artisan gin, gyokuro green tea, bamboo distillate, yuzu tonic, slapped purple shiso & crushed sansho pepper.</p>
         </div>
 
         <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
           <div class="flex justify-between font-bold text-amber-300 text-[11px]">
-            <span>3. The Black Forest Secret</span>
+            <span>4. The Black Forest Secret (黑森林秘境)</span>
             <span class="font-retro text-stone-400">47% ABV</span>
           </div>
-          <p class="text-[10px] text-stone-300 mt-0.5">Monkey 47, tart lingonberries, Fever-Tree Indian tonic, fresh blackberry skewer & torched sage leaf.</p>
+          <p class="text-[10px] text-stone-300 mt-0.5" id="album-desc-4">Monkey 47, tart lingonberries, Fever-Tree Indian tonic, fresh blackberry skewer & torched sage leaf.</p>
         </div>
 
         <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
           <div class="flex justify-between font-bold text-amber-300 text-[11px]">
-            <span>4. Mediterranean Dusk</span>
+            <span>5. Mediterranean Dusk (地中海薄暮)</span>
             <span class="font-retro text-stone-400">42.7% ABV</span>
           </div>
-          <p class="text-[10px] text-stone-300 mt-0.5">Gin Mare, Arbequina black olive brine wash, garden thyme, 1724 high-altitude tonic & torched orange wheel.</p>
-        </div>
-
-        <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
-          <div class="flex justify-between font-bold text-amber-300 text-[11px]">
-            <span>5. The Oceanic Saline Drift</span>
-            <span class="font-retro text-stone-400">45% ABV</span>
-          </div>
-          <p class="text-[10px] text-stone-300 mt-0.5">Isle of Harris Gin with Scottish sugar kelp infusion, light tonic, fresh sea asparagus & pink grapefruit crescent.</p>
-        </div>
-
-        <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
-          <div class="flex justify-between font-bold text-amber-300 text-[11px]">
-            <span>6. The Midnight Smoked Lemongrass</span>
-            <span class="font-retro text-stone-400">46% ABV</span>
-          </div>
-          <p class="text-[10px] text-stone-300 mt-0.5">Wei's Signature smoky tea-steeped dry gin, lemongrass botanical tonic, charred ruby grapefruit & smoked sea salt rim.</p>
-        </div>
-
-        <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
-          <div class="flex justify-between font-bold text-amber-300 text-[11px]">
-            <span>7. The London Heritage 1888</span>
-            <span class="font-retro text-stone-400">57.1% ABV</span>
-          </div>
-          <p class="text-[10px] text-stone-300 mt-0.5">Navy Strength heavy juniper gin, extra dry tonic, cracked green coriander seeds & dehydrated Persian lime.</p>
-        </div>
-
-        <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
-          <div class="flex justify-between font-bold text-amber-300 text-[11px]">
-            <span>8. The Wild Foraged Sloe & Plum</span>
-            <span class="font-retro text-stone-400">29% ABV</span>
-          </div>
-          <p class="text-[10px] text-stone-300 mt-0.5">English Blackthorn sloe gin, bitter lemon tonic water, toasted star anise pod & preserved Japanese ume plum.</p>
-        </div>
-
-        <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
-          <div class="flex justify-between font-bold text-amber-300 text-[11px]">
-            <span>9. The Botanical Greenhouse</span>
-            <span class="font-retro text-stone-400">43.4% ABV</span>
-          </div>
-          <p class="text-[10px] text-stone-300 mt-0.5">Hendrick's Neptunia, coastal cucumber botanical tonic, paper-thin cucumber ribbons & freshly cracked black tellicherry pepper.</p>
-        </div>
-
-        <div class="p-2 bg-stone-900/90 border border-stone-800 hover:border-amber-600/60">
-          <div class="flex justify-between font-bold text-amber-300 text-[11px]">
-            <span>10. The Alpine Pine & Rosemary</span>
-            <span class="font-retro text-stone-400">45% ABV</span>
-          </div>
-          <p class="text-[10px] text-stone-300 mt-0.5">St. George Terroir forest gin, Austrian elderflower tonic, Douglas fir needles & wild macerated juniper berry.</p>
+          <p class="text-[10px] text-stone-300 mt-0.5" id="album-desc-5">Gin Mare, Arbequina black olive brine wash, garden thyme, 1724 high-altitude tonic & torched orange wheel.</p>
         </div>
 
       </div>
 
-      <!-- TAB 2: Interactive Gin & Tonic Customizer -->
+      <!-- TAB 2: Interactive Atelier -->
       <div id="album-pane-custom" class="hidden flex-1 overflow-y-auto pr-1 space-y-2 text-xs">
         <div class="p-2.5 bg-stone-900 border border-stone-800">
-          <div class="font-bold text-amber-300 text-[11px] mb-1">GIN & TONIC PAIRING ATELIER</div>
-          <p class="text-[10px] text-stone-400 mb-2">Build your bespoke G&T pairing and send it straight to Wei's counter:</p>
+          <div class="font-bold text-amber-300 text-[11px] mb-1" id="atelier-title">GIN & TONIC PAIRING ATELIER</div>
+          <p class="text-[10px] text-stone-400 mb-2" id="atelier-sub">Build your bespoke G&T pairing and send it straight to Wei's counter:</p>
 
           <div class="space-y-2 text-[10px]">
             <div>
-              <span class="text-stone-300 block mb-0.5 font-retro">1. CHOOSE BOTANICAL GIN BASE:</span>
+              <span class="text-stone-300 block mb-0.5 font-retro" id="atelier-step-1">1. CHOOSE BOTANICAL GIN BASE:</span>
               <select id="atelier-gin" onchange="previewAtelierPairing()" class="w-full bg-stone-950 border border-stone-700 text-amber-200 p-1">
+                <option value="Beijing Jasmine Tea Gin">Beijing Jasmine Tea Gin (Fragrant & Crisp)</option>
                 <option value="Ki No Bi Kyoto (Tea & Bamboo)">Ki No Bi Kyoto (Tea & Bamboo)</option>
-                <option value="Monkey 47 Black Forest (47 Botanicals)">Monkey 47 (47 Botanicals)</option>
+                <option value="Monkey 47 Black Forest">Monkey 47 (47 Botanicals)</option>
                 <option value="Gin Mare (Olive & Thyme)">Gin Mare (Olive & Thyme)</option>
                 <option value="Isle of Harris (Sugar Kelp Saline)">Isle of Harris (Sugar Kelp Saline)</option>
-                <option value="Sloe Berry Infusion (Wild & Tart)">Sloe Berry Infusion (Wild & Tart)</option>
               </select>
             </div>
 
             <div>
-              <span class="text-stone-300 block mb-0.5 font-retro">2. CHOOSE TONIC WATER:</span>
+              <span class="text-stone-300 block mb-0.5 font-retro" id="atelier-step-2">2. CHOOSE TONIC WATER:</span>
               <select id="atelier-tonic" onchange="previewAtelierPairing()" class="w-full bg-stone-950 border border-stone-700 text-amber-200 p-1">
+                <option value="Beijing Osmanthus Soda">Beijing Autumn Osmanthus Soda</option>
                 <option value="Mediterranean Herbal Tonic">Mediterranean Herbal Tonic</option>
                 <option value="Japanese Yuzu Citrus Tonic">Japanese Yuzu Citrus Tonic</option>
                 <option value="Extra Dry Indian Tonic">Extra Dry Indian Tonic</option>
-                <option value="Wild Elderflower Tonic">Wild Elderflower Tonic</option>
-                <option value="Bitter Lemon Quinine Tonic">Bitter Lemon Quinine Tonic</option>
               </select>
             </div>
 
             <div>
-              <span class="text-stone-300 block mb-0.5 font-retro">3. AROMATIC GARNISH:</span>
+              <span class="text-stone-300 block mb-0.5 font-retro" id="atelier-step-3">3. AROMATIC GARNISH:</span>
               <select id="atelier-garnish" onchange="previewAtelierPairing()" class="w-full bg-stone-950 border border-stone-700 text-amber-200 p-1">
+                <option value="Golden Gingko Leaf & Hawthorn">Golden Gingko Leaf & Hawthorn</option>
                 <option value="Slapped Shiso & Sansho Pepper">Slapped Shiso & Sansho Pepper</option>
-                <option value="Torched Rosemary & Olive">Torched Rosemary & Olive</option>
                 <option value="Sant Jordi Rose Petals">Sant Jordi Rose Petals</option>
-                <option value="Charred Grapefruit Crescent">Charred Grapefruit Crescent</option>
-                <option value="Cucumber Ribbons & Cracked Pepper">Cucumber Ribbons & Cracked Pepper</option>
+                <option value="Torched Rosemary & Olive">Torched Rosemary & Olive</option>
               </select>
             </div>
           </div>
 
           <div id="atelier-preview-box" class="mt-3 p-2 bg-stone-950 border border-amber-800/60 text-[10px] text-stone-300">
-            <span class="text-amber-400 font-bold block" id="atelier-custom-name">Bespoke Flight: Ki No Bi & Yuzu</span>
-            <span id="atelier-custom-desc" class="text-stone-400 text-[9px] block">A crisp and contemplative Japanese pairing with sparkling citrus resonance.</span>
+            <span class="text-amber-400 font-bold block" id="atelier-custom-name">Bespoke Flight: Jasmine & Osmanthus</span>
+            <span id="atelier-custom-desc" class="text-stone-400 text-[9px] block">A contemplative Hutong twilight pairing steeped with northern flowers and fine bubbles.</span>
           </div>
 
-          <button onclick="orderAtelierDrink()" class="pixel-btn w-full mt-2.5 py-1.5 bg-amber-500 text-black font-bold text-[10px] uppercase tracking-wider">
+          <button onclick="orderAtelierDrink()" class="pixel-btn w-full mt-2.5 py-1.5 bg-amber-500 text-black font-bold text-[10px] uppercase tracking-wider" id="atelier-order-btn">
             Slide This Custom G&T to Counter 🍸
           </button>
         </div>
@@ -670,30 +669,80 @@
       </div>
 
       <div class="pt-2 border-t border-stone-800 flex justify-between items-center text-[9px] font-retro text-stone-500">
-        <span>ARCHIVE VOL. 5</span>
+        <span>ARCHIVE VOL. 6 • PEK EDITION</span>
         <span>TAP ✕ TO CLOSE</span>
       </div>
 
     </div>
   </div>
 
+  <!-- AUDIO ENGINE WITH EXPANDED LO-FI ENGINE & MULTIPLE RANDOM TRACKS -->
   <script>
-    /* ========================================================
-     * WEB AUDIO ENGINE: Procedural Lo-Fi Beats & Sound Effects
-     * ======================================================== */
     const SoundEngine = {
       ctx: null,
       bgmPlaying: false,
       timerId: null,
       noiseNode: null,
-      currentProgression: 0,
+      currentTrackIndex: 0,
       bpm: 72,
 
-      // Diverse Lo-Fi harmonic progressions (Keys: Dm, Cmaj, Fmaj, Am, Ebmaj)
-      progressions: [
-        [ [146.83, 220.00, 261.63, 329.63, 392.00], [196.00, 246.94, 293.66, 329.63, 440.00], [130.81, 196.00, 246.94, 329.63, 392.00], [220.00, 261.63, 329.63, 392.00, 493.88] ],
-        [ [155.56, 233.08, 277.18, 349.23, 415.30], [207.65, 261.63, 311.13, 349.23, 466.16], [138.59, 207.65, 261.63, 349.23, 415.30], [233.08, 277.18, 349.23, 415.30, 523.25] ],
-        [ [174.61, 220.00, 261.63, 329.63, 392.00], [130.81, 196.00, 246.94, 293.66, 349.23], [146.83, 220.00, 261.63, 349.23, 440.00], [196.00, 246.94, 293.66, 392.00, 440.00] ]
+      // Diverse Lo-Fi Tracks (Randomized on enter & manual shuffle)
+      tracks: [
+        {
+          name: "Gulou Midnight Breeze (鼓楼晚风)",
+          bpm: 72,
+          chords: [
+            [146.83, 220.00, 261.63, 329.63, 392.00], // Dm9
+            [196.00, 246.94, 293.66, 329.63, 440.00], // G13
+            [130.81, 196.00, 246.94, 329.63, 392.00], // Cmaj9
+            [220.00, 261.63, 329.63, 392.00, 493.88]  // Am9
+          ],
+          cutoff: 720
+        },
+        {
+          name: "Hutong Autumn Rain (胡同秋雨)",
+          bpm: 68,
+          chords: [
+            [155.56, 233.08, 277.18, 349.23, 415.30], // Ebm9
+            [207.65, 261.63, 311.13, 349.23, 466.16], // Ab13
+            [138.59, 207.65, 261.63, 349.23, 415.30], // Dbmaj9
+            [233.08, 277.18, 349.23, 415.30, 523.25]  // Bbm9
+          ],
+          cutoff: 650
+        },
+        {
+          name: "Beihai White Pagoda Ripples (北海微澜)",
+          bpm: 76,
+          chords: [
+            [174.61, 220.00, 261.63, 329.63, 392.00], // Fmaj9
+            [130.81, 196.00, 246.94, 293.66, 349.23], // Em7
+            [146.83, 220.00, 261.63, 349.23, 440.00], // Dm9
+            [196.00, 246.94, 293.66, 392.00, 440.00]  // G9sus4
+          ],
+          cutoff: 820
+        },
+        {
+          name: "Line 2 Last Train (二号线末班车)",
+          bpm: 70,
+          chords: [
+            [110.00, 164.81, 220.00, 261.63, 329.63], // Am9
+            [130.81, 196.00, 246.94, 329.63, 392.00], // Cmaj7
+            [87.31,  130.81, 174.61, 220.00, 261.63], // Fmaj7
+            [98.00,  146.83, 196.00, 246.94, 293.66]  // G7
+          ],
+          cutoff: 680
+        },
+        {
+          name: "Catalan Dusk & Amber Gin (加泰罗尼亚薄暮)",
+          bpm: 75,
+          chords: [
+            [174.61, 220.00, 261.63, 349.23, 440.00], // Fmaj7
+            [196.00, 246.94, 293.66, 392.00, 493.88], // G6
+            [130.81, 196.00, 246.94, 329.63, 392.00], // Cmaj9
+            [164.81, 220.00, 261.63, 329.63, 392.00]  // Em7
+          ],
+          cutoff: 750
+        }
       ],
 
       init() {
@@ -706,9 +755,16 @@
         }
       },
 
-      randomizeLoFiEngine() {
-        this.currentProgression = Math.floor(Math.random() * this.progressions.length);
-        this.bpm = Math.floor(Math.random() * 14) + 68; // 68 - 82 BPM
+      randomizeTrack() {
+        this.currentTrackIndex = Math.floor(Math.random() * this.tracks.length);
+        const cur = this.tracks[this.currentTrackIndex];
+        this.bpm = cur.bpm + Math.floor(Math.random() * 5 - 2);
+        
+        const trackLabel = document.getElementById('lofi-track-name');
+        if (trackLabel) {
+          trackLabel.textContent = cur.name.split(' ')[0];
+          trackLabel.title = `${cur.name} (${this.bpm} BPM)`;
+        }
       },
 
       startVinylCrackle() {
@@ -721,8 +777,8 @@
         for (let i = 0; i < bufferSize; i++) {
           const white = Math.random() * 2 - 1;
           last = (last + (0.02 * white)) / 1.02;
-          const pop = Math.random() > 0.9991 ? (Math.random() * 0.35) : 0;
-          data[i] = (last * 0.1) + pop;
+          const pop = Math.random() > 0.9991 ? (Math.random() * 0.3) : 0;
+          data[i] = (last * 0.08) + pop;
         }
 
         const noise = this.ctx.createBufferSource();
@@ -731,10 +787,10 @@
 
         const filter = this.ctx.createBiquadFilter();
         filter.type = 'lowpass';
-        filter.frequency.value = 1050;
+        filter.frequency.value = 1000;
 
         const gain = this.ctx.createGain();
-        gain.gain.value = 0.06;
+        gain.gain.value = 0.05;
 
         noise.connect(filter);
         filter.connect(gain);
@@ -749,12 +805,13 @@
         this.bgmPlaying = true;
         this.startVinylCrackle();
 
-        const activeChords = this.progressions[this.currentProgression];
+        const currentTrack = this.tracks[this.currentTrackIndex];
         let chordIndex = 0;
 
         const playChord = () => {
           if (!this.bgmPlaying || !this.ctx) return;
-          const chord = activeChords[chordIndex % activeChords.length];
+          const chords = currentTrack.chords;
+          const chord = chords[chordIndex % chords.length];
           const now = this.ctx.currentTime;
           const chordDuration = (60 / this.bpm) * 4;
 
@@ -764,14 +821,16 @@
             const filter = this.ctx.createBiquadFilter();
 
             osc.type = i % 2 === 0 ? 'sine' : 'triangle';
-            osc.frequency.setValueAtTime(freq, now);
+            // Subtle lo-fi tape flutter
+            const detune = (Math.random() * 6 - 3);
+            osc.frequency.setValueAtTime(freq + (detune * 0.1), now);
 
             filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(780, now);
-            filter.frequency.exponentialRampToValueAtTime(320, now + (chordDuration * 0.85));
+            filter.frequency.setValueAtTime(currentTrack.cutoff, now);
+            filter.frequency.exponentialRampToValueAtTime(300, now + (chordDuration * 0.88));
 
             gain.gain.setValueAtTime(0.001, now);
-            gain.gain.linearRampToValueAtTime(0.032 / chord.length, now + 0.12);
+            gain.gain.linearRampToValueAtTime(0.035 / chord.length, now + 0.14);
             gain.gain.exponentialRampToValueAtTime(0.0001, now + chordDuration - 0.1);
 
             osc.connect(filter);
@@ -785,10 +844,10 @@
           // Soft Lo-Fi Kick
           const kick = this.ctx.createOscillator();
           const kGain = this.ctx.createGain();
-          kick.frequency.setValueAtTime(72, now);
-          kick.frequency.exponentialRampToValueAtTime(30, now + 0.18);
-          kGain.gain.setValueAtTime(0.05, now);
-          kGain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          kick.frequency.setValueAtTime(70, now);
+          kick.frequency.exponentialRampToValueAtTime(28, now + 0.2);
+          kGain.gain.setValueAtTime(0.045, now);
+          kGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
           kick.connect(kGain);
           kGain.connect(this.ctx.destination);
           kick.start(now);
@@ -949,23 +1008,21 @@
     };
   </script>
 
+  <!-- APPLICATION STATE & FULL I18N SYSTEM -->
   <script>
-    /* ========================================================
-     * APPLICATION STATE & LOCALIZATION
-     * ======================================================== */
     const AppState = {
       lang: 'en',
       hour: 22.5,
-      weather: 'rain', // 'rain', 'clear', 'snow', 'fog', 'storm'
+      weather: 'rain',
       inSanctuary: false,
       isBarOpen: true,
 
-      // Dynamic Bartender Session Engine
-      weiMood: 'nightOwl', // 'nightOwl', 'sarcastic', 'empath', 'gossip', 'poetic'
-      weiEnergy: 4,        // 4 (Awake), 3 (Drowsy), 2 (Sluggish), 1 (Nodding), 0 (Asleep)
-      weiState: 'awake',   // 'awake', 'asleep'
-      conversationDepth: 0,
+      // Host State
+      weiMood: 'nightOwl',
+      weiEnergy: 4,
+      weiState: 'awake',
       usedTopicIds: new Set(),
+      currentTopic: null,
 
       // Cats
       misoAction: 'loaf',
@@ -981,21 +1038,65 @@
         btnEnterCoffee: "Enter Wei's Coffee",
         doorHero: "Spin the hand. Push the wood.",
         returnDoor: "Door",
+        navAlbum: "ALBUM",
         catNap: "🐾 Miso & Yuzu are napping together",
         catFight: "⚠️ Miso & Yuzu are in a slap fight!",
-        catPlay: "🧶 Yuzu is chasing Miso's tail"
+        catPlay: "🧶 Yuzu is chasing Miso's tail",
+        drawerTitle: "ATMOSPHERE CONTROL",
+        drawerWeatherHeader: "OUTDOOR WEATHER (BEIJING)",
+        drawerPresetsHeader: "TIME SELECTOR",
+        sleepHeaderTitle: "LATE NIGHT COMPLICATION",
+        sleepStoryText: "*HONK-SHOO...* Wei fell fast asleep right over the cedar cutting board! His round glasses slipped down his nose.",
+        sleepBtnWake: "Clink a glass to wake Wei",
+        sleepBtnCats: "Let Miso & Yuzu mix",
+        sleepBtnDiy: "Sneak behind the bar & DIY",
+        sneakHeaderTitle: "UNAUTHORIZED DIY BAR MIXER",
+        sneakLabelBase: "SPIRIT BASE",
+        sneakLabelMod: "TONIC / MOD",
+        sneakLabelGarnish: "GARNISH",
+        sneakBtnPour: "Pour & Slide Over Counter",
+        resBtnReorder: "New Order ↺",
+        resBtnCheers: "🥂 Cheers!",
+        modalSub: "WEI'S BOTANICAL ARCHIVE",
+        modalMain: "The Gin & Tonic Variations",
+        tabFlight: "FLIGHTS",
+        tabAtelier: "ATELIER BUILDER",
+        tabClassic: "CLASSIC RATIOS",
+        cellarBanner: "[WEI'S BOTANICAL CELLAR]"
       },
       zh: {
         venueBar: "酒吧",
         venueCoffee: "咖啡",
-        doorSub: "18:00—04:00 酒吧 • 04:00—18:00 咖啡",
-        btnEnterBar: "进入小酒馆",
-        btnEnterCoffee: "进入咖啡馆",
+        doorSub: "18:00—04:00 小酒馆 • 04:00—18:00 晨间咖啡",
+        btnEnterBar: "推门进入小酒馆",
+        btnEnterCoffee: "推门进入咖啡馆",
         doorHero: "拨动表针，静听木门回响。",
         returnDoor: "门前",
+        navAlbum: "酒单图鉴",
         catNap: "🐾 味噌和柚子正挤着打呼噜",
         catFight: "⚠️ 味噌和柚子打起喵喵拳了！",
-        catPlay: "🧶 柚子在扑咬味噌的黑尾巴"
+        catPlay: "🧶 柚子在扑咬味噌的黑尾巴",
+        drawerTitle: "环境与天气调节",
+        drawerWeatherHeader: "北京窗外天气",
+        drawerPresetsHeader: "时间预设与同步",
+        sleepHeaderTitle: "深夜突发状况",
+        sleepStoryText: "*呼——呼噜……* Wei 趴在雪松吧台上睡得正香！圆框眼镜滑到了鼻尖。",
+        sleepBtnWake: "轻碰酒杯唤醒 Wei",
+        sleepBtnCats: "让小猫味噌和柚子来调酒",
+        sleepBtnDiy: "悄悄溜进吧台自己倒一杯",
+        sneakHeaderTitle: "未经许可的自助吧台",
+        sneakLabelBase: "基酒选择",
+        sneakLabelMod: "气泡水 / 汤力",
+        sneakLabelGarnish: "风味点缀",
+        sneakBtnPour: "轻推至吧台前 🍸",
+        resBtnReorder: "再点一杯 ↺",
+        resBtnCheers: "🥂 干杯！",
+        modalSub: "WEI 的植物草本典藏",
+        modalMain: "金汤力风味图鉴",
+        tabFlight: "特调酒单",
+        tabAtelier: "工坊定制",
+        tabClassic: "经典配比",
+        cellarBanner: "[WEI 的胡同草本酒窖]"
       },
       es: {
         venueBar: "BAR",
@@ -1005,199 +1106,332 @@
         btnEnterCoffee: "Entrar al Café",
         doorHero: "Gira la manecilla. Empuja la madera.",
         returnDoor: "Puerta",
+        navAlbum: "ÁLBUM",
         catNap: "🐾 Miso y Yuzu duermen acurrucados",
         catFight: "⚠️ ¡Pelea de patitas entre Miso y Yuzu!",
-        catPlay: "🧶 Yuzu persigue la cola de Miso"
+        catPlay: "🧶 Yuzu persigue la cola de Miso",
+        drawerTitle: "CONTROL ATMOSFÉRICO",
+        drawerWeatherHeader: "CLIMA EXTERIOR (PEKÍN)",
+        drawerPresetsHeader: "SELECTOR DE HORA",
+        sleepHeaderTitle: "COMPLICACIÓN NOCTURNA",
+        sleepStoryText: "*Zzz...* ¡Wei se quedó dormido sobre la barra! Sus gafas redondas resbalaron por su nariz.",
+        sleepBtnWake: "Chocar una copa para despertar a Wei",
+        sleepBtnCats: "Dejar que Miso y Yuzu preparen",
+        sleepBtnDiy: "Colarse tras la barra y hacer DIY",
+        sneakHeaderTitle: "BARRA LIBRE NO AUTORIZADA",
+        sneakLabelBase: "BASE ESPIRITUOSA",
+        sneakLabelMod: "TÓNICA / MEZCLA",
+        sneakLabelGarnish: "ADORNOS",
+        sneakBtnPour: "Servir y deslizar a la barra",
+        resBtnReorder: "Otro trago ↺",
+        resBtnCheers: "🥂 ¡Salud!",
+        modalSub: "ARCHIVO BOTÁNICO DE WEI",
+        modalMain: "Variaciones de Gin & Tonic",
+        tabFlight: "SELECCIÓN G&T",
+        tabAtelier: "TALLER CREATIVO",
+        tabClassic: "RATIOS CLÁSICOS",
+        cellarBanner: "[BODEGA BOTÁNICA DE WEI]"
       }
     };
   </script>
 
+  <!-- EXPANDED DIALOGUE POOL WITH BEIJING ELEMENTS -->
   <script>
-    /* ========================================================
-     * DEEP NON-REPETITIVE TOPIC POOL (Never repeats in session)
-     * ======================================================== */
     const TopicPool = [
       {
-        id: "mist_and_coats",
+        id: "gulou_bells",
         mood: "nightOwl",
-        text: "\"The coastal mist off the bay smells like chilled gin and forgotten conversations. What brought your coat through my doorway tonight?\"",
+        text: {
+          en: "\"The belltower bells over Gulou just struck midnight into the hutong alleyways. Did you escape the cold wind, or are you chasing night stories?\"",
+          zh: "\"鼓楼的夜钟刚敲过子夜，钟声穿过了灰瓦胡同。你是来躲避北风的，还是来打捞今夜的故事？\"",
+          es: "\"Las campanas de Gulou acaban de dar la medianoche entre los callejones hutong. ¿Huyes del viento o buscas historias?\""
+        },
         options: [
-          { label: "Needed an antidote for an overstimulated brain.", deltaEnergy: -1, drink: "kyoto", nextMood: "empath" },
-          { label: "Just chasing quiet rain and honest botanicals.", deltaEnergy: -1, drink: "catalan", nextMood: "nightOwl" },
-          { label: "Wondering if people ever genuinely change.", deltaEnergy: -1, drink: "paperplane", nextMood: "poetic" }
+          {
+            label: { en: "A sharp Jasmine Tea gin to warm up.", zh: "来一杯带着北京茉莉花茶香的气泡金酒驱驱寒。", es: "Un gin con té de jazmín para entrar en calor." },
+            deltaEnergy: -1, drink: "jasmine_gulou", nextMood: "empath"
+          },
+          {
+            label: { en: "Tell me about the stray cats around the Drum Tower.", zh: "跟我讲讲鼓楼附近那几只常来串门的小野猫吧。", es: "Cuéntame de los gatos callejeros de la Torre del Tambor." },
+            deltaEnergy: 0, drink: "catalan", nextMood: "gossip"
+          },
+          {
+            label: { en: "Just need silence, ice cubes, and a quiet stool.", zh: "只要一块老冰、高脚椅和安安静静的五分钟。", es: "Solo necesito hielo puro, una banqueta y silencio." },
+            deltaEnergy: -1, drink: "kyoto", nextMood: "poetic"
+          }
         ]
       },
       {
-        id: "corporate_trauma",
+        id: "gingko_autumn",
+        mood: "poetic",
+        text: {
+          en: "\"The golden gingko leaves outside are sticking to the damp flagstones. If tonight had an aroma, is it toasted osmanthus or chilled juniper?\"",
+          zh: "\"窗外红墙边的银杏叶落得厚厚的。如果今晚你的心境有种香气，是金桂花香还是冰镇杜松？\"",
+          es: "\"Las hojas doradas de ginkgo cubren los adoquines húmedos. Si esta noche tuviera un aroma, ¿sería osmanto o enebro frío?\""
+        },
+        options: [
+          {
+            label: { en: "Toasted osmanthus and warm autumn spices.", zh: "烤金桂花香，带一点秋天的微甜与麦香。", es: "Osmanto tostado con suaves especias otoñales." },
+            deltaEnergy: 0, drink: "jasmine_gulou", nextMood: "empath"
+          },
+          {
+            label: { en: "Chilled juniper and crystal clear river ice.", zh: "冷冽的杜松子与清澈的白塔湖面碎冰。", es: "Enebro frío y hielo cristalino del lago." },
+            deltaEnergy: -1, drink: "oceanic", nextMood: "nightOwl"
+          },
+          {
+            label: { en: "Give me something rebellious with a smokey bite.", zh: "给我来杯烟熏烈性、能击碎疲惫的特调。", es: "Dame algo rebelde con un toque ahumado." },
+            deltaEnergy: -1, drink: "oldfashioned", nextMood: "sarcastic"
+          }
+        ]
+      },
+      {
+        id: "line2_last_train",
         mood: "sarcastic",
-        text: "\"Look who survived the modern world's comedy of errors. Did your employer's quarterly spreadsheet break your spirit, or was it the transit?\"",
+        text: {
+          en: "\"Line 2 subway just sent out its last train announcement. If you're still on this side of the door, either your shift was brutal or your soul refused to go home.\"",
+          zh: "\"地铁二号线的末班车刚刚驶过护城河。既然你还留在吧台这头，要么是今天方案改了八遍，要么是灵魂拒绝回家。\"",
+          es: "\"El último tren de la Línea 2 acaba de pasar. Si sigues en mi barra, o tu jornada fue brutal o tu alma se negó a ir a casa.\""
+        },
         options: [
-          { label: "An urgent email sent at 5:58 PM broke me.", deltaEnergy: -1, drink: "london1888", nextMood: "sarcastic" },
-          { label: "I came to let you judge my palate without mercy.", deltaEnergy: 0, drink: "meddusk", nextMood: "gossip" },
-          { label: "Pour me what the truly stubborn dreamers drink.", deltaEnergy: -1, drink: "oldfashioned", nextMood: "nightOwl" }
+          {
+            label: { en: "My spreadsheet crashed at 21:59. Mercy please.", zh: "晚上九点五十九分表格崩溃了，需要精神急救。", es: "Mi hoja de cálculo se colgó a las 21:59. Piedad." },
+            deltaEnergy: -1, drink: "london1888", nextMood: "empath"
+          },
+          {
+            label: { en: "Pour me what the truly stubborn night wanderers drink.", zh: "倒一杯那些真正顽固的夜游人常喝的硬朗金酒。", es: "Sírveme lo que beben los caminantes obstinados." },
+            deltaEnergy: -1, drink: "negroni", nextMood: "nightOwl"
+          },
+          {
+            label: { en: "Your round glasses look extra studious tonight, Wei.", zh: "Wei，你这副复古圆框眼镜今晚看起来格外睿智。", es: "Tus gafas redondas se ven muy sabias esta noche, Wei." },
+            deltaEnergy: 0, drink: "paperplane", nextMood: "gossip"
+          }
         ]
       },
       {
-        id: "rain_and_nostalgia",
+        id: "beihai_white_pagoda",
         mood: "poetic",
-        text: "\"Raindrops on cedar wood have their own metronome. If your heart had a tasting note right now, is it sharp citrus or slow smoke?\"",
+        text: {
+          en: "\"Old locals say when mist rises over Beihai, the white pagoda floats between two skies. What thought are you letting dissolve in your glass?\"",
+          zh: "\"老北京人说，当北海湖面泛起轻雾，白塔就像悬在两个天空之间。你在杯子里融化的是哪件放不下的事？\"",
+          es: "\"Dicen que cuando la niebla sube sobre Beihai, la pagoda blanca flota entre dos cielos. ¿Qué pensamiento estás disolviendo?\""
+        },
         options: [
-          { label: "Slow, heavy peat smoke and toasted sugars.", deltaEnergy: -1, drink: "oldfashioned", nextMood: "nightOwl" },
-          { label: "Sharp, electrifying citrus to shake my senses.", deltaEnergy: 0, drink: "paperplane", nextMood: "sarcastic" },
-          { label: "Cold ocean saline and sea mist.", deltaEnergy: -1, drink: "oceanic", nextMood: "poetic" }
-        ]
-      },
-      {
-        id: "speakeasy_rumor",
-        mood: "gossip",
-        text: "\"A regular claims he saw a sea otter stealing an ice scoop by the pier. Are you here for rumors or alcohol?\"",
-        options: [
-          { label: "Both! Give me the scandal and a drink.", deltaEnergy: 0, drink: "smokedlemongrass", nextMood: "gossip" },
-          { label: "Tell me how you tested 40 tonics for this cellar.", deltaEnergy: -1, drink: "blackforest", nextMood: "nightOwl" },
-          { label: "Just hand me something crisp while I pet Miso.", deltaEnergy: -1, drink: "greenhouse", nextMood: "empath" }
-        ]
-      },
-      {
-        id: "tender_quiet",
-        mood: "empath",
-        text: "\"Take off that cold umbrella and lean back against the mahogany. No one can assign you a deadline inside Wei's walls.\"",
-        options: [
-          { label: "Thank you, Wei. It's been an extraordinarily heavy week.", deltaEnergy: -1, drink: "sloe", nextMood: "nightOwl" },
-          { label: "I just needed to watch ice melt in low amber light.", deltaEnergy: -1, drink: "catalan", nextMood: "poetic" },
-          { label: "Mix me an alpine pine flight to clear the cobwebs.", deltaEnergy: 0, drink: "alpine", nextMood: "sarcastic" }
-        ]
-      },
-      {
-        id: "ice_and_geometry",
-        mood: "nightOwl",
-        text: "\"People ask why I hand-carve clear ice spheres. Clouded ice is full of trapped air and hurried panic. Clear ice melts in contemplative peace.\"",
-        options: [
-          { label: "Test that crystal ice with a classic Negroni.", deltaEnergy: -1, drink: "negroni", nextMood: "sarcastic" },
-          { label: "Give me the Kyoto Mist over a hand-carved spear.", deltaEnergy: -1, drink: "kyoto", nextMood: "poetic" },
-          { label: "You look like you've been carving ice for 9 hours.", deltaEnergy: -2, drink: "oldfashioned", nextMood: "nightOwl" }
-        ]
-      },
-      {
-        id: "philosophical_quinine",
-        mood: "poetic",
-        text: "\"Quinine was once a cure for tropical fever; now we drink it in the dark to cure modern loneliness. Poetic irony, isn't it?\"",
-        options: [
-          { label: "Deep irony. Pour the Mediterranean Herbaceous.", deltaEnergy: -1, drink: "meddusk", nextMood: "empath" },
-          { label: "I prefer high-altitude navy strength truth.", deltaEnergy: -1, drink: "london1888", nextMood: "sarcastic" },
-          { label: "Wild foraged plums sounds more comforting.", deltaEnergy: 0, drink: "sloe", nextMood: "poetic" }
+          {
+            label: { en: "Unfinished conversations from three autumns ago.", zh: "三年前那个深秋没能说完的半句话。", es: "Conversaciones que quedaron a medias hace tres otoños." },
+            deltaEnergy: -1, drink: "catalan", nextMood: "empath"
+          },
+          {
+            label: { en: "Just thirst and pure curiosity for botanical tonics.", zh: "没那么沉重，纯粹是想试试你窖藏的汤力水配方。", es: "Nada tan pesado: pura sed y curiosidad botánica." },
+            deltaEnergy: 0, drink: "blackforest", nextMood: "nightOwl"
+          },
+          {
+            label: { en: "Pour the Kyoto Mist and let the shiso speak.", zh: "倒一杯京都竹雾，让紫苏的香气替我说话。", es: "Sirve el Kyoto Mist y deja que el shiso hable." },
+            deltaEnergy: -1, drink: "kyoto", nextMood: "poetic"
+          }
         ]
       },
       {
         id: "late_hour_fatigue",
-        mood: "sarcastic",
-        text: "\"*Yawn*... If my eyelids close for more than 4 seconds, just assume I'm meditating on vermouth oxidation. What can I get you before gravity wins?\"",
+        mood: "nightOwl",
+        text: {
+          en: "\"*Adjusts round glasses*... My eyes are telling me it's past 2 AM, but the ice cubes in my shaker are still carved razor-sharp. What's your order?\"",
+          zh: "\"*推了推圆框眼镜*……虽然表针已经快两点半了，但我手凿的透明冰柱依然棱角分明。今夜的终局想喝点什么？\"",
+          es: "\"*Se ajusta las gafas redondas*... Son más de las dos, pero el hielo tallado sigue perfecto. ¿Cuál es tu última orden?\""
+        },
         options: [
-          { label: "A quick, sharp Paper Plane before you drift off!", deltaEnergy: -1, drink: "paperplane", nextMood: "nightOwl" },
-          { label: "Go ahead and rest your eyes, Wei.", deltaEnergy: -3, drink: "kyoto", nextMood: "nightOwl" },
-          { label: "The Smoked Lemongrass with charred ruby peel.", deltaEnergy: -1, drink: "smokedlemongrass", nextMood: "poetic" }
+          {
+            label: { en: "A rapid Paper Plane before gravity claims your eyelids!", zh: "快来一杯酸爽明亮的纸飞机，在眼皮打架前碰个杯！", es: "¡Un Paper Plane rápido antes de que gane el sueño!" },
+            deltaEnergy: -1, drink: "paperplane", nextMood: "sarcastic"
+          },
+          {
+            label: { en: "Rest your head on the bar, Wei. You've been carving all night.", zh: "趴着歇会儿吧 Wei，你凿了一整晚冰了。", es: "Apoya la cabeza en la barra, Wei. Descansa un poco." },
+            deltaEnergy: -3, drink: "jasmine_gulou", nextMood: "nightOwl"
+          },
+          {
+            label: { en: "Classic Rye Old Fashioned with torched orange oil.", zh: "慢摇一杯经典黑麦老式，滴两滴火焰橙皮油。", es: "Un Old Fashioned de centeno con aceite de naranja." },
+            deltaEnergy: -1, drink: "oldfashioned", nextMood: "poetic"
+          }
         ]
       }
     ];
 
     const DrinkManifest = {
+      jasmine_gulou: {
+        name: {
+          en: "Gulou Belltower Jasmine G&T",
+          zh: "鼓楼夜钟茉莉金汤力",
+          es: "G&T Jazmín de la Torre Gulou"
+        },
+        sub: {
+          en: "Beijing Jasmine Tea • Osmanthus Mist • Crystal Clear Ice",
+          zh: "北京茉莉银针 • 金桂气泡水 • 手凿晶透长冰柱",
+          es: "Té de Jazmín de Pekín • Bruma de Osmanto • Hielo Cristalino"
+        },
+        desc: {
+          en: "\"Cold-infused Beijing jasmine green tea with artisan dry gin, effervescent osmanthus soda, and a sliver of dried sweet hawthorn.\"",
+          zh: "\"采用冷萃北京茉莉花茶基底，搭配植物金酒与清冽桂花气泡水，杯口饰有一片薄切糖霜山楂片。花香回甘，秋意沉静。\"",
+          es: "\"Gin infusionado en frío con té verde de jazmín de Pekín, soda efervescente de osmanto y una lámina de espino silvestre.\""
+        },
+        formula: "45ml Jasmine Tea Gin • 120ml Osmanthus Soda • Hawthorn Crisp",
+        icon: "🫖"
+      },
+      catalan: {
+        name: {
+          en: "The Catalan Rose & Sea",
+          zh: "加泰罗尼亚玫瑰与海",
+          es: "La Rosa y el Mar Catalán"
+        },
+        sub: {
+          en: "Barcelona Botanicals • Sant Jordi Petals • Mediterranean Tonic",
+          zh: "巴塞罗那地中海草本 • 圣乔治红玫瑰花瓣 • 柠檬叶",
+          es: "Botánicos de Barcelona • Pétalos de Sant Jordi • Tónica Med"
+        },
+        desc: {
+          en: "\"Mediterranean rosemary, arbequina olive notes, Fever-Tree tonic, and freshly floating Sant Jordi red rose petals.\"",
+          zh: "\"融汇巴塞罗那迷迭香、阿贝金娜橄榄微咸与圣乔治红玫瑰花瓣，回味如漫步在贝尔港的薄暮海风中。\"",
+          es: "\"Romero mediterráneo, tónica de alta montaña y pétalos carmesí de Sant Jordi flotando sobre hielo claro.\""
+        },
+        formula: "45ml Catalan Gin • 120ml Med Tonic • Rose Petals • Bay Leaf",
+        icon: "🌹"
+      },
       kyoto: {
-        name: "Kyoto Mist Shiso G&T",
-        sub: "Botanical: 90% • Tart: 40% • Ki No Bi & Yuzu Tonic",
-        desc: "\"Freshly slapped purple shiso leaf, green tea distillate, and crushed sansho pepper over clear crystal spear.\"",
+        name: {
+          en: "Kyoto Mist Shiso G&T",
+          zh: "京都竹雾紫苏金汤力",
+          es: "Kyoto Mist Shiso G&T"
+        },
+        sub: {
+          en: "Ki No Bi Gin • Green Tea & Bamboo • Slapped Shiso",
+          zh: "季之美京都金酒 • 玉露竹林蒸馏 • 紫苏叶与山椒",
+          es: "Gin Ki No Bi • Té Gyokuro y Bambú • Shiso Morado"
+        },
+        desc: {
+          en: "\"Freshly slapped purple shiso leaf, green tea distillate, and crushed sansho pepper over clear crystal spear.\"",
+          zh: "\"拍醒的新鲜紫苏叶，交融京都玉露绿茶与竹叶蒸馏液，研磨山椒粉带来一丝清冽微辛。\"",
+          es: "\"Hoja de shiso morado despertada a mano, destilado de té verde y pimienta sansho sobre lanza de hielo.\""
+        },
         formula: "45ml Ki No Bi Gin • 120ml Yuzu Tonic • Shiso • Sansho",
         icon: "🌿"
       },
-      catalan: {
-        name: "The Catalan Rose & Sea",
-        sub: "Floral: 75% • Sea Saline: 30% • Sant Jordi Petals",
-        desc: "\"Barcelona botanicals and kaffir lime with fragrant fresh bay leaves and floating crimson rose petals.\"",
-        formula: "45ml Catalan Botanical Gin • 120ml Med Tonic • Rose Petals • Bay Leaf",
-        icon: "🌹"
-      },
       blackforest: {
-        name: "The Black Forest Secret",
-        sub: "ABV: 47% • Lingonberry & Pine • Monkey 47",
-        desc: "\"Monkey 47 with torched sage, frozen tart lingonberries, and classic Indian quinine bubbles.\"",
+        name: {
+          en: "The Black Forest Secret",
+          zh: "黑森林47秘境金汤力",
+          es: "El Secreto de la Selva Negra"
+        },
+        sub: {
+          en: "Monkey 47 • Lingonberry & Pine • Torched Sage",
+          zh: "47种黑森林草本 • 越橘果酸 • 炙烤鼠尾草",
+          es: "Monkey 47 • Arándano Rojo y Pino • Salvia Tostada"
+        },
+        desc: {
+          en: "\"Monkey 47 with torched sage, frozen tart lingonberries, and classic Indian quinine bubbles.\"",
+          zh: "\"来自德国黑森林的47种植物精萃，搭配炙烤鼠尾草的松木烟香与微酸越橘，层次繁复深邃。\"",
+          es: "\"Monkey 47 con salvia flameada, arándanos rojos congelados y burbujas clásicas de quinina india.\""
+        },
         formula: "45ml Monkey 47 • 120ml Indian Tonic • Sage • Lingonberry",
         icon: "🌲"
       },
-      meddusk: {
-        name: "Mediterranean Dusk",
-        sub: "Savory & Herbaceous • Arbequina Olive • Gin Mare",
-        desc: "\"Arbequina olive brine wash with sweet basil, thyme, and torched caramelized orange wheel.\"",
-        formula: "45ml Gin Mare • 120ml 1724 Tonic • Olive • Thyme • Torched Orange",
-        icon: "🫒"
-      },
       oceanic: {
-        name: "The Oceanic Saline Drift",
-        sub: "Saline Sugar Kelp • Hebridean Mist • Isle of Harris",
-        desc: "\"Infused with Scottish sugar kelp and sea asparagus. Crisp, cold, and mineral-driven like high tide.\"",
+        name: {
+          en: "The Oceanic Saline Drift",
+          zh: "高纬度潮汐冷海盐金汤力",
+          es: "Deriva Salina Oceánica"
+        },
+        sub: {
+          en: "Scottish Sugar Kelp • Sea Asparagus • Light Tonic",
+          zh: "苏格兰海带萃取 • 海芦笋微咸 • 粉红西柚月牙",
+          es: "Algas Escocesas • Salicornia • Pomelo Rosado"
+        },
+        desc: {
+          en: "\"Infused with Scottish sugar kelp and sea asparagus. Crisp, cold, and mineral-driven like high tide.\"",
+          zh: "\"汲取外赫布里底群岛的海带矿物风味与脆嫩海芦笋，冷洌如涨潮时拂过面颊的海雾。\"",
+          es: "\"Infusión de algas marinas de las Hébridas y espárrago de mar. Cristalino, frío y mineral.\""
+        },
         formula: "45ml Isle of Harris • 120ml Light Tonic • Sea Asparagus • Pink Grapefruit",
         icon: "🌊"
       },
-      smokedlemongrass: {
-        name: "Midnight Smoked Lemongrass G&T",
-        sub: "Wei's Signature • Charred Grapefruit • Smoky Juniper",
-        desc: "\"Tea-steeped smoky dry gin with house lemongrass cordial and charred citrus oils.\"",
-        formula: "45ml Smoky Gin • 120ml Lemongrass Tonic • Charred Peel • Smoked Salt",
-        icon: "🪵"
-      },
       london1888: {
-        name: "The London Heritage 1888",
-        sub: "57.1% Navy Strength • Extra Dry • Cracked Coriander",
-        desc: "\"Stiff naval proof dry gin with sharp extra dry tonic and cracked green coriander seed.\"",
+        name: {
+          en: "The London Heritage 1888",
+          zh: "1888伦敦海军重度干金",
+          es: "Herencia de Londres 1888"
+        },
+        sub: {
+          en: "57.1% Navy Strength • Extra Dry • Cracked Coriander",
+          zh: "57.1度海军强度 • 极致超干型 • 压破青芫荽籽",
+          es: "57.1% Navy Strength • Extra Seco • Cilantro Verde"
+        },
+        desc: {
+          en: "\"Stiff naval proof dry gin with sharp extra dry tonic and cracked green coriander seed.\"",
+          zh: "\"57.1度原桶浓郁杜松烈度，配合超干奎宁与敲裂的芫荽籽，干脆利落直击灵魂。\"",
+          es: "\"Gin seco naval de alta graduación con tónica extra seca y semillas de cilantro machacadas.\""
+        },
         formula: "50ml Navy Gin • 100ml Extra Dry Tonic • Lime • Cracked Coriander",
         icon: "⚓"
       },
-      sloe: {
-        name: "Wild Foraged Sloe & Plum",
-        sub: "Gentle ABV: 29% • Blackthorn Berries • Tart Comfort",
-        desc: "\"Rich English sloe gin with bitter lemon tonic, toasted star anise, and preserved Japanese plum.\"",
-        formula: "45ml Sloe Gin • 120ml Bitter Lemon • Star Anise • Ume Plum",
-        icon: "🫐"
-      },
-      greenhouse: {
-        name: "The Botanical Greenhouse",
-        sub: "Fresh & Crisp • Cucumber Ribbons • Neptunia",
-        desc: "\"Coastal cucumber notes, crisp bubbles, and freshly cracked black tellicherry peppercorns.\"",
-        formula: "45ml Hendrick's Neptunia • 120ml Cucumber Tonic • Black Pepper",
-        icon: "🥒"
-      },
-      alpine: {
-        name: "The Alpine Pine & Rosemary",
-        sub: "High Forest • Douglas Fir • Elderflower",
-        desc: "\"St. George Terroir gin with Austrian elderflower tonic and crushed wild juniper berries.\"",
-        formula: "45ml Forest Gin • 120ml Elderflower Tonic • Fir Needles • Juniper",
-        icon: "🏔️"
-      },
       oldfashioned: {
-        name: "Cask-Strength Rye Old Fashioned",
-        sub: "Bitterness: 60% • Peat Level: High • Hand-cut Cube",
-        desc: "\"Heavy lowball with flamed orange peel, demerara sugar syrup, and barrel-aged bitters.\"",
+        name: {
+          en: "Cask-Strength Rye Old Fashioned",
+          zh: "原桶黑麦经典古典鸡尾酒",
+          es: "Old Fashioned de Centeno en Barrica"
+        },
+        sub: {
+          en: "Bitterness: 60% • Peat Level: High • Hand-cut Cube",
+          zh: "焦糖甜苦平衡 • 桶陈木质香 • 60mm整块透冰",
+          es: "Centeno Puro • Azúcar Demerara • Hielo Esférico"
+        },
+        desc: {
+          en: "\"Heavy lowball with flamed orange peel, demerara sugar syrup, and barrel-aged bitters.\"",
+          zh: "\"选用沉稳重底厚玻璃杯，以火燎香橙皮油喷香，德梅拉拉原蔗糖与桶陈安哥斯图拉苦精静静交融。\"",
+          es: "\"Vaso bajo pesado con piel de naranja flameada, almíbar demerara y amargos añejados en roble.\""
+        },
         formula: "60ml Rye • 5ml Demerara • 3 dashes Angostura • Flamed Peel",
         icon: "🥃"
       },
       negroni: {
-        name: "Negroni Classico",
-        sub: "Bittersweet 1:1:1 • Campari & Vermouth",
-        desc: "\"Equal parts London dry, Italian bitter aperitif, and sweet vermouth stirred over rock.\"",
+        name: {
+          en: "Negroni Classico",
+          zh: "经典内格罗尼 1:1:1",
+          es: "Negroni Clásico"
+        },
+        sub: {
+          en: "Bittersweet 1:1:1 • Campari & Vermouth",
+          zh: "金巴利苦酒 • 甜味美思 • 伦敦干金 搅拌35次",
+          es: "Agridulce Equilibrado • Campari & Vermouth"
+        },
+        desc: {
+          en: "\"Equal parts London dry, Italian bitter aperitif, and sweet vermouth stirred over rock.\"",
+          zh: "\"等比例的英格兰干金、意大利金巴利与都灵甜味美思，在冰块上顺畅旋转35周，红宝石般深邃。\"",
+          es: "\"Partes iguales de gin seco, aperitivo amargo italiano y vermouth dulce removido sobre roca.\""
+        },
         formula: "30ml Gin • 30ml Campari • 30ml Carpano Antica",
         icon: "🍷"
       },
       paperplane: {
-        name: "Paper Plane Nocturne",
-        sub: "Acidity: Crisp • Bourbon & Amaro Nonino",
-        desc: "\"Shaken hard in coupe with fresh lemon, Aperol, and velvety herbal Amaro Nonino.\"",
+        name: {
+          en: "Paper Plane Nocturne",
+          zh: "夜间纸飞机 Paper Plane",
+          es: "Paper Plane Nocturno"
+        },
+        sub: {
+          en: "Crisp Acidity • Bourbon & Amaro Nonino",
+          zh: "明亮酸度 • 波本威士忌 • 诺尼诺草本利口",
+          es: "Acidez Viva • Bourbon & Amaro Nonino"
+        },
+        desc: {
+          en: "\"Shaken hard in coupe with fresh lemon, Aperol, and velvety herbal Amaro Nonino.\"",
+          zh: "\"猛烈摇荡，鲜柠檬汁与阿佩罗的果橙甜润中和了诺尼诺草本利口的微苦，轻盈得如同能滑翔破晓。\"",
+          es: "\"Agitado con fuerza en copa coupé con limón fresco, Aperol y el aterciopelado Amaro Nonino.\""
+        },
         formula: "22.5ml Bourbon • 22.5ml Aperol • 22.5ml Nonino • 22.5ml Lemon",
         icon: "✈️"
       }
     };
   </script>
 
+  <!-- WEATHER SYSTEM WITH BEIJING ATMOSPHERE SYNC -->
   <script>
-    /* ========================================================
-     * CANVAS PARTICLES SYSTEM: Rain, Snow, Stars, Fog & Storm
-     * ======================================================== */
     const WeatherSystem = {
       canvas: null,
       ctx: null,
@@ -1224,10 +1458,10 @@
       createParticles() {
         this.particles = [];
         const w = AppState.weather;
-        let count = 50;
+        let count = 55;
         if (w === 'rain') count = 75;
         if (w === 'storm') count = 90;
-        if (w === 'snow') count = 45;
+        if (w === 'snow') count = 50;
         if (w === 'fog') count = 30;
 
         for (let i = 0; i < count; i++) {
@@ -1247,7 +1481,6 @@
 
         const w = AppState.weather;
 
-        // Occasional thunder lightning flash for storm
         if (w === 'storm') {
           if (Math.random() > 0.994 && this.lightningFlash <= 0) {
             this.lightningFlash = 0.35;
@@ -1272,7 +1505,7 @@
             if (p.y > this.canvas.height) { p.y = -10; p.x = Math.random() * this.canvas.width; }
           });
         } else if (w === 'snow') {
-          this.ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+          this.ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
           this.particles.forEach(p => {
             this.ctx.fillRect(Math.floor(p.x), Math.floor(p.y), p.size, p.size);
             p.y += p.speed * 0.45;
@@ -1290,8 +1523,8 @@
             if (p.y < -20) { p.y = this.canvas.height + 20; p.x = Math.random() * this.canvas.width; }
           });
         } else {
-          // Clear Starlight motes
-          this.ctx.fillStyle = 'rgba(245, 158, 11, 0.18)';
+          // Clear Starlight
+          this.ctx.fillStyle = 'rgba(245, 158, 11, 0.2)';
           this.particles.forEach(p => {
             this.ctx.fillRect(Math.floor(p.x), Math.floor(p.y), p.size * 1.4, p.size * 1.4);
             p.y -= 0.35;
@@ -1304,14 +1537,14 @@
       }
     };
 
-    function setWeather(w) {
-      SoundEngine.playClick();
+    function setWeather(w, userClick = true) {
+      if (userClick) SoundEngine.playClick();
       AppState.weather = w;
       const icons = { rain: '🌧️', clear: '✨', snow: '❄️', fog: '🌫️', storm: '⚡' };
       document.getElementById('weather-display-icon').textContent = icons[w] || '🌧️';
       WeatherSystem.createParticles();
       applyTimeWeatherPalette();
-      toggleAtmosphereDrawer(false);
+      if (userClick) toggleAtmosphereDrawer(false);
     }
 
     function toggleAtmosphereDrawer(force) {
@@ -1324,80 +1557,36 @@
       }
     }
 
-    /* Dynamic Color Palette Matrix: Changes based on Time AND Weather */
     function applyTimeWeatherPalette() {
       const h = AppState.hour;
       const w = AppState.weather;
       let bgGrad = '';
       let auraGrad = '';
 
-      // Determine time bucket
       const isDawn = (h >= 4 && h < 8);
       const isDay = (h >= 8 && h < 16);
       const isDusk = (h >= 16 && h < 19);
       const isWitching = (h >= 1 && h < 4);
 
       if (isDawn) {
-        // Dawn: Misty wood, soft waking light
-        if (w === 'rain' || w === 'storm') {
-          bgGrad = 'radial-gradient(circle at 50% 20%, #1c2126 0%, #0c0e11 95%)';
-          auraGrad = 'linear-gradient(to bottom, rgba(56, 189, 248, 0.12), transparent)';
-        } else if (w === 'snow') {
-          bgGrad = 'radial-gradient(circle at 50% 20%, #1e242a 0%, #0b0f14 95%)';
-          auraGrad = 'linear-gradient(to bottom, rgba(224, 242, 254, 0.15), transparent)';
-        } else {
-          bgGrad = 'radial-gradient(circle at 50% 20%, #292019 0%, #0e0a07 95%)';
-          auraGrad = 'linear-gradient(to bottom, rgba(251, 191, 36, 0.12), transparent)';
-        }
+        bgGrad = (w === 'rain' || w === 'storm')
+          ? 'radial-gradient(circle at 50% 20%, #1c2126 0%, #0c0e11 95%)'
+          : 'radial-gradient(circle at 50% 20%, #292019 0%, #0e0a07 95%)';
+        auraGrad = 'linear-gradient(to bottom, rgba(251, 191, 36, 0.12), transparent)';
       } else if (isDay) {
-        // Daytime: Roasted coffee & warm parchment
-        if (w === 'rain' || w === 'storm') {
-          bgGrad = 'radial-gradient(circle at 50% 20%, #1e1e24 0%, #0d0c10 95%)';
-          auraGrad = 'linear-gradient(to bottom, rgba(148, 163, 184, 0.1), transparent)';
-        } else {
-          bgGrad = 'radial-gradient(circle at 50% 20%, #2b1f18 0%, #110c09 95%)';
-          auraGrad = 'linear-gradient(to bottom, rgba(245, 158, 11, 0.1), transparent)';
-        }
+        bgGrad = (w === 'rain' || w === 'storm')
+          ? 'radial-gradient(circle at 50% 20%, #1e1e24 0%, #0d0c10 95%)'
+          : 'radial-gradient(circle at 50% 20%, #2b1f18 0%, #110c09 95%)';
+        auraGrad = 'linear-gradient(to bottom, rgba(245, 158, 11, 0.1), transparent)';
       } else if (isDusk) {
-        // Dusk: Twilight amber, rich burnt mahogany
-        if (w === 'rain' || w === 'storm') {
-          bgGrad = 'radial-gradient(circle at 50% 20%, #201720 0%, #0a080d 95%)';
-          auraGrad = 'linear-gradient(to bottom, rgba(168, 85, 247, 0.12), transparent)';
-        } else {
-          bgGrad = 'radial-gradient(circle at 50% 20%, #2b160b 0%, #0d0703 95%)';
-          auraGrad = 'linear-gradient(to bottom, rgba(249, 115, 22, 0.14), transparent)';
-        }
+        bgGrad = 'radial-gradient(circle at 50% 20%, #2b160b 0%, #0d0703 95%)';
+        auraGrad = 'linear-gradient(to bottom, rgba(249, 115, 22, 0.14), transparent)';
       } else if (isWitching) {
-        // Witching Hour (1:00 - 4:00 AM): Deep obsidian velvet & sleepiness
-        if (w === 'storm') {
-          bgGrad = 'radial-gradient(circle at 50% 20%, #140d1f 0%, #040207 95%)';
-          auraGrad = 'linear-gradient(to bottom, rgba(147, 51, 234, 0.18), transparent)';
-        } else if (w === 'snow') {
-          bgGrad = 'radial-gradient(circle at 50% 20%, #0b141d 0%, #03060a 95%)';
-          auraGrad = 'linear-gradient(to bottom, rgba(56, 189, 248, 0.12), transparent)';
-        } else {
-          bgGrad = 'radial-gradient(circle at 50% 20%, #120907 0%, #050201 95%)';
-          auraGrad = 'linear-gradient(to bottom, rgba(217, 119, 6, 0.1), transparent)';
-        }
+        bgGrad = 'radial-gradient(circle at 50% 20%, #120907 0%, #050201 95%)';
+        auraGrad = 'linear-gradient(to bottom, rgba(217, 119, 6, 0.1), transparent)';
       } else {
-        // Prime Night Speakeasy (19:00 - 01:00)
-        if (w === 'rain') {
-          bgGrad = 'radial-gradient(circle at 50% 25%, #151a24 0%, #07090f 95%)';
-          auraGrad = 'linear-gradient(to bottom, rgba(14, 165, 233, 0.12), transparent)';
-        } else if (w === 'storm') {
-          bgGrad = 'radial-gradient(circle at 50% 25%, #181126 0%, #06030c 95%)';
-          auraGrad = 'linear-gradient(to bottom, rgba(168, 85, 247, 0.15), transparent)';
-        } else if (w === 'snow') {
-          bgGrad = 'radial-gradient(circle at 50% 25%, #0e1722 0%, #05090f 95%)';
-          auraGrad = 'linear-gradient(to bottom, rgba(186, 230, 253, 0.12), transparent)';
-        } else if (w === 'fog') {
-          bgGrad = 'radial-gradient(circle at 50% 25%, #1c1815 0%, #090706 95%)';
-          auraGrad = 'linear-gradient(to bottom, rgba(214, 211, 209, 0.08), transparent)';
-        } else {
-          // Clear starlight night
-          bgGrad = 'radial-gradient(circle at 50% 25%, #1f140e 0%, #0a0705 95%)';
-          auraGrad = 'linear-gradient(to bottom, rgba(245, 158, 11, 0.14), transparent)';
-        }
+        bgGrad = 'radial-gradient(circle at 50% 25%, #151a24 0%, #07090f 95%)';
+        auraGrad = 'linear-gradient(to bottom, rgba(14, 165, 233, 0.12), transparent)';
       }
 
       document.body.style.background = bgGrad;
@@ -1406,15 +1595,15 @@
     }
   </script>
 
+  <!-- 2-HAND ANALOG CLOCK & BEIJING TIME SYNC -->
   <script>
-    /* ========================================================
-     * 2-HAND ANALOG CLOCK INTERACTION
-     * ======================================================== */
     function updateClockHands(hourValue) {
       AppState.hour = hourValue;
       AppState.isBarOpen = (hourValue >= 18 || hourValue < 4);
 
-      const hDeg = (hourValue % 12) * 30 + ((hourValue % 1) * 30);
+      // Hour hand moves 30 deg per hour + minute fraction
+      const hDeg = (hourValue % 12) * 30;
+      // Minute hand moves 360 deg per full hour
       const mDeg = (hourValue % 1) * 360;
 
       const hHand = document.getElementById('hour-needle');
@@ -1427,7 +1616,11 @@
       const timeStr = `${hInt < 10 ? '0' + hInt : hInt}:${mInt < 10 ? '0' + mInt : mInt}`;
 
       document.getElementById('time-display-badge').textContent = timeStr;
-      document.getElementById('clock-status-tag').textContent = `${timeStr} • ${AppState.isBarOpen ? 'NIGHT SPEAKEASY' : 'DAYLIGHT COFFEE'}`;
+      
+      const tagText = AppState.isBarOpen 
+        ? `${timeStr} • BEIJING SPEAKEASY` 
+        : `${timeStr} • BEIJING CAFE`;
+      document.getElementById('clock-status-tag').textContent = tagText;
 
       const t = i18n[AppState.lang];
       const navPill = document.getElementById('nav-mode-pill');
@@ -1466,10 +1659,11 @@
         let angle = Math.atan2(dx, -dy) * (180 / Math.PI);
         if (angle < 0) angle += 360;
 
+        // Angle maps to 12-hour dial
         const hourFromAngle = (angle / 360) * 12;
         const wasPM = AppState.hour >= 12;
         let finalH = wasPM ? (hourFromAngle + 12) : hourFromAngle;
-        if (finalH >= 24) finalH = 23.9;
+        if (finalH >= 24) finalH = 23.99;
 
         updateClockHands(finalH);
       }
@@ -1489,15 +1683,44 @@
       toggleAtmosphereDrawer(false);
     }
 
-    function syncRealTime() {
-      SoundEngine.playClick();
-      const now = new Date();
-      const dec = now.getHours() + (now.getMinutes() / 60);
-      updateClockHands(dec);
+    // Default Sync with Beijing Time (Asia/Shanghai) & Beijing Weather
+    async function syncBeijingWeatherAndClock() {
+      // 1. Calculate precise Beijing (UTC+8) time
+      try {
+        const beijingTimeStr = new Date().toLocaleString("en-US", { timeZone: "Asia/Shanghai" });
+        const bjDate = new Date(beijingTimeStr);
+        const decHour = bjDate.getHours() + (bjDate.getMinutes() / 60);
+        updateClockHands(decHour);
+      } catch (err) {
+        // Fallback UTC calculation
+        const now = new Date();
+        const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        const bj = new Date(utc + (3600000 * 8));
+        updateClockHands(bj.getHours() + (bj.getMinutes() / 60));
+      }
+
+      // 2. Fetch live Beijing weather via Open-Meteo
+      try {
+        const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=39.9042&longitude=116.4074&current=weather_code&timezone=Asia%2FShanghai");
+        if (res.ok) {
+          const data = await res.json();
+          const code = data.current?.weather_code;
+          let w = 'clear';
+          if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) w = 'rain';
+          else if ([71, 73, 75, 77, 85, 86].includes(code)) w = 'snow';
+          else if ([45, 48].includes(code)) w = 'fog';
+          else if ([95, 96, 99].includes(code)) w = 'storm';
+          else if ([0, 1, 2, 3].includes(code)) w = 'clear';
+          setWeather(w, false);
+        }
+      } catch (e) {
+        // Fallback to gentle speakeasy rain if network blocked
+        setWeather('rain', false);
+      }
+
       toggleAtmosphereDrawer(false);
     }
 
-    /* Update bartender energy pip indicators */
     function updateEnergyPips() {
       for (let i = 1; i <= 4; i++) {
         const pip = document.getElementById(`pip-${i}`);
@@ -1515,7 +1738,6 @@
       const tag = document.getElementById('sprite-wei-tag');
       const moodPill = document.getElementById('host-mood-pill');
 
-      // Late night exhaustion trigger
       if ((AppState.hour >= 2.5 && AppState.hour < 4.0) || AppState.weiEnergy <= 0) {
         AppState.weiState = 'asleep';
         if (zzz) zzz.classList.remove('hidden');
@@ -1531,27 +1753,20 @@
     }
   </script>
 
+  <!-- DIALOGUE & RPG INTERACTION ENGINE -->
   <script>
-    /* ========================================================
-     * NON-REPEATING DIVERSE DIALOGUE ENGINE
-     * ======================================================== */
     function getNextUniqueTopic() {
-      // Find topics matching current mood that haven't been used yet
       let candidates = TopicPool.filter(t => !AppState.usedTopicIds.has(t.id) && t.mood === AppState.weiMood);
-      
-      // If none match mood, get any unused topic
       if (candidates.length === 0) {
         candidates = TopicPool.filter(t => !AppState.usedTopicIds.has(t.id));
       }
-
-      // If all topics exhausted, clear history to allow fresh reshuffle
       if (candidates.length === 0) {
         AppState.usedTopicIds.clear();
         candidates = TopicPool;
       }
-
       const chosen = candidates[Math.floor(Math.random() * candidates.length)];
       AppState.usedTopicIds.add(chosen.id);
+      AppState.currentTopic = chosen;
       return chosen;
     }
 
@@ -1574,19 +1789,19 @@
 
       screenDialogue.classList.remove('hidden');
 
-      const topic = getNextUniqueTopic();
+      const topic = AppState.currentTopic || getNextUniqueTopic();
+      const lang = AppState.lang;
 
-      const moodTags = {
-        nightOwl: "WEI • NIGHT OWL",
-        sarcastic: "WEI • ALCHEMIST",
-        empath: "WEI • GENTLE HOST",
-        gossip: "WEI • SPEAKEASY TALES",
-        poetic: "WEI • TWILIGHT POET"
+      const speakerTags = {
+        en: { nightOwl: "WEI • NIGHT OWL", sarcastic: "WEI • WITTY HOST", empath: "WEI • GENTLE HOST", poetic: "WEI • TWILIGHT POET" },
+        zh: { nightOwl: "WEI • 夜猫子主理人", sarcastic: "WEI • 毒舌炼金术士", empath: "WEI • 温润倾听者", poetic: "WEI • 暮色吟游者" },
+        es: { nightOwl: "WEI • BÚHO NOCTURNO", sarcastic: "WEI • ANFITRIÓN IRÓNICO", empath: "WEI • ANFITRIÓN EMPÁTICO", poetic: "WEI • POETA DEL OCASO" }
       };
 
-      document.getElementById('dialogue-speaker-tag').textContent = moodTags[AppState.weiMood] || "WEI • HOST";
-      document.getElementById('dialogue-speech-text').textContent = topic.text;
-      document.getElementById('dialogue-vibe-tag').textContent = `TOPIC #${AppState.usedTopicIds.size} • UNREPEATED`;
+      const moodDict = speakerTags[lang] || speakerTags.en;
+      document.getElementById('dialogue-speaker-tag').textContent = moodDict[AppState.weiMood] || "WEI • HOST";
+      document.getElementById('dialogue-speech-text').textContent = topic.text[lang] || topic.text.en;
+      document.getElementById('dialogue-vibe-tag').textContent = `PEK #${AppState.usedTopicIds.size} • UNREPEATED`;
 
       const grid = document.getElementById('rpg-options-grid');
       grid.innerHTML = '';
@@ -1594,11 +1809,11 @@
       topic.options.forEach(opt => {
         const btn = document.createElement('button');
         btn.className = "pixel-btn p-1.5 sm:p-2 bg-stone-950 border border-stone-700 hover:border-amber-400 text-left text-[11px] text-stone-200 hover:text-amber-200 transition-colors flex items-center justify-between";
-        btn.innerHTML = `<span>${opt.label}</span><span class="text-[9px] font-retro text-amber-500 ml-1">→</span>`;
+        const labelText = opt.label[lang] || opt.label.en;
+        btn.innerHTML = `<span>${labelText}</span><span class="text-[9px] font-retro text-amber-500 ml-1">→</span>`;
         btn.onclick = () => {
           SoundEngine.playClick();
 
-          // Dynamically adjust Bartender Energy and Mood
           if (typeof opt.deltaEnergy === 'number') {
             AppState.weiEnergy = Math.max(0, AppState.weiEnergy + opt.deltaEnergy);
           }
@@ -1613,6 +1828,7 @@
           } else if (opt.drink) {
             serveCocktailByKey(opt.drink);
           } else {
+            AppState.currentTopic = null;
             renderCurrentDialogue();
           }
         };
@@ -1624,16 +1840,17 @@
       SoundEngine.playShaker();
       setTimeout(() => SoundEngine.playClink(), 500);
 
-      const d = DrinkManifest[key] || DrinkManifest.kyoto;
+      const d = DrinkManifest[key] || DrinkManifest.jasmine_gulou;
+      const lang = AppState.lang;
 
       document.getElementById('rpg-dialogue-screen').classList.add('hidden');
       const servedScreen = document.getElementById('served-result-screen');
       servedScreen.classList.remove('hidden');
 
       document.getElementById('res-icon').textContent = d.icon;
-      document.getElementById('res-name').textContent = d.name;
-      document.getElementById('res-subtitle').textContent = d.sub;
-      document.getElementById('res-description').textContent = d.desc;
+      document.getElementById('res-name').textContent = d.name[lang] || d.name.en;
+      document.getElementById('res-subtitle').textContent = d.sub[lang] || d.sub.en;
+      document.getElementById('res-description').textContent = d.desc[lang] || d.desc.en;
       document.getElementById('res-formula').textContent = d.formula;
 
       const plate = document.getElementById('served-item-plate');
@@ -1643,8 +1860,8 @@
 
     function resetRpgConversation() {
       SoundEngine.playClick();
-      // Natural shift in mood on new turn
-      const moods = ['nightOwl', 'sarcastic', 'empath', 'gossip', 'poetic'];
+      AppState.currentTopic = null;
+      const moods = ['nightOwl', 'sarcastic', 'empath', 'poetic'];
       AppState.weiMood = moods[Math.floor(Math.random() * moods.length)];
       document.getElementById('served-item-plate').classList.add('hidden');
       renderCurrentDialogue();
@@ -1668,6 +1885,7 @@
       SoundEngine.playShaker();
       AppState.weiMood = 'empath';
       evaluateWeiState();
+      AppState.currentTopic = null;
       renderCurrentDialogue();
     }
 
@@ -1680,10 +1898,17 @@
       const served = document.getElementById('served-result-screen');
       served.classList.remove('hidden');
 
+      const isZh = AppState.lang === 'zh';
+      const isEs = AppState.lang === 'es';
+
       document.getElementById('res-icon').textContent = "🐟";
-      document.getElementById('res-name').textContent = "Miso & Yuzu's Sardine Dirty Martini";
-      document.getElementById('res-subtitle').textContent = "Fishiness: 100% • Quinine: 0% • Cat Approved";
-      document.getElementById('res-description').textContent = "\"Miso pushed the coupe glass across the mahogany while Yuzu rolled a dried sardine flake over the rim. Surprisingly velvety.\"";
+      document.getElementById('res-name').textContent = isZh ? "味噌和柚子的北京小沙丁马天尼" : (isEs ? "Martini de Sardinas de Miso y Yuzu" : "Miso & Yuzu's Beijing Sardine Martini");
+      document.getElementById('res-subtitle').textContent = isZh ? "小鱼干度: 100% • 零奎宁 • 经胡同猫咪认证" : (isEs ? "Pescado: 100% • Quinina: 0% • Aprobado por Gatos" : "Fishiness: 100% • Quinine: 0% • Hutong Cat Approved");
+      document.getElementById('res-description').textContent = isZh 
+        ? "\"味噌用肉垫将高脚杯推过红木吧台，柚子把一片烘干的沙丁鱼脆片滚在杯沿。意外地顺滑细腻。\"" 
+        : (isEs 
+          ? "\"Miso empujó la copa con su patita mientras Yuzu colocaba una sardina seca en el borde. Sorprendentemente sedoso.\"" 
+          : "\"Miso pushed the coupe glass across the mahogany while Yuzu rolled a dried sardine flake over the rim. Surprisingly velvety.\"");
       document.getElementById('res-formula').textContent = "60ml London Dry • 15ml Sardine Brine • Fresh Catnip Leaf";
 
       const plate = document.getElementById('served-item-plate');
@@ -1715,10 +1940,17 @@
       const served = document.getElementById('served-result-screen');
       served.classList.remove('hidden');
 
+      const isZh = AppState.lang === 'zh';
       document.getElementById('res-icon').textContent = "🧪";
-      document.getElementById('res-name').textContent = `Midnight Rogue: ${base.split(' ')[0]} & ${mod.split(' ')[0]}`;
-      document.getElementById('res-subtitle').textContent = "Unauthorized DIY • Secret Garnish";
-      document.getElementById('res-description').textContent = `\"You tiptoed behind Wei's mahogany bar and infused ${base} with ${mod}, crowned with ${secret}. It hits with a rebellious spark.\"`;
+      document.getElementById('res-name').textContent = isZh 
+        ? `深夜私调: ${base.split(' ')[0]} 配 ${mod.split(' ')[0]}` 
+        : `Midnight Rogue: ${base.split(' ')[0]} & ${mod.split(' ')[0]}`;
+      document.getElementById('res-subtitle').textContent = isZh 
+        ? "客串吧台 • 秘密风味点缀" 
+        : "Unauthorized DIY • Secret Garnish";
+      document.getElementById('res-description').textContent = isZh 
+        ? `\"你蹑手蹑脚溜进吧台，将 ${base} 与清冽的 ${mod} 调和，最后饰以 ${secret}。带着打破规则的刺激与香气。\"` 
+        : `\"You tiptoed behind Wei's bar and infused ${base} with ${mod}, crowned with ${secret}. It hits with a rebellious spark.\"`;
       document.getElementById('res-formula').textContent = `45ml ${base} • 120ml ${mod} • ${secret}`;
 
       const plate = document.getElementById('served-item-plate');
@@ -1727,24 +1959,25 @@
     }
   </script>
 
+  <!-- CATS BEHAVIOR & INTERACTION -->
   <script>
-    /* ========================================================
-     * CATS (MISO & YUZU) BEHAVIOR ENGINE
-     * ======================================================== */
     function interactCat(catName) {
+      const isZh = AppState.lang === 'zh';
+      const isEs = AppState.lang === 'es';
+
       if (catName === 'miso') {
         SoundEngine.playMeow(0.85);
         const misoBadge = document.getElementById('miso-badge');
         misoBadge.textContent = 'purr';
         const ticker = document.getElementById('cat-pair-status');
-        ticker.textContent = "🖤 Miso rubbed against your hand, purring contentedly.";
+        ticker.textContent = isZh ? "🖤 味噌蹭了蹭你的手背，发出治愈的咕噜声。" : (isEs ? "🖤 Miso ronronea frotándose contra tu mano." : "🖤 Miso rubbed against your hand, purring contentedly.");
         setTimeout(() => misoBadge.textContent = 'loaf', 2000);
       } else {
         SoundEngine.playMeow(1.3);
         const yuzuBadge = document.getElementById('yuzu-badge');
         yuzuBadge.textContent = 'pounce';
         const ticker = document.getElementById('cat-pair-status');
-        ticker.textContent = "🧡 Yuzu tapped your finger with a soft paw and swished her tail.";
+        ticker.textContent = isZh ? "🧡 柚子用软绵绵的爪子碰了碰你，尾巴晃得欢实。" : (isEs ? "🧡 Yuzu te dio un golpecito con la patita y movió la cola." : "🧡 Yuzu tapped your finger with a soft paw and swished her tail.");
         setTimeout(() => yuzuBadge.textContent = 'tail', 2000);
       }
     }
@@ -1767,42 +2000,30 @@
         ticker.textContent = i18n[AppState.lang].catPlay;
       }
     }
+  </script>
 
-    /* ========================================================
-     * SANCTUARY ENTRY & DOOR RANDOMIZER
-     * ======================================================== */
+  <!-- SANCTUARY ENTRY & MODAL LOGIC -->
+  <script>
     function enterSanctuary() {
       SoundEngine.playClick();
       AppState.inSanctuary = true;
 
-      // 1. Randomize Outdoor Weather on Every Door Push
-      const weathers = ['rain', 'clear', 'snow', 'fog', 'storm'];
-      const chosenWeather = weathers[Math.floor(Math.random() * weathers.length)];
-      setWeather(chosenWeather);
-
-      // 2. Randomize Procedural Lo-Fi BGM Settings
-      SoundEngine.randomizeLoFiEngine();
+      // 1. Randomize Lo-Fi Track on Every Enter
+      SoundEngine.randomizeTrack();
       if (!SoundEngine.bgmPlaying) {
         toggleLoFiBGM();
       }
 
-      // 3. Randomize Bartender Starting Demeanor
-      const moods = ['nightOwl', 'sarcastic', 'empath', 'gossip', 'poetic'];
+      // 2. Randomize Mood & Energy
+      const moods = ['nightOwl', 'sarcastic', 'empath', 'poetic'];
       AppState.weiMood = moods[Math.floor(Math.random() * moods.length)];
-      AppState.weiEnergy = Math.floor(Math.random() * 2) + 3; // 3 or 4
-
-      // 4. Randomize Cats' Initial States
-      const catStatuses = [
-        "🐾 Miso & Yuzu are napping together",
-        "🐾 Miso is loafing on a napkin while Yuzu watches ice melt",
-        "🐾 Yuzu is batting a champagne cork across the floor"
-      ];
-      document.getElementById('cat-pair-status').textContent = catStatuses[Math.floor(Math.random() * catStatuses.length)];
+      AppState.weiEnergy = Math.floor(Math.random() * 2) + 3;
 
       document.getElementById('view-door').classList.add('hidden');
       document.getElementById('view-sanctuary').classList.remove('hidden');
 
       evaluateWeiState();
+      AppState.currentTopic = null;
       renderCurrentDialogue();
     }
 
@@ -1813,45 +2034,6 @@
       document.getElementById('view-door').classList.remove('hidden');
     }
 
-    /* ========================================================
-     * ATELIER PAIRING BUILDER
-     * ======================================================== */
-    function previewAtelierPairing() {
-      const gin = document.getElementById('atelier-gin').value;
-      const tonic = document.getElementById('atelier-tonic').value;
-      const garnish = document.getElementById('atelier-garnish').value;
-
-      document.getElementById('atelier-custom-name').textContent = `Atelier: ${gin.split(' ')[0]} + ${tonic.split(' ')[0]}`;
-      document.getElementById('atelier-custom-desc').textContent = `Harmonizing ${gin} with chilled ${tonic}, perfumed with ${garnish}.`;
-    }
-
-    function orderAtelierDrink() {
-      toggleCodexModal(false);
-      SoundEngine.playShaker();
-      setTimeout(() => SoundEngine.playClink(), 600);
-
-      const gin = document.getElementById('atelier-gin').value;
-      const tonic = document.getElementById('atelier-tonic').value;
-      const garnish = document.getElementById('atelier-garnish').value;
-
-      document.getElementById('rpg-dialogue-screen').classList.add('hidden');
-      const served = document.getElementById('served-result-screen');
-      served.classList.remove('hidden');
-
-      document.getElementById('res-icon').textContent = "🍸";
-      document.getElementById('res-name').textContent = `Atelier G&T: ${gin.split(' ')[0]}`;
-      document.getElementById('res-subtitle').textContent = "Hand-Crafted Botanical Flight";
-      document.getElementById('res-description').textContent = `\"Wei crafted your custom pairing from the album: ${gin} topped with ${tonic} and ${garnish}.\"`;
-      document.getElementById('res-formula').textContent = `45ml ${gin} • 120ml ${tonic} • ${garnish}`;
-
-      const plate = document.getElementById('served-item-plate');
-      plate.textContent = "🍸";
-      plate.classList.remove('hidden');
-    }
-
-    /* ========================================================
-     * ALBUM & MODAL CONTROLS
-     * ======================================================== */
     function toggleCodexModal(show) {
       SoundEngine.playClick();
       const modal = document.getElementById('codex-modal');
@@ -1877,9 +2059,39 @@
       b3.className = tab === 'classic' ? 'px-2 py-0.5 bg-amber-950 border border-amber-700 text-amber-300' : 'px-2 py-0.5 bg-stone-900 border border-stone-800 text-stone-400';
     }
 
-    /* ========================================================
-     * SOUND, LOGO & LANGUAGE ENGINE
-     * ======================================================== */
+    function previewAtelierPairing() {
+      const gin = document.getElementById('atelier-gin').value;
+      const tonic = document.getElementById('atelier-tonic').value;
+      const garnish = document.getElementById('atelier-garnish').value;
+
+      document.getElementById('atelier-custom-name').textContent = `Atelier: ${gin.split(' ')[0]} + ${tonic.split(' ')[0]}`;
+      document.getElementById('atelier-custom-desc').textContent = `Harmonizing ${gin} with chilled ${tonic}, perfumed with ${garnish}.`;
+    }
+
+    function orderAtelierDrink() {
+      toggleCodexModal(false);
+      SoundEngine.playShaker();
+      setTimeout(() => SoundEngine.playClink(), 600);
+
+      const gin = document.getElementById('atelier-gin').value;
+      const tonic = document.getElementById('atelier-tonic').value;
+      const garnish = document.getElementById('atelier-garnish').value;
+
+      document.getElementById('rpg-dialogue-screen').classList.add('hidden');
+      const served = document.getElementById('served-result-screen');
+      served.classList.remove('hidden');
+
+      document.getElementById('res-icon').textContent = "🍸";
+      document.getElementById('res-name').textContent = `Atelier: ${gin.split(' ')[0]}`;
+      document.getElementById('res-subtitle').textContent = "Hand-Crafted Botanical Flight";
+      document.getElementById('res-description').textContent = `\"Wei crafted your custom pairing from the album: ${gin} topped with ${tonic} and ${garnish}.\"`;
+      document.getElementById('res-formula').textContent = `45ml ${gin} • 120ml ${tonic} • ${garnish}`;
+
+      const plate = document.getElementById('served-item-plate');
+      plate.textContent = "🍸";
+      plate.classList.remove('hidden');
+    }
+
     function toggleLoFiBGM() {
       const eqGraphic = document.getElementById('eq-graphic');
       const muteIcon = document.getElementById('eq-mute-icon');
@@ -1890,6 +2102,7 @@
         eqGraphic.classList.remove('flex');
         muteIcon.classList.remove('hidden');
       } else {
+        SoundEngine.randomizeTrack();
         SoundEngine.startLoFiMusic();
         eqGraphic.classList.remove('hidden');
         eqGraphic.classList.add('flex');
@@ -1907,6 +2120,7 @@
       setTimeout(() => document.body.style.filter = "none", 120);
     }
 
+    // Complete i18n switcher
     function cycleLanguage() {
       SoundEngine.playClick();
       const langs = ['en', 'zh', 'es'];
@@ -1915,20 +2129,48 @@
       document.getElementById('lang-indicator').textContent = AppState.lang.toUpperCase();
 
       const t = i18n[AppState.lang];
+
+      // Navbar & Door
+      document.getElementById('nav-album-label').textContent = t.navAlbum;
       document.getElementById('label-return-door').textContent = t.returnDoor;
       document.getElementById('door-hero-text').textContent = t.doorHero;
       document.getElementById('door-hero-sub').textContent = t.doorSub;
       document.getElementById('cat-pair-status').textContent = t.catNap;
+      document.getElementById('cellar-banner-text').textContent = t.cellarBanner;
+
+      // Drawers & Modals
+      document.getElementById('drawer-title').textContent = t.drawerTitle;
+      document.getElementById('drawer-weather-header').textContent = t.drawerWeatherHeader;
+      document.getElementById('drawer-presets-header').textContent = t.drawerPresetsHeader;
+      document.getElementById('sleep-header-title').textContent = t.sleepHeaderTitle;
+      document.getElementById('sleep-story-text').textContent = t.sleepStoryText;
+      document.getElementById('sleep-btn-wake').textContent = t.sleepBtnWake;
+      document.getElementById('sleep-btn-cats').textContent = t.sleepBtnCats;
+      document.getElementById('sleep-btn-diy').textContent = t.sleepBtnDiy;
+      document.getElementById('sneak-header-title').textContent = t.sneakHeaderTitle;
+      document.getElementById('sneak-label-base').textContent = t.sneakLabelBase;
+      document.getElementById('sneak-label-mod').textContent = t.sneakLabelMod;
+      document.getElementById('sneak-label-garnish').textContent = t.sneakLabelGarnish;
+      document.getElementById('sneak-btn-pour').textContent = t.sneakBtnPour;
+      document.getElementById('res-btn-reorder').textContent = t.resBtnReorder;
+      document.getElementById('res-btn-cheers').textContent = t.resBtnCheers;
+
+      document.getElementById('modal-sub-title').textContent = t.modalSub;
+      document.getElementById('modal-main-title').textContent = t.modalMain;
+      document.getElementById('tab-label-flight').textContent = t.tabFlight;
+      document.getElementById('tab-label-atelier').textContent = t.tabAtelier;
+      document.getElementById('tab-label-classic').textContent = t.tabClassic;
 
       updateClockHands(AppState.hour);
       if (AppState.inSanctuary) renderCurrentDialogue();
     }
 
+    // App Initialization
     window.addEventListener('DOMContentLoaded', () => {
       WeatherSystem.init();
       initClockDragging();
-      updateClockHands(22.5); // Default 10:30 PM
-      applyTimeWeatherPalette();
+      SoundEngine.randomizeTrack();
+      syncBeijingWeatherAndClock(); // Default sync to Beijing (UTC+8) time and weather
     });
   </script>
 </body>
