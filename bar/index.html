@@ -1442,7 +1442,7 @@
         tabAtelier: "ATELIER BUILDER",
         tabClassic: "CLASSICS / BAKERY",
         cellarBannerBar: "[WEI'S BOTANICAL CELLAR]",
-        cellarBannerCafe: "[WEI'S HUTONG ROASTERY & ESPRESSO]",
+        cellarBannerCafe: "[WEI'S HUTONG ROASTERY]",
         jokeTitle: "Wei's Dry Banter",
         jokeNext: "Another One ↺",
         gameTitle: "RETRO PIXEL ARCADE",
@@ -1456,12 +1456,12 @@
         btnEnterCoffee: "推门进入",
         doorHero: "拨动表针，推开木门。",
         returnDoor: "门前",
-        navAlbum: "单品图鉴",
-        navArcade: "复古街机",
+        navAlbum: "图鉴",
+        navArcade: "街机",
         catNap: "🐾 味噌和柚子正挤着打呼噜",
         catFight: "⚠ 味噌和柚子打起喵喵拳了！",
         catPlay: "🧶 柚子在扑咬味噌的黑尾巴",
-        drawerTitle: "环境与天气调节",
+        drawerTitle: "环境调节",
         drawerWeatherHeader: "窗外天气",
         drawerPresetsHeader: "时间预设",
         
@@ -1490,7 +1490,7 @@
         tabAtelier: "风味工坊",
         tabClassic: "经典款 / 甜点烘焙",
         cellarBannerBar: "[WEI 的胡同草本酒窖]",
-        cellarBannerCafe: "[WEI 的胡同烘焙与意式咖啡]",
+        cellarBannerCafe: "[WEI 的胡同烘焙]",
         jokeTitle: "Wei 的冷幽默",
         jokeNext: "再来一个 ↺",
         gameTitle: "像素复古街机",
@@ -1538,7 +1538,7 @@
         tabAtelier: "TALLER CREATIVO",
         tabClassic: "CLÁSICOS / REPOSTERÍA",
         cellarBannerBar: "[BODEGA BOTÁNICA DE WEI]",
-        cellarBannerCafe: "[TOSTADURÍA & ESPRESSO DE WEI]",
+        cellarBannerCafe: "[TOSTADURÍA DE WEI]",
         jokeTitle: "Chistes Secos de Wei",
         jokeNext: "Otro Chiste ↺",
         gameTitle: "ARCADE RETRO PIXEL",
@@ -1928,7 +1928,7 @@
   </script>
 
  <script>
-    /* EXPANDED DRINK & COFFEE MENU MANIFEST */
+    /* DRINK & COFFEE MENU MANIFEST */
     const DrinkManifest = {
       // Cocktails (Bar Mode)
       jasmine_gulou: {
@@ -2463,7 +2463,7 @@
       
       const tag = document.getElementById('clock-status-tag');
       if (tag) {
-        tag.textContent = AppState.isBarOpen ? `${timeStr} BAR` : `${timeStr} CAFE`;
+        tag.textContent = AppState.isBarOpen ? `${timeStr} SPEAKEASY` : `${timeStr} CAFE`;
       }
 
       const t = i18n[AppState.lang];
