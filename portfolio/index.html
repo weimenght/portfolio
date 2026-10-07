@@ -63,12 +63,35 @@
       background-color: #18181B;
       color: #34D399;
     }
+
+    /* Easter Egg Reveal Animation */
+    @keyframes eggSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .egg-unlocked {
+      animation: eggSlideIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
   </style>
 </head>
 <body class="bg-[#FAFAFA] text-[#18181B] bg-grid-subtle min-h-screen antialiased selection:bg-neutral-900 selection:text-white">
 
+  <!-- UNLOCK NOTIFICATION TOAST -->
+  <div id="unlock-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none hidden opacity-0 transition-opacity duration-300" role="status" aria-live="polite">
+    <div class="bg-neutral-900 text-white border border-neutral-700/80 shadow-2xl rounded-full px-4 sm:px-5 py-2.5 flex items-center gap-2.5 font-mono text-xs">
+      <span class="text-emerald-400 text-sm">⚡</span>
+      <span data-i18n="unlockToast">Cognitive dignity restored: 5 interactive micro-sandboxes unlocked below!</span>
+    </div>
+  </div>
+
   <!-- EASTER EGG MODAL: "THE 60-SLIDE COMPLIANCE SIMULATOR" -->
-  <div id="compliance-hell-modal" class="fixed inset-0 z-50 bg-neutral-950/85 backdrop-blur-sm hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true">
+  <div id="compliance-hell-modal" class="fixed inset-0 z-50 bg-neutral-950/85 backdrop-blur-sm hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="handleModalBackdrop(event)" role="dialog" aria-modal="true">
     <div class="bg-white border-2 border-neutral-300 rounded-2xl max-w-lg w-full p-5 sm:p-8 shadow-2xl space-y-5 sm:space-y-6 text-left">
       <div class="flex items-center justify-between border-b border-neutral-200 pb-3">
         <div class="flex items-center gap-2">
@@ -88,8 +111,8 @@
           "All personnel must optimize interdepartmental synchronization through asynchronous documentation workflows. Please avoid interaction until this timer expires."
         </p>
         <div class="pt-2 flex items-center justify-between text-xs font-mono text-neutral-400">
-          <span>Speaker: Monotone AI Voice [Muted]</span>
-          <span class="text-amber-600 font-bold" id="lock-timer">Locked: 00:44 remaining</span>
+          <span>Speaker: Monotone AI Voice</span>
+          <span class="text-amber-600 font-bold" id="lock-timer">Locked: 00:59 remaining</span>
         </div>
       </div>
 
@@ -99,8 +122,8 @@
           <span>🔒</span>
         </button>
         
-        <button type="button" onclick="closeComplianceModal()" class="w-full py-3 rounded-xl bg-neutral-900 text-emerald-400 hover:bg-neutral-800 active:scale-95 text-xs font-mono font-bold transition-all shadow-md flex items-center justify-center gap-2">
-          <span data-i18n="easterEggEject">⚡ Eject to Cognitive Dignity (Back to Work)</span>
+        <button type="button" onclick="ejectToCognitiveDignity()" class="w-full py-3 rounded-xl bg-neutral-900 text-emerald-400 hover:bg-neutral-800 active:scale-95 text-xs font-mono font-bold transition-all shadow-md flex items-center justify-center gap-2">
+          <span data-i18n="easterEggEject">Eject to Cognitive Dignity</span>
         </button>
       </div>
     </div>
@@ -153,7 +176,7 @@
             WEI MENG
           </div>
           <p class="text-[11px] sm:text-xs text-neutral-500 mt-0.5 sm:mt-1 hidden sm:block" data-i18n="headerSubtitle">
-            Portfilio
+            Portfolio
           </p>
         </div>
       </a>
@@ -195,25 +218,6 @@
 
   <!-- MAIN VIEWPORT -->
   <main class="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-16 space-y-10 sm:space-y-16">
-    
-    <!-- HERO -->
-    <!-- 
-    <section class="max-w-3xl space-y-3 sm:space-y-4">
-      <div class="inline-flex items-center gap-2 text-xs font-mono tracking-wider uppercase text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full border border-neutral-200">
-        <span class="text-emerald-500">●</span>
-        <span data-i18n="heroPill">Playable Proof</span>
-      </div>
-
-      <h1 class="font-syne text-2xl sm:text-5xl font-bold tracking-tight text-neutral-900 leading-[1.12]" data-i18n-html="heroTitle">
-        Zero slide monologues. <br class="hidden sm:inline">
-        Click to play the <span class="text-neutral-500 font-normal italic font-serif">antidotes</span>.
-      </h1>
-
-      <p class="text-xs sm:text-base text-neutral-600 leading-relaxed font-normal" data-i18n="heroDesc">
-        Interact with the live teasers below. Each card is an active miniature playground designed with emotional friction, safe-to-fail stakes, and adult cognitive dignity.
-      </p>
-    </section>
-    -->
 
     <!-- THE 6 CASES -->
     <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
@@ -277,7 +281,7 @@
             </span>
 
             <div class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-neutral-300 truncate">
-              Choose your advanture
+              Choose your adventure
             </div>
           </a>
 
@@ -294,7 +298,8 @@
             New hires become forensic auditors decoding an unapproved $22M offshore wire. Culture and ethics learned through discovery, not policy handouts.
           </p>
 
-          <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-1.5">
+          <!-- EASTER EGG (CARD 2) -->
+          <div class="card-easter-egg hidden p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-1.5">
             <div class="flex items-center justify-between text-[10px] font-mono text-neutral-400">
               <span data-i18n="case2ClueTag">CLASSIFIED CLUE [TAP TO DECRYPT]</span>
               <span>CONFIDENTIAL</span>
@@ -352,7 +357,8 @@
             Replaces multiple-choice quizzes with 3D tactile battlecards and timed objection blitzes using real-time procedural Web Audio.
           </p>
 
-          <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-1.5">
+          <!-- EASTER EGG (CARD 3) -->
+          <div class="card-easter-egg hidden p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-1.5">
             <div class="flex items-center justify-between text-[10px] font-mono text-neutral-400">
               <span data-i18n="case3DrillTag">RECALL DRILL [TAP TO FLIP]</span>
               <span>ACTIVE PRACTICE</span>
@@ -377,7 +383,7 @@
         </div>
       </article>
 
-      <!-- CASE 04 (Optimized for Mobile Grid) -->
+      <!-- CASE 04 -->
       <article class="interactive-card bg-white rounded-3xl p-5 sm:p-6 border border-neutral-200/90 shadow-sm flex flex-col justify-between group">
         <div class="space-y-4">
           <a href="https://wei-meng.org/free_builder/coach/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-neutral-900 block">
@@ -410,12 +416,12 @@
             AI direct reports react in real-time to your management habits. Make conversational mistakes safely without burning team political capital.
           </p>
 
-          <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-2">
+          <!-- EASTER EGG (CARD 4) -->
+          <div class="card-easter-egg hidden p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-2">
             <div class="flex items-center justify-between text-[10px] font-mono text-neutral-400">
               <span data-i18n="case4ScenarioTag">SAFE-TO-FAIL TEST // DIRECT REPORT IS LATE</span>
               <span id="coach-status" class="text-neutral-500 font-bold">READY</span>
             </div>
-            <!-- Changed to 1 column on mobile, 2 columns on sm+ -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] font-mono">
               <button type="button" onclick="testCoachResponse('micromanage', this)" class="p-2 rounded bg-white hover:bg-neutral-100 active:scale-[0.98] border border-neutral-200 text-left transition-colors">
                 [A] "Why is this late again?"
@@ -433,7 +439,7 @@
             <span data-i18n="launchWeb">Open Co-Pilot</span>
             <span>↗</span>
           </a>
-          <span class="text-[11px] font-mono text-neutral-400">Phychology Calibrated</span>
+          <span class="text-[11px] font-mono text-neutral-400">Psychology Calibrated</span>
         </div>
       </article>
 
@@ -470,7 +476,8 @@
             Simulates high-friction cross-border interactions. Replaces ethnic stereotypes with the 3-Lenses Model and dual-perspective reflection mirrors.
           </p>
 
-          <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-2">
+          <!-- EASTER EGG (CARD 5) -->
+          <div class="card-easter-egg hidden p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-2">
             <div class="flex items-center justify-between text-[10px] font-mono text-neutral-400">
               <span data-i18n="case5MirrorTag">DUAL-LENS MIRROR [TAP TO TOGGLE]</span>
               <span id="lens-name" class="font-bold text-neutral-700">LOW-CONTEXT</span>
@@ -528,7 +535,8 @@
             Eliminates whiteboard theory. Step straight into 48-hour disposable prototypes, un-biasing tests, and timed Crazy 8s sprint execution.
           </p>
 
-          <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-2">
+          <!-- EASTER EGG (CARD 6) -->
+          <div class="card-easter-egg hidden p-3 bg-neutral-50 rounded-xl border border-neutral-200/80 space-y-2">
             <div class="flex items-center justify-between text-[10px] font-mono text-neutral-400">
               <span data-i18n="case6SprintTag">RAPID SPRINT PULSE</span>
               <span id="crazy-status" class="text-neutral-600 font-bold">READY</span>
@@ -538,7 +546,7 @@
               onclick="triggerCrazySprint(this)" 
               class="w-full py-2 px-3 rounded bg-white border border-neutral-200 hover:border-neutral-400 active:scale-[0.98] text-neutral-800 font-mono text-xs flex items-center justify-between transition-all"
             >
-              <span id="crazy-label">⚡ Trigger 8-Second Idea Sprint</span>
+              <span id="crazy-label">Trigger 8-Second Idea Sprint</span>
               <span id="crazy-count" class="font-bold text-cyan-600">08s</span>
             </button>
           </div>
@@ -603,9 +611,7 @@
         headerSubtitle: "Portfolio",
         backHome: "About Me ↗",
         navEasterEgg: "Standard 60-Slide Deck?",
-        heroPill: "Playable Proof",
-        heroTitle: 'Zero slide monologues. <br class="hidden sm:inline">Click to play the <span class="text-neutral-500 font-normal italic font-serif">antidotes</span>.',
-        heroDesc: "Interact with the live teasers below. Each card is an active miniature playground designed with emotional friction, safe-to-fail stakes, and adult cognitive dignity.",
+        unlockToast: "Cognitive dignity restored: 5 interactive micro-sandboxes unlocked below!",
 
         case1Badge: "● Episodic Series",
         case1Category: "Narrative Drama // AI Media",
@@ -650,7 +656,7 @@
         easterEggTop: "Corporate Mandatory Deck // Sim 2026",
         easterEggSlideTitle: "Module 1.1: Synergy Paradigms & Policy Compliance",
         easterEggSlideText: '"All personnel must optimize interdepartmental synchronization through asynchronous documentation workflows. Please avoid interaction until this timer expires."',
-        easterEggEject: "⚡ Eject to Cognitive Dignity (Back to Work)",
+        easterEggEject: "Eject to Cognitive Dignity",
 
         bottomBannerTitle: "Let's build learning experiences people choose to finish.",
         bottomBannerDesc: "Available for custom learning design and curriculum transformation.",
@@ -661,9 +667,7 @@
         headerSubtitle: "案例集",
         backHome: "关于我 ↗",
         navEasterEgg: "体验下传统的60页合规PPT？",
-        heroPill: "可玩案例",
-        heroTitle: '告别单向PPT灌输。<br class="hidden sm:inline">直接上手体验这些<span class="text-neutral-500 font-normal italic font-serif">解药原型</span>。',
-        heroDesc: "点击下方卡片中的微交互模块。每一个作品都是专为成年学员打造的实战微沙盒：拒绝幼稚说教，尊重认知尊严。",
+        unlockToast: "已恢复认知尊严：下方 5 个微交互实战沙盒已解锁！",
 
         case1Badge: "● 系列短剧",
         case1Category: "叙事短剧 // AI视听",
@@ -708,7 +712,7 @@
         easterEggTop: "企业传统强制合规课件 // 仿真",
         easterEggSlideTitle: "第 1.1 节：跨部门协同范式与政策合规",
         easterEggSlideText: "“全体员工必须通过异步文档工作流优化部门间的协同共振。在倒计时结束前，请勿进行任何交互操作。”",
-        easterEggEject: "⚡ 逃离合规噩梦 (回归尊重认知尊严的系统)",
+        easterEggEject: "回归遵循认知尊严的体验",
 
         bottomBannerTitle: "携手打造让人主动沉浸的学习体验。",
         bottomBannerDesc: "开放沟通定制化学习产品开发与课程体系重塑合作。",
@@ -719,9 +723,7 @@
         headerSubtitle: "Carpeta de Trabajos",
         backHome: "Sobre Mí ↗",
         navEasterEgg: "¿Presentación típica de 60 diapositivas?",
-        heroPill: "Pruebas Reales",
-        heroTitle: 'Cero monólogos pasivos. <br class="hidden sm:inline">Pruebe directamente los <span class="text-neutral-500 font-normal italic font-serif">antídotos</span>.',
-        heroDesc: "Interactúe con los módulos interactivos a continuación. Cada tarjeta es un prototipo activo diseñado con tensión emocional, práctica sin riesgos y respeto cognitivo.",
+        unlockToast: "¡Dignidad cognitiva restaurada: 5 micro-sandboxes interactivos desbloqueados!",
 
         case1Badge: "● Serie Episódica",
         case1Category: "Drama Narrativo // Medios IA",
@@ -766,7 +768,7 @@
         easterEggTop: "Capacitación Obligatoria Típica // Simulación",
         easterEggSlideTitle: "Módulo 1.1: Sinergia de Paradigmas y Cumplimiento",
         easterEggSlideText: '"Todo el personal debe optimizar la sincronización interdepartamental mediante flujos asíncronos. Por favor espere a que termine el temporizador."',
-        easterEggEject: "⚡ Salir hacia la Dignidad Cognitiva (Volver)",
+        easterEggEject: "Salir hacia la Dignidad Cognitiva",
 
         bottomBannerTitle: "Creemos experiencias de aprendizaje que la gente elija completar.",
         bottomBannerDesc: "Disponible para diseño de aprendizaje a medida y transformación curricular.",
@@ -800,18 +802,13 @@
         if (translations[lang][key]) el.textContent = translations[lang][key];
       });
 
-      document.querySelectorAll('[data-i18n-html]').forEach(el => {
-        const key = el.getAttribute('data-i18n-html');
-        if (translations[lang][key]) el.innerHTML = translations[lang][key];
-      });
-
       try {
         localStorage.setItem('wm_cases_lang', lang);
         localStorage.setItem('wm_preferred_lang', lang);
       } catch (e) {}
     }
 
-    // --- Micro-Interactions ---
+    // --- Micro-Interactions Inside The 5 Easter Eggs ---
     function toggleRedaction(btn) {
       const isRevealed = btn.getAttribute('data-revealed') === 'true';
       if (!isRevealed) {
@@ -884,7 +881,7 @@
 
       statusEl.textContent = "SKETCHING...";
       statusEl.className = "font-bold text-cyan-600 animate-pulse";
-      labelEl.textContent = "⚡ Idea 1/8 in progress...";
+      labelEl.textContent = "Idea 1/8 in progress...";
 
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       const audio = AudioCtx ? new AudioCtx() : null;
@@ -915,15 +912,18 @@
             timerRunning = false;
             statusEl.textContent = "READY";
             statusEl.className = "text-neutral-600 font-bold";
-            labelEl.textContent = "⚡ Trigger 8-Second Idea Sprint";
+            labelEl.textContent = "Trigger 8-Second Idea Sprint";
           }, 3000);
         }
       }, 1000);
     }
 
-    // --- Compliance Easter Egg Modal ---
+    // --- Easter Egg Unlock & Modal Mechanics ---
+    let complianceDeckClicked = false;
     const complianceModal = document.getElementById('compliance-hell-modal');
+
     function openComplianceModal() {
+      complianceDeckClicked = true; // Visitor clicked "Standard 60-Slide Deck?"
       complianceModal.classList.remove('hidden');
       complianceModal.classList.add('flex');
       setTimeout(() => {
@@ -931,6 +931,7 @@
         complianceModal.classList.add('opacity-100');
       }, 10);
     }
+
     function closeComplianceModal() {
       complianceModal.classList.remove('opacity-100');
       complianceModal.classList.add('opacity-0');
@@ -938,6 +939,38 @@
         complianceModal.classList.remove('flex');
         complianceModal.classList.add('hidden');
       }, 300);
+    }
+
+    // Explicit Trigger: Visitor clicks "Eject to Cognitive Dignity"
+    function ejectToCognitiveDignity() {
+      closeComplianceModal();
+
+      if (complianceDeckClicked) {
+        revealCardEasterEggs();
+      }
+    }
+
+    function revealCardEasterEggs() {
+      const easterEggs = document.querySelectorAll('.card-easter-egg');
+      easterEggs.forEach((egg, index) => {
+        egg.classList.remove('hidden');
+        egg.classList.add('egg-unlocked');
+      });
+
+      // Show temporary unlock toast notification
+      const toast = document.getElementById('unlock-toast');
+      if (toast) {
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.remove('opacity-0'), 20);
+        setTimeout(() => {
+          toast.classList.add('opacity-0');
+          setTimeout(() => toast.classList.add('hidden'), 300);
+        }, 4000);
+      }
+
+      try {
+        sessionStorage.setItem('wm_easter_eggs_unlocked', 'true');
+      } catch (e) {}
     }
 
     // --- Video Modal ---
@@ -980,6 +1013,17 @@
     });
 
     document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    // Session-level check: retain revealed state if already ejected during this session
+    (function initEasterEggs() {
+      try {
+        if (sessionStorage.getItem('wm_easter_eggs_unlocked') === 'true') {
+          document.querySelectorAll('.card-easter-egg').forEach(egg => {
+            egg.classList.remove('hidden');
+          });
+        }
+      } catch (e) {}
+    })();
 
     // Auto-detect Language
     (function initLanguage() {
