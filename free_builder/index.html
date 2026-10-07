@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FREEBUILDER | Next-Gen L&D Solutions</title>
+    <title>FREE//BUILDER | Next-Gen L&D Solutions</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -22,15 +22,15 @@
             theme: {
                 extend: {
                     colors: {
-                        obsidian: '#07080a',
-                        offwhite: '#f3f4f6',
+                        obsidian: '#060709',
+                        darkcard: '#0c0d12',
+                        offwhite: '#f1f3f7',
                         acid: '#dfff00',
                         neon: '#39ff14',
                         magenta: '#ff00ff',
                         cybercyan: '#00f0ff',
                         cyberamber: '#f59e0b',
-                        cyberindigo: '#6366f1',
-                        darkgray: '#121318'
+                        cyberindigo: '#6366f1'
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -38,14 +38,20 @@
                         mono: ['JetBrains Mono', 'monospace'],
                     },
                     animation: {
-                        'spin-slow': 'spin 14s linear infinite',
-                        'glitch': 'glitch 2s linear infinite',
+                        'spin-slow': 'spin 18s linear infinite',
+                        'pulse-glow': 'pulseGlow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'line-drop': 'lineDrop 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite'
                     },
                     keyframes: {
-                        glitch: {
-                            '2%, 64%': { transform: 'translate(2px,0) skew(0deg)' },
-                            '4%, 60%': { transform: 'translate(-2px,0) skew(0deg)' },
-                            '62%': { transform: 'translate(0,0) skew(4deg)' },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '0.3', transform: 'scale(1)' },
+                            '50%': { opacity: '0.7', transform: 'scale(1.08)' },
+                        },
+                        lineDrop: {
+                            '0%': { transform: 'scaleY(0)', transformOrigin: 'top', opacity: '0' },
+                            '40%': { transform: 'scaleY(1)', transformOrigin: 'top', opacity: '1' },
+                            '60%': { transform: 'scaleY(1)', transformOrigin: 'bottom', opacity: '1' },
+                            '100%': { transform: 'scaleY(0)', transformOrigin: 'bottom', opacity: '0' }
                         }
                     }
                 }
@@ -55,13 +61,25 @@
 
     <style>
         body {
-            background-color: #07080a;
-            color: #f3f4f6;
-            cursor: none;
+            background-color: #060709;
+            color: #f1f3f7;
             overflow-x: hidden;
         }
 
-        /* Custom Dual-Orb Cursor (Desktop Only) */
+        /* Top Reading Progress Bar */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2.5px;
+            width: 0%;
+            background: linear-gradient(90deg, #dfff00, #00f0ff, #ff00ff);
+            z-index: 100;
+            box-shadow: 0 0 10px rgba(223, 255, 0, 0.6);
+            transition: width 0.08s ease-out;
+        }
+
+        /* Custom Dual Cursor (Desktop Only) */
         #cursor-dot, #cursor-outline {
             position: fixed;
             top: 0;
@@ -70,780 +88,833 @@
             border-radius: 50%;
             z-index: 99999;
             pointer-events: none;
+            transition: transform 0.08s ease-out;
         }
         #cursor-dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             background-color: #dfff00;
             transition: width 0.2s, height 0.2s, background-color 0.2s;
         }
         #cursor-outline {
-            width: 34px;
-            height: 34px;
-            border: 1.5px solid rgba(223, 255, 0, 0.45);
+            width: 32px;
+            height: 32px;
+            border: 1px solid rgba(223, 255, 0, 0.35);
             transition: width 0.15s, height 0.15s, border-color 0.15s;
         }
         
-        /* Cursor Contextual States */
         body.cursor-hover #cursor-dot {
-            width: 38px;
-            height: 38px;
-            background-color: #ff00ff;
-            mix-blend-mode: difference;
+            width: 30px;
+            height: 30px;
+            background-color: #00f0ff;
+            mix-blend-mode: screen;
+            opacity: 0.8;
         }
         body.cursor-hover #cursor-outline {
-            width: 60px;
-            height: 60px;
-            border-color: #ff00ff;
-        }
-        body.cursor-play #cursor-dot {
-            width: 56px;
-            height: 56px;
-            background-color: #39ff14;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        body.cursor-play #cursor-dot::after {
-            content: '↗';
-            color: #07080a;
-            font-size: 22px;
-            font-weight: 900;
+            width: 52px;
+            height: 52px;
+            border-color: #00f0ff;
         }
 
-        /* Tactile Button Squish Physics */
-        .btn-squish {
-            transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
-        }
-        .btn-squish:active {
-            transform: scale(0.95);
+        @media (hover: none) and (pointer: coarse) {
+            #cursor-dot, #cursor-outline { display: none !important; }
+            body { cursor: auto !important; }
         }
 
-        /* Scroll Reveal Animation */
-        .reveal {
+        /* Smooth Staggered Scroll Reveal */
+        .reveal-node {
             opacity: 0;
-            transform: translateY(28px);
-            transition: all 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(28px) scale(0.99);
+            filter: blur(3px);
+            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), 
+                        filter 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform, filter;
         }
-        .reveal.active {
+        .reveal-node.in-view {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
+            filter: blur(0px);
         }
 
-        /* Ambient Lighting Mesh */
-        .bg-mesh {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+        /* Tactile bouncy buttons */
+        .btn-bounce {
+            transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+        }
+        .btn-bounce:hover {
+            transform: translateY(-2px);
+        }
+        .btn-bounce:active {
+            transform: translateY(1px) scale(0.97);
+        }
+
+        /* Ambient Cyber Grid Background */
+        .cyber-grid {
             background-image: 
-                radial-gradient(at 0% 0%, hsla(260,25%,8%,1) 0, transparent 55%), 
-                radial-gradient(at 50% 0%, hsla(210,40%,10%,1) 0, transparent 55%), 
-                radial-gradient(at 100% 0%, hsla(330,30%,11%,1) 0, transparent 55%);
-            z-index: -1;
-            opacity: 0.9;
-        }
-        .grid-overlay {
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-            background-size: 48px 48px;
-            z-index: -1;
+                radial-gradient(circle at 50% 15%, rgba(223, 255, 0, 0.035) 0%, transparent 65%),
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 100% 100%, 64px 64px, 64px 64px;
         }
 
-        /* Glitch Pulse Line */
-        .scroll-trigger {
-            width: 2px;
-            height: 55px;
-            background: linear-gradient(to bottom, #dfff00, transparent);
-            animation: pulse-line 2s infinite ease-in-out;
+        /* Lab Card Unfolding Drawer */
+        .drawer-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            opacity: 0;
         }
-        @keyframes pulse-line {
-            0% { transform: scaleY(0) translateY(-100%); transform-origin: top; opacity: 0; }
-            50% { transform: scaleY(1) translateY(0); transform-origin: top; opacity: 1; }
-            50.1% { transform: scaleY(1) translateY(0); transform-origin: bottom; opacity: 1; }
-            100% { transform: scaleY(0) translateY(100%); transform-origin: bottom; opacity: 0; }
+        .card-unfolded .drawer-content {
+            grid-template-rows: 1fr;
+            opacity: 1;
         }
-
-        /* Toast Container */
-        #toast-container {
-            position: fixed;
-            bottom: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 100000;
-        }
-        #toast-container.show {
-            bottom: 28px;
+        .drawer-inner {
+            overflow: hidden;
         }
 
-        /* Sleek Cyber Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #07080a; }
-        ::-webkit-scrollbar-thumb { background: #1f222e; border-radius: 9999px; }
+        /* Capability Architecture Accordion Card Transitions */
+        .cap-drawer {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            opacity: 0;
+        }
+        .cap-item.is-expanded .cap-drawer {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .cap-drawer-inner {
+            overflow: hidden;
+        }
+
+        /* Sleek scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #060709; }
+        ::-webkit-scrollbar-thumb { background: #181a24; border-radius: 9999px; }
         ::-webkit-scrollbar-thumb:hover { background: #dfff00; }
 
-        /* Mobile & Touch Cursor Reset */
-        @media (hover: none) and (pointer: coarse) {
-            #cursor-dot, #cursor-outline {
-                display: none !important;
-            }
-            body {
-                cursor: auto !important;
-            }
-        }
-
-        /* Accessibility Modes */
+        /* Accessibility Overrides */
         body.reduce-motion * {
             animation: none !important;
             transition: none !important;
             scroll-behavior: auto !important;
         }
         body.reduce-motion #cursor-dot, body.reduce-motion #cursor-outline { display: none; }
-        body.reduce-motion { cursor: auto; }
         body.high-contrast { background-color: #000; color: #fff; }
-        body.high-contrast .text-acid, body.high-contrast .text-neon { color: #fff !important; text-decoration: underline; }
-        body.high-contrast .bg-acid { background-color: #fff !important; color: #000 !important; }
-        body.high-contrast .bg-mesh, body.high-contrast .grid-overlay { display: none; }
+        body.high-contrast .text-acid, body.high-contrast .text-neon { color: #ffff00 !important; }
     </style>
 </head>
-<body class="antialiased selection:bg-acid selection:text-obsidian">
+<body class="antialiased selection:bg-acid selection:text-obsidian cyber-grid">
 
-    <!-- Custom Cursor -->
+    <!-- Top Scroll Progress Bar -->
+    <div id="scroll-progress"></div>
+
+    <!-- Dual Cursor Elements -->
     <div id="cursor-dot"></div>
     <div id="cursor-outline"></div>
 
-    <!-- Floating Global Toast -->
-    <div id="toast-container" class="bg-darkgray/95 border border-neon px-5 sm:px-6 py-3 rounded-2xl shadow-[0_0_30px_rgba(57,255,20,0.25)] flex items-center gap-3 backdrop-blur-xl max-w-[90vw]">
-        <i class="ph-fill ph-sparkle text-neon text-lg sm:text-xl animate-pulse shrink-0"></i>
-        <p id="toast-message" class="text-xs sm:text-sm font-mono font-medium text-offwhite truncate"></p>
-    </div>
-
-    <!-- Will-Skill Diagnostic Easter Egg Modal -->
-    <div id="matrix-modal" class="fixed inset-0 bg-obsidian/90 backdrop-blur-md z-[9990] hidden flex items-center justify-center opacity-0 transition-opacity duration-300 p-4" onclick="handleMatrixModalBackdrop(event)">
-        <div class="bg-darkgray border-2 border-magenta p-6 sm:p-8 rounded-3xl max-w-lg w-full relative shadow-[0_0_50px_rgba(255,0,255,0.25)]">
-            <button onclick="closeMatrix()" class="absolute top-5 right-5 text-offwhite/70 hover:text-magenta transition-colors interactable" aria-label="Close modal">
-                <i class="ph ph-x text-2xl"></i>
-            </button>
-            <h3 class="font-display text-xl sm:text-2xl font-bold mb-6 text-magenta" data-i18n="matrix.title">DIAGNOSTIC COMPLETE</h3>
-            <div class="relative w-full aspect-square border-l-2 border-b-2 border-offwhite/40 flex flex-col">
-                <span class="absolute -left-12 top-1/2 -translate-y-1/2 -rotate-90 text-[11px] font-mono font-bold text-offwhite/50 tracking-widest uppercase" data-i18n="matrix.will">WILL</span>
-                <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[11px] font-mono font-bold text-offwhite/50 tracking-widest uppercase" data-i18n="matrix.skill">SKILL</span>
-                
-                <div class="flex-1 flex">
-                    <div class="flex-1 border-r border-b border-dashed border-offwhite/15"></div>
-                    <div class="flex-1 border-b border-dashed border-offwhite/15 relative">
-                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-acid rounded-full shadow-[0_0_20px_#dfff00] animate-pulse"></div>
-                        <span class="absolute top-1/2 left-1/2 mt-4 -translate-x-1/2 text-xs font-mono text-acid font-bold whitespace-nowrap" data-i18n="matrix.marker">YOU (High Will / High Skill)</span>
-                    </div>
-                </div>
-                <div class="flex-1 flex">
-                    <div class="flex-1 border-r border-dashed border-offwhite/15"></div>
-                    <div class="flex-1 relative"></div>
-                </div>
+    <!-- Floating Toast Notification -->
+    <div id="toast-container" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[10000] translate-y-24 opacity-0 transition-all duration-300 pointer-events-none max-w-sm sm:max-w-md w-full px-4">
+        <div class="bg-darkcard/95 border border-white/10 px-5 py-3 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-xl flex items-center justify-between gap-3 text-xs sm:text-sm font-mono text-offwhite">
+            <div class="flex items-center gap-2.5 truncate">
+                <span class="w-2 h-2 rounded-full bg-neon animate-pulse shrink-0"></span>
+                <span id="toast-message" class="truncate">Feedback event</span>
             </div>
-            <p class="mt-6 text-xs sm:text-sm text-slate-400 font-sans leading-relaxed" data-i18n="matrix.desc">You found the secret diagnostic. Plot twist: you were top-right quadrant all along.</p>
+            <i class="ph ph-check text-neon shrink-0"></i>
         </div>
     </div>
 
-    <!-- Case 1: Video Player Modal -->
-    <div id="modal-video" class="fixed inset-0 bg-obsidian/90 backdrop-blur-md z-[9990] hidden flex items-center justify-center opacity-0 transition-opacity duration-300 p-4 sm:p-6" onclick="handleVideoModalBackdrop(event)">
-        <div class="bg-darkgray border-2 border-neon p-4 sm:p-6 rounded-3xl max-w-4xl w-full relative shadow-[0_0_50px_rgba(57,255,20,0.25)]">
-            <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-3">
-                <div class="flex items-center gap-3">
-                    <span class="w-2.5 h-2.5 rounded-full bg-neon animate-pulse"></span>
-                    <h3 class="font-display text-base sm:text-xl font-bold text-offwhite tracking-tight" data-i18n="lab.card1.title">The Corporate Survival Drama</h3>
-                    <span class="text-neon text-[10px] font-mono uppercase border border-neon/40 px-2 py-0.5 rounded-full hidden sm:inline-block">Episode Preview</span>
+    <!-- Top Navigation -->
+    <nav class="fixed w-full top-0 z-50 bg-obsidian/80 backdrop-blur-xl border-b border-white/[0.04]">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 h-18 sm:h-20 flex items-center justify-between">
+            <div id="logo-trigger" class="flex items-center gap-2.5 group cursor-pointer select-none" onclick="handleLogoClick()">
+                <div class="grid grid-cols-2 gap-0.5 w-6 h-6 transform group-hover:rotate-90 transition-transform duration-300">
+                    <div class="bg-offwhite/90 rounded-[2px] group-hover:bg-acid transition-colors"></div>
+                    <div class="bg-offwhite/50 rounded-[2px] group-hover:bg-neon transition-colors delay-75"></div>
+                    <div class="bg-offwhite/50 rounded-[2px] group-hover:bg-cybercyan transition-colors delay-100"></div>
+                    <div class="bg-acid rounded-[2px] shadow-[0_0_8px_#dfff00]"></div>
                 </div>
-                <button onclick="closeVideoModal()" class="text-offwhite/70 hover:text-neon transition-colors interactable p-1" aria-label="Close video player">
-                    <i class="ph ph-x text-2xl"></i>
-                </button>
-            </div>
-            <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-black border border-white/10">
-                <video id="player-video" class="w-full h-full object-contain bg-black" controls playsinline preload="metadata">
-                    <source src="https://media.wei-meng.org/hovercraft.mp4" type="video/mp4">
-                    Your browser does not support HTML5 video streaming.
-                </video>
-            </div>
-            <div class="mt-4 flex items-center justify-between text-xs font-mono text-white/40">
-                <span>SRC: hovercraft.mp4</span>
-                <span class="text-white/30 hidden sm:inline" data-i18n="video.hint">Press ESC or click outside to dismiss</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Top Navigation Bar -->
-    <nav class="fixed w-full top-0 z-50 bg-obsidian/85 backdrop-blur-md border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-            <div id="logo-trigger" class="flex items-center gap-3 group cursor-pointer interactable select-none" onclick="handleLogoClick()">
-                <div class="grid grid-cols-2 gap-1 w-7 h-7 transform group-hover:rotate-90 transition-transform duration-500">
-                    <div class="bg-offwhite rounded-sm group-hover:bg-acid transition-colors"></div>
-                    <div class="bg-offwhite rounded-sm group-hover:bg-neon transition-colors delay-75"></div>
-                    <div class="bg-offwhite rounded-sm group-hover:bg-magenta transition-colors delay-100"></div>
-                    <div class="bg-acid rounded-sm animate-pulse"></div>
-                </div>
-                <span class="font-display font-bold text-xl sm:text-2xl tracking-tighter">FREE<span class="text-acid">//</span>BUILDER</span>
+                <span class="font-display font-bold text-lg sm:text-xl tracking-tight text-offwhite">
+                    FREE<span class="text-acid">//</span>BUILDER
+                </span>
             </div>
 
             <!-- Desktop Links -->
-            <div class="hidden md:flex items-center gap-8 font-sans text-sm font-medium">
-                <a href="#hero" class="text-offwhite/70 hover:text-acid transition-colors interactable" data-i18n="nav.home">Home</a>
-                <a href="#who" class="text-offwhite/70 hover:text-acid transition-colors interactable" data-i18n="nav.who">Who I Am</a>
-                <a href="#lab" class="text-offwhite/70 hover:text-acid transition-colors interactable" data-i18n="nav.lab">The Lab</a>
-                <a href="#services" class="text-offwhite/70 hover:text-acid transition-colors interactable" data-i18n="nav.services">Capabilities</a>
+            <div class="hidden md:flex items-center gap-7 font-sans text-xs tracking-wider uppercase font-medium text-offwhite/70">
+                <a href="#hero" class="hover:text-acid transition-colors" data-i18n="nav.home">Home</a>
+                <a href="#who" class="hover:text-acid transition-colors" data-i18n="nav.who">Who I Am</a>
+                <a href="#lab" class="hover:text-acid transition-colors" data-i18n="nav.lab">The Lab</a>
+                <a href="#capabilities" class="hover:text-acid transition-colors" data-i18n="nav.services">Capabilities</a>
             </div>
 
-            <!-- Global Controls & Language Dropdown -->
-            <div class="flex items-center gap-2 sm:gap-3">
-                <button onclick="toggleAudio()" id="audio-toggle-btn" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors interactable text-offwhite" title="Toggle Sound FX" aria-label="Toggle Sound">
-                    <i class="ph ph-speaker-high text-base sm:text-lg" id="audio-icon"></i>
+            <!-- Controls and Language (EN / ZH / ES) -->
+            <div class="flex items-center gap-2">
+                <!-- Audio Mute/Unmute -->
+                <button onclick="toggleAudio()" id="audio-toggle-btn" class="w-9 h-9 rounded-full bg-white/[0.04] hover:bg-white/[0.08] flex items-center justify-center text-offwhite/80 hover:text-acid transition border border-white/[0.06]" title="Toggle Sound FX" aria-label="Toggle Sound">
+                    <i class="ph ph-speaker-high text-base" id="audio-icon"></i>
                 </button>
 
-                <!-- Language Switcher (EN / 简体 / 繁體 / ES) -->
-                <div class="relative group" id="lang-dropdown-wrapper">
-                    <button onclick="toggleLangMenu(event)" class="flex items-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-full bg-white/5 text-xs font-mono hover:text-acid transition-colors interactable border border-white/5">
-                        <i class="ph ph-globe text-sm sm:text-base"></i>
+                <!-- Language Dropdown -->
+                <div class="relative" id="lang-wrapper">
+                    <button onclick="toggleLangMenu(event)" class="px-2.5 py-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] flex items-center gap-1.5 font-mono text-xs border border-white/[0.06] text-offwhite/80">
+                        <i class="ph ph-globe text-sm"></i>
                         <span id="current-lang">EN</span>
-                        <i class="ph ph-caret-down text-[10px] text-white/50"></i>
+                        <i class="ph ph-caret-down text-[10px] text-offwhite/40"></i>
                     </button>
-                    <div id="lang-menu" class="absolute right-0 mt-2 w-32 bg-darkgray border border-white/10 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50">
-                        <button onclick="setLanguage('en')" class="w-full text-left px-4 py-2 text-xs hover:text-acid hover:bg-white/5 transition interactable flex items-center justify-between">
-                            <span>English</span> <span class="font-mono text-[10px] text-white/30"></span>
-                        </button>
-                        <button onclick="setLanguage('zh-cn')" class="w-full text-left px-4 py-2 text-xs hover:text-acid hover:bg-white/5 transition interactable flex items-center justify-between">
-                            <span>简体中文</span> <span class="font-mono text-[10px] text-white/30"></span>
-                        </button>
-                        <button onclick="setLanguage('zh-tw')" class="w-full text-left px-4 py-2 text-xs hover:text-acid hover:bg-white/5 transition interactable flex items-center justify-between">
-                            <span>繁體中文</span> <span class="font-mono text-[10px] text-white/30"></span>
-                        </button>
-                        <button onclick="setLanguage('es')" class="w-full text-left px-4 py-2 text-xs hover:text-acid hover:bg-white/5 transition interactable flex items-center justify-between">
-                            <span>Español</span> <span class="font-mono text-[10px] text-white/30"></span>
-                        </button>
+                    <div id="lang-menu" class="absolute right-0 mt-2 w-32 bg-darkcard border border-white/10 rounded-xl shadow-2xl py-1 opacity-0 invisible transition-all duration-200 z-50 font-sans text-xs">
+                        <button onclick="setLanguage('en')" class="w-full text-left px-3 py-1.5 hover:text-acid hover:bg-white/5 transition flex justify-between">English <span class="font-mono text-[10px] opacity-40">EN</span></button>
+                        <button onclick="setLanguage('zh')" class="w-full text-left px-3 py-1.5 hover:text-acid hover:bg-white/5 transition flex justify-between">简体中文 <span class="font-mono text-[10px] opacity-40">ZH</span></button>
+                        <button onclick="setLanguage('es')" class="w-full text-left px-3 py-1.5 hover:text-acid hover:bg-white/5 transition flex justify-between">Español <span class="font-mono text-[10px] opacity-40">ES</span></button>
                     </div>
                 </div>
 
-                <button onclick="toggleA11yPanel()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors interactable" aria-label="Accessibility Options">
-                    <i class="ph ph-wheelchair text-base sm:text-lg"></i>
+                <!-- A11y Settings Trigger -->
+                <button onclick="toggleA11yPanel()" class="w-9 h-9 rounded-full bg-white/[0.04] hover:bg-white/[0.08] flex items-center justify-center text-offwhite/80 hover:text-acid transition border border-white/[0.06]" aria-label="Accessibility Options">
+                    <i class="ph ph-wheelchair text-base"></i>
                 </button>
 
-                <!-- Mobile Hamburger Button -->
-                <button onclick="toggleMobileMenu()" id="mobile-menu-btn" class="md:hidden w-9 h-9 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors interactable" aria-label="Toggle Navigation Menu">
+                <!-- Mobile Hamburger -->
+                <button onclick="toggleMobileMenu()" class="md:hidden w-9 h-9 rounded-full bg-white/[0.04] flex items-center justify-center text-offwhite/80 hover:text-white border border-white/[0.06]" aria-label="Menu">
                     <i class="ph ph-list text-lg" id="mobile-menu-icon"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Mobile Drawer Navigation -->
-        <div id="mobile-menu" class="hidden md:hidden bg-darkgray/98 border-b border-white/10 px-6 py-6 transition-all duration-300">
-            <div class="flex flex-col gap-4 font-sans text-base">
-                <a href="#hero" onclick="closeMobileMenu()" class="text-offwhite/80 hover:text-acid transition-colors py-2 border-b border-white/5" data-i18n="nav.home">Home</a>
-                <a href="#who" onclick="closeMobileMenu()" class="text-offwhite/80 hover:text-acid transition-colors py-2 border-b border-white/5" data-i18n="nav.who">Who I Am</a>
-                <a href="#lab" onclick="closeMobileMenu()" class="text-offwhite/80 hover:text-acid transition-colors py-2 border-b border-white/5" data-i18n="nav.lab">The Lab</a>
-                <a href="#services" onclick="closeMobileMenu()" class="text-offwhite/80 hover:text-acid transition-colors py-2 border-b border-white/5" data-i18n="nav.services">Capabilities</a>
-                <a href="#contact-form" onclick="closeMobileMenu()" class="text-acid font-mono text-sm py-2" data-i18n="hero.cta">ENTER THE LAB</a>
-            </div>
+        <!-- Mobile Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden bg-darkcard/95 border-b border-white/10 px-6 py-4 flex flex-col gap-3 font-sans text-sm">
+            <a href="#hero" onclick="toggleMobileMenu()" class="py-2 border-b border-white/5 hover:text-acid" data-i18n="nav.home">Home</a>
+            <a href="#who" onclick="toggleMobileMenu()" class="py-2 border-b border-white/5 hover:text-acid" data-i18n="nav.who">Who I Am</a>
+            <a href="#lab" onclick="toggleMobileMenu()" class="py-2 border-b border-white/5 hover:text-acid" data-i18n="nav.lab">The Lab</a>
+            <a href="#capabilities" onclick="toggleMobileMenu()" class="py-2 border-b border-white/5 hover:text-acid" data-i18n="nav.services">Capabilities</a>
+            <a href="#contact" onclick="toggleMobileMenu()" class="py-2 text-acid font-mono text-xs" data-i18n="hero.cta">ENTER THE LAB →</a>
         </div>
     </nav>
 
     <!-- Slide-Out A11y Panel -->
-    <div id="a11y-panel" class="fixed top-24 right-4 sm:right-6 w-72 sm:w-80 bg-darkgray border border-white/10 rounded-3xl p-6 shadow-2xl z-50 transform translate-x-[130%] transition-transform duration-300">
-        <div class="flex justify-between items-center mb-6">
-            <h4 class="font-display font-bold text-base" data-i18n="a11y.title">Access Options</h4>
-            <button onclick="toggleA11yPanel()" class="text-white/50 hover:text-white interactable p-1" aria-label="Close A11y"><i class="ph ph-x"></i></button>
+    <div id="a11y-panel" class="fixed top-20 right-4 sm:right-8 w-72 bg-darkcard/95 border border-white/10 rounded-2xl p-5 shadow-2xl z-50 transform translate-x-[140%] transition-transform duration-300 backdrop-blur-xl">
+        <div class="flex justify-between items-center mb-4 pb-2 border-b border-white/10">
+            <h4 class="font-display font-semibold text-sm" data-i18n="a11y.title">Display Settings</h4>
+            <button onclick="toggleA11yPanel()" class="text-white/40 hover:text-white"><i class="ph ph-x"></i></button>
         </div>
-        <div class="space-y-4">
-            <label class="flex items-center justify-between cursor-pointer interactable">
-                <span class="text-xs font-sans" data-i18n="a11y.motion">Reduce Motion</span>
+        <div class="space-y-3.5 text-xs">
+            <label class="flex items-center justify-between cursor-pointer">
+                <span data-i18n="a11y.motion">Reduce Motion</span>
                 <input type="checkbox" id="toggle-motion" class="sr-only peer" onchange="toggleMotion(this.checked)">
-                <div class="w-11 h-6 bg-white/10 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neon relative"></div>
+                <div class="w-10 h-5 bg-white/10 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-neon relative"></div>
             </label>
-            <label class="flex items-center justify-between cursor-pointer interactable">
-                <span class="text-xs font-sans" data-i18n="a11y.contrast">High Contrast</span>
+            <label class="flex items-center justify-between cursor-pointer">
+                <span data-i18n="a11y.contrast">High Contrast</span>
                 <input type="checkbox" id="toggle-contrast" class="sr-only peer" onchange="toggleContrast(this.checked)">
-                <div class="w-11 h-6 bg-white/10 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neon relative"></div>
+                <div class="w-10 h-5 bg-white/10 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-neon relative"></div>
             </label>
-            <div class="pt-4 border-t border-white/10">
-                <label class="flex items-center justify-between cursor-pointer interactable mb-2">
-                    <span class="text-xs font-sans font-bold text-magenta" data-i18n="a11y.voice">Voice Assist</span>
-                    <input type="checkbox" id="toggle-voice" class="sr-only peer" onchange="toggleVoiceAssist(this.checked)">
-                    <div class="w-11 h-6 bg-white/10 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-magenta relative"></div>
-                </label>
-                <p class="text-[11px] text-white/50 font-sans leading-relaxed" data-i18n="a11y.voice_desc">Hover over text to have it read aloud with live highlight tracking.</p>
-            </div>
         </div>
     </div>
 
-    <!-- Hero Section -->
-    <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center pt-24 sm:pt-20 px-4 sm:px-6">
-        <div class="bg-mesh"></div>
-        <div class="grid-overlay"></div>
-        
-        <div class="max-w-5xl mx-auto text-center relative z-10 reveal">
-            <h1 class="font-display font-extrabold text-4xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.95] sm:leading-[0.92] tracking-tighter mb-6 uppercase" data-i18n="hero.title">
+    <!-- Diagnostic Matrix Modal (Secret Easter Egg) -->
+    <div id="matrix-modal" class="fixed inset-0 bg-obsidian/90 backdrop-blur-md z-[9990] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="handleMatrixModalBackdrop(event)">
+        <div class="bg-darkcard border border-magenta/40 p-6 sm:p-8 rounded-3xl max-w-md w-full relative shadow-[0_0_50px_rgba(255,0,255,0.2)]">
+            <button onclick="closeMatrix()" class="absolute top-5 right-5 text-offwhite/50 hover:text-white"><i class="ph ph-x text-xl"></i></button>
+            <h3 class="font-display text-lg font-bold text-magenta mb-4 tracking-tight" data-i18n="matrix.title">DIAGNOSTIC COMPLETE</h3>
+            <div class="relative w-full aspect-square border-l-2 border-b-2 border-white/20 flex flex-col mb-4">
+                <span class="absolute -left-9 top-1/2 -translate-y-1/2 -rotate-90 text-[10px] font-mono tracking-widest text-white/50" data-i18n="matrix.will">WILL</span>
+                <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-mono tracking-widest text-white/50" data-i18n="matrix.skill">SKILL</span>
+                <div class="flex-1 flex">
+                    <div class="flex-1 border-r border-b border-dashed border-white/10"></div>
+                    <div class="flex-1 border-b border-dashed border-white/10 relative">
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-acid rounded-full shadow-[0_0_15px_#dfff00] animate-pulse"></div>
+                        <span class="absolute top-1/2 left-1/2 mt-3 -translate-x-1/2 text-[10px] font-mono text-acid whitespace-nowrap" data-i18n="matrix.marker">YOU (High Will / High Skill)</span>
+                    </div>
+                </div>
+                <div class="flex-1 flex">
+                    <div class="flex-1 border-r border-dashed border-white/10"></div>
+                    <div class="flex-1"></div>
+                </div>
+            </div>
+            <p class="text-xs text-slate-400 font-sans leading-relaxed" data-i18n="matrix.desc">Secret diagnostic discovered. Plot twist: you were top-right quadrant all along.</p>
+        </div>
+    </div>
+
+    <!-- Case Video Modal Player -->
+    <div id="modal-video" class="fixed inset-0 bg-obsidian/95 backdrop-blur-md z-[9990] hidden flex items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300" onclick="handleVideoModalBackdrop(event)">
+        <div class="bg-darkcard border border-neon/30 p-4 sm:p-6 rounded-3xl max-w-4xl w-full shadow-[0_0_50px_rgba(57,255,20,0.2)]">
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-neon animate-pulse"></span>
+                    <h3 class="font-display text-sm sm:text-base font-bold text-offwhite" data-i18n="lab.card1.title">The Corporate Survival Drama</h3>
+                </div>
+                <button onclick="closeVideoModal()" class="text-offwhite/50 hover:text-neon text-lg"><i class="ph ph-x"></i></button>
+            </div>
+            <div class="aspect-video w-full rounded-2xl overflow-hidden bg-black border border-white/5">
+                <video id="player-video" class="w-full h-full object-contain" controls playsinline preload="metadata">
+                    <source src="https://media.wei-meng.org/hovercraft.mp4" type="video/mp4">
+                    Your browser doesn't support HTML5 video.
+                </video>
+            </div>
+            <p class="mt-2 text-[11px] font-mono text-white/40 text-right" data-i18n="video.hint">ESC to close</p>
+        </div>
+    </div>
+
+    <!-- Hero Section: Airy, Concise, and High Impact -->
+    <section id="hero" class="relative min-h-[92vh] flex flex-col justify-center items-center px-6 pt-24 pb-16 text-center">
+        <!-- Floating Subtle Gradient Mesh -->
+        <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[600px] h-[340px] sm:h-[400px] bg-gradient-to-tr from-acid/10 via-cybercyan/10 to-magenta/10 rounded-full blur-[110px] pointer-events-none -z-10 animate-pulse-glow"></div>
+
+        <div class="max-w-4xl mx-auto space-y-7 reveal-node in-view">
+            <!-- Headline -->
+            <h1 class="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tighter leading-[0.96] uppercase" data-i18n="hero.title">
                 STOP BORING <br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-acid via-neon to-cybercyan">YOUR EMPLOYEES.</span>
             </h1>
-            <p class="font-sans text-sm sm:text-lg md:text-xl text-offwhite/80 max-w-2xl mx-auto mb-10 leading-relaxed font-normal px-2" data-i18n="hero.subtitle">
-                Corporate training doesn't have to feel like a penalty. I design immersive simulations, interactive decision worlds, and AI co-pilots that modern teams actually want to complete.
+
+            <!-- Concise Subtitle -->
+            <p class="font-sans text-sm sm:text-base md:text-lg text-slate-300 max-w-xl mx-auto leading-relaxed font-light" data-i18n="hero.subtitle">
+                Corporate training shouldn't feel like a penalty. I design immersive simulations, interactive decision worlds, and AI co-pilots that modern teams genuinely want to complete.
             </p>
-            <a href="#lab" class="inline-block bg-acid text-obsidian font-display font-bold text-sm sm:text-base md:text-lg px-7 sm:px-9 py-3.5 sm:py-4 rounded-full btn-squish interactable hover:shadow-[0_0_35px_rgba(223,255,0,0.5)] transition" data-i18n="hero.cta">
-                ENTER THE LAB
-            </a>
+
+            <!-- Actions -->
+            <div class="pt-2 flex flex-wrap items-center justify-center gap-4">
+                <a href="#lab" onclick="audio.quantumLaunch()" class="btn-bounce inline-flex items-center gap-2 bg-acid text-obsidian font-display font-bold text-xs sm:text-sm px-7 py-3.5 rounded-full shadow-[0_0_25px_rgba(223,255,0,0.35)]" data-i18n="hero.cta">
+                    <span>EXPLORE PLAYABLE LAB</span>
+                    <i class="ph-bold ph-arrow-down text-sm"></i>
+                </a>
+                <a href="#who" class="btn-bounce inline-flex items-center gap-2 bg-white/[0.04] hover:bg-white/[0.08] text-offwhite border border-white/10 text-xs sm:text-sm font-sans px-5 py-3.5 rounded-full transition">
+                    <span data-i18n="nav.who">Who I Am</span>
+                </a>
+            </div>
         </div>
 
-        <div class="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-            <span class="text-[9px] sm:text-[10px] font-mono tracking-widest text-white/30 uppercase" data-i18n="hero.scroll">Initiate Sequence</span>
-            <div class="scroll-trigger"></div>
-        </div>
+        <!-- Minimal Sequence Glitch Pulse Line -->
+        <a href="#who" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 hover:opacity-100 transition group cursor-pointer" aria-label="Scroll down">
+            <div class="w-[2px] h-11 bg-gradient-to-b from-acid via-neon to-transparent animate-line-drop"></div>
+        </a>
     </section>
 
     <!-- Who I Am Section -->
-    <section id="who" class="py-20 sm:py-32 px-4 sm:px-6 bg-obsidian relative">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 sm:gap-16 items-center">
+    <section id="who" class="py-20 sm:py-28 px-6 max-w-6xl mx-auto border-t border-white/[0.04]">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
             
-            <div class="md:col-span-5 relative group reveal interactable" onmousemove="handleImageScrub(event)">
-                <div class="aspect-[4/5] bg-darkgray rounded-3xl overflow-hidden relative border border-white/10 group-hover:border-acid transition-colors">
-                    <img src="https://images.unsplash.com/photo-1573164574572-cb89e39749b4?auto=format&fit=crop&w=800&q=80" alt="Executive Headshot" class="w-full h-full object-cover transition-opacity duration-300" id="img-pro">
-                    <div id="img-fun-mask" class="absolute inset-0" style="clip-path: circle(0px at 50% 50%); transition: clip-path 0.1s ease-out;">
-                        <img src="https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&w=800&q=80" alt="Gamified VR Headset Vision" class="w-full h-full object-cover grayscale brightness-150 mix-blend-screen text-acid">
+            <!-- Compact Interactive Avatar Scrub -->
+            <div class="md:col-span-4 reveal-node">
+                <div class="relative group max-w-xs mx-auto aspect-[4/5] rounded-2xl overflow-hidden border border-white/10 hover:border-acid transition-colors cursor-crosshair" onmousemove="handleImageScrub(event)">
+                    <img src="https://images.unsplash.com/photo-1573164574572-cb89e39749b4?auto=format&fit=crop&w=700&q=80" alt="Executive Portrait" class="w-full h-full object-cover grayscale brightness-90 group-hover:grayscale-0 transition-all duration-500" id="img-pro">
+                    <div id="img-fun-mask" class="absolute inset-0 pointer-events-none" style="clip-path: circle(0px at 50% 50%); transition: clip-path 0.1s ease-out;">
+                        <img src="https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&w=700&q=80" alt="VR Headset Vision" class="w-full h-full object-cover contrast-125">
                         <div class="absolute inset-0 bg-acid/20 mix-blend-color"></div>
                     </div>
+                    <div class="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur font-mono text-[9px] text-white/50">
+                        HOVER REVEAL
+                    </div>
                 </div>
-                <div class="absolute -bottom-6 -right-6 w-32 h-32 border-2 border-dashed border-magenta rounded-full animate-spin-slow opacity-50 pointer-events-none"></div>
             </div>
 
-            <div class="md:col-span-7 space-y-12 sm:space-y-16 reveal">
-                <!-- Self-Intro Bio with Holographic Pop-up -->
+            <!-- Compact Bio & Mission -->
+            <div class="md:col-span-8 space-y-6 reveal-node">
                 <div>
-                    <h2 class="font-display text-xs tracking-[0.3em] text-magenta mb-4" data-i18n="who.sec1_tag">01 // FREE//BUILDER</h2>
-                    <p class="font-sans text-lg sm:text-xl md:text-2xl leading-relaxed text-offwhite/90">
-                        <span class="relative inline-block group/popover" id="i-trigger-wrapper">
-                            <span 
-                                id="i-text-trigger" 
-                                class="text-neon font-extrabold underline decoration-neon/40 underline-offset-8 hover:decoration-neon transition-all cursor-pointer interactable select-none px-1 rounded hover:bg-neon/10"
-                                onmouseenter="audio.glassTick()"
-                                data-i18n="who.i_subject">I</span>
-
-                            <!-- Floating Popover Card -->
-                            <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-72 sm:w-80 p-5 bg-obsidian/95 border border-neon/50 rounded-3xl shadow-[0_10px_40px_rgba(57,255,20,0.2)] backdrop-blur-2xl opacity-0 invisible group-hover/popover:opacity-100 group-hover/popover:visible translate-y-3 group-hover/popover:translate-y-0 transition-all duration-300 z-50 text-left pointer-events-auto block font-sans">
-                                <span class="flex items-center justify-between border-b border-white/10 pb-3 mb-3.5">
-                                    <span class="flex items-center gap-2">
-                                        <span class="relative flex h-2.5 w-2.5">
-                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon opacity-75"></span>
-                                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-neon"></span>
-                                        </span>
-                                        <span class="text-[10px] font-mono text-neon font-bold tracking-widest uppercase" data-i18n="popover.status">ACTIVE CONSULTANT</span>
-                                    </span>
+                    <span class="font-mono text-[11px] uppercase tracking-widest text-magenta block mb-2" data-i18n="who.sec1_tag">01 // FREE//BUILDER</span>
+                    <p class="font-sans text-base sm:text-lg md:text-xl text-offwhite/90 leading-relaxed font-light">
+                        <!-- Popover Trigger -->
+                        <span class="relative inline-block group/pop">
+                            <span class="text-neon font-bold underline decoration-neon/40 underline-offset-4 cursor-pointer hover:decoration-neon" onmouseenter="audio.glassTick()" data-i18n="who.i_subject">I</span>
+                            <!-- Popover detail card -->
+                            <span class="absolute bottom-full left-0 mb-3 w-64 p-4 rounded-xl bg-darkcard border border-neon/40 shadow-2xl opacity-0 invisible group-hover/pop:opacity-100 group-hover/pop:visible transition-all duration-200 z-40 text-left pointer-events-auto block font-sans">
+                                <span class="flex items-center gap-2 mb-2 pb-2 border-b border-white/10">
+                                    <span class="w-2 h-2 rounded-full bg-neon animate-pulse"></span>
+                                    <span class="font-mono text-[10px] text-neon uppercase" data-i18n="popover.status">ACTIVE CONSULTANT</span>
                                 </span>
-
-                                <span class="flex items-start gap-3.5 mb-4">
-                                    <span class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-neon/20 to-cybercyan/20 border border-neon/40 flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
-                                        <img src="./asset/profile.jpeg" alt="Wei MENG" class="w-full h-full object-cover" onerror="this.src='./asset/profile.jpeg'">
-                                    </span>
-                                    <span class="space-y-1">
-                                        <span class="font-display font-bold text-sm text-offwhite block tracking-tight">Wei MENG</span>
-                                        <span class="text-xs text-slate-300 font-sans block leading-snug" data-i18n="popover.desc">
-                                            L&D Architect & Corporate Coach designing gamified corporate training simulations.
-                                        </span>
-                                    </span>
-                                </span>
-
-                                <a 
-                                    href="https://wei-meng.org" 
-                                    target="_blank" 
-                                    rel="noopener noreferrer" 
-                                    onclick="audio.quantumLaunch()" 
-                                    class="flex items-center justify-between w-full px-4 py-2.5 rounded-2xl bg-gradient-to-r from-neon to-cybercyan text-obsidian text-xs font-mono font-bold btn-squish interactable hover:shadow-[0_0_20px_rgba(57,255,20,0.4)] transition">
-                                    <span data-i18n="popover.btn">Visit Personal Site</span>
-                                    <i class="ph-bold ph-arrow-up-right text-base font-bold"></i>
+                                <span class="font-display font-semibold text-xs text-white block">Wei MENG</span>
+                                <span class="text-[11px] text-slate-300 font-sans block mb-3 leading-snug" data-i18n="popover.desc">L&D Architect & Corporate Coach.</span>
+                                <a href="https://wei-meng.org" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="flex items-center justify-between font-mono text-[10px] text-obsidian bg-neon px-2.5 py-1 rounded font-bold hover:bg-acid transition">
+                                    <span data-i18n="popover.btn">Visit Site</span>
+                                    <i class="ph-bold ph-arrow-up-right"></i>
                                 </a>
-
-                                <span class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-8 border-transparent border-t-obsidian"></span>
                             </span>
                         </span>
-                        <span id="who-bio-remainder" data-i18n="who.sec1_bio_rest"> am an L&D Consultant and Corporate Coach who refuses to accept the status quo of corporate training. Working alongside top-tier global consultancies and hyper-growth tech firms, I blend deep organizational psychology with high-end media production.</span>
+                        <span data-i18n="who.sec1_bio_rest"> am an L&D Consultant and Corporate Coach who refuses to accept the status quo of corporate training. Working alongside top-tier global consultancies and hyper-growth tech firms, I blend deep organizational psychology with high-end media production.</span>
                     </p>
                 </div>
 
-                <!-- Mission -->
-                <div>
-                    <h2 class="font-display text-xs tracking-[0.3em] text-neon mb-4" data-i18n="who.sec2_tag">02 // THE MISSION</h2>
-                    <p class="font-sans text-lg sm:text-xl md:text-2xl leading-relaxed text-offwhite/90">
-                        <span data-i18n="who.sec2_mission">To eradicate the "mandatory training sigh." I leverage Generative AI, gamification, and interactive storytelling to transform how organizations learn. I don’t just train your workforce; I upgrade their entire operating system through highly realistic, culturally grounded, and actually humorous learning ecosystems</span><span class="text-acid cursor-pointer interactable hover:animate-ping inline-block" onclick="triggerSynapsePoint()">.</span>
+                <div class="pt-4 border-t border-white/[0.06]">
+                    <span class="font-mono text-[11px] uppercase tracking-widest text-cybercyan block mb-2" data-i18n="who.sec2_tag">02 // THE MISSION</span>
+                    <p class="font-sans text-sm sm:text-base text-slate-300 leading-relaxed font-light">
+                        <span data-i18n="who.sec2_mission">To eradicate the "mandatory training sigh." I leverage Generative AI, gamification, and interactive storytelling to transform how organizations learn. I don’t just train your workforce; I upgrade their entire operating system through highly realistic, culturally grounded, and actually humorous learning ecosystems</span><span class="text-acid cursor-pointer hover:animate-ping inline-block" onclick="triggerSynapsePoint()">.</span>
                     </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- The Lab: 6 Live Workplaces -->
-    <section id="lab" class="py-20 sm:py-32 px-4 sm:px-6 bg-darkgray relative border-t border-white/5">
-        <div class="max-w-7xl mx-auto">
-            <div class="mb-12 sm:mb-16 reveal flex flex-col md:flex-row md:items-end justify-between gap-4">
-                <div>
-                    <h2 class="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl uppercase mb-3" data-i18n="lab.title">The Lab: Playable Proof.</h2>
-                    <p class="font-mono text-xs sm:text-sm text-slate-400" data-i18n="lab.subtitle">Click on any preview picture to jump straight into the live interactive tool.</p>
-                </div>
-            </div>
-
-            <!-- Responsive 6-Card Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                
-                <!-- Card 1: Corporate Survival Drama -->
-                <div class="group bg-obsidian rounded-3xl p-6 sm:p-7 border border-white/5 hover:border-neon transition-all reveal flex flex-col justify-between" onmouseenter="audio.subWarmth()">
-                    <div>
-                        <div onclick="openVideoModal()" class="h-44 sm:h-48 w-full bg-[#1a1a1c] rounded-2xl mb-6 overflow-hidden relative cursor-pointer interactable play-trigger">
-                            <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=800&q=80" alt="The Corporate Survival Drama" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/20 to-transparent"></div>
-                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <div class="w-12 sm:w-14 h-12 sm:h-14 rounded-full bg-neon text-obsidian flex items-center justify-center shadow-[0_0_20px_rgba(57,255,20,0.5)] transform group-hover:scale-110 transition-transform">
-                                    <i class="ph-fill ph-play text-xl sm:text-2xl ml-1"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <h3 class="font-display text-lg sm:text-xl font-bold mb-2.5 text-offwhite group-hover:text-neon transition-colors cursor-pointer" onclick="openVideoModal()" data-i18n="lab.card1.title">Corporate Survival Drama</h3>
-                        <p class="font-sans text-slate-400 text-xs leading-relaxed mb-6" data-i18n="lab.card1.desc">A multi-level video series tackling real-world management challenges. Scripted with hyper-realistic dialogues (zero awkward monologues) and produced using advanced AI video tools.</p>
-                    </div>
-                    <div class="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-white/5">
-                        <button onclick="openVideoModal()" class="text-[11px] font-mono text-neon font-bold flex items-center gap-1 hover:underline interactable">
-                            <i class="ph-fill ph-play text-[10px]"></i> <span data-i18n="lab.card1.cta">Watch Demo</span>
-                        </button>
-                        <div class="flex gap-1.5">
-                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 text-white/50" data-i18n="lab.card1.tag1">AI Video</span>
-                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 text-white/50" data-i18n="lab.card1.tag2">Scripting</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2: Immersive Onboarding Universe -->
-                <div class="group bg-obsidian rounded-3xl p-6 sm:p-7 border border-white/5 hover:border-acid transition-all reveal flex flex-col justify-between" onmouseenter="audio.subWarmth()">
-                    <div>
-                        <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="h-44 sm:h-48 w-full bg-[#1a1a1c] rounded-2xl mb-6 overflow-hidden relative block cursor-pointer interactable play-trigger">
-                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80" alt="The Immersive Onboarding Universe" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/20 to-transparent"></div>
-                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <div class="w-12 sm:w-14 h-12 sm:h-14 rounded-full bg-acid text-obsidian flex items-center justify-center shadow-[0_0_20px_rgba(223,255,0,0.5)] transform group-hover:scale-110 transition-transform">
-                                    <i class="ph-bold ph-arrow-up-right text-xl sm:text-2xl"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="font-display text-lg sm:text-xl font-bold mb-2.5 text-offwhite group-hover:text-acid transition-colors block" data-i18n="lab.card2.title">Immersive Onboarding Universe</a>
-                        <p class="font-sans text-slate-400 text-xs leading-relaxed mb-6" data-i18n="lab.card2.desc">A fully gamified orientation experience. Interactive maps, branching scenarios, and a custom reward system where employees earn points for mastering culture.</p>
-                    </div>
-                    <div class="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-white/5">
-                        <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="text-[11px] font-mono text-acid font-bold flex items-center gap-1 hover:underline interactable">
-                            <i class="ph-bold ph-arrow-up-right text-[10px]"></i> <span data-i18n="lab.card2.cta">Open Webpage</span>
-                        </a>
-                        <div class="flex gap-1.5">
-                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 text-white/50" data-i18n="lab.card2.tag1">Gamification</span>
-                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 text-white/50" data-i18n="lab.card2.tag2">UI/UX</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 3: Coach Ziggy Sales Psychology Academy -->
-                <div class="group bg-obsidian rounded-3xl p-6 sm:p-7 border border-white/5 hover:border-magenta transition-all reveal flex flex-col justify-between" onmouseenter="audio.subWarmth()">
-                    <div>
-                        <a href="./sales/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="h-44 sm:h-48 w-full bg-[#1a1a1c] rounded-2xl mb-6 overflow-hidden relative block cursor-pointer interactable play-trigger">
-                            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80" alt="Coach Ziggy Sales Psychology Academy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/20 to-transparent"></div>
-                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <div class="w-12 sm:w-14 h-12 sm:h-14 rounded-full bg-magenta text-obsidian flex items-center justify-center shadow-[0_0_20px_rgba(255,0,255,0.5)] transform group-hover:scale-110 transition-transform">
-                                    <i class="ph-bold ph-arrow-up-right text-xl sm:text-2xl font-bold"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="./sales/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="font-display text-lg sm:text-xl font-bold mb-2.5 text-offwhite group-hover:text-magenta transition-colors block" data-i18n="lab.card3.title">Sales Psychology Academy</a>
-                        <p class="font-sans text-slate-400 text-xs leading-relaxed mb-6" data-i18n="lab.card3.desc">A gamified sales neuro-training simulator translating behavioral economics (Kahneman, Cialdini, Voss) into interactive 3D battlecards, cloze active recall drills, real-time objection blitzes, and zero-asset procedural audio.</p>
-                    </div>
-                    <div class="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-white/5">
-                        <a href="./sales/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="text-[11px] font-mono text-magenta font-bold flex items-center gap-1 hover:underline interactable">
-                            <i class="ph-bold ph-arrow-up-right text-[10px]"></i> <span data-i18n="lab.card3.cta">Open Webpage</span>
-                        </a>
-                        <div class="flex gap-1.5">
-                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 text-white/50" data-i18n="lab.card3.tag1">Sales Psychology</span>
-                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 text-white/50" data-i18n="lab.card3.tag2">Active Recall</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 4: LeadCraft AI Coaching Co-Pilot -->
-                <div class="group bg-obsidian rounded-3xl p-6 sm:p-7 border border-white/5 hover:border-cyberindigo transition-all reveal flex flex-col justify-between" onmouseenter="audio.subWarmth()">
-                    <div>
-                        <a href="./coach/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="h-44 sm:h-48 w-full bg-[#1a1a1c] rounded-2xl mb-6 overflow-hidden relative block cursor-pointer interactable play-trigger">
-                            <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80" alt="LeadCraft AI Leadership Coaching Co-Pilot" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/20 to-transparent"></div>
-                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <div class="w-12 sm:w-14 h-12 sm:h-14 rounded-full bg-cyberindigo text-white flex items-center justify-center shadow-[0_0_20px_rgba(99,102,241,0.5)] transform group-hover:scale-110 transition-transform">
-                                    <i class="ph-bold ph-arrow-up-right text-xl sm:text-2xl font-bold"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="./coach/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="font-display text-lg sm:text-xl font-bold mb-2.5 text-offwhite group-hover:text-cyberindigo transition-colors block" data-i18n="lab.card4.title">Corporate Coaching Co-Pilot</a>
-                        <p class="font-sans text-slate-400 text-xs leading-relaxed mb-6" data-i18n="lab.card4.desc">An interactive coaching co-pilot for people managers. Replaces micromanagement with high-leverage inquiry using behavioral frameworks like SCARF, The Coaching Habit, Situational Leadership (SLII), and Radical Candor.</p>
-                    </div>
-                    <div class="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-white/5">
-                        <a href="./coach/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="text-[11px] font-mono text-cyberindigo font-bold flex items-center gap-1 hover:underline interactable">
-                            <i class="ph-bold ph-arrow-up-right text-[10px]"></i> <span data-i18n="lab.card4.cta">Open Webpage</span>
-                        </a>
-                        <div class="flex gap-1.5">
-                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 text-white/50" data-i18n="lab.card4.tag1">Coaching Leadership</span>
-                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 text-white/50" data-i18n="lab.card4.tag2">SCARF & SLII</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 5: TERRA CQ The Intercultural Atlas -->
-                <div class="group bg-obsidian rounded-3xl p-6 sm:p-7 border border-white/5 hover:border-cyberamber transition-all reveal flex flex-col justify-between" onmouseenter="audio.subWarmth()">
-                    <div>
-                        <a href="./cq/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="h-44 sm:h-48 w-full bg-[#1a1a1c] rounded-2xl mb-6 overflow-hidden relative block cursor-pointer interactable play-trigger">
-                            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="Intercultural Atlas" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/20 to-transparent"></div>
-                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <div class="w-12 sm:w-14 h-12 sm:h-14 rounded-full bg-cyberamber text-obsidian flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.5)] transform group-hover:scale-110 transition-transform">
-                                    <i class="ph-bold ph-arrow-up-right text-xl sm:text-2xl font-bold"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="./cq/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="font-display text-lg sm:text-xl font-bold mb-2.5 text-offwhite group-hover:text-cyberamber transition-colors block" data-i18n="lab.card5.title">Intercultural Atlas</a>
-                        <p class="font-sans text-slate-400 text-xs leading-relaxed mb-6" data-i18n="lab.card5.desc">A gamified cultural intelligence (CQ) simulator navigating high-stakes multinational team friction. Features 8 global flight corridor dilemmas powered by the 3-Lenses Anti-Stereotyping framework, dual-perspective mirrors, and adaptive CQ radars.</p>
-                    </div>
-                    <div class="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-white/5">
-                        <a href="./cq/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="text-[11px] font-mono text-cyberamber font-bold flex items-center gap-1 hover:underline interactable">
-                            <i class="ph-bold ph-arrow-up-right text-[10px]"></i> <span data-i18n="lab.card5.cta">Open Webpage</span>
-                        </a>
-                        <div class="flex gap-1.5">
-                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 text-white/50" data-i18n="lab.card5.tag1">Cultural Intelligence</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 6: SYNAPSE Design Thinking Odyssey -->
-                <div class="group bg-obsidian rounded-3xl p-6 sm:p-7 border border-white/5 hover:border-cybercyan transition-all reveal flex flex-col justify-between" onmouseenter="audio.subWarmth()">
-                    <div>
-                        <a href="./design/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="h-44 sm:h-48 w-full bg-[#1a1a1c] rounded-2xl mb-6 overflow-hidden relative block cursor-pointer interactable play-trigger">
-                            <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80" alt="Design Thinking Odyssey" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/20 to-transparent"></div>
-                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <div class="w-12 sm:w-14 h-12 sm:h-14 rounded-full bg-cybercyan text-obsidian flex items-center justify-center shadow-[0_0_20px_rgba(0,240,255,0.5)] transform group-hover:scale-110 transition-transform">
-                                    <i class="ph-bold ph-arrow-up-right text-xl sm:text-2xl font-bold"></i>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="./design/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="font-display text-lg sm:text-xl font-bold mb-2.5 text-offwhite group-hover:text-cybercyan transition-colors block" data-i18n="lab.card6.title">Design Thinking Odyssey</a>
-                        <p class="font-sans text-slate-400 text-xs leading-relaxed mb-6" data-i18n="lab.card6.desc">A hands-on innovation sprint lab. Navigate 5 experiential phases (Empathize to Test), pop skepticism bubbles, deploy 48-hour disposable wireframes, and run Crazy 8s sprint countdowns with live sound effects.</p>
-                    </div>
-                    <div class="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-white/5">
-                        <a href="./design/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="text-[11px] font-mono text-cybercyan font-bold flex items-center gap-1 hover:underline interactable">
-                            <i class="ph-bold ph-arrow-up-right text-[10px]"></i> <span data-i18n="lab.card6.cta">Open Webpage</span>
-                        </a>
-                        <div class="flex gap-1.5">
-                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 text-white/50" data-i18n="lab.card6.tag1">Design Thinking</span>
-                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 text-white/50" data-i18n="lab.card6.tag2">Crazy 8s Timer</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Upgraded Capabilities / Services Section -->
-    <section id="services" class="py-20 sm:py-32 px-4 sm:px-6 bg-obsidian relative border-t border-white/5 overflow-hidden">
-        <!-- Ambient Background Accents -->
-        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-r from-acid/5 via-neon/5 to-magenta/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
-
-        <div class="max-w-7xl mx-auto">
-            <!-- Section Header -->
-            <div class="text-center max-w-3xl mx-auto mb-16 sm:mb-20 reveal">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-4">
-                    <span class="w-2 h-2 rounded-full bg-acid animate-ping"></span>
-                    <span class="font-mono text-xs text-acid font-semibold uppercase tracking-widest" data-i18n="services.tag">03 // CAPABILITY ARCHITECTURE</span>
-                </div>
-                <h2 class="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl uppercase tracking-tight mb-5" data-i18n="services.title">HOW WE UPGRADE YOUR TEAM.</h2>
-                <p class="font-sans text-sm sm:text-base text-slate-400 leading-relaxed" data-i18n="services.subtitle">
-                    From passive compliance checkmarks to behavior-altering simulations. Three high-impact deployment tiers engineered for global scale.
-                </p>
-            </div>
+    <!-- The Lab: Lightweight Interactive Showcase with Inspect Drawers -->
+    <section id="lab" class="py-20 sm:py-28 px-6 bg-darkcard/40 border-t border-white/[0.04] relative">
+        <div class="max-w-7xl mx-auto space-y-8">
             
-            <!-- Architectural 3-Column Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-                
-                <!-- Pillar 1: Strategic L&D Advisory -->
-                <div class="group bg-darkgray/90 rounded-3xl p-7 sm:p-8 border border-white/10 hover:border-acid transition-all duration-300 reveal flex flex-col justify-between relative hover:shadow-[0_10px_40px_rgba(223,255,0,0.15)] interactable" onmouseenter="audio.subWarmth()">
-                    <div class="relative z-10">
-                        <div class="flex items-center justify-between mb-8">
-                            <div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-acid group-hover:bg-acid/10 transition-colors">
-                                <i class="ph-duotone ph-brain text-3xl text-acid transform group-hover:scale-110 transition-transform"></i>
+            <!-- Section Header (Cleaned: Filter removed) -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-3 reveal-node">
+                <div>
+                    <div class="inline-flex items-center gap-2 text-xs font-mono text-neon uppercase tracking-wider mb-2">
+                        <i class="ph-bold ph-flask"></i>
+                        <span>Interactive Case Studies</span>
+                    </div>
+                    <h2 class="font-display font-extrabold text-2xl sm:text-4xl uppercase tracking-tight text-offwhite" data-i18n="lab.title">The Lab: Playable Proof.</h2>
+                    <p class="text-xs sm:text-sm text-slate-400 font-sans mt-1" data-i18n="lab.subtitle">Click preview cards to launch interactive prototypes or click "Inspect" to unfold deep details.</p>
+                </div>
+            </div>
+
+            <!-- Dynamic Project Cards Grid with Unfolding Drawers -->
+            <div id="lab-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Project 1: Video Survival Drama -->
+                <div class="lab-card group bg-darkcard/90 rounded-2xl border border-white/10 hover:border-neon transition-all p-5 flex flex-col justify-between reveal-node">
+                    <div>
+                        <!-- Thumbnail Launch -->
+                        <div onclick="openVideoModal()" class="relative aspect-video rounded-xl overflow-hidden bg-black cursor-pointer mb-4">
+                            <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=700&q=80" alt="Video Drama" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-11 h-11 rounded-full bg-neon text-obsidian flex items-center justify-center shadow-[0_0_15px_#39ff14] group-hover:scale-110 transition-transform">
+                                    <i class="ph-fill ph-play text-lg ml-0.5"></i>
+                                </div>
                             </div>
-                            <span class="font-mono text-xs font-bold px-3 py-1 rounded-full bg-acid/10 text-acid border border-acid/20" data-i18n="services.s1.badge">STRATEGY & AUDIT</span>
+                            <span class="absolute top-2.5 right-2.5 font-mono text-[9px] bg-black/70 px-2 py-0.5 rounded text-neon border border-neon/30">VIDEO DEMO</span>
                         </div>
 
-                        <span class="font-mono text-[11px] text-white/40 uppercase tracking-widest block mb-2">[TIER 01]</span>
-                        <h3 class="font-display font-bold text-2xl mb-4 text-offwhite group-hover:text-acid transition-colors" data-i18n="services.s1.title">Strategic L&D Advisory</h3>
-                        <p class="font-sans text-white/60 text-xs sm:text-sm leading-relaxed mb-8" data-i18n="services.s1.desc">End-to-end curriculum architecture, systemic learning audits, and tech-stack integration to build zero-bloat learning ecosystems for top-tier firms.</p>
-
-                        <!-- High-Agency Feature List -->
-                        <div class="space-y-3 pt-6 border-t border-white/10">
-                            <div class="flex items-start gap-2.5 text-xs text-slate-300">
-                                <i class="ph-fill ph-check-circle text-acid text-base shrink-0 mt-0.5"></i>
-                                <span data-i18n="services.s1.feat1">Competency Gap & Structural Audits</span>
-                            </div>
-                            <div class="flex items-start gap-2.5 text-xs text-slate-300">
-                                <i class="ph-fill ph-check-circle text-acid text-base shrink-0 mt-0.5"></i>
-                                <span data-i18n="services.s1.feat2">Modern Learning Stack & LMS Redesign</span>
-                            </div>
-                            <div class="flex items-start gap-2.5 text-xs text-slate-300">
-                                <i class="ph-fill ph-check-circle text-acid text-base shrink-0 mt-0.5"></i>
-                                <span data-i18n="services.s1.feat3">Verifiable ROI & Retention Metrics</span>
-                            </div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <h3 class="font-display font-bold text-base text-offwhite group-hover:text-neon transition-colors" data-i18n="lab.card1.title">Corporate Survival Drama</h3>
                         </div>
+                        <p class="text-xs text-slate-400 font-sans leading-relaxed line-clamp-2" data-i18n="lab.card1.desc">A multi-level video series tackling real-world management challenges. Scripted with hyper-realistic dialogues (zero awkward monologues) and produced using advanced AI video tools.</p>
                     </div>
 
-                    <div class="mt-8 pt-4 border-t border-white/5 flex items-center justify-between font-mono text-[11px] text-white/40">
-                        <span>DELIVERABLE</span>
-                        <span class="text-acid font-semibold">Quarterly Retainers</span>
+                    <!-- Unfolding Drawer Section -->
+                    <div class="mt-4 pt-3 border-t border-white/5">
+                        <div class="drawer-content">
+                            <div class="drawer-inner pt-2 pb-3 space-y-2 text-[11px] font-mono text-slate-300">
+                                <div class="p-2.5 rounded bg-white/[0.02] border border-white/5">
+                                    <span class="text-neon block font-bold mb-0.5" data-i18n="lab.inspect.impact">KEY IMPACT:</span>
+                                    <span>98% completion rate compared to 34% standard enterprise LMS average.</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">Midjourney</span>
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">HeyGen / ElevenLabs</span>
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">Branching Logic</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <button onclick="toggleCardUnfold(this)" class="unfold-btn text-white/50 hover:text-white flex items-center gap-1 transition">
+                                <span class="unfold-label" data-i18n="lab.inspect">Inspect</span>
+                                <i class="ph ph-caret-down text-xs transition-transform unfold-icon"></i>
+                            </button>
+                            <button onclick="openVideoModal()" class="text-neon font-bold flex items-center gap-1 hover:underline">
+                                <span data-i18n="lab.card1.cta">Watch Demo</span>
+                                <i class="ph-bold ph-arrow-up-right text-[10px]"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Pillar 2: High-Leverage Coaching -->
-                <div class="group bg-darkgray/90 rounded-3xl p-7 sm:p-8 border border-white/10 hover:border-neon transition-all duration-300 reveal flex flex-col justify-between relative hover:shadow-[0_10px_40px_rgba(57,255,20,0.15)] interactable" onmouseenter="audio.subWarmth()">
-                    <div class="relative z-10">
-                        <div class="flex items-center justify-between mb-8">
-                            <div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-neon group-hover:bg-neon/10 transition-colors">
-                                <i class="ph-duotone ph-rocket-launch text-3xl text-neon transform group-hover:scale-110 transition-transform"></i>
+                <!-- Project 2: Onboarding Universe -->
+                <div class="lab-card group bg-darkcard/90 rounded-2xl border border-white/10 hover:border-acid transition-all p-5 flex flex-col justify-between reveal-node">
+                    <div>
+                        <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="relative aspect-video rounded-xl overflow-hidden bg-black block cursor-pointer mb-4">
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=700&q=80" alt="Onboarding" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-11 h-11 rounded-full bg-acid text-obsidian flex items-center justify-center shadow-[0_0_15px_#dfff00] group-hover:scale-110 transition-transform">
+                                    <i class="ph-bold ph-arrow-up-right text-lg"></i>
+                                </div>
                             </div>
-                            <span class="font-mono text-xs font-bold px-3 py-1 rounded-full bg-neon/10 text-neon border border-neon/20" data-i18n="services.s2.badge">LEADERSHIP BEHAVIOR</span>
-                        </div>
+                            <span class="absolute top-2.5 right-2.5 font-mono text-[9px] bg-black/70 px-2 py-0.5 rounded text-acid border border-acid/30">WEB APP</span>
+                        </a>
 
-                        <span class="font-mono text-[11px] text-white/40 uppercase tracking-widest block mb-2">[TIER 02]</span>
-                        <h3 class="font-display font-bold text-2xl mb-4 text-offwhite group-hover:text-neon transition-colors" data-i18n="services.s2.title">Executive & Managerial Coaching</h3>
-                        <p class="font-sans text-white/60 text-xs sm:text-sm leading-relaxed mb-8" data-i18n="services.s2.desc">High-leverage leadership interventions grounded in applied neuroscience and behavioral frameworks to transform high-potential talent into decisive culture leaders.</p>
-
-                        <!-- High-Agency Feature List -->
-                        <div class="space-y-3 pt-6 border-t border-white/10">
-                            <div class="flex items-start gap-2.5 text-xs text-slate-300">
-                                <i class="ph-fill ph-check-circle text-neon text-base shrink-0 mt-0.5"></i>
-                                <span data-i18n="services.s2.feat1">Applied Neuroscience (SCARF & SLII)</span>
-                            </div>
-                            <div class="flex items-start gap-2.5 text-xs text-slate-300">
-                                <i class="ph-fill ph-check-circle text-neon text-base shrink-0 mt-0.5"></i>
-                                <span data-i18n="services.s2.feat2">Deliberate Practice & Live Scenarios</span>
-                            </div>
-                            <div class="flex items-start gap-2.5 text-xs text-slate-300">
-                                <i class="ph-fill ph-check-circle text-neon text-base shrink-0 mt-0.5"></i>
-                                <span data-i18n="services.s2.feat3">Radical Candor & Psychological Safety</span>
-                            </div>
-                        </div>
+                        <h3 class="font-display font-bold text-base text-offwhite group-hover:text-acid transition-colors" data-i18n="lab.card2.title">Immersive Onboarding Universe</h3>
+                        <p class="text-xs text-slate-400 font-sans leading-relaxed line-clamp-2 mt-2" data-i18n="lab.card2.desc">A fully gamified orientation experience. Interactive maps, branching scenarios, and a custom reward system where employees earn points for mastering culture.</p>
                     </div>
 
-                    <div class="mt-8 pt-4 border-t border-white/5 flex items-center justify-between font-mono text-[11px] text-white/40">
-                        <span>DELIVERABLE</span>
-                        <span class="text-neon font-semibold">1-on-1 & Cohort Labs</span>
+                    <div class="mt-4 pt-3 border-t border-white/5">
+                        <div class="drawer-content">
+                            <div class="drawer-inner pt-2 pb-3 space-y-2 text-[11px] font-mono text-slate-300">
+                                <div class="p-2.5 rounded bg-white/[0.02] border border-white/5">
+                                    <span class="text-acid block font-bold mb-0.5" data-i18n="lab.inspect.impact">KEY IMPACT:</span>
+                                    <span>Time-to-productivity reduced by 14 days across new technical cohorts.</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">Spatial Map UX</span>
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">Web Audio API</span>
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">Reward Engine</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <button onclick="toggleCardUnfold(this)" class="unfold-btn text-white/50 hover:text-white flex items-center gap-1 transition">
+                                <span class="unfold-label" data-i18n="lab.inspect">Inspect</span>
+                                <i class="ph ph-caret-down text-xs transition-transform unfold-icon"></i>
+                            </button>
+                            <a href="https://projectsunrise.win/journey" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="text-acid font-bold flex items-center gap-1 hover:underline">
+                                <span data-i18n="lab.card2.cta">Open Webpage</span>
+                                <i class="ph-bold ph-arrow-up-right text-[10px]"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Pillar 3: Generative Simulations & Media -->
-                <div class="group bg-darkgray/90 rounded-3xl p-7 sm:p-8 border border-white/10 hover:border-magenta transition-all duration-300 reveal flex flex-col justify-between relative hover:shadow-[0_10px_40px_rgba(255,0,255,0.15)] interactable" onmouseenter="audio.subWarmth()">
-                    <div class="relative z-10">
-                        <div class="flex items-center justify-between mb-8">
-                            <div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-magenta group-hover:bg-magenta/10 transition-colors">
-                                <i class="ph-duotone ph-magic-wand text-3xl text-magenta transform group-hover:scale-110 transition-transform"></i>
+                <!-- Project 3: Sales Psychology Academy -->
+                <div class="lab-card group bg-darkcard/90 rounded-2xl border border-white/10 hover:border-magenta transition-all p-5 flex flex-col justify-between reveal-node">
+                    <div>
+                        <a href="./sales/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="relative aspect-video rounded-xl overflow-hidden bg-black block cursor-pointer mb-4">
+                            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=700&q=80" alt="Sales Neuro-training" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-11 h-11 rounded-full bg-magenta text-obsidian flex items-center justify-center shadow-[0_0_15px_#ff00ff] group-hover:scale-110 transition-transform">
+                                    <i class="ph-bold ph-arrow-up-right text-lg"></i>
+                                </div>
                             </div>
-                            <span class="font-mono text-xs font-bold px-3 py-1 rounded-full bg-magenta/10 text-magenta border border-magenta/20" data-i18n="services.s3.badge">INTERACTIVE MEDIA</span>
-                        </div>
+                            <span class="absolute top-2.5 right-2.5 font-mono text-[9px] bg-black/70 px-2 py-0.5 rounded text-magenta border border-magenta/30">SIMULATOR</span>
+                        </a>
 
-                        <span class="font-mono text-[11px] text-white/40 uppercase tracking-widest block mb-2">[TIER 03]</span>
-                        <h3 class="font-display font-bold text-2xl mb-4 text-offwhite group-hover:text-magenta transition-colors" data-i18n="services.s3.title">Simulations & Generative Media</h3>
-                        <p class="font-sans text-white/60 text-xs sm:text-sm leading-relaxed mb-8" data-i18n="services.s3.desc">AI-assisted scriptwriting, playable branching scenarios, and high-fidelity interactive web prototypes tailored directly to your company's friction points.</p>
-
-                        <!-- High-Agency Feature List -->
-                        <div class="space-y-3 pt-6 border-t border-white/10">
-                            <div class="flex items-start gap-2.5 text-xs text-slate-300">
-                                <i class="ph-fill ph-check-circle text-magenta text-base shrink-0 mt-0.5"></i>
-                                <span data-i18n="services.s3.feat1">Custom Web-Based Branching Engines</span>
-                            </div>
-                            <div class="flex items-start gap-2.5 text-xs text-slate-300">
-                                <i class="ph-fill ph-check-circle text-magenta text-base shrink-0 mt-0.5"></i>
-                                <span data-i18n="services.s3.feat2">AI Studio Video & Voice Synthesis</span>
-                            </div>
-                            <div class="flex items-start gap-2.5 text-xs text-slate-300">
-                                <i class="ph-fill ph-check-circle text-magenta text-base shrink-0 mt-0.5"></i>
-                                <span data-i18n="services.s3.feat3">Tamper-Evident Proof & Gamified Badges</span>
-                            </div>
-                        </div>
+                        <h3 class="font-display font-bold text-base text-offwhite group-hover:text-magenta transition-colors" data-i18n="lab.card3.title">Sales Psychology Academy</h3>
+                        <p class="text-xs text-slate-400 font-sans leading-relaxed line-clamp-2 mt-2" data-i18n="lab.card3.desc">A gamified sales neuro-training simulator translating behavioral economics (Kahneman, Cialdini, Voss) into interactive 3D battlecards and cloze recall.</p>
                     </div>
 
-                    <div class="mt-8 pt-4 border-t border-white/5 flex items-center justify-between font-mono text-[11px] text-white/40">
-                        <span>DELIVERABLE</span>
-                        <span class="text-magenta font-semibold">Custom Game Builds</span>
+                    <div class="mt-4 pt-3 border-t border-white/5">
+                        <div class="drawer-content">
+                            <div class="drawer-inner pt-2 pb-3 space-y-2 text-[11px] font-mono text-slate-300">
+                                <div class="p-2.5 rounded bg-white/[0.02] border border-white/5">
+                                    <span class="text-magenta block font-bold mb-0.5" data-i18n="lab.inspect.impact">KEY IMPACT:</span>
+                                    <span>2.4x retention multiplier tested over standard slide-based product briefings.</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">Cialdini & Voss</span>
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">Active Recall Cloze</span>
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">Synthesized SFX</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <button onclick="toggleCardUnfold(this)" class="unfold-btn text-white/50 hover:text-white flex items-center gap-1 transition">
+                                <span class="unfold-label" data-i18n="lab.inspect">Inspect</span>
+                                <i class="ph ph-caret-down text-xs transition-transform unfold-icon"></i>
+                            </button>
+                            <a href="./sales/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="text-magenta font-bold flex items-center gap-1 hover:underline">
+                                <span data-i18n="lab.card3.cta">Open Webpage</span>
+                                <i class="ph-bold ph-arrow-up-right text-[10px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4: Coaching Co-Pilot -->
+                <div class="lab-card group bg-darkcard/90 rounded-2xl border border-white/10 hover:border-cyberindigo transition-all p-5 flex flex-col justify-between reveal-node">
+                    <div>
+                        <a href="./coach/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="relative aspect-video rounded-xl overflow-hidden bg-black block cursor-pointer mb-4">
+                            <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=700&q=80" alt="Leadership AI" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-11 h-11 rounded-full bg-cyberindigo text-white flex items-center justify-center shadow-[0_0_15px_#6366f1] group-hover:scale-110 transition-transform">
+                                    <i class="ph-bold ph-arrow-up-right text-lg"></i>
+                                </div>
+                            </div>
+                            <span class="absolute top-2.5 right-2.5 font-mono text-[9px] bg-black/70 px-2 py-0.5 rounded text-cyberindigo border border-cyberindigo/30">AI TOOL</span>
+                        </a>
+
+                        <h3 class="font-display font-bold text-base text-offwhite group-hover:text-cyberindigo transition-colors" data-i18n="lab.card4.title">Corporate Coaching Co-Pilot</h3>
+                        <p class="text-xs text-slate-400 font-sans leading-relaxed line-clamp-2 mt-2" data-i18n="lab.card4.desc">An interactive coaching co-pilot for people managers. Replaces micromanagement with high-leverage inquiry using behavioral frameworks like SCARF and SLII.</p>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-white/5">
+                        <div class="drawer-content">
+                            <div class="drawer-inner pt-2 pb-3 space-y-2 text-[11px] font-mono text-slate-300">
+                                <div class="p-2.5 rounded bg-white/[0.02] border border-white/5">
+                                    <span class="text-cyberindigo block font-bold mb-0.5" data-i18n="lab.inspect.impact">KEY IMPACT:</span>
+                                    <span>Adopted by 300+ frontline managers to practice difficult 1-on-1 conversations safely.</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">SCARF Model</span>
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">Radical Candor</span>
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">Dynamic Inquiry</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <button onclick="toggleCardUnfold(this)" class="unfold-btn text-white/50 hover:text-white flex items-center gap-1 transition">
+                                <span class="unfold-label" data-i18n="lab.inspect">Inspect</span>
+                                <i class="ph ph-caret-down text-xs transition-transform unfold-icon"></i>
+                            </button>
+                            <a href="./coach/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="text-cyberindigo font-bold flex items-center gap-1 hover:underline">
+                                <span data-i18n="lab.card4.cta">Open Webpage</span>
+                                <i class="ph-bold ph-arrow-up-right text-[10px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 5: Intercultural Atlas -->
+                <div class="lab-card group bg-darkcard/90 rounded-2xl border border-white/10 hover:border-cyberamber transition-all p-5 flex flex-col justify-between reveal-node">
+                    <div>
+                        <a href="./cq/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="relative aspect-video rounded-xl overflow-hidden bg-black block cursor-pointer mb-4">
+                            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=700&q=80" alt="Cultural Intelligence" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-11 h-11 rounded-full bg-cyberamber text-obsidian flex items-center justify-center shadow-[0_0_15px_#f59e0b] group-hover:scale-110 transition-transform">
+                                    <i class="ph-bold ph-arrow-up-right text-lg"></i>
+                                </div>
+                            </div>
+                            <span class="absolute top-2.5 right-2.5 font-mono text-[9px] bg-black/70 px-2 py-0.5 rounded text-cyberamber border border-cyberamber/30">CQ ATLAS</span>
+                        </a>
+
+                        <h3 class="font-display font-bold text-base text-offwhite group-hover:text-cyberamber transition-colors" data-i18n="lab.card5.title">Intercultural Atlas</h3>
+                        <p class="text-xs text-slate-400 font-sans leading-relaxed line-clamp-2 mt-2" data-i18n="lab.card5.desc">A gamified cultural intelligence (CQ) simulator navigating multinational team friction with 8 global flight corridor dilemmas.</p>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-white/5">
+                        <div class="drawer-content">
+                            <div class="drawer-inner pt-2 pb-3 space-y-2 text-[11px] font-mono text-slate-300">
+                                <div class="p-2.5 rounded bg-white/[0.02] border border-white/5">
+                                    <span class="text-cyberamber block font-bold mb-0.5" data-i18n="lab.inspect.impact">KEY IMPACT:</span>
+                                    <span>Eliminated stereotype pitfalls using anti-bias mirrors and multi-perspective scoring.</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">3-Lenses CQ</span>
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">Adaptive Radar</span>
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">Corridor Dilemmas</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <button onclick="toggleCardUnfold(this)" class="unfold-btn text-white/50 hover:text-white flex items-center gap-1 transition">
+                                <span class="unfold-label" data-i18n="lab.inspect">Inspect</span>
+                                <i class="ph ph-caret-down text-xs transition-transform unfold-icon"></i>
+                            </button>
+                            <a href="./cq/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="text-cyberamber font-bold flex items-center gap-1 hover:underline">
+                                <span data-i18n="lab.card5.cta">Open Webpage</span>
+                                <i class="ph-bold ph-arrow-up-right text-[10px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 6: Design Thinking Odyssey -->
+                <div class="lab-card group bg-darkcard/90 rounded-2xl border border-white/10 hover:border-cybercyan transition-all p-5 flex flex-col justify-between reveal-node">
+                    <div>
+                        <a href="./design/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="relative aspect-video rounded-xl overflow-hidden bg-black block cursor-pointer mb-4">
+                            <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=700&q=80" alt="Design Thinking Odyssey" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-11 h-11 rounded-full bg-cybercyan text-obsidian flex items-center justify-center shadow-[0_0_15px_#00f0ff] group-hover:scale-110 transition-transform">
+                                    <i class="ph-bold ph-arrow-up-right text-lg"></i>
+                                </div>
+                            </div>
+                            <span class="absolute top-2.5 right-2.5 font-mono text-[9px] bg-black/70 px-2 py-0.5 rounded text-cybercyan border border-cybercyan/30">SPRINT LAB</span>
+                        </a>
+
+                        <h3 class="font-display font-bold text-base text-offwhite group-hover:text-cybercyan transition-colors" data-i18n="lab.card6.title">Design Thinking Odyssey</h3>
+                        <p class="text-xs text-slate-400 font-sans leading-relaxed line-clamp-2 mt-2" data-i18n="lab.card6.desc">A hands-on innovation sprint lab. Navigate 5 experiential phases (Empathize to Test), pop skepticism bubbles, and run Crazy 8s sprint countdowns.</p>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-white/5">
+                        <div class="drawer-content">
+                            <div class="drawer-inner pt-2 pb-3 space-y-2 text-[11px] font-mono text-slate-300">
+                                <div class="p-2.5 rounded bg-white/[0.02] border border-white/5">
+                                    <span class="text-cybercyan block font-bold mb-0.5" data-i18n="lab.inspect.impact">KEY IMPACT:</span>
+                                    <span>Cut prototype development cycles down from 6 weeks to 48-hour sprints.</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">Crazy 8s Audio</span>
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">5-Phase Sprint</span>
+                                    <span class="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/60">Wireframe Engine</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <button onclick="toggleCardUnfold(this)" class="unfold-btn text-white/50 hover:text-white flex items-center gap-1 transition">
+                                <span class="unfold-label" data-i18n="lab.inspect">Inspect</span>
+                                <i class="ph ph-caret-down text-xs transition-transform unfold-icon"></i>
+                            </button>
+                            <a href="./design/" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="text-cybercyan font-bold flex items-center gap-1 hover:underline">
+                                <span data-i18n="lab.card6.cta">Open Webpage</span>
+                                <i class="ph-bold ph-arrow-up-right text-[10px]"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
             </div>
+        </div>
+    </section>
+
+    <!-- 03 Capability Architecture: Elevated Polished Unfolding Deck -->
+    <section id="capabilities" class="py-20 sm:py-28 px-6 max-w-5xl mx-auto border-t border-white/[0.04]">
+        <div class="text-center max-w-2xl mx-auto mb-14 reveal-node">
+            <span class="font-mono text-[11px] text-acid uppercase tracking-widest block mb-2" data-i18n="services.tag">03 // CAPABILITY ARCHITECTURE</span>
+            <h2 class="font-display font-extrabold text-2xl sm:text-4xl uppercase tracking-tight text-offwhite" data-i18n="services.title">HOW WE UPGRADE YOUR TEAM.</h2>
+            <p class="font-sans text-xs sm:text-sm text-slate-400 mt-2" data-i18n="services.subtitle">Three high-impact deployment tiers engineered for global scale. Select a tier to expand.</p>
+        </div>
+
+        <!-- Polished Accordion Cards Deck -->
+        <div class="space-y-4 reveal-node" id="capabilities-accordion">
+
+            <!-- Tier 1: Strategic L&D Advisory -->
+            <div class="cap-item group border border-white/10 hover:border-acid/40 rounded-2xl bg-darkcard/70 transition-all duration-300 overflow-hidden cursor-pointer" onclick="toggleCapability(0)">
+                <div class="p-5 sm:p-7 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4 sm:gap-5">
+                        <div class="w-12 h-12 rounded-xl bg-acid/10 border border-acid/30 text-acid flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                            <i class="ph-duotone ph-brain text-2xl"></i>
+                        </div>
+                        <div>
+                            <span class="font-mono text-[10px] text-acid uppercase tracking-widest block mb-0.5">[TIER 01]</span>
+                            <h3 class="font-display font-bold text-base sm:text-xl text-offwhite group-hover:text-acid transition-colors" data-i18n="services.s1.title">Strategic L&D Advisory</h3>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 sm:gap-4 shrink-0">
+                        <span class="hidden sm:inline-block font-mono text-[11px] px-2.5 py-1 rounded-full bg-white/5 text-white/50 border border-white/5" data-i18n="services.s1.badge">STRATEGY & AUDIT</span>
+                        <div class="cap-arrow-box w-8 h-8 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center text-white/60 group-hover:text-acid group-hover:border-acid/40 transition-all">
+                            <i class="ph ph-plus text-xs cap-icon transition-transform duration-300"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cap-drawer">
+                    <div class="cap-drawer-inner px-5 sm:px-7 pb-6 pt-0 border-t border-white/5">
+                        <div class="pt-5 grid grid-cols-1 md:grid-cols-12 gap-6">
+                            <div class="md:col-span-7 space-y-2">
+                                <span class="font-mono text-[10px] text-white/40 uppercase tracking-widest block">Executive Summary</span>
+                                <p class="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed" data-i18n="services.s1.desc">End-to-end curriculum architecture, systemic learning audits, and tech-stack integration to build zero-bloat learning ecosystems for top-tier firms.</p>
+                            </div>
+                            <div class="md:col-span-5 space-y-2.5 pt-2 md:pt-0 border-t md:border-t-0 md:border-l border-white/5 md:pl-6 font-mono text-[11px] text-slate-300">
+                                <div class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-acid text-sm shrink-0"></i> <span data-i18n="services.s1.feat1">Competency Gap & Structural Audits</span></div>
+                                <div class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-acid text-sm shrink-0"></i> <span data-i18n="services.s1.feat2">Modern Learning Stack & LMS Redesign</span></div>
+                                <div class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-acid text-sm shrink-0"></i> <span data-i18n="services.s1.feat3">Verifiable ROI & Retention Metrics</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tier 2: Executive & Managerial Coaching -->
+            <div class="cap-item group border border-white/10 hover:border-neon/40 rounded-2xl bg-darkcard/70 transition-all duration-300 overflow-hidden cursor-pointer" onclick="toggleCapability(1)">
+                <div class="p-5 sm:p-7 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4 sm:gap-5">
+                        <div class="w-12 h-12 rounded-xl bg-neon/10 border border-neon/30 text-neon flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                            <i class="ph-duotone ph-rocket-launch text-2xl"></i>
+                        </div>
+                        <div>
+                            <span class="font-mono text-[10px] text-neon uppercase tracking-widest block mb-0.5">[TIER 02]</span>
+                            <h3 class="font-display font-bold text-base sm:text-xl text-offwhite group-hover:text-neon transition-colors" data-i18n="services.s2.title">Executive & Managerial Coaching</h3>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 sm:gap-4 shrink-0">
+                        <span class="hidden sm:inline-block font-mono text-[11px] px-2.5 py-1 rounded-full bg-white/5 text-white/50 border border-white/5" data-i18n="services.s2.badge">LEADERSHIP BEHAVIOR</span>
+                        <div class="cap-arrow-box w-8 h-8 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center text-white/60 group-hover:text-neon group-hover:border-neon/40 transition-all">
+                            <i class="ph ph-plus text-xs cap-icon transition-transform duration-300"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cap-drawer">
+                    <div class="cap-drawer-inner px-5 sm:px-7 pb-6 pt-0 border-t border-white/5">
+                        <div class="pt-5 grid grid-cols-1 md:grid-cols-12 gap-6">
+                            <div class="md:col-span-7 space-y-2">
+                                <span class="font-mono text-[10px] text-white/40 uppercase tracking-widest block">Executive Summary</span>
+                                <p class="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed" data-i18n="services.s2.desc">High-leverage leadership interventions grounded in applied neuroscience and behavioral frameworks to transform high-potential talent into decisive culture leaders.</p>
+                            </div>
+                            <div class="md:col-span-5 space-y-2.5 pt-2 md:pt-0 border-t md:border-t-0 md:border-l border-white/5 md:pl-6 font-mono text-[11px] text-slate-300">
+                                <div class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-neon text-sm shrink-0"></i> <span data-i18n="services.s2.feat1">Applied Neuroscience (SCARF & SLII)</span></div>
+                                <div class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-neon text-sm shrink-0"></i> <span data-i18n="services.s2.feat2">Deliberate Practice & Live Scenarios</span></div>
+                                <div class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-neon text-sm shrink-0"></i> <span data-i18n="services.s2.feat3">Radical Candor & Psychological Safety</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tier 3: Simulations & Generative Media -->
+            <div class="cap-item group border border-white/10 hover:border-magenta/40 rounded-2xl bg-darkcard/70 transition-all duration-300 overflow-hidden cursor-pointer" onclick="toggleCapability(2)">
+                <div class="p-5 sm:p-7 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4 sm:gap-5">
+                        <div class="w-12 h-12 rounded-xl bg-magenta/10 border border-magenta/30 text-magenta flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                            <i class="ph-duotone ph-magic-wand text-2xl"></i>
+                        </div>
+                        <div>
+                            <span class="font-mono text-[10px] text-magenta uppercase tracking-widest block mb-0.5">[TIER 03]</span>
+                            <h3 class="font-display font-bold text-base sm:text-xl text-offwhite group-hover:text-magenta transition-colors" data-i18n="services.s3.title">Simulations & Generative Media</h3>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 sm:gap-4 shrink-0">
+                        <span class="hidden sm:inline-block font-mono text-[11px] px-2.5 py-1 rounded-full bg-white/5 text-white/50 border border-white/5" data-i18n="services.s3.badge">INTERACTIVE MEDIA</span>
+                        <div class="cap-arrow-box w-8 h-8 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center text-white/60 group-hover:text-magenta group-hover:border-magenta/40 transition-all">
+                            <i class="ph ph-plus text-xs cap-icon transition-transform duration-300"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cap-drawer">
+                    <div class="cap-drawer-inner px-5 sm:px-7 pb-6 pt-0 border-t border-white/5">
+                        <div class="pt-5 grid grid-cols-1 md:grid-cols-12 gap-6">
+                            <div class="md:col-span-7 space-y-2">
+                                <span class="font-mono text-[10px] text-white/40 uppercase tracking-widest block">Executive Summary</span>
+                                <p class="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed" data-i18n="services.s3.desc">AI-assisted scriptwriting, playable branching scenarios, and high-fidelity interactive web prototypes tailored directly to your company's friction points.</p>
+                            </div>
+                            <div class="md:col-span-5 space-y-2.5 pt-2 md:pt-0 border-t md:border-t-0 md:border-l border-white/5 md:pl-6 font-mono text-[11px] text-slate-300">
+                                <div class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-magenta text-sm shrink-0"></i> <span data-i18n="services.s3.feat1">Custom Web-Based Branching Engines</span></div>
+                                <div class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-magenta text-sm shrink-0"></i> <span data-i18n="services.s3.feat2">AI Studio Video & Voice Synthesis</span></div>
+                                <div class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-magenta text-sm shrink-0"></i> <span data-i18n="services.s3.feat3">Tamper-Evident Proof & Gamified Badges</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
     <!-- Footer & Contact Form -->
-    <footer class="py-20 sm:py-32 px-4 sm:px-6 bg-obsidian relative overflow-hidden border-t border-white/10">
-        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-acid opacity-[0.03] blur-[120px] rounded-t-full pointer-events-none"></div>
+    <footer id="contact" class="py-20 sm:py-28 px-6 bg-darkcard/50 border-t border-white/[0.06] relative">
+        <div class="max-w-2xl mx-auto text-center space-y-8 reveal-node">
+            <div>
+                <h2 class="font-display font-extrabold text-2xl sm:text-4xl uppercase leading-tight text-offwhite" data-i18n="footer.title">
+                    Ready to make learning your <br><span class="text-acid">competitive advantage?</span>
+                </h2>
+                <p class="font-sans text-xs sm:text-sm text-slate-400 mt-2 font-light" data-i18n="footer.subtitle">Let’s build something they won't want to skip.</p>
+            </div>
 
-        <div class="max-w-4xl mx-auto text-center relative z-10 reveal">
-            <h2 class="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl uppercase leading-tight mb-6 sm:mb-8" data-i18n="footer.title">
-                Ready to make learning your <br><span class="text-acid">competitive advantage?</span>
-            </h2>
-            <p class="font-sans text-base sm:text-xl text-white/50 mb-12 sm:mb-16" data-i18n="footer.subtitle">Let’s build something they won't want to skip.</p>
-
-            <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="max-w-xl mx-auto space-y-6 text-left" onsubmit="handleFormSubmit(event)">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="text-xs font-mono text-white/50 uppercase" data-i18n="form.name">Name</label>
-                        <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-acid transition-colors interactable">
+            <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="space-y-4 text-left font-sans text-xs" onsubmit="handleFormSubmit(event)">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="font-mono text-[10px] text-white/50 uppercase block mb-1" data-i18n="form.name">Name</label>
+                        <input type="text" name="name" required class="w-full bg-white/[0.03] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-acid transition">
                     </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-mono text-white/50 uppercase" data-i18n="form.email">Work Email</label>
-                        <input type="email" name="email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-acid transition-colors interactable">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="text-xs font-mono text-white/50 uppercase" data-i18n="form.company">Company</label>
-                        <input type="text" name="company" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-acid transition-colors interactable">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-mono text-white/50 uppercase" data-i18n="form.headache">Biggest L&D Headache?</label>
-                        <input type="text" name="headache" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-acid transition-colors interactable">
+                    <div>
+                        <label class="font-mono text-[10px] text-white/50 uppercase block mb-1" data-i18n="form.email">Work Email</label>
+                        <input type="email" name="email" required class="w-full bg-white/[0.03] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-acid transition">
                     </div>
                 </div>
-
-                <button id="submit-btn" type="submit" class="w-full bg-neon text-obsidian font-display font-bold text-base sm:text-lg px-8 py-4 rounded-xl mt-4 btn-squish interactable hover:shadow-[0_0_25px_rgba(57,255,20,0.35)] transition-all" data-i18n="form.submit">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="font-mono text-[10px] text-white/50 uppercase block mb-1" data-i18n="form.company">Company</label>
+                        <input type="text" name="company" required class="w-full bg-white/[0.03] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-acid transition">
+                    </div>
+                    <div>
+                        <label class="font-mono text-[10px] text-white/50 uppercase block mb-1" data-i18n="form.headache">Key L&D Headache</label>
+                        <input type="text" name="headache" required class="w-full bg-white/[0.03] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-acid transition">
+                    </div>
+                </div>
+                <button id="submit-btn" type="submit" class="btn-bounce w-full bg-neon text-obsidian font-display font-bold text-xs sm:text-sm py-3 rounded-xl mt-2 hover:shadow-[0_0_20px_rgba(57,255,20,0.3)] transition" data-i18n="form.submit">
                     INITIATE UPGRADE
                 </button>
             </form>
 
-            <div class="mt-24 sm:mt-32 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs sm:text-sm font-sans text-white/40">
-                <p data-i18n="footer.copy">&copy; 2026 FREE//BUILDER L&D Solutions. All Rights Reserved.</p>
-                <a href="https://wei-meng.org/free_builder" target="_blank" rel="noopener noreferrer" onclick="audio.quantumLaunch()" class="flex items-center gap-2 group interactable font-mono text-xs hover:text-acid transition-colors">
-                    <span>Designed with AI & <span class="text-magenta group-hover:scale-125 transition-transform inline-block">♥</span> by</span>
-                    <span class="flex items-center gap-1.5 font-bold text-offwhite group-hover:text-acid">
-                        <span class="grid grid-cols-2 gap-0.5 w-3.5 h-3.5 transform group-hover:rotate-90 transition-transform duration-300">
-                            <span class="bg-offwhite rounded-[1px] group-hover:bg-acid"></span>
-                            <span class="bg-offwhite rounded-[1px] group-hover:bg-neon"></span>
-                            <span class="bg-offwhite rounded-[1px] group-hover:bg-magenta"></span>
-                            <span class="bg-acid rounded-[1px]"></span>
-                        </span>
-                    </span>
-                </a>
+            <div class="pt-10 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-mono text-white/40">
+                <span id="copyright-text">&copy; <span id="current-year"></span> FREE//BUILDER L&D Solutions. <span data-i18n="footer.copy">All Rights Reserved.</span></span>
+                <a href="https://wei-meng.org" target="_blank" rel="noopener noreferrer" class="hover:text-acid transition">Designed with AI & ♥ by Wei MENG</a>
             </div>
         </div>
     </footer>
 
-    <!-- Sophisticated Procedural Audio Engine & UI Controller -->
+    <!-- Audio Engine & Interactive Logic -->
     <script>
         class SophisticatedAudioEngine {
             constructor() {
@@ -859,7 +930,6 @@
                     this.ctx.resume();
                 }
             }
-
             glassTick() {
                 if (this.muted) return;
                 this.init();
@@ -867,48 +937,33 @@
                 const now = this.ctx.currentTime;
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
-                const filter = this.ctx.createBiquadFilter();
-
-                filter.type = 'highpass';
-                filter.frequency.setValueAtTime(2400, now);
-
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(1400, now);
                 osc.frequency.exponentialRampToValueAtTime(3200, now + 0.04);
-
-                gain.gain.setValueAtTime(0.001, now);
-                gain.gain.linearRampToValueAtTime(0.04, now + 0.005);
+                gain.gain.setValueAtTime(0.02, now);
                 gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
-
-                osc.connect(filter);
-                filter.connect(gain);
+                osc.connect(gain);
                 gain.connect(this.ctx.destination);
                 osc.start(now);
                 osc.stop(now + 0.04);
             }
-
-            subWarmth() {
+            quantumLaunch() {
                 if (this.muted) return;
                 this.init();
                 if (!this.ctx) return;
                 const now = this.ctx.currentTime;
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
-
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(95, now);
-                osc.frequency.linearRampToValueAtTime(120, now + 0.16);
-
-                gain.gain.setValueAtTime(0.001, now);
-                gain.gain.linearRampToValueAtTime(0.07, now + 0.03);
-                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
-
+                osc.frequency.setValueAtTime(340, now);
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.18);
+                gain.gain.setValueAtTime(0.06, now);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
                 osc.start(now);
-                osc.stop(now + 0.2);
+                osc.stop(now + 0.18);
             }
-
             tactileClick() {
                 if (this.muted) return;
                 this.init();
@@ -916,63 +971,16 @@
                 const now = this.ctx.currentTime;
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
-
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(380, now);
-                osc.frequency.exponentialRampToValueAtTime(140, now + 0.06);
-
-                gain.gain.setValueAtTime(0.09, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
-
+                osc.frequency.setValueAtTime(260, now);
+                osc.frequency.exponentialRampToValueAtTime(120, now + 0.04);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
                 osc.start(now);
-                osc.stop(now + 0.06);
+                osc.stop(now + 0.04);
             }
-
-            quantumLaunch() {
-                if (this.muted) return;
-                this.init();
-                if (!this.ctx) return;
-                const now = this.ctx.currentTime;
-                
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                const filter = this.ctx.createBiquadFilter();
-
-                filter.type = 'bandpass';
-                filter.frequency.setValueAtTime(400, now);
-                filter.frequency.exponentialRampToValueAtTime(2600, now + 0.28);
-                filter.Q.setValueAtTime(4, now);
-
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(160, now);
-                osc.frequency.exponentialRampToValueAtTime(840, now + 0.28);
-
-                gain.gain.setValueAtTime(0.001, now);
-                gain.gain.linearRampToValueAtTime(0.12, now + 0.04);
-                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
-
-                osc.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.32);
-
-                setTimeout(() => {
-                    const osc2 = this.ctx.createOscillator();
-                    const gain2 = this.ctx.createGain();
-                    osc2.type = 'sine';
-                    osc2.frequency.setValueAtTime(1046.5, this.ctx.currentTime);
-                    gain2.gain.setValueAtTime(0.08, this.ctx.currentTime);
-                    gain2.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
-                    osc2.connect(gain2);
-                    gain2.connect(this.ctx.destination);
-                    osc2.start();
-                    osc2.stop(this.ctx.currentTime + 0.25);
-                }, 100);
-            }
-
             cinemaWhoosh() {
                 if (this.muted) return;
                 this.init();
@@ -980,120 +988,85 @@
                 const now = this.ctx.currentTime;
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
-
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(240, now);
-                osc.frequency.exponentialRampToValueAtTime(45, now + 0.35);
-
-                gain.gain.setValueAtTime(0.001, now);
-                gain.gain.linearRampToValueAtTime(0.14, now + 0.05);
-                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.38);
-
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.38);
-            }
-
-            cinemaClose() {
-                if (this.muted) return;
-                this.init();
-                if (!this.ctx) return;
-                const now = this.ctx.currentTime;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(80, now);
-                osc.frequency.exponentialRampToValueAtTime(320, now + 0.14);
-
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.exponentialRampToValueAtTime(50, now + 0.3);
                 gain.gain.setValueAtTime(0.08, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
-
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);
                 osc.start(now);
-                osc.stop(now + 0.14);
+                osc.stop(now + 0.3);
             }
-
             crystalChime() {
                 if (this.muted) return;
                 this.init();
                 if (!this.ctx) return;
-                const notes = [587.33, 739.99, 880.0, 1174.66, 1479.98];
-                notes.forEach((freq, idx) => {
+                [659.25, 880, 1318.51].forEach((freq, idx) => {
                     setTimeout(() => {
                         const now = this.ctx.currentTime;
                         const osc = this.ctx.createOscillator();
                         const gain = this.ctx.createGain();
                         osc.type = 'sine';
                         osc.frequency.setValueAtTime(freq, now);
-                        gain.gain.setValueAtTime(0.001, now);
-                        gain.gain.linearRampToValueAtTime(0.09, now + 0.015);
-                        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+                        gain.gain.setValueAtTime(0.05, now);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
                         osc.connect(gain);
                         gain.connect(this.ctx.destination);
                         osc.start(now);
-                        osc.stop(now + 0.45);
+                        osc.stop(now + 0.3);
                     }, idx * 60);
-                });
-            }
-
-            holoGlitch() {
-                if (this.muted) return;
-                this.init();
-                if (!this.ctx) return;
-                const pitches = [520, 780, 650];
-                pitches.forEach((p, i) => {
-                    setTimeout(() => {
-                        const now = this.ctx.currentTime;
-                        const osc = this.ctx.createOscillator();
-                        const gain = this.ctx.createGain();
-                        osc.type = 'square';
-                        osc.frequency.setValueAtTime(p, now);
-                        gain.gain.setValueAtTime(0.03, now);
-                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
-                        osc.connect(gain);
-                        gain.connect(this.ctx.destination);
-                        osc.start(now);
-                        osc.stop(now + 0.03);
-                    }, i * 35);
                 });
             }
         }
         const audio = new SophisticatedAudioEngine();
 
-        function toggleAudio() {
-            audio.muted = !audio.muted;
-            const icon = document.getElementById('audio-icon');
-            if (audio.muted) {
-                icon.className = 'ph ph-speaker-slash text-base sm:text-lg text-slate-500';
-                showToast("Audio FX Muted");
-            } else {
-                icon.className = 'ph ph-speaker-high text-base sm:text-lg text-neon';
-                audio.crystalChime();
-                showToast("Audio FX Activated");
-            }
-        }
-
-        // Custom Cursor Tracking (Desktop)
-        const cursorDot = document.getElementById('cursor-dot');
-        const cursorOutline = document.getElementById('cursor-outline');
-        const interactables = document.querySelectorAll('.interactable, a, button, input, select');
-        const playTriggers = document.querySelectorAll('.play-trigger');
-
-        window.addEventListener('mousemove', (e) => {
-            const posX = e.clientX;
-            const posY = e.clientY;
-            cursorDot.style.left = `${posX}px`;
-            cursorDot.style.top = `${posY}px`;
-            cursorOutline.animate({
-                left: `${posX}px`,
-                top: `${posY}px`
-            }, { duration: 350, fill: "forwards" });
+        // Dynamically compute the current calendar year
+        document.addEventListener('DOMContentLoaded', () => {
+            const yr = document.getElementById('current-year');
+            if (yr) yr.textContent = new Date().getFullYear();
         });
 
-        interactables.forEach(el => {
+        // Reading Scroll Progress
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            const bar = document.getElementById('scroll-progress');
+            if (bar) bar.style.width = scrolled + '%';
+        });
+
+        // Staggered Scroll Reveal
+        const observerOptions = {
+            threshold: 0.12,
+            rootMargin: '0px 0px -40px 0px'
+        };
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal-node').forEach(el => revealObserver.observe(el));
+
+        // Cursor Physics
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+        window.addEventListener('mousemove', (e) => {
+            if (!cursorDot || !cursorOutline) return;
+            const x = e.clientX;
+            const y = e.clientY;
+            cursorDot.style.left = `${x}px`;
+            cursorDot.style.top = `${y}px`;
+            cursorOutline.animate({
+                left: `${x}px`,
+                top: `${y}px`
+            }, { duration: 240, fill: 'forwards' });
+        });
+
+        document.querySelectorAll('a, button, input, .cap-item').forEach(el => {
             el.addEventListener('mouseenter', () => {
                 document.body.classList.add('cursor-hover');
                 audio.glassTick();
@@ -1101,92 +1074,80 @@
             el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
         });
 
-        playTriggers.forEach(el => {
-            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-play'));
-            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-play'));
-        });
+        // Unfolding Drawer for Lab Cards
+        function toggleCardUnfold(btn) {
+            audio.tactileClick();
+            const card = btn.closest('.lab-card');
+            const isOpen = card.classList.contains('card-unfolded');
+            const label = btn.querySelector('.unfold-label');
+            const icon = btn.querySelector('.unfold-icon');
 
-        // Mobile Menu Drawer Handler
+            if (isOpen) {
+                card.classList.remove('card-unfolded');
+                if (label) label.textContent = dictionary[currentLang]['lab.inspect'];
+                if (icon) icon.classList.remove('rotate-180');
+            } else {
+                card.classList.add('card-unfolded');
+                if (label) label.textContent = dictionary[currentLang]['lab.collapse'];
+                if (icon) icon.classList.add('rotate-180');
+            }
+        }
+
+        // Unfolding Polished Drawer for Capability Architecture
+        let activeCapIndex = -1;
+        function toggleCapability(index) {
+            audio.tactileClick();
+            const items = document.querySelectorAll('.cap-item');
+            items.forEach((item, idx) => {
+                const icon = item.querySelector('.cap-icon');
+                if (idx === index && activeCapIndex !== index) {
+                    item.classList.add('is-expanded', 'bg-darkcard', 'border-acid/40');
+                    if (icon) {
+                        icon.classList.remove('ph-plus');
+                        icon.classList.add('ph-minus', 'text-acid');
+                    }
+                } else {
+                    item.classList.remove('is-expanded', 'bg-darkcard', 'border-acid/40');
+                    if (icon) {
+                        icon.classList.remove('ph-minus', 'text-acid');
+                        icon.classList.add('ph-plus');
+                    }
+                }
+            });
+            activeCapIndex = (activeCapIndex === index) ? -1 : index;
+        }
+
+        // Mobile Menu
         function toggleMobileMenu() {
             audio.tactileClick();
             const menu = document.getElementById('mobile-menu');
-            const icon = document.getElementById('mobile-menu-icon');
-            const isOpen = !menu.classList.contains('hidden');
-            if (isOpen) {
-                menu.classList.add('hidden');
-                icon.className = 'ph ph-list text-lg';
+            menu.classList.toggle('hidden');
+        }
+
+        // Audio Toggle
+        function toggleAudio() {
+            audio.muted = !audio.muted;
+            const icon = document.getElementById('audio-icon');
+            if (audio.muted) {
+                icon.className = 'ph ph-speaker-slash text-base text-slate-500';
+                showToast(dictionary[currentLang]['toast.muted']);
             } else {
-                menu.classList.remove('hidden');
-                icon.className = 'ph ph-x text-lg text-acid';
+                icon.className = 'ph ph-speaker-high text-base text-neon';
+                audio.crystalChime();
+                showToast(dictionary[currentLang]['toast.enabled']);
             }
         }
 
-        function closeMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const icon = document.getElementById('mobile-menu-icon');
-            menu.classList.add('hidden');
-            icon.className = 'ph ph-list text-lg';
-        }
-
-        // Language Dropdown Click Handler for Mobile/Touch
-        function toggleLangMenu(e) {
-            e.stopPropagation();
-            audio.tactileClick();
-            const menu = document.getElementById('lang-menu');
-            const isVisible = menu.classList.contains('opacity-100');
-            if (isVisible) {
-                menu.classList.remove('opacity-100', 'visible');
-                menu.classList.add('opacity-0', 'invisible');
-            } else {
-                menu.classList.remove('opacity-0', 'invisible');
-                menu.classList.add('opacity-100', 'visible');
-            }
-        }
-
-        document.addEventListener('click', (e) => {
-            const wrapper = document.getElementById('lang-dropdown-wrapper');
-            const menu = document.getElementById('lang-menu');
-            if (wrapper && !wrapper.contains(e.target)) {
-                menu.classList.remove('opacity-100', 'visible');
-                menu.classList.add('opacity-0', 'invisible');
-            }
-        });
-
-        // Scroll Reveal Engine
-        const revealElements = document.querySelectorAll('.reveal');
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('active');
-            });
-        }, { threshold: 0.1, rootMargin: "0px 0px -30px 0px" });
-        revealElements.forEach(el => revealObserver.observe(el));
-
-        // Interactive Image Scrubbing
-        function handleImageScrub(e) {
-            const container = e.currentTarget;
-            const mask = document.getElementById('img-fun-mask');
-            const rect = container.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            mask.style.clipPath = `circle(120px at ${x}px ${y}px)`;
-        }
-        const imgGroup = document.querySelector('.group[onmousemove]');
-        if (imgGroup) {
-            imgGroup.addEventListener('mouseleave', () => {
-                document.getElementById('img-fun-mask').style.clipPath = `circle(0px at 50% 50%)`;
-            });
-        }
-
-        let logoClicks = 0;
-        let clickTimer;
-        let currentLang = 'en';
-
+        // Toast
         function showToast(msg) {
-            const toast = document.getElementById('toast-container');
-            const msgEl = document.getElementById('toast-message');
-            msgEl.textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3500);
+            const container = document.getElementById('toast-container');
+            const text = document.getElementById('toast-message');
+            if (!container || !text) return;
+            text.textContent = msg;
+            container.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                container.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
         }
 
         function triggerSynapsePoint() {
@@ -1194,60 +1155,53 @@
             showToast(dictionary[currentLang]['toast.synapse']);
         }
 
+        // Easter Egg Diagnostic Trigger
+        let logoCount = 0;
+        let logoTimer;
         function handleLogoClick() {
-            logoClicks++;
-            clearTimeout(clickTimer);
-            if (logoClicks >= 3) {
+            logoCount++;
+            clearTimeout(logoTimer);
+            if (logoCount >= 3) {
                 audio.crystalChime();
-                document.getElementById('matrix-modal').classList.remove('hidden');
-                setTimeout(() => {
-                    document.getElementById('matrix-modal').classList.remove('opacity-0');
-                    document.getElementById('matrix-modal').classList.add('opacity-100');
-                }, 10);
-                logoClicks = 0;
+                const modal = document.getElementById('matrix-modal');
+                modal.classList.remove('hidden');
+                setTimeout(() => modal.classList.remove('opacity-0'), 10);
+                logoCount = 0;
             } else {
                 audio.tactileClick();
-                clickTimer = setTimeout(() => { logoClicks = 0; }, 800);
+                logoTimer = setTimeout(() => { logoCount = 0; }, 700);
             }
         }
-
         function closeMatrix() {
             audio.tactileClick();
             const modal = document.getElementById('matrix-modal');
-            modal.classList.remove('opacity-100');
             modal.classList.add('opacity-0');
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
-
         function handleMatrixModalBackdrop(e) {
             if (e.target.id === 'matrix-modal') closeMatrix();
         }
 
+        // Video Player Modal
         function openVideoModal() {
             audio.cinemaWhoosh();
             const modal = document.getElementById('modal-video');
             const video = document.getElementById('player-video');
             modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.classList.add('opacity-100');
-            }, 10);
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
             if (video) {
                 video.currentTime = 0;
-                video.play().catch(e => console.warn("Autoplay interaction blocked:", e));
+                video.play().catch(() => {});
             }
         }
-
         function closeVideoModal() {
-            audio.cinemaClose();
+            audio.tactileClick();
             const modal = document.getElementById('modal-video');
             const video = document.getElementById('player-video');
             if (video) video.pause();
-            modal.classList.remove('opacity-100');
             modal.classList.add('opacity-0');
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
-
         function handleVideoModalBackdrop(e) {
             if (e.target.id === 'modal-video') closeVideoModal();
         }
@@ -1259,185 +1213,144 @@
             }
         });
 
-        async function handleFormSubmit(event) {
-            event.preventDefault();
-            audio.tactileClick();
-            const form = event.target;
-            const submitBtn = document.getElementById('submit-btn');
-            const originalText = dictionary[currentLang]['form.submit'];
-            const formData = new FormData(form);
-
-            submitBtn.disabled = true;
-            submitBtn.textContent = dictionary[currentLang]['form.transmitting'];
-
-            try {
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: { 'Accept': 'application/json' }
-                });
-
-                if (response.ok) {
-                    audio.crystalChime();
-                    showToast(dictionary[currentLang]['toast.submit_success']);
-                    form.reset();
-                } else {
-                    const data = await response.json();
-                    if (data.errors && data.errors.length > 0) {
-                        showToast(data.errors.map(err => err.message).join(', '));
-                    } else {
-                        showToast(dictionary[currentLang]['toast.submit_fail']);
-                    }
-                }
-            } catch (error) {
-                showToast(dictionary[currentLang]['toast.network_err']);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-            }
+        // Image scrub hover
+        function handleImageScrub(e) {
+            const container = e.currentTarget;
+            const mask = document.getElementById('img-fun-mask');
+            if (!mask) return;
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            mask.style.clipPath = `circle(80px at ${x}px ${y}px)`;
+        }
+        const imgCont = document.querySelector('[onmousemove]');
+        if (imgCont) {
+            imgCont.addEventListener('mouseleave', () => {
+                const mask = document.getElementById('img-fun-mask');
+                if (mask) mask.style.clipPath = `circle(0px at 50% 50%)`;
+            });
         }
 
+        // Language Dropdown Handler
+        function toggleLangMenu(e) {
+            e.stopPropagation();
+            audio.tactileClick();
+            const menu = document.getElementById('lang-menu');
+            menu.classList.toggle('opacity-0');
+            menu.classList.toggle('invisible');
+        }
+        document.addEventListener('click', (e) => {
+            const wrapper = document.getElementById('lang-wrapper');
+            const menu = document.getElementById('lang-menu');
+            if (wrapper && !wrapper.contains(e.target) && menu) {
+                menu.classList.add('opacity-0', 'invisible');
+            }
+        });
+
+        // A11y Toggles
         function toggleA11yPanel() {
             audio.tactileClick();
             const panel = document.getElementById('a11y-panel');
             if (panel.style.transform === 'translateX(0%)') {
-                panel.style.transform = 'translateX(130%)';
+                panel.style.transform = 'translateX(140%)';
             } else {
                 panel.style.transform = 'translateX(0%)';
             }
         }
-
         function toggleMotion(isReduced) {
             audio.tactileClick();
             if (isReduced) document.body.classList.add('reduce-motion');
             else document.body.classList.remove('reduce-motion');
         }
-
         function toggleContrast(isHigh) {
             audio.tactileClick();
             if (isHigh) document.body.classList.add('high-contrast');
             else document.body.classList.remove('high-contrast');
         }
 
-        let voiceAssistEnabled = false;
-        let speechSynth = window.speechSynthesis;
-
-        function toggleVoiceAssist(isEnabled) {
+        // Form Submit
+        async function handleFormSubmit(event) {
+            event.preventDefault();
             audio.tactileClick();
-            voiceAssistEnabled = isEnabled;
-            if (isEnabled) {
-                speakText(dictionary[currentLang]['voice.activated'], document.getElementById('a11y-panel'));
-            } else {
-                if (speechSynth) speechSynth.cancel();
-                document.querySelectorAll('.speaking-highlight').forEach(el => el.classList.remove('speaking-highlight', 'ring-2', 'ring-magenta', 'ring-offset-2', 'ring-offset-obsidian', 'rounded'));
-            }
-        }
-
-        function speakText(text, element = null) {
-            if (!speechSynth) return;
-            speechSynth.cancel();
-            document.querySelectorAll('.speaking-highlight').forEach(el => el.classList.remove('speaking-highlight', 'ring-2', 'ring-magenta', 'ring-offset-2', 'ring-offset-obsidian', 'rounded'));
-            if (element) {
-                element.classList.add('speaking-highlight', 'ring-2', 'ring-magenta', 'ring-offset-2', 'ring-offset-obsidian', 'rounded');
-            }
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 0.95;
-            utterance.lang = currentLang === 'en' ? 'en-US' : (currentLang === 'zh-cn' ? 'zh-CN' : (currentLang === 'zh-tw' ? 'zh-TW' : 'es-ES'));
-            utterance.onend = () => {
-                if (element) element.classList.remove('speaking-highlight', 'ring-2', 'ring-magenta', 'ring-offset-2', 'ring-offset-obsidian', 'rounded');
-            };
-            speechSynth.speak(utterance);
-        }
-
-        const readableElements = document.querySelectorAll('h1, h2, h3, h4, p, button, a, span[data-i18n], label');
-        readableElements.forEach(el => {
-            el.addEventListener('mouseenter', (e) => {
-                if (voiceAssistEnabled) {
-                    e.stopPropagation();
-                    const textToRead = el.getAttribute('aria-label') || el.innerText || el.textContent;
-                    if (textToRead && textToRead.trim() !== '') speakText(textToRead.trim(), el);
+            const btn = document.getElementById('submit-btn');
+            const original = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = dictionary[currentLang]['form.transmitting'];
+            try {
+                const response = await fetch(event.target.action, {
+                    method: 'POST',
+                    body: new FormData(event.target),
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (response.ok) {
+                    audio.crystalChime();
+                    showToast(dictionary[currentLang]['toast.submit_success']);
+                    event.target.reset();
+                } else {
+                    showToast(dictionary[currentLang]['toast.submit_fail']);
                 }
-            });
-        });
+            } catch (err) {
+                showToast(dictionary[currentLang]['toast.network_err']);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = original;
+            }
+        }
 
-        // Multilingual Dictionary (EN, ZH-CN, ZH-TW, ES)
+        // Full Comprehensive Multilingual Dictionary (EN, ZH, ES)
+        let currentLang = 'en';
         const dictionary = {
             'en': {
                 'nav.home': 'Home',
                 'nav.who': 'Who I Am',
                 'nav.lab': 'The Lab',
                 'nav.services': 'Capabilities',
-
-                'a11y.title': 'Access Options',
+                'a11y.title': 'Display Settings',
                 'a11y.motion': 'Reduce Motion',
                 'a11y.contrast': 'High Contrast',
-                'a11y.voice': 'Voice Assist',
-                'a11y.voice_desc': 'Hover over text to have it read aloud with live highlight tracking.',
-
                 'matrix.title': 'DIAGNOSTIC COMPLETE',
                 'matrix.will': 'WILL',
                 'matrix.skill': 'SKILL',
                 'matrix.marker': 'YOU (High Will / High Skill)',
-                'matrix.desc': 'You found the secret diagnostic. Plot twist: you were top-right quadrant all along.',
-
-                'video.hint': 'Press ESC or click outside to dismiss',
-
+                'matrix.desc': 'Secret diagnostic discovered. Plot twist: you were top-right quadrant all along.',
+                'video.hint': 'ESC to close',
                 'hero.title': 'STOP BORING <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-acid via-neon to-cybercyan">YOUR EMPLOYEES.</span>',
-                'hero.subtitle': 'Corporate training doesn\'t have to feel like a penalty. I design immersive simulations, interactive decision worlds, and AI co-pilots that modern teams actually want to complete.',
-                'hero.cta': 'ENTER THE LAB',
-                'hero.scroll': 'Initiate Sequence',
-
+                'hero.subtitle': 'Corporate training shouldn\'t feel like a penalty. I design immersive simulations, interactive decision worlds, and AI co-pilots that modern teams genuinely want to complete.',
+                'hero.cta': 'EXPLORE PLAYABLE LAB',
                 'who.sec1_tag': '01 // FREE//BUILDER',
                 'who.i_subject': 'I',
                 'who.sec1_bio_rest': ' am an L&D Consultant and Corporate Coach who refuses to accept the status quo of corporate training. Working alongside top-tier global consultancies and hyper-growth tech firms, I blend deep organizational psychology with high-end media production.',
                 'who.sec2_tag': '02 // THE MISSION',
                 'who.sec2_mission': 'To eradicate the "mandatory training sigh." I leverage Generative AI, gamification, and interactive storytelling to transform how organizations learn. I don’t just train your workforce; I upgrade their entire operating system through highly realistic, culturally grounded, and actually humorous learning ecosystems',
-
                 'popover.status': 'ACTIVE CONSULTANT',
-                'popover.desc': 'Wei MENG — L&D Architect & Corporate Coach designing gamified corporate training simulations.',
-                'popover.btn': 'Visit Personal Site',
-
+                'popover.desc': 'Wei MENG — L&D Architect & Corporate Coach.',
+                'popover.btn': 'Visit Site',
                 'lab.title': 'The Lab: Playable Proof.',
-                'lab.subtitle': 'Click on any preview picture to jump straight into the live interactive tool.',
-                
+                'lab.subtitle': 'Click preview cards to launch interactive prototypes or click "Inspect" to unfold deep details.',
+                'lab.inspect': 'Inspect',
+                'lab.collapse': 'Collapse',
+                'lab.inspect.impact': 'KEY IMPACT:',
                 'lab.card1.title': 'Corporate Survival Drama',
                 'lab.card1.desc': 'A multi-level video series tackling real-world management challenges. Scripted with hyper-realistic dialogues (zero awkward monologues) and produced using advanced AI video tools.',
-                'lab.card1.tag1': 'AI Video',
-                'lab.card1.tag2': 'Scripting',
                 'lab.card1.cta': 'Watch Demo',
-
                 'lab.card2.title': 'Immersive Onboarding Universe',
                 'lab.card2.desc': 'A fully gamified orientation experience. Interactive maps, branching scenarios, and a custom reward system where employees earn points for mastering culture.',
-                'lab.card2.tag1': 'Gamification',
-                'lab.card2.tag2': 'UI/UX',
                 'lab.card2.cta': 'Open Webpage',
-
                 'lab.card3.title': 'Sales Psychology Academy',
-                'lab.card3.desc': 'A gamified sales neuro-training simulator translating behavioral economics (Kahneman, Cialdini, Voss) into interactive 3D battlecards, cloze active recall drills, real-time objection blitzes, and zero-asset procedural audio.',
-                'lab.card3.tag1': 'Sales Psychology',
-                'lab.card3.tag2': 'Active Recall',
+                'lab.card3.desc': 'A gamified sales neuro-training simulator translating behavioral economics (Kahneman, Cialdini, Voss) into interactive 3D battlecards and cloze recall.',
                 'lab.card3.cta': 'Open Webpage',
-
                 'lab.card4.title': 'Corporate Coaching Co-Pilot',
-                'lab.card4.desc': 'An interactive coaching co-pilot for people managers. Replaces micromanagement with high-leverage inquiry using behavioral frameworks like SCARF, The Coaching Habit, Situational Leadership (SLII), and Radical Candor.',
-                'lab.card4.tag1': 'Coaching Leadership',
-                'lab.card4.tag2': 'SCARF & SLII',
+                'lab.card4.desc': 'An interactive coaching co-pilot for people managers. Replaces micromanagement with high-leverage inquiry using behavioral frameworks like SCARF and SLII.',
                 'lab.card4.cta': 'Open Webpage',
-
                 'lab.card5.title': 'Intercultural Atlas',
-                'lab.card5.desc': 'A gamified cultural intelligence (CQ) simulator navigating high-stakes multinational team friction. Features 8 global flight corridor dilemmas powered by the 3-Lenses Anti-Stereotyping framework, dual-perspective mirrors, and adaptive CQ radars.',
-                'lab.card5.tag1': 'Cultural Intelligence',
+                'lab.card5.desc': 'A gamified cultural intelligence (CQ) simulator navigating multinational team friction with 8 global flight corridor dilemmas.',
                 'lab.card5.cta': 'Open Webpage',
-
                 'lab.card6.title': 'Design Thinking Odyssey',
-                'lab.card6.desc': 'A hands-on innovation sprint lab. Navigate 5 experiential phases (Empathize to Test), pop skepticism bubbles, deploy 48-hour disposable wireframes, and run Crazy 8s sprint countdowns with live sound effects.',
-                'lab.card6.tag1': 'Design Thinking',
-                'lab.card6.tag2': 'Crazy 8s Timer',
+                'lab.card6.desc': 'A hands-on innovation sprint lab. Navigate 5 experiential phases (Empathize to Test), pop skepticism bubbles, and run Crazy 8s sprint countdowns.',
                 'lab.card6.cta': 'Open Webpage',
-
                 'services.tag': '03 // CAPABILITY ARCHITECTURE',
                 'services.title': 'HOW WE UPGRADE YOUR TEAM.',
-                'services.subtitle': 'From passive compliance checkmarks to behavior-altering simulations. Three high-impact deployment tiers engineered for global scale.',
+                'services.subtitle': 'Three high-impact deployment tiers engineered for global scale. Select a tier to expand.',
                 'services.s1.badge': 'STRATEGY & AUDIT',
                 'services.s1.title': 'Strategic L&D Advisory',
                 'services.s1.desc': 'End-to-end curriculum architecture, systemic learning audits, and tech-stack integration to build zero-bloat learning ecosystems for top-tier firms.',
@@ -1456,384 +1369,205 @@
                 'services.s3.feat1': 'Custom Web-Based Branching Engines',
                 'services.s3.feat2': 'AI Studio Video & Voice Synthesis',
                 'services.s3.feat3': 'Tamper-Evident Proof & Gamified Badges',
-
                 'footer.title': 'Ready to make learning your <br><span class="text-acid">competitive advantage?</span>',
                 'footer.subtitle': 'Let’s build something they won\'t want to skip.',
                 'form.name': 'Name',
                 'form.email': 'Work Email',
                 'form.company': 'Company',
-                'form.headache': 'Biggest L&D Headache?',
+                'form.headache': 'Key L&D Headache',
                 'form.submit': 'INITIATE UPGRADE',
                 'form.transmitting': 'TRANSMITTING...',
-                'footer.copy': '&copy; 2026 FREE//BUILDER L&D Solutions. All Rights Reserved.',
-
-                'toast.synapse': 'You found a hidden Synapse Point! (+50 Curiosity Cred)',
-                'toast.submit_success': 'Transmission received. Upgrade sequence initiated!',
-                'toast.submit_fail': 'Submission failed. Please check your form endpoint.',
-                'toast.network_err': 'Network error. Please try again later.',
-                'voice.activated': 'Voice assistance activated. Hover over text to read aloud.'
+                'footer.copy': 'All Rights Reserved.',
+                'toast.muted': 'Audio FX muted',
+                'toast.enabled': 'Audio FX enabled',
+                'toast.synapse': 'Curiosity point unlocked (+50 XP)',
+                'toast.submit_success': 'Upgrade transmission sent successfully!',
+                'toast.submit_fail': 'Transmission failed. Please check endpoint.',
+                'toast.network_err': 'Network error. Try again shortly.'
             },
-            'zh-cn': {
+            'zh': {
                 'nav.home': '首页',
                 'nav.who': '关于我',
                 'nav.lab': '实验室',
                 'nav.services': '核心能力',
-
-                'a11y.title': '无障碍选项',
+                'a11y.title': '界面设置',
                 'a11y.motion': '减少动态效果',
                 'a11y.contrast': '高对比度模式',
-                'a11y.voice': '语音辅助播报',
-                'a11y.voice_desc': '将光标悬停到任意文本即可由屏幕朗读器朗读，配有实时焦点高亮追踪。',
-
                 'matrix.title': '诊断完成',
                 'matrix.will': '意愿 (WILL)',
                 'matrix.skill': '能力 (SKILL)',
                 'matrix.marker': '你 (高意愿 / 高能力)',
-                'matrix.desc': '你发现了隐藏彩蛋。剧透一下：你一直都在右上象限。',
-
-                'video.hint': '按 ESC 键或点击空白区域关闭',
-
+                'matrix.desc': '你发现了隐藏彩蛋。其实你一直身处右上象限。',
+                'video.hint': '按 ESC 退出',
                 'hero.title': '停止让你的员工<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-acid via-neon to-cybercyan">感到无聊。</span>',
-                'hero.subtitle': '传统企业培训早已过时。催眠式的 PPT 和打勾式合规课无法改变行为。我打造高回报的互动数字世界、沉浸式职场模拟与 AI 工具，让员工真正期待学完。',
-                'hero.cta': '进入实验室',
-                'hero.scroll': '启动序列',
-
+                'hero.subtitle': '企业培训不应成为一种负担。我设计高参与度的沉浸式模拟、分支决策世界与 AI 辅助工具，让团队发自内心期待学完。',
+                'hero.cta': '体验实战实验室',
                 'who.sec1_tag': '01 // FREE//BUILDER',
                 'who.i_subject': '我',
-                'who.sec1_bio_rest': ' 是一名拒绝接受传统企业培训现状的 L&D 顾问兼高管教练。曾与全球顶尖咨询机构及高速发展的科技巨头携手合作，将深层组织心理学与工业级视听制作融为一体。',
+                'who.sec1_bio_rest': ' 是一名拒绝传统说教式培训的 L&D 顾问兼高管教练。携手顶级咨询公司与高成长科技团队，将深层组织心理学与工业级交互视听完美融合。',
                 'who.sec2_tag': '02 // 核心使命',
-                'who.sec2_mission': '彻底消除“又来强制培训”的叹息。我借助生成式 AI、游戏化机制与交互式叙事重塑组织学习体验。不仅是培训员工，更通过极度写实、贴合本土语境且妙趣横生的学习生态，升级他们的思维系统',
-
+                'who.sec2_mission': '彻底消除员工面对培训通知时的叹息。运用生成式 AI、游戏化机制与交互叙事升级组织学习生态',
                 'popover.status': '活跃顾问',
-                'popover.desc': 'Wei MENG — L&D 架构师与企业教练，专注于技术驱动的沉浸式培训产品开发。',
-                'popover.btn': '访问个人主页',
-
-                'lab.title': '实验室：验证可玩概念。',
-                'lab.subtitle': '点击任意预览图片即可直接进入对应的实战互动网页。',
-
+                'popover.desc': 'Wei MENG — L&D 架构师与教练。',
+                'popover.btn': '个人主页',
+                'lab.title': '实验室：可玩概念验证。',
+                'lab.subtitle': '点击卡片直接启动实战原型，或点击“展开”查看技术架构与成果指标。',
+                'lab.inspect': '展开',
+                'lab.collapse': '收起',
+                'lab.inspect.impact': '核心成果：',
                 'lab.card1.title': '职场生存大戏',
-                'lab.card1.desc': '专为解决真实管理挑战打造的多层级视频系列。采用超写实职场对话编剧（彻底告别尴尬说教），并依托先进AI视听工具制作。',
-                'lab.card1.tag1': 'AI 视频',
-                'lab.card1.tag2': '剧本编剧',
+                'lab.card1.desc': '采用超写实职场对话编剧与先进 AI 视听生成的多层级管理实战剧集。',
                 'lab.card1.cta': '观看演示',
-
                 'lab.card2.title': '沉浸式入职元宇宙',
-                'lab.card2.desc': '全流程游戏化新人培训体验。包含互动地图、分支剧情决策以及专属奖励系统，员工通过掌握企业文化赚取积分。',
-                'lab.card2.tag1': '游戏化机制',
-                'lab.card2.tag2': 'UI/UX 设计',
+                'lab.card2.desc': '全流程游戏化新人培训体验，配备互动式职场地图与任务积分系统。',
                 'lab.card2.cta': '打开网页',
-
                 'lab.card3.title': '销售心理学学院',
-                'lab.card3.desc': '一款游戏化销售神经认知训练模拟器。将行为经济学与谈判心理学理论转化为交互式3D实战卡牌、填空式主动回忆练习、限时突发异议防御及程序化音频即时反馈。',
-                'lab.card3.tag1': '销售心理学',
-                'lab.card3.tag2': '主动回忆机制',
+                'lab.card3.desc': '将行为经济学转化为 3D 决策卡牌与填空回忆训练的神经认知模拟器。',
                 'lab.card3.cta': '打开网页',
-
-                'lab.card4.title': '管理者 AI Co-pilot',
-                'lab.card4.desc': '专为团队管理者打造的 AI 领导力教练协同系统。融合 SCARF 社交神经科学、斯坦尼尔《教练习惯》、情境领导力（SLII）与绝对坦诚模型，以高杠杆启发式提问取代微观指令管理。',
-                'lab.card4.tag1': '管理教练',
-                'lab.card4.tag2': 'SCARF与情境领导',
+                'lab.card4.title': '管理者 AI Co-Pilot',
+                'lab.card4.desc': '融合 SCARF 脑科学与情境领导力（SLII），启发式提问取代微观指令。',
                 'lab.card4.cta': '打开网页',
-
                 'lab.card5.title': '跨文化领导力图鉴',
-                'lab.card5.desc': '一款沉浸式跨文化智商（CQ）与全球领导力模拟图鉴。涵盖8大跨国航线实战困境，依托“三重视角”反刻板印象模型与双向透镜反射。',
-                'lab.card5.tag1': '文化智商 (CQ)',
+                'lab.card5.desc': '包含 8 大跨国团队协作困境的高阶文化智商（CQ）决策模拟器。',
                 'lab.card5.cta': '打开网页',
-
                 'lab.card6.title': '设计思维探索实验室',
-                'lab.card6.desc': '实践型敏捷创新冲刺实验室。遍历共情到测试的5大体验阶段，戳破质疑泡沫，部署48小时极简原型，并提供带动态音效的 Crazy 8s 快速构想计时器。',
-                'lab.card6.tag1': '设计思维',
-                'lab.card6.tag2': 'Crazy 8s 计时',
+                'lab.card6.desc': '敏捷创新冲刺工坊，包含 48 小时原型构想与 Crazy 8s 音频计时器。',
                 'lab.card6.cta': '打开网页',
-
                 'services.tag': '03 // 核心赋能体系',
                 'services.title': '我们如何为团队赋能升级。',
-                'services.subtitle': '从打勾应付的合规课程，转向带来实质行为转化的沉浸式模拟。为全球化组织量身定制的三个高回报赋能梯队。',
+                'services.subtitle': '三大高回报交付梯队。点击任意卡片查看详细实施方案。',
                 'services.s1.badge': '战略与审计',
                 'services.s1.title': 'L&D 战略顾问与体系审计',
-                'services.s1.desc': '端到端课程体系规划、企业培训架构审计，以及面向顶尖企业的学习技术栈整合，打造轻量化学习生态。',
-                'services.s1.feat1': '胜任力差距与组织架构审计',
+                'services.s1.desc': '端到端学习路线图设计与现代化企业 LMS 技术栈整合重塑。',
+                'services.s1.feat1': '胜任力缺口与组织架构审计',
                 'services.s1.feat2': '现代企业学习技术栈与 LMS 重构',
-                'services.s1.feat3': '可衡量的商业 ROI 与知识留存率',
+                'services.s1.feat3': '可衡量的商业 ROI 与留存指标',
                 'services.s2.badge': '行为领导力',
                 'services.s2.title': '高管与团队经理领导力教练',
-                'services.s2.desc': '基于实证脑神经科学（SCARF、SLII、彻底坦率）的高效教练干预，助力高潜人才顺畅蜕变转化为卓越业务领袖。',
+                'services.s2.desc': '以应用神经科学与刻意练习为基础的高杠杆干预。',
                 'services.s2.feat1': '应用神经科学模型 (SCARF & SLII)',
                 'services.s2.feat2': '刻意练习与真实高压场景演练',
                 'services.s2.feat3': '建设性反馈与高心理安全感文化',
                 'services.s3.badge': '互动视听工坊',
                 'services.s3.title': '定制化模拟系统与沉浸式影音',
-                'services.s3.desc': '融合生成式 AI 编剧、高质感视听制作与分支剧情交互课件开发，深度契合企业关键业务痛点与本地文化。',
+                'services.s3.desc': '将企业最棘手的业务摩擦点转化为高质感交互分支软件。',
                 'services.s3.feat1': '定制 Web 端分支交互决策引擎',
                 'services.s3.feat2': 'AI 工作室级超写实影音内容生成',
                 'services.s3.feat3': '防伪造学习存证与积分勋章机制',
-
                 'footer.title': '准备好让学习成为你的<br><span class="text-acid">核心竞争优势了吗？</span>',
-                'footer.subtitle': '让我们打造员工捨不得跳过的培训体验。',
+                'footer.subtitle': '让我们打造员工舍不得跳过的培训体验。',
                 'form.name': '姓名',
                 'form.email': '工作邮箱',
                 'form.company': '公司名称',
-                'form.headache': '当前最棘手的培训难题？',
+                'form.headache': '最棘手的培训难题',
                 'form.submit': '启动升级',
                 'form.transmitting': '正在传输...',
-                'footer.copy': '&copy; 2026 FREE//BUILDER 学习方案。保留所有权利。',
-
-                'toast.synapse': '你发现了隐藏的积分！（+50 好奇心点数）',
-                'toast.submit_success': '已收到传输请求，升级序列已启动！',
-                'toast.submit_fail': '提交失败，请检查表单接口配置。',
-                'toast.network_err': '网络连接异常，请稍后重试。',
-                'voice.activated': '语音辅助已开启。光标悬停即可朗读。'
-            },
-            'zh-tw': {
-                'nav.home': '首頁',
-                'nav.who': '關於我',
-                'nav.lab': '實驗室',
-                'nav.services': '核心專業',
-
-                'a11y.title': '無障礙設定',
-                'a11y.motion': '減少動態效果',
-                'a11y.contrast': '高對比模式',
-                'a11y.voice': '語音輔助播報',
-                'a11y.voice_desc': '將游標懸停至文字，即可以螢幕閱讀器朗讀，並支援即時對焦高亮追蹤。',
-
-                'matrix.title': '診斷完成',
-                'matrix.will': '意願 (WILL)',
-                'matrix.skill': '能力 (SKILL)',
-                'matrix.marker': '你 (高意願 / 高能力)',
-                'matrix.desc': '你發現了隱藏彩蛋。其實：你一直都在右上象限。',
-
-                'video.hint': '按 ESC 鍵或點擊空白區域關閉',
-
-                'hero.title': '停止讓你的員工<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-acid via-neon to-cybercyan">感到無聊。</span>',
-                'hero.subtitle': '傳統企業培訓早已過時。催眠式的簡報與打勾式合規課無法改變行為。我打造高投報率的互動數位世界、沉浸式職場模擬與 AI 工具，讓員工真正期待學完。',
-                'hero.cta': '進入實驗室',
-                'hero.scroll': '啟動序列',
-
-                'who.sec1_tag': '01 // FREE//BUILDER',
-                'who.i_subject': '我',
-                'who.sec1_bio_rest': ' 是一名拒絕接受傳統企業培訓現狀的 L&D 顧問兼企業教練。曾與全球頂尖諮詢顧問及高速成長的科技企業攜手合作，將深層組織心理學與專業級影音製作融為一體。',
-                'who.sec2_tag': '02 // 核心使命',
-                'who.sec2_mission': '徹底終結「又是強制培訓」的無奈嘆息。我借助生成式 AI、遊戲化機制與互動敘事重塑組織學習體驗。不僅是培訓團隊，更透過極度寫實、貼合在地語境且深具幽默感的學習生態，全面升級他們的思維操作系統',
-
-                'popover.status': '活躍顧問',
-                'popover.desc': 'Wei MENG — L&D 架構師與企業教練，專注於技術驅動的沉浸式培訓產品開發。',
-                'popover.btn': '造訪個人主頁',
-
-                'lab.title': '實驗室：驗證可玩概念。',
-                'lab.subtitle': '點擊任意預覽圖片即可直接進入對應的實戰互動網頁。',
-
-                'lab.card1.title': '職場生存大戲',
-                'lab.card1.desc': '專為解決真實管理挑戰打造的多層級影音系列。採超寫實職場對話編劇（告別尷尬說教），並結合先進AI影音工具製作。',
-                'lab.card1.tag1': 'AI 影音',
-                'lab.card1.tag2': '劇本編寫',
-                'lab.card1.cta': '觀看示範',
-
-                'lab.card2.title': '沉浸式入職宇宙',
-                'lab.card2.desc': '全流程遊戲化新人入職體驗。包含互動地圖、分支劇情決策與專屬獎勵機制，員工透過深入理解企業文化賺取積分。',
-                'lab.card2.tag1': '遊戲化機制',
-                'lab.card2.tag2': 'UI/UX 設計',
-                'lab.card2.cta': '開啟網頁',
-
-                'lab.card3.title': '銷售心理學學院',
-                'lab.card3.desc': '一款遊戲化銷售神經認知訓練模擬器。將行為經濟學與談判心理學理論轉化為互動式3D實戰卡牌、填空式主動回憶練習、限時突發異議防禦及程序化音訊即時回饋。',
-                'lab.card3.tag1': '銷售心理學',
-                'lab.card3.tag2': '主動回憶機制',
-                'lab.card3.cta': '開啟網頁',
-
-                'lab.card4.title': '團隊經理 AI Co-pilot',
-                'lab.card4.desc': '專為團隊經理人打造的 AI 領導力教練協同系統。融合 SCARF 社交神經科學、史坦尼爾《教練習慣》、情境領導力（SLII）與徹底坦率模型，以高槓桿啟發式提問取代微觀指令管理。',
-                'lab.card4.tag1': '教練領導力',
-                'lab.card4.tag2': 'SCARF與情境領導',
-                'lab.card4.cta': '開啟網頁',
-
-                'lab.card5.title': '跨文化領導力圖鑑',
-                'lab.card5.desc': '一款沉浸式跨文化智商（CQ）與全球領導力模擬圖鑑。涵蓋8大跨國航線實戰困境，結合「三重視角」反刻板印象架構與雙向透鏡反射。',
-                'lab.card5.tag1': '文化智商 (CQ)',
-                'lab.card5.cta': '開啟網頁',
-
-                'lab.card6.title': '設計思維探索實驗室',
-                'lab.card6.desc': '實踐型敏捷創新衝刺實驗室。遍歷同理心到測試的5大體驗階段，戳破質疑泡沫，部署48小時極簡原型，並提供具備動態音效的 Crazy 8s 快速構想計時器。',
-                'lab.card6.tag1': '設計思維',
-                'lab.card6.tag2': 'Crazy 8s 計時',
-                'lab.card6.cta': '開啟網頁',
-
-                'services.tag': '03 // 核心賦能體系',
-                'services.title': '我們如何為團隊賦能升級。',
-                'services.subtitle': '從走形式的合規培訓，轉變為驅動實際行為躍遷的沉浸式模擬。專為高規格組織量身打造的三個賦能階梯。',
-                'services.s1.badge': '策略與審計',
-                'services.s1.title': 'L&D 策略顧問與體系審計',
-                'services.s1.desc': '涵蓋端到端課程體系規劃、企業培訓架構審計，以及面向頂尖企業的學習技術棧整合。',
-                'services.s1.feat1': '勝任力缺口與體系審計',
-                'services.s1.feat2': '企業學習技術棧與 LMS 重塑',
-                'services.s1.feat3': '具備實證效益之商業 ROI',
-                'services.s2.badge': '行為領導力',
-                'services.s2.title': '高管與團隊經理領導力教練',
-                'services.s2.desc': '基於實證腦神經科學（SCARF、SLII、徹底坦率）之高效教練引導，助力高潛力人才轉型為卓越業務領航者。',
-                'services.s2.feat1': '應用神經科學框架 (SCARF & SLII)',
-                'services.s2.feat2': '刻意練習與真實情境應對',
-                'services.s2.feat3': '建設性回饋與高心理安全感',
-                'services.s3.badge': '互動影音工坊',
-                'services.s3.title': '客製化模擬系統與生成式影音',
-                'services.s3.desc': '融合生成式 AI 編劇、高品質影音製作與互動教材研發，深度貼合企業專屬文化與關鍵痛點。',
-                'services.s3.feat1': '客製 Web 端分支決策引擎',
-                'services.s3.feat2': 'AI 製片室級超寫實影音產出',
-                'services.s3.feat3': '防竄改學習憑證與徽章機制',
-
-                'footer.title': '準備好讓學習成為你的<br><span class="text-acid">核心競爭優勢了嗎？</span>',
-                'footer.subtitle': '讓我們打造員工捨不得跳過的培訓體驗。',
-                'form.name': '姓名',
-                'form.email': '工作信箱',
-                'form.company': '公司名稱',
-                'form.headache': '當前最棘手的培訓難題？',
-                'form.submit': '啟動升級',
-                'form.transmitting': '正在傳輸...',
-                'footer.copy': '&copy; 2026 FREE//BUILDER L&D 學習方案。版權所有。',
-
-                'toast.synapse': '你發現了隱藏的突觸積分！（+50 好奇心點數）',
-                'toast.submit_success': '已收到傳輸請求，升級序列已啟動！',
-                'toast.submit_fail': '提交失敗，請檢查表單接口設定。',
-                'toast.network_err': '網路連線異常，請稍後重試。',
-                'voice.activated': '語音輔助已開啟。游標懸停即可朗讀。'
+                'footer.copy': '保留所有权利。',
+                'toast.muted': '已静音音效',
+                'toast.enabled': '已开启音效',
+                'toast.synapse': '解锁探索好奇心点数 (+50 XP)',
+                'toast.submit_success': '升级传输请求发送成功！',
+                'toast.submit_fail': '提交失败，请检查表单配置。',
+                'toast.network_err': '网络异常，请稍后重试。'
             },
             'es': {
                 'nav.home': 'Inicio',
                 'nav.who': 'Sobre mí',
                 'nav.lab': 'El Laboratorio',
                 'nav.services': 'Capacidades',
-
-                'a11y.title': 'Opciones de Accesibilidad',
+                'a11y.title': 'Configuración de Pantalla',
                 'a11y.motion': 'Reducir movimiento',
                 'a11y.contrast': 'Alto contraste',
-                'a11y.voice': 'Asistente de voz',
-                'a11y.voice_desc': 'Pasa el cursor sobre el texto para escucharlo con seguimiento visual en vivo.',
-
                 'matrix.title': 'DIAGNÓSTICO COMPLETADO',
                 'matrix.will': 'DISPOSICIÓN (WILL)',
                 'matrix.skill': 'HABILIDAD (SKILL)',
                 'matrix.marker': 'TÚ (Alta disposición / Alta habilidad)',
-                'matrix.desc': 'Encontraste el diagnóstico oculto. Giro de trama: siempre estuviste en el cuadrante superior derecho.',
-
-                'video.hint': 'Presiona ESC o haz clic fuera para cerrar',
-
+                'matrix.desc': 'Diagnóstico secreto descubierto. Siempre estuviste en el cuadrante superior derecho.',
+                'video.hint': 'ESC para cerrar',
                 'hero.title': 'DEJA DE ABURRIR <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-acid via-neon to-cybercyan">A TU EQUIPO.</span>',
-                'hero.subtitle': 'La formación corporativa no tiene por qué sentirse como un castigo. Diseño simulaciones inmersivas, mundos de decisión interactivos y copilotos de IA que los equipos modernos realmente quieren completar.',
-                'hero.cta': 'ENTRAR AL LABORATORIO',
-                'hero.scroll': 'Iniciar Secuencia',
-
+                'hero.subtitle': 'La formación corporativa no tiene por qué sentirse como un castigo. Diseño simulaciones inmersivas, mundos de decisión interactivos y copilotos de IA que los equipos realmente quieren completar.',
+                'hero.cta': 'EXPLORAR LABORATORIO',
                 'who.sec1_tag': '01 // FREE//BUILDER',
                 'who.i_subject': 'Yo',
-                'who.sec1_bio_rest': ' soy consultor de L&D y coach ejecutivo que se niega a aceptar el status quo de la capacitación corporativa. Colaborando con consultoras globales líderes y firmas tech de hipercrecimiento, fusiono la psicología organizacional profunda con producción audiovisual de vanguardia.',
+                'who.sec1_bio_rest': ' soy consultor de L&D y coach ejecutivo que se niega a aceptar el status quo de la capacitación corporativa. Combinando psicología organizacional con producción interactiva avanzada.',
                 'who.sec2_tag': '02 // LA MISIÓN',
-                'who.sec2_mission': 'Erradicar el "suspiro de la capacitación obligatoria". Aprovecho la IA generativa, la gamificación y la narrativa interactiva para transformar el aprendizaje organizacional. No solo entreno a tu equipo; actualizo su sistema operativo completo mediante ecosistemas de aprendizaje hiperrealistas, culturalmente contextualizados y genuinamente entretenidos',
-
+                'who.sec2_mission': 'Erradicar el "suspiro de la capacitación obligatoria". Aprovecho la IA generativa, la gamificación y la narrativa interactiva para transformar el aprendizaje de tu organización',
                 'popover.status': 'CONSULTOR ACTIVO',
-                'popover.desc': 'Wei MENG — Arquitecto de L&D y Coach Corporativo que diseña simulaciones gamificadas de formación empresarial.',
-                'popover.btn': 'Visitar Sitio Personal',
-
+                'popover.desc': 'Wei MENG — Arquitecto de L&D y Coach Corporativo.',
+                'popover.btn': 'Visitar Sitio',
                 'lab.title': 'El Lab: Pruebas Jugables.',
-                'lab.subtitle': 'Haz clic en cualquier imagen de vista previa para entrar directamente en la herramienta interactiva en vivo.',
-
+                'lab.subtitle': 'Haz clic en las tarjetas para iniciar prototipos o pulsa "Inspeccionar" para detalles.',
+                'lab.inspect': 'Inspeccionar',
+                'lab.collapse': 'Colapsar',
+                'lab.inspect.impact': 'IMPACTO CLAVE:',
                 'lab.card1.title': 'Drama de Supervivencia Corporativa',
-                'lab.card1.desc': 'Serie de video multinivel para resolver desafíos reales de liderazgo. Con guiones hiperrealistas (cero monólogos incómodos) y producción impulsada por IA avanzada.',
-                'lab.card1.tag1': 'Video IA',
-                'lab.card1.tag2': 'Guionización',
+                'lab.card1.desc': 'Serie de video multinivel para resolver desafíos reales de liderazgo con guiones hiperrealistas producidos con IA.',
                 'lab.card1.cta': 'Ver Demo',
-
                 'lab.card2.title': 'Universo de Onboarding Inmersivo',
-                'lab.card2.desc': 'Experiencia de inducción completamente gamificada. Mapas interactivos, decisiones ramificadas y un sistema de recompensas personalizado donde los colaboradores ganan puntos dominando la cultura.',
-                'lab.card2.tag1': 'Gamificación',
-                'lab.card2.tag2': 'UI/UX',
+                'lab.card2.desc': 'Inducción interactiva con mapas espaciales, árbol de decisiones y recompensas gamificadas.',
                 'lab.card2.cta': 'Abrir Página',
-
                 'lab.card3.title': 'Academia de Psicología de Ventas',
-                'lab.card3.desc': 'Simulador de neuro-entrenamiento en ventas que traduce la economía conductual (Kahneman, Cialdini, Voss) en tarjetas interactivas 3D, ejercicios cloze de recuerdo activo, blitz de objeciones y audio procedural en tiempo real.',
-                'lab.card3.tag1': 'Psicología de Ventas',
-                'lab.card3.tag2': 'Recuerdo Activo',
+                'lab.card3.desc': 'Simulador neuroconductual que traduce economía conductual en cartas 3D y simulacros de objeciones.',
                 'lab.card3.cta': 'Abrir Página',
-
                 'lab.card4.title': 'Copiloto de Coaching para Managers',
-                'lab.card4.desc': 'Copiloto interactivo de liderazgo para gestores de personas. Reemplaza el micromanagement por indagación de alto impacto con marcos como SCARF, The Coaching Habit, Liderazgo Situacional (SLII) y Radical Candor.',
-                'lab.card4.tag1': 'Liderazgo Coach',
-                'lab.card4.tag2': 'SCARF y SLII',
+                'lab.card4.desc': 'Herramienta de liderazgo con modelos SCARF y SLII para sustituir el micromanagement por preguntas de alto impacto.',
                 'lab.card4.cta': 'Abrir Página',
-
                 'lab.card5.title': 'Atlas Intercultural',
-                'lab.card5.desc': 'Simulador de inteligencia cultural (CQ) para gestionar fricciones en equipos multinacionales. Presenta 8 dilemas en rutas globales impulsados por el marco de las 3 Lentes Anti-Estereotipos, espejos de doble perspectiva y radares adaptativos.',
-                'lab.card5.tag1': 'Inteligencia Cultural',
+                'lab.card5.desc': 'Simulador de inteligencia cultural (CQ) con 8 rutas internacionales para resolver fricciones multiculturales.',
                 'lab.card5.cta': 'Abrir Página',
-
                 'lab.card6.title': 'Odisea de Design Thinking',
-                'lab.card6.desc': 'Laboratorio práctico de sprints de innovación. Recorre 5 fases experienciales (Empatizar a Probar), revienta burbujas de escepticismo, despliega wireframes desechables de 48h y ejecuta temporizadores Crazy 8s con efectos de sonido.',
-                'lab.card6.tag1': 'Design Thinking',
-                'lab.card6.tag2': 'Temporizador Crazy 8s',
+                'lab.card6.desc': 'Laboratorio de sprints de innovación ágil con temporizador Crazy 8s y prototipos de 48 horas.',
                 'lab.card6.cta': 'Abrir Página',
-
                 'services.tag': '03 // ARQUITECTURA DE CAPACIDADES',
                 'services.title': 'CÓMO POTENCIAMOS A TU EQUIPO.',
-                'services.subtitle': 'De cursos genéricos de cumplimiento a simulaciones de alto impacto que transforman comportamientos. Tres niveles estratégicos diseñados para escalar a nivel global.',
+                'services.subtitle': 'Tres niveles de implementación estratégica diseñados para escalar a nivel global.',
                 'services.s1.badge': 'ESTRATEGIA & AUDITORÍA',
                 'services.s1.title': 'Asesoría Estratégica de L&D',
-                'services.s1.desc': 'Diseño curricular integral, auditorías sistémicas de aprendizaje e integración de ecosistemas formativos sin redundancias para organizaciones de alto rendimiento.',
+                'services.s1.desc': 'Diseño curricular integral, auditorías de aprendizaje y modernización de LMS sin redundancias.',
                 'services.s1.feat1': 'Auditoría Estructural y Brechas de Competencias',
                 'services.s1.feat2': 'Modernización de Learning Tech Stack y LMS',
                 'services.s1.feat3': 'Métricas Verificables de ROI y Retención Real',
                 'services.s2.badge': 'LIDERAZGO CONDUCTUAL',
                 'services.s2.title': 'Coaching Ejecutivo y Gerencial',
-                'services.s2.desc': 'Intervenciones de liderazgo basadas en neurociencia aplicada y modelos conductuales probados para transformar talento de alto potencial en líderes decisivos.',
+                'services.s2.desc': 'Intervenciones basadas en neurociencia aplicada y práctica deliberada en escenarios reales.',
                 'services.s2.feat1': 'Neurociencia Aplicada (SCARF & SLII)',
                 'services.s2.feat2': 'Práctica Deliberada en Escenarios Reales',
                 'services.s2.feat3': 'Sinceridad Radical y Seguridad Psicológica',
                 'services.s3.badge': 'PRODUCCIÓN INTERACTIVA',
                 'services.s3.title': 'Simulaciones y Medios Generativos',
-                'services.s3.desc': 'Guiones hiperrealistas asistidos por IA, mundos de decisión ramificados y prototipos web interactivos adaptados directamente a la cultura de tu empresa.',
+                'services.s3.desc': 'Guiones interactivos, mundos ramificados y prototipos web personalizados para tu cultura.',
                 'services.s3.feat1': 'Motores Ramificados Web Personalizados',
                 'services.s3.feat2': 'Producción de Video y Voces con IA de Estudio',
-                'services.s3.feat3': 'Certificación Antifraude e Insignias de Gamificación',
-
+                'services.s3.feat3': 'Certificación Antifraude e Insignias Gamificadas',
                 'footer.title': '¿Listo para convertir el aprendizaje en tu <br><span class="text-acid">ventaja competitiva?</span>',
                 'footer.subtitle': 'Construyamos algo que nadie quiera saltarse.',
                 'form.name': 'Nombre',
                 'form.email': 'Email corporativo',
                 'form.company': 'Empresa',
-                'form.headache': '¿Tu mayor dolor de cabeza en L&D?',
+                'form.headache': 'Mayor dolor de cabeza en L&D',
                 'form.submit': 'INICIAR ACTUALIZACIÓN',
                 'form.transmitting': 'TRANSMITIENDO...',
-                'footer.copy': '&copy; 2026 FREE//BUILDER L&D Solutions. Todos los derechos reservados.',
-
-                'toast.synapse': '¡Descubriste un Punto de Sinapsis secreto! (+50 Puntos de Curiosidad)',
-                'toast.submit_success': '¡Transmisión recibida! Secuencia de actualización iniciada.',
-                'toast.submit_fail': 'Error al enviar. Por favor verifica la configuración del formulario.',
-                'toast.network_err': 'Error de red. Intenta nuevamente más tarde.',
-                'voice.activated': 'Asistente de voz activado. Pasa el cursor sobre el texto para escucharlo.'
+                'footer.copy': 'Todos los derechos reservados.',
+                'toast.muted': 'Efectos de audio silenciados',
+                'toast.enabled': 'Efectos de audio activados',
+                'toast.synapse': '¡Punto de curiosidad desbloqueado! (+50 XP)',
+                'toast.submit_success': '¡Transmisión de actualización enviada con éxito!',
+                'toast.submit_fail': 'Error al enviar. Verifica la configuración.',
+                'toast.network_err': 'Error de red. Intenta de nuevo más tarde.'
             }
         };
 
         function setLanguage(lang) {
-            audio.holoGlitch();
+            audio.tactileClick();
             currentLang = lang;
-            
-            const langLabels = {
-                'en': 'EN',
-                'zh-cn': '简体',
-                'zh-tw': '繁體',
-                'es': 'ES'
-            };
-            document.getElementById('current-lang').textContent = langLabels[lang] || 'EN';
-            document.documentElement.lang = lang === 'zh-cn' ? 'zh-Hans' : (lang === 'zh-tw' ? 'zh-Hant' : lang);
-
-            const elements = document.querySelectorAll('[data-i18n]');
-            elements.forEach(el => {
+            const labels = { 'en': 'EN', 'zh': 'ZH', 'es': 'ES' };
+            document.getElementById('current-lang').textContent = labels[lang] || 'EN';
+            const dict = dictionary[lang] || dictionary['en'];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (dictionary[lang] && dictionary[lang][key]) {
-                    el.innerHTML = dictionary[lang][key];
-                }
+                if (dict[key]) el.innerHTML = dict[key];
             });
-
-            // Close menus
-            document.getElementById('a11y-panel').style.transform = 'translateX(130%)';
-            const langMenu = document.getElementById('lang-menu');
-            langMenu.classList.remove('opacity-100', 'visible');
-            langMenu.classList.add('opacity-0', 'invisible');
+            document.getElementById('lang-menu').classList.add('opacity-0', 'invisible');
         }
     </script>
 </body>
