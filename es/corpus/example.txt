@@ -1304,3 +1304,2396 @@ el software	software	La última actualización del software ha corregido varios 
 el teclado	keyboard	Derramé café sobre el teclado y algunas teclas ya no funcionan.
 la tecnología	technology	La tecnología médica actual permite realizar cirugías menos invasivas.
 el telescopio	telescope	Pudimos ver los anillos de Saturno gracias a este telescopio.
+el abogado	lawyer / attorney	El abogado defensor presentó nuevas pruebas ante el tribunal.
+
+la acusación	prosecution / accusation	La acusación sostiene que el robo fue premeditado.
+
+acusar	to accuse	No puedes acusar a nadie sin tener pruebas concluyentes.
+
+administrar	to administer / manage	El nuevo gobierno debe administrar los fondos públicos con transparencia.
+
+la alcaldía	mayor's office / town hall	Los vecinos se manifestaron frente a la alcaldía para pedir mejoras.
+
+la amnistía	amnesty	El parlamento debatió la concesión de una amnistía general.
+
+apelar	to appeal	El reo decidió apelar la sentencia ante el tribunal superior.
+
+aprobar	to pass / approve (a law)	El congreso logró aprobar la reforma laboral tras meses de debate.
+
+el arbitraje	arbitration	Ambas partes aceptaron someter la disputa a un arbitraje internacional.
+
+el arresto	arrest	La policía procedió al arresto del sospechoso en su domicilio.
+
+la asamblea	assembly	La asamblea ciudadana votó a favor del nuevo plan urbanístico.
+
+el asilo	asylum	El activista solicitó asilo político en la embajada extranjera.
+
+la autoridad	authority	Es fundamental respetar la autoridad de los jueces en una democracia.
+
+el ayuntamiento	city hall / municipality	Fui al ayuntamiento para empadronarme en mi nuevo barrio.
+
+la burocracia	bureaucracy	El exceso de burocracia ralentiza la creación de nuevas empresas.
+
+el candidato	candidate	Cada candidato expuso sus propuestas durante el debate electoral.
+
+el castigo	punishment	El castigo debe ser proporcional a la gravedad de la falta.
+
+la censura	censorship	La prensa independiente luchó contra la censura gubernamental.
+
+censurar	to censor	El régimen intentó censurar las publicaciones en redes sociales.
+
+la ciudadanía	citizenship / citizens	La ciudadanía exige mayor transparencia en la gestión pública.
+
+el ciudadano	citizen	Todo ciudadano tiene el deber de contribuir a la comunidad.
+
+la coalición	coalition	Dos partidos formaron una coalición para alcanzar la mayoría parlamentaria.
+
+el código penal	penal code	El artículo del código penal tipifica claramente este delito.
+
+los comicios	elections	Los comicios generales se celebrarán el próximo mes de mayo.
+
+la comunidad	community	La comunidad de vecinos acordó reparar la fachada del edificio.
+
+la condena	sentence / conviction	El juez dictó una condena de cinco años de prisión para el acusado.
+
+condenar	to sentence / condemn	El tribunal decidió condenar al culpable tras escuchar los testimonios.
+
+el conflicto	conflict	Las dos naciones buscan una salida negociada al conflicto fronterizo.
+
+el congreso	congress	El congreso nacional sesionará de forma extraordinaria esta semana.
+
+la constitución	constitution	La constitución garantiza la igualdad de todos ante la ley.
+
+constitucional	constitutional	El tribunal constitucional declaró inválida la polémica ley.
+
+la corrupción	corruption	La lucha contra la corrupción es prioritaria para sanear la economía.
+
+la corte	court	El caso fue remitido a la corte suprema para su revisión final.
+
+culpable	guilty	El jurado declaró culpable al acusado de todos los cargos.
+
+la custodia	custody	Ambos progenitores acordaron compartir la custodia de sus hijos.
+
+el debate	debate	El debate parlamentario reflejó la división entre los partidos.
+
+declarar	to testify / declare	El testigo acudió a declarar ante el juez de instrucción.
+
+el decreto	decree	El presidente firmó un decreto de necesidad y urgencia.
+
+defraudar	to defraud	Intentó defraudar a la hacienda pública ocultando sus ingresos.
+
+la delincuencia	crime / delinquency	La tasa de delincuencia juvenil ha disminuido notablemente este año.
+
+el delito	crime / felony	Cometer perjurio en un juicio es un delito muy grave.
+
+la demanda	lawsuit / claim	El sindicato presentó una demanda colectiva contra la patronal.
+
+demandar	to sue	Amenazó con demandar a la empresa por despido improcedente.
+
+la democracia	democracy	La separación de poderes es el pilar fundamental de la democracia.
+
+la denuncia	police report / complaint	La víctima acudió a comisaría a interponer una denuncia formal.
+
+denunciar	to report / denounce	Es necesario denunciar cualquier caso de acoso laboral de inmediato.
+
+el derecho	right / law	Todo ser humano goza del derecho inalienable a la vida.
+
+derrocar	to overthrow	Los rebeldes consiguieron derrocar al dictador tras meses de conflicto.
+
+la desigualdad	inequality	Reducir la desigualdad económica es un reto constante para el país.
+
+desobedecer	to disobey	Ningún funcionario puede desobedecer una orden judicial directa.
+
+la detención	detention / custody	La detención preventiva del investigado durará un máximo de dos días.
+
+detener	to arrest / detain	Los agentes lograron detener al prófugo en el aeropuerto.
+
+el dictamen	ruling / opinion	Los peritos emitieron un dictamen favorable a la constructora.
+
+la dictadura	dictatorship	El país vivió bajo una dura dictadura militar durante décadas.
+
+el diputado	deputy / representative	El diputado defendió con pasión la nueva iniciativa legislativa.
+
+la discriminación	discrimination	La ley prohíbe cualquier tipo de discriminación por motivos de género.
+
+discriminar	to discriminate	No se debe discriminar a los candidatos por su lugar de origen.
+
+la elección	election	La participación ciudadana en la última elección fue histórica.
+
+el electorado	electorate	El electorado castigó las promesas incumplidas en las urnas.
+
+el encarcelamiento	imprisonment	El encarcelamiento injusto del periodista causó indignación internacional.
+
+encarcelar	to imprison	Un juez tiene la potestad de encarcelar a los reincidentes peligrosos.
+
+la enmienda	amendment	La oposición propuso una enmienda a la totalidad del presupuesto.
+
+el escaño	seat (parliamentary)	Su partido ganó tres escaños adicionales en las elecciones pasadas.
+
+el estado de derecho	rule of law	En un verdadero estado de derecho, nadie está por encima de la ley.
+
+el estatuto	statute / bylaws	El estatuto autonómico regula las competencias de la región.
+
+la evidencia	evidence	La policía científica no encontró evidencia alguna en la habitación.
+
+extraditar	to extradite	El gobierno accedió a extraditar al criminal a su país de origen.
+
+la fiscalía	prosecutor's office	La fiscalía abrió una investigación exhaustiva sobre el desfalco.
+
+el fiscal	prosecutor	El fiscal interrogó minuciosamente a los testigos del caso.
+
+el fraude	fraud	Fue descubierto tras cometer un sofisticado fraude fiscal.
+
+la garantía	guarantee / safeguard	El juicio justo es una garantía constitucional indispensable.
+
+gobernar	to govern	Gobernar un país en tiempos de crisis requiere gran liderazgo.
+
+el gobierno	government	El gobierno anunció una bajada temporal del impuesto al combustible.
+
+la huelga	strike	El sindicato convocó una huelga para exigir salarios dignos.
+
+ilegal	illegal	Conducir sin el cinturón de seguridad es una conducta ilegal.
+
+la impunidad	impunity	Las familias de las víctimas exigieron el fin de la impunidad policial.
+
+indemnizar	to compensate	La aseguradora deberá indemnizar a los afectados por las inundaciones.
+
+la infracción	infraction / violation	Cometió una grave infracción de tránsito al saltarse el semáforo rojo.
+
+la injusticia	injustice	La sentencia fue percibida por la sociedad como una flagrante injusticia.
+
+la inmunidad	immunity	El congresista apeló a su inmunidad parlamentaria para no declarar.
+
+inocente	innocent	Toda persona se presume inocente mientras no se demuestre lo contrario.
+
+interrogar	to interrogate / question	Los detectives procedieron a interrogar al sospechoso durante horas.
+
+el interrogatorio	interrogation	Durante el interrogatorio, el acusado cayó en varias contradicciones.
+
+la investigación judicial	judicial investigation	La investigación judicial reveló una compleja red de sobornos.
+
+el juez	judge	El juez ordenó levantar el secreto de sumario sobre el caso.
+
+el juicio	trial	El juicio oral comenzará el próximo lunes a primera hora.
+
+el jurado	jury	El jurado popular deliberó durante tres días antes de emitir su veredicto.
+
+la jurisprudencia	jurisprudence / case law	La sentencia del tribunal sentó jurisprudencia para casos venideros.
+
+la justicia	justice	Los ciudadanos salieron a la calle a clamar justicia para la víctima.
+
+justificar	to justify	No existen razones de peso que puedan justificar la violencia armada.
+
+la legislación	legislation	La legislación laboral española protege el descanso de los trabajadores.
+
+legislar	to legislate	La función primordial del parlamento es legislar en favor del pueblo.
+
+legislativo	legislative	El poder legislativo debe actuar con independencia del poder ejecutivo.
+
+la ley	law	El desconocimiento de la ley no exime a nadie de su cumplimiento.
+
+la libertad de expresión	freedom of expression	La libertad de expresión es un derecho básico en cualquier sociedad libre.
+
+licitar	to tender / bid	Varias constructoras decidieron licitar para la obra del nuevo hospital.
+
+el litigio	litigation / lawsuit	Ambas empresas decidieron resolver el litigio fuera de los tribunales.
+
+manifestarse	to protest / demonstrate	Miles de personas salieron a manifestarse en defensa de la sanidad pública.
+
+
+el síntoma	symptom	La fiebre alta y el dolor muscular son síntomas claros de la gripe.
+
+el diagnóstico	diagnosis	El médico confirmó el diagnóstico tras revisar los análisis de sangre.
+
+diagnosticar	to diagnose	Lograron diagnosticar la enfermedad antes de que se extendiera.
+
+el tratamiento	treatment	El paciente debe completar el tratamiento con antibióticos durante diez días.
+
+la receta	prescription / recipe	El doctor me dio una receta para comprar el medicamento en la farmacia.
+
+recetar	to prescribe	El especialista le recetó reposo absoluto y abundante agua.
+
+el medicamento	medication / medicine	Debes guardar cualquier medicamento fuera del alcance de los niños.
+
+el fármaco	drug / pharmaceutical	Este nuevo fármaco ha mostrado gran eficacia en los ensayos clínicos.
+
+la dosis	dose / dosage	Es peligroso tomar una dosis mayor a la recomendada por el fabricante.
+
+la sobredosis	overdose	Fue trasladado a urgencias tras sufrir una sobredosis accidental.
+
+el efecto secundario	side effect	La somnolencia es un efecto secundario común de este antihistamínico.
+
+el analgésico	painkiller	Tomé un analgésico para calmar el dolor de muelas mientras esperaba la cita.
+
+el antibiótico	antibiotic	Los médicos advierten sobre el abuso de antibióticos para tratar resfriados.
+
+la anestesia	anesthesia	El cirujano esperó a que la anestesia general hiciera efecto completo.
+
+la cirugía	surgery	El hospital cuenta con tres salas preparadas para cirugía reconstructiva.
+
+el cirujano	surgeon	El cirujano explicó los riesgos del procedimiento antes de la intervención.
+
+el quirófano	operating room	El equipo médico se preparó para entrar de inmediato al quirófano.
+
+la intervención	surgical intervention / operation	La intervención quirúrgica duró más de cuatro horas pero concluyó con éxito.
+
+operar	to operate on	Van a operar al futbolista la próxima semana para reparar el menisco.
+
+recuperarse	to recover	El paciente tardará al menos tres semanas en recuperarse por completo.
+
+la recuperación	recovery	Una alimentación equilibrada acelerará tu proceso de recuperación.
+
+la rehabilitación	rehabilitation	Asiste a sesiones de rehabilitación dos veces por semana para la rodilla.
+
+la terapia	therapy	La terapia ocupacional ayudó al paciente a recuperar su autonomía motora.
+
+el terapeuta	therapist	El terapeuta le recomendó ejercicios de estiramiento para la espalda.
+
+la herida	wound / injury	Hay que desinfectar bien la herida antes de colocar una gasa limpia.
+
+cicatrizar	to heal / scar over	La quemadura superficial empezó a cicatrizar al cabo de pocos días.
+
+la cicatriz	scar	Le quedó una pequeña cicatriz en la barbilla tras la caída de bicicleta.
+
+el vendaje	bandage / dressing	La enfermera cambió el vendaje para evitar que la herida se infectara.
+
+vendar	to bandage	El socorrista tuvo que vendar la muñeca del escalador para inmovilizarla.
+
+la tirita	adhesive plaster / band-aid	Ponte una tirita en el talón para evitar las rozaduras del zapato nuevo.
+
+el esguince	sprain	El jugador sufrió un esguince de tobillo durante el entrenamiento de ayer.
+
+la fractura	fracture / broken bone	La radiografía reveló una fractura limpia en el hueso del brazo.
+
+fracturar	to fracture / break	El impacto fue tan fuerte que logró fracturar varias costillas.
+
+el yeso	cast / plaster	Tuvo que llevar un yeso en la pierna derecha durante más de un mes.
+
+la hemorragia	hemorrhage / bleeding	Los paramédicos actuaron rápido para detener la hemorragia de la pierna.
+
+sangrar	to bleed	La encía suele sangrar si te cepillas los dientes con demasiada fuerza.
+
+la inflamación	inflammation	El hielo aplicado a tiempo reduce notablemente la inflamación articular.
+
+hincharse	to swell	El tobillo comenzó a hincharse en cuanto apoyó el pie en el suelo.
+
+la hinchazón	swelling	Usa esta pomada antiinflamatoria para rebajar la hinchazón del golpe.
+
+el hematoma	hematoma / bruise	Apareció un hematoma oscuro alrededor de la zona golpeada.
+
+el dolor agudo	sharp pain	Sintió un dolor agudo en el pecho y acudió de urgencia al hospital.
+
+el dolor crónico	chronic pain	Muchas personas mayores lidian a diario con dolor crónico en las articulaciones.
+
+padecer	to suffer from	Padece una enfermedad autoinmune desde que era adolescente.
+
+la dolencia	ailment / complaint	Fue a consultar al especialista para descartar una dolencia coronaria.
+
+el malestar	malaise / discomfort	Siento un malestar general que me impide concentrarme en el trabajo.
+
+el mareo	dizziness / nausea	Tomar una pastilla para el mareo ayuda antes de subir a un barco agitado.
+
+marearse	to get dizzy / motion sick	Suele marearse si lee en el asiento trasero mientras viaja en coche.
+
+el desmayo	faint / fainting spell	El calor sofocante del verano provocó el desmayo de varias personas.
+
+desmayarse	to faint / pass out	Estuvo a punto de desmayarse al ver tanta sangre tras el accidente.
+
+la náusea	nausea	El olor a comida pesada le provocaba una persistente sensación de náusea.
+
+vomitar	to vomit / throw up	Comió marisco en mal estado y se pasó toda la noche vomitando.
+
+el vómito	vomit / vomiting	La deshidratación provocada por el vómito constante requirió suero intravenoso.
+
+la fiebre	fever	Si la fiebre supera los treinta y nueve grados, debes avisar al médico.
+
+febril	feverish	El niño permaneció en un estado febril durante casi cuarenta y ocho horas.
+
+el resfriado	common cold	Abrígate bien para no pescar un resfriado con este viento helado.
+
+resfriarse	to catch a cold	Suele resfriarse con mucha facilidad durante los meses de otoño.
+
+la gripe	flu / influenza	La vacuna anual contra la gripe reduce significativamente el riesgo de contagio.
+
+la tos	cough	Tiene una tos seca muy molesta que apenas le deja dormir de noche.
+
+toser	to cough	Es fundamental cubrirse la boca con el codo al toser cerca de otros.
+
+el estornudo	sneeze	Un estornudo repentino alertó a todos sobre su fuerte resfriado.
+
+estornudar	to sneeze	La presencia de polvo en la habitación me hace estornudar sin parar.
+
+la congestión	congestion	El espray nasal alivia la congestión durante las noches de congestión nasal.
+
+la alergia	allergy	Desarrolló una severa alergia a los frutos secos durante su juventud.
+
+alérgico	allergic	Soy muy alérgico al pelo de gato y debo tomar precauciones al visitarlos.
+
+el asma	asthma	Utiliza un inhalador antes de hacer ejercicio intenso para controlar el asma.
+
+la respiración	breathing / respiration	Controlar la respiración ayuda a calmar el ritmo cardíaco en situaciones de estrés.
+
+respirar hondo	to breathe deeply	Le pidieron respirar hondo mientras auscultaban sus pulmones con el estetoscopio.
+
+el ahogo	choking sensation / breathlessness	Sintió un repentino ahogo al subir las escaleras debido a su falta de condición.
+
+asfixiarse	to suffocate / choke	Cuidado con darle trozos grandes de comida al bebé para que no se asfixie.
+
+la presión arterial	blood pressure	Es prudente medirse la presión arterial con regularidad después de los cincuenta.
+
+la hipertensión	hypertension	Una dieta baja en sodio ayuda a prevenir problemas graves de hipertensión.
+
+el pulso	pulse	El enfermero tomó su pulso y comprobó que los latidos eran regulares.
+
+el latido	heartbeat	Podía escuchar el latido apresurado de su propio corazón por los nervios.
+
+el infarto	heart attack	Adoptar hábitos saludables reduce drásticamente las probabilidades de sufrir un infarto.
+
+el paro cardíaco	cardiac arrest	Los socorristas aplicaron maniobras de RCP para revertir el paro cardíaco.
+
+el derrame cerebral	stroke	Reconocer los síntomas tempranos de un derrame cerebral salva muchas vidas.
+
+la infección	infection	Limpió la herida con alcohol para evitar una infección bacteriana.
+
+infectar	to infect	La bacteria puede infectar tejidos profundos si no se administra el fármaco.
+
+contagioso	contagious	Esa variante del virus es mucho más contagiosa que las anteriores.
+
+contagiar	to pass on / infect	Se quedó en casa para no contagiar a sus compañeros de departamento.
+
+el contagio	contagion / spread	El lavado de manos frecuente frena el contagio de enfermedades respiratorias.
+
+la inmunidad	immunity	Haber superado el sarampión confiere inmunidad prolongada en la mayoría de los casos.
+
+el sistema inmunológico	immune system	Dormir suficientes horas fortalece las defensas del sistema inmunológico.
+
+la vacuna	vaccine	La campaña de administración de la vacuna comenzó a principios de invierno.
+
+vacunar	to vaccinate	Es obligatorio vacunar a las mascotas domésticas contra la rabia.
+
+la prevención	prevention	La medicina moderna enfatiza la prevención por encima de la intervención tardía.
+
+prevenir	to prevent	Llevar una vida activa ayuda a prevenir la aparición de enfermedades cardiovasculares.
+
+la salud mental	mental health	Cuidar la salud mental es tan indispensable como atender las dolencias físicas.
+
+la ansiedad	anxiety	Las técnicas de respiración consciente ayudan a rebajar los picos agudos de ansiedad.
+
+la depresión	depression	La depresión clínica requiere acompañamiento médico y psicológico continuado.
+
+el trastorno	disorder	El paciente fue diagnosticado con un trastorno del ritmo circadiano.
+
+el insomnio	insomnia	El exceso de cafeína antes de acostarse agrava los episodios de insomnio.
+
+conciliar el sueño	to fall asleep	Le cuesta conciliar el sueño cuando tiene muchas preocupaciones pendientes.
+
+el cansancio	tiredness / fatigue	El cansancio acumulado tras semanas de exámenes afectó su rendimiento general.
+
+el agotamiento	exhaustion	Llegó a un punto de agotamiento físico y mental que lo obligó a frenar.
+
+la nutrición	nutrition	Una nutrición balanceada es la base del bienestar físico a cualquier edad.
+
+los nutrientes	nutrients	Las verduras de hoja verde aportan nutrientes esenciales y antioxidantes al organismo.
+
+la deshidratación	dehydration	Beber abundante agua durante una ola de calor evita la deshidratación severa.
+
+deshidratarse	to become dehydrated	Si haces deporte bajo el sol directo sin hidratarte, corres el riesgo de deshidratarte.
+
+el chequeo médico	medical check-up	Es recomendable realizarse un chequeo médico completo al menos una vez al año.
+
+el estado de ánimo	mood / state of mind	El mal tiempo suele influir negativamente en mi estado de ánimo.
+
+la autoestima	self-esteem	Practicar la autocompasión es clave para fortalecer la autoestima personal.
+
+la empatía	empathy	Mostró una gran empatía al escuchar los problemas de sus compañeros.
+
+empático	empathetic	Un buen líder debe ser empático con las dificultades de su equipo.
+
+la compasión	compassion	Sintió profunda compasión por las familias afectadas por la catástrofe.
+
+compasivo	compassionate	Fue muy compasivo y decidió perdonarle la falta sin imponer castigos.
+
+la envidia	envy	Intenta transformar la envidia en una motivación sana para mejorar.
+
+envidioso	envious	Una persona envidiosa rara vez puede disfrutar del éxito ajeno.
+
+los celos	jealousy	Los celos infundados acabaron desgastando la relación de pareja.
+
+celoso	jealous	Se puso celoso cuando vio a su amigo recibir más reconocimiento.
+
+el remordimiento	remorse / regret	Sentía un fuerte remordimiento por no haber dicho la verdad a tiempo.
+
+el rencor	grudge / resentment	Guardar rencor durante años solo perjudica a quien lo siente.
+
+rencoroso	resentful / grudge-bearing	Es una persona rencorosa que nunca olvida una pequeña ofensa.
+
+el resentimiento	resentment	El resentimiento acumulado estalló durante la discusión familiar.
+
+la nostalgia	nostalgia / homesickness	Mirar fotos antiguas le provocó una oleada de nostalgia por su niñez.
+
+nostálgico	nostalgic	Se sintió nostálgico al volver a caminar por las calles de su pueblo natal.
+
+la melancolía	melancholy	El otoño siempre viene acompañado de una suave melancolía.
+
+melancólico	melancholic / gloomy	La música melancólica del piano llenaba el salón en penumbra.
+
+la euforia	euphoria	La afición celebró el triunfo final con auténtica euforia en la plaza.
+
+eufórico	euphoric	Estaba eufórico tras enterarse de que había obtenido la plaza de trabajo.
+
+el entusiasmo	enthusiasm	Afrontó el nuevo proyecto universitario con muchísimo entusiasmo.
+
+entusiasmar	to excite / fill with enthusiasm	La idea de viajar por Sudamérica logró entusiasmar a todo el grupo.
+
+la desesperación	despair / desperation	En un momento de desesperación, recurrió a pedir ayuda a desconocidos.
+
+desesperar	to despair / drive to despair	La falta de noticias sobre el vuelo comenzó a desesperar a los pasajeros.
+
+la angustia	anguish / distress	Esperar los resultados de las pruebas médicas le causaba gran angustia.
+
+angustiarse	to become distressed / anxious	No deberías angustiarse antes de tiempo por problemas que aún no existen.
+
+el alivio	relief	Sintió un inmenso alivio cuando le confirmaron que todos estaban a salvo.
+
+aliviar	to relieve / soothe	Una charla sincera con un amigo cercano ayuda a aliviar las tensiones.
+
+la serenidad	serenity / composure	Afrontó la situación crítica con una serenidad admirable para su edad.
+
+sereno	serene / calm	Mantuvo un tono sereno a pesar de las continuas interrupciones del debate.
+
+el sosiego	peace / tranquility	Encontró en la lectura nocturna un momento de verdadero sosiego.
+
+sosegar	to calm / pacify	Sus palabras conciliadoras lograron sosegar los ánimos en la sala.
+
+la inquietud	concern / restlessness	Existe cierta inquietud entre los vecinos por los ruidos nocturnos.
+
+inquieto	restless / uneasy	Estaba tan inquieto que no pudo permanecer sentado durante la reunión.
+
+la frustración	frustration	La incapacidad de resolver el problema técnico le provocó gran frustración.
+
+frustrar	to frustrate / thwart	Las intensas lluvias frustraron nuestros planes de salir de excursión.
+
+la decepción	disappointment	Fue una amarga decepción comprobar que la película no era tan buena.
+
+decepcionar	to disappoint	Temía decepcionar las altas expectativas que su familia tenía puestas en él.
+
+la desilusión	disillusionment	Tras varias promesas rotas, la desilusión se apoderó de los votantes.
+
+desilusionar	to disillusion / let down	No quiero desilusionarte, pero el proceso de selección será muy exigente.
+
+el orgullo	pride	Sintió un orgullo legítimo al ver publicado su primer artículo de prensa.
+
+orgulloso	proud	Estaba profundamente orgulloso de los logros académicos de su hija menor.
+
+la soberbia	arrogance / haughtiness	Su soberbia le impedía admitir que había cometido una grave equivocación.
+
+soberbio	arrogant / haughty	El ejecutivo soberbio se negó a escuchar las sugerencias de los empleados.
+
+la humildad	humility	A pesar de su fama mundial, siempre destacó por su trato cercano y humildad.
+
+humilde	humble	Viene de una familia humilde y valora el esfuerzo diario más que nadie.
+
+la vanidad	vanity	Su preocupación obsesiva por las apariencias denota una excesiva vanidad.
+
+vanidoso	vain	Es demasiado vanidoso como para salir a la calle sin arreglarse durante horas.
+
+la cobardía	cowardice	Callar ante una injusticia evidente puede ser considerado un acto de cobardía.
+
+cobarde	cowardly / coward	Fue un comportamiento cobarde culpar a otros para salvar su propia reputación.
+
+la valentía	bravery / courage	Tuvo la valentía de confesar el error antes de que el daño fuera irreversible.
+
+valiente	brave	Hay que ser muy valiente para empezar de cero en un país desconocido.
+
+el coraje	courage / boldness	Mostró un coraje extraordinario al rescatar al animal atrapado en el canal.
+
+la audacia	audacity / daring	Su propuesta comercial destacaba por la audacia de su planteamiento.
+
+audaz	bold / daring	Fue una maniobra audaz invertir en esa tecnología emergente antes que otros.
+
+la timidez	shyness	Venció su timidez inicial tras participar activamente en el taller de teatro.
+
+tímido	shy / timid	De niño era muy tímido y le daba vergüenza hablar en público.
+
+la introversión	introversion	La introversión no debe confundirse nunca con la falta de habilidades sociales.
+
+introvertido	introverted	Prefiere pasar la tarde leyendo en casa porque es de naturaleza introvertida.
+
+la extroversión	extroversion	Su marcada extroversión le facilita hacer contactos profesionales con rapidez.
+
+extrovertido	extroverted	Es un chico muy extrovertido que entabla conversación con cualquiera en el tren.
+
+la terquedad	stubbornness	Su terquedad le impidió aceptar un acuerdo que claramente lo beneficiaba.
+
+terco	stubborn	Es tan terco que no cambiará de opinión aunque le presentes pruebas irrefutables.
+
+la obstinación	obstinacy	Consiguió alcanzar su meta gracias a una obstinación casi legendaria.
+
+obstinado	obstinate	El debate se alargó horas por la postura obstinada de ambas partes negociadoras.
+
+la sensatez	good sense / common sense	Actuar con sensatez es prioritario en momentos de tensión financiera.
+
+sensato	sensible / level-headed	Tomó una decisión muy sensata al posponer la compra de la vivienda este año.
+
+la insensatez	foolishness / folly	Gastar todos los ahorros en un coche de lujo fue una auténtica insensatez.
+
+insensato	foolish / reckless	Sería insensato cruzar el río caudaloso en plena crecida de la tormenta.
+
+la prudencia	prudence / caution	La prudencia al volante reduce el riesgo de sufrir accidentes mortales.
+
+prudente	prudent / cautious	Es prudente guardar una copia de seguridad antes de actualizar el software.
+
+la imprudencia	recklessness / imprudence	Conducir a gran velocidad bajo la niebla constituye una grave imprudencia.
+
+imprudente	reckless / imprudent	Hizo un comentario muy imprudente sobre la vida privada de su compañero.
+
+la generosidad	generosity	Agradecieron la enorme generosidad de los donantes con los refugiados.
+
+generoso	generous	Fue muy generoso al compartir sus apuntes completos antes del examen final.
+
+la tacañería	stinginess / cheapness	Su tacañería llegó al extremo de negarse a dejar una propina básica.
+
+tacaño	stingy / cheap	Es tan tacaño que prefiere caminar cinco kilómetros antes que tomar el autobús.
+
+la ternura	tenderness	La imagen de la anciana acariciando al cachorro inspiraba mucha ternura.
+
+tierno	tender / affectionate	Le dedicó una mirada tierna antes de despedirse en la estación de tren.
+
+el afecto	affection	Le tiene un gran afecto a su maestra de primaria por todo lo que le enseñó.
+
+afectuoso	affectionate	Siempre recibe a sus invitados con un abrazo cálido y afectuoso.
+
+el apego	attachment	Desarrolló un apego muy fuerte a la casa de campo donde pasó sus veranos.
+
+el desapego	detachment	Practicar cierto desapego material ayuda a vivir con menor preocupación.
+
+el desdén	disdain / scorn	Miró la propuesta alternativa con evidente desdén y la rechazó sin leerla.
+
+desdeñar	to disdain / dismiss	No conviene desdeñar las advertencias de los especialistas en climatología.
+
+el desprecio	contempt / disdain	Tratar a los demás con desprecio deteriora la convivencia en cualquier grupo.
+
+despreciar	to despise / look down on	Jamás debes despreciar el trabajo de quienes se esfuerzan por ayudarte.
+
+la admiración	admiration	Siento una profunda admiración por la labor desinteresada de los voluntarios.
+
+admirar	to admire	Es imposible no admirar su constancia y su capacidad para superar barreras.
+
+la devoción	devotion	Cuida el jardín botánico con una devoción y un esmero verdaderamente únicos.
+
+conmover	to move / touch emotionally	La emotiva dedicatoria del libro logró conmover a todos los asistentes.
+
+conmovido	moved / touched	Quedó muy conmovido tras escuchar el testimonio de los supervivientes.
+
+abrumar	to overwhelm	La avalancha constante de notificaciones en el móvil puede llegar a abrumar.
+
+abrumador	overwhelming	La cantidad de trabajo administrativo que recibió resultó abrumadora.
+
+desahogarse	to unburden oneself / vent	Necesitaba desahogarse con alguien de confianza tras una semana agotadora.
+
+el desahogo	venting / relief	Llorar desconsoladamente supuso un necesario desahogo emocional para ella.
+
+resignarse	to resign oneself / accept	Tuvo que resignarse a perder el tren y esperar pacientemente al siguiente.
+
+la resignación	resignation / acceptance	Aceptó la mala noticia con resignación y comenzó a pensar en otras opciones.
+
+sobrellevar	to cope with / endure	Hizo todo lo posible por sobrellevar las dificultades económicas con dignidad.
+
+superar	to overcome / get over	Con apoyo profesional y paciencia logró superar su fobia a los espacios cerrados.
+
+la formación	training / education	Una sólida formación humanística fomenta el pensamiento crítico.
+
+el aprendizaje	learning / apprenticeship	El aprendizaje cooperativo mejora la interacción entre los alumnos.
+
+la docencia	teaching / faculty work	Compagina la investigación de laboratorio con la docencia universitaria.
+
+el catedrático	tenured professor / chairholder	El catedrático de lingüística histórica dictó una conferencia magistral.
+
+la ponencia	presentation / paper	Su ponencia sobre energías limpias suscitó preguntas muy interesantes.
+
+el ponente	speaker / presenter	El ponente aclaró las dudas del público al término de la sesión.
+
+el simposio	symposium	Varios expertos internacionales asistieron al simposio de neurociencia.
+
+el congreso académico	academic conference	Presentará los resultados preliminares en el próximo congreso académico.
+
+la matrícula	tuition / enrollment	El plazo para formalizar la matrícula concluye a finales de septiembre.
+
+matricularse	to enroll / register	Decidió matricularse en el máster de relaciones internacionales.
+
+el plan de estudios	curriculum / syllabus	El nuevo plan de estudios incluye asignaturas sobre inteligencia artificial.
+
+la asignatura	subject / course	Esa asignatura optativa profundiza en la narrativa del siglo de oro.
+
+la titulación	degree / qualification	Obtuvo una doble titulación en economía y ciencias políticas.
+
+el egresado	graduate / alumnus	Los egresados de esta facultad encuentran empleo con relativa facilidad.
+
+la tesis	thesis / dissertation	Dedica gran parte de su jornada a redactar la tesis doctoral.
+
+la tesina	minor thesis / monograph	Entregó la tesina de investigación con dos semanas de antelación.
+
+el tribunal evaluador	evaluating committee / examination board	El tribunal evaluador calificó el trabajo con la máxima distinción.
+
+la calificación	grade / mark	Su calificación final refleja la constancia demostrada todo el año.
+
+la matrícula de honor	distinction / highest honors	Consiguió una matrícula de honor en el examen final de farmacología.
+
+el expediente académico	academic transcript	Un expediente académico brillante le abrió las puertas a varias becas.
+
+la beca de investigación	research grant / fellowship	Le concedieron una prestigiosa beca de investigación posdoctoral en Suiza.
+
+el becario	intern / scholarship recipient	El becario asistió al equipo recopilando datos estadísticos fiables.
+
+la pasantía	internship (LatAm)	Completó una pasantía trimestral en un bufete corporativo relevante.
+
+las prácticas profesionales	internship / practical training (Spain)	Hacer prácticas profesionales en una empresa ayuda a adquirir destrezas reales.
+
+el tutor	academic advisor / guardian	El tutor aconsejó acotar el marco teórico antes de seguir escribiendo.
+
+la tutoría	advisory session / office hours	Reservó una cita en tutoría para comentar la bibliografía sugerida.
+
+el marco teórico	theoretical framework	El marco teórico sustenta las hipótesis planteadas en el primer capítulo.
+
+la hipótesis	hypothesis	Los datos del experimento no lograron refutar la hipótesis inicial.
+
+el postulado	postulate / premise	Ese modelo sociológico parte del postulado de la cooperación mutua.
+
+la premisa	premise	Si la premisa resulta errónea, la conclusión perderá toda validez.
+
+el razonamiento	reasoning / argument	Su razonamiento lógico desmontó por completo las objeciones del rival.
+
+el argumento	argument / line of reasoning	Aportó un sólido argumento cuantitativo para defender su propuesta.
+
+argumentar	to argue / reason	Supo argumentar con serenidad frente a las críticas del comité.
+
+rebatir	to refute / rebut	El científico empleó estadísticas concluyentes para rebatir esa teoría.
+
+refutar	to disprove / refute	No basta con disentir; es imprescindible refutar las afirmaciones con pruebas.
+
+discrepar	to disagree	Ambos investigadores discrepan sobre la fecha exacta del asentamiento.
+
+la discrepancia	discrepancy / disagreement	La discrepancia entre ambos informes obedece a métodos de medición distintos.
+
+el consenso	consensus	Alcanzar un consenso amplio requirió concesiones por ambas partes.
+
+la disertación	dissertation / lecture	Pronunció una brillante disertación sobre la ética en los algoritmos.
+
+el ensayo	essay	Escribió un ensayo analítico sobre la evolución de la lírica moderna.
+
+la monografía	monograph	Publicó una monografía detallada sobre la flora endémica pirenaica.
+
+el marco conceptual	conceptual framework	Definir bien el marco conceptual evita confusiones terminológicas graves.
+
+el rigor	rigor / thoroughness	El análisis carece del rigor metodológico necesario para su publicación.
+
+riguroso	rigorous / strict	Llevaron a cabo un muestreo riguroso antes de extraer conclusiones.
+
+la bibliografía	bibliography	Asegúrate de citar la bibliografía consultada conforme a las normas APA.
+
+la cita textual	direct quote	Entrecomilló la cita textual para respetar la autoría original de la obra.
+
+parafrasear	to paraphrase	Es aconsejable parafrasear las ideas complejas para ganar claridad expositiva.
+
+el plagio	plagiarism	El detector digital identificó indicios de plagio en el marco general.
+
+plagiar	to plagiarize	Plagiar fragmentos de internet conlleva la anulación automática de la prueba.
+
+la autoría	authorship	La autoría del texto anónimo continúa suscitando agrias controversias.
+
+el manuscrito	manuscript	Custodian un valioso manuscrito medieval en el archivo histórico local.
+
+la revista indexada	indexed journal	Publicar en una revista indexada incrementa el impacto de la investigación.
+
+la revisión por pares	peer review	El artículo se encuentra en fase de revisión por pares anónimos.
+
+el muestreo	sampling	El muestreo aleatorio garantizó la representatividad de la población.
+
+la variable	variable	Controlar cada variable externa resulta vital en este tipo de ensayos.
+
+el hallazgo	finding / discovery	El hallazgo arqueológico modificó la cronología admitida hasta la fecha.
+
+la deducción	deduction	Llegó a esa deducción tras cotejar los testimonios de los informantes.
+
+deducir	to deduce / infer	Podemos deducir que la falta de precipitaciones mermó la producción agrícola.
+
+la inducción	induction	El método científico combina el razonamiento por inducción con la prueba empírica.
+
+inferir	to infer	De sus palabras no cabe inferir un rechazo rotundo a la propuesta.
+
+la inferencia	inference	Esa inferencia estadística descansa en un tamaño de muestra insuficiente.
+
+el postulado epistemológico	epistemological postulate	Revisaron el postulado epistemológico que sustentaba el paradigma clásico.
+
+el paradigma	paradigm	La irrupción de la mecánica cuántica supuso un profundo cambio de paradigma.
+
+la correlación	correlation	Existe una notable correlación entre el nivel educativo y los ingresos.
+
+la causalidad	causality	Confundir correlación con causalidad es un fallo analítico frecuente.
+
+el sesgo	bias	El entrevistador procuró formular preguntas neutrales para eludir cualquier sesgo.
+
+sesgado	biased / skewed	Los resultados están sesgados porque solo se encuestó a estudiantes jóvenes.
+
+la metodología	methodology	La metodología cualitativa permitió profundizar en las vivencias individuales.
+
+cualitativo	qualitative	El estudio cualitativo incluyó entrevistas semiestructuradas en profundidad.
+
+cuantitativo	quantitative	El enfoque cuantitativo aportó gráficos y tablas comparativas elocuentes.
+
+el cuestionario	questionnaire	Diseñaron un cuestionario cerrado para agilizar la recopilación de respuestas.
+
+la encuesta representativa	representative survey	Esa encuesta representativa abarcó a más de tres mil hogares del país.
+
+el corpus	corpus	Analizó un vasto corpus lingüístico extraído de la prensa del siglo XIX.
+
+el cotejo	collation / comparison	El cotejo minucioso de las dos ediciones reveló erratas tipográficas.
+
+cotejar	to compare / check against	Conviene cotejar los datos oficiales con fuentes independientes fiables.
+
+contrastar	to contrast / verify	Intentamos contrastar esa información antes de darla por definitiva.
+
+la antítesis	antithesis	Su postura intransigente encarna la antítesis del diálogo constructivo.
+
+la síntesis	synthesis / summary	Redactó una síntesis condensada con las conclusiones principales del debate.
+
+sintetizar	to synthesize / summarize	Logró sintetizar tres tomos densos en una presentación de veinte minutos.
+
+la deliberación	deliberation	Tras una larga deliberación a puerta cerrada, el jurado falló a su favor.
+
+deliberar	to deliberate	Los miembros del comité se retiraron a deliberar sobre la concesión de fondos.
+
+el debate encendido	heated debate	El cambio normativo desató un debate encendido en el claustro docente.
+
+el claustro	faculty board / cloister	El claustro de profesores aprobó por mayoría el calendario lectivo.
+
+la lección magistral	lecture / master class	El experto ofreció una lección magistral sobre diplomacia económica europea.
+
+la retórica	rhetoric	Su intervención abundó en figuras de retórica pero careció de propuestas.
+
+retórico	rhetorical	Formuló una pregunta retórica para mantener alerta la atención del auditorio.
+
+la elocuencia	eloquence	Habló con tanta elocuencia que disipó las dudas iniciales del público.
+
+elocuente	eloquent	Las cifras desglosadas en el gráfico constituyen un testimonio elocuente.
+
+la falacia	fallacy	Apelar a la emoción para ocultar la falta de datos representa una falacia.
+
+falaz	fallacious / misleading	El argumento empleado por el portavoz se apoya en premisas falaces.
+
+la ambigüedad	ambiguity	Para evitar cualquier ambigüedad, definió con exactitud cada término técnico.
+
+ambiguo	ambiguous	La redacción del reglamento resulta ambigua en lo relativo a los plazos.
+
+la precisión conceptual	conceptual precision	El debate ganó altura gracias a la precisión conceptual de los ponentes.
+
+esclarecer	to clarify / shed light on	Nuevos análisis de archivo permitieron esclarecer el origen del tratado.
+
+el esclarecimiento	clarification / resolution	El esclarecimiento de este enigma histórico requirió décadas de trabajo.
+
+la elucidación	elucidation	Su ensayo aporta una valiosa elucidación sobre las causas del conflicto.
+
+dilucidar	to elucidate / unravel	Queda pendiente dilucidar qué papel desempeñó la diplomacia secreta.
+
+el matiz epistemológico	epistemological nuance	Añadió un matiz epistemológico relevante al considerar el contexto social.
+
+la erudición	erudition / scholarship	Su libro desborda erudición histórica y un manejo impecable de archivos.
+
+erudito	scholarly / erudite	El erudito catalogó manuscritos olvidados en los fondos de la biblioteca.
+
+la obra maestra	masterpiece	Las Meninas es considerada una obra maestra de la pintura universal.
+
+el lienzo	canvas	El artista aplicó pinceladas gruesas y enérgicas sobre el lienzo.
+
+el óleo	oil paint / oil painting	Prefiere pintar al óleo antes que usar acuarelas por la textura.
+
+el boceto	sketch / draft	Dibujó un rápido boceto a carboncillo antes de empezar el mural.
+
+el grabado	engraving / print	La galería exhibe una colección rara de grabados del siglo dieciocho.
+
+la escultura	sculpture	La escultura de mármol capta con precisión la anatomía humana.
+
+esculpir	to sculpt	El artesano tardó seis meses en esculpir la figura en madera noble.
+
+el escultor	sculptor	El escultor contemporáneo trabaja principalmente con hierro reciclado.
+
+la exposición	exhibition / display	La exposición temporal del museo atrajo a miles de visitantes este fin de semana.
+
+el comisario de arte	curator	El comisario de arte seleccionó piezas clave para ilustrar el movimiento vanguardista.
+
+la galería	gallery	Inauguraron una nueva galería independiente en el barrio histórico.
+
+el patrimonio cultural	cultural heritage	Proteger el patrimonio cultural de la ciudad es una prioridad municipal.
+
+la corriente artística	artistic movement / trend	El surrealismo fue una corriente artística fundamental en el periodo de entreguerras.
+
+la vanguardia	vanguard / avant-garde	Sus composiciones musicales siempre han estado a la vanguardia de la experimentación sonora.
+
+el taller	workshop / studio	El pintor pasa largas jornadas en su taller aprovechando la luz natural.
+
+la paleta	palette	El cuadro destaca por una paleta de colores cálidos y luminosos.
+
+el pincel	paintbrush	Limpia con cuidado el pincel con aguarrás para no estropear las cerdas.
+
+el trazo	stroke / line	Su trazo firme y seguro denota muchos años de práctica en el dibujo.
+
+el claroscuro	chiaroscuro	Caravaggio revolucionó la pintura barroca con su magistral uso del claroscuro.
+
+la perspectiva	perspective	El uso de la perspectiva lineal otorga una notable sensación de profundidad a la sala.
+
+la estética	aesthetics	La estética minimalista del diseño arquitectónico transmite orden y serenidad.
+
+estético	aesthetic	La renovación urbana no solo busca la funcionalidad, sino también un valor estético.
+
+el crítico	critic	El crítico cinematográfico elogió la sólida dirección de la película independiente.
+
+la crítica	criticism / review	La obra teatral recibió excelentes críticas en los principales diarios nacionales.
+
+el estreno	premiere / release	El estreno de la ópera contó con la presencia de destacadas personalidades culturales.
+
+estrenar	to premiere / show for the first time	La compañía planea estrenar una adaptación moderna de Hamlet en otoño.
+
+el escenario	stage / setting	Los actores salieron al escenario entre los entusiastas aplausos del público asistente.
+
+la escenografía	set design / scenery	La cuidada escenografía recreaba con todo lujo de detalles un café parisino de época.
+
+el ensayo general	dress rehearsal	Todo el elenco acudió puntual al último ensayo general antes del estreno oficial.
+
+el guion	script / screenplay	El guion cinematográfico destaca por unos diálogos ágiles, verosímiles y cargados de ingenio.
+
+el guionista	screenwriter	La guionista recibió un merecido galardón por adaptar con maestría la novela histórica.
+
+el rodaje	filming / shooting	El rodaje del largometraje tuvo lugar íntegramente en parajes naturales de la cordillera.
+
+rodar	to shoot / to film	El director decidió rodar la escena final en blanco y negro para acentuar el dramatismo.
+
+el largometraje	feature film	Su primer largometraje compite este año por la prestigiosa Concha de Oro del festival.
+
+el cortometraje	short film	Presentó un original cortometraje de animación que aborda el aislamiento digital contemporáneo.
+
+el reparto	cast	El reparto incluye tanto a veteranos consagrados como a jóvenes promesas de la interpretación.
+
+el protagonista	protagonist / main character	El protagonista de la tragedia se ve arrastrado inexorablemente hacia un destino fatal.
+
+el antagonista	antagonist / villain	El carismático antagonista añade una gran tensión psicológica al conflicto de la trama.
+
+el papel secundario	supporting role	Su brillante actuación en un papel secundario le valió una nominación indiscutible.
+
+la interpretación	performance / interpretation	Su interpretación de la heroína clásica conmovió profundamente a todos los espectadores.
+
+el subtítulo	subtitle	Prefiero ver las versiones originales con subtítulos para apreciar la voz auténtica del actor.
+
+el doblaje	dubbing	La tradicional industria del doblaje cuenta con una larga e influyente trayectoria en España.
+
+la banda sonora	soundtrack	La emotiva banda sonora orquestal acompaña y potencia los momentos cumbres de la historia.
+
+el espectador	spectator / viewer	La película logra mantener al espectador en vilo hasta el último minuto de metraje.
+
+la taquilla	box office	La producción superó todas las expectativas iniciales de recaudación en taquilla.
+
+la trama	plot	La compleja trama policiaca entrelaza hábilmente varios crímenes sin resolver en el pasado.
+
+el desenlace	ending / outcome	El inesperado desenlace de la intriga sorprendió incluso a los lectores más perspicaces.
+
+el nudo	climax / central conflict	En el nudo de la narración se desvelan los verdaderos motivos que guiaban al criminal.
+
+el personaje	character	Construyó un personaje complejo y lleno de contradicciones morales fascinantes.
+
+el narrador	narrator	El narrador en primera persona aporta un marcado tono intimista a las memorias familiares.
+
+la prosa	prose	Su elegante prosa poética fluye con un ritmo y una cadencia verdaderamente hipnóticos.
+
+el verso	verse / line of poetry	Cada verso del poema encierra una sutil alusión al paso inexorable del tiempo.
+
+la estrofa	stanza	El soneto clásico se compone rigurosamente de dos cuartetos y dos tercetos como estrofas.
+
+la rima	rhyme	El poeta moderno prescindió de la rima asonante tradicional en favor del verso libre.
+
+la metáfora	metaphor	Empleó una brillante metáfora marina para evocar la inmensidad del duelo y la pérdida.
+
+el símil	simile	El autor recurre a un ingenioso símil botánico para retratar el desarrollo del personaje.
+
+la alegoría	allegory	La célebre novela puede leerse como una lúcida alegoría del totalitarismo político.
+
+el ensayo	essay	Publicó un influyente ensayo filosófico que cuestiona la tiranía de la inmediatez mediática.
+
+el ensayista	essayist	El consagrado ensayista aborda la desinformación con agudo rigor intelectual.
+
+la novela histórica	historical novel	Esta lograda novela histórica reconstruye con rigor documental la corte renacentista.
+
+la poesía	poetry	La lectura asidua de buena poesía enriquece notablemente la sensibilidad lingüística.
+
+el poeta	poet	El laureado poeta leyó varios inéditos durante la velada literaria del ateneo.
+
+el recital	recital	Asistieron a un multitudinario recital lírico en el patio central del claustro universitario.
+
+la prosaica realidad	mundane reality	La ficción fantástica le servía de agradable refugio frente a la prosaica realidad cotidiana.
+
+el canon literario	literary canon	El controvertido libro tardó décadas en ser admitido dentro del canon literario oficial.
+
+la antología	anthology	El profesor editó una representativa antología de la poesía contemporánea en lengua española.
+
+el prólogo	prologue / foreword	El prólogo del catedrático contextualiza el entorno social en el que surgió el texto.
+
+el epílogo	epilogue	En el breve epílogo, el autor reflexiona sobre las lecciones éticas de su propio relato.
+
+la editorial	publishing house	Una prestigiosa editorial independiente asumió el riesgo de publicar su primera novela.
+
+el editor	editor / publisher	El editor sugirió suprimir varios pasajes descriptivos para dinamizar el ritmo narrativo.
+
+la tirada	print run / circulation	La primera tirada del libro de crónicas periodísticas se agotó en apenas dos semanas.
+
+la portada	cover (book) / front page (newspaper)	La llamativa portada del semanario refleja con crudeza la crisis migratoria actual.
+
+el titular	headline	Un alarmante titular en letras grandes dominaba la primera plana del diario matutino.
+
+la columna de opinión	opinion column	La polémica columna de opinión semanal desató un animado debate en las redes cívicas.
+
+el columnista	columnist	El veterano columnista analiza con ironía y lucidez los vaivenes de la actualidad política.
+
+el editorial	editorial (newspaper)	El contundente editorial del periódico condena la falta de transparencia del gobierno.
+
+la rueda de prensa	press conference	El ministro compareció en rueda de prensa para responder a las preguntas de los cronistas.
+
+el reportero	reporter	La intrépida reportera cubrió la situación de emergencia desde la misma zona del siniestro.
+
+el corresponsal	correspondent	El veterano corresponsal extranjero relató con objetividad los acontecimientos bélicos.
+
+la emisora	station (radio/TV)	La histórica emisora de radio emite un espacio nocturno dedicado a la tertulia cultural.
+
+la retransmisión	broadcast	La retransmisión en directo del concierto sinfónico reunió a miles de melómanos online.
+
+retransmitir	to broadcast	La cadena pública nacional prevé retransmitir la ceremonia inaugural en alta definición.
+
+el espectro radioeléctrico	radio spectrum	El control del espectro radioeléctrico es clave para las comunicaciones modernas.
+
+la sintonía	theme music / harmony	La pegadiza sintonía del informativo vespertino es reconocida por varias generaciones.
+
+sintonizar	to tune into	Muchas familias suelen sintonizar el informativo radiofónico antes de salir hacia el trabajo.
+
+la tertulia	talk show / gathering	El programa combina el análisis de actualidad política con una animada tertulia literaria.
+
+la primicia	scoop / exclusive	La emisora regional logró dar la primicia del sorprendente hallazgo antes que nadie.
+
+la censura	censorship	La directiva impuso una férrea censura sobre las investigaciones periodísticas delicadas.
+
+censurar	to censor	El comité regulador no dudó en censurar las imágenes más crudas por su violencia explícita.
+
+la difusión	dissemination / broadcast	Internet facilita la instantánea difusión global de cualquier acontecimiento noticioso.
+
+difundir	to spread / to broadcast	Es irresponsable difundir rumores no contrastados que puedan alarmar a la población civil.
+
+la divulgación	popularization / outreach	Su labor de divulgación científica acerca conceptos complejos al público general sin perder rigor.
+
+el patrimonio inmaterial	intangible heritage	El flamenco forma parte destacada del patrimonio inmaterial protegido por organismos mundiales.
+
+la melodía	melody	La suave melodía del violonchelo resonaba con emotiva claridad en la nave de la iglesia.
+
+el acorde	chord	El guitarrista enlazó una serie de complejos acordes menores que crearon una atmósfera íntima.
+
+el compás	beat / rhythm / compass	Los bailarines siguieron el marcado compás de las palmas con asombrosa precisión técnica.
+
+el timbre	timbre / tone quality	La soprano posee un timbre de voz aterciopelado que cautivó al exigente jurado del certamen.
+
+la partitura	score / sheet music	El pianista solista interpretó la compleja pieza de memoria, sin consultar la partitura.
+
+la afinación	tuning / intonation	La orquesta dedicó varios minutos a revisar la afinación de las cuerdas antes del concierto.
+
+afinar	to tune	Es indispensable afinar el instrumento antes de dar inicio a la interpretación colectiva.
+
+el destino	destination	Nuestro próximo destino de vacaciones será una pequeña isla del Mediterráneo.
+
+el itinerario	itinerary / route	Elaboramos un minucioso itinerario para aprovechar cada día del recorrido.
+
+el billete de ida y vuelta	round-trip ticket	Comprar un billete de ida y vuelta suele resultar más económico que comprar dos sencillos.
+
+el transbordo	transfer / connection	Tuvimos apenas quince minutos para hacer el transbordo de tren en Lyon.
+
+hacer transbordo	to transfer / change trains or buses	Tuvimos que hacer transbordo en la estación central para llegar al aeropuerto.
+
+el andén	platform (train/bus)	El tren con destino a Valencia saldrá puntualmente desde el andén número tres.
+
+la vía ferroviaria	railway track	Las intensas nevadas bloquearon temporalmente la vía ferroviaria en el puerto de montaña.
+
+el retraso	delay	El vuelo procedente de Roma acumuló un retraso imprevisto de casi dos horas.
+
+la escala	layover / stopover	Elegimos un trayecto directo para evitar una larga escala en la capital.
+
+hacer escala	to have a layover	El avión debe hacer escala técnica durante una hora para repostar combustible.
+
+el equipaje de mano	hand luggage / carry-on	Verifica que el equipaje de mano no sobrepase las medidas fijadas por la compañía.
+
+facturar el equipaje	to check luggage	Es conveniente facturar el equipaje con al menos dos horas de antelación al despegue.
+
+la tarjeta de embarque	boarding pass	Descargué la tarjeta de embarque en el teléfono móvil para agilizar el acceso.
+
+la puerta de embarque	boarding gate	Anunciaron por megafonía un cambio repentino en la puerta de embarque.
+
+el control de seguridad	security checkpoint	Debes sacar los líquidos y los aparatos electrónicos en el control de seguridad.
+
+el mostrador de facturación	check-in desk	Se formó una larga fila ante el mostrador de facturación tras la caída del sistema.
+
+la cinta de equipajes	baggage carousel	Esperamos impacientes junto a la cinta de equipajes hasta ver aparecer nuestras maletas.
+
+la aduana	customs	Los agentes de aduana inspeccionaron minuciosamente los paquetes sospechosos.
+
+el visado de turista	tourist visa	Para estancias inferiores a tres meses no es obligatorio tramitar un visado de turista.
+
+la tasa turística	tourist tax	Varios municipios cobran una tasa turística por noche de estancia en establecimientos hoteleros.
+
+el alojamiento	accommodation / lodging	Encontrar un alojamiento céntrico a precio asequible fue una tarea ardua.
+
+alojarse	to stay / lodge	Decidieron alojarse en una casa rural a las afueras para desconectar del ruido urbano.
+
+el albergue juvenil	youth hostel	El albergue juvenil ofrece habitaciones compartidas ideales para viajeros con poco presupuesto.
+
+la pensión completa	full board	Reservamos la estancia con pensión completa para no preocuparnos por las comidas.
+
+la media pensión	half board	La modalidad de media pensión incluye el desayuno y una comida principal en el hotel.
+
+reservar con antelación	to book in advance	Si planeas viajar en temporada estival, conviene reservar con antelación suficiente.
+
+la cancelación gratuita	free cancellation	Optamos por una reserva con opción de cancelación gratuita por si surgían imprevistos.
+
+el suplemento	surcharge / extra fee	Tuvimos que abonar un suplemento por exceso de equipaje en el mostrador.
+
+la temporada alta	peak / high season	Los precios del transporte aéreo se disparan considerablemente durante la temporada alta.
+
+la temporada baja	low season	Viajar en temporada baja permite recorrer las ciudades sin aglomeraciones molestas.
+
+el folleto turístico	tourist brochure	Recogió un folleto turístico en recepción con información sobre las rutas locales.
+
+la oficina de turismo	tourist office	Nos dirigimos a la oficina de turismo para solicitar un mapa actualizado de la comarca.
+
+el guía turístico	tour guide	El guía turístico narró anécdotas fascinantes sobre la construcción del castillo medieval.
+
+la visita guiada	guided tour	Contratamos una visita guiada para comprender en profundidad la arquitectura del templo.
+
+el casco antiguo	old town	Pasear sin prisa por las callejuelas empedradas del casco antiguo es un deleite.
+
+el centro histórico	historic center	El centro histórico fue declarado conjunto monumental por su riqueza patrimonial.
+
+el callejón	alley / narrow street	Un callejón estrecho y umbrío conducía directamente a la plaza escondida.
+
+la avenida principal	main avenue	La avenida principal concentra las principales tiendas y edificios administrativos.
+
+la travesía	crossing / passage / main street	La travesía que cruza el pueblo soporta un intenso tráfico rodado en verano.
+
+la glorieta	roundabout / traffic circle	Toma la tercera salida de la glorieta para incorporarte a la carretera comarcal.
+
+el paso de peatones	pedestrian crossing	Los conductores tienen la obligación de ceder el paso a quien cruza por el paso de peatones.
+
+la acera	sidewalk / pavement	Caminaba despacio por la acera observando los escaparates de las tiendas.
+
+la calzada	roadway / carriageway	Está prohibido circular en bicicleta por la calzada si existe una vía ciclista adyacente.
+
+el bordillo	curb	Tropezó con el bordillo de la acera al cruzar distraído mirando el teléfono.
+
+el semáforo	traffic light	El semáforo cambió a rojo justo antes de que pudiéramos cruzar la avenida.
+
+la señal de tráfico	traffic sign	Una señal de tráfico advertía de la proximidad de una curva pronunciada.
+
+la zona peatonal	pedestrian zone	La conversión del centro comercial en zona peatonal revitalizó los negocios locales.
+
+el carril bici	bike lane	La red de carril bici ha facilitado el desplazamiento seguro en bicicleta por la urbe.
+
+la congestión vial	traffic congestion	La lluvia matinal provocó una enorme congestión vial en las vías de acceso a la capital.
+
+la hora punta	rush hour	Es recomendable evitar el metro durante la hora punta para eludir los empujones.
+
+el transporte público	public transportation	El fomento del transporte público reduce significativamente las emisiones contaminantes.
+
+el bono de transporte	transit pass / travel card	Comprar un bono de transporte de diez viajes resulta mucho más ventajoso.
+
+validar el billete	to validate the ticket	Acuérdate de validar el billete en la máquina canceladora antes de subir al vagón.
+
+el revisor	ticket inspector / conductor	El revisor solicitó amablemente los billetes a todos los ocupantes del compartimento.
+
+la parada de autobús	bus stop	Esperamos bajo el techado de la parada de autobús para resguardarnos del chubasco.
+
+la marquesina	canopy / bus shelter	La marquesina de la parada protegía a los usuarios del viento invernal.
+
+la boca de metro	subway entrance	Quedamos en encontrarnos a las siete en punto junto a la boca de metro de Sol.
+
+el vagón	railway car / carriage	El vagón restaurante ofrece bebidas calientes y refrigerios durante el trayecto.
+
+la red de cercanías	commuter rail network	La red de cercanías conecta eficazmente los municipios periféricos con el centro.
+
+el tren de alta velocidad	high-speed train	El tren de alta velocidad redujo el tiempo de viaje entre ambas ciudades a dos horas.
+
+el apeadero	halt / minor train station	El convoy efectúa una breve parada facultativa en el modesto apeadero del pueblo.
+
+el peaje	toll / toll booth	Tuvimos que detenernos en la caseta de peaje para abonar el importe del trayecto.
+
+la autopista de peaje	toll highway	Tomar la autopista de peaje permite eludir las retenciones de la carretera nacional.
+
+la autovía	dual carriageway / highway	La circulación por la autovía fluyó con total normalidad a lo largo del fin de semana.
+
+el arcén	shoulder (road)	Detuvo el automóvil en el arcén debido a un pinchazo repentino en la rueda trasera.
+
+el carril de aceleración	acceleration lane	Usa el carril de aceleración para adecuar tu velocidad antes de incorporarte al tráfico.
+
+adelantar	to overtake / pass	No intentes adelantar a otro vehículo en tramos con línea continua o visibilidad reducida.
+
+el adelantamiento	overtaking / passing maneuver	Realizó una maniobra de adelantamiento limpia y segura en una recta despejada.
+
+el límite de velocidad	speed limit	Superar el límite de velocidad fijado conlleva multas severas y pérdida de puntos.
+
+el radar de tráfico	speed camera	Un radar de tráfico colocado en el túnel detecta las infracciones por exceso de velocidad.
+
+la multa por infracción	traffic fine / ticket	Recibió una multa por infracción tras estacionar indebidamente en una zona de carga.
+
+el aparcamiento subterráneo	underground parking	Dejamos el coche en el aparcamiento subterráneo porque no había sitio en la superficie.
+
+aparcar en línea	to parallel park	Le resulta complicado aparcar en línea cuando el hueco entre coches es reducido.
+
+la grúa municipal	tow truck	La grúa municipal retiró el vehículo por obstaculizar la salida de emergencia del garaje.
+
+el bache	pothole	El mal estado del pavimento provocó un bache que dañó la suspensión del coche.
+
+las obras en la calzada	roadworks	Las obras en la calzada obligaron a reducir la circulación a un solo carril alterno.
+
+el desvío	detour / diversion	Tuvimos que tomar un desvío señalizado debido al derrumbe de un tramo de la ladera.
+
+la periferia	periphery / outskirts	Muchas familias jóvenes prefieren fijar su residencia en la periferia metropolitana.
+
+el suburbio	suburb	El crecimiento acelerado transformó el antiguo suburbio en un distrito consolidado.
+
+las afueras	outskirts	Construyeron un gran complejo polideportivo en las afueras de la localidad.
+
+la comarca	region / district	Esa comarca montañosa destaca por la conservación de sus tradiciones arquitectónicas.
+
+el relieve	relief / terrain topography	El accidentado relieve de la región dificulta la construcción de infraestructuras lineales.
+
+la cordillera	mountain range	La cordillera pirenaica ejerce de barrera natural entre la península y el continente.
+
+la cumbre	summit / peak	Alcanzaron la cumbre tras una exigente ascensión de más de seis horas continuas.
+
+el acantilado	cliff	Las olas rompían con extrema violencia contra la base escarpada del acantilado.
+
+la costa rocosa	rocky coast	La costa rocosa alberga pequeñas calas inaccesibles por tierra firme.
+
+la península	peninsula	La península ibérica goza de una extraordinaria diversidad biológica y paisajística.
+
+el archipiélago	archipelago	El archipiélago balear recibe millones de visitantes procedentes de toda Europa cada año.
+
+el estrecho	strait	El estrecho de Gibraltar separa físicamente los continentes europeo y africano.
+
+el cabo	cape / headland	Desde el faro situado en el cabo se contempla una vista imponente de la inmensidad marina.
+
+la bahía	bay	Los veleros fondearon al abrigo del viento en las tranquilas aguas de la bahía.
+
+la desembocadura	mouth / estuary (river)	En la desembocadura del río se forma un delta de gran valor ecológico para las aves.
+
+el afluente	tributary	Ese caudaloso afluente nutre de agua fresca a la cuenca fluvial principal.
+
+el caudal	flow / volume of water	El caudal del río mermó alarmantemente como consecuencia de la prolongada sequía.
+
+el desfiladero	gorge / canyon	La carretera serpentea por un angosto desfiladero flanqueado por paredes verticales.
+
+el sendero balizado	marked trail	Es aconsejable no abandonar el sendero balizado para evitar extravíos en la niebla.
+
+el mirador	viewpoint / lookout	Nos detuvimos en el mirador panorámico para contemplar el atardecer sobre el valle.
+
+el turismo sostenible	sustainable tourism	Fomentar el turismo sostenible preserva los ecosistemas frágiles sin frenar la economía.
+
+el impacto medioambiental	environmental impact	El proyecto ferroviario fue modificado para minimizar su impacto medioambiental local.
+
+el éxodo rural	rural exodus	El éxodo rural durante el siglo veinte provocó el paulatino despoblamiento de muchos pueblos.
+
+
+la cosecha	harvest / crop	La cosecha de trigo de este año superó todas las expectativas iniciales.
+
+cosechar	to harvest / reap	Tuvieron que cosechar la fruta con rapidez antes de que llegara el temporal.
+
+la siembra	sowing / planting season	Los agricultores iniciaron las labores de siembra tras las primeras lluvias otoñales.
+
+sembrar	to sow / plant	Es conveniente sembrar las semillas a suficiente profundidad para protegerlas del frío.
+
+el cultivo de secano	dryland farming	El cultivo de secano predomina en las zonas donde las precipitaciones anuales son escasas.
+
+el cultivo de regadío	irrigated crop	El cultivo de regadío requiere una gestión muy eficiente de los recursos hídricos.
+
+la sequía prolongada	prolonged drought	La sequía prolongada mermó de forma drástica la producción de aceite de oliva en la región.
+
+el embalse	reservoir / dam	El nivel de agua en el embalse cayó por debajo del treinta por ciento de su capacidad.
+
+la presa hidráulica	dam	Construyeron una imponente presa hidráulica en el desfiladero para regular las crecidas.
+
+el pozo artesiano	artesian well	Excavaron un pozo artesiano en la finca para abastecer al ganado durante el verano.
+
+el abono orgánico	organic fertilizer	El uso de abono orgánico mejora notablemente la fertilidad natural de la tierra.
+
+abonar el terreno	to fertilize the ground	Es indispensable abonar el terreno antes de proceder a la plantación de los plantones.
+
+el pesticida químico	chemical pesticide	Limitaron la pulverización con pesticida químico para no intoxicar a las colonias de abejas.
+
+la plaga agrícola	agricultural pest	Una plaga agrícola de orugas amenazó la supervivencia de los viñedos centenarios.
+
+el rebaño de ovejas	flock of sheep	El pastor guio pacientemente al rebaño de ovejas hacia los pastos frescos de la colina.
+
+el ganado vacuno	cattle	La ganadería extensiva de ganado vacuno favorece el mantenimiento limpio de los montes.
+
+pastar	to graze	Las vacas salieron a pastar libremente por las praderas verdes tras disiparse la niebla matutina.
+
+el pastizal	pasture / grassland	El extenso pastizal quedó completamente cubierto por un fino manto de escarcha al amanecer.
+
+la dehesa	wooded meadow / pastureland	La dehesa ibérica constituye un ecosistema singular donde conviven encinas y piaras de cerdos.
+
+la encina	holm oak	Bajo la sombra protectora de una encina milenaria se resguardaron los caminantes del bochorno.
+
+el roble	oak tree	El tronco centenario del roble resistió incólume los fuertes embates del temporal.
+
+el pinar	pine forest	El agradable aroma a resina envolvía todo el sendero mientras cruzaban el pinar.
+
+la maleza	undergrowth / weeds	Tuvieron que desbrozar la espesa maleza para abrir un camino seguro hacia el refugio.
+
+desbrozar	to clear undergrowth	Los brigadistas se dedicaron a desbrozar los márgenes del camino para prevenir incendios forestales.
+
+el cortafuegos	firebreak	Abrieron un ancho cortafuegos en la cresta de la montaña para frenar el avance de las llamas.
+
+la reforestación	reforestation	La campaña comunitaria de reforestación plantó más de cinco mil árboles autóctonos en la ladera.
+
+reforestar	to reforest	Decidieron reforestar la zona quemada utilizando especies mediterráneas adaptadas al clima seco.
+
+la tala indiscriminada	indiscriminate logging	La tala indiscriminada en la cuenca fluvial provocó una grave erosión del suelo vegetal.
+
+la erosión del suelo	soil erosion	La pérdida constante de vegetación acelera la erosión del suelo durante las trombas de lluvia.
+
+la fertilidad del suelo	soil fertility	La rotación de cultivos es una práctica tradicional clave para preservar la fertilidad del suelo.
+
+el bancal	terrace / cultivation terrace	Construyeron bancales escalonados en la pendiente para poder cultivar olivos y almendros.
+
+el huerto familiar	family vegetable garden	Pasa gran parte del tiempo libre cuidando los tomates y pimientos en su huerto familiar.
+
+el invernadero	greenhouse	Cultivan verduras de invierno dentro de un gran invernadero climatizado con placas solares.
+
+la helada tardía	late frost	Una helada tardía en primavera arruinó la floración temprana de los árboles frutales.
+
+el rocío matutino	morning dew	Gotas microscópicas de rocío matutino brillaban sobre los pétalos de las amapolas silvestres.
+
+la escarcha	frost / rime	El frío polar de la madrugada dejó una capa blanca de escarcha sobre el parabrisas del tractor.
+
+la granizada	hailstorm	Una repentina granizada descargó piedras de hielo del tamaño de canicas sobre la plantación.
+
+el granizo	hail	El impacto del granizo perforó los toldos de plástico y dañó severamente las hortalizas.
+
+el chubasco repentino	sudden shower	Tuvimos que buscar cobijo bajo un porche para guarecernos del chubasco repentino.
+
+el aguacero torrencial	torrential downpour	El aguacero torrencial anegó en pocos minutos las calles del pueblo y los caminos rurales.
+
+la tromba de agua	cloudburst / downpour	Una repentina tromba de agua provocó el desbordamiento imprevisto del arroyo municipal.
+
+la inundación	flood	El desborde del cauce causó una grave inundación en las zonas más bajas del valle.
+
+desbordarse	to overflow	El río comenzó a desbordarse tras tres días consecutivos de lluvias ininterrumpidas.
+
+el cauce del río	riverbed	Las aguas bajaban turbulentas y arrastraban troncos caídos a lo largo de todo el cauce del río.
+
+el caudal fluvial	river flow / discharge	Los sensores registraron un incremento histórico del caudal fluvial tras el deshielo.
+
+el deshielo primaveral	spring thaw	El rápido deshielo primaveral en las cumbres multiplicó las cascadas de montaña.
+
+la niebla espesa	thick fog	La niebla espesa redujo la visibilidad a menos de cincuenta metros en el tramo de autopista.
+
+la bruma matinal	morning mist	La bruma matinal se disipó lentamente a medida que los rayos de sol calentaban la superficie.
+
+el bochorno sofocante	stifling mugginess	El bochorno sofocante que precedió a la tormenta hacía que el aire resultara irrespirable.
+
+la ola de calor	heatwave	Durante la ola de calor las temperaturas superaron con facilidad los cuarenta grados a la sombra.
+
+la ráfaga de viento	gust of wind	Una fuerte ráfaga de viento arrancó de cuajo varias ramas secas del árbol del patio.
+
+el vendaval	gale / strong wind	El feroz vendaval derribó postes del tendido eléctrico e interrumpió el suministro en la aldea.
+
+el temporal marítimo	sea storm / gale	La capitanía marítima prohibió la salida de embarcaciones debido al temporal marítimo adverso.
+
+el oleaje bravío	rough swell	El oleaje bravío golpeaba con furia las rocas del rompeolas en el puerto pesquero.
+
+la marea alta	high tide	Durante la marea alta el agua cubre por completo la franja de arena de la cala.
+
+la marea baja	low tide	Aprovecharon la marea baja para caminar por la orilla y recolectar moluscos entre las rocas.
+
+la corriente marina	ocean current	Una fuerte corriente marina arrastró mar adentro a los bañistas desprevenidos.
+
+la cordillera nevada	snowy mountain range	El avión sobrevoló la majestuosa cordillera nevada justo antes de iniciar el descenso al valle.
+
+la ladera escarpada	steep slope	Los senderistas ascendieron con extrema precaución por la ladera escarpada del risco.
+
+el barranco profundo	deep ravine / gorge	Un sendero estrecho bordeaba el abismo sobre el barranco profundo que conducía al cañón.
+
+el despeñadero	cliff / precipice	Colocaron una valla metálica para impedir que los excursionistas se acercaran al despeñadero.
+
+la sima geológica	chasm / sinkhole	Los espeleólogos descendieron mediante cuerdas al fondo de una sima geológica inexplorada.
+
+la cueva subterránea	underground cave	Descubrieron pinturas rupestres antiquísimas en el interior de una cueva subterránea húmeda.
+
+la estalactita	stalactite	Desde el techo abovedado de la caverna colgaba una frágil y reluciente estalactita de caliza.
+
+la estalagmita	stalagmite	El goteo mineral incesante durante milenios formó una imponente estalagmita en el suelo.
+
+el manantial natural	natural spring	Llenamos nuestras cantimploras con agua fresca y cristalina que brotaba del manantial natural.
+
+el arroyo cristalino	clear brook / stream	Los niños pasaron la calurosa tarde jugando descalzos en las aguas del arroyo cristalino.
+
+el remanso de paz	haven of peace	La pequeña aldea aislada entre montañas era un auténtico remanso de paz sin cobertura telefónica.
+
+la cascada estruendosa	thundering waterfall	El agua se precipitaba al vacío creando una cascada estruendosa visible desde el mirador.
+
+el desfiladero rocoso	rocky gorge	La antigua calzada romana atraviesa un impresionante desfiladero rocoso labrado por el agua.
+
+el páramo desolado	desolate moor / wasteland	Caminar por aquel páramo desolado transmitía una sobrecogedora sensación de inmensidad vacía.
+
+la meseta árida	arid plateau	El viento soplaba constante e inclemente sobre la extensa meseta árida del interior peninsular.
+
+la duna móvil	shifting sand dune	El viento del desierto desplaza constantemente la silueta de cada duna móvil de arena fina.
+
+el oasis frondoso	lush oasis	Tras jornadas de fatigosa travesía por el desierto avistaron las palmeras de un oasis frondoso.
+
+la biodiversidad biológica	biological biodiversity	La reserva natural fue creada con el propósito explícito de salvaguardar su biodiversidad biológica.
+
+la especie endémica	endemic species	Esa pequeña planta con flores violáceas es una especie endémica que solo habita en estos riscos.
+
+la fauna salvaje	wild fauna / wildlife	Es prioritario construir pasos subterráneos para no fragmentar el hábitat de la fauna salvaje.
+
+la flora autóctona	indigenous flora	Sustituyeron los jardines ornamentales por ejemplares de flora autóctona con bajo consumo hídrico.
+
+el hábitat natural	natural habitat	La contaminación de los humedales degrada de forma irreversible el hábitat natural de las garzas.
+
+el ave migratoria	migratory bird	Ese humedal sirve de refugio de descanso para miles de aves migratorias en su ruta al sur.
+
+el nido de águila	eagle nest	El guarda forestal divisó con los prismáticos un nido de águila situado en lo alto de la peña.
+
+el plumaje vistoso	showy plumage	El macho exhibe un plumaje vistoso durante la época de cortejo para llamar la atención.
+
+la madriguera subterránea	underground burrow	El conejo salvaje corrió a guarecerse dentro de su madriguera subterránea al notar peligro.
+
+la hibernación invernal	winter hibernation	El oso acumula abundantes reservas de grasa antes de entrar en la hibernación invernal.
+
+la cría en cautividad	captive breeding	El programa de cría en cautividad del lince ibérico logró salvar a la especie de la extinción.
+
+el depredador natural	natural predator	La ausencia de su depredador natural provocó una superpoblación descontrolada de jabalíes.
+
+la presa fácil	easy prey	Un animal débil o herido se convierte de inmediato en una presa fácil para los lobos.
+
+la cadena trófica	food chain	Cualquier alteración en el nivel de fitoplancton repercute en toda la cadena trófica marina.
+
+el ecosistema frágil	fragile ecosystem	La presión excesiva del turismo descontrolado pone en grave riesgo este ecosistema frágil.
+
+el parque natural	natural park	En el interior del parque natural está terminantemente prohibido acampar o encender hogueras.
+
+el guarda forestal	forest ranger	El guarda forestal patrulla los senderos para comprobar que se respeta la normativa ambiental.
+
+el sendero escarpado	steep path / trail	Subir por el sendero escarpado requería calzado técnico de montaña y bastones de apoyo.
+
+la vereda de trashumancia	drover's path / cattle track	El paso de ganado por la antigua vereda de trashumancia está regulado por leyes medievales.
+
+la aldea remota	remote hamlet	Apenas una docena de vecinos ancianos residen de forma permanente en aquella aldea remota.
+
+el caserío tradicional	traditional farmhouse	Rehabilitaron un viejo caserío tradicional de piedra para convertirlo en hotel de ecoturismo.
+
+el granero comunal	communal barn	Almacenaban el grano cosechado en el granero comunal para repartirlo equitativamente en invierno.
+
+el pajar ventilado	ventilated hayloft	Subieron los fardos de heno recién secados al pajar ventilado para alimentar las bestias.
+
+el establo limpio	clean stable	El vaquero limpiaba diariamente el establo limpio para mantener en buen estado a las reses.
+
+el corral doméstico	domestic barnyard / pen	Las gallinas ponedoras picoteaban grano suelto en el corral doméstico detrás de la vivienda.
+
+la huella ecológica	ecological footprint	Adoptar una dieta basada en productos de proximidad disminuye sensiblemente la huella ecológica.
+el ingrediente	ingredient	La receta requiere ingredientes frescos y de buena calidad.
+
+la materia prima	raw material / primary product	Utilizan materia prima de proximidad para elaborar todos sus platos.
+
+el condimento	seasoning / condiment	Añade un toque de condimento para realzar el sabor del guiso.
+
+condimentar	to season	Es mejor condimentar la carne justo antes de ponerla en la sartén.
+
+la especia	spice	El azafrán es una especia muy cotizada en la cocina tradicional.
+
+el comino	cumin	El comino aporta un aroma inconfundible a los platos de legumbres.
+
+el romero	rosemary	Colocó una ramita de romero sobre el cordero antes de meterlo al horno.
+
+el tomillo	thyme	El caldo aromatizado con tomillo y laurel resultó muy reconfortante.
+
+el orégano	oregano	Espolvoreó orégano seco sobre la pizza recién horneada.
+
+el laurel	bay leaf	Retira la hoja de laurel del estofado antes de servirlo a los comensales.
+
+la albahaca	basil	La salsa pesto se elabora machacando hojas de albahaca con piñones y aceite.
+
+la canela	cinnamon	El postre tradicional está aromatizado con corteza de limón y canela en rama.
+
+la nuez moscada	nutmeg	Ralló una pizca de nuez moscada sobre la bechamel para darle un matiz especial.
+
+la guindilla	chili pepper	Ten cuidado con esa salsa casera, lleva guindilla picante y pica bastante.
+
+el cilantro	cilantro / coriander	Algunos comensales prefieren prescindir del cilantro por su sabor particular.
+
+el perejil	parsley	Pica un puñado de perejil fresco para decorar el pescado a la plancha.
+
+el diente de ajo	garlic clove	Sofrió dos dientes de ajo picados en una sartén con aceite de oliva virgen.
+
+la cebolla morada	red onion	La ensalada incluye láminas finas de cebolla morada para aportar un toque crujiente.
+
+el adobo	marinade	Dejó el lomo en adobo durante doce horas para que absorbiera las especias.
+
+adobar	to marinate	Conviene adobar el pescado azul con hierbas antes de cocinarlo a las brasas.
+
+el marinado	marinade / marinated dish	El marinado con cítricos ablanda las fibras de la carne y aporta frescura.
+
+marinar	to marinate (in acid/juice)	Vamos a marinar el salmón fresco en zumo de lima y eneldo antes de servirlo.
+
+el aliño	dressing	Preparó un aliño sencillo a base de vinagre de manzana, sal y aceite de oliva.
+
+aliñar	to dress (salad/food)	Es preferible aliñar la ensalada justo en el momento en que se va a comer.
+
+la vinagreta	vinaigrette	La vinagreta de mostaza y miel acompaña de maravilla a las verduras asadas.
+
+la textura	texture	El cocinero busca contrastar la textura cremosa del puré con semillas crujientes.
+
+crujiente	crispy / crunchy	La masa del pan recién hecho quedó perfectamente dorada y crujiente.
+
+tierno	tender	La carne quedó tan tierna que se deshacía con solo tocarla con el tenedor.
+
+jugoso	juicy	El asado resultó sumamente jugoso gracias a la lenta cocción a baja temperatura.
+
+seco	dry	Si dejas el pollo demasiado tiempo en la sartén, quedará reseco e insípido.
+
+insípido	tasteless / bland	La sopa estaba completamente insípida porque olvidaron echarle una pizca de sal.
+
+sabroso	tasty / flavorful	El estofado de ternera estaba excepcionalmente sabroso tras horas a fuego lento.
+
+amargo	bitter	El café negro sin azúcar tiene un regusto amargo que no agrada a todo el mundo.
+
+ácido	acidic / sour	El limón aporta un toque ácido necesario para equilibrar la grasa del pescado.
+
+dulce	sweet	El melón maduro estaba tan dulce que no hizo falta añadir ningún sirope.
+
+salado	salty	El bacalao curado en salazón suele quedar demasiado salado si no se desala antes.
+
+agridulce	sweet and sour	Preparó una reducción agridulce a base de vinagre balsámico y frutos rojos.
+
+picante	spicy / hot	Este curry tradicional contiene especias aromáticas pero resulta muy picante.
+
+el regusto	aftertaste	Aquel queso curado dejaba un regusto intenso y persistente en el paladar.
+
+el paladar	palate	Es un catador experto con un paladar refinado capaz de identificar cada aroma.
+
+el comensal	diner / guest	El anfitrión saludó a cada comensal antes de servir el plato principal en la mesa.
+
+la cata	tasting / wine tasting	Asistimos a una cata comentada de aceites de oliva vírgenes en la almazara.
+
+catar	to taste / to sample (wine/oil)	El sumiller procedió a catar el vino tinto antes de recomendarlo a la mesa.
+
+el sumiller	sommelier	El sumiller sugirió maridar el marisco con un vino blanco seco y afrutado.
+
+el maridaje	pairing (food and drink)	El maridaje entre el queso artesanal y la sidra natural sorprendió al jurado.
+
+maridar	to pair (food with wine)	Es conveniente maridar carnes rojas y potentes con vinos tintos de buena crianza.
+
+la carta	menu (restaurant)	Revisaron la carta del restaurante con detenimiento para ver los platos de temporada.
+
+el menú del día	set menu / daily special	El menú del día incluye dos platos, bebida, pan y postre casero por doce euros.
+
+la sugerencia del chef	chef's recommendation	Como sugerencia del chef nos propusieron unas alcachofas confitadas con jamón ibérico.
+
+el plato combinado	combination plate	Los estudiantes suelen pedir un plato combinado por rapidez y economía a mediodía.
+
+la ración	portion / serving	Pedimos una ración de croquetas y otra de calamares para compartir al centro.
+
+la tapa	tapa / appetizer	En muchos bares de la zona te sirven una pequeña tapa gratuita con la bebida.
+
+el aperitivo	appetizer / pre-meal drink	Tomaron un vermú con aceitunas a modo de aperitivo antes de sentarse a almorzar.
+
+el entrante	starter / appetizer	Como entrante caliente eligieron una crema templada de calabaza con semillas tostadas.
+
+el primer plato	first course	El primer plato consistió en un arroz meloso con setas silvestres de temporada.
+
+el segundo plato	main course / second course	De segundo plato eligió solomillo ibérico a la plancha con guarnición de patatas.
+
+la guarnición	side dish / garnish	Puedes elegir entre puré de patata o verduras al vapor como guarnición ligera.
+
+el postre	dessert	El camarero nos cantó la lista de postres caseros, entre los que destacaba el flan.
+
+la cuenta	bill / check	Pedimos la cuenta al terminar el café para comprobar los conceptos cobrados.
+
+la propina	tip / gratuity	Dejaron una propina generosa al camarero por el impecable servicio brindado.
+
+el camarero	waiter	El camarero atendió con amabilidad todas las dudas sobre los alérgenos alimentarios.
+
+hacer una reserva	to make a reservation	Tuvimos que hacer una reserva con semanas de antelación para conseguir mesa un sábado.
+
+estar lleno	to be fully booked / full	El comedor principal del mesón estaba completamente lleno debido a un banquete.
+
+hervir	to boil	Deja hervir el caldo de verduras a fuego moderado durante veinte minutos continuos.
+
+el hervor	boil / boiling point	Apaga el fuego en cuanto el líquido rompa el primer hervor para no evaporarlo.
+
+cocer	to cook / to boil	Hay que cocer los garbanzos en agua caliente con laurel hasta que queden blandos.
+
+la cocción	cooking / boiling	Una cocción prolongada a fuego lento garantiza que la carne quede muy tierna.
+
+freír	to fry	Es imprescindible freír las patatas en aceite muy caliente para que no queden grasientas.
+
+la fritura	frying / fried food	La fritura andaluza de pescado destaca por su rebozado fino y nada aceitoso.
+
+sofreír	to sauté / lightly fry	Comienza por sofreír la cebolla y el pimiento picados finamente en la cazuela.
+
+el sofrito	sofrito / sautéed base	El sofrito es la base indispensable de la mayoría de los arroces tradicionales.
+
+dorar	to brown / to sear	Debes dorar las piezas de carne por ambos lados para sellar bien sus jugos.
+
+sellar	to sear	Es conveniente sellar el lomo a fuego vivo antes de asarlo despacio en el horno.
+
+asar	to roast / to grill	Decidieron asar verduras de temporada y chuletas de cordero en las brasas exteriores.
+
+el asado	roast / barbecue	El asado dominical reúne a toda la familia alrededor de una mesa compartida.
+
+hornear	to bake	Puso a hornear la masa de hojaldre a ciento ochenta grados durante media hora.
+
+el horneado	baking	El horneado uniforme asegura que el bizcocho suba de manera regular sin quemarse.
+
+gratinar	to broil / to gratinate	Mete la bandeja al horno para gratinar el queso rallado hasta que quede dorado.
+
+escaldar	to scald / blanch	Conviene escaldar los tomates en agua hirviendo unos segundos para pelarlos fácil.
+
+escalfar	to poach	Aprender a escalfar un huevo en agua avinagrada requiere práctica y paciencia.
+
+estofar	to stew	Es preferible estofar las carnes duras con verduras cortadas y vino tinto añejo.
+
+el estofado	stew	El estofado de ternera con patatas es un plato clásico ideal para los días fríos.
+
+guisar	to cook / to stew	Mi abuela solía guisar platos tradicionales empleando ollas de barro sobre lumbre.
+
+el guiso	casserole / cooked stew	Aquel reconfortante guiso marinero llevaba rape, patatas y un caldo muy sabroso.
+
+confitar	to confit	Decidió confitar las alcachofas en aceite templado durante más de una hora.
+
+rebozar	to batter / coat in egg and flour	Hay que rebozar los filetes finos pasándolos primero por harina y luego huevo batido.
+
+el rebozado	batter / breading	El crujiente rebozado impedía que el pescado perdiera humedad durante la fritura.
+
+empanar	to bread (meat/fish)	Le gusta empanar las pechugas de pollo con pan rallado y ajo picado muy fino.
+
+rallar	to grate	Usa un rallador de acero para rallar queso curado sobre el plato de pasta fresca.
+
+el rallador	grater	Lava el rallador inmediatamente después de usarlo para que no se pegue el queso.
+
+batir	to whisk / to beat	Tienes que batir las claras a punto de nieve con la varilla hasta que monten bien.
+
+amasar	to knead	Hay que amasar la masa del pan con energía sobre la mesa enharinada previamente.
+
+el amasado	kneading	Un buen proceso de amasado favorece el correcto desarrollo del gluten en la masa.
+
+triturar	to crush / to blend	Usa la batidora eléctrica para triturar los ingredientes hasta lograr una crema fina.
+
+pelar	to peel	Ayúdame a pelar las patatas y las zanahorias antes de empezar con el sofrito.
+
+picar fino	to chop finely	Es necesario picar fino el ajo y la cebolla para que se integren sin notarse.
+
+trocear	to chop into pieces	Debes trocear la calabaza en dados regulares para que se cocinen por igual.
+
+deshuesar	to debone	El carnicero se ofreció a deshuesar el muslo de pollo con gran destreza técnica.
+
+desgrasar	to skim fat / degrease	Es conveniente desgrasar el caldo dejándolo enfriar en la nevera unas horas.
+
+reducir la salsa	to reduce the sauce	Deja reducir la salsa a fuego lento hasta que espese y adquiera brillo intenso.
+
+el envejecimiento demográfico	population aging	El envejecimiento demográfico plantea desafíos urgentes para el sistema público de pensiones.
+
+la tasa de natalidad	birth rate	Varios países europeos han implementado incentivos económicos para elevar la tasa de natalidad.
+
+la tasa de mortalidad	mortality rate	Las mejoras en atención sanitaria redujeron notablemente la tasa de mortalidad infantil.
+
+la esperanza de vida	life expectancy	La esperanza de vida al nacer ha aumentado de manera sostenida durante el último siglo.
+
+el censo de población	population census	El instituto oficial de estadística actualiza el censo de población cada diez años.
+
+la pirámide poblacional	population pyramid	La pirámide poblacional del país muestra una base cada vez más estrecha por la falta de nacimientos.
+
+el crecimiento vegetativo	natural population growth	El crecimiento vegetativo resultó negativo este año al registrarse más defunciones que nacimientos.
+
+la densidad de población	population density	Las regiones del litoral presentan una elevada densidad de población en comparación con el interior.
+
+la despoblación	depopulation	La despoblación de las comarcas rurales amenaza la supervivencia de tradiciones ancestrales.
+
+la superpoblación	overpopulation	El crecimiento descontrolado de las megaciudades suscita debates sobre la superpoblación global.
+
+el flujo migratorio	migratory flow	El constante flujo migratorio en la frontera requiere acuerdos de cooperación internacional.
+
+la inmigración irregular	irregular immigration	Las autoridades fronterizas debaten nuevas vías legales para frenar la inmigración irregular.
+
+la emigración juvenil	youth emigration	La falta de oportunidades laborales estables fomenta la emigración juvenil hacia el extranjero.
+
+el arraigo social	social integration ties / social roots	El solicitante acreditó tres años de residencia continua para tramitar el arraigo social.
+
+el permiso de residencia	residence permit	Es imprescindible renovar el permiso de residencia antes de que venza el plazo legal establecido.
+
+la reagrupación familiar	family reunification	Solicitó el visado correspondiente por reagrupación familiar para traer a sus hijos menores.
+
+la integración social	social integration	El aprendizaje del idioma local resulta determinante para lograr una rápida integración social.
+
+la cohesión social	social cohesion	Las políticas públicas de redistribución de la riqueza fortalecen la cohesión social.
+
+la convivencia intercultural	intercultural coexistence	El barrio es un modelo ejemplar de respeto mutuo y convivencia intercultural pacífica.
+
+la barrera lingüística	language barrier	Los mediadores comunitarios ayudan a superar la barrera lingüística en los centros de salud.
+
+la asimilación cultural	cultural assimilation	Muchos sociólogos defienden la diversidad frente a los modelos forzados de asimilación cultural.
+
+la inclusión social	social inclusion	Los programas de empleo protegido promueven la inclusión social de colectivos desfavorecidos.
+
+la exclusión social	social exclusion	La falta continuada de ingresos y de red de apoyo conduce con frecuencia a la exclusión social.
+
+el colectivo vulnerable	vulnerable group	Los servicios municipales brindan atención prioritaria a cualquier colectivo vulnerable.
+
+la marginalidad	marginality / marginalization	Las entidades vecinales luchan contra la marginalidad urbana mediante talleres educativos.
+
+marginar	to marginalize	Ninguna sociedad democrática avanzada debería marginar a sus minorías por motivos ideológicos.
+
+el riesgo de pobreza	risk of poverty	El aumento de la inflación sitúa a miles de hogares vulnerables en riesgo de pobreza.
+
+el umbral de pobreza	poverty line / threshold	Las familias cuyos ingresos quedan por debajo del umbral de pobreza reciben ayuda complementaria.
+
+la precariedad laboral	job insecurity / precariousness	Los contratos temporales continuados perpetúan la precariedad laboral entre los jóvenes.
+
+la brecha salarial	wage gap	La transparencia retributiva en las empresas es clave para erradicar la brecha salarial de género.
+
+el techo de cristal	glass ceiling	Las investigadoras señalaron la persistencia de un techo de cristal en los altos cargos directivos.
+
+la conciliación laboral	work-life balance	La flexibilidad horaria facilita la conciliación laboral y familiar de los empleados.
+
+el permiso de paternidad	paternity leave	El gobierno amplió la duración del permiso de paternidad para equipararlo al de maternidad.
+
+el permiso de maternidad	maternity leave	Durante el permiso de maternidad la trabajadora percibe la totalidad de su prestación contributiva.
+
+la guardería pública	public daycare / nursery	La apertura de plazas en la guardería pública facilita la reincorporación de los progenitores al empleo.
+
+el subsidio de desempleo	unemployment benefit	Cobró el subsidio de desempleo mientras buscaba una nueva oportunidad en su sector profesional.
+
+el ingreso mínimo vital	guaranteed minimum income	El estado aprobó el ingreso mínimo vital para garantizar una renta básica a hogares sin recursos.
+
+la pensión de jubilación	retirement pension	Cotizó a la seguridad social durante más de cuarenta años para cobrar su pensión de jubilación.
+
+el estado del bienestar	welfare state	La educación gratuita y la sanidad pública son pilares irrenunciables del estado del bienestar.
+
+la seguridad social	social security	Todo trabajador dado de alta tiene derecho a la cobertura asistencial de la seguridad social.
+
+la cobertura sanitaria	healthcare coverage	El sistema nacional garantiza una amplia cobertura sanitaria universal a todos los residentes.
+
+la dependencia	dependency / care needs	La ley de dependencia financia ayudas para personas que no pueden valerse por sí mismas.
+
+la persona dependiente	dependent person	El cuidador asiste diariamente a la persona dependiente en sus tareas de aseo y alimentación.
+
+el cuidador no profesional	informal caregiver	La labor abnegada del cuidador no profesional suele conllevar una enorme carga emocional.
+
+el centro de día	daycare center (for elderly)	Pasa las mañanas realizando actividades cognitivas y de ocio en el centro de día del barrio.
+
+la residencia de ancianos	nursing home / retirement home	Sus familiares lo visitan todos los fines de semana en la residencia de ancianos.
+
+la accesibilidad universal	universal accessibility	El consistorio renovó las paradas de autobús para garantizar la accesibilidad universal.
+
+la barrera arquitectónica	architectural barrier	Eliminar cualquier barrera arquitectónica permite el libre tránsito de personas en silla de ruedas.
+
+la discapacidad motora	physical / motor disability	Las rampas de acceso resultan imprescindibles para las personas con discapacidad motora.
+
+la inclusión educativa	educational inclusion	La inclusión educativa exige adaptar los recursos del aula a las necesidades de cada estudiante.
+
+la discriminación racial	racial discrimination	El código penal castiga severamente cualquier manifestación de discriminación racial o xenofobia.
+
+el racismo institucional	institutional racism	Diversas organizaciones civiles denunciaron prácticas asociadas al racismo institucional.
+
+la xenofobia	xenophobia	La difusión de bulos y prejuicios en redes alimenta peligrosamente la xenofobia en la sociedad.
+
+el estereotipo	stereotype	Debemos cuestionar los estereotipos simplistas que impiden conocer la realidad de otras culturas.
+
+el prejuicio social	social prejudice	El diálogo abierto entre comunidades disuelve el prejuicio social arraigado durante décadas.
+
+la tolerancia	tolerance	El respeto a las opiniones divergentes es el verdadero fundamento de la tolerancia democrática.
+
+la convivencia pacífica	peaceful coexistence	La educación en valores cívicos sienta las bases para una convivencia pacífica duradera.
+
+el asociacionismo	community organizing / voluntary association	El fuerte asociacionismo vecinal impulsó la creación de una biblioteca en el distrito.
+
+la organización sin ánimo de lucro	non-profit organization	Trabaja como voluntario en una conocida organización sin ánimo de lucro dedicada a la infancia.
+
+la ONG (organización no gubernamental)	NGO (non-governmental organization)	La ONG envió un cargamento urgente de medicinas y mantas a la zona devastada por el seísmo.
+
+el voluntariado	volunteering	Dedica dos tardes a la semana a realizar labores de voluntariado en un hospital infantil.
+
+el cooperante internacional	international aid worker	El cooperante internacional coordinó la distribución de agua potable en el campamento de refugiados.
+
+la ayuda humanitaria	humanitarian aid	Varios convoyes con ayuda humanitaria lograron cruzar el corredor seguro hacia la ciudad sitiada.
+
+el comedor social	soup kitchen	El comedor social sirve cientos de comidas calientes cada día a personas desfavorecidas.
+
+el banco de alimentos	food bank	Las donaciones de los supermercados abastecen de productos no perecederos al banco de alimentos.
+
+la vivienda social	public / social housing	El ayuntamiento construyó un bloque de vivienda social destinado al alquiler asequible para familias.
+
+el desahucio	eviction	La plataforma ciudadana intentó paralizar el desahucio de una familia con menores a su cargo.
+
+desahuciar	to evict	La nueva normativa prohíbe desahuciar a inquilinos en situación de vulnerabilidad extrema en invierno.
+
+el sinhogarismo	homelessness	Combatir el sinhogarismo requiere ofrecer un techo digno y un acompañamiento psicosocial integral.
+
+la persona sin hogar	homeless person	Los equipos de emergencia social reparten bebidas calientes a las personas sin hogar en noches gélidas.
+
+el albergue municipal	municipal shelter	El albergue municipal amplió el número de camas disponibles ante la inminente ola de frío.
+
+la reinserción social	social reintegration	Los talleres formativos en prisión tienen como meta primordial la reinserción social de los reclusos.
+
+reinsertar	to reintegrate	Existen proyectos orientados a reinsertar en el mercado laboral a antiguos penados.
+
+la mediación comunitaria	community mediation	El conflicto entre los comerciantes se resolvió de forma satisfactoria mediante mediación comunitaria.
+
+el mediador social	social mediator	El mediador social facilitó el entendimiento entre las dos familias enfrentadas en el barrio.
+
+el trabajo social	social work	Estudia el grado en trabajo social porque siente una clara vocación por ayudar a los demás.
+
+el asistente social	social worker	El asistente social evaluó la situación familiar para tramitar las ayudas económicas pertinentes.
+
+la beneficencia	charity / philanthropy	La fundación privada destina parte de sus beneficios anuales a obras de beneficencia local.
+
+la recaudación de fondos	fundraising	Organizaron una carrera popular benéfica para la recaudación de fondos contra la leucemia.
+
+donar	to donate	Animó a los asistentes a donar ropa de abrigo y calzado para la campaña solidaria de invierno.
+
+la donación altruista	altruistic donation	La construcción de la nueva clínica comunitaria fue posible gracias a una donación altruista.
+
+la solidaridad intergeneracional	intergenerational solidarity	Cuidar a los nietos y apoyar a los abuelos constituye una muestra de solidaridad intergeneracional.
+
+la manifestación pacífica	peaceful protest / demonstration	Miles de manifestantes marcharon de forma ordenada durante la manifestación pacífica por el clima.
+
+la reivindicación laboral	labor demand / claim	La subida salarial de acuerdo con la inflación fue la principal reivindicación laboral del sindicato.
+
+reivindicar	to demand / claim	Los colectivos sanitarios se concentraron para reivindicar mayores recursos para la atención primaria.
+
+la huelga general	general strike	El paro convocado paralizó el transporte público en una jornada de huelga general sin incidentes.
+
+la movilización ciudadana	citizen mobilization	La movilización ciudadana logró frenar la tala indiscriminada de árboles centenarios en el parque.
+
+la participación ciudadana	civic / citizen participation	El consistorio habilitó un portal web interactivo para fomentar la participación ciudadana activa.
+
+la iniciativa legislativa popular	citizens' legislative initiative	Reunieron más de medio millón de firmas para presentar una iniciativa legislativa popular en el congreso.
+
+el plebiscito	plebiscite	El presidente sometió la controvertida reforma constitucional a un plebiscito vinculante.
+
+la consulta popular	public referendum / consultation	Celebraron una consulta popular no vinculante sobre la peatonalización total del centro histórico.
+
+el tejido social	social fabric	El aislamiento prolongado y la precariedad debilitan el tejido social de los barrios obreros.
+
+el sentido de pertenencia	sense of belonging	Participar en asociaciones juveniles refuerza el sentido de pertenencia a la comunidad local.
+
+la desafección política	political disaffection	La desconexión entre los representantes y los ciudadanos genera una creciente desafección política.
+
+el abstencionismo	voter abstention	Un alto porcentaje de abstencionismo suele reflejar desencanto o apatía entre el electorado joven.
+
+la polarización social	social polarization	Los discursos extremistas en el debate público alimentan una preocupante polarización social.
+
+el pluralismo político	political pluralism	La existencia de múltiples fuerzas con ideologías diversas enriquece el pluralismo político.
+
+la secularización	secularization	La secularización de las costumbres cotidianas transformó los ritos sociales en las últimas décadas.
+
+la transformación demográfica	demographic transformation	La llegada continua de población extranjera ha acelerado la transformación demográfica del país.
+
+la justicia distributiva	distributive justice	Un sistema fiscal equitativo y progresivo es la base fundamental de la justicia distributiva.
+la vivienda unifamiliar	single-family detached home	Prefieren mudarse a una vivienda unifamiliar con jardín para que los niños jueguen fuera.
+
+el piso compartido	shared flat / shared apartment	Vivir en un piso compartido durante la etapa universitaria ayuda a abaratar costes.
+
+el arrendador	landlord / lessor	El arrendador acordó devolver la fianza íntegra tras revisar el estado del inmueble.
+
+el arrendatario	tenant / lessee	El contrato estipula que el arrendatario debe abonar la mensualidad en los primeros cinco días.
+
+la fianza	security deposit / bail	Tuvimos que depositar una fianza equivalente a dos mensualidades antes de recibir las llaves.
+
+el contrato de arrendamiento	lease / rental contract	Firmaron un contrato de arrendamiento con una cláusula de permanencia mínima de un año.
+
+la comunidad de propietarios	homeowners' association	La comunidad de propietarios convocó una junta extraordinaria para votar la reforma del portal.
+
+la cuota de comunidad	maintenance / HOA fees	La cuota de comunidad cubre la limpieza semanal de la escalera y el mantenimiento del ascensor.
+
+el portal	building entrance / doorway	Instalaron un interfono digital con videocámara en el portal para reforzar la seguridad.
+
+el rellano	landing (stairs)	Los vecinos del tercer piso colocaron un macetero con flores en el rellano de la escalera.
+
+el pasamanos	handrail / banister	Apóyate en el pasamanos de madera al bajar los escalones empinados.
+
+el felpudo	doormat	Limpió el barro de las suelas de los zapatos en el felpudo antes de entrar al vestíbulo.
+
+la cerradura	lock	El cerrajero tuvo que cambiar la cerradura completa porque la llave se rompió dentro.
+
+el cerrojo	bolt / latch	Por precaución, echó el cerrojo de seguridad antes de acostarse a dormir.
+
+el picaporte	door handle / latch	El picaporte de latón de la puerta principal está desgastado por el uso continuo.
+
+el mirilla	peephole	Miró con discreción a través de la mirilla para comprobar quién tocaba el timbre.
+
+el timbre	doorbell	El cartero tocó el timbre dos veces para entregar un paquete certificado.
+
+el vestíbulo	foyer / entrance hall	Dejaron los paraguas mojados y los abrigos en el perchero del vestíbulo.
+
+el recibidor	entrance hall / foyer	Pusieron un espejo ovalado de cuerpo entero en el recibidor junto a la entrada.
+
+el pasillo distribuidor	hallway / corridor	Un largo pasillo distribuidor conecta las habitaciones con la zona del salón comedor.
+
+el salón comedor	living-dining room	El salón comedor recibe abundante luz natural durante toda la mañana gracias al ventanal.
+
+el ventanal	large window / picture window	Abrió las cortinas del ventanal para disfrutar de las vistas a la cordillera.
+
+la persiana	window blind / shutter	Bajó la persiana hasta la mitad para evitar que el sol directo deslumbrara la pantalla.
+
+el estor	roller blind	Instalaron un estor translúcido en la ventana de la cocina para mantener la privacidad.
+
+el alféizar	windowsill	Puso una pequeña maceta con albahaca fresca sobre el alféizar de la ventana soleada.
+
+la moldura	molding / trim	El techo del salón conserva molduras clásicas de escayola del siglo pasado.
+
+el parqué	parquet flooring	Hay que aplicar una cera especial de vez en cuando para no rayar el suelo de parqué.
+
+la tarima flotante	laminate flooring	Eligieron tarima flotante de roble claro para darle un aire moderno al dormitorio.
+
+el rodapié	baseboard / skirting board	Pintaron el rodapié de blanco para crear contraste con el tono gris de la pared.
+
+la grieta	crack / fissure	El albañil selló la grieta de la pared con masilla antes de dar la primera mano de pintura.
+
+el tabique	partition wall	Derribaron un tabique divisorio para unir la cocina con el comedor en un solo espacio abierto.
+
+el aislamiento térmico	thermal insulation	Un buen aislamiento térmico en los muros exteriores reduce el consumo de calefacción en invierno.
+
+el doble acristalamiento	double glazing	Las ventanas con doble acristalamiento atenúan sensiblemente el ruido procedente de la calle.
+
+la condensación	condensation	El exceso de humedad en el cuarto de baño provoca condensación en los espejos y cristales.
+
+el deshumidificador	dehumidifier	Encendieron el deshumidificador durante la noche para retirar el exceso de vapor del ambiente.
+
+el radiador	radiator	Purgó el radiador para eliminar las bolsas de aire que impedían calentar la habitación.
+
+el termostato	thermostat	Programaron el termostato a veinte grados para ahorrar energía durante la madrugada.
+
+el aire acondicionado	air conditioning	En verano resulta indispensable encender el aire acondicionado en las horas centrales del día.
+
+el conducto de ventilación	ventilation duct	Un técnico limpió el conducto de ventilación de la cocina para evitar la acumulación de grasa.
+
+la caldera de gas	gas boiler	La revisión técnica anual de la caldera de gas es obligatoria por motivos de seguridad.
+
+el calentador de agua	water heater	El termo eléctrico no tenía capacidad suficiente para calentar agua para cuatro duchas seguidas.
+
+el desagüe	drain	El fontanero desatascó el desagüe de la ducha usando un desatascador manual.
+
+el sifón	trap (plumbing) / siphon	Tuvieron que desmontar el sifón del lavabo para recuperar el anillo que se había colado.
+
+el grifo monomando	single-handle faucet	Instaló un grifo monomando en el fregadero para regular la temperatura del agua con precisión.
+
+el lavabo	washbasin / bathroom sink	Limpia la superficie de cerámica del lavabo con un desinfectante suave.
+
+el fregadero	kitchen sink	No acumules los platos sucios en el fregadero; lávalos justo después de comer.
+
+la encimera	countertop	La encimera de granito de la cocina resiste altas temperaturas sin deteriorarse.
+
+el armario empotrado	fitted wardrobe / built-in closet	Las habitaciones cuentan con amplios armarios empotrados con puertas correderas de madera.
+
+la balda	shelf	Colocó los diccionarios más pesados en la balda inferior de la estantería.
+
+el estante	shelf / bookrack	El carpintero ajustó el estante para que los libros de arte cupieran sin doblarse.
+
+el cajón con guías	drawer with runners	El cajón con guías se abre y cierra de forma suave sin hacer ningún chirrido.
+
+la cajonera	chest of drawers	Compró una pequeña cajonera auxiliar para ordenar el material de oficina.
+
+el cabecero	headboard	El cabecero tapizado de la cama aporta calidez a la decoración del dormitorio principal.
+
+el somier	bed base / box spring	Cambiaron el somier de láminas viejo porque empezaba a chirriar al moverse.
+
+el colchón viscoelástico	memory foam mattress	Comprar un colchón viscoelástico de calidad mejoró de inmediato sus dolores lumbares.
+
+la funda nórdica	duvet cover	Puso una funda nórdica de lino lavado en la cama para la temporada de frío.
+
+el edredón	duvet / quilt	En invierno guardan las sábanas finas y sacan el edredón de plumas del altillo.
+
+el altillo	attic shelf / loft space	Guardamos las maletas y la ropa de esquí en el altillo del armario.
+
+el desván	attic / loft	Encontró varios baúles con cartas familiares antiguas arrinconados en el desván de la casa.
+
+la buhardilla	garret / attic room	Acondicionaron la buhardilla bajo el tejado para convertirla en un despacho luminoso.
+
+el sótano	basement / cellar	El sótano de la casa se utiliza como trastero y taller de bricolaje.
+
+el trastero	storage room	Alquiló un trastero en las afueras para guardar los muebles durante la mudanza.
+
+la despensa	pantry / larder	Tienen la despensa bien surtida de conservas, legumbres secas y botellas de aceite.
+
+el tendedero	drying rack / clothesline	Colgó la colada recién lavada en el tendedero plegable que tiene en la terraza.
+
+la colada	laundry / wash	Separa las prendas de color antes de poner la colada en la lavadora automática.
+
+la lavadora de carga frontal	front-loading washing machine	La lavadora de carga frontal consume menos agua y energía por cada ciclo de lavado.
+
+la secadora de condensación	condensation tumble dryer	Usa la secadora de condensación en invierno cuando la humedad del exterior impide secar la ropa.
+
+la plancha de vapor	steam iron	Llenó el depósito de la plancha de vapor con agua destilada para planchar las camisas.
+
+la tabla de planchar	ironing board	Plegó la tabla de planchar y la guardó detrás de la puerta del lavadero.
+
+el lavavajillas integrable	integrated dishwasher	El lavavajillas integrable queda oculto tras el mismo panel que los demás muebles de cocina.
+
+la campana extractora	extractor hood	Enciende la campana extractora al cocinar para evacuar los humos y los olores a comida.
+
+la placa de inducción	induction cooktop	La placa de inducción calienta los recipientes con rapidez y resulta muy sencilla de limpiar.
+
+el horno pirolítico	pyrolytic oven	El horno pirolítico dispone de una función de autolimpieza que quema los restos de grasa.
+
+el microondas integrable	built-in microwave	Instalaron el microondas integrable en una columna vertical sobre el horno eléctrico.
+
+el frigorífico combi	fridge-freezer	El frigorífico combi cuenta con tres cajones inferiores dedicados exclusivamente al congelador.
+
+el congelador no-frost	frost-free freezer	El congelador no-frost evita la formación de capas gruesas de hielo en las paredes internas.
+
+la batidora de mano	hand blender / immersion blender	Trituró las verduras cocidas con la batidora de mano hasta lograr una textura homogénea.
+
+el tostador de pan	toaster	Puso dos rebanadas de pan de hogaza en el tostador de pan para desayunar.
+
+el hervidor de agua	kettle	El hervidor de agua eléctrico tarda apenas dos minutos en calentar agua para el té.
+
+la cafetera de goteo	drip coffee maker	La cafetera de goteo prepara una jarra entera de café para toda la oficina por la mañana.
+
+el exprimidor de cítricos	citrus juicer	Compró un exprimidor de cítricos eléctrico para preparar zumo de naranja natural cada día.
+
+el menaje del hogar	household goods / cookware	En esa ferretería tradicional puedes adquirir todo tipo de menaje del hogar y vajillas.
+
+la vajilla de porcelana	porcelain dinnerware	Sacaron la vajilla de porcelana fina para la cena de gala de Nochebuena.
+
+la cubertería de acero	steel cutlery set	La cubertería de acero inoxidable incluye tenedores, cuchillos y cucharas soperas.
+
+la cristalería fina	fine glassware	Lavó a mano cada copa de la cristalería fina para evitar roturas accidentales.
+
+la sartén antiadherente	non-stick frying pan	Utiliza una espátula de silicona para no rayar el revestimiento de la sartén antiadherente.
+
+la cacerola de hierro fundido	cast iron saucepan	El guiso tradicional se cocina lentamente en una cacerola de hierro fundido tapada.
+
+el escurridor de platos	dish rack / drainer	Colocó los vasos boca abajo en el escurridor de platos para que soltaran el agua.
+
+el cubo de la basura	rubbish bin / trash can	Disponen de cubos separados bajo el fregadero para reciclar envases, papel y restos orgánicos.
+
+la escoba de cerdas suaves	soft-bristle broom	Barrió el polvo fino del suelo con una escoba de cerdas suaves para no arañar la madera.
+
+el recogedor	dustpan	Recogió las migas caídas en el suelo con el recogedor de plástico.
+
+la fregona	mop (Spain)	Escurrió bien la fregona en el cubo antes de pasársela al suelo de la cocina.
+
+el trapo de microfibra	microfiber cloth	Limpió las superficies de cristal con un trapo de microfibra humedecido con agua.
+
+el bayeta absorbente	absorbent cleaning cloth	Pasa una bayeta absorbente sobre la encimera para secar las gotas salpicadas.
+
+el estropajo	scouring pad / sponge	Frotó la base de la sartén quemada con un estropajo metálico resistente.
+
+el detergente lavavajillas	dishwashing detergent	Añadió unas gotas de detergente lavavajillas en la esponja para desengrasar las fuentes.
+
+el limpiacristales	glass cleaner	Pulverizó un poco de limpiacristales sobre el espejo antes de frotar con papel secante.
+
+el desatascador químico	chemical drain opener	Vertió un bote de desatascador químico por la tubería atascada y esperó media hora.
+
+la bombilla de bajo consumo	low-energy / LED lightbulb	Sustituyeron las antiguas lámparas incandescentes por bombillas de bajo consumo eficientes.
+
+el enchufe de pared	wall socket / power outlet	Conectó el cargador del ordenador portátil en el enchufe de pared situado tras la mesa.
+el organigrama	organizational chart	El departamento de recursos humanos publicó un organigrama actualizado con las nuevas incorporaciones.
+
+el puesto directivo	executive / managerial position	Acceder a un puesto directivo exige sólidas dotes de liderazgo y capacidad de decisión.
+
+la toma de decisiones	decision-making	La toma de decisiones en momentos de incertidumbre requiere serenidad y análisis exhaustivo.
+
+el trabajo en equipo	teamwork	El éxito de la campaña dependió fundamentalmente de la capacidad de trabajo en equipo.
+
+la coordinación interdisciplinar	interdisciplinary coordination	La coordinación interdisciplinar entre diseñadores e ingenieros agilizó el desarrollo del prototipo.
+
+el rendimiento laboral	work performance	La empresa evaluó el rendimiento laboral de la plantilla mediante indicadores objetivos.
+
+el indicador de rendimiento	performance indicator (KPI)	Fijaron un indicador de rendimiento trimestral para medir el grado de satisfacción de los clientes.
+
+la productividad	productivity	La implantación de herramientas digitales contribuyó a elevar la productividad de la oficina.
+
+la carga de trabajo	workload	Distribuir equitativamente la carga de trabajo previene el agotamiento físico y mental del personal.
+
+el agotamiento profesional	burnout	El exceso de horas extraordinarias provocó un cuadro de agotamiento profesional en varios empleados.
+
+la jornada laboral	working day / hours	El convenio colectivo fija una jornada laboral máxima de treinta y siete horas y media semanales.
+
+la jornada continua	continuous working day	Durante los meses de verano muchos empleados prefieren acogerse a la jornada continua matinal.
+
+el horario flexible	flexible working hours	Tener un horario flexible permite conciliar mejor las obligaciones familiares y el empleo.
+
+el teletrabajo	remote work / telecommuting	El teletrabajo parcial ha demostrado mantener altos niveles de compromiso y eficacia.
+
+el trabajo presencial	on-site work	La dirección exige dos días semanales de trabajo presencial para fomentar la cohesión del equipo.
+
+el fichaje digital	digital clock-in / time tracking	El sistema de fichaje digital registra la hora exacta de entrada y salida de cada operario.
+
+el turno rotativo	rotating shift	Trabajar en régimen de turno rotativo altera con frecuencia los ciclos de descanso y sueño.
+
+las horas extraordinarias	overtime hours	La empresa acordó abonar las horas extraordinarias con un recargo del treinta por ciento sobre la tarifa base.
+
+el día de asuntos propios	personal day off	Solicitó un día de asuntos propios para gestionar trámites burocráticos urgentes en el juzgado.
+
+la baja médica	medical leave / sick leave	El médico de cabecera le tramitó la baja médica debido a una lumbalgia incapacitante.
+
+el alta laboral	medical clearance to return to work	El trabajador recibió el alta laboral tras recuperarse completamente de la intervención quirúrgica.
+
+el expediente de regulación de empleo	collective redundancy procedure (ERE)	La dirección presentó un expediente de regulación de empleo ante la drástica caída de la demanda.
+
+la indemnización por despido	severance pay / dismissal compensation	El juzgado de lo social fijó una indemnización por despido improcedente equivalente a treinta y tres días por año.
+
+el finiquito	settlement pay (upon leaving job)	Antes de abandonar la empresa, firmó el recibo del finiquito con la liquidación de las vacaciones pendientes.
+
+la carta de despido	dismissal letter	El responsable de personal le entregó en mano la carta de despido especificando los motivos alegados.
+
+la renuncia voluntaria	voluntary resignation	Presentó su renuncia voluntaria con quince días de preaviso conforme a lo pactado en el contrato.
+
+el periodo de preaviso	notice period	El empleado cumplió escrupulosamente con el periodo de preaviso antes de incorporarse a su nuevo destino.
+
+el periodo de prueba	probationary period	Superó con éxito el periodo de prueba de seis meses y firmó su contrato indefinido.
+
+el contrato indefinido	permanent contract	Conseguir un contrato indefinido le brindó la estabilidad económica necesaria para comprar una vivienda.
+
+el contrato temporal	temporary / fixed-term contract	La legislación laboral restringe el uso reiterado del contrato temporal para puestos habituales.
+
+la plantilla fija	permanent staff	La multinacional anunció un plan para ampliar la plantilla fija con cincuenta nuevos especialistas.
+
+la vacante	vacancy / job opening	Publicaron una vacante en el portal de empleo para un analista de datos con experiencia previa.
+
+el proceso de selección	selection / recruitment process	El proceso de selección incluyó una prueba técnica eliminatoria y dos rondas de entrevistas personales.
+
+el cribado curricular	resume screening	El software de recursos humanos realizó un primer cribado curricular seleccionando los perfiles más afines.
+
+el candidato finalista	finalist candidate	Cada candidato finalista tuvo que defender un caso práctico ante el panel de evaluación.
+
+la entrevista por competencias	competency-based interview	En la entrevista por competencias le pidieron describir cómo resolvió situaciones de conflicto en el pasado.
+
+las aptitudes profesionales	professional skills / aptitudes	El comité valoró especialmente sus aptitudes profesionales para negociar acuerdos comerciales complejos.
+
+las habilidades blandas	soft skills	La empatía, la asertividad y la adaptabilidad son habilidades blandas muy cotizadas en los procesos modernos.
+
+la asertividad	assertiveness	La asertividad permite expresar discrepancias de criterio sin generar hostilidad entre los compañeros.
+
+la proactividad	proactivity	Demostró una notable proactividad al anticipar los posibles cuellos de botella del proyecto.
+
+la resiliencia laboral	work resilience	La resiliencia laboral resulta indispensable para afrontar periodos de reestructuración corporativa.
+
+la capacidad de adaptación	adaptability	Su rápida capacidad de adaptación facilitó la integración en las rutinas de la delegación internacional.
+
+el plan de formación continua	continuing training plan	La dirección aprobó un ambicioso plan de formación continua en ciberseguridad para todo el personal.
+
+la cualificación profesional	professional qualification	Obtener esa certificación técnica mejoró sensiblemente su cualificación profesional en el mercado.
+
+el reciclaje profesional	professional retraining / reskilling	Muchos operarios completaron cursos de reciclaje profesional para aprender a manejar maquinaria automatizada.
+
+la promoción interna	internal promotion	La empresa prioriza la promoción interna antes de acudir a reclutadores externos para cargos de mando.
+
+el ascenso de categoría	promotion to higher rank	Tras años de dedicación ejemplar, consiguió un merecido ascenso de categoría con mejores condiciones.
+
+el estancamiento profesional	career stagnation	Cambió de empresa para eludir una situación de estancamiento profesional sin expectativas de crecimiento.
+
+el plan de carrera	career development plan	El departamento de talento diseña un plan de carrera individualizado para cada nuevo empleado con potencial.
+
+la delegación de funciones	delegation of duties	Una correcta delegación de funciones evita sobrecargar a los mandos intermedios con microgestión.
+
+la microgestión	micromanagement	El exceso de microgestión por parte de los supervisores mina la autonomía y la moral de los trabajadores.
+
+la reunión de seguimiento	follow-up meeting	Convocaron una breve reunión de seguimiento a primera hora para repasar las tareas prioritarias del día.
+
+el orden del día	meeting agenda	El secretario adjuntó el orden del día al correo de convocatoria para que todos preparasen sus puntos.
+
+el acta de la reunión	meeting minutes	El acta de la reunión recoge con precisión los acuerdos adoptados y los plazos de ejecución asignados.
+
+levantar acta	to take minutes	La secretaria se encargó de levantar acta detallando las intervenciones de cada asistente.
+
+el quórum	quorum	No fue posible someter el acuerdo a votación formal al no alcanzarse el quórum mínimo exigido.
+
+la votación a mano alzada	vote by show of hands	Aprobaron la propuesta presupuestaria mediante una rápida votación a mano alzada en la sala de juntas.
+
+la votación secreta	secret ballot	Varios miembros solicitaron una votación secreta para garantizar la total libertad de elección individual.
+
+el turno de palabra	floor / turn to speak	El moderador del debate concedió el turno de palabra al portavoz de la comisión de enlace.
+
+la objeción fundamentada	grounded objection	El auditor planteó una objeción fundamentada respecto al cálculo de las amortizaciones pendientes.
+
+hacer constar en acta	to enter into the minutes / go on record	El delegado sindical exigió hacer constar en acta su desacuerdo explícito con la nueva directriz.
+
+el consenso unánime	unanimous consensus	La junta directiva alcanzó un consenso unánime respecto a la expansión comercial hacia nuevos mercados.
+
+el punto muerto	deadlock / impasse	Las negociaciones con el proveedor entraron en un punto muerto debido al desacuerdo sobre las tarifas.
+
+desbloquear la negociación	to unblock / resolve deadlock	La intervención de un mediador externo ayudó a desbloquear la negociación tras semanas de parálisis.
+
+la concesión mutua	mutual concession	Ambas partes tuvieron que hacer concesiones mutuas para suscribir un pacto ventajoso para todos.
+
+el memorando interno	internal memorandum / memo	El director ejecutivo difundió un memorando interno recordando las normas de confidencialidad de la firma.
+
+la circular corporativa	corporate circular	La circular corporativa detalla las pautas que regirán la solicitud de permisos vacacionales este año.
+
+el correo corporativo	corporate email	Es obligatorio utilizar exclusivamente el correo corporativo para cualquier comunicación con clientes externos.
+
+el asunto del mensaje	email subject line	Conviene redactar un asunto del mensaje conciso y claro para facilitar su clasificación en la bandeja.
+
+la bandeja de entrada	inbox	Tenía más de cien correos sin leer acumulados en la bandeja de entrada tras volver de vacaciones.
+
+el acuse de recibo	acknowledgment of receipt	Le rogamos que responda a este mensaje remitiendo un breve acuse de recibo para confirmar su lectura.
+
+poner en copia	to copy (cc in email)	Acuérdate de poner en copia al jefe de departamento al responder al cliente sobre las condiciones.
+
+poner en copia oculta	to blind-copy (bcc)	Es aconsejable poner en copia oculta a los destinatarios para preservar la privacidad de sus direcciones.
+
+el archivo adjunto	attachment	El sistema de seguridad rechazó el envío al detectar un archivo adjunto con formato sospechoso.
+
+la firma digital	digital signature	Validó la factura rectificada utilizando su certificado con firma digital autorizada.
+
+el flujo de trabajo	workflow	La nueva aplicación agiliza el flujo de trabajo entre los equipos de diseño y maquetación.
+
+la cadena de mando	chain of command	Respetar la cadena de mando garantiza una comunicación ordenada y evita órdenes contradictorias.
+
+la asignación de tareas	task assignment	La responsable utilizó un tablero interactivo para coordinar la asignación de tareas semanales.
+
+el plazo de entrega	delivery deadline	El equipo aceleró el ritmo para no sobrepasar el riguroso plazo de entrega pactado con el cliente.
+
+entregar fuera de plazo	to deliver past the deadline	Entregar el informe fuera de plazo puede acarrear penalizaciones contractuales para la consultora.
+
+la prórroga temporal	time extension	Solicitaron una prórroga temporal de dos semanas para perfeccionar el análisis de viabilidad técnica.
+
+la gestión del tiempo	time management	Dominar técnicas eficaces de gestión del tiempo permite minimizar interrupciones y retrasos evitables.
+
+la priorización de tareas	task prioritization	La matriz de Eisenhower es una herramienta clásica de apoyo en la priorización de tareas complejas.
+
+lo urgente y lo importante	the urgent and the important	Distinguir con claridad entre lo urgente y lo importante resulta clave para no trabajar bajo estrés continuo.
+
+la procrastinación	procrastination	Establecer metas diarias intermedias es una estrategia útil para combatir la procrastinación involuntaria.
+
+procrastinar	to procrastinate	Procrastinar la redacción del dictamen solo servirá para incrementar la presión en los días finales.
+
+la política de empresa	company policy	La política de empresa prohíbe el uso de dispositivos personales sin encriptar para fines corporativos.
+
+el código ético corporativo	corporate code of ethics	Todos los empleados deben comprometerse por escrito a cumplir las pautas fijadas en el código ético corporativo.
+
+el conflicto de intereses	conflict of interest	El consejero se abstuvo de votar al advertir un evidente conflicto de intereses con el adjudicatario.
+
+la confidencialidad	confidentiality	El contrato incluye un estricto acuerdo de confidencialidad que prohíbe divulgar secretos industriales.
+
+la cláusula de no competencia	non-compete clause	La cláusula de no competencia le impide prestar servicios a firmas del mismo sector durante dos años.
+
+la auditoría interna	internal audit	El departamento contable colaboró activamente en la auditoría interna anual de cumplimiento normativo.
+
+el auditor externo	external auditor	El auditor externo emitió un informe con opinión limpia validando las cuentas anuales presentadas.
+
+el comité de empresa	works council / staff committee	El comité de empresa convocó una asamblea general para informar sobre la marcha de las negociaciones.
+
+el enlace sindical	union representative	El enlace sindical trasladó a la dirección las inquietudes del personal sobre las condiciones de la nave.
+
+el convenio colectivo	collective bargaining agreement	El nuevo convenio colectivo incluye un incremento salarial vinculado a la evolución del índice de precios.
+
+la mediación laboral	labor mediation	Acudieron a los servicios de mediación laboral para intentar evitar la huelga indefinida convocada.
+
+el laudo arbitral	arbitral award / ruling	Ambas partes acataron el laudo arbitral que puso fin al conflicto colectivo de forma vinculante.
+
+la salud laboral	occupational health	La comisión paritaria de salud laboral revisa periódicamente los protocolos de ergonomía en las oficinas.
+
+la prevención de riesgos laborales	occupational hazard prevention	Todos los trabajadores de la planta deben realizar el curso obligatorio de prevención de riesgos laborales.
+la alfabetización mediática	media literacy	La alfabetización mediática ayuda a los jóvenes a discernir entre hechos objetivos y meras opiniones.
+
+la desinformación	disinformation / misinformation	Las campañas sistemáticas de desinformación buscan debilitar la confianza en las instituciones públicas.
+
+el bulo	hoax / fake rumor	Un bulo alarmista sobre el agua del grifo se difundió con rapidez en las redes sociales.
+
+la noticia falsa	fake news	Es prioritario contrastar las noticias falsas antes de compartirlas con amigos y familiares.
+
+la verificación de datos	fact-checking	Varias agencias independientes se dedican en exclusiva a la verificación de datos políticos.
+
+contrastar fuentes	to cross-check sources	El manual de estilo exige contrastar fuentes directas antes de publicar cualquier reportaje.
+
+la fuente fidedigna	reliable source	Consultar únicamente fuentes fidedignas previene la divulgación de testimonios inexactos.
+
+la libertad de prensa	freedom of the press	La libertad de prensa es un pilar insustituible para el funcionamiento pleno de cualquier democracia.
+
+el sesgo informativo	media bias	El lector crítico debe identificar el sesgo informativo propio de cada línea editorial.
+
+la manipulación mediática	media manipulation	Denunciaron un intento evidente de manipulación mediática durante la campaña electoral.
+
+el sensacionalismo	sensationalism	El diario fue criticado por abusar del sensacionalismo en la cobertura del suceso luctuoso.
+
+el amarillismo	yellow journalism	La prensa sensacionalista recurre al amarillismo para engrosar sus cifras de ventas diarias.
+
+el titular engañoso	clickbait / misleading headline	El titular engañoso prometía una cura milagrosa que el texto desmentía por completo.
+
+el ciberanzuelo	clickbait	Muchas páginas web emplean el ciberanzuelo para atraer tráfico digital sin aportar contenido valioso.
+
+la cámara de eco	echo chamber	Las redes sociales a menudo actúan como una cámara de eco donde solo escuchamos opiniones afines.
+
+la burbuja de filtros	filter bubble	Los algoritmos personalizados encierran a los usuarios dentro de una cerrada burbuja de filtros.
+
+la polarización discursiva	discursive polarization	Los debates televisivos actuales fomentan con frecuencia una agria polarización discursiva.
+
+la viralidad	virality	La viralidad del vídeo en internet tomó por sorpresa a su propio creador amateur.
+
+hacerse viral	to go viral	La campaña comunitaria logró hacerse viral en menos de veinticuatro horas en todas las plataformas.
+
+la difusión masiva	mass dissemination	La difusión masiva de contenidos digitales plantea interrogantes complejos sobre la propiedad intelectual.
+
+el algoritmo de recomendación	recommendation algorithm	El algoritmo de recomendación prioriza las publicaciones que generan mayor controversia emocional.
+
+la moderación de contenidos	content moderation	La moderación de contenidos en foros requiere combinar filtros automáticos y revisión humana.
+
+la censura digital	digital censorship	Varios colectivos protestaron contra la censura digital impuesta sobre plataformas informativas independientes.
+
+el discurso de odio	hate speech	El código penal tipifica y sanciona la incitación pública al odio en entornos virtuales.
+
+la difamación	defamation	El actor interpuso una querella por difamación tras la emisión del reportaje injurioso.
+
+la calumnia	slander	Imputar en público un delito falso a otra persona constituye un delito de calumnia grave.
+
+la injuria	insult / libel	La sentencia judicial condenó al columnista por verter injurias contra el magistrado.
+
+el derecho a la rectificación	right of correction / rectification	El afectado exigió su legítimo derecho a la rectificación en la misma plana del diario.
+
+rectificar	to retract / rectify	El periódico se vio en la obligación de rectificar la información errónea en su edición dominical.
+
+la fe de erratas	errata / correction notice	Publicaron una pequeña fe de erratas para enmendar los datos estadísticos del cuadro adjunto.
+
+la huella digital	digital footprint	Cada búsqueda y comentario que realizamos en la red va configurando nuestra huella digital duradera.
+
+la privacidad en línea	online privacy	Configurar adecuadamente los permisos del navegador refuerza la privacidad en línea de los usuarios.
+
+la protección de datos	data protection	El reglamento comunitario establece estrictas salvaguardas para la protección de datos personales.
+
+el consentimiento informado	informed consent	La plataforma debe recabar el consentimiento informado expreso antes de recopilar información bancaria.
+
+la suplantación de identidad	identity theft / impersonation	Fue víctima de una suplantación de identidad cuando un pirata clonó su perfil corporativo.
+
+la ciberseguridad	cybersecurity	Las instituciones financieras invierten sumas millonarias en reforzar su protocolo de ciberseguridad.
+
+el ciberacoso	cyberbullying	Los centros escolares organizan talleres preventivos para erradicar el ciberacoso entre menores.
+
+el acoso virtual	online harassment	Bloquear perfiles tóxicos y denunciar a la policía son pasos clave ante el acoso virtual continuado.
+
+la etiqueta de advertencia	warning label / content warning	Las plataformas aplican una etiqueta de advertencia en los mensajes con contenido gráfico o sensible.
+
+la descontextualización	taking out of context	La descontextualización de las declaraciones del ministro desató una polémica artificial innecesaria.
+
+sacar de contexto	to take out of context	Es una práctica deshonesta sacar de contexto frases aisladas para desprestigiar al adversario.
+
+la tergiversación	misrepresentation / distortion	El informe presentado incurre en una manifiesta tergiversación de los acuerdos originales.
+
+tergiversar	to distort / misrepresent	El portavoz acusó a la oposición de tergiversar deliberadamente el sentido de la reforma.
+
+la credibilidad	credibility	Un medio de comunicación pierde toda su credibilidad si difunde noticias sin contrastar previamente.
+
+poner en tela de juicio	to call into question	Varios analistas decidieron poner en tela de juicio las estimaciones económicas del gobierno.
+
+la veracidad	truthfulness / veracity	El tribunal analizó minuciosamente la veracidad de los testimonios aportados por los peritos.
+
+verosímil	plausible / credible	Su explicación de lo ocurrido sonaba bastante verosímil y convenció a la comisión investigadora.
+
+inverosímil	implausible / unlikely	La versión de los hechos ofrecida por el sospechoso resultó inverosímil para los agentes policiales.
+
+el periodismo de investigación	investigative journalism	El premio literario reconoció un trabajo sobresaliente de periodismo de investigación sobre corrupción local.
+
+la filtración	leak	Una filtración anónima desveló documentos clasificados sobre la venta clandestina de armamento.
+
+filtrar información	to leak information	El exfuncionario fue detenido por filtrar información confidencial a un consorcio de periódicos.
+
+el informante anónimo	anonymous informant	El cronista protegió celosamente la identidad de su informante anónimo durante el interrogatorio judicial.
+
+el denunciante de irregularidades	whistleblower	Las leyes internacionales ofrecen protección legal al denunciante de irregularidades dentro de corporaciones.
+
+el secreto profesional	journalistic confidentiality / professional secrecy	El periodista invocó el secreto profesional para no revelar quién le había facilitado el dossier.
+
+la columna de opinión	opinion column	La columna de opinión dominical abordó con lucidez los retos éticos de la inteligencia artificial.
+
+el artículo de fondo	in-depth / background article	El suplemento cultural publicó un brillante artículo de fondo sobre la transformación de las metrópolis.
+
+la crónica	chronicle / narrative feature	La corresponsal firmó una conmovedora crónica sobre la vida cotidiana en las trincheras del frente.
+
+el reportaje en profundidad	in-depth reporting	El canal estatal emitió un riguroso reportaje en profundidad sobre el impacto del cambio climático.
+
+la comparecencia	press appearance / official statement	El presidente ofreció una breve comparecencia ante los medios sin aceptar preguntas de los asistentes.
+
+el comunicado oficial	official statement	El ministerio emitió un comunicado oficial desmintiendo las especulaciones sobre un confinamiento inmediato.
+
+el portavoz	spokesperson	La portavoz del comité ejecutivo atendió con cortesía a los redactores congregados en la sala.
+
+la cobertura mediática	media coverage	La cumbre internacional sobre el clima contó con una cobertura mediática sin precedentes mundiales.
+
+cubrir un evento	to cover an event	La emisora desplazó a dos reporteros veteranos para cubrir un evento cultural de alcance internacional.
+
+la primicia informativa	news scoop	El diario vespertino se apuntó una valiosa primicia informativa al adelantar la dimisión del ministro.
+
+el directo	live broadcast	El reportero se trabó unos segundos al hablar debido a los imprevistos propios del directo.
+
+retransmitir en directo	to broadcast live	Van a retransmitir en directo las ceremonias de apertura a través del portal digital público.
+
+el corte de voz	soundbite	El informativo radiofónico emitió un breve corte de voz del testigo principal del incidente.
+
+la tertulia radiofónica	radio talk show / panel discussion	Escucha todas las mañanas la tertulia radiofónica mientras conduce de camino hacia el despacho.
+
+el contertulio	panelist / commentator	El contertulio rebatió con cifras contrastadas los argumentos falaces del invitado del programa.
+
+el analista político	political analyst	El analista político predijo con notable exactitud los posibles pactos parlamentarios tras las urnas.
+
+el creador de contenido	content creator	Hoy en día muchos graduados en comunicación aspiran a consolidarse como creador de contenido digital.
+
+la monetización de contenidos	content monetization	Diversificar los patrocinios privados es vital para la monetización de contenidos a largo plazo.
+
+la tasa de interacción	engagement rate	La nueva estrategia gráfica duplicó la tasa de interacción de los seguidores con las publicaciones.
+
+la masa de seguidores	follower base	El divulgador científico cuenta con una fiel masa de seguidores que respalda sus ensayos online.
+
+el muro de pago	paywall	El diario digital implementó un muro de pago parcial para financiar sus investigaciones periodísticas.
+
+el acceso abierto	open access	Las universidades defienden el acceso abierto como vía fundamental para democratizar el saber científico.
+
+la propiedad intelectual	intellectual property	El registro de la obra garantiza la salvaguarda de la propiedad intelectual ante posibles copias.
+
+los derechos de autor	copyright	Utilizar material gráfico sin abonar los derechos de autor correspondientes vulnera la legalidad vigente.
+
+la infracción de derechos	copyright infringement	El portal web fue clausurado cautelarmente por cometer una reiterada infracción de derechos.
+
+el dominio público	public domain	Al transcurrir ochenta años de la muerte del autor, sus poemas pasaron al dominio público libre.
+
+la licencia abierta	open license	El software de código abierto se distribuye bajo una licencia abierta para cualquier desarrollador.
+
+la atribución obligatoria	mandatory attribution	Puedes reutilizar el gráfico divulgativo siempre que incluyas la atribución obligatoria al diseñador.
+
+atribuir la autoría	to attribute authorship	Es preceptivo atribuir la autoría originaria al citar párrafos textuales en un informe académico.
+
+la sobrecarga informativa	information overload	El bombardeo constante de notificaciones en el teléfono móvil genera una aguda sobrecarga informativa.
+
+la infoxicación	infoxication / information overload	Aprender a desconectar los fines de semana previene caer en un estado perjudicial de infoxicación.
+
+la brecha digital	digital divide	La falta de conectividad de banda ancha en zonas despobladas ensancha peligrosamente la brecha digital.
+
+la ciudadanía digital	digital citizenship	Ejercer una ciudadanía digital responsable exige actuar en las redes con respeto, juicio y mesura.
+
+la netiqueta	netiquette	Saludar al iniciar un correo y evitar redactar todo en mayúsculas son reglas básicas de netiqueta.
+
+el trol de internet	internet troll	La mejor manera de neutralizar el comportamiento de un trol de internet es no responder a sus provocaciones.
+
+la toxicidad en redes	toxicity on social media	Muchas figuras públicas abandonan temporalmente sus perfiles cansadas de la toxicidad en redes.
+
+la censura algorítmica	algorithmic shadowbanning / filtering	Varios creadores denunciaron la censura algorítmica que redujo drásticamente el alcance de sus vídeos.
+
+la inteligencia artificial generativa	generative artificial intelligence	La irrupción de la inteligencia artificial generativa redefine la producción y edición de textos periodísticos.
+
+el deepfake	deepfake	Los peritos informáticos detectaron que la grabación de voz atribuida al embajador era un burdo deepfake.
+
+la verificación audiovisual	audiovisual verification	La verificación audiovisual de metadatos permite autentificar grabaciones de zonas de conflicto bélico.
+
+el canal de difusión	broadcast / dissemination channel	La organización utiliza un canal de difusión unidireccional para remitir avisos y alertas urgentes.
+
+la plataforma de transmisión	streaming platform	El documental independiente se estrenó en exclusiva en una plataforma de transmisión temática.
+
+el podcast de investigación	investigative podcast	La serie de podcast de investigación reconstruye con minuciosidad un enigmático caso policial de los años noventa.
+
+el hilo explicativo	explanatory thread	El especialista redactó un hilo explicativo en redes sintetizando las conclusiones del informe ambiental.
+
+la cámara web	webcam	Acuérdate de apagar la cámara web y el micrófono al concluir la sesión de trabajo en remoto.
+
+la comunidad virtual	virtual community	Los miembros de la comunidad virtual comparten consejos útiles y recursos gratuitos sobre diseño.
