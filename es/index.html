@@ -54,7 +54,6 @@
     .flag-accent {
       background: linear-gradient(to right, #C60B1E 0%, #C60B1E 25%, #FFC400 25%, #FFC400 75%, #C60B1E 75%, #C60B1E 100%);
     }
-
     .perspective-1000 { perspective: 1000px; }
     .transform-style-3d {
       transform-style: preserve-3d;
@@ -76,7 +75,7 @@
     }
 
     @media (orientation: landscape) and (max-height: 540px) {
-      .landscape-card { height: 13rem !important; }
+      .landscape-card { height: 13.5rem !important; }
       .landscape-shrink { font-size: 1.5rem !important; line-height: 1.75rem !important; }
     }
 
@@ -91,12 +90,9 @@
 
 <body class="min-h-screen flex flex-col bg-day-bg text-day-text dark:bg-night-bg dark:text-night-text transition-colors duration-150 selection:bg-rojigualda-gold selection:text-day-text font-sans antialiased">
 
-  <!-- Franja Superior Rojigualda -->
   <div class="h-1.5 w-full flag-accent fixed top-0 left-0 z-50"></div>
 
-  <!-- ============================================================== -->
-  <!-- NAVEGACIÓN CAPA 1 (PRINCIPAL) & CAPA 2 (SUB-VISTA COHESIVA)    -->
-  <!-- ============================================================== -->
+  <!-- NAVEGACIÓN CAPA 1 & CAPA 2 -->
   <header class="sticky top-1.5 z-40 bg-day-bg/95 dark:bg-night-bg/95 backdrop-blur-md border-b border-day-border dark:border-night-border transition-colors">
     <div class="max-w-4xl mx-auto px-4">
       
@@ -140,7 +136,7 @@
           <button 
             onclick="app.toggleTheme()" 
             class="p-2 rounded-lg text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition"
-            title="Modo Día / Noche"
+            title="Día / Noche"
           >
             <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
             <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
@@ -148,10 +144,10 @@
         </div>
       </div>
 
-      <!-- CAPA 2: SUB-NAVEGACIÓN CONTEXTUAL COHESIVA -->
+      <!-- CAPA 2: SUB-NAVEGACIÓN CONTEXTUAL -->
       <div class="h-10 border-t border-day-border/70 dark:border-night-border/70 flex items-center justify-between text-xs overflow-x-auto no-scrollbar py-1">
         
-        <!-- Sub-navegación para Tarjetas -->
+        <!-- Sub-navegación: Tarjetas -->
         <div id="subNavTarjetas" class="flex items-center gap-1">
           <button 
             id="subBtnCardsStudy" 
@@ -177,16 +173,24 @@
             <i data-lucide="star" class="w-3 h-3 text-amber-500"></i>
             <span>Guardadas (<span id="badgeSavedTotal">0</span>)</span>
           </button>
+          <button 
+            id="subBtnCardsAdd" 
+            onclick="app.setTarjetasSub('add')"
+            class="px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5"
+          >
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>
+            <span>Añadir</span>
+          </button>
         </div>
 
-        <!-- Sub-navegación para Verbo -->
+        <!-- Sub-navegación: Verbo -->
         <div id="subNavVerbo" class="hidden flex items-center gap-1">
           <button 
             id="subBtnVerboDrill" 
             onclick="app.setVerboSub('drill')"
             class="px-3 py-1 rounded-lg font-bold bg-day-surface dark:bg-night-surface text-day-text dark:text-night-text transition flex items-center gap-1.5"
           >
-            <i data-lucide="edit-3" class="w-3 h-3 text-rojigualda-red dark:text-rojigualda-gold"></i>
+            <i data-lucide="edit-3" class="w-3.5 h-3.5 text-rojigualda-red dark:text-rojigualda-gold"></i>
             <span>Escribir</span>
           </button>
           <button 
@@ -194,7 +198,7 @@
             onclick="app.setVerboSub('choice')"
             class="px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5"
           >
-            <i data-lucide="zap" class="w-3 h-3"></i>
+            <i data-lucide="zap" class="w-3.5 h-3.5"></i>
             <span>Opción</span>
           </button>
           <button 
@@ -202,7 +206,7 @@
             onclick="app.setVerboSub('table')"
             class="px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5"
           >
-            <i data-lucide="table" class="w-3 h-3"></i>
+            <i data-lucide="table" class="w-3.5 h-3.5"></i>
             <span>Tablas</span>
           </button>
           <button 
@@ -210,37 +214,29 @@
             onclick="app.setVerboSub('mistakes')"
             class="px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5"
           >
-            <i data-lucide="alert-circle" class="w-3 h-3 text-rose-500"></i>
+            <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-rose-500"></i>
             <span>Errores (<span id="badgeMistakesTotal">0</span>)</span>
           </button>
         </div>
 
-        <div id="subActionRight" class="pl-2">
-          <!-- Botón de acción contextual dinámica -->
-        </div>
-
+        <div id="subActionRight" class="pl-2"></div>
       </div>
 
     </div>
   </header>
 
-  <!-- ============================================================== -->
-  <!-- CONTENEDOR CENTRAL DINÁMICO                                    -->
-  <!-- ============================================================== -->
+  <!-- CONTENEDOR CENTRAL -->
   <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-4 flex flex-col justify-start">
 
-    <!-- ============================================================= -->
-    <!-- CAPA 1.A: TARJETAS                                            -->
-    <!-- ============================================================= -->
+    <!-- SECCIÓN 1: TARJETAS -->
     <section id="viewTarjetas" class="flex-1 flex flex-col gap-3">
       
-      <!-- SUB-VISTA 1: PRÁCTICA 3D -->
+      <!-- SUB-VISTA 1.A: PRÁCTICA 3D -->
       <div id="subViewCardsStudy" class="flex-1 flex flex-col justify-center gap-3">
         
-        <!-- Progreso y Contadores -->
         <div class="flex items-center justify-between text-[11px] font-mono text-day-muted dark:text-night-muted px-1">
           <div class="flex items-center gap-2">
-            <span id="fcIdxIndicator">1 / 1</span>
+            <span id="fcIdxIndicator">0 / 0</span>
             <span id="fcStudyModeFilterPill" class="hidden px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-sans font-bold text-[10px]">
               ⭐ Solo Guardadas
             </span>
@@ -257,7 +253,7 @@
         </div>
 
         <!-- Tarjeta 3D -->
-        <div class="perspective-1000 w-full h-64 sm:h-72 landscape-card cursor-pointer select-none" onclick="app.flipCard()">
+        <div class="perspective-1000 w-full h-72 sm:h-80 landscape-card cursor-pointer select-none" onclick="app.flipCard()">
           <div id="flashcardEl" class="relative w-full h-full transform-style-3d transition-transform duration-300 rounded-2xl border border-day-border dark:border-night-border shadow-xs bg-day-card dark:bg-night-card">
             
             <!-- ANVERSO (Español) -->
@@ -270,7 +266,7 @@
                     id="fcStarBtn"
                     onclick="event.stopPropagation(); app.toggleSaveCurrentWord();" 
                     class="p-1.5 rounded-lg text-day-muted dark:text-night-muted hover:text-amber-500 transition"
-                    title="Guardar palabra"
+                    title="Guardar"
                   >
                     <i data-lucide="star" class="w-4 h-4"></i>
                   </button>
@@ -295,10 +291,10 @@
               </div>
             </div>
 
-            <!-- REVERSO (Traducción & Contexto) -->
-            <div class="absolute inset-0 w-full h-full rounded-2xl p-6 flex flex-col justify-between backface-hidden rotate-y-180 bg-day-card dark:bg-night-card border-t-2 border-rojigualda-red dark:border-rojigualda-gold">
+            <!-- REVERSO (Traducción, Frase & Notas en D1) -->
+            <div class="absolute inset-0 w-full h-full rounded-2xl p-5 sm:p-6 flex flex-col justify-between backface-hidden rotate-y-180 bg-day-card dark:bg-night-card border-t-2 border-rojigualda-red dark:border-rojigualda-gold overflow-hidden">
               <div class="flex items-center justify-between text-xs">
-                <span class="text-[10px] font-mono uppercase tracking-wider text-rojigualda-red dark:text-rojigualda-gold">Significado</span>
+                <span class="text-[10px] font-mono uppercase tracking-wider text-rojigualda-red dark:text-rojigualda-gold">Significado & Notas</span>
                 <button 
                   type="button" 
                   onclick="event.stopPropagation(); app.speakSentence();" 
@@ -308,12 +304,29 @@
                 </button>
               </div>
 
-              <div class="my-auto space-y-2 text-center">
+              <div class="my-auto space-y-2 text-center overflow-y-auto max-h-[140px] pr-1">
                 <h3 id="fcMeaning" class="text-xl sm:text-2xl font-bold font-serif text-day-text dark:text-night-text"></h3>
-                <p id="fcExample" class="text-xs sm:text-sm text-day-muted dark:text-night-muted italic leading-relaxed px-2"></p>
+                <p id="fcExample" class="text-xs sm:text-sm text-day-muted dark:text-night-muted italic leading-relaxed"></p>
+
+                <!-- Caja de Notas de Aprendizaje -->
+                <div class="pt-2 text-left" onclick="event.stopPropagation()">
+                  <div class="bg-day-surface dark:bg-night-surface p-2 rounded-xl border border-day-border dark:border-night-border">
+                    <div class="flex items-center justify-between text-[10px] font-mono text-day-muted dark:text-night-muted mb-1">
+                      <span>Nota (Cloudflare D1):</span>
+                      <span id="noteSavedStatus" class="opacity-0 transition-opacity text-emerald-600 dark:text-emerald-400">✓ Guardado</span>
+                    </div>
+                    <textarea 
+                      id="fcCardNotesInput"
+                      rows="2"
+                      placeholder="Escribe apuntes o trucos mnemotécnicos..."
+                      class="w-full text-xs bg-transparent border-0 focus:ring-0 p-0 text-day-text dark:text-night-text resize-none outline-none leading-relaxed"
+                      onchange="app.saveCurrentCardNotes(this.value)"
+                    ></textarea>
+                  </div>
+                </div>
               </div>
 
-              <div class="text-center text-[10px] text-day-muted dark:text-night-muted">
+              <div class="text-center text-[10px] text-day-muted dark:text-night-muted pt-1">
                 <span>1 Repasar &bull; 2 Dominada</span>
               </div>
             </div>
@@ -321,18 +334,18 @@
           </div>
         </div>
 
-        <!-- Controles Inferiores -->
+        <!-- Controles -->
         <div class="grid grid-cols-5 gap-1.5">
           <button onclick="app.prevCard()" class="p-3 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card flex items-center justify-center hover:bg-day-surface dark:hover:bg-night-surface transition">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
           </button>
-          <button onclick="app.rateCard(false)" class="p-3 rounded-xl border border-amber-300 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20 text-amber-800 dark:text-amber-300 text-xs font-bold transition flex items-center justify-center gap-1">
+          <button onclick="app.rateCard('review')" class="p-3 rounded-xl border border-amber-300 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20 text-amber-800 dark:text-amber-300 text-xs font-bold transition flex items-center justify-center gap-1">
             <span>Repasar</span>
           </button>
           <button onclick="app.flipCard()" class="p-3 rounded-xl bg-day-surface dark:bg-night-surface border border-day-border dark:border-night-border text-xs font-bold transition flex items-center justify-center">
             <i data-lucide="repeat" class="w-4 h-4"></i>
           </button>
-          <button onclick="app.rateCard(true)" class="p-3 rounded-xl border border-emerald-300 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300 text-xs font-bold transition flex items-center justify-center gap-1">
+          <button onclick="app.rateCard('mastered')" class="p-3 rounded-xl border border-emerald-300 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300 text-xs font-bold transition flex items-center justify-center gap-1">
             <span>Dominada</span>
           </button>
           <button onclick="app.nextCard()" class="p-3 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card flex items-center justify-center hover:bg-day-surface dark:hover:bg-night-surface transition">
@@ -342,22 +355,36 @@
 
       </div>
 
-      <!-- SUB-VISTA 2: CORPUS COMPLETO -->
+      <!-- SUB-VISTA 1.B: CORPUS COMPLETO & IMPORTADOR .TXT -->
       <div id="subViewCardsCorpus" class="hidden flex-1 flex flex-col gap-2">
-        <div class="relative">
-          <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-day-muted dark:text-night-muted"></i>
-          <input 
-            type="text" 
-            id="corpusFilter" 
-            oninput="app.renderCorpusList()"
-            placeholder="Buscar en el corpus..." 
-            class="w-full pl-8 pr-3 py-2 text-xs bg-day-surface dark:bg-night-surface rounded-xl border border-day-border dark:border-night-border focus:border-rojigualda-red dark:focus:border-rojigualda-gold outline-none transition"
-          />
+        <div class="flex items-center gap-2">
+          <div class="relative flex-1">
+            <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-day-muted dark:text-night-muted"></i>
+            <input 
+              type="text" 
+              id="corpusFilter" 
+              oninput="app.renderCorpusList()"
+              placeholder="Buscar en el corpus..." 
+              class="w-full pl-8 pr-3 py-2 text-xs bg-day-surface dark:bg-night-surface rounded-xl border border-day-border dark:border-night-border focus:border-rojigualda-red dark:focus:border-rojigualda-gold outline-none transition"
+            />
+          </div>
+
+          <!-- Botón de importación .txt local directo a Cloudflare D1 -->
+          <input type="file" id="localTxtFileInput" accept=".txt" class="hidden" onchange="app.handleTxtFileImport(event)">
+          <button 
+            onclick="document.getElementById('localTxtFileInput').click()"
+            class="px-3 py-2 rounded-xl bg-day-surface dark:bg-night-surface border border-day-border dark:border-night-border text-xs font-bold text-day-text dark:text-night-text hover:border-rojigualda-red dark:hover:border-rojigualda-gold flex items-center gap-1.5 transition shrink-0"
+            title="Cargar archivo .txt local a Cloudflare D1"
+          >
+            <i data-lucide="upload-cloud" class="w-3.5 h-3.5 text-rojigualda-red dark:text-rojigualda-gold"></i>
+            <span>Importar .txt</span>
+          </button>
         </div>
+
         <div id="corpusRows" class="flex-1 max-h-[62vh] overflow-y-auto divide-y divide-day-border/60 dark:divide-night-border/60 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card"></div>
       </div>
 
-      <!-- SUB-VISTA 3: PALABRAS GUARDADAS -->
+      <!-- SUB-VISTA 1.C: PALABRAS GUARDADAS -->
       <div id="subViewCardsSaved" class="hidden flex-1 flex flex-col gap-2">
         <div class="flex items-center justify-between pb-1">
           <button 
@@ -368,21 +395,79 @@
             <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
             <span>Practicar Guardadas</span>
           </button>
-          <button onclick="app.clearSavedWords()" class="text-xs text-day-muted hover:text-rose-600 transition">
-            Vaciar lista
-          </button>
+          <span class="text-xs text-day-muted dark:text-night-muted">Palabras marcadas con ⭐</span>
         </div>
         <div id="savedWordsRows" class="flex-1 max-h-[62vh] overflow-y-auto divide-y divide-day-border/60 dark:divide-night-border/60 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card"></div>
       </div>
 
+      <!-- SUB-VISTA 1.D: AÑADIR DIRECTAMENTE A CLOUDFLARE D1 -->
+      <div id="subViewCardsAdd" class="hidden flex-1 flex flex-col justify-center">
+        <div class="bg-day-card dark:bg-night-card rounded-2xl p-6 border border-day-border dark:border-night-border shadow-xs max-w-xl mx-auto w-full space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-day-border dark:border-night-border">
+            <span class="font-serif font-bold text-base text-day-text dark:text-night-text">Nueva Palabra (Cloudflare D1)</span>
+            <span class="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">Edge Sync</span>
+          </div>
+
+          <form onsubmit="app.handleNewWordSubmit(event)" class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-bold text-day-muted dark:text-night-muted uppercase tracking-wider mb-1">Palabra / Término (Español)</label>
+              <input 
+                type="text" 
+                id="newWordInput" 
+                required 
+                placeholder="Ej: el reto, desarrollar, imprescindible..."
+                class="w-full text-xs sm:text-sm font-semibold p-2.5 rounded-xl border border-day-border dark:border-night-border bg-day-surface dark:bg-night-surface outline-none focus:border-rojigualda-red dark:focus:border-rojigualda-gold"
+              />
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-day-muted dark:text-night-muted uppercase tracking-wider mb-1">Traducción / Significado</label>
+              <input 
+                type="text" 
+                id="newMeaningInput" 
+                required 
+                placeholder="Ej: challenge, to develop, essential..."
+                class="w-full text-xs sm:text-sm font-semibold p-2.5 rounded-xl border border-day-border dark:border-night-border bg-day-surface dark:bg-night-surface outline-none focus:border-rojigualda-red dark:focus:border-rojigualda-gold"
+              />
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-day-muted dark:text-night-muted uppercase tracking-wider mb-1">Frase de Contexto (Opcional)</label>
+              <input 
+                type="text" 
+                id="newSentenceInput" 
+                placeholder="Ej: Aceptó el reto con entusiasmo."
+                class="w-full text-xs p-2.5 rounded-xl border border-day-border dark:border-night-border bg-day-surface dark:bg-night-surface outline-none focus:border-rojigualda-red dark:focus:border-rojigualda-gold"
+              />
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-day-muted dark:text-night-muted uppercase tracking-wider mb-1">Notas de Aprendizaje (Opcional)</label>
+              <textarea 
+                id="newNotesInput" 
+                rows="2"
+                placeholder="Ej: Falso amigo con threat. Deriva del latín vulgar relictum..."
+                class="w-full text-xs p-2.5 rounded-xl border border-day-border dark:border-night-border bg-day-surface dark:bg-night-surface outline-none focus:border-rojigualda-red dark:focus:border-rojigualda-gold resize-none"
+              ></textarea>
+            </div>
+
+            <button 
+              type="submit" 
+              class="w-full py-3 rounded-xl bg-rojigualda-red dark:bg-rojigualda-gold text-white dark:text-stone-950 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-sm active:scale-98"
+            >
+              <span>Guardar en Cloudflare D1</span>
+              <i data-lucide="cloud-upload" class="w-4 h-4"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+
     </section>
 
-    <!-- ============================================================= -->
-    <!-- CAPA 1.B: VERBO                                               -->
-    <!-- ============================================================= -->
+    <!-- SECCIÓN 2: VERBO -->
     <section id="viewVerbo" class="hidden flex-1 flex flex-col gap-3">
       
-      <!-- SUB-VISTA 1: ESCRIBIR (FULL DRILL) -->
+      <!-- SUB-VISTA 2.A: ESCRIBIR -->
       <div id="subViewVerboDrill" class="flex-1 flex flex-col justify-center gap-4">
         
         <div class="bg-day-card dark:bg-night-card rounded-2xl p-6 border border-day-border dark:border-night-border shadow-xs text-center space-y-2">
@@ -400,7 +485,6 @@
           <p id="drillEnglish" class="text-xs text-day-muted dark:text-night-muted"></p>
         </div>
 
-        <!-- Entrada & Teclado de Acentos -->
         <form onsubmit="app.submitDrill(event)" class="space-y-2">
           <div class="relative">
             <input 
@@ -454,7 +538,7 @@
 
       </div>
 
-      <!-- SUB-VISTA 2: OPCIÓN MÚLTIPLE -->
+      <!-- SUB-VISTA 2.B: OPCIÓN MÚLTIPLE -->
       <div id="subViewVerboChoice" class="hidden flex-1 flex flex-col justify-center gap-3">
         <div class="bg-day-card dark:bg-night-card rounded-2xl p-5 border border-day-border dark:border-night-border text-center space-y-1">
           <div class="flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono text-day-muted dark:text-night-muted">
@@ -468,7 +552,7 @@
         <div id="choiceFeedback" class="hidden p-2.5 rounded-xl text-center text-xs font-semibold border transition"></div>
       </div>
 
-      <!-- SUB-VISTA 3: TABLAS DE CONJUGACIÓN (7 TIEMPOS COMPLETOS) -->
+      <!-- SUB-VISTA 2.C: TABLAS DE CONJUGACIÓN -->
       <div id="subViewVerboTable" class="hidden flex-1 flex flex-col gap-3">
         <div class="flex items-center justify-between gap-2">
           <select 
@@ -479,7 +563,7 @@
         </div>
 
         <div class="flex-1 overflow-x-auto rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card">
-          <table class="w-full text-left text-xs border-collapse min-w-[700px]">
+          <table class="w-full text-left text-xs border-collapse min-w-[720px]">
             <thead>
               <tr class="border-b border-day-border dark:border-night-border text-day-muted dark:text-night-muted text-[10px] font-mono uppercase">
                 <th class="p-2.5">Persona</th>
@@ -497,7 +581,7 @@
         </div>
       </div>
 
-      <!-- SUB-VISTA 4: REVISIÓN DE ERRORES DE CONJUGACIÓN -->
+      <!-- SUB-VISTA 2.D: REVISIÓN DE ERRORES EN CLOUDFLARE D1 -->
       <div id="subViewVerboMistakes" class="hidden flex-1 flex flex-col gap-2">
         <div class="flex items-center justify-between pb-1">
           <button 
@@ -519,7 +603,17 @@
 
   </main>
 
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-opacity duration-200">
+    <div id="toastContent" class="px-3.5 py-1.5 rounded-full bg-day-text text-day-bg dark:bg-night-text dark:text-night-bg text-xs font-medium shadow-lg"></div>
+  </div>
+
   <script>
+    /* ==============================================================
+       CONFIGURACIÓN DE LA BASE DE DATOS CLOUDFLARE D1
+       ============================================================== */
+    const API_BASE = 'https://esp-vocab-api.enzowmeng.workers.dev';
+
     const PRONOUNS = [
       { key: 'yo', label: 'yo' },
       { key: 'tu', label: 'tú' },
@@ -529,7 +623,6 @@
       { key: 'ellos', label: 'ellos / ellas' }
     ];
 
-    /* NOMBRES GRAMATICALES COMPLETOS CON CONDICIONAL Y SUBJUNTIVO PRETÉRITO */
     const TENSES = {
       pres: 'Presente de Indicativo',
       pret_indef: 'Pretérito Indefinido',
@@ -540,7 +633,6 @@
       subj_pret_imp: 'Pretérito Imperfecto de Subjuntivo'
     };
 
-    /* BASE DE DATOS AMPLIADA: 24 VERBOS CON TODOS LOS 7 TIEMPOS COMPLETOS */
     const VERB_BANK = [
       {
         infinitive: 'ser', english: 'to be (essence / origin)',
@@ -675,126 +767,6 @@
         }
       },
       {
-        infinitive: 'dar', english: 'to give',
-        forms: {
-          pres: ['doy', 'das', 'da', 'damos', 'dais', 'dan'],
-          pret_indef: ['di', 'diste', 'dio', 'dimos', 'disteis', 'dieron'],
-          pret_imp: ['daba', 'dabas', 'daba', 'dábamos', 'dabais', 'daban'],
-          fut: ['daré', 'darás', 'dará', 'daremos', 'daréis', 'darán'],
-          cond: ['daría', 'darías', 'daría', 'daríamos', 'daríais', 'darían'],
-          subj_pres: ['dé', 'des', 'dé', 'demos', 'deis', 'den'],
-          subj_pret_imp: ['diera', 'dieras', 'diera', 'diéramos', 'dierais', 'dieran']
-        }
-      },
-      {
-        infinitive: 'venir', english: 'to come',
-        forms: {
-          pres: ['vengo', 'vienes', 'viene', 'venimos', 'venís', 'vienen'],
-          pret_indef: ['vine', 'viniste', 'vino', 'vinimos', 'vinisteis', 'vinieron'],
-          pret_imp: ['venía', 'venías', 'venía', 'veníamos', 'veníais', 'venían'],
-          fut: ['vendré', 'vendrás', 'vendrá', 'vendremos', 'vendréis', 'vendrán'],
-          cond: ['vendría', 'vendrías', 'vendría', 'vendríamos', 'vendríais', 'vendrían'],
-          subj_pres: ['venga', 'vengas', 'venga', 'vengamos', 'vengáis', 'vengan'],
-          subj_pret_imp: ['viniera', 'vinieras', 'viniera', 'viniéramos', 'vinierais', 'vinieran']
-        }
-      },
-      {
-        infinitive: 'salir', english: 'to exit / go out',
-        forms: {
-          pres: ['salgo', 'sales', 'sale', 'salimos', 'salís', 'salen'],
-          pret_indef: ['salí', 'saliste', 'salió', 'salimos', 'salisteis', 'salieron'],
-          pret_imp: ['salía', 'salías', 'salía', 'salíamos', 'salíais', 'salían'],
-          fut: ['saldré', 'saldrás', 'saldrá', 'saldremos', 'saldréis', 'saldrán'],
-          cond: ['saldría', 'saldrías', 'saldría', 'saldríamos', 'saldríais', 'saldrían'],
-          subj_pres: ['salga', 'salgas', 'salga', 'salgamos', 'salgáis', 'salgan'],
-          subj_pret_imp: ['saliera', 'salieras', 'saliera', 'saliéramos', 'salierais', 'salieran']
-        }
-      },
-      {
-        infinitive: 'traer', english: 'to bring',
-        forms: {
-          pres: ['traigo', 'traes', 'trae', 'traemos', 'traéis', 'traen'],
-          pret_indef: ['traje', 'trajiste', 'trajo', 'trajimos', 'trajisteis', 'trajeron'],
-          pret_imp: ['traía', 'traías', 'traía', 'traíamos', 'traíais', 'traían'],
-          fut: ['traeré', 'traerás', 'traerá', 'traeremos', 'traeréis', 'traerán'],
-          cond: ['traería', 'traerías', 'traería', 'traeríamos', 'traeríais', 'traerían'],
-          subj_pres: ['traiga', 'traigas', 'traiga', 'traigamos', 'traigáis', 'traigan'],
-          subj_pret_imp: ['trajera', 'trajeras', 'trajera', 'trajéramos', 'trajerais', 'trajeran']
-        }
-      },
-      {
-        infinitive: 'oír', english: 'to hear',
-        forms: {
-          pres: ['oigo', 'oyes', 'oye', 'oímos', 'oís', 'oyen'],
-          pret_indef: ['oí', 'oíste', 'oyó', 'oímos', 'oísteis', 'oyeron'],
-          pret_imp: ['oía', 'oías', 'oía', 'oíamos', 'oíais', 'oían'],
-          fut: ['oiré', 'oirás', 'oirá', 'oiremos', 'oiréis', 'oirán'],
-          cond: ['oiría', 'oirías', 'oiría', 'oiríamos', 'oiríais', 'oirían'],
-          subj_pres: ['oiga', 'oigas', 'oiga', 'oigamos', 'oigáis', 'oigan'],
-          subj_pret_imp: ['oyera', 'oyeras', 'oyera', 'oyéramos', 'oyerais', 'oyeran']
-        }
-      },
-      {
-        infinitive: 'conocer', english: 'to know / meet (person/place)',
-        forms: {
-          pres: ['conozco', 'conoces', 'conoce', 'conocemos', 'conocéis', 'conocen'],
-          pret_indef: ['conocí', 'conociste', 'conoció', 'conocimos', 'conocisteis', 'conocieron'],
-          pret_imp: ['conocía', 'conocías', 'conocía', 'conocíamos', 'conocíais', 'conocían'],
-          fut: ['conoceré', 'conocerás', 'conocerá', 'conoceremos', 'conoceréis', 'conocerán'],
-          cond: ['conocería', 'conocerías', 'conocería', 'conoceríamos', 'conoceríais', 'conocerían'],
-          subj_pres: ['conozca', 'conozcas', 'conozca', 'conozcamos', 'conozcáis', 'conozcan'],
-          subj_pret_imp: ['conociera', 'conocieras', 'conociera', 'conociéramos', 'conocierais', 'conocieran']
-        }
-      },
-      {
-        infinitive: 'dormir', english: 'to sleep (o->ue, o->u)',
-        forms: {
-          pres: ['duermo', 'duermes', 'duerme', 'dormimos', 'dormís', 'duermen'],
-          pret_indef: ['dormí', 'dormiste', 'durmió', 'dormimos', 'dormisteis', 'durmieron'],
-          pret_imp: ['dormía', 'dormías', 'dormía', 'dormíamos', 'dormíais', 'dormían'],
-          fut: ['dormiré', 'dormirás', 'dormirá', 'dormiremos', 'dormiréis', 'dormirán'],
-          cond: ['dormiría', 'dormirías', 'dormiría', 'dormiríamos', 'dormiríais', 'dormirían'],
-          subj_pres: ['duerma', 'duermas', 'duerma', 'durmamos', 'durmáis', 'duerman'],
-          subj_pret_imp: ['durmiera', 'durmieras', 'durmiera', 'durmiéramos', 'durmierais', 'durmieran']
-        }
-      },
-      {
-        infinitive: 'pedir', english: 'to ask for / order (e->i)',
-        forms: {
-          pres: ['pido', 'pides', 'pide', 'pedimos', 'pedís', 'piden'],
-          pret_indef: ['pedí', 'pediste', 'pidió', 'pedimos', 'pedisteis', 'pidieron'],
-          pret_imp: ['pedía', 'pedías', 'pedía', 'pedíamos', 'pedíais', 'pedían'],
-          fut: ['pediré', 'pedirás', 'pedirá', 'pediremos', 'pediréis', 'pedirán'],
-          cond: ['pediría', 'pedirías', 'pediría', 'pediríamos', 'pediríais', 'pedirían'],
-          subj_pres: ['pida', 'pidas', 'pida', 'pidamos', 'pidáis', 'pidan'],
-          subj_pret_imp: ['pidiera', 'pidieras', 'pidiera', 'pidiéramos', 'pidierais', 'pidieran']
-        }
-      },
-      {
-        infinitive: 'sentir', english: 'to feel / regret (e->ie, e->i)',
-        forms: {
-          pres: ['siento', 'sientes', 'siente', 'sentimos', 'sentís', 'sienten'],
-          pret_indef: ['sentí', 'sentiste', 'sintió', 'sentimos', 'sentisteis', 'sintieron'],
-          pret_imp: ['sentía', 'sentías', 'sentía', 'sentíamos', 'sentíais', 'sentían'],
-          fut: ['sentiré', 'sentirás', 'sentirá', 'sentiremos', 'sentiréis', 'sentirán'],
-          cond: ['sentiría', 'sentirías', 'sentiría', 'sentiríamos', 'sentiríais', 'sentirían'],
-          subj_pres: ['sienta', 'sientas', 'sienta', 'sintamos', 'sintáis', 'sientan'],
-          subj_pret_imp: ['sintiera', 'sintieras', 'sintiera', 'sintiéramos', 'sintierais', 'sintieran']
-        }
-      },
-      {
-        infinitive: 'volver', english: 'to return (o->ue)',
-        forms: {
-          pres: ['vuelvo', 'vuelves', 'vuelve', 'volvemos', 'volvéis', 'vuelven'],
-          pret_indef: ['volví', 'volviste', 'volvió', 'volvimos', 'volvisteis', 'volvieron'],
-          pret_imp: ['volvía', 'volvías', 'volvía', 'volvíamos', 'volvíais', 'volvían'],
-          fut: ['volveré', 'volverás', 'volverá', 'volveremos', 'volveréis', 'volverán'],
-          cond: ['volvería', 'volverías', 'volvería', 'volveríamos', 'volveríais', 'volverían'],
-          subj_pres: ['vuelva', 'vuelvas', 'vuelva', 'volvamos', 'volváis', 'vuelvan'],
-          subj_pret_imp: ['volviera', 'volvieras', 'volviera', 'volviéramos', 'volvierais', 'volvieran']
-        }
-      },
-      {
         infinitive: 'hablar', english: 'to speak (regular -ar)',
         forms: {
           pres: ['hablo', 'hablas', 'habla', 'hablamos', 'habláis', 'hablan'],
@@ -805,44 +777,7 @@
           subj_pres: ['hable', 'hables', 'hable', 'hablemos', 'habléis', 'hablen'],
           subj_pret_imp: ['hablara', 'hablaras', 'hablara', 'habláramos', 'hablarais', 'hablaran']
         }
-      },
-      {
-        infinitive: 'comer', english: 'to eat (regular -er)',
-        forms: {
-          pres: ['como', 'comes', 'come', 'comemos', 'coméis', 'comen'],
-          pret_indef: ['comí', 'comiste', 'comió', 'comimos', 'comisteis', 'comieron'],
-          pret_imp: ['comía', 'comías', 'comía', 'comíamos', 'comíais', 'comían'],
-          fut: ['comeré', 'comerás', 'comerá', 'comeremos', 'comeréis', 'comerán'],
-          cond: ['comería', 'comerías', 'comería', 'comeríamos', 'comeríais', 'comerían'],
-          subj_pres: ['coma', 'comas', 'coma', 'comamos', 'comáis', 'coman'],
-          subj_pret_imp: ['comiera', 'comieras', 'comiera', 'comiéramos', 'comierais', 'comieran']
-        }
-      },
-      {
-        infinitive: 'vivir', english: 'to live (regular -ir)',
-        forms: {
-          pres: ['vivo', 'vives', 'vive', 'vivimos', 'vivís', 'viven'],
-          pret_indef: ['viví', 'viviste', 'vivió', 'vivimos', 'vivisteis', 'vivieron'],
-          pret_imp: ['vivía', 'vivías', 'vivía', 'vivíamos', 'vivíais', 'vivían'],
-          fut: ['viviré', 'vivirás', 'vivirá', 'viviremos', 'viviréis', 'vivirán'],
-          cond: ['viviría', 'vivirías', 'viviría', 'viviríamos', 'viviríais', 'vivirían'],
-          subj_pres: ['viva', 'vivas', 'viva', 'vivamos', 'viváis', 'vivan'],
-          subj_pret_imp: ['viviera', 'vivieras', 'viviera', 'viviéramos', 'vivierais', 'vivieran']
-        }
       }
-    ];
-
-    const SEED_BACKUP = [
-      { word: 'el software', meaningEn: 'software', example: 'Es necesario actualizar el software.', ipa: '[softweɾ]', grammar: 'sustantivo masc.' },
-      { word: 'el algoritmo', meaningEn: 'algorithm', example: 'El algoritmo optimiza el rendimiento.', ipa: '[alɣoˈɾidmo]', grammar: 'sustantivo masc.' },
-      { word: 'la aleación', meaningEn: 'alloy', example: 'La pieza está compuesta por una aleación.', ipa: '[aleaˈθjon]', grammar: 'sustantivo fem.' },
-      { word: 'el análisis', meaningEn: 'analysis', example: 'El análisis confirmó los resultados.', ipa: '[aˈnalisis]', grammar: 'sustantivo masc.' },
-      { word: 'el dispositivo', meaningEn: 'device', example: 'Conectó el dispositivo a la red.', ipa: '[disposiˈtiβo]', grammar: 'sustantivo masc.' },
-      { word: 'la batería', meaningEn: 'battery', example: 'La batería tiene gran autonomía.', ipa: '[bateˈɾia]', grammar: 'sustantivo fem.' },
-      { word: 'el desarrollo', meaningEn: 'development', example: 'El desarrollo avanzó rápidamente.', ipa: '[desaˈroʎo]', grammar: 'sustantivo masc.' },
-      { word: 'la energía renovable', meaningEn: 'renewable energy', example: 'España invierte en energía renovable.', ipa: '[eneɾˈxia renoˈβaβle]', grammar: 'sustantivo fem.' },
-      { word: 'el microscopio', meaningEn: 'microscope', example: 'Examinaron la muestra con microscopio.', ipa: '[mikɾosˈkopjo]', grammar: 'sustantivo masc.' },
-      { word: 'la alteración', meaningEn: 'alteration / mutation', example: 'No se detectó alteración genética.', ipa: '[alteɾaˈθjon]', grammar: 'sustantivo fem.' }
     ];
 
     function normalize(s) {
@@ -855,17 +790,12 @@
         this.tarjetasSub = 'study';
         this.verboSub = 'drill';
         
-        this.corpus = [...SEED_BACKUP];
-        this.activeDeck = [...this.corpus];
+        this.corpus = [];
+        this.activeDeck = [];
         this.cardIdx = 0;
         this.isFlipped = false;
         
-        // Memoria Persistente de Guardadas & Errores
-        this.savedWords = new Set(JSON.parse(localStorage.getItem('esp_saved_words') || '[]'));
-        this.masteredCards = new Set(JSON.parse(localStorage.getItem('esp_mastered_cards') || '[]'));
-        this.reviewCards = new Set(JSON.parse(localStorage.getItem('esp_review_cards') || '[]'));
-        this.mistakesVault = JSON.parse(localStorage.getItem('esp_verb_mistakes') || '[]');
-        
+        this.mistakesVault = [];
         this.currentDrill = null;
         this.choiceItem = null;
         this.isDrillingMistakesOnly = false;
@@ -878,7 +808,10 @@
       async init() {
         this.initTheme();
         this.initTablePicker();
-        await this.loadCorpusFile();
+        
+        await this.syncCloudflareD1();
+        await this.syncMistakesFromD1();
+
         this.updateBadges();
         this.renderCard();
         this.newDrill();
@@ -887,176 +820,257 @@
         lucide.createIcons();
       }
 
-      /* Auto-detección del archivo corpus.txt en el mismo directorio */
-      async loadCorpusFile() {
+      async syncCloudflareD1() {
+        if (!API_BASE || API_BASE.includes('<your-subdomain>')) return;
         try {
-          const res = await fetch('corpus.txt', { cache: 'no-cache' });
-          if (!res.ok) throw new Error();
-          const txt = await res.text();
-          if (txt && !txt.trim().startsWith('<!DOCTYPE')) {
-            const lines = txt.replace(/^\uFEFF/, '').split(/\r?\n/);
-            const items = [];
-            for (let l of lines) {
-              l = l.trim();
-              if (!l || l.startsWith('#')) continue;
-              const parts = l.includes('\t') ? l.split('\t') : l.split('|');
-              if (parts.length >= 2) {
-                items.push({
-                  word: parts[0].trim(),
-                  meaningEn: parts[1].trim(),
-                  example: parts[2] ? parts[2].trim() : '',
-                  ipa: '',
-                  grammar: parts[0].trim().startsWith('la ') ? 'sustantivo fem.' : 'sustantivo masc.'
-                });
-              }
-            }
-            if (items.length > 0) {
-              this.corpus = items;
-              this.activeDeck = [...this.corpus];
-            }
+          const res = await fetch(`${API_BASE}/api/words`);
+          if (!res.ok) return;
+          const rows = await res.json();
+          if (Array.isArray(rows)) {
+            this.corpus = rows.map(r => ({
+              id: r.id,
+              word: r.word,
+              meaningEn: r.meaning,
+              example: r.sentence || '',
+              notes: r.notes || '',
+              status: r.status || 'unseen',
+              is_saved: !!r.is_saved,
+              ipa: '',
+              grammar: r.word.startsWith('la ') ? 'sustantivo fem.' : 'sustantivo masc.'
+            }));
+            this.activeDeck = [...this.corpus];
           }
-        } catch (_) {}
-        this.updateBadges();
-        this.renderCorpusList();
-      }
-
-      initTheme() {
-        const dark = localStorage.getItem('esp_theme') === 'dark' || 
-          (!localStorage.getItem('esp_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-        document.documentElement.classList.toggle('dark', dark);
-      }
-
-      toggleTheme() {
-        const isDark = document.documentElement.classList.toggle('dark');
-        localStorage.setItem('esp_theme', isDark ? 'dark' : 'light');
-        lucide.createIcons();
-      }
-
-      toggleSound() {
-        this.sfx = !this.sfx;
-        const icon = document.getElementById('sfxIcon');
-        if (icon) {
-          icon.setAttribute('data-lucide', this.sfx ? 'volume-2' : 'volume-x');
-          lucide.createIcons();
+        } catch (e) {
+          console.warn('Conexión con Cloudflare D1 en espera:', e);
         }
       }
 
-      speak(text) {
-        if (!('speechSynthesis' in window) || !text) return;
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'es-ES';
-        u.rate = 0.95;
-        window.speechSynthesis.speak(u);
-      }
-
-      beep(freq, duration = 0.1) {
-        if (!this.sfx) return;
+      async syncMistakesFromD1() {
+        if (!API_BASE || API_BASE.includes('<your-subdomain>')) return;
         try {
-          if (!this.audioCtx) this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-          const osc = this.audioCtx.createOscillator();
-          const g = this.audioCtx.createGain();
-          osc.frequency.setValueAtTime(freq, this.audioCtx.currentTime);
-          g.gain.setValueAtTime(0.08, this.audioCtx.currentTime);
-          g.gain.exponentialRampToValueAtTime(0.0001, this.audioCtx.currentTime + duration);
-          osc.connect(g);
-          g.connect(this.audioCtx.destination);
-          osc.start();
-          osc.stop(this.audioCtx.currentTime + duration);
-        } catch (_) {}
-      }
-
-      /* NAVEGACIÓN CAPA 1 & 2 COHESIVA */
-      setMainView(view) {
-        this.mainView = view;
-        const isTarjetas = view === 'tarjetas';
-        
-        document.getElementById('viewTarjetas').classList.toggle('hidden', !isTarjetas);
-        document.getElementById('viewVerbo').classList.toggle('hidden', isTarjetas);
-        document.getElementById('subNavTarjetas').classList.toggle('hidden', !isTarjetas);
-        document.getElementById('subNavVerbo').classList.toggle('hidden', isTarjetas);
-
-        document.getElementById('tabBtnTarjetas').className = isTarjetas 
-          ? "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-white dark:bg-night-card text-rojigualda-red dark:text-rojigualda-gold shadow-xs"
-          : "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition-all";
-        
-        document.getElementById('tabBtnVerbo').className = !isTarjetas
-          ? "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-white dark:bg-night-card text-rojigualda-red dark:text-rojigualda-gold shadow-xs"
-          : "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition-all";
-
-        this.updateContextAction();
-        lucide.createIcons();
-      }
-
-      setTarjetasSub(sub) {
-        this.tarjetasSub = sub;
-        document.getElementById('subViewCardsStudy').classList.toggle('hidden', sub !== 'study');
-        document.getElementById('subViewCardsCorpus').classList.toggle('hidden', sub !== 'corpus');
-        document.getElementById('subViewCardsSaved').classList.toggle('hidden', sub !== 'saved');
-
-        const map = { study: 'subBtnCardsStudy', corpus: 'subBtnCardsCorpus', saved: 'subBtnCardsSaved' };
-        Object.keys(map).forEach(key => {
-          const el = document.getElementById(map[key]);
-          if (el) {
-            el.className = key === sub
-              ? "px-3 py-1 rounded-lg font-bold bg-day-surface dark:bg-night-surface text-day-text dark:text-night-text transition flex items-center gap-1.5"
-              : "px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5";
+          const res = await fetch(`${API_BASE}/api/verb-mistakes`);
+          if (!res.ok) return;
+          const rows = await res.json();
+          if (Array.isArray(rows)) {
+            this.mistakesVault = rows;
           }
-        });
-
-        if (sub === 'corpus') this.renderCorpusList();
-        if (sub === 'saved') this.renderSavedList();
-        this.updateContextAction();
-        lucide.createIcons();
-      }
-
-      setVerboSub(sub) {
-        this.verboSub = sub;
-        document.getElementById('subViewVerboDrill').classList.toggle('hidden', sub !== 'drill');
-        document.getElementById('subViewVerboChoice').classList.toggle('hidden', sub !== 'choice');
-        document.getElementById('subViewVerboTable').classList.toggle('hidden', sub !== 'table');
-        document.getElementById('subViewVerboMistakes').classList.toggle('hidden', sub !== 'mistakes');
-
-        const map = { drill: 'subBtnVerboDrill', choice: 'subBtnVerboChoice', table: 'subBtnVerboTable', mistakes: 'subBtnVerboMistakes' };
-        Object.keys(map).forEach(key => {
-          const el = document.getElementById(map[key]);
-          if (el) {
-            el.className = key === sub
-              ? "px-3 py-1 rounded-lg font-bold bg-day-surface dark:bg-night-surface text-day-text dark:text-night-text transition flex items-center gap-1.5"
-              : "px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5";
-          }
-        });
-
-        if (sub === 'table') this.renderTable(document.getElementById('tableVerbPicker').value);
-        if (sub === 'mistakes') this.renderMistakesList();
-        this.updateContextAction();
-        lucide.createIcons();
-      }
-
-      updateContextAction() {
-        const box = document.getElementById('subActionRight');
-        if (!box) return;
-        box.innerHTML = '';
-
-        if (this.mainView === 'tarjetas' && this.tarjetasSub === 'study') {
-          box.innerHTML = `
-            <button onclick="app.shuffleCards()" class="p-1 text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition" title="Barajar">
-              <i data-lucide="shuffle" class="w-3.5 h-3.5"></i>
-            </button>
-          `;
+        } catch (e) {
+          console.warn('Conexión con errores en D1 en espera:', e);
         }
-        lucide.createIcons();
       }
 
-      updateBadges() {
-        document.getElementById('badgeCorpusTotal').innerText = this.corpus.length;
-        document.getElementById('badgeSavedTotal').innerText = this.savedWords.size;
-        document.getElementById('badgeMistakesTotal').innerText = this.mistakesVault.length;
+      async handleTxtFileImport(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (evt) => {
+          const text = evt.target.result;
+          const lines = text.replace(/^\uFEFF/, '').split(/\r?\n/);
+          const items = [];
+
+          for (let l of lines) {
+            l = l.trim();
+            if (!l || l.startsWith('#')) continue;
+            const parts = l.includes('\t') ? l.split('\t') : l.split('|');
+            if (parts.length >= 2) {
+              items.push({
+                word: parts[0].trim(),
+                meaning: parts[1].trim(),
+                sentence: parts[2] ? parts[2].trim() : '',
+                notes: ''
+              });
+            }
+          }
+
+          if (items.length === 0) {
+            this.toast('No se encontraron términos válidos');
+            return;
+          }
+
+          this.toast(`Importando ${items.length} palabras a Cloudflare D1...`);
+
+          try {
+            const res = await fetch(`${API_BASE}/api/words/batch`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ items })
+            });
+            const data = await res.json();
+            if (data.success) {
+              await this.syncCloudflareD1();
+              this.updateBadges();
+              this.renderCorpusList();
+              this.renderCard();
+              this.toast(`¡${items.length} palabras guardadas en D1!`);
+            }
+          } catch (err) {
+            console.error(err);
+            this.toast('Error al importar a Cloudflare D1');
+          }
+        };
+
+        reader.readAsText(file);
+        e.target.value = '';
       }
 
-      /* TARJETAS & GUARDADAS */
-      renderCard() {
+      async rateCard(status) {
         if (!this.activeDeck.length) return;
+        const current = this.activeDeck[this.cardIdx];
+        current.status = status;
+
+        if (status === 'mastered') this.beep(520);
+        else this.beep(350);
+
+        if (current.id && API_BASE && !API_BASE.includes('<your-subdomain>')) {
+          try {
+            await fetch(`${API_BASE}/api/words/${current.id}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ status })
+            });
+          } catch (e) {}
+        }
+
+        this.nextCard();
+      }
+
+      async toggleSaveCurrentWord() {
+        if (!this.activeDeck.length) return;
+        const current = this.activeDeck[this.cardIdx];
+        current.is_saved = !current.is_saved;
+
+        if (current.id && API_BASE && !API_BASE.includes('<your-subdomain>')) {
+          try {
+            await fetch(`${API_BASE}/api/words/${current.id}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ is_saved: current.is_saved })
+            });
+          } catch (e) {}
+        }
+
+        this.updateBadges();
+        this.renderCard();
+      }
+
+      async saveCurrentCardNotes(notesVal) {
+        if (!this.activeDeck.length) return;
+        const current = this.activeDeck[this.cardIdx];
+        current.notes = notesVal;
+
+        const statusIndicator = document.getElementById('noteSavedStatus');
+        if (statusIndicator) statusIndicator.classList.remove('opacity-0');
+
+        if (current.id && API_BASE && !API_BASE.includes('<your-subdomain>')) {
+          try {
+            await fetch(`${API_BASE}/api/words/${current.id}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ notes: notesVal })
+            });
+          } catch (e) {}
+        }
+
+        setTimeout(() => {
+          if (statusIndicator) statusIndicator.classList.add('opacity-0');
+        }, 1500);
+      }
+
+      async logMistake(item, userAttempt) {
+        const payload = {
+          infinitive: item.verb.infinitive,
+          tense_key: item.tenseKey,
+          tense_name: TENSES[item.tenseKey],
+          person_idx: item.personIdx,
+          pronoun: PRONOUNS[item.personIdx].label,
+          target_answer: item.target,
+          last_attempt: userAttempt
+        };
+
+        if (API_BASE && !API_BASE.includes('<your-subdomain>')) {
+          try {
+            await fetch(`${API_BASE}/api/verb-mistakes`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            await this.syncMistakesFromD1();
+          } catch (e) {}
+        }
+
+        this.updateBadges();
+      }
+
+      async removeMistake(infinitive, tenseKey, personIdx) {
+        const match = this.mistakesVault.find(
+          m => m.infinitive === infinitive && m.tense_key === tenseKey && m.person_idx === personIdx
+        );
+        if (match && match.id && API_BASE && !API_BASE.includes('<your-subdomain>')) {
+          try {
+            await fetch(`${API_BASE}/api/verb-mistakes/${match.id}`, { method: 'DELETE' });
+            await this.syncMistakesFromD1();
+          } catch (e) {}
+        }
+        this.updateBadges();
+      }
+
+      async clearMistakes() {
+        if (API_BASE && !API_BASE.includes('<your-subdomain>')) {
+          try {
+            await fetch(`${API_BASE}/api/verb-mistakes`, { method: 'DELETE' });
+            this.mistakesVault = [];
+          } catch (e) {}
+        }
+        this.updateBadges();
+        this.renderMistakesList();
+      }
+
+      async handleNewWordSubmit(e) {
+        e.preventDefault();
+        const word = document.getElementById('newWordInput').value.trim();
+        const meaning = document.getElementById('newMeaningInput').value.trim();
+        const sentence = document.getElementById('newSentenceInput').value.trim();
+        const notes = document.getElementById('newNotesInput').value.trim();
+
+        if (!word || !meaning) return;
+
+        try {
+          const res = await fetch(`${API_BASE}/api/words`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ word, meaning, sentence, notes })
+          });
+          const data = await res.json();
+          if (data.success) {
+            await this.syncCloudflareD1();
+            document.getElementById('newWordInput').value = '';
+            document.getElementById('newMeaningInput').value = '';
+            document.getElementById('newSentenceInput').value = '';
+            document.getElementById('newNotesInput').value = '';
+            this.updateBadges();
+            this.setTarjetasSub('study');
+            this.renderCard();
+            this.toast('Guardado en Cloudflare D1');
+          }
+        } catch (err) {
+          this.toast('Error al guardar en Cloudflare D1');
+        }
+      }
+
+      renderCard() {
+        if (!this.activeDeck.length) {
+          document.getElementById('fcTerm').innerText = 'Sin palabras';
+          document.getElementById('fcMeaning').innerText = 'Importa un archivo .txt o añade una palabra';
+          document.getElementById('fcIpa').innerText = '';
+          document.getElementById('fcGrammarPill').innerText = '';
+          document.getElementById('fcExample').innerText = '';
+          document.getElementById('fcCardNotesInput').value = '';
+          document.getElementById('fcIdxIndicator').innerText = '0 / 0';
+          document.getElementById('fcBar').style.width = '0%';
+          return;
+        }
+
         this.isFlipped = false;
         document.getElementById('flashcardEl').classList.remove('rotate-y-180');
 
@@ -1066,25 +1080,29 @@
         document.getElementById('fcGrammarPill').innerText = item.grammar || '';
         document.getElementById('fcMeaning').innerText = item.meaningEn;
         document.getElementById('fcExample').innerText = item.example ? `"${item.example}"` : '';
+        document.getElementById('fcCardNotesInput').value = item.notes || '';
 
         const len = this.activeDeck.length;
         document.getElementById('fcIdxIndicator').innerText = `${this.cardIdx + 1} / ${len}`;
         document.getElementById('fcBar').style.width = `${((this.cardIdx + 1) / len) * 100}%`;
-        document.getElementById('fcCountMastered').innerText = this.masteredCards.size;
-        document.getElementById('fcCountReview').innerText = this.reviewCards.size;
+        
+        const masteredCount = this.corpus.filter(x => x.status === 'mastered').length;
+        const reviewCount = this.corpus.filter(x => x.status === 'review').length;
+        document.getElementById('fcCountMastered').innerText = masteredCount;
+        document.getElementById('fcCountReview').innerText = reviewCount;
 
         const starBtn = document.getElementById('fcStarBtn');
         if (starBtn) {
-          const isStarred = this.savedWords.has(item.word);
-          starBtn.className = isStarred 
+          starBtn.className = item.is_saved
             ? "p-1.5 rounded-lg text-amber-500 transition" 
             : "p-1.5 rounded-lg text-day-muted dark:text-night-muted hover:text-amber-500 transition";
-          starBtn.innerHTML = `<i data-lucide="star" class="w-4 h-4 ${isStarred ? 'fill-amber-500' : ''}"></i>`;
+          starBtn.innerHTML = `<i data-lucide="star" class="w-4 h-4 ${item.is_saved ? 'fill-amber-500' : ''}"></i>`;
         }
         lucide.createIcons();
       }
 
       flipCard() {
+        if (!this.activeDeck.length) return;
         this.isFlipped = !this.isFlipped;
         document.getElementById('flashcardEl').classList.toggle('rotate-y-180', this.isFlipped);
       }
@@ -1101,45 +1119,6 @@
         this.renderCard();
       }
 
-      rateCard(mastered) {
-        if (!this.activeDeck.length) return;
-        const w = this.activeDeck[this.cardIdx].word;
-        if (mastered) {
-          this.masteredCards.add(w);
-          this.reviewCards.delete(w);
-          this.beep(520);
-        } else {
-          this.reviewCards.add(w);
-          this.masteredCards.delete(w);
-          this.beep(350);
-        }
-        localStorage.setItem('esp_mastered_cards', JSON.stringify(Array.from(this.masteredCards)));
-        localStorage.setItem('esp_review_cards', JSON.stringify(Array.from(this.reviewCards)));
-        this.nextCard();
-      }
-
-      toggleSaveCurrentWord() {
-        if (!this.activeDeck.length) return;
-        const w = this.activeDeck[this.cardIdx].word;
-        if (this.savedWords.has(w)) {
-          this.savedWords.delete(w);
-        } else {
-          this.savedWords.add(w);
-        }
-        localStorage.setItem('esp_saved_words', JSON.stringify(Array.from(this.savedWords)));
-        this.updateBadges();
-        this.renderCard();
-      }
-
-      shuffleCards() {
-        for (let i = this.activeDeck.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [this.activeDeck[i], this.activeDeck[j]] = [this.activeDeck[j], this.activeDeck[i]];
-        }
-        this.cardIdx = 0;
-        this.renderCard();
-      }
-
       speakTerm() {
         if (this.activeDeck.length) this.speak(this.activeDeck[this.cardIdx].word);
       }
@@ -1151,20 +1130,12 @@
       }
 
       startSavedPractice() {
-        if (this.savedWords.size === 0) return;
-        this.activeDeck = this.corpus.filter(x => this.savedWords.has(x.word));
+        const savedList = this.corpus.filter(x => x.is_saved);
+        if (savedList.length === 0) return;
+        this.activeDeck = savedList;
         this.cardIdx = 0;
-        this.isDrillingSavedOnly = true;
         document.getElementById('fcStudyModeFilterPill').classList.remove('hidden');
         this.setTarjetasSub('study');
-        this.renderCard();
-      }
-
-      resetFullDeck() {
-        this.activeDeck = [...this.corpus];
-        this.cardIdx = 0;
-        this.isDrillingSavedOnly = false;
-        document.getElementById('fcStudyModeFilterPill').classList.add('hidden');
         this.renderCard();
       }
 
@@ -1174,11 +1145,20 @@
         if (!rows) return;
 
         const filtered = this.corpus.filter(i => normalize(i.word).includes(q) || normalize(i.meaningEn).includes(q));
+        if (filtered.length === 0) {
+          rows.innerHTML = `<div class="p-6 text-center text-xs text-day-muted dark:text-night-muted">No se encontraron términos. Usa <strong>Importar .txt</strong> o <strong>Añadir</strong>.</div>`;
+          return;
+        }
+
         rows.innerHTML = filtered.map((item, idx) => `
           <div class="px-3.5 py-2.5 flex items-center justify-between text-xs hover:bg-day-surface dark:hover:bg-night-surface transition">
             <div class="min-w-0 pr-2">
-              <span class="font-bold text-day-text dark:text-night-text">${item.word}</span>
-              <span class="text-day-muted dark:text-night-muted ml-2">${item.meaningEn}</span>
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-day-text dark:text-night-text">${item.word}</span>
+                <span class="text-[9px] px-1 py-0.2 rounded font-mono ${item.status === 'mastered' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : (item.status === 'review' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' : 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400')}">${item.status}</span>
+              </div>
+              <span class="text-day-muted dark:text-night-muted">${item.meaningEn}</span>
+              ${item.notes ? `<p class="text-[10px] text-amber-700 dark:text-amber-400 italic mt-0.5 truncate">${item.notes}</p>` : ''}
             </div>
             <div class="flex items-center gap-1 shrink-0">
               <button onclick="app.speak('${item.word.replace(/'/g, "\\'")}')" class="p-1 text-day-muted hover:text-day-text">
@@ -1194,8 +1174,9 @@
       }
 
       pickCorpusCard(idx) {
-        this.resetFullDeck();
+        this.activeDeck = [...this.corpus];
         this.cardIdx = idx;
+        document.getElementById('fcStudyModeFilterPill').classList.add('hidden');
         this.setTarjetasSub('study');
         this.renderCard();
       }
@@ -1205,14 +1186,14 @@
         const btn = document.getElementById('btnDrillSaved');
         if (!rows) return;
 
-        if (this.savedWords.size === 0) {
-          rows.innerHTML = `<div class="p-6 text-center text-xs text-day-muted dark:text-night-muted">No tienes palabras guardadas todavía. Marca con ⭐ cualquier tarjeta.</div>`;
+        const savedArr = this.corpus.filter(x => x.is_saved);
+        if (savedArr.length === 0) {
+          rows.innerHTML = `<div class="p-6 text-center text-xs text-day-muted dark:text-night-muted">No tienes palabras guardadas. Marca con ⭐ cualquier tarjeta.</div>`;
           if (btn) btn.disabled = true;
           return;
         }
 
         if (btn) btn.disabled = false;
-        const savedArr = this.corpus.filter(x => this.savedWords.has(x.word));
         rows.innerHTML = savedArr.map(item => `
           <div class="px-3.5 py-2.5 flex items-center justify-between text-xs hover:bg-day-surface dark:hover:bg-night-surface transition">
             <div>
@@ -1223,41 +1204,20 @@
               <button onclick="app.speak('${item.word.replace(/'/g, "\\'")}')" class="p-1 text-day-muted hover:text-day-text">
                 <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
               </button>
-              <button onclick="app.removeSavedWord('${item.word.replace(/'/g, "\\'")}')" class="p-1 text-day-muted hover:text-rose-500">
-                <i data-lucide="trash" class="w-3.5 h-3.5"></i>
-              </button>
             </div>
           </div>
         `).join('');
         lucide.createIcons();
       }
 
-      removeSavedWord(word) {
-        this.savedWords.delete(word);
-        localStorage.setItem('esp_saved_words', JSON.stringify(Array.from(this.savedWords)));
-        this.updateBadges();
-        this.renderSavedList();
-      }
-
-      clearSavedWords() {
-        this.savedWords.clear();
-        localStorage.setItem('esp_saved_words', JSON.stringify([]));
-        this.updateBadges();
-        this.renderSavedList();
-      }
-
-      /* ============================================================== */
-      /* VERBO: DRILL, OPCIÓN, TABLAS & REGISTRO DE ERRORES             */
-      /* ============================================================== */
       newDrill() {
         let verb, tenseKey, personIdx;
 
-        // Si se activa modo "Practicar Errores"
         if (this.isDrillingMistakesOnly && this.mistakesVault.length > 0) {
           const m = this.mistakesVault[Math.floor(Math.random() * this.mistakesVault.length)];
           verb = VERB_BANK.find(v => v.infinitive === m.infinitive) || VERB_BANK[0];
-          tenseKey = m.tenseKey;
-          personIdx = m.personIdx;
+          tenseKey = m.tense_key;
+          personIdx = m.person_idx;
         } else {
           this.isDrillingMistakesOnly = false;
           verb = VERB_BANK[Math.floor(Math.random() * VERB_BANK.length)];
@@ -1318,7 +1278,6 @@
           this.beep(520);
           f.className = "p-3 rounded-xl text-center text-xs font-bold border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300";
           f.innerText = '✓ Correcto';
-          // Si estaba en la bóveda de errores, eliminarlo al acertar
           this.removeMistake(this.currentDrill.verb.infinitive, this.currentDrill.tenseKey, this.currentDrill.personIdx);
         } else if (normalize(val) === normalize(target)) {
           this.beep(400);
@@ -1347,7 +1306,6 @@
         inp.selectionStart = inp.selectionEnd = start + 1;
       }
 
-      /* OPCIÓN MÚLTIPLE */
       newChoice() {
         const verb = VERB_BANK[Math.floor(Math.random() * VERB_BANK.length)];
         const tenseKeys = Object.keys(TENSES);
@@ -1407,45 +1365,13 @@
         setTimeout(() => this.newChoice(), 1100);
       }
 
-      /* REGISTRO & REVISIÓN DE ERRORES */
-      logMistake(item, userAttempt) {
-        const existing = this.mistakesVault.find(
-          m => m.infinitive === item.verb.infinitive && m.tenseKey === item.tenseKey && m.personIdx === item.personIdx
-        );
-        if (existing) {
-          existing.count = (existing.count || 1) + 1;
-          existing.lastAttempt = userAttempt;
-        } else {
-          this.mistakesVault.push({
-            infinitive: item.verb.infinitive,
-            tenseKey: item.tenseKey,
-            tenseName: TENSES[item.tenseKey],
-            personIdx: item.personIdx,
-            pronoun: PRONOUNS[item.personIdx].label,
-            target: item.target,
-            lastAttempt: userAttempt,
-            count: 1
-          });
-        }
-        localStorage.setItem('esp_verb_mistakes', JSON.stringify(this.mistakesVault));
-        this.updateBadges();
-      }
-
-      removeMistake(infinitive, tenseKey, personIdx) {
-        this.mistakesVault = this.mistakesVault.filter(
-          m => !(m.infinitive === infinitive && m.tenseKey === tenseKey && m.personIdx === personIdx)
-        );
-        localStorage.setItem('esp_verb_mistakes', JSON.stringify(this.mistakesVault));
-        this.updateBadges();
-      }
-
       renderMistakesList() {
         const rows = document.getElementById('mistakesRows');
         const btn = document.getElementById('btnDrillMistakes');
         if (!rows) return;
 
         if (this.mistakesVault.length === 0) {
-          rows.innerHTML = `<div class="p-6 text-center text-xs text-day-muted dark:text-night-muted">No tienes errores registrados. Los fallos en ejercicios se guardarán aquí automáticamente.</div>`;
+          rows.innerHTML = `<div class="p-6 text-center text-xs text-day-muted dark:text-night-muted">No tienes errores registrados en Cloudflare D1.</div>`;
           if (btn) btn.disabled = true;
           return;
         }
@@ -1456,20 +1382,17 @@
             <div>
               <div class="flex items-center gap-2">
                 <span class="font-bold text-day-text dark:text-night-text">${m.infinitive}</span>
-                <span class="text-[10px] text-rojigualda-red dark:text-rojigualda-gold font-mono">${m.tenseName}</span>
+                <span class="text-[10px] text-rojigualda-red dark:text-rojigualda-gold font-mono">${m.tense_name}</span>
                 <span class="px-1 py-0.2 rounded bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 font-bold text-[9px]">${m.count}x</span>
               </div>
               <div class="text-[11px] text-day-muted dark:text-night-muted mt-0.5">
-                ${m.pronoun} &rarr; <strong class="text-emerald-600 dark:text-emerald-400 font-semibold">${m.target}</strong>
-                ${m.lastAttempt ? `<span class="line-through text-rose-400 ml-1">${m.lastAttempt}</span>` : ''}
+                ${m.pronoun} &rarr; <strong class="text-emerald-600 dark:text-emerald-400 font-semibold">${m.target_answer}</strong>
+                ${m.last_attempt ? `<span class="line-through text-rose-400 ml-1">${m.last_attempt}</span>` : ''}
               </div>
             </div>
             <div class="flex items-center gap-1">
-              <button onclick="app.speak('${m.target.replace(/'/g, "\\'")}')" class="p-1 text-day-muted hover:text-day-text">
+              <button onclick="app.speak('${m.target_answer.replace(/'/g, "\\'")}')" class="p-1 text-day-muted hover:text-day-text">
                 <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
-              </button>
-              <button onclick="app.removeMistake('${m.infinitive}', '${m.tenseKey}', ${m.personIdx}); app.renderMistakesList();" class="p-1 text-day-muted hover:text-rose-500">
-                <i data-lucide="trash" class="w-3.5 h-3.5"></i>
               </button>
             </div>
           </div>
@@ -1484,14 +1407,6 @@
         this.newDrill();
       }
 
-      clearMistakes() {
-        this.mistakesVault = [];
-        localStorage.setItem('esp_verb_mistakes', JSON.stringify([]));
-        this.updateBadges();
-        this.renderMistakesList();
-      }
-
-      /* TABLAS DE CONJUGACIÓN (7 TIEMPOS) */
       initTablePicker() {
         const sel = document.getElementById('tableVerbPicker');
         if (!sel) return;
@@ -1517,15 +1432,141 @@
         `).join('');
       }
 
+      updateBadges() {
+        document.getElementById('badgeCorpusTotal').innerText = this.corpus.length;
+        document.getElementById('badgeSavedTotal').innerText = this.corpus.filter(x => x.is_saved).length;
+        document.getElementById('badgeMistakesTotal').innerText = this.mistakesVault.length;
+      }
+
+      initTheme() {
+        const dark = localStorage.getItem('esp_theme') === 'dark' || 
+          (!localStorage.getItem('esp_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', dark);
+      }
+
+      toggleTheme() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('esp_theme', isDark ? 'dark' : 'light');
+        lucide.createIcons();
+      }
+
+      toggleSound() {
+        this.sfx = !this.sfx;
+        const icon = document.getElementById('sfxIcon');
+        if (icon) {
+          icon.setAttribute('data-lucide', this.sfx ? 'volume-2' : 'volume-x');
+          lucide.createIcons();
+        }
+      }
+
+      speak(text) {
+        if (!('speechSynthesis' in window) || !text) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'es-ES';
+        u.rate = 0.95;
+        window.speechSynthesis.speak(u);
+      }
+
+      beep(freq, duration = 0.1) {
+        if (!this.sfx) return;
+        try {
+          if (!this.audioCtx) this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = this.audioCtx.createOscillator();
+          const g = this.audioCtx.createGain();
+          osc.frequency.setValueAtTime(freq, this.audioCtx.currentTime);
+          g.gain.setValueAtTime(0.08, this.audioCtx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.0001, this.audioCtx.currentTime + duration);
+          osc.connect(g);
+          g.connect(this.audioCtx.destination);
+          osc.start();
+          osc.stop(this.audioCtx.currentTime + duration);
+        } catch (_) {}
+      }
+
+      toast(msg) {
+        const el = document.getElementById('toast');
+        const c = document.getElementById('toastContent');
+        if (!el || !c) return;
+        c.innerText = msg;
+        el.classList.remove('opacity-0');
+        clearTimeout(this.toastTimer);
+        this.toastTimer = setTimeout(() => el.classList.add('opacity-0'), 2000);
+      }
+
+      setMainView(view) {
+        this.mainView = view;
+        const isTarjetas = view === 'tarjetas';
+        
+        document.getElementById('viewTarjetas').classList.toggle('hidden', !isTarjetas);
+        document.getElementById('viewVerbo').classList.toggle('hidden', isTarjetas);
+        document.getElementById('subNavTarjetas').classList.toggle('hidden', !isTarjetas);
+        document.getElementById('subNavVerbo').classList.toggle('hidden', isTarjetas);
+
+        document.getElementById('tabBtnTarjetas').className = isTarjetas 
+          ? "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-white dark:bg-night-card text-rojigualda-red dark:text-rojigualda-gold shadow-xs"
+          : "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition-all";
+        
+        document.getElementById('tabBtnVerbo').className = !isTarjetas
+          ? "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-white dark:bg-night-card text-rojigualda-red dark:text-rojigualda-gold shadow-xs"
+          : "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition-all";
+
+        lucide.createIcons();
+      }
+
+      setTarjetasSub(sub) {
+        this.tarjetasSub = sub;
+        document.getElementById('subViewCardsStudy').classList.toggle('hidden', sub !== 'study');
+        document.getElementById('subViewCardsCorpus').classList.toggle('hidden', sub !== 'corpus');
+        document.getElementById('subViewCardsSaved').classList.toggle('hidden', sub !== 'saved');
+        document.getElementById('subViewCardsAdd').classList.toggle('hidden', sub !== 'add');
+
+        const map = { study: 'subBtnCardsStudy', corpus: 'subBtnCardsCorpus', saved: 'subBtnCardsSaved', add: 'subBtnCardsAdd' };
+        Object.keys(map).forEach(key => {
+          const el = document.getElementById(map[key]);
+          if (el) {
+            el.className = key === sub
+              ? "px-3 py-1 rounded-lg font-bold bg-day-surface dark:bg-night-surface text-day-text dark:text-night-text transition flex items-center gap-1.5"
+              : "px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5";
+          }
+        });
+
+        if (sub === 'corpus') this.renderCorpusList();
+        if (sub === 'saved') this.renderSavedList();
+        lucide.createIcons();
+      }
+
+      setVerboSub(sub) {
+        this.verboSub = sub;
+        document.getElementById('subViewVerboDrill').classList.toggle('hidden', sub !== 'drill');
+        document.getElementById('subViewVerboChoice').classList.toggle('hidden', sub !== 'choice');
+        document.getElementById('subViewVerboTable').classList.toggle('hidden', sub !== 'table');
+        document.getElementById('subViewVerboMistakes').classList.toggle('hidden', sub !== 'mistakes');
+
+        const map = { drill: 'subBtnVerboDrill', choice: 'subBtnVerboChoice', table: 'subBtnVerboTable', mistakes: 'subBtnVerboMistakes' };
+        Object.keys(map).forEach(key => {
+          const el = document.getElementById(map[key]);
+          if (el) {
+            el.className = key === sub
+              ? "px-3 py-1 rounded-lg font-bold bg-day-surface dark:bg-night-surface text-day-text dark:text-night-text transition flex items-center gap-1.5"
+              : "px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5";
+          }
+        });
+
+        if (sub === 'table') this.renderTable(document.getElementById('tableVerbPicker').value);
+        if (sub === 'mistakes') this.renderMistakesList();
+        lucide.createIcons();
+      }
+
       setupKeyboard() {
         document.addEventListener('keydown', e => {
-          if (['INPUT', 'SELECT'].includes(document.activeElement?.tagName)) return;
+          if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
           if (this.mainView === 'tarjetas' && this.tarjetasSub === 'study') {
             if (e.code === 'Space') { e.preventDefault(); this.flipCard(); }
             else if (e.code === 'ArrowRight') this.nextCard();
             else if (e.code === 'ArrowLeft') this.prevCard();
-            else if (e.key === '1') this.rateCard(false);
-            else if (e.key === '2') this.rateCard(true);
+            else if (e.key === '1') this.rateCard('review');
+            else if (e.key === '2') this.rateCard('mastered');
           }
         });
       }
