@@ -870,7 +870,7 @@
         id: 'jug',
         name: 'Bucket Jug (Rest Hold)',
         tag: 'REST JUG',
-        pumpRate: -0.05, // Actively RECOVERS grip! Unlimited reading time!
+        pumpRate: -0.02, // Actively RECOVERS grip! Unlimited reading time!
         score: 30,
         colorHex: '#10b981',
         draw: (ctx, x, y, active) => {
@@ -916,7 +916,7 @@
         id: 'crimp',
         name: 'Razor Crimp',
         tag: 'CRIMP (SLOW DRAIN)',
-        pumpRate: 0.045, // Gentle drain (~22s hang)
+        pumpRate: 0.09, // Gentle drain (~22s hang)
         score: 55,
         colorHex: '#f59e0b',
         draw: (ctx, x, y, active) => {
@@ -937,7 +937,7 @@
         id: 'sloper',
         name: 'Granite Sloper',
         tag: 'SLOPER (SLOW DRAIN)',
-        pumpRate: 0.055,
+        pumpRate: 0.11,
         score: 50,
         colorHex: '#f97316',
         draw: (ctx, x, y, active) => {
@@ -962,7 +962,7 @@
         id: 'choss',
         name: 'Fragile Choss Flake',
         tag: 'CHOSS (CRACKS OVER 6s)',
-        pumpRate: 0.06,
+        pumpRate: 0.12,
         score: 85,
         crumble: true,
         colorHex: '#ef4444',
@@ -1456,8 +1456,8 @@
           item.collected = true;
           sound.playItemCollect();
           if (item.type === 'FLOWER') {
-            climber.grip = Math.min(100, climber.grip + 35);
-            showHoldFeedbackToast('🌸 CLIFF FLOWER: +35% GRIP RECOVERED!');
+            climber.grip = Math.min(100, climber.grip + 10);
+            showHoldFeedbackToast('🌸 CLIFF FLOWER: +10 % GRIP RECOVERED!');
           } else {
             climber.score += 250;
             showHoldFeedbackToast('🟡 GOLDEN CARABINER: +250 PTS!');
@@ -1662,20 +1662,20 @@
             const hasChoss = holds.some(h => h.type.id === 'choss');
 
             if (hasJug) {
-              netGripRate = -0.05 * currentChar.staminaRate;
+              netGripRate = -0.02 * currentChar.staminaRate;
               currentHoldStatusText = "🟢 JUG: RECOVERING GRIP";
             } else if (hasPocket) {
               netGripRate = 0.0;
               currentHoldStatusText = "🔵 POCKET: ZERO DRAIN (REST)";
             } else if (hasCrimp) {
-              netGripRate = 0.045 * currentChar.staminaRate;
+              netGripRate = 0.09 * currentChar.staminaRate;
               currentHoldStatusText = "🟡 CRIMP: SLOW PUMP";
             } else if (hasSloper) {
               const sloperMod = currentChar.id === 'billy' ? 0.5 : 1.0;
-              netGripRate = 0.055 * currentChar.staminaRate * sloperMod;
+              netGripRate = 0.11 * currentChar.staminaRate * sloperMod;
               currentHoldStatusText = "🟠 SLOPER: SLOW PUMP";
             } else if (hasChoss) {
-              netGripRate = 0.06 * currentChar.staminaRate;
+              netGripRate = 0.12 * currentChar.staminaRate;
               currentHoldStatusText = "🔴 CHOSS: CRACKING!";
             }
           }
