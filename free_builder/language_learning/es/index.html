@@ -552,6 +552,7 @@
         <div id="choiceFeedback" class="hidden p-2.5 rounded-xl text-center text-xs font-semibold border transition"></div>
       </div>
 
+
       <!-- SUB-VISTA 2.C: TABLAS DE CONJUGACIÓN -->
       <div id="subViewVerboTable" class="hidden flex flex-col gap-3">
         <div class="flex items-center justify-between gap-2">
@@ -812,8 +813,6 @@
         
         await this.syncCloudflareD1();
         await this.syncMistakesFromD1();
-
-        this.shuffleCards();
 
         this.updateBadges();
         this.renderCard();
@@ -1112,14 +1111,7 @@
 
       nextCard() {
         if (!this.activeDeck.length) return;
-        // Pick any random card different from the current one
-        if (this.activeDeck.length > 1) {
-          let nextIdx;
-          do {
-            nextIdx = Math.floor(Math.random() * this.activeDeck.length);
-          } while (nextIdx === this.cardIdx);
-          this.cardIdx = nextIdx;
-        }
+        this.cardIdx = (this.cardIdx + 1) % this.activeDeck.length;
         this.renderCard();
       }
 
@@ -1144,7 +1136,6 @@
         if (savedList.length === 0) return;
         this.activeDeck = savedList;
         this.cardIdx = 0;
-        this.shuffleCards();
         document.getElementById('fcStudyModeFilterPill').classList.remove('hidden');
         this.setTarjetasSub('study');
         this.renderCard();
