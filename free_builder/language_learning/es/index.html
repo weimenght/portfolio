@@ -235,11 +235,21 @@
       <div id="subViewCardsStudy" class="flex-1 flex flex-col justify-center gap-3">
         
         <div class="flex items-center justify-between text-[11px] font-mono text-day-muted dark:text-night-muted px-1">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5 flex-wrap">
             <span id="fcIdxIndicator">0 / 0</span>
-            <span id="fcStudyModeFilterPill" onclick="app.exitFilterMode()" class="hidden cursor-pointer hover:opacity-80 px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-sans font-bold text-[10px]" title="Clic para ver todas las pendientes">
+            <span id="fcStudyModeFilterPill" onclick="app.exitFilterMode()" class="hidden cursor-pointer hover:opacity-80 px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-sans font-bold text-[10px]" title="Clic para ver todas las pendientes">
               ⭐ Solo Guardadas &times;
             </span>
+            <button 
+              type="button" 
+              id="fcShuffleToggleBtn" 
+              onclick="app.toggleShuffle()" 
+              class="flex items-center gap-1 px-2 py-0.5 rounded-lg border border-day-border dark:border-night-border bg-day-surface dark:bg-night-surface hover:border-rojigualda-red dark:hover:border-rojigualda-gold text-day-muted dark:text-night-muted transition text-[10px] font-sans font-semibold cursor-pointer"
+              title="Alternar orden aleatorio continuo"
+            >
+              <i data-lucide="shuffle" class="w-3 h-3"></i>
+              <span id="fcShuffleToggleText">Aleatorio</span>
+            </button>
           </div>
           <div class="flex items-center gap-2 font-sans font-medium text-[10px]">
             <span class="text-emerald-600 dark:text-emerald-400 font-bold" id="fcCountMastered">0</span> Dominadas
@@ -274,6 +284,7 @@
                     type="button" 
                     onclick="event.stopPropagation(); app.speakTerm();" 
                     class="p-1.5 rounded-lg text-day-muted dark:text-night-muted hover:text-rojigualda-red dark:hover:text-rojigualda-gold transition"
+                    title="Pronunciar"
                   >
                     <i data-lucide="volume-2" class="w-4 h-4"></i>
                   </button>
@@ -299,6 +310,7 @@
                   type="button" 
                   onclick="event.stopPropagation(); app.speakSentence();" 
                   class="p-1.5 rounded-lg text-day-muted dark:text-night-muted hover:text-rojigualda-red dark:hover:text-rojigualda-gold transition"
+                  title="Pronunciar frase"
                 >
                   <i data-lucide="volume-2" class="w-4 h-4"></i>
                 </button>
@@ -317,7 +329,7 @@
                     </div>
                     <textarea 
                       id="fcCardNotesInput" 
-                      rows="2"
+                      rows="2" 
                       placeholder="Escribe apuntes o trucos mnemotécnicos..."
                       class="w-full text-xs bg-transparent border-0 focus:ring-0 p-0 text-day-text dark:text-night-text resize-none outline-none leading-relaxed"
                       onchange="app.saveCurrentCardNotes(this.value)"
@@ -327,7 +339,7 @@
               </div>
 
               <div class="text-center text-[10px] text-day-muted dark:text-night-muted pt-1">
-                <span>1 Repasar &bull; 2 Dominada</span>
+                <span>1 Repasar &bull; 2 Dominada &bull; R Aleatorio</span>
               </div>
             </div>
 
@@ -335,20 +347,23 @@
         </div>
 
         <!-- Controles -->
-        <div class="grid grid-cols-5 gap-1.5">
-          <button onclick="app.prevCard()" class="p-3 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card flex items-center justify-center hover:bg-day-surface dark:hover:bg-night-surface transition">
+        <div class="flex items-center gap-1.5">
+          <button onclick="app.prevCard()" class="p-3 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card flex items-center justify-center hover:bg-day-surface dark:hover:bg-night-surface transition shrink-0" title="Anterior (←)">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
           </button>
-          <button onclick="app.rateCard('review')" class="p-3 rounded-xl border border-amber-300 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20 text-amber-800 dark:text-amber-300 text-xs font-bold transition flex items-center justify-center gap-1">
+          <button onclick="app.rateCard('review')" class="flex-1 py-3 px-1.5 sm:px-2 rounded-xl border border-amber-300 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20 text-amber-800 dark:text-amber-300 text-xs font-bold transition flex items-center justify-center gap-1">
             <span>Repasar</span>
           </button>
-          <button onclick="app.flipCard()" class="p-3 rounded-xl bg-day-surface dark:bg-night-surface border border-day-border dark:border-night-border text-xs font-bold transition flex items-center justify-center">
+          <button onclick="app.flipCard()" class="p-3 rounded-xl bg-day-surface dark:bg-night-surface border border-day-border dark:border-night-border text-xs font-bold transition flex items-center justify-center shrink-0" title="Girar (Espacio)">
             <i data-lucide="repeat" class="w-4 h-4"></i>
           </button>
-          <button onclick="app.rateCard('mastered')" class="p-3 rounded-xl border border-emerald-300 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300 text-xs font-bold transition flex items-center justify-center gap-1">
+          <button onclick="app.rateCard('mastered')" class="flex-1 py-3 px-1.5 sm:px-2 rounded-xl border border-emerald-300 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300 text-xs font-bold transition flex items-center justify-center gap-1">
             <span>Dominada</span>
           </button>
-          <button onclick="app.nextCard()" class="p-3 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card flex items-center justify-center hover:bg-day-surface dark:hover:bg-night-surface transition">
+          <button id="fcShuffleBtnCtrl" onclick="app.randomCard()" class="p-3 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card flex items-center justify-center hover:bg-day-surface dark:hover:bg-night-surface hover:text-rojigualda-red dark:hover:text-rojigualda-gold transition shrink-0" title="Siguiente aleatoria (R)">
+            <i data-lucide="shuffle" class="w-4 h-4"></i>
+          </button>
+          <button onclick="app.nextCard()" class="p-3 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card flex items-center justify-center hover:bg-day-surface dark:hover:bg-night-surface transition shrink-0" title="Siguiente (→)">
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
@@ -386,15 +401,26 @@
 
       <!-- SUB-VISTA 1.C: PALABRAS GUARDADAS -->
       <div id="subViewCardsSaved" class="hidden flex-1 flex flex-col gap-2">
-        <div class="flex items-center justify-between pb-1">
-          <button 
-            onclick="app.startSavedPractice()" 
-            id="btnDrillSaved"
-            class="px-3 py-1.5 rounded-xl bg-rojigualda-red dark:bg-rojigualda-gold text-white dark:text-stone-950 text-xs font-bold transition flex items-center gap-1.5"
-          >
-            <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
-            <span>Practicar Guardadas</span>
-          </button>
+        <div class="flex items-center justify-between pb-1 flex-wrap gap-2">
+          <div class="flex items-center gap-1.5">
+            <button 
+              onclick="app.startSavedPractice(false)" 
+              id="btnDrillSaved"
+              class="px-3 py-1.5 rounded-xl bg-rojigualda-red dark:bg-rojigualda-gold text-white dark:text-stone-950 text-xs font-bold transition flex items-center gap-1.5"
+            >
+              <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+              <span>Practicar Guardadas</span>
+            </button>
+            <button 
+              onclick="app.startSavedPractice(true)" 
+              id="btnDrillSavedRandom"
+              class="px-3 py-1.5 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card hover:border-rojigualda-red dark:hover:border-rojigualda-gold text-day-text dark:text-night-text text-xs font-bold transition flex items-center gap-1.5"
+              title="Practicar guardadas en orden aleatorio"
+            >
+              <i data-lucide="shuffle" class="w-3.5 h-3.5 text-rojigualda-red dark:text-rojigualda-gold"></i>
+              <span>Aleatorio</span>
+            </button>
+          </div>
           <span class="text-xs text-day-muted dark:text-night-muted">Palabras marcadas con ⭐ (no dominadas)</span>
         </div>
         <div id="savedWordsRows" class="flex-1 max-h-[62vh] overflow-y-auto divide-y divide-day-border/60 dark:divide-night-border/60 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card"></div>
@@ -445,7 +471,7 @@
               <label class="block text-[11px] font-bold text-day-muted dark:text-night-muted uppercase tracking-wider mb-1">Notas de Aprendizaje (Opcional)</label>
               <textarea 
                 id="newNotesInput" 
-                rows="2"
+                rows="2" 
                 placeholder="Ej: Falso amigo con threat. Deriva del latín vulgar relictum..."
                 class="w-full text-xs p-2.5 rounded-xl border border-day-border dark:border-night-border bg-day-surface dark:bg-night-surface outline-none focus:border-rojigualda-red dark:focus:border-rojigualda-gold resize-none"
               ></textarea>
@@ -854,7 +880,6 @@
       return (s || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     }
 
-    // Ignora artículos determinados e indeterminados (el, la, al, del, un, una, etc.) al ordenar
     function getSortKey(s) {
       const norm = normalize(s);
       return norm.replace(/^(el\s+|la\s+|los\s+|las\s+|un\s+|una\s+|unos\s+|unas\s+|al\s+|del\s+)/, '').trim();
@@ -870,6 +895,8 @@
         this.activeDeck = [];
         this.cardIdx = 0;
         this.isFlipped = false;
+        this.isShuffle = false;
+        this.history = [];
         
         this.mistakesVault = [];
         this.currentDrill = null;
@@ -889,6 +916,7 @@
         await this.syncMistakesFromD1();
 
         this.updateBadges();
+        this.updateShuffleUI();
         this.renderCard();
         this.newDrill();
         this.newChoice();
@@ -915,8 +943,8 @@
               grammar: r.word.startsWith('la ') ? 'sustantivo fem.' : 'sustantivo masc.'
             }));
             
-            // Excluir palabras "mastered" de la baraja activa de estudio
             this.activeDeck = this.corpus.filter(x => x.status !== 'mastered');
+            this.history = [];
             if (this.cardIdx >= this.activeDeck.length) {
               this.cardIdx = 0;
             }
@@ -1015,7 +1043,10 @@
 
         if (status === 'mastered') {
           this.activeDeck.splice(this.cardIdx, 1);
-          if (this.cardIdx >= this.activeDeck.length) {
+          this.history = this.history.filter(idx => idx < this.activeDeck.length);
+          if (this.isShuffle && this.activeDeck.length > 1) {
+            this.cardIdx = Math.floor(Math.random() * this.activeDeck.length);
+          } else if (this.cardIdx >= this.activeDeck.length) {
             this.cardIdx = 0;
           }
           this.updateBadges();
@@ -1068,9 +1099,6 @@
         }, 1500);
       }
 
-      /* ==============================================================
-         EDICIÓN Y ELIMINACIÓN DE TARJETAS EN CLOUDFLARE D1
-         ============================================================== */
       openEditModal(id) {
         const item = this.corpus.find(x => String(x.id) === String(id));
         if (!item) return;
@@ -1109,7 +1137,6 @@
             if (!res.ok) throw new Error('Error al actualizar');
           }
 
-          // Actualizar estado local
           const item = this.corpus.find(x => String(x.id) === String(id));
           if (item) {
             item.word = word;
@@ -1151,6 +1178,7 @@
 
           this.corpus = this.corpus.filter(x => String(x.id) !== String(id));
           this.activeDeck = this.activeDeck.filter(x => String(x.id) !== String(id));
+          this.history = this.history.filter(idx => idx < this.activeDeck.length);
           if (this.cardIdx >= this.activeDeck.length) {
             this.cardIdx = 0;
           }
@@ -1253,6 +1281,48 @@
         if (pill) pill.classList.add('hidden');
         this.activeDeck = this.corpus.filter(x => x.status !== 'mastered');
         this.cardIdx = 0;
+        this.history = [];
+      }
+
+      toggleShuffle() {
+        this.isShuffle = !this.isShuffle;
+        this.updateShuffleUI();
+        this.toast(this.isShuffle ? 'Modo aleatorio activado' : 'Modo secuencial activado');
+        if (this.isShuffle && this.activeDeck.length > 1) {
+          this.randomCard();
+        }
+      }
+
+      updateShuffleUI() {
+        const btn = document.getElementById('fcShuffleToggleBtn');
+        const ctrlBtn = document.getElementById('fcShuffleBtnCtrl');
+        if (btn) {
+          btn.className = this.isShuffle
+            ? "flex items-center gap-1 px-2 py-0.5 rounded-lg border border-rojigualda-red dark:border-rojigualda-gold bg-rojigualda-red/10 dark:bg-rojigualda-gold/15 text-rojigualda-red dark:text-rojigualda-gold transition text-[10px] font-sans font-bold cursor-pointer"
+            : "flex items-center gap-1 px-2 py-0.5 rounded-lg border border-day-border dark:border-night-border bg-day-surface dark:bg-night-surface hover:border-rojigualda-red dark:hover:border-rojigualda-gold text-day-muted dark:text-night-muted transition text-[10px] font-sans font-semibold cursor-pointer";
+        }
+        if (ctrlBtn) {
+          ctrlBtn.classList.toggle('border-rojigualda-red', this.isShuffle);
+          ctrlBtn.classList.toggle('dark:border-rojigualda-gold', this.isShuffle);
+          ctrlBtn.classList.toggle('text-rojigualda-red', this.isShuffle);
+          ctrlBtn.classList.toggle('dark:text-rojigualda-gold', this.isShuffle);
+        }
+        lucide.createIcons();
+      }
+
+      randomCard() {
+        if (!this.activeDeck.length) return;
+        if (this.activeDeck.length === 1) {
+          this.renderCard();
+          return;
+        }
+        this.history.push(this.cardIdx);
+        let nextIdx;
+        do {
+          nextIdx = Math.floor(Math.random() * this.activeDeck.length);
+        } while (nextIdx === this.cardIdx);
+        this.cardIdx = nextIdx;
+        this.renderCard();
       }
 
       renderCard() {
@@ -1314,13 +1384,23 @@
 
       nextCard() {
         if (!this.activeDeck.length) return;
-        this.cardIdx = (this.cardIdx + 1) % this.activeDeck.length;
-        this.renderCard();
+        if (this.isShuffle) {
+          this.randomCard();
+        } else {
+          this.history.push(this.cardIdx);
+          this.cardIdx = (this.cardIdx + 1) % this.activeDeck.length;
+          this.renderCard();
+        }
       }
 
       prevCard() {
         if (!this.activeDeck.length) return;
-        this.cardIdx = (this.cardIdx - 1 + this.activeDeck.length) % this.activeDeck.length;
+        if (this.history.length > 0) {
+          this.cardIdx = this.history.pop();
+          if (this.cardIdx >= this.activeDeck.length) this.cardIdx = 0;
+        } else {
+          this.cardIdx = (this.cardIdx - 1 + this.activeDeck.length) % this.activeDeck.length;
+        }
         this.renderCard();
       }
 
@@ -1334,14 +1414,21 @@
         }
       }
 
-      startSavedPractice() {
+      startSavedPractice(randomize = false) {
         const savedList = this.corpus.filter(x => x.is_saved && x.status !== 'mastered');
         if (savedList.length === 0) {
           this.toast('No hay palabras guardadas pendientes');
           return;
         }
         this.activeDeck = savedList;
-        this.cardIdx = 0;
+        this.history = [];
+        this.isShuffle = randomize;
+        this.updateShuffleUI();
+        if (randomize && this.activeDeck.length > 1) {
+          this.cardIdx = Math.floor(Math.random() * this.activeDeck.length);
+        } else {
+          this.cardIdx = 0;
+        }
         document.getElementById('fcStudyModeFilterPill').classList.remove('hidden');
         this.setTarjetasSub('study');
         this.renderCard();
@@ -1352,7 +1439,6 @@
         const rows = document.getElementById('corpusRows');
         if (!rows) return;
 
-        // Filtrado y orden alfabético estricto omitiendo artículos (el/la/los/las/un/al/del...)
         const filtered = this.corpus
           .filter(i => normalize(i.word).includes(q) || normalize(i.meaningEn).includes(q))
           .sort((a, b) => getSortKey(a.word).localeCompare(getSortKey(b.word), 'es'));
@@ -1403,6 +1489,7 @@
         }
         this.exitFilterMode();
         this.activeDeck = this.corpus.filter(x => x.status !== 'mastered');
+        this.history = [];
         this.cardIdx = Math.max(0, this.activeDeck.findIndex(x => String(x.id) === String(id)));
         this.setTarjetasSub('study');
         this.renderCard();
@@ -1411,16 +1498,19 @@
       renderSavedList() {
         const rows = document.getElementById('savedWordsRows');
         const btn = document.getElementById('btnDrillSaved');
+        const btnRnd = document.getElementById('btnDrillSavedRandom');
         if (!rows) return;
 
         const savedArr = this.corpus.filter(x => x.is_saved);
         if (savedArr.length === 0) {
           rows.innerHTML = `<div class="p-6 text-center text-xs text-day-muted dark:text-night-muted">No tienes palabras guardadas. Marca con ⭐ cualquier tarjeta.</div>`;
           if (btn) btn.disabled = true;
+          if (btnRnd) btnRnd.disabled = true;
           return;
         }
 
         if (btn) btn.disabled = false;
+        if (btnRnd) btnRnd.disabled = false;
         rows.innerHTML = savedArr.map(item => `
           <div class="px-3.5 py-2.5 flex items-center justify-between text-xs hover:bg-day-surface dark:hover:bg-night-surface transition">
             <div>
@@ -1805,6 +1895,7 @@
             if (e.code === 'Space') { e.preventDefault(); this.flipCard(); }
             else if (e.code === 'ArrowRight') this.nextCard();
             else if (e.code === 'ArrowLeft') this.prevCard();
+            else if (e.key === 'r' || e.key === 'R') this.randomCard();
             else if (e.key === '1') this.rateCard('review');
             else if (e.key === '2') this.rateCard('mastered');
           }
