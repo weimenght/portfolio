@@ -553,7 +553,7 @@
       </div>
 
       <!-- SUB-VISTA 2.C: TABLAS DE CONJUGACIÓN -->
-      <div id="subViewVerboTable" class="hidden flex-1 flex flex-col gap-3">
+      <div id="subViewVerboTable" class="hidden flex flex-col gap-3">
         <div class="flex items-center justify-between gap-2">
           <select 
             id="tableVerbPicker" 
@@ -561,8 +561,9 @@
             class="w-full p-2 bg-day-surface dark:bg-night-surface border border-day-border dark:border-night-border rounded-xl text-xs font-bold outline-none"
           ></select>
         </div>
-
-        <div class="flex-1 overflow-x-auto rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card">
+      
+        <!-- Removed 'flex-1' so the box wraps tight to the rows -->
+        <div class="overflow-x-auto rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card">
           <table class="w-full text-left text-xs border-collapse min-w-[720px]">
             <thead>
               <tr class="border-b border-day-border dark:border-night-border text-day-muted dark:text-night-muted text-[10px] font-mono uppercase">
