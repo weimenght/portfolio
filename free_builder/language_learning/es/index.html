@@ -151,7 +151,7 @@
         <div id="subNavTarjetas" class="flex items-center gap-1">
           <button 
             id="subBtnCardsStudy" 
-            onclick="app.setTarjetasSub('study')"
+            onclick="app.exitFilterMode(); app.setTarjetasSub('study');"
             class="px-3 py-1 rounded-lg font-bold bg-day-surface dark:bg-night-surface text-day-text dark:text-night-text transition flex items-center gap-1.5"
           >
             <i data-lucide="sparkles" class="w-3 h-3 text-rojigualda-red dark:text-rojigualda-gold"></i>
@@ -237,8 +237,8 @@
         <div class="flex items-center justify-between text-[11px] font-mono text-day-muted dark:text-night-muted px-1">
           <div class="flex items-center gap-2">
             <span id="fcIdxIndicator">0 / 0</span>
-            <span id="fcStudyModeFilterPill" class="hidden px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-sans font-bold text-[10px]">
-              ⭐ Solo Guardadas
+            <span id="fcStudyModeFilterPill" onclick="app.exitFilterMode()" class="hidden cursor-pointer hover:opacity-80 px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-sans font-bold text-[10px]" title="Clic para ver todas las pendientes">
+              ⭐ Solo Guardadas &times;
             </span>
           </div>
           <div class="flex items-center gap-2 font-sans font-medium text-[10px]">
@@ -263,7 +263,7 @@
                 <div class="flex items-center gap-1.5">
                   <button 
                     type="button" 
-                    id="fcStarBtn"
+                    id="fcStarBtn" 
                     onclick="event.stopPropagation(); app.toggleSaveCurrentWord();" 
                     class="p-1.5 rounded-lg text-day-muted dark:text-night-muted hover:text-amber-500 transition"
                     title="Guardar"
@@ -312,11 +312,11 @@
                 <div class="pt-2 text-left" onclick="event.stopPropagation()">
                   <div class="bg-day-surface dark:bg-night-surface p-2 rounded-xl border border-day-border dark:border-night-border">
                     <div class="flex items-center justify-between text-[10px] font-mono text-day-muted dark:text-night-muted mb-1">
-                      <span>Nota (Cloudflare D1):</span>
+                      <span>Nota:</span>
                       <span id="noteSavedStatus" class="opacity-0 transition-opacity text-emerald-600 dark:text-emerald-400">✓ Guardado</span>
                     </div>
                     <textarea 
-                      id="fcCardNotesInput"
+                      id="fcCardNotesInput" 
                       rows="2"
                       placeholder="Escribe apuntes o trucos mnemotécnicos..."
                       class="w-full text-xs bg-transparent border-0 focus:ring-0 p-0 text-day-text dark:text-night-text resize-none outline-none leading-relaxed"
@@ -395,7 +395,7 @@
             <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
             <span>Practicar Guardadas</span>
           </button>
-          <span class="text-xs text-day-muted dark:text-night-muted">Palabras marcadas con ⭐</span>
+          <span class="text-xs text-day-muted dark:text-night-muted">Palabras marcadas con ⭐ (no dominadas)</span>
         </div>
         <div id="savedWordsRows" class="flex-1 max-h-[62vh] overflow-y-auto divide-y divide-day-border/60 dark:divide-night-border/60 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card"></div>
       </div>
@@ -404,7 +404,7 @@
       <div id="subViewCardsAdd" class="hidden flex-1 flex flex-col justify-center">
         <div class="bg-day-card dark:bg-night-card rounded-2xl p-6 border border-day-border dark:border-night-border shadow-xs max-w-xl mx-auto w-full space-y-4">
           <div class="flex items-center justify-between pb-2 border-b border-day-border dark:border-night-border">
-            <span class="font-serif font-bold text-base text-day-text dark:text-night-text">Nueva Palabra (Cloudflare D1)</span>
+            <span class="font-serif font-bold text-base text-day-text dark:text-night-text">Nueva Palabra</span>
             <span class="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">Edge Sync</span>
           </div>
 
@@ -455,7 +455,7 @@
               type="submit" 
               class="w-full py-3 rounded-xl bg-rojigualda-red dark:bg-rojigualda-gold text-white dark:text-stone-950 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-sm active:scale-98"
             >
-              <span>Guardar en Cloudflare D1</span>
+              <span>Guardar</span>
               <i data-lucide="cloud-upload" class="w-4 h-4"></i>
             </button>
           </form>
@@ -489,16 +489,16 @@
           <div class="relative">
             <input 
               type="text" 
-              id="drillInput"
+              id="drillInput" 
               autocomplete="off" 
               autocorrect="off" 
-              spellcheck="false"
+              spellcheck="false" 
               placeholder="Escribe la conjugación..." 
               class="w-full text-center text-lg sm:text-xl font-bold py-3.5 px-4 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card focus:border-rojigualda-red dark:focus:border-rojigualda-gold outline-none transition"
             />
             <button 
               type="button" 
-              id="drillListenAnswerBtn"
+              id="drillListenAnswerBtn" 
               onclick="app.speak(app.currentDrill.target)" 
               class="hidden absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-day-muted hover:text-day-text transition"
             >
@@ -519,7 +519,7 @@
           <div class="flex gap-2 pt-1">
             <button 
               type="submit" 
-              id="drillActionBtn"
+              id="drillActionBtn" 
               class="flex-1 py-3 rounded-xl bg-rojigualda-red dark:bg-rojigualda-gold text-white dark:text-stone-950 font-bold text-xs transition active:scale-98"
             >
               Comprobar
@@ -552,7 +552,6 @@
         <div id="choiceFeedback" class="hidden p-2.5 rounded-xl text-center text-xs font-semibold border transition"></div>
       </div>
 
-
       <!-- SUB-VISTA 2.C: TABLAS DE CONJUGACIÓN -->
       <div id="subViewVerboTable" class="hidden flex flex-col gap-3">
         <div class="flex items-center justify-between gap-2">
@@ -562,8 +561,7 @@
             class="w-full p-2 bg-day-surface dark:bg-night-surface border border-day-border dark:border-night-border rounded-xl text-xs font-bold outline-none"
           ></select>
         </div>
-      
-        <!-- Removed 'flex-1' so the box wraps tight to the rows -->
+        
         <div class="overflow-x-auto rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card">
           <table class="w-full text-left text-xs border-collapse min-w-[720px]">
             <thead>
@@ -604,6 +602,76 @@
     </section>
 
   </main>
+
+  <!-- MODAL DE EDICIÓN DE PALABRAS -->
+  <div id="editWordModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-day-card dark:bg-night-card rounded-2xl border border-day-border dark:border-night-border shadow-2xl max-w-lg w-full p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-day-border dark:border-night-border pb-3">
+        <h3 class="font-serif font-bold text-base text-day-text dark:text-night-text">Editar Tarjeta</h3>
+        <button onclick="app.closeEditModal()" class="p-1 rounded-lg text-day-muted hover:text-day-text transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form onsubmit="app.handleUpdateWordSubmit(event)" class="space-y-3">
+        <input type="hidden" id="editWordId">
+
+        <div>
+          <label class="block text-[11px] font-bold text-day-muted dark:text-night-muted uppercase tracking-wider mb-1">Palabra / Término (Español)</label>
+          <input 
+            type="text" 
+            id="editWordInput" 
+            required 
+            class="w-full text-xs font-semibold p-2.5 rounded-xl border border-day-border dark:border-night-border bg-day-surface dark:bg-night-surface outline-none focus:border-rojigualda-red dark:focus:border-rojigualda-gold"
+          />
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-day-muted dark:text-night-muted uppercase tracking-wider mb-1">Traducción / Significado</label>
+          <input 
+            type="text" 
+            id="editMeaningInput" 
+            required 
+            class="w-full text-xs font-semibold p-2.5 rounded-xl border border-day-border dark:border-night-border bg-day-surface dark:bg-night-surface outline-none focus:border-rojigualda-red dark:focus:border-rojigualda-gold"
+          />
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-day-muted dark:text-night-muted uppercase tracking-wider mb-1">Frase de Contexto</label>
+          <input 
+            type="text" 
+            id="editSentenceInput" 
+            class="w-full text-xs p-2.5 rounded-xl border border-day-border dark:border-night-border bg-day-surface dark:bg-night-surface outline-none focus:border-rojigualda-red dark:focus:border-rojigualda-gold"
+          />
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-day-muted dark:text-night-muted uppercase tracking-wider mb-1">Notas de Aprendizaje</label>
+          <textarea 
+            id="editNotesInput" 
+            rows="2" 
+            class="w-full text-xs p-2.5 rounded-xl border border-day-border dark:border-night-border bg-day-surface dark:bg-night-surface outline-none focus:border-rojigualda-red dark:focus:border-rojigualda-gold resize-none"
+          ></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button 
+            type="button" 
+            onclick="app.closeEditModal()" 
+            class="px-4 py-2 rounded-xl border border-day-border dark:border-night-border text-xs font-semibold text-day-muted hover:text-day-text transition"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            class="px-4 py-2 rounded-xl bg-rojigualda-red dark:bg-rojigualda-gold text-white dark:text-stone-950 text-xs font-bold transition shadow-xs"
+          >
+            Guardar Cambios
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Notification Toast -->
   <div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-opacity duration-200">
@@ -786,6 +854,12 @@
       return (s || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     }
 
+    // Ignora artículos determinados e indeterminados (el, la, al, del, un, una, etc.) al ordenar
+    function getSortKey(s) {
+      const norm = normalize(s);
+      return norm.replace(/^(el\s+|la\s+|los\s+|las\s+|un\s+|una\s+|unos\s+|unas\s+|al\s+|del\s+)/, '').trim();
+    }
+
     class App {
       constructor() {
         this.mainView = 'tarjetas';
@@ -840,7 +914,12 @@
               ipa: '',
               grammar: r.word.startsWith('la ') ? 'sustantivo fem.' : 'sustantivo masc.'
             }));
-            this.activeDeck = [...this.corpus];
+            
+            // Excluir palabras "mastered" de la baraja activa de estudio
+            this.activeDeck = this.corpus.filter(x => x.status !== 'mastered');
+            if (this.cardIdx >= this.activeDeck.length) {
+              this.cardIdx = 0;
+            }
           }
         } catch (e) {
           console.warn('Conexión con Cloudflare D1 en espera:', e);
@@ -934,7 +1013,17 @@
           } catch (e) {}
         }
 
-        this.nextCard();
+        if (status === 'mastered') {
+          this.activeDeck.splice(this.cardIdx, 1);
+          if (this.cardIdx >= this.activeDeck.length) {
+            this.cardIdx = 0;
+          }
+          this.updateBadges();
+          this.renderCard();
+        } else {
+          this.updateBadges();
+          this.nextCard();
+        }
       }
 
       async toggleSaveCurrentWord() {
@@ -977,6 +1066,104 @@
         setTimeout(() => {
           if (statusIndicator) statusIndicator.classList.add('opacity-0');
         }, 1500);
+      }
+
+      /* ==============================================================
+         EDICIÓN Y ELIMINACIÓN DE TARJETAS EN CLOUDFLARE D1
+         ============================================================== */
+      openEditModal(id) {
+        const item = this.corpus.find(x => String(x.id) === String(id));
+        if (!item) return;
+
+        document.getElementById('editWordId').value = item.id;
+        document.getElementById('editWordInput').value = item.word;
+        document.getElementById('editMeaningInput').value = item.meaningEn;
+        document.getElementById('editSentenceInput').value = item.example || '';
+        document.getElementById('editNotesInput').value = item.notes || '';
+
+        document.getElementById('editWordModal').classList.remove('hidden');
+        lucide.createIcons();
+      }
+
+      closeEditModal() {
+        document.getElementById('editWordModal').classList.add('hidden');
+      }
+
+      async handleUpdateWordSubmit(e) {
+        e.preventDefault();
+        const id = document.getElementById('editWordId').value;
+        const word = document.getElementById('editWordInput').value.trim();
+        const meaning = document.getElementById('editMeaningInput').value.trim();
+        const sentence = document.getElementById('editSentenceInput').value.trim();
+        const notes = document.getElementById('editNotesInput').value.trim();
+
+        if (!id || !word || !meaning) return;
+
+        try {
+          if (API_BASE && !API_BASE.includes('<your-subdomain>')) {
+            const res = await fetch(`${API_BASE}/api/words/${id}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ word, meaning, sentence, notes })
+            });
+            if (!res.ok) throw new Error('Error al actualizar');
+          }
+
+          // Actualizar estado local
+          const item = this.corpus.find(x => String(x.id) === String(id));
+          if (item) {
+            item.word = word;
+            item.meaningEn = meaning;
+            item.example = sentence;
+            item.notes = notes;
+            item.grammar = word.startsWith('la ') ? 'sustantivo fem.' : 'sustantivo masc.';
+          }
+
+          const activeItem = this.activeDeck.find(x => String(x.id) === String(id));
+          if (activeItem) {
+            activeItem.word = word;
+            activeItem.meaningEn = meaning;
+            activeItem.example = sentence;
+            activeItem.notes = notes;
+            activeItem.grammar = word.startsWith('la ') ? 'sustantivo fem.' : 'sustantivo masc.';
+          }
+
+          this.closeEditModal();
+          this.renderCorpusList();
+          this.renderCard();
+          this.toast('Tarjeta actualizada en D1');
+        } catch (err) {
+          console.error(err);
+          this.toast('Error al actualizar en Cloudflare D1');
+        }
+      }
+
+      async deleteWord(id) {
+        const item = this.corpus.find(x => String(x.id) === String(id));
+        const wordLabel = item ? `"${item.word}"` : 'esta tarjeta';
+        if (!confirm(`¿Eliminar definitivamente ${wordLabel} de la base de datos?`)) return;
+
+        try {
+          if (API_BASE && !API_BASE.includes('<your-subdomain>')) {
+            const res = await fetch(`${API_BASE}/api/words/${id}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error('Error al eliminar');
+          }
+
+          this.corpus = this.corpus.filter(x => String(x.id) !== String(id));
+          this.activeDeck = this.activeDeck.filter(x => String(x.id) !== String(id));
+          if (this.cardIdx >= this.activeDeck.length) {
+            this.cardIdx = 0;
+          }
+
+          this.updateBadges();
+          this.renderCorpusList();
+          this.renderSavedList();
+          this.renderCard();
+          this.toast('Palabra eliminada de D1');
+        } catch (err) {
+          console.error(err);
+          this.toast('Error al eliminar de Cloudflare D1');
+        }
       }
 
       async logMistake(item, userAttempt) {
@@ -1051,6 +1238,7 @@
             document.getElementById('newSentenceInput').value = '';
             document.getElementById('newNotesInput').value = '';
             this.updateBadges();
+            this.exitFilterMode();
             this.setTarjetasSub('study');
             this.renderCard();
             this.toast('Guardado en Cloudflare D1');
@@ -1060,16 +1248,36 @@
         }
       }
 
+      exitFilterMode() {
+        const pill = document.getElementById('fcStudyModeFilterPill');
+        if (pill) pill.classList.add('hidden');
+        this.activeDeck = this.corpus.filter(x => x.status !== 'mastered');
+        this.cardIdx = 0;
+      }
+
       renderCard() {
+        const masteredCount = this.corpus.filter(x => x.status === 'mastered').length;
+        const reviewCount = this.corpus.filter(x => x.status === 'review').length;
+        const mEl = document.getElementById('fcCountMastered');
+        const rEl = document.getElementById('fcCountReview');
+        if (mEl) mEl.innerText = masteredCount;
+        if (rEl) rEl.innerText = reviewCount;
+
         if (!this.activeDeck.length) {
-          document.getElementById('fcTerm').innerText = 'Sin palabras';
-          document.getElementById('fcMeaning').innerText = 'Importa un archivo .txt o añade una palabra';
+          document.getElementById('fcTerm').innerText = '¡Todo dominado!';
+          document.getElementById('fcMeaning').innerText = 'No hay palabras pendientes para estudiar.';
           document.getElementById('fcIpa').innerText = '';
           document.getElementById('fcGrammarPill').innerText = '';
           document.getElementById('fcExample').innerText = '';
           document.getElementById('fcCardNotesInput').value = '';
           document.getElementById('fcIdxIndicator').innerText = '0 / 0';
           document.getElementById('fcBar').style.width = '0%';
+          const starBtn = document.getElementById('fcStarBtn');
+          if (starBtn) {
+            starBtn.className = "p-1.5 rounded-lg text-day-muted dark:text-night-muted transition opacity-40 pointer-events-none";
+            starBtn.innerHTML = `<i data-lucide="star" class="w-4 h-4"></i>`;
+          }
+          lucide.createIcons();
           return;
         }
 
@@ -1087,11 +1295,6 @@
         const len = this.activeDeck.length;
         document.getElementById('fcIdxIndicator').innerText = `${this.cardIdx + 1} / ${len}`;
         document.getElementById('fcBar').style.width = `${((this.cardIdx + 1) / len) * 100}%`;
-        
-        const masteredCount = this.corpus.filter(x => x.status === 'mastered').length;
-        const reviewCount = this.corpus.filter(x => x.status === 'review').length;
-        document.getElementById('fcCountMastered').innerText = masteredCount;
-        document.getElementById('fcCountReview').innerText = reviewCount;
 
         const starBtn = document.getElementById('fcStarBtn');
         if (starBtn) {
@@ -1132,8 +1335,11 @@
       }
 
       startSavedPractice() {
-        const savedList = this.corpus.filter(x => x.is_saved);
-        if (savedList.length === 0) return;
+        const savedList = this.corpus.filter(x => x.is_saved && x.status !== 'mastered');
+        if (savedList.length === 0) {
+          this.toast('No hay palabras guardadas pendientes');
+          return;
+        }
         this.activeDeck = savedList;
         this.cardIdx = 0;
         document.getElementById('fcStudyModeFilterPill').classList.remove('hidden');
@@ -1146,27 +1352,40 @@
         const rows = document.getElementById('corpusRows');
         if (!rows) return;
 
-        const filtered = this.corpus.filter(i => normalize(i.word).includes(q) || normalize(i.meaningEn).includes(q));
+        // Filtrado y orden alfabético estricto omitiendo artículos (el/la/los/las/un/al/del...)
+        const filtered = this.corpus
+          .filter(i => normalize(i.word).includes(q) || normalize(i.meaningEn).includes(q))
+          .sort((a, b) => getSortKey(a.word).localeCompare(getSortKey(b.word), 'es'));
+
         if (filtered.length === 0) {
           rows.innerHTML = `<div class="p-6 text-center text-xs text-day-muted dark:text-night-muted">No se encontraron términos. Usa <strong>Importar .txt</strong> o <strong>Añadir</strong>.</div>`;
           return;
         }
 
-        rows.innerHTML = filtered.map((item, idx) => `
-          <div class="px-3.5 py-2.5 flex items-center justify-between text-xs hover:bg-day-surface dark:hover:bg-night-surface transition">
-            <div class="min-w-0 pr-2">
+        rows.innerHTML = filtered.map((item) => `
+          <div class="px-3.5 py-2.5 flex items-center justify-between text-xs hover:bg-day-surface dark:hover:bg-night-surface transition group">
+            <div class="min-w-0 pr-2 flex-1">
               <div class="flex items-center gap-1.5">
                 <span class="font-bold text-day-text dark:text-night-text">${item.word}</span>
                 <span class="text-[9px] px-1 py-0.2 rounded font-mono ${item.status === 'mastered' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : (item.status === 'review' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' : 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400')}">${item.status}</span>
+                ${item.is_saved ? '<i data-lucide="star" class="w-3 h-3 text-amber-500 fill-amber-500 inline"></i>' : ''}
               </div>
               <span class="text-day-muted dark:text-night-muted">${item.meaningEn}</span>
+              ${item.example ? `<p class="text-[10px] text-day-muted/80 italic mt-0.5 truncate">"${item.example}"</p>` : ''}
               ${item.notes ? `<p class="text-[10px] text-amber-700 dark:text-amber-400 italic mt-0.5 truncate">${item.notes}</p>` : ''}
             </div>
+            
             <div class="flex items-center gap-1 shrink-0">
-              <button onclick="app.speak('${item.word.replace(/'/g, "\\'")}')" class="p-1 text-day-muted hover:text-day-text">
+              <button onclick="app.speak('${item.word.replace(/'/g, "\\'")}')" class="p-1 text-day-muted hover:text-day-text" title="Escuchar">
                 <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
               </button>
-              <button onclick="app.pickCorpusCard(${idx})" class="px-2 py-0.5 rounded text-[10px] font-mono bg-day-surface dark:bg-night-surface hover:bg-rojigualda-red hover:text-white transition">
+              <button onclick="app.openEditModal('${item.id}')" class="p-1 text-day-muted hover:text-amber-500" title="Editar">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="app.deleteWord('${item.id}')" class="p-1 text-day-muted hover:text-rose-500" title="Eliminar">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="app.pickCorpusCard('${item.id}')" class="px-2 py-0.5 rounded text-[10px] font-mono bg-day-surface dark:bg-night-surface hover:bg-rojigualda-red hover:text-white transition" title="Practicar">
                 &rarr;
               </button>
             </div>
@@ -1175,10 +1394,16 @@
         lucide.createIcons();
       }
 
-      pickCorpusCard(idx) {
-        this.activeDeck = [...this.corpus];
-        this.cardIdx = idx;
-        document.getElementById('fcStudyModeFilterPill').classList.add('hidden');
+      pickCorpusCard(id) {
+        const item = this.corpus.find(x => String(x.id) === String(id));
+        if (!item) return;
+        if (item.status === 'mastered') {
+          this.toast('Esta palabra ya está dominada');
+          return;
+        }
+        this.exitFilterMode();
+        this.activeDeck = this.corpus.filter(x => x.status !== 'mastered');
+        this.cardIdx = Math.max(0, this.activeDeck.findIndex(x => String(x.id) === String(id)));
         this.setTarjetasSub('study');
         this.renderCard();
       }
@@ -1201,10 +1426,14 @@
             <div>
               <span class="font-bold text-day-text dark:text-night-text">${item.word}</span>
               <span class="text-day-muted dark:text-night-muted ml-2">${item.meaningEn}</span>
+              ${item.status === 'mastered' ? '<span class="ml-2 text-[9px] px-1 py-0.2 rounded font-mono bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">dominada</span>' : ''}
             </div>
             <div class="flex items-center gap-1">
               <button onclick="app.speak('${item.word.replace(/'/g, "\\'")}')" class="p-1 text-day-muted hover:text-day-text">
                 <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="app.openEditModal('${item.id}')" class="p-1 text-day-muted hover:text-amber-500" title="Editar">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
               </button>
             </div>
           </div>
@@ -1509,7 +1738,7 @@
           ? "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-white dark:bg-night-card text-rojigualda-red dark:text-rojigualda-gold shadow-xs"
           : "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition-all";
         
-        document.getElementById('tabBtnVerbo').className = !isTarjetas
+        document.getElementById('tabBtnVerbo').className = !isTarjetas 
           ? "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-white dark:bg-night-card text-rojigualda-red dark:text-rojigualda-gold shadow-xs"
           : "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition-all";
 
@@ -1533,6 +1762,15 @@
           }
         });
 
+        if (sub === 'study') {
+          const filterPill = document.getElementById('fcStudyModeFilterPill');
+          const isSavedOnly = filterPill && !filterPill.classList.contains('hidden');
+          this.activeDeck = isSavedOnly 
+            ? this.corpus.filter(x => x.is_saved && x.status !== 'mastered')
+            : this.corpus.filter(x => x.status !== 'mastered');
+          if (this.cardIdx >= this.activeDeck.length) this.cardIdx = 0;
+          this.renderCard();
+        }
         if (sub === 'corpus') this.renderCorpusList();
         if (sub === 'saved') this.renderSavedList();
         lucide.createIcons();
