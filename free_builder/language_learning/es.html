@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Español — Vocabulario & Verbos</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            rojigualda: {
+              red: '#C60B1E',
+              gold: '#FFC400',
+              crimson: '#9F0818',
+            },
+            day: {
+              bg: '#FBF9F5',
+              card: '#FFFFFF',
+              surface: '#F3EFEA',
+              border: '#E8E2D9',
+              text: '#1C1917',
+              muted: '#78716C',
+            },
+            night: {
+              bg: '#0F0E0E',
+              card: '#181617',
+              surface: '#221F20',
+              border: '#2C2729',
+              text: '#F5F5F4',
+              muted: '#A8A29E',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .flag-accent {
+      background: linear-gradient(to right, #C60B1E 0%, #C60B1E 25%, #FFC400 25%, #FFC400 75%, #C60B1E 75%, #C60B1E 100%);
+    }
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d {
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 { transform: rotateY(180deg); }
+
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-thumb {
+      background: #C60B1E33;
+      border-radius: 9999px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #FFC40033;
+    }
+
+    @media (orientation: landscape) and (max-height: 540px) {
+      .landscape-card { height: 13.5rem !important; }
+      .landscape-shrink { font-size: 1.5rem !important; line-height: 1.75rem !important; }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+    .shake-anim { animation: shake 0.25s ease-in-out; }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col bg-day-bg text-day-text dark:bg-night-bg dark:text-night-text transition-colors duration-150 selection:bg-rojigualda-gold selection:text-day-text font-sans antialiased">
+
+  <div class="h-1.5 w-full flag-accent fixed top-0 left-0 z-50"></div>
+
+  <!-- NAVEGACIÓN CAPA 1 & CAPA 2 -->
+  <header class="sticky top-1.5 z-40 bg-day-bg/95 dark:bg-night-bg/95 backdrop-blur-md border-b border-day-border dark:border-night-border transition-colors">
+    <div class="max-w-4xl mx-auto px-4">
+      
+      <!-- CAPA 1: TARJETAS / VERBO -->
+      <div class="h-14 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-lg flag-accent text-white flex items-center justify-center font-black text-xs shadow-xs border border-rojigualda-gold/60">
+            ES
+          </div>
+          <span class="font-serif font-bold text-base tracking-tight hidden sm:inline">Español</span>
+        </div>
+
+        <nav class="flex items-center bg-day-surface dark:bg-night-surface p-1 rounded-xl border border-day-border dark:border-night-border shadow-inner">
+          <button 
+            id="tabBtnTarjetas" 
+            onclick="app.setMainView('tarjetas')"
+            class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-white dark:bg-night-card text-rojigualda-red dark:text-rojigualda-gold shadow-xs"
+          >
+            <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+            <span>Tarjetas</span>
+          </button>
+          <button 
+            id="tabBtnVerbo" 
+            onclick="app.setMainView('verbo')"
+            class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition-all"
+          >
+            <i data-lucide="flame" class="w-3.5 h-3.5"></i>
+            <span>Verbo</span>
+          </button>
+        </nav>
+
+        <div class="flex items-center gap-1">
+          <button 
+            onclick="app.toggleSound()" 
+            id="sfxBtn"
+            class="p-2 rounded-lg text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition"
+            title="Audio"
+          >
+            <i data-lucide="volume-2" class="w-4 h-4" id="sfxIcon"></i>
+          </button>
+          <button 
+            onclick="app.toggleTheme()" 
+            class="p-2 rounded-lg text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition"
+            title="Día / Noche"
+          >
+            <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+            <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- CAPA 2: SUB-NAVEGACIÓN CONTEXTUAL -->
+      <div class="h-10 border-t border-day-border/70 dark:border-night-border/70 flex items-center justify-between text-xs overflow-x-auto no-scrollbar py-1">
+        
+        <!-- Sub-navegación: Tarjetas -->
+        <div id="subNavTarjetas" class="flex items-center gap-1">
+          <button 
+            id="subBtnCardsStudy" 
+            onclick="app.setTarjetasSub('study')"
+            class="px-3 py-1 rounded-lg font-bold bg-day-surface dark:bg-night-surface text-day-text dark:text-night-text transition flex items-center gap-1.5"
+          >
+            <i data-lucide="sparkles" class="w-3 h-3 text-rojigualda-red dark:text-rojigualda-gold"></i>
+            <span>Práctica</span>
+          </button>
+          <button 
+            id="subBtnCardsCorpus" 
+            onclick="app.setTarjetasSub('corpus')"
+            class="px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5"
+          >
+            <i data-lucide="book-open" class="w-3 h-3"></i>
+            <span>Corpus (<span id="badgeCorpusTotal">0</span>)</span>
+          </button>
+          <button 
+            id="subBtnCardsSaved" 
+            onclick="app.setTarjetasSub('saved')"
+            class="px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5"
+          >
+            <i data-lucide="star" class="w-3 h-3 text-amber-500"></i>
+            <span>Guardadas (<span id="badgeSavedTotal">0</span>)</span>
+          </button>
+          <button 
+            id="subBtnCardsAdd" 
+            onclick="app.setTarjetasSub('add')"
+            class="px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5"
+          >
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>
+            <span>Añadir</span>
+          </button>
+        </div>
+
+        <!-- Sub-navegación: Verbo -->
+        <div id="subNavVerbo" class="hidden flex items-center gap-1">
+          <button 
+            id="subBtnVerboDrill" 
+            onclick="app.setVerboSub('drill')"
+            class="px-3 py-1 rounded-lg font-bold bg-day-surface dark:bg-night-surface text-day-text dark:text-night-text transition flex items-center gap-1.5"
+          >
+            <i data-lucide="edit-3" class="w-3.5 h-3.5 text-rojigualda-red dark:text-rojigualda-gold"></i>
+            <span>Escribir</span>
+          </button>
+          <button 
+            id="subBtnVerboChoice" 
+            onclick="app.setVerboSub('choice')"
+            class="px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5"
+          >
+            <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+            <span>Opción</span>
+          </button>
+          <button 
+            id="subBtnVerboTable" 
+            onclick="app.setVerboSub('table')"
+            class="px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5"
+          >
+            <i data-lucide="table" class="w-3.5 h-3.5"></i>
+            <span>Tablas</span>
+          </button>
+          <button 
+            id="subBtnVerboMistakes" 
+            onclick="app.setVerboSub('mistakes')"
+            class="px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5"
+          >
+            <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-rose-500"></i>
+            <span>Errores (<span id="badgeMistakesTotal">0</span>)</span>
+          </button>
+        </div>
+
+        <div id="subActionRight" class="pl-2"></div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- CONTENEDOR CENTRAL -->
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-4 flex flex-col justify-start">
+
+    <!-- SECCIÓN 1: TARJETAS -->
+    <section id="viewTarjetas" class="flex-1 flex flex-col gap-3">
+      
+      <!-- SUB-VISTA 1.A: PRÁCTICA 3D -->
+      <div id="subViewCardsStudy" class="flex-1 flex flex-col justify-center gap-3">
+        
+        <div class="flex items-center justify-between text-[11px] font-mono text-day-muted dark:text-night-muted px-1">
+          <div class="flex items-center gap-2">
+            <span id="fcIdxIndicator">0 / 0</span>
+            <span id="fcStudyModeFilterPill" class="hidden px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-sans font-bold text-[10px]">
+              ⭐ Solo Guardadas
+            </span>
+          </div>
+          <div class="flex items-center gap-2 font-sans font-medium text-[10px]">
+            <span class="text-emerald-600 dark:text-emerald-400 font-bold" id="fcCountMastered">0</span> Dominadas
+            <span>&bull;</span>
+            <span class="text-amber-600 dark:text-amber-400 font-bold" id="fcCountReview">0</span> Repasar
+          </div>
+        </div>
+
+        <div class="w-full bg-day-surface dark:bg-night-surface rounded-full h-1 overflow-hidden">
+          <div id="fcBar" class="h-full bg-rojigualda-red dark:bg-rojigualda-gold transition-all duration-200 w-0"></div>
+        </div>
+
+        <!-- Tarjeta 3D -->
+        <div class="perspective-1000 w-full h-72 sm:h-80 landscape-card cursor-pointer select-none" onclick="app.flipCard()">
+          <div id="flashcardEl" class="relative w-full h-full transform-style-3d transition-transform duration-300 rounded-2xl border border-day-border dark:border-night-border shadow-xs bg-day-card dark:bg-night-card">
+            
+            <!-- ANVERSO (Español) -->
+            <div class="absolute inset-0 w-full h-full rounded-2xl p-6 flex flex-col justify-between backface-hidden bg-day-card dark:bg-night-card">
+              <div class="flex items-center justify-between text-xs">
+                <span id="fcGrammarPill" class="text-[10px] font-mono uppercase tracking-wider text-day-muted dark:text-night-muted"></span>
+                <div class="flex items-center gap-1.5">
+                  <button 
+                    type="button" 
+                    id="fcStarBtn"
+                    onclick="event.stopPropagation(); app.toggleSaveCurrentWord();" 
+                    class="p-1.5 rounded-lg text-day-muted dark:text-night-muted hover:text-amber-500 transition"
+                    title="Guardar"
+                  >
+                    <i data-lucide="star" class="w-4 h-4"></i>
+                  </button>
+                  <button 
+                    type="button" 
+                    onclick="event.stopPropagation(); app.speakTerm();" 
+                    class="p-1.5 rounded-lg text-day-muted dark:text-night-muted hover:text-rojigualda-red dark:hover:text-rojigualda-gold transition"
+                  >
+                    <i data-lucide="volume-2" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="text-center my-auto">
+                <h2 id="fcTerm" class="text-3xl sm:text-4xl landscape-shrink font-serif font-bold tracking-tight"></h2>
+                <div id="fcIpa" class="font-mono text-xs text-day-muted dark:text-night-muted mt-1"></div>
+              </div>
+
+              <div class="flex items-center justify-center text-[11px] text-day-muted dark:text-night-muted">
+                <i data-lucide="corner-down-right" class="w-3 h-3 mr-1 opacity-60"></i>
+                <span>Girar</span>
+              </div>
+            </div>
+
+            <!-- REVERSO (Traducción, Frase & Notas en D1) -->
+            <div class="absolute inset-0 w-full h-full rounded-2xl p-5 sm:p-6 flex flex-col justify-between backface-hidden rotate-y-180 bg-day-card dark:bg-night-card border-t-2 border-rojigualda-red dark:border-rojigualda-gold overflow-hidden">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-[10px] font-mono uppercase tracking-wider text-rojigualda-red dark:text-rojigualda-gold">Significado & Notas</span>
+                <button 
+                  type="button" 
+                  onclick="event.stopPropagation(); app.speakSentence();" 
+                  class="p-1.5 rounded-lg text-day-muted dark:text-night-muted hover:text-rojigualda-red dark:hover:text-rojigualda-gold transition"
+                >
+                  <i data-lucide="volume-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+
+              <div class="my-auto space-y-2 text-center overflow-y-auto max-h-[140px] pr-1">
+                <h3 id="fcMeaning" class="text-xl sm:text-2xl font-bold font-serif text-day-text dark:text-night-text"></h3>
+                <p id="fcExample" class="text-xs sm:text-sm text-day-muted dark:text-night-muted italic leading-relaxed"></p>
+
+                <!-- Caja de Notas de Aprendizaje -->
+                <div class="pt-2 text-left" onclick="event.stopPropagation()">
+                  <div class="bg-day-surface dark:bg-night-surface p-2 rounded-xl border border-day-border dark:border-night-border">
+                    <div class="flex items-center justify-between text-[10px] font-mono text-day-muted dark:text-night-muted mb-1">
+                      <span>Nota (Cloudflare D1):</span>
+                      <span id="noteSavedStatus" class="opacity-0 transition-opacity text-emerald-600 dark:text-emerald-400">✓ Guardado</span>
+                    </div>
+                    <textarea 
+                      id="fcCardNotesInput"
+                      rows="2"
+                      placeholder="Escribe apuntes o trucos mnemotécnicos..."
+                      class="w-full text-xs bg-transparent border-0 focus:ring-0 p-0 text-day-text dark:text-night-text resize-none outline-none leading-relaxed"
+                      onchange="app.saveCurrentCardNotes(this.value)"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-center text-[10px] text-day-muted dark:text-night-muted pt-1">
+                <span>1 Repasar &bull; 2 Dominada</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Controles -->
+        <div class="grid grid-cols-5 gap-1.5">
+          <button onclick="app.prevCard()" class="p-3 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card flex items-center justify-center hover:bg-day-surface dark:hover:bg-night-surface transition">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          </button>
+          <button onclick="app.rateCard('review')" class="p-3 rounded-xl border border-amber-300 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20 text-amber-800 dark:text-amber-300 text-xs font-bold transition flex items-center justify-center gap-1">
+            <span>Repasar</span>
+          </button>
+          <button onclick="app.flipCard()" class="p-3 rounded-xl bg-day-surface dark:bg-night-surface border border-day-border dark:border-night-border text-xs font-bold transition flex items-center justify-center">
+            <i data-lucide="repeat" class="w-4 h-4"></i>
+          </button>
+          <button onclick="app.rateCard('mastered')" class="p-3 rounded-xl border border-emerald-300 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300 text-xs font-bold transition flex items-center justify-center gap-1">
+            <span>Dominada</span>
+          </button>
+          <button onclick="app.nextCard()" class="p-3 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card flex items-center justify-center hover:bg-day-surface dark:hover:bg-night-surface transition">
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- SUB-VISTA 1.B: CORPUS COMPLETO & IMPORTADOR .TXT -->
+      <div id="subViewCardsCorpus" class="hidden flex-1 flex flex-col gap-2">
+        <div class="flex items-center gap-2">
+          <div class="relative flex-1">
+            <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-day-muted dark:text-night-muted"></i>
+            <input 
+              type="text" 
+              id="corpusFilter" 
+              oninput="app.renderCorpusList()"
+              placeholder="Buscar en el corpus..." 
+              class="w-full pl-8 pr-3 py-2 text-xs bg-day-surface dark:bg-night-surface rounded-xl border border-day-border dark:border-night-border focus:border-rojigualda-red dark:focus:border-rojigualda-gold outline-none transition"
+            />
+          </div>
+
+          <!-- Botón de importación .txt local directo a Cloudflare D1 -->
+          <input type="file" id="localTxtFileInput" accept=".txt" class="hidden" onchange="app.handleTxtFileImport(event)">
+          <button 
+            onclick="document.getElementById('localTxtFileInput').click()"
+            class="px-3 py-2 rounded-xl bg-day-surface dark:bg-night-surface border border-day-border dark:border-night-border text-xs font-bold text-day-text dark:text-night-text hover:border-rojigualda-red dark:hover:border-rojigualda-gold flex items-center gap-1.5 transition shrink-0"
+            title="Cargar archivo .txt local a Cloudflare D1"
+          >
+            <i data-lucide="upload-cloud" class="w-3.5 h-3.5 text-rojigualda-red dark:text-rojigualda-gold"></i>
+            <span>Importar .txt</span>
+          </button>
+        </div>
+
+        <div id="corpusRows" class="flex-1 max-h-[62vh] overflow-y-auto divide-y divide-day-border/60 dark:divide-night-border/60 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card"></div>
+      </div>
+
+      <!-- SUB-VISTA 1.C: PALABRAS GUARDADAS -->
+      <div id="subViewCardsSaved" class="hidden flex-1 flex flex-col gap-2">
+        <div class="flex items-center justify-between pb-1">
+          <button 
+            onclick="app.startSavedPractice()" 
+            id="btnDrillSaved"
+            class="px-3 py-1.5 rounded-xl bg-rojigualda-red dark:bg-rojigualda-gold text-white dark:text-stone-950 text-xs font-bold transition flex items-center gap-1.5"
+          >
+            <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+            <span>Practicar Guardadas</span>
+          </button>
+          <span class="text-xs text-day-muted dark:text-night-muted">Palabras marcadas con ⭐</span>
+        </div>
+        <div id="savedWordsRows" class="flex-1 max-h-[62vh] overflow-y-auto divide-y divide-day-border/60 dark:divide-night-border/60 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card"></div>
+      </div>
+
+      <!-- SUB-VISTA 1.D: AÑADIR DIRECTAMENTE A CLOUDFLARE D1 -->
+      <div id="subViewCardsAdd" class="hidden flex-1 flex flex-col justify-center">
+        <div class="bg-day-card dark:bg-night-card rounded-2xl p-6 border border-day-border dark:border-night-border shadow-xs max-w-xl mx-auto w-full space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-day-border dark:border-night-border">
+            <span class="font-serif font-bold text-base text-day-text dark:text-night-text">Nueva Palabra (Cloudflare D1)</span>
+            <span class="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">Edge Sync</span>
+          </div>
+
+          <form onsubmit="app.handleNewWordSubmit(event)" class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-bold text-day-muted dark:text-night-muted uppercase tracking-wider mb-1">Palabra / Término (Español)</label>
+              <input 
+                type="text" 
+                id="newWordInput" 
+                required 
+                placeholder="Ej: el reto, desarrollar, imprescindible..."
+                class="w-full text-xs sm:text-sm font-semibold p-2.5 rounded-xl border border-day-border dark:border-night-border bg-day-surface dark:bg-night-surface outline-none focus:border-rojigualda-red dark:focus:border-rojigualda-gold"
+              />
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-day-muted dark:text-night-muted uppercase tracking-wider mb-1">Traducción / Significado</label>
+              <input 
+                type="text" 
+                id="newMeaningInput" 
+                required 
+                placeholder="Ej: challenge, to develop, essential..."
+                class="w-full text-xs sm:text-sm font-semibold p-2.5 rounded-xl border border-day-border dark:border-night-border bg-day-surface dark:bg-night-surface outline-none focus:border-rojigualda-red dark:focus:border-rojigualda-gold"
+              />
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-day-muted dark:text-night-muted uppercase tracking-wider mb-1">Frase de Contexto (Opcional)</label>
+              <input 
+                type="text" 
+                id="newSentenceInput" 
+                placeholder="Ej: Aceptó el reto con entusiasmo."
+                class="w-full text-xs p-2.5 rounded-xl border border-day-border dark:border-night-border bg-day-surface dark:bg-night-surface outline-none focus:border-rojigualda-red dark:focus:border-rojigualda-gold"
+              />
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-day-muted dark:text-night-muted uppercase tracking-wider mb-1">Notas de Aprendizaje (Opcional)</label>
+              <textarea 
+                id="newNotesInput" 
+                rows="2"
+                placeholder="Ej: Falso amigo con threat. Deriva del latín vulgar relictum..."
+                class="w-full text-xs p-2.5 rounded-xl border border-day-border dark:border-night-border bg-day-surface dark:bg-night-surface outline-none focus:border-rojigualda-red dark:focus:border-rojigualda-gold resize-none"
+              ></textarea>
+            </div>
+
+            <button 
+              type="submit" 
+              class="w-full py-3 rounded-xl bg-rojigualda-red dark:bg-rojigualda-gold text-white dark:text-stone-950 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-sm active:scale-98"
+            >
+              <span>Guardar en Cloudflare D1</span>
+              <i data-lucide="cloud-upload" class="w-4 h-4"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECCIÓN 2: VERBO -->
+    <section id="viewVerbo" class="hidden flex-1 flex flex-col gap-3">
+      
+      <!-- SUB-VISTA 2.A: ESCRIBIR -->
+      <div id="subViewVerboDrill" class="flex-1 flex flex-col justify-center gap-4">
+        
+        <div class="bg-day-card dark:bg-night-card rounded-2xl p-6 border border-day-border dark:border-night-border shadow-xs text-center space-y-2">
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-1 text-[11px] font-mono text-day-muted dark:text-night-muted">
+            <span id="drillTenseBadge" class="font-bold text-rojigualda-red dark:text-rojigualda-gold">Presente de Indicativo</span>
+            <span id="drillPronounBadge" class="text-stone-700 dark:text-stone-300 font-bold">yo</span>
+          </div>
+
+          <div class="flex items-center justify-center gap-2">
+            <h2 id="drillInfinitive" class="text-3xl sm:text-4xl font-serif font-bold">tener</h2>
+            <button onclick="app.speak(app.currentDrill.verb.infinitive)" class="p-1 text-day-muted hover:text-day-text transition">
+              <i data-lucide="volume-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <p id="drillEnglish" class="text-xs text-day-muted dark:text-night-muted"></p>
+        </div>
+
+        <form onsubmit="app.submitDrill(event)" class="space-y-2">
+          <div class="relative">
+            <input 
+              type="text" 
+              id="drillInput"
+              autocomplete="off" 
+              autocorrect="off" 
+              spellcheck="false"
+              placeholder="Escribe la conjugación..." 
+              class="w-full text-center text-lg sm:text-xl font-bold py-3.5 px-4 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card focus:border-rojigualda-red dark:focus:border-rojigualda-gold outline-none transition"
+            />
+            <button 
+              type="button" 
+              id="drillListenAnswerBtn"
+              onclick="app.speak(app.currentDrill.target)" 
+              class="hidden absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-day-muted hover:text-day-text transition"
+            >
+              <i data-lucide="volume-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <div class="flex justify-center gap-1">
+            <button type="button" onclick="app.insertChar('á')" class="w-7 h-7 rounded-lg bg-day-surface dark:bg-night-surface text-xs font-semibold hover:border hover:border-day-border">á</button>
+            <button type="button" onclick="app.insertChar('é')" class="w-7 h-7 rounded-lg bg-day-surface dark:bg-night-surface text-xs font-semibold hover:border hover:border-day-border">é</button>
+            <button type="button" onclick="app.insertChar('í')" class="w-7 h-7 rounded-lg bg-day-surface dark:bg-night-surface text-xs font-semibold hover:border hover:border-day-border">í</button>
+            <button type="button" onclick="app.insertChar('ó')" class="w-7 h-7 rounded-lg bg-day-surface dark:bg-night-surface text-xs font-semibold hover:border hover:border-day-border">ó</button>
+            <button type="button" onclick="app.insertChar('ú')" class="w-7 h-7 rounded-lg bg-day-surface dark:bg-night-surface text-xs font-semibold hover:border hover:border-day-border">ú</button>
+            <button type="button" onclick="app.insertChar('ñ')" class="w-7 h-7 rounded-lg bg-day-surface dark:bg-night-surface text-xs font-semibold hover:border hover:border-day-border">ñ</button>
+            <button type="button" onclick="app.insertChar('ü')" class="w-7 h-7 rounded-lg bg-day-surface dark:bg-night-surface text-xs font-semibold hover:border hover:border-day-border">ü</button>
+          </div>
+
+          <div class="flex gap-2 pt-1">
+            <button 
+              type="submit" 
+              id="drillActionBtn"
+              class="flex-1 py-3 rounded-xl bg-rojigualda-red dark:bg-rojigualda-gold text-white dark:text-stone-950 font-bold text-xs transition active:scale-98"
+            >
+              Comprobar
+            </button>
+            <button 
+              type="button" 
+              onclick="app.nextDrill()" 
+              class="px-4 py-3 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card text-day-muted hover:text-day-text text-xs transition"
+            >
+              Pasar
+            </button>
+          </div>
+        </form>
+
+        <div id="drillFeedback" class="hidden p-3 rounded-xl text-center text-xs font-semibold border transition"></div>
+
+      </div>
+
+      <!-- SUB-VISTA 2.B: OPCIÓN MÚLTIPLE -->
+      <div id="subViewVerboChoice" class="hidden flex-1 flex flex-col justify-center gap-3">
+        <div class="bg-day-card dark:bg-night-card rounded-2xl p-5 border border-day-border dark:border-night-border text-center space-y-1">
+          <div class="flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono text-day-muted dark:text-night-muted">
+            <span id="choiceTenseBadge" class="font-bold text-rojigualda-red dark:text-rojigualda-gold"></span>
+            <span id="choicePronounBadge" class="text-stone-700 dark:text-stone-300 font-bold"></span>
+          </div>
+          <h2 id="choiceInfinitive" class="text-2xl font-serif font-bold"></h2>
+        </div>
+
+        <div id="choiceGrid" class="grid grid-cols-2 gap-2"></div>
+        <div id="choiceFeedback" class="hidden p-2.5 rounded-xl text-center text-xs font-semibold border transition"></div>
+      </div>
+
+      <!-- SUB-VISTA 2.C: TABLAS DE CONJUGACIÓN -->
+      <div id="subViewVerboTable" class="hidden flex-1 flex flex-col gap-3">
+        <div class="flex items-center justify-between gap-2">
+          <select 
+            id="tableVerbPicker" 
+            onchange="app.renderTable(this.value)"
+            class="w-full p-2 bg-day-surface dark:bg-night-surface border border-day-border dark:border-night-border rounded-xl text-xs font-bold outline-none"
+          ></select>
+        </div>
+
+        <div class="flex-1 overflow-x-auto rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card">
+          <table class="w-full text-left text-xs border-collapse min-w-[720px]">
+            <thead>
+              <tr class="border-b border-day-border dark:border-night-border text-day-muted dark:text-night-muted text-[10px] font-mono uppercase">
+                <th class="p-2.5">Persona</th>
+                <th class="p-2.5">Presente</th>
+                <th class="p-2.5">Indefinido</th>
+                <th class="p-2.5">Imperfecto</th>
+                <th class="p-2.5">Futuro Simple</th>
+                <th class="p-2.5">Condicional</th>
+                <th class="p-2.5">Subj. Presente</th>
+                <th class="p-2.5">Subj. Imperfecto</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody" class="divide-y divide-day-border/60 dark:divide-night-border/60 font-medium"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SUB-VISTA 2.D: REVISIÓN DE ERRORES EN CLOUDFLARE D1 -->
+      <div id="subViewVerboMistakes" class="hidden flex-1 flex flex-col gap-2">
+        <div class="flex items-center justify-between pb-1">
+          <button 
+            onclick="app.startMistakesPractice()" 
+            id="btnDrillMistakes"
+            class="px-3 py-1.5 rounded-xl bg-rojigualda-red dark:bg-rojigualda-gold text-white dark:text-stone-950 text-xs font-bold transition flex items-center gap-1.5"
+          >
+            <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+            <span>Practicar Errores</span>
+          </button>
+          <button onclick="app.clearMistakes()" class="text-xs text-day-muted hover:text-rose-600 transition">
+            Borrar historial
+          </button>
+        </div>
+        <div id="mistakesRows" class="flex-1 max-h-[62vh] overflow-y-auto divide-y divide-day-border/60 dark:divide-night-border/60 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card"></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-opacity duration-200">
+    <div id="toastContent" class="px-3.5 py-1.5 rounded-full bg-day-text text-day-bg dark:bg-night-text dark:text-night-bg text-xs font-medium shadow-lg"></div>
+  </div>
+
+  <script>
+    /* ==============================================================
+       CONFIGURACIÓN DE LA BASE DE DATOS CLOUDFLARE D1
+       ============================================================== */
+    const API_BASE = 'https://esp-vocab-api.enzowmeng.workers.dev';
+
+    const PRONOUNS = [
+      { key: 'yo', label: 'yo' },
+      { key: 'tu', label: 'tú' },
+      { key: 'el', label: 'él / ella' },
+      { key: 'nosotros', label: 'nosotros' },
+      { key: 'vosotros', label: 'vosotros' },
+      { key: 'ellos', label: 'ellos / ellas' }
+    ];
+
+    const TENSES = {
+      pres: 'Presente de Indicativo',
+      pret_indef: 'Pretérito Indefinido',
+      pret_imp: 'Pretérito Imperfecto de Indicativo',
+      fut: 'Futuro Simple de Indicativo',
+      cond: 'Condicional Simple',
+      subj_pres: 'Presente de Subjuntivo',
+      subj_pret_imp: 'Pretérito Imperfecto de Subjuntivo'
+    };
+
+    const VERB_BANK = [
+      {
+        infinitive: 'ser', english: 'to be (essence / origin)',
+        forms: {
+          pres: ['soy', 'eres', 'es', 'somos', 'sois', 'son'],
+          pret_indef: ['fui', 'fuiste', 'fue', 'fuimos', 'fuisteis', 'fueron'],
+          pret_imp: ['era', 'eras', 'era', 'éramos', 'erais', 'eran'],
+          fut: ['seré', 'serás', 'será', 'seremos', 'seréis', 'serán'],
+          cond: ['sería', 'serías', 'sería', 'seríamos', 'seríais', 'serían'],
+          subj_pres: ['sea', 'seas', 'sea', 'seamos', 'seáis', 'sean'],
+          subj_pret_imp: ['fuera', 'fueras', 'fuera', 'fuéramos', 'fuerais', 'fueran']
+        }
+      },
+      {
+        infinitive: 'estar', english: 'to be (state / location)',
+        forms: {
+          pres: ['estoy', 'estás', 'está', 'estamos', 'estáis', 'están'],
+          pret_indef: ['estuve', 'estuviste', 'estuvo', 'estuvimos', 'estuvisteis', 'estuvieron'],
+          pret_imp: ['estaba', 'estabas', 'estaba', 'estábamos', 'estabais', 'estaban'],
+          fut: ['estaré', 'estarás', 'estará', 'estaremos', 'estaréis', 'estarán'],
+          cond: ['estaría', 'estarías', 'estaría', 'estaríamos', 'estaríais', 'estarían'],
+          subj_pres: ['esté', 'estés', 'esté', 'estemos', 'estéis', 'estén'],
+          subj_pret_imp: ['estuviera', 'estuvieras', 'estuviera', 'estuviéramos', 'estuvierais', 'estuvieran']
+        }
+      },
+      {
+        infinitive: 'ir', english: 'to go',
+        forms: {
+          pres: ['voy', 'vas', 'va', 'vamos', 'vais', 'van'],
+          pret_indef: ['fui', 'fuiste', 'fue', 'fuimos', 'fuisteis', 'fueron'],
+          pret_imp: ['iba', 'ibas', 'iba', 'íbamos', 'ibais', 'iban'],
+          fut: ['iré', 'irás', 'irá', 'iremos', 'iréis', 'irán'],
+          cond: ['iría', 'irías', 'iría', 'iríamos', 'iríais', 'irían'],
+          subj_pres: ['vaya', 'vayas', 'vaya', 'vayamos', 'vayáis', 'vayan'],
+          subj_pret_imp: ['fuera', 'fueras', 'fuera', 'fuéramos', 'fuerais', 'fueran']
+        }
+      },
+      {
+        infinitive: 'tener', english: 'to have / possess',
+        forms: {
+          pres: ['tengo', 'tienes', 'tiene', 'tenemos', 'tenéis', 'tienen'],
+          pret_indef: ['tuve', 'tuviste', 'tuvo', 'tuvimos', 'tuvisteis', 'tuvieron'],
+          pret_imp: ['tenía', 'tenías', 'tenía', 'teníamos', 'teníais', 'tenían'],
+          fut: ['tendré', 'tendrás', 'tendrá', 'tendremos', 'tendréis', 'tendrán'],
+          cond: ['tendría', 'tendrías', 'tendría', 'tendríamos', 'tendríais', 'tendrían'],
+          subj_pres: ['tenga', 'tengas', 'tenga', 'tengamos', 'tengáis', 'tengan'],
+          subj_pret_imp: ['tuviera', 'tuvieras', 'tuviera', 'tuviéramos', 'tuvierais', 'tuvieran']
+        }
+      },
+      {
+        infinitive: 'hacer', english: 'to do / to make',
+        forms: {
+          pres: ['hago', 'haces', 'hace', 'hacemos', 'hacéis', 'hacen'],
+          pret_indef: ['hice', 'hiciste', 'hizo', 'hicimos', 'hicisteis', 'hicieron'],
+          pret_imp: ['hacía', 'hacías', 'hacía', 'hacíamos', 'hacíais', 'hacían'],
+          fut: ['haré', 'harás', 'hará', 'haremos', 'haréis', 'harán'],
+          cond: ['haría', 'harías', 'haría', 'haríamos', 'haríais', 'harían'],
+          subj_pres: ['haga', 'hagas', 'haga', 'hagamos', 'hagáis', 'hagan'],
+          subj_pret_imp: ['hiciera', 'hicieras', 'hiciera', 'hiciéramos', 'hicierais', 'hicieran']
+        }
+      },
+      {
+        infinitive: 'decir', english: 'to say / to tell',
+        forms: {
+          pres: ['digo', 'dices', 'dice', 'decimos', 'decís', 'dicen'],
+          pret_indef: ['dije', 'dijiste', 'dijo', 'dijimos', 'dijisteis', 'dijeron'],
+          pret_imp: ['decía', 'decías', 'decía', 'decíamos', 'decíais', 'decían'],
+          fut: ['diré', 'dirás', 'dirá', 'diremos', 'diréis', 'dirán'],
+          cond: ['diría', 'dirías', 'diría', 'diríamos', 'diríais', 'dirían'],
+          subj_pres: ['diga', 'digas', 'diga', 'digamos', 'digáis', 'digan'],
+          subj_pret_imp: ['dijera', 'dijeras', 'dijera', 'dijéramos', 'dijerais', 'dijeran']
+        }
+      },
+      {
+        infinitive: 'poder', english: 'to be able / can',
+        forms: {
+          pres: ['puedo', 'puedes', 'puede', 'podemos', 'podéis', 'pueden'],
+          pret_indef: ['pude', 'pudiste', 'pudo', 'pudimos', 'pudisteis', 'pudieron'],
+          pret_imp: ['podía', 'podías', 'podía', 'podíamos', 'podíais', 'podían'],
+          fut: ['podré', 'podrás', 'podrá', 'podremos', 'podréis', 'podrán'],
+          cond: ['podría', 'podrías', 'podría', 'podríamos', 'podríais', 'podrían'],
+          subj_pres: ['pueda', 'puedas', 'pueda', 'podamos', 'podáis', 'puedan'],
+          subj_pret_imp: ['pudiera', 'pudieras', 'pudiera', 'pudiéramos', 'pudierais', 'pudieran']
+        }
+      },
+      {
+        infinitive: 'poner', english: 'to put / place',
+        forms: {
+          pres: ['pongo', 'pones', 'pone', 'ponemos', 'ponéis', 'ponen'],
+          pret_indef: ['puse', 'pusiste', 'puso', 'pusimos', 'pusisteis', 'pusieron'],
+          pret_imp: ['ponía', 'ponías', 'ponía', 'poníamos', 'poníais', 'ponían'],
+          fut: ['pondré', 'pondrás', 'pondrá', 'pondremos', 'pondréis', 'pondrán'],
+          cond: ['pondría', 'pondrías', 'pondría', 'pondríamos', 'pondríais', 'pondrían'],
+          subj_pres: ['ponga', 'pongas', 'ponga', 'pongamos', 'pongáis', 'pongan'],
+          subj_pret_imp: ['pusiera', 'pusieras', 'pusiera', 'pusiéramos', 'pusierais', 'pusieran']
+        }
+      },
+      {
+        infinitive: 'querer', english: 'to want / love',
+        forms: {
+          pres: ['quiero', 'quieres', 'quiere', 'queremos', 'queréis', 'quieren'],
+          pret_indef: ['quise', 'quisiste', 'quiso', 'quisimos', 'quisisteis', 'quisieron'],
+          pret_imp: ['quería', 'querías', 'quería', 'queríamos', 'queríais', 'querían'],
+          fut: ['querré', 'querrás', 'querrá', 'querremos', 'querréis', 'querrán'],
+          cond: ['querría', 'querrías', 'querría', 'querríamos', 'querríais', 'querrían'],
+          subj_pres: ['quiera', 'quieras', 'quiera', 'queramos', 'queráis', 'quieran'],
+          subj_pret_imp: ['quisiera', 'quisieras', 'quisiera', 'quisiéramos', 'quisierais', 'quisieran']
+        }
+      },
+      {
+        infinitive: 'saber', english: 'to know (facts)',
+        forms: {
+          pres: ['sé', 'sabes', 'sabe', 'sabemos', 'sabéis', 'saben'],
+          pret_indef: ['supe', 'supiste', 'supo', 'supimos', 'supisteis', 'supieron'],
+          pret_imp: ['sabía', 'sabías', 'sabía', 'sabíamos', 'sabíais', 'sabían'],
+          fut: ['sabré', 'sabrás', 'sabrá', 'sabremos', 'sabréis', 'sabrán'],
+          cond: ['sabría', 'sabrías', 'sabría', 'sabríamos', 'sabríais', 'sabrían'],
+          subj_pres: ['sepa', 'sepas', 'sepa', 'sepamos', 'sepáis', 'sepan'],
+          subj_pret_imp: ['supiera', 'supieras', 'supiera', 'supiéramos', 'supierais', 'supieran']
+        }
+      },
+      {
+        infinitive: 'ver', english: 'to see / watch',
+        forms: {
+          pres: ['veo', 'ves', 've', 'vemos', 'veis', 'ven'],
+          pret_indef: ['vi', 'viste', 'vio', 'vimos', 'visteis', 'vieron'],
+          pret_imp: ['veía', 'veías', 'veía', 'veíamos', 'veíais', 'veían'],
+          fut: ['veré', 'verás', 'verá', 'veremos', 'veréis', 'verán'],
+          cond: ['vería', 'verías', 'vería', 'veríamos', 'veríais', 'verían'],
+          subj_pres: ['vea', 'veas', 'vea', 'veamos', 'veáis', 'vean'],
+          subj_pret_imp: ['viera', 'vieras', 'viera', 'viéramos', 'vierais', 'vieran']
+        }
+      },
+      {
+        infinitive: 'hablar', english: 'to speak (regular -ar)',
+        forms: {
+          pres: ['hablo', 'hablas', 'habla', 'hablamos', 'habláis', 'hablan'],
+          pret_indef: ['hablé', 'hablaste', 'habló', 'hablamos', 'hablasteis', 'hablaron'],
+          pret_imp: ['hablaba', 'hablabas', 'hablaba', 'hablábamos', 'hablabais', 'hablaban'],
+          fut: ['hablaré', 'hablarás', 'hablará', 'hablaremos', 'hablaréis', 'hablarán'],
+          cond: ['hablaría', 'hablarías', 'hablaría', 'hablaríamos', 'hablaríais', 'hablarían'],
+          subj_pres: ['hable', 'hables', 'hable', 'hablemos', 'habléis', 'hablen'],
+          subj_pret_imp: ['hablara', 'hablaras', 'hablara', 'habláramos', 'hablarais', 'hablaran']
+        }
+      }
+    ];
+
+    function normalize(s) {
+      return (s || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    class App {
+      constructor() {
+        this.mainView = 'tarjetas';
+        this.tarjetasSub = 'study';
+        this.verboSub = 'drill';
+        
+        this.corpus = [];
+        this.activeDeck = [];
+        this.cardIdx = 0;
+        this.isFlipped = false;
+        
+        this.mistakesVault = [];
+        this.currentDrill = null;
+        this.choiceItem = null;
+        this.isDrillingMistakesOnly = false;
+        this.isDrillingSavedOnly = false;
+
+        this.sfx = true;
+        this.audioCtx = null;
+      }
+
+      async init() {
+        this.initTheme();
+        this.initTablePicker();
+        
+        await this.syncCloudflareD1();
+        await this.syncMistakesFromD1();
+
+        this.updateBadges();
+        this.renderCard();
+        this.newDrill();
+        this.newChoice();
+        this.setupKeyboard();
+        lucide.createIcons();
+      }
+
+      async syncCloudflareD1() {
+        if (!API_BASE || API_BASE.includes('<your-subdomain>')) return;
+        try {
+          const res = await fetch(`${API_BASE}/api/words`);
+          if (!res.ok) return;
+          const rows = await res.json();
+          if (Array.isArray(rows)) {
+            this.corpus = rows.map(r => ({
+              id: r.id,
+              word: r.word,
+              meaningEn: r.meaning,
+              example: r.sentence || '',
+              notes: r.notes || '',
+              status: r.status || 'unseen',
+              is_saved: !!r.is_saved,
+              ipa: '',
+              grammar: r.word.startsWith('la ') ? 'sustantivo fem.' : 'sustantivo masc.'
+            }));
+            this.activeDeck = [...this.corpus];
+          }
+        } catch (e) {
+          console.warn('Conexión con Cloudflare D1 en espera:', e);
+        }
+      }
+
+      async syncMistakesFromD1() {
+        if (!API_BASE || API_BASE.includes('<your-subdomain>')) return;
+        try {
+          const res = await fetch(`${API_BASE}/api/verb-mistakes`);
+          if (!res.ok) return;
+          const rows = await res.json();
+          if (Array.isArray(rows)) {
+            this.mistakesVault = rows;
+          }
+        } catch (e) {
+          console.warn('Conexión con errores en D1 en espera:', e);
+        }
+      }
+
+      async handleTxtFileImport(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (evt) => {
+          const text = evt.target.result;
+          const lines = text.replace(/^\uFEFF/, '').split(/\r?\n/);
+          const items = [];
+
+          for (let l of lines) {
+            l = l.trim();
+            if (!l || l.startsWith('#')) continue;
+            const parts = l.includes('\t') ? l.split('\t') : l.split('|');
+            if (parts.length >= 2) {
+              items.push({
+                word: parts[0].trim(),
+                meaning: parts[1].trim(),
+                sentence: parts[2] ? parts[2].trim() : '',
+                notes: ''
+              });
+            }
+          }
+
+          if (items.length === 0) {
+            this.toast('No se encontraron términos válidos');
+            return;
+          }
+
+          this.toast(`Importando ${items.length} palabras a Cloudflare D1...`);
+
+          try {
+            const res = await fetch(`${API_BASE}/api/words/batch`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ items })
+            });
+            const data = await res.json();
+            if (data.success) {
+              await this.syncCloudflareD1();
+              this.updateBadges();
+              this.renderCorpusList();
+              this.renderCard();
+              this.toast(`¡${items.length} palabras guardadas en D1!`);
+            }
+          } catch (err) {
+            console.error(err);
+            this.toast('Error al importar a Cloudflare D1');
+          }
+        };
+
+        reader.readAsText(file);
+        e.target.value = '';
+      }
+
+      async rateCard(status) {
+        if (!this.activeDeck.length) return;
+        const current = this.activeDeck[this.cardIdx];
+        current.status = status;
+
+        if (status === 'mastered') this.beep(520);
+        else this.beep(350);
+
+        if (current.id && API_BASE && !API_BASE.includes('<your-subdomain>')) {
+          try {
+            await fetch(`${API_BASE}/api/words/${current.id}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ status })
+            });
+          } catch (e) {}
+        }
+
+        this.nextCard();
+      }
+
+      async toggleSaveCurrentWord() {
+        if (!this.activeDeck.length) return;
+        const current = this.activeDeck[this.cardIdx];
+        current.is_saved = !current.is_saved;
+
+        if (current.id && API_BASE && !API_BASE.includes('<your-subdomain>')) {
+          try {
+            await fetch(`${API_BASE}/api/words/${current.id}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ is_saved: current.is_saved })
+            });
+          } catch (e) {}
+        }
+
+        this.updateBadges();
+        this.renderCard();
+      }
+
+      async saveCurrentCardNotes(notesVal) {
+        if (!this.activeDeck.length) return;
+        const current = this.activeDeck[this.cardIdx];
+        current.notes = notesVal;
+
+        const statusIndicator = document.getElementById('noteSavedStatus');
+        if (statusIndicator) statusIndicator.classList.remove('opacity-0');
+
+        if (current.id && API_BASE && !API_BASE.includes('<your-subdomain>')) {
+          try {
+            await fetch(`${API_BASE}/api/words/${current.id}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ notes: notesVal })
+            });
+          } catch (e) {}
+        }
+
+        setTimeout(() => {
+          if (statusIndicator) statusIndicator.classList.add('opacity-0');
+        }, 1500);
+      }
+
+      async logMistake(item, userAttempt) {
+        const payload = {
+          infinitive: item.verb.infinitive,
+          tense_key: item.tenseKey,
+          tense_name: TENSES[item.tenseKey],
+          person_idx: item.personIdx,
+          pronoun: PRONOUNS[item.personIdx].label,
+          target_answer: item.target,
+          last_attempt: userAttempt
+        };
+
+        if (API_BASE && !API_BASE.includes('<your-subdomain>')) {
+          try {
+            await fetch(`${API_BASE}/api/verb-mistakes`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            await this.syncMistakesFromD1();
+          } catch (e) {}
+        }
+
+        this.updateBadges();
+      }
+
+      async removeMistake(infinitive, tenseKey, personIdx) {
+        const match = this.mistakesVault.find(
+          m => m.infinitive === infinitive && m.tense_key === tenseKey && m.person_idx === personIdx
+        );
+        if (match && match.id && API_BASE && !API_BASE.includes('<your-subdomain>')) {
+          try {
+            await fetch(`${API_BASE}/api/verb-mistakes/${match.id}`, { method: 'DELETE' });
+            await this.syncMistakesFromD1();
+          } catch (e) {}
+        }
+        this.updateBadges();
+      }
+
+      async clearMistakes() {
+        if (API_BASE && !API_BASE.includes('<your-subdomain>')) {
+          try {
+            await fetch(`${API_BASE}/api/verb-mistakes`, { method: 'DELETE' });
+            this.mistakesVault = [];
+          } catch (e) {}
+        }
+        this.updateBadges();
+        this.renderMistakesList();
+      }
+
+      async handleNewWordSubmit(e) {
+        e.preventDefault();
+        const word = document.getElementById('newWordInput').value.trim();
+        const meaning = document.getElementById('newMeaningInput').value.trim();
+        const sentence = document.getElementById('newSentenceInput').value.trim();
+        const notes = document.getElementById('newNotesInput').value.trim();
+
+        if (!word || !meaning) return;
+
+        try {
+          const res = await fetch(`${API_BASE}/api/words`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ word, meaning, sentence, notes })
+          });
+          const data = await res.json();
+          if (data.success) {
+            await this.syncCloudflareD1();
+            document.getElementById('newWordInput').value = '';
+            document.getElementById('newMeaningInput').value = '';
+            document.getElementById('newSentenceInput').value = '';
+            document.getElementById('newNotesInput').value = '';
+            this.updateBadges();
+            this.setTarjetasSub('study');
+            this.renderCard();
+            this.toast('Guardado en Cloudflare D1');
+          }
+        } catch (err) {
+          this.toast('Error al guardar en Cloudflare D1');
+        }
+      }
+
+      renderCard() {
+        if (!this.activeDeck.length) {
+          document.getElementById('fcTerm').innerText = 'Sin palabras';
+          document.getElementById('fcMeaning').innerText = 'Importa un archivo .txt o añade una palabra';
+          document.getElementById('fcIpa').innerText = '';
+          document.getElementById('fcGrammarPill').innerText = '';
+          document.getElementById('fcExample').innerText = '';
+          document.getElementById('fcCardNotesInput').value = '';
+          document.getElementById('fcIdxIndicator').innerText = '0 / 0';
+          document.getElementById('fcBar').style.width = '0%';
+          return;
+        }
+
+        this.isFlipped = false;
+        document.getElementById('flashcardEl').classList.remove('rotate-y-180');
+
+        const item = this.activeDeck[this.cardIdx];
+        document.getElementById('fcTerm').innerText = item.word;
+        document.getElementById('fcIpa').innerText = item.ipa || '';
+        document.getElementById('fcGrammarPill').innerText = item.grammar || '';
+        document.getElementById('fcMeaning').innerText = item.meaningEn;
+        document.getElementById('fcExample').innerText = item.example ? `"${item.example}"` : '';
+        document.getElementById('fcCardNotesInput').value = item.notes || '';
+
+        const len = this.activeDeck.length;
+        document.getElementById('fcIdxIndicator').innerText = `${this.cardIdx + 1} / ${len}`;
+        document.getElementById('fcBar').style.width = `${((this.cardIdx + 1) / len) * 100}%`;
+        
+        const masteredCount = this.corpus.filter(x => x.status === 'mastered').length;
+        const reviewCount = this.corpus.filter(x => x.status === 'review').length;
+        document.getElementById('fcCountMastered').innerText = masteredCount;
+        document.getElementById('fcCountReview').innerText = reviewCount;
+
+        const starBtn = document.getElementById('fcStarBtn');
+        if (starBtn) {
+          starBtn.className = item.is_saved
+            ? "p-1.5 rounded-lg text-amber-500 transition" 
+            : "p-1.5 rounded-lg text-day-muted dark:text-night-muted hover:text-amber-500 transition";
+          starBtn.innerHTML = `<i data-lucide="star" class="w-4 h-4 ${item.is_saved ? 'fill-amber-500' : ''}"></i>`;
+        }
+        lucide.createIcons();
+      }
+
+      flipCard() {
+        if (!this.activeDeck.length) return;
+        this.isFlipped = !this.isFlipped;
+        document.getElementById('flashcardEl').classList.toggle('rotate-y-180', this.isFlipped);
+      }
+
+      nextCard() {
+        if (!this.activeDeck.length) return;
+        this.cardIdx = (this.cardIdx + 1) % this.activeDeck.length;
+        this.renderCard();
+      }
+
+      prevCard() {
+        if (!this.activeDeck.length) return;
+        this.cardIdx = (this.cardIdx - 1 + this.activeDeck.length) % this.activeDeck.length;
+        this.renderCard();
+      }
+
+      speakTerm() {
+        if (this.activeDeck.length) this.speak(this.activeDeck[this.cardIdx].word);
+      }
+
+      speakSentence() {
+        if (this.activeDeck.length && this.activeDeck[this.cardIdx].example) {
+          this.speak(this.activeDeck[this.cardIdx].example);
+        }
+      }
+
+      startSavedPractice() {
+        const savedList = this.corpus.filter(x => x.is_saved);
+        if (savedList.length === 0) return;
+        this.activeDeck = savedList;
+        this.cardIdx = 0;
+        document.getElementById('fcStudyModeFilterPill').classList.remove('hidden');
+        this.setTarjetasSub('study');
+        this.renderCard();
+      }
+
+      renderCorpusList() {
+        const q = normalize(document.getElementById('corpusFilter')?.value);
+        const rows = document.getElementById('corpusRows');
+        if (!rows) return;
+
+        const filtered = this.corpus.filter(i => normalize(i.word).includes(q) || normalize(i.meaningEn).includes(q));
+        if (filtered.length === 0) {
+          rows.innerHTML = `<div class="p-6 text-center text-xs text-day-muted dark:text-night-muted">No se encontraron términos. Usa <strong>Importar .txt</strong> o <strong>Añadir</strong>.</div>`;
+          return;
+        }
+
+        rows.innerHTML = filtered.map((item, idx) => `
+          <div class="px-3.5 py-2.5 flex items-center justify-between text-xs hover:bg-day-surface dark:hover:bg-night-surface transition">
+            <div class="min-w-0 pr-2">
+              <div class="flex items-center gap-1.5">
+                <span class="font-bold text-day-text dark:text-night-text">${item.word}</span>
+                <span class="text-[9px] px-1 py-0.2 rounded font-mono ${item.status === 'mastered' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : (item.status === 'review' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' : 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400')}">${item.status}</span>
+              </div>
+              <span class="text-day-muted dark:text-night-muted">${item.meaningEn}</span>
+              ${item.notes ? `<p class="text-[10px] text-amber-700 dark:text-amber-400 italic mt-0.5 truncate">${item.notes}</p>` : ''}
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <button onclick="app.speak('${item.word.replace(/'/g, "\\'")}')" class="p-1 text-day-muted hover:text-day-text">
+                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="app.pickCorpusCard(${idx})" class="px-2 py-0.5 rounded text-[10px] font-mono bg-day-surface dark:bg-night-surface hover:bg-rojigualda-red hover:text-white transition">
+                &rarr;
+              </button>
+            </div>
+          </div>
+        `).join('');
+        lucide.createIcons();
+      }
+
+      pickCorpusCard(idx) {
+        this.activeDeck = [...this.corpus];
+        this.cardIdx = idx;
+        document.getElementById('fcStudyModeFilterPill').classList.add('hidden');
+        this.setTarjetasSub('study');
+        this.renderCard();
+      }
+
+      renderSavedList() {
+        const rows = document.getElementById('savedWordsRows');
+        const btn = document.getElementById('btnDrillSaved');
+        if (!rows) return;
+
+        const savedArr = this.corpus.filter(x => x.is_saved);
+        if (savedArr.length === 0) {
+          rows.innerHTML = `<div class="p-6 text-center text-xs text-day-muted dark:text-night-muted">No tienes palabras guardadas. Marca con ⭐ cualquier tarjeta.</div>`;
+          if (btn) btn.disabled = true;
+          return;
+        }
+
+        if (btn) btn.disabled = false;
+        rows.innerHTML = savedArr.map(item => `
+          <div class="px-3.5 py-2.5 flex items-center justify-between text-xs hover:bg-day-surface dark:hover:bg-night-surface transition">
+            <div>
+              <span class="font-bold text-day-text dark:text-night-text">${item.word}</span>
+              <span class="text-day-muted dark:text-night-muted ml-2">${item.meaningEn}</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <button onclick="app.speak('${item.word.replace(/'/g, "\\'")}')" class="p-1 text-day-muted hover:text-day-text">
+                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        `).join('');
+        lucide.createIcons();
+      }
+
+      newDrill() {
+        let verb, tenseKey, personIdx;
+
+        if (this.isDrillingMistakesOnly && this.mistakesVault.length > 0) {
+          const m = this.mistakesVault[Math.floor(Math.random() * this.mistakesVault.length)];
+          verb = VERB_BANK.find(v => v.infinitive === m.infinitive) || VERB_BANK[0];
+          tenseKey = m.tense_key;
+          personIdx = m.person_idx;
+        } else {
+          this.isDrillingMistakesOnly = false;
+          verb = VERB_BANK[Math.floor(Math.random() * VERB_BANK.length)];
+          const tenseKeys = Object.keys(TENSES);
+          tenseKey = tenseKeys[Math.floor(Math.random() * tenseKeys.length)];
+          personIdx = Math.floor(Math.random() * 6);
+        }
+
+        this.currentDrill = {
+          verb,
+          tenseKey,
+          personIdx,
+          target: verb.forms[tenseKey][personIdx]
+        };
+
+        document.getElementById('drillInfinitive').innerText = verb.infinitive;
+        document.getElementById('drillEnglish').innerText = verb.english;
+        document.getElementById('drillTenseBadge').innerText = TENSES[tenseKey];
+        document.getElementById('drillPronounBadge').innerText = PRONOUNS[personIdx].label;
+
+        const inp = document.getElementById('drillInput');
+        inp.value = '';
+        inp.disabled = false;
+        inp.className = "w-full text-center text-lg sm:text-xl font-bold py-3.5 px-4 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card focus:border-rojigualda-red dark:focus:border-rojigualda-gold outline-none transition";
+
+        document.getElementById('drillFeedback').classList.add('hidden');
+        document.getElementById('drillListenAnswerBtn').classList.add('hidden');
+        document.getElementById('drillActionBtn').innerText = 'Comprobar';
+        document.getElementById('drillActionBtn').onclick = null;
+        inp.focus();
+      }
+
+      submitDrill(e) {
+        if (e) e.preventDefault();
+        const inp = document.getElementById('drillInput');
+        if (inp.disabled) {
+          this.newDrill();
+          return;
+        }
+
+        const val = inp.value.trim().toLowerCase();
+        if (!val) {
+          inp.classList.add('shake-anim');
+          setTimeout(() => inp.classList.remove('shake-anim'), 250);
+          return;
+        }
+
+        const target = this.currentDrill.target.toLowerCase();
+        const f = document.getElementById('drillFeedback');
+        f.classList.remove('hidden');
+        inp.disabled = true;
+
+        const actionBtn = document.getElementById('drillActionBtn');
+        actionBtn.innerText = 'Siguiente';
+        document.getElementById('drillListenAnswerBtn').classList.remove('hidden');
+
+        if (val === target) {
+          this.beep(520);
+          f.className = "p-3 rounded-xl text-center text-xs font-bold border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300";
+          f.innerText = '✓ Correcto';
+          this.removeMistake(this.currentDrill.verb.infinitive, this.currentDrill.tenseKey, this.currentDrill.personIdx);
+        } else if (normalize(val) === normalize(target)) {
+          this.beep(400);
+          f.className = "p-3 rounded-xl text-center text-xs font-bold border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300";
+          f.innerText = `Tilde requerida: ${target}`;
+          this.logMistake(this.currentDrill, val);
+        } else {
+          this.beep(240);
+          f.className = "p-3 rounded-xl text-center text-xs font-bold border border-rojigualda-red/30 bg-rojigualda-red/10 text-rojigualda-red dark:text-rose-400";
+          f.innerText = target;
+          this.logMistake(this.currentDrill, val);
+        }
+      }
+
+      nextDrill() {
+        this.newDrill();
+      }
+
+      insertChar(c) {
+        const inp = document.getElementById('drillInput');
+        if (!inp || inp.disabled) return;
+        const start = inp.selectionStart || inp.value.length;
+        const end = inp.selectionEnd || inp.value.length;
+        inp.value = inp.value.substring(0, start) + c + inp.value.substring(end);
+        inp.focus();
+        inp.selectionStart = inp.selectionEnd = start + 1;
+      }
+
+      newChoice() {
+        const verb = VERB_BANK[Math.floor(Math.random() * VERB_BANK.length)];
+        const tenseKeys = Object.keys(TENSES);
+        const tenseKey = tenseKeys[Math.floor(Math.random() * tenseKeys.length)];
+        const personIdx = Math.floor(Math.random() * 6);
+        const target = verb.forms[tenseKey][personIdx];
+
+        this.choiceItem = { verb, tenseKey, personIdx, target };
+
+        document.getElementById('choiceInfinitive').innerText = verb.infinitive;
+        document.getElementById('choiceTenseBadge').innerText = TENSES[tenseKey];
+        document.getElementById('choicePronounBadge').innerText = PRONOUNS[personIdx].label;
+        document.getElementById('choiceFeedback').classList.add('hidden');
+
+        const opts = new Set([target]);
+        for (let i = 0; i < 6; i++) {
+          if (i !== personIdx) opts.add(verb.forms[tenseKey][i]);
+          if (opts.size >= 4) break;
+        }
+        while (opts.size < 4) {
+          const rV = VERB_BANK[Math.floor(Math.random() * VERB_BANK.length)];
+          opts.add(rV.forms[tenseKey][personIdx]);
+        }
+
+        const grid = document.getElementById('choiceGrid');
+        grid.innerHTML = Array.from(opts).sort(() => Math.random() - 0.5).map(opt => `
+          <button 
+            type="button" 
+            onclick="app.selectChoice('${opt}', '${target}', this)"
+            class="p-3.5 rounded-xl border border-day-border dark:border-night-border bg-day-card dark:bg-night-card hover:border-rojigualda-red dark:hover:border-rojigualda-gold font-bold text-sm transition"
+          >
+            ${opt}
+          </button>
+        `).join('');
+      }
+
+      selectChoice(selected, target, btn) {
+        const btns = document.getElementById('choiceGrid').querySelectorAll('button');
+        btns.forEach(b => b.disabled = true);
+        const f = document.getElementById('choiceFeedback');
+        f.classList.remove('hidden');
+
+        if (selected === target) {
+          this.beep(520);
+          btn.className = "p-3.5 rounded-xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 font-bold text-sm";
+          f.className = "p-2 rounded-lg text-center text-xs font-bold border border-emerald-300 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300";
+          f.innerText = '✓ Correcto';
+          this.removeMistake(this.choiceItem.verb.infinitive, this.choiceItem.tenseKey, this.choiceItem.personIdx);
+        } else {
+          this.beep(240);
+          btn.className = "p-3.5 rounded-xl border border-rojigualda-red bg-rojigualda-red/10 text-rojigualda-red font-bold text-sm";
+          f.className = "p-2 rounded-lg text-center text-xs font-bold border border-rojigualda-red/30 bg-rojigualda-red/10 text-rojigualda-red";
+          f.innerText = target;
+          this.logMistake(this.choiceItem, selected);
+        }
+
+        setTimeout(() => this.newChoice(), 1100);
+      }
+
+      renderMistakesList() {
+        const rows = document.getElementById('mistakesRows');
+        const btn = document.getElementById('btnDrillMistakes');
+        if (!rows) return;
+
+        if (this.mistakesVault.length === 0) {
+          rows.innerHTML = `<div class="p-6 text-center text-xs text-day-muted dark:text-night-muted">No tienes errores registrados en Cloudflare D1.</div>`;
+          if (btn) btn.disabled = true;
+          return;
+        }
+
+        if (btn) btn.disabled = false;
+        rows.innerHTML = this.mistakesVault.map(m => `
+          <div class="px-3.5 py-2.5 flex items-center justify-between text-xs hover:bg-day-surface dark:hover:bg-night-surface transition">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-day-text dark:text-night-text">${m.infinitive}</span>
+                <span class="text-[10px] text-rojigualda-red dark:text-rojigualda-gold font-mono">${m.tense_name}</span>
+                <span class="px-1 py-0.2 rounded bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 font-bold text-[9px]">${m.count}x</span>
+              </div>
+              <div class="text-[11px] text-day-muted dark:text-night-muted mt-0.5">
+                ${m.pronoun} &rarr; <strong class="text-emerald-600 dark:text-emerald-400 font-semibold">${m.target_answer}</strong>
+                ${m.last_attempt ? `<span class="line-through text-rose-400 ml-1">${m.last_attempt}</span>` : ''}
+              </div>
+            </div>
+            <div class="flex items-center gap-1">
+              <button onclick="app.speak('${m.target_answer.replace(/'/g, "\\'")}')" class="p-1 text-day-muted hover:text-day-text">
+                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        `).join('');
+        lucide.createIcons();
+      }
+
+      startMistakesPractice() {
+        if (this.mistakesVault.length === 0) return;
+        this.isDrillingMistakesOnly = true;
+        this.setVerboSub('drill');
+        this.newDrill();
+      }
+
+      initTablePicker() {
+        const sel = document.getElementById('tableVerbPicker');
+        if (!sel) return;
+        sel.innerHTML = VERB_BANK.map(v => `<option value="${v.infinitive}">${v.infinitive.toUpperCase()} — ${v.english}</option>`).join('');
+      }
+
+      renderTable(infinitive) {
+        const verb = VERB_BANK.find(v => v.infinitive === infinitive) || VERB_BANK[0];
+        const tbody = document.getElementById('tableBody');
+        if (!tbody) return;
+
+        tbody.innerHTML = PRONOUNS.map((p, idx) => `
+          <tr class="hover:bg-day-surface dark:hover:bg-night-surface transition cursor-pointer" onclick="app.speak('${p.label} ${verb.forms.pres[idx]}')">
+            <td class="p-2 font-mono text-[11px] text-day-muted dark:text-night-muted">${p.label}</td>
+            <td class="p-2 font-bold text-rojigualda-red dark:text-rojigualda-gold">${verb.forms.pres[idx]}</td>
+            <td class="p-2 font-medium">${verb.forms.pret_indef[idx]}</td>
+            <td class="p-2 text-day-muted dark:text-night-muted">${verb.forms.pret_imp[idx]}</td>
+            <td class="p-2 text-day-muted dark:text-night-muted">${verb.forms.fut[idx]}</td>
+            <td class="p-2 font-medium text-amber-700 dark:text-amber-400">${verb.forms.cond[idx]}</td>
+            <td class="p-2 font-semibold text-emerald-700 dark:text-emerald-400">${verb.forms.subj_pres[idx]}</td>
+            <td class="p-2 font-semibold text-indigo-700 dark:text-indigo-400">${verb.forms.subj_pret_imp[idx]}</td>
+          </tr>
+        `).join('');
+      }
+
+      updateBadges() {
+        document.getElementById('badgeCorpusTotal').innerText = this.corpus.length;
+        document.getElementById('badgeSavedTotal').innerText = this.corpus.filter(x => x.is_saved).length;
+        document.getElementById('badgeMistakesTotal').innerText = this.mistakesVault.length;
+      }
+
+      initTheme() {
+        const dark = localStorage.getItem('esp_theme') === 'dark' || 
+          (!localStorage.getItem('esp_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', dark);
+      }
+
+      toggleTheme() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('esp_theme', isDark ? 'dark' : 'light');
+        lucide.createIcons();
+      }
+
+      toggleSound() {
+        this.sfx = !this.sfx;
+        const icon = document.getElementById('sfxIcon');
+        if (icon) {
+          icon.setAttribute('data-lucide', this.sfx ? 'volume-2' : 'volume-x');
+          lucide.createIcons();
+        }
+      }
+
+      speak(text) {
+        if (!('speechSynthesis' in window) || !text) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'es-ES';
+        u.rate = 0.95;
+        window.speechSynthesis.speak(u);
+      }
+
+      beep(freq, duration = 0.1) {
+        if (!this.sfx) return;
+        try {
+          if (!this.audioCtx) this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = this.audioCtx.createOscillator();
+          const g = this.audioCtx.createGain();
+          osc.frequency.setValueAtTime(freq, this.audioCtx.currentTime);
+          g.gain.setValueAtTime(0.08, this.audioCtx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.0001, this.audioCtx.currentTime + duration);
+          osc.connect(g);
+          g.connect(this.audioCtx.destination);
+          osc.start();
+          osc.stop(this.audioCtx.currentTime + duration);
+        } catch (_) {}
+      }
+
+      toast(msg) {
+        const el = document.getElementById('toast');
+        const c = document.getElementById('toastContent');
+        if (!el || !c) return;
+        c.innerText = msg;
+        el.classList.remove('opacity-0');
+        clearTimeout(this.toastTimer);
+        this.toastTimer = setTimeout(() => el.classList.add('opacity-0'), 2000);
+      }
+
+      setMainView(view) {
+        this.mainView = view;
+        const isTarjetas = view === 'tarjetas';
+        
+        document.getElementById('viewTarjetas').classList.toggle('hidden', !isTarjetas);
+        document.getElementById('viewVerbo').classList.toggle('hidden', isTarjetas);
+        document.getElementById('subNavTarjetas').classList.toggle('hidden', !isTarjetas);
+        document.getElementById('subNavVerbo').classList.toggle('hidden', isTarjetas);
+
+        document.getElementById('tabBtnTarjetas').className = isTarjetas 
+          ? "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-white dark:bg-night-card text-rojigualda-red dark:text-rojigualda-gold shadow-xs"
+          : "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition-all";
+        
+        document.getElementById('tabBtnVerbo').className = !isTarjetas
+          ? "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-white dark:bg-night-card text-rojigualda-red dark:text-rojigualda-gold shadow-xs"
+          : "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition-all";
+
+        lucide.createIcons();
+      }
+
+      setTarjetasSub(sub) {
+        this.tarjetasSub = sub;
+        document.getElementById('subViewCardsStudy').classList.toggle('hidden', sub !== 'study');
+        document.getElementById('subViewCardsCorpus').classList.toggle('hidden', sub !== 'corpus');
+        document.getElementById('subViewCardsSaved').classList.toggle('hidden', sub !== 'saved');
+        document.getElementById('subViewCardsAdd').classList.toggle('hidden', sub !== 'add');
+
+        const map = { study: 'subBtnCardsStudy', corpus: 'subBtnCardsCorpus', saved: 'subBtnCardsSaved', add: 'subBtnCardsAdd' };
+        Object.keys(map).forEach(key => {
+          const el = document.getElementById(map[key]);
+          if (el) {
+            el.className = key === sub
+              ? "px-3 py-1 rounded-lg font-bold bg-day-surface dark:bg-night-surface text-day-text dark:text-night-text transition flex items-center gap-1.5"
+              : "px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5";
+          }
+        });
+
+        if (sub === 'corpus') this.renderCorpusList();
+        if (sub === 'saved') this.renderSavedList();
+        lucide.createIcons();
+      }
+
+      setVerboSub(sub) {
+        this.verboSub = sub;
+        document.getElementById('subViewVerboDrill').classList.toggle('hidden', sub !== 'drill');
+        document.getElementById('subViewVerboChoice').classList.toggle('hidden', sub !== 'choice');
+        document.getElementById('subViewVerboTable').classList.toggle('hidden', sub !== 'table');
+        document.getElementById('subViewVerboMistakes').classList.toggle('hidden', sub !== 'mistakes');
+
+        const map = { drill: 'subBtnVerboDrill', choice: 'subBtnVerboChoice', table: 'subBtnVerboTable', mistakes: 'subBtnVerboMistakes' };
+        Object.keys(map).forEach(key => {
+          const el = document.getElementById(map[key]);
+          if (el) {
+            el.className = key === sub
+              ? "px-3 py-1 rounded-lg font-bold bg-day-surface dark:bg-night-surface text-day-text dark:text-night-text transition flex items-center gap-1.5"
+              : "px-3 py-1 rounded-lg font-medium text-day-muted dark:text-night-muted hover:text-day-text dark:hover:text-night-text transition flex items-center gap-1.5";
+          }
+        });
+
+        if (sub === 'table') this.renderTable(document.getElementById('tableVerbPicker').value);
+        if (sub === 'mistakes') this.renderMistakesList();
+        lucide.createIcons();
+      }
+
+      setupKeyboard() {
+        document.addEventListener('keydown', e => {
+          if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+          if (this.mainView === 'tarjetas' && this.tarjetasSub === 'study') {
+            if (e.code === 'Space') { e.preventDefault(); this.flipCard(); }
+            else if (e.code === 'ArrowRight') this.nextCard();
+            else if (e.code === 'ArrowLeft') this.prevCard();
+            else if (e.key === '1') this.rateCard('review');
+            else if (e.key === '2') this.rateCard('mastered');
+          }
+        });
+      }
+    }
+
+    let app;
+    window.addEventListener('DOMContentLoaded', () => {
+      app = new App();
+      app.init();
+    });
+  </script>
+</body>
+</html>
