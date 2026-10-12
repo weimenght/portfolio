@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Retro DJ</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Press Start 2P & VT323 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --neon-cyan: #00f3ff;
+      --neon-magenta: #ff007f;
+      --neon-green: #39ff14;
+      --neon-yellow: #ffe600;
+      --neon-purple: #9d00ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: 'Press Start 2P', monospace;
+      background-color: #080710;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      height: 100dvh;
+      max-height: 100dvh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    .font-vt {
+      font-family: 'VT323', monospace;
+    }
+
+    /* Pixelated image and canvas rendering */
+    canvas, .pixelated {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    .crt-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 99;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%),
+                  linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+      background-size: 100% 4px, 6px 100%;
+      opacity: 0.85;
+      transition: opacity 0.3s;
+    }
+
+    .crt-overlay.disabled {
+      opacity: 0;
+    }
+
+    /* Retro Glow utilities */
+    .glow-cyan {
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.6), inset 0 0 8px rgba(0, 243, 255, 0.3);
+      text-shadow: 0 0 6px #00f3ff;
+    }
+    .glow-magenta {
+      box-shadow: 0 0 10px rgba(255, 0, 127, 0.6), inset 0 0 8px rgba(255, 0, 127, 0.3);
+      text-shadow: 0 0 6px #ff007f;
+    }
+    .glow-gold {
+      box-shadow: 0 0 15px rgba(255, 230, 0, 0.8), inset 0 0 10px rgba(255, 230, 0, 0.4);
+      text-shadow: 0 0 6px #ffe600;
+    }
+
+    .arcade-pad {
+      position: relative;
+      border: 3px solid #1a1a2e;
+      border-bottom-width: 6px;
+      border-right-width: 5px;
+      transition: transform 0.05s, border-width 0.05s, box-shadow 0.05s;
+      cursor: pointer;
+    }
+
+    .arcade-pad:active, .arcade-pad.pad-active {
+      transform: translate(2px, 3px);
+      border-bottom-width: 3px;
+      border-right-width: 3px;
+      filter: brightness(1.4);
+    }
+
+    /* Turntable vinyl grooves */
+    .vinyl-grooves {
+      background: radial-gradient(circle,
+        #111 14%,
+        #ffe600 15%,
+        #ffe600 23%,
+        #161616 24%,
+        #242424 35%,
+        #141414 36%,
+        #2a2a2a 50%,
+        #121212 51%,
+        #272727 68%,
+        #0d0d0d 69%,
+        #202020 85%,
+        #050505 86%,
+        #111 100%
+      );
+    }
+
+    /* Fever rainbow flash animation */
+    @keyframes rainbow-border {
+      0% { border-color: #ff007f; box-shadow: 0 0 20px #ff007f; }
+      25% { border-color: #00f3ff; box-shadow: 0 0 20px #00f3ff; }
+      50% { border-color: #39ff14; box-shadow: 0 0 20px #39ff14; }
+      75% { border-color: #ffe600; box-shadow: 0 0 20px #ffe600; }
+      100% { border-color: #ff007f; box-shadow: 0 0 20px #ff007f; }
+    }
+
+    .fever-active {
+      animation: rainbow-border 0.4s infinite linear;
+    }
+
+    /* Custom range slider styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: #181926;
+      border: 2px solid #33364f;
+      border-radius: 4px;
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 24px;
+      background: #00f3ff;
+      border: 2px solid #fff;
+      cursor: ew-resize;
+      box-shadow: 0 0 6px #00f3ff;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body class="flex flex-col h-screen w-screen overflow-hidden select-none bg-[#090814] text-white">
+
+  <!-- CRT Scanline overlay effect -->
+  <div id="crtOverlay" class="crt-overlay"></div>
+
+  <header class="flex-none z-20 flex items-center justify-between px-2.5 py-1.5 sm:px-4 sm:py-2 bg-[#100f24] border-b-2 border-[#2b2752] text-[9px] sm:text-xs">
+    <div class="flex items-center gap-2">
+      <span class="text-xs sm:text-base text-[#ff007f] font-bold tracking-wider">RETRO<span class="text-[#00f3ff]">DJ</span></span>
+      <span id="cityTag" class="hidden sm:inline-block bg-[#1f1b3e] text-[#ffe600] px-1.5 py-0.5 rounded border border-[#ffe600]/30 text-[8px]">TOKYO NEON</span>
+    </div>
+
+    <!-- Center beat pulse lights -->
+    <div class="flex items-center gap-1.5">
+      <div id="beatLight1" class="w-2.5 h-2.5 rounded-full bg-red-950 border border-red-500"></div>
+      <div id="beatLight2" class="w-2.5 h-2.5 rounded-full bg-yellow-950 border border-yellow-500"></div>
+      <div id="beatLight3" class="w-2.5 h-2.5 rounded-full bg-green-950 border border-green-500"></div>
+      <div id="beatLight4" class="w-2.5 h-2.5 rounded-full bg-cyan-950 border border-cyan-500"></div>
+      <span id="comboBadge" class="ml-1 px-1.5 py-0.5 bg-[#ff007f]/20 border border-[#ff007f] text-[#ff007f] text-[8px] sm:text-[9px] rounded">0x</span>
+    </div>
+
+    <!-- Quick action buttons -->
+    <div class="flex items-center gap-1.5 sm:gap-2">
+      <button id="btnRandomCity" title="Randomize City Skyline & Style" class="px-2 py-1 bg-[#231e47] hover:bg-[#342e68] border border-[#00f3ff] text-[#00f3ff] rounded active:scale-95 text-[8px] sm:text-[9px] flex items-center gap-1">
+        <span>🎲</span><span class="hidden md:inline">CITY</span>
+      </button>
+
+      <button id="btnSelectDJ" title="Select DJ Avatar" class="px-2 py-1 bg-[#231e47] hover:bg-[#342e68] border border-[#ffe600] text-[#ffe600] rounded active:scale-95 text-[8px] sm:text-[9px] flex items-center gap-1">
+        <span>🎧</span><span id="djNameShort" class="hidden md:inline">REX</span>
+      </button>
+
+      <button id="btnToggleCRT" title="Toggle Scanline Filter" class="px-2 py-1 bg-[#1a1836] border border-[#5d568c] text-gray-300 rounded active:scale-95 text-[8px]">
+        CRT
+      </button>
+    </div>
+  </header>
+
+  <main class="relative flex-1 min-h-[160px] sm:min-h-[200px] w-full overflow-hidden bg-black flex flex-col">
+    <!-- Stage Canvas: Skyline, Lasers, DJ Avatar, Crowd -->
+    <canvas id="stageCanvas" class="w-full h-full block pixelated"></canvas>
+
+    <!-- Floating Score Popups Container -->
+    <div id="floatingTextContainer" class="absolute inset-0 pointer-events-none overflow-hidden z-10"></div>
+
+    <!-- Dynamic Beat rhythm target strip -->
+    <div class="absolute bottom-0 left-0 right-0 h-4 bg-black/75 border-t border-[#312c5b] flex items-center justify-center overflow-hidden z-10 px-4">
+      <div class="relative w-full max-w-md h-full flex items-center">
+        <!-- Center Hit Target Marker -->
+        <div class="absolute left-1/2 -translate-x-1/2 w-4 h-full border-x-2 border-[#00f3ff] bg-[#00f3ff]/20 flex items-center justify-center">
+          <div class="w-1 h-2 bg-white"></div>
+        </div>
+        <!-- Moving beat ticks generated in JS -->
+        <div id="beatTrack" class="w-full h-full relative"></div>
+      </div>
+    </div>
+  </main>
+
+  <section class="flex-none z-20 w-full bg-[#110f22] border-t-2 border-[#2b2752] p-1.5 sm:p-2.5 flex flex-col gap-1.5 sm:gap-2">
+
+    <!-- Top Mixer Bar: Crossfader, BPM, Hype Meter & Fever Drop Button -->
+    <div class="flex items-center justify-between gap-1.5 sm:gap-3 bg-[#181630] p-1.5 rounded-lg border border-[#2b2854]">
+      
+      <!-- Crossfader: Beat A vs Synth B -->
+      <div class="flex flex-col items-center flex-1 max-w-[140px] sm:max-w-[190px]">
+        <div class="flex justify-between w-full text-[7px] sm:text-[8px] text-gray-400 mb-0.5">
+          <span class="text-[#00f3ff] font-bold">A:BEAT</span>
+          <span class="text-gray-300">X-FADE</span>
+          <span class="text-[#ff007f] font-bold">B:SYNTH</span>
+        </div>
+        <input id="crossFader" type="range" min="0" max="100" value="50" class="w-full h-3 cursor-pointer">
+      </div>
+
+      <!-- BPM Tempo control -->
+      <div class="flex flex-col items-center w-20 sm:w-28">
+        <div class="flex justify-between w-full text-[7px] sm:text-[8px] text-gray-400 mb-0.5">
+          <span>BPM</span>
+          <span id="bpmValue" class="text-[#ffe600] font-bold">124</span>
+        </div>
+        <input id="bpmSlider" type="range" min="80" max="160" value="124" class="w-full h-3 cursor-pointer">
+      </div>
+
+      <!-- Crowd Hype Meter & Drop Bass Frenzy Button -->
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-1 justify-end">
+        <div class="flex flex-col w-20 sm:w-32">
+          <div class="flex justify-between text-[7px] sm:text-[8px] mb-0.5">
+            <span class="text-gray-400">HYPE</span>
+            <span id="hypePct" class="text-[#39ff14] font-bold">45%</span>
+          </div>
+          <div class="w-full h-2.5 bg-[#090814] rounded overflow-hidden border border-[#3b376b]">
+            <div id="hypeBar" class="h-full bg-gradient-to-r from-[#00f3ff] via-[#39ff14] to-[#ffe600] transition-all duration-150 w-[45%]"></div>
+          </div>
+        </div>
+
+        <!-- Bass Drop / Fever Frenzy Button -->
+        <button id="btnBassDrop" class="px-2 py-1.5 sm:px-3 sm:py-2 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white rounded font-bold text-[8px] sm:text-[9px] border-2 border-yellow-300 active:scale-95 shadow-md flex items-center justify-center tracking-tighter">
+          💥 <span class="hidden sm:inline ml-1">DROP!</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Deck Controls: Left Scratch Turntable + Right 8x Arcade Beat Pads -->
+    <div class="grid grid-cols-12 gap-1.5 sm:gap-3 items-center">
+
+      <!-- Scratch Vinyl Turntable Column (Takes 4 cols on mobile, 3.5 cols on desktop) -->
+      <div class="col-span-4 sm:col-span-3 flex flex-col items-center justify-center">
+        <div class="relative w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full border-4 border-[#28254b] p-1 bg-[#090812] shadow-inner flex items-center justify-center">
+          <!-- Tone arm decoration -->
+          <div class="absolute -top-1 -right-1 w-6 sm:w-8 h-10 sm:h-12 border-r-4 border-t-4 border-[#7872a8] rounded-tr-lg pointer-events-none z-10 rotate-12 opacity-80"></div>
+          
+          <!-- Interactive Scratchable Vinyl Disc -->
+          <div id="vinylRecord" class="w-full h-full rounded-full vinyl-grooves relative flex items-center justify-center cursor-grab active:cursor-grabbing border-2 border-black shadow-lg">
+            <!-- Center Vinyl Label with animated sticker -->
+            <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-[#ffe600] border-2 border-[#111] flex flex-col items-center justify-center pointer-events-none text-center shadow-inner">
+              <span class="text-[6px] sm:text-[7px] text-black font-bold">PIXEL</span>
+              <div class="w-2 h-2 rounded-full bg-[#111] my-0.5"></div>
+              <span class="text-[5px] sm:text-[6px] text-black">45 RPM</span>
+            </div>
+            <!-- Marker line to visualize spin and scratching -->
+            <div id="vinylStripe" class="absolute top-1 left-1/2 -translate-x-1/2 w-1 h-3 sm:h-4 bg-[#ff007f] rounded-full pointer-events-none"></div>
+          </div>
+        </div>
+        <span class="text-[7px] sm:text-[8px] text-gray-400 mt-1 tracking-wider">◄ SCRATCH ME ►</span>
+      </div>
+
+      <div class="col-span-8 sm:col-span-9 grid grid-cols-4 gap-1 sm:gap-2">
+        
+        <!-- Pad 1: Kick -->
+        <button data-pad="0" class="arcade-pad bg-[#d91456] hover:bg-[#e82365] rounded p-1.5 sm:p-2.5 flex flex-col items-center justify-center text-center">
+          <span class="text-[7px] sm:text-[8px] text-pink-200">KICK</span>
+          <span class="text-[9px] sm:text-xs mt-0.5">🥁</span>
+          <span class="text-[6px] text-pink-300/80 hidden sm:block mt-0.5">[1]</span>
+        </button>
+
+        <!-- Pad 2: Snare -->
+        <button data-pad="1" class="arcade-pad bg-[#0284c7] hover:bg-[#0ea5e9] rounded p-1.5 sm:p-2.5 flex flex-col items-center justify-center text-center">
+          <span class="text-[7px] sm:text-[8px] text-cyan-200">SNARE</span>
+          <span class="text-[9px] sm:text-xs mt-0.5">💥</span>
+          <span class="text-[6px] text-cyan-300/80 hidden sm:block mt-0.5">[2]</span>
+        </button>
+
+        <!-- Pad 3: Hi-Hat -->
+        <button data-pad="2" class="arcade-pad bg-[#ca8a04] hover:bg-[#eab308] rounded p-1.5 sm:p-2.5 flex flex-col items-center justify-center text-center">
+          <span class="text-[7px] sm:text-[8px] text-amber-100">HI-HAT</span>
+          <span class="text-[9px] sm:text-xs mt-0.5">✨</span>
+          <span class="text-[6px] text-amber-200/80 hidden sm:block mt-0.5">[3]</span>
+        </button>
+
+        <!-- Pad 4: Acid Bass -->
+        <button data-pad="3" class="arcade-pad bg-[#16a34a] hover:bg-[#22c55e] rounded p-1.5 sm:p-2.5 flex flex-col items-center justify-center text-center">
+          <span class="text-[7px] sm:text-[8px] text-emerald-100">ACID</span>
+          <span class="text-[9px] sm:text-xs mt-0.5">🔊</span>
+          <span class="text-[6px] text-emerald-200/80 hidden sm:block mt-0.5">[4]</span>
+        </button>
+
+        <!-- Pad 5: Chiptune Arp -->
+        <button data-pad="4" class="arcade-pad bg-[#7c3aed] hover:bg-[#9333ea] rounded p-1.5 sm:p-2.5 flex flex-col items-center justify-center text-center">
+          <span class="text-[7px] sm:text-[8px] text-purple-200">CHIP</span>
+          <span class="text-[9px] sm:text-xs mt-0.5">👾</span>
+          <span class="text-[6px] text-purple-300/80 hidden sm:block mt-0.5">[Q]</span>
+        </button>
+
+        <!-- Pad 6: Laser Zap -->
+        <button data-pad="5" class="arcade-pad bg-[#059669] hover:bg-[#10b981] rounded p-1.5 sm:p-2.5 flex flex-col items-center justify-center text-center">
+          <span class="text-[7px] sm:text-[8px] text-teal-100">LASER</span>
+          <span class="text-[9px] sm:text-xs mt-0.5">🔫</span>
+          <span class="text-[6px] text-teal-200/80 hidden sm:block mt-0.5">[W]</span>
+        </button>
+
+        <!-- Pad 7: 8-bit Airhorn -->
+        <button data-pad="6" class="arcade-pad bg-[#ea580c] hover:bg-[#f97316] rounded p-1.5 sm:p-2.5 flex flex-col items-center justify-center text-center">
+          <span class="text-[7px] sm:text-[8px] text-orange-100">HORN</span>
+          <span class="text-[9px] sm:text-xs mt-0.5">🎺</span>
+          <span class="text-[6px] text-orange-200/80 hidden sm:block mt-0.5">[E]</span>
+        </button>
+
+        <!-- Pad 8: Crowd Shout -->
+        <button data-pad="7" class="arcade-pad bg-[#e11d48] hover:bg-[#f43f5e] rounded p-1.5 sm:p-2.5 flex flex-col items-center justify-center text-center">
+          <span class="text-[7px] sm:text-[8px] text-rose-100">CROWD</span>
+          <span class="text-[9px] sm:text-xs mt-0.5">🙌</span>
+          <span class="text-[6px] text-rose-200/80 hidden sm:block mt-0.5">[R]</span>
+        </button>
+
+      </div>
+    </div>
+  </section>
+
+  <div id="characterModal" class="hidden absolute inset-0 z-50 bg-black/85 flex items-center justify-center p-3">
+    <div class="bg-[#171430] border-4 border-[#00f3ff] rounded-xl max-w-sm w-full p-4 flex flex-col shadow-2xl">
+      <div class="flex items-center justify-between pb-2 mb-3 border-b-2 border-[#2b2752]">
+        <h2 class="text-xs sm:text-sm text-[#ffe600]">SELECT DJ HERO</h2>
+        <button id="btnCloseModal" class="text-gray-400 hover:text-white px-2 py-1 text-sm font-bold">✕</button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1" id="characterList">
+        <!-- Character cards populated in JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Self-contained, robust Chiptune & Beat Web Audio Engine
+    let audioCtx = null;
+    let masterGain = null;
+    let channelAGain = null; // Beats channel
+    let channelBGain = null; // Chiptune synth channel
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+
+        masterGain = audioCtx.createGain();
+        masterGain.gain.setValueAtTime(0.85, audioCtx.currentTime);
+        masterGain.connect(audioCtx.destination);
+
+        channelAGain = audioCtx.createGain();
+        channelAGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+        channelAGain.connect(masterGain);
+
+        channelBGain = audioCtx.createGain();
+        channelBGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+        channelBGain.connect(masterGain);
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    // Sound Generation: Kick Drum
+    function synthKick(time = 0) {
+      const ctx = getAudioContext();
+      const t = time || ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(140, t);
+      osc.frequency.exponentialRampToValueAtTime(32, t + 0.12);
+
+      gain.gain.setValueAtTime(1.0, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+
+      osc.connect(gain);
+      gain.connect(channelAGain);
+
+      osc.start(t);
+      osc.stop(t + 0.28);
+    }
+
+    // Sound Generation: Snare Drum (Noise + Tone)
+    function synthSnare(time = 0) {
+      const ctx = getAudioContext();
+      const t = time || ctx.currentTime;
+
+      // Noise buffer for snap
+      const bufferSize = ctx.sampleRate * 0.15;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+      }
+
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.setValueAtTime(800, t);
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.7, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(channelAGain);
+
+      // Body tone
+      const osc = ctx.createOscillator();
+      const oscGain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(190, t);
+      osc.frequency.exponentialRampToValueAtTime(45, t + 0.08);
+
+      oscGain.gain.setValueAtTime(0.6, t);
+      oscGain.gain.exponentialRampToValueAtTime(0.01, t + 0.09);
+
+      osc.connect(oscGain);
+      oscGain.connect(channelAGain);
+
+      noise.start(t);
+      noise.stop(t + 0.15);
+      osc.start(t);
+      osc.stop(t + 0.09);
+    }
+
+    // Sound Generation: Hi-Hat
+    function synthHiHat(time = 0) {
+      const ctx = getAudioContext();
+      const t = time || ctx.currentTime;
+      const bufferSize = ctx.sampleRate * 0.05;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(8000, t);
+      filter.Q.setValueAtTime(3, t);
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.5, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.045);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(channelAGain);
+
+      noise.start(t);
+      noise.stop(t + 0.05);
+    }
+
+    // Sound Generation: Acid Bass
+    let acidNoteIndex = 0;
+    const acidFrequencies = [65.4, 73.4, 87.3, 98.0, 110.0, 130.8]; // C2 to C3 minor
+    function synthAcid(time = 0) {
+      const ctx = getAudioContext();
+      const t = time || ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const filter = ctx.createBiquadFilter();
+      const gain = ctx.createGain();
+
+      const freq = acidFrequencies[acidNoteIndex % acidFrequencies.length];
+      acidNoteIndex++;
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, t);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1400, t);
+      filter.frequency.exponentialRampToValueAtTime(150, t + 0.25);
+      filter.Q.setValueAtTime(8, t);
+
+      gain.gain.setValueAtTime(0.8, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(channelBGain);
+
+      osc.start(t);
+      osc.stop(t + 0.28);
+    }
+
+    // Sound Generation: Chiptune Melody
+    let chipIndex = 0;
+    const chipScale = [261.6, 311.1, 349.2, 392.0, 466.2, 523.3, 622.3]; // C minor pentatonic
+    function synthChiptune(time = 0) {
+      const ctx = getAudioContext();
+      const t = time || ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      const note = chipScale[chipIndex % chipScale.length];
+      chipIndex++;
+
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(note, t);
+      // Quick retro vibrato
+      osc.frequency.linearRampToValueAtTime(note * 1.03, t + 0.08);
+      osc.frequency.linearRampToValueAtTime(note, t + 0.16);
+
+      gain.gain.setValueAtTime(0.4, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+
+      osc.connect(gain);
+      gain.connect(channelBGain);
+
+      osc.start(t);
+      osc.stop(t + 0.22);
+    }
+
+    // Sound Generation: Laser Zap
+    function synthLaser(time = 0) {
+      const ctx = getAudioContext();
+      const t = time || ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(1100, t);
+      osc.frequency.exponentialRampToValueAtTime(90, t + 0.14);
+
+      gain.gain.setValueAtTime(0.6, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+
+      osc.connect(gain);
+      gain.connect(masterGain);
+
+      osc.start(t);
+      osc.stop(t + 0.15);
+    }
+
+    // Sound Generation: 8-bit Reggae Airhorn
+    function synthAirhorn() {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+      const notes = [440, 440, 440, 440, 554.37, 440];
+      const step = 0.07;
+
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(freq, now + idx * step);
+
+        gain.gain.setValueAtTime(0.4, now + idx * step);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + idx * step + 0.065);
+
+        osc.connect(gain);
+        gain.connect(masterGain);
+
+        osc.start(now + idx * step);
+        osc.stop(now + idx * step + 0.07);
+      });
+    }
+
+    // Sound Generation: Crowd Cheer Shout
+    function synthCrowdShout() {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+      const bufferSize = ctx.sampleRate * 0.4;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.sin((i / bufferSize) * Math.PI);
+      }
+
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(750, now);
+      filter.Q.setValueAtTime(1.5, now);
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.8, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(masterGain);
+
+      noise.start(now);
+      noise.stop(now + 0.4);
+    }
+
+    // Dynamic Scratch Sound with Pitch Proportional to Rotation Velocity
+    let lastScratchTime = 0;
+    function playScratchSound(speed) {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+      if (now - lastScratchTime < 0.05) return; // limit density
+      lastScratchTime = now;
+
+      const clampedSpeed = Math.min(Math.max(Math.abs(speed), 0.2), 3.0);
+      const osc = ctx.createOscillator();
+      const filter = ctx.createBiquadFilter();
+      const gain = ctx.createGain();
+
+      osc.type = 'sawtooth';
+      const baseFreq = 220 * clampedSpeed;
+      osc.frequency.setValueAtTime(baseFreq, now);
+      osc.frequency.linearRampToValueAtTime(baseFreq * (speed > 0 ? 1.6 : 0.6), now + 0.08);
+
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(900 * clampedSpeed, now);
+      filter.Q.setValueAtTime(4.0, now);
+
+      gain.gain.setValueAtTime(0.6, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(masterGain);
+
+      osc.start(now);
+      osc.stop(now + 0.09);
+    }
+
+    // Mega Bass Drop / Fever Frenzy Trigger
+    function playBassDropExplosion() {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+
+      // 1. Pitch Riser Siren
+      const siren = ctx.createOscillator();
+      const sirenGain = ctx.createGain();
+      siren.type = 'sawtooth';
+      siren.frequency.setValueAtTime(200, now);
+      siren.frequency.exponentialRampToValueAtTime(1200, now + 0.5);
+
+      sirenGain.gain.setValueAtTime(0.4, now);
+      sirenGain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+
+      siren.connect(sirenGain);
+      sirenGain.connect(masterGain);
+      siren.start(now);
+      siren.stop(now + 0.5);
+
+      // 2. Sub-Bass Explosion Boom
+      const boom = ctx.createOscillator();
+      const boomGain = ctx.createGain();
+      boom.type = 'sine';
+      boom.frequency.setValueAtTime(160, now + 0.5);
+      boom.frequency.exponentialRampToValueAtTime(28, now + 1.4);
+
+      boomGain.gain.setValueAtTime(1.0, now + 0.5);
+      boomGain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+
+      boom.connect(boomGain);
+      boomGain.connect(masterGain);
+      boom.start(now + 0.5);
+      boom.stop(now + 1.5);
+    }
+
+    const GAME = {
+      score: 0,
+      combo: 0,
+      hype: 45, // 0 to 100
+      bpm: 124,
+      fever: false,
+      feverTimer: 0,
+      activeCityIdx: 0,
+      activeDjIdx: 0,
+      beatStep: 0,
+      crossfade: 0.5,
+      lastBeatTime: 0
+    };
+
+    // 5 Distinct Pixel City Themes
+    const CITIES = [
+      {
+        name: "TOKYO NEON",
+        skyGrad: ["#0b0424", "#2e0854"],
+        gridColor: "#ff007f",
+        buildingColors: ["#140d33", "#1b1442", "#231a57"],
+        windowColor: "#00f3ff",
+        accent: "#ff007f"
+      },
+      {
+        name: "MIAMI 84",
+        skyGrad: ["#1e0826", "#61184a", "#db486f"],
+        gridColor: "#00f3ff",
+        buildingColors: ["#150b1f", "#261338", "#381a4d"],
+        windowColor: "#ffe600",
+        accent: "#ffe600"
+      },
+      {
+        name: "BERLIN CLUB",
+        skyGrad: ["#080a0c", "#121a1d"],
+        gridColor: "#39ff14",
+        buildingColors: ["#0d1114", "#141c22", "#1b252d"],
+        windowColor: "#39ff14",
+        accent: "#39ff14"
+      },
+      {
+        name: "MOTHERSHIP",
+        skyGrad: ["#03001e", "#1b0042"],
+        gridColor: "#b026ff",
+        buildingColors: ["#0d0426", "#140a3d", "#1e1059"],
+        windowColor: "#ff00ff",
+        accent: "#00f3ff"
+      },
+      {
+        name: "CYBER NYC",
+        skyGrad: ["#041017", "#0a2430"],
+        gridColor: "#ffe600",
+        buildingColors: ["#081620", "#0f2330", "#163142"],
+        windowColor: "#ffe600",
+        accent: "#00f3ff"
+      }
+    ];
+
+    const CHARACTERS = [
+      { id: 'rex', name: 'DJ REX', type: 'Human', color: '#ff007f', icon: '🧢', desc: 'Arcade King' },
+      { id: 'luna', name: 'LUNA VIBE', type: 'Human', color: '#00f3ff', icon: '🎧', desc: 'Synth Diva' },
+      { id: 'neo', name: 'B-BOY NEO', type: 'Human', color: '#ffe600', icon: '👟', desc: 'Breakbeat Master' },
+      { id: 'scratchy', name: 'SCRATCHY CAT', type: 'Animal', color: '#39ff14', icon: '🐱', desc: 'Gold Chain Feline' },
+      { id: 'puggo', name: 'DJ PUGGO', type: 'Animal', color: '#f97316', icon: '🐶', desc: 'Barking the Beats' },
+      { id: 'frog', name: 'GROOVE FROG', type: 'Animal', color: '#22c55e', icon: '🐸', desc: 'Lilypad Funk' },
+      { id: 'zorblax', name: 'ZORBLAX', type: 'Alien', color: '#a855f7', icon: '👽', desc: '3-Eyed Martian' },
+      { id: 'blob', name: 'NEON BLOB', type: 'Alien', color: '#ec4899', icon: '🫧', desc: 'Jelly Jams' },
+      { id: 'chromebot', name: 'CHROME BOT', type: 'Easter Egg', color: '#e2e8f0', icon: '🤖', desc: 'French Electro Bot' },
+      { id: 'ghost', name: 'GHOST DJ', type: 'Easter Egg', color: '#67e8f9', icon: '👻', desc: 'Spooky Basslines' }
+    ];
+
+    const stageCanvas = document.getElementById('stageCanvas');
+    const stageCtx = stageCanvas.getContext('2d');
+
+    let canvasWidth = 0;
+    let canvasHeight = 0;
+
+    function resizeStage() {
+      const rect = stageCanvas.getBoundingClientRect();
+      stageCanvas.width = rect.width;
+      stageCanvas.height = rect.height;
+      canvasWidth = rect.width;
+      canvasHeight = rect.height;
+    }
+    window.addEventListener('resize', resizeStage);
+
+    // Dynamic Crowd Dancers (25 pixel dancers with unique bob offsets)
+    const crowdDancers = [];
+    function initCrowd() {
+      crowdDancers.length = 0;
+      const count = Math.max(18, Math.floor(window.innerWidth / 30));
+      for (let i = 0; i < count; i++) {
+        crowdDancers.push({
+          xRel: (i + 0.5) / count,
+          height: 14 + Math.random() * 8,
+          headColor: Math.random() > 0.5 ? '#00f3ff' : '#ff007f',
+          glowStick: Math.random() > 0.4 ? (Math.random() > 0.5 ? '#39ff14' : '#ffe600') : null,
+          jumpPhase: Math.random() * Math.PI * 2
+        });
+      }
+    }
+    initCrowd();
+    window.addEventListener('resize', initCrowd);
+
+    // Laser beams state
+    let laserAngle = 0;
+
+    // Confetti particles for Bass Drop / Fever Mode
+    const confettiParticles = [];
+    function spawnFeverConfetti() {
+      for (let i = 0; i < 40; i++) {
+        confettiParticles.push({
+          x: Math.random() * canvasWidth,
+          y: canvasHeight * 0.7,
+          vx: (Math.random() - 0.5) * 6,
+          vy: -Math.random() * 7 - 3,
+          color: ['#00f3ff', '#ff007f', '#ffe600', '#39ff14', '#fff'][Math.floor(Math.random() * 5)],
+          size: 3 + Math.random() * 3,
+          life: 60 + Math.random() * 40
+        });
+      }
+    }
+
+    function drawPixelDJAvatar(ctx, x, y, char, isScratching, beatPulse) {
+      ctx.save();
+      ctx.translate(x, y);
+
+      const bobY = Math.sin(Date.now() * 0.008 * (GAME.bpm / 120)) * (GAME.fever ? 6 : 3);
+      ctx.translate(0, bobY);
+
+      // DJ Body / Torso
+      ctx.fillStyle = '#1e1b38';
+      ctx.fillRect(-12, -22, 24, 24);
+
+      // Character specific heads and features
+      const headY = -34;
+      switch (char.id) {
+        case 'rex': // Cap & Sunglasses
+          ctx.fillStyle = '#f87171'; // Red Cap
+          ctx.fillRect(-11, headY - 8, 22, 10);
+          ctx.fillStyle = '#ffe4e6'; // Face
+          ctx.fillRect(-10, headY, 20, 16);
+          // Neon shades
+          ctx.fillStyle = '#00f3ff';
+          ctx.fillRect(-8, headY + 3, 16, 5);
+          break;
+
+        case 'luna': // Cyan visor, pink hair
+          ctx.fillStyle = '#ff007f'; // Hair
+          ctx.fillRect(-14, headY - 6, 28, 20);
+          ctx.fillStyle = '#ffe4e6'; // Face
+          ctx.fillRect(-9, headY + 2, 18, 14);
+          ctx.fillStyle = '#00f3ff'; // Visor
+          ctx.fillRect(-8, headY + 5, 16, 4);
+          break;
+
+        case 'scratchy': // Cat
+          ctx.fillStyle = '#9ca3af'; // Cat Head
+          ctx.fillRect(-12, headY, 24, 16);
+          // Ears
+          ctx.beginPath();
+          ctx.moveTo(-12, headY); ctx.lineTo(-7, headY - 9); ctx.lineTo(-2, headY);
+          ctx.moveTo(2, headY); ctx.lineTo(7, headY - 9); ctx.lineTo(12, headY);
+          ctx.fill();
+          // Cat Eyes (Yellow glow)
+          ctx.fillStyle = '#ffe600';
+          ctx.fillRect(-8, headY + 4, 4, 4);
+          ctx.fillRect(4, headY + 4, 4, 4);
+          // Gold chain
+          ctx.fillStyle = '#fbbf24';
+          ctx.fillRect(-7, -20, 14, 4);
+          break;
+
+        case 'puggo': // Pug dog
+          ctx.fillStyle = '#d97706';
+          ctx.fillRect(-13, headY, 26, 17);
+          ctx.fillStyle = '#78350f'; // Pug muzzle
+          ctx.fillRect(-7, headY + 6, 14, 10);
+          // Big cute eyes
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(-9, headY + 3, 5, 5);
+          ctx.fillRect(4, headY + 3, 5, 5);
+          ctx.fillStyle = '#000000';
+          ctx.fillRect(-7, headY + 4, 3, 3);
+          ctx.fillRect(4, headY + 4, 3, 3);
+          break;
+
+        case 'zorblax': // 3-eyed Alien
+          ctx.fillStyle = '#86efac';
+          ctx.fillRect(-11, headY - 3, 22, 19);
+          // Antenna
+          ctx.fillStyle = '#4ade80';
+          ctx.fillRect(-1, headY - 12, 3, 10);
+          ctx.fillStyle = '#a855f7';
+          ctx.fillRect(-3, headY - 15, 7, 5);
+          // 3 Glowing Cyan Eyes
+          ctx.fillStyle = '#00f3ff';
+          ctx.fillRect(-9, headY + 3, 4, 4);
+          ctx.fillRect(-2, headY + 1, 4, 4);
+          ctx.fillRect(5, headY + 3, 4, 4);
+          break;
+
+        case 'chromebot': // Chrome Helmet
+          ctx.fillStyle = '#e2e8f0';
+          ctx.fillRect(-12, headY - 4, 24, 20);
+          // Equalizer visor smile
+          ctx.fillStyle = '#ef4444';
+          ctx.fillRect(-9, headY + 6, 18, 5);
+          break;
+
+        case 'ghost': // Spooky translucent ghost
+          ctx.fillStyle = 'rgba(103, 232, 249, 0.75)';
+          ctx.fillRect(-12, headY - 4, 24, 22);
+          // Glowing purple eyes
+          ctx.fillStyle = '#c084fc';
+          ctx.fillRect(-8, headY + 3, 5, 5);
+          ctx.fillRect(3, headY + 3, 5, 5);
+          break;
+
+        default: // Standard cool avatar
+          ctx.fillStyle = char.color;
+          ctx.fillRect(-10, headY, 20, 16);
+          ctx.fillStyle = '#000';
+          ctx.fillRect(-7, headY + 4, 14, 4);
+      }
+
+      // Headphones on avatar
+      ctx.fillStyle = '#111827';
+      ctx.fillRect(-15, headY - 3, 4, 16);
+      ctx.fillRect(11, headY - 3, 4, 16);
+      ctx.fillStyle = char.color;
+      ctx.fillRect(-14, headY - 7, 28, 4);
+
+      // Arms (Right arm on vinyl deck scratch motion)
+      ctx.fillStyle = '#cbd5e1';
+      // Left arm holds headphone
+      ctx.fillRect(-16, -18, 5, 12);
+      ctx.fillRect(-17, -26, 6, 9);
+
+      // Right arm scratches back and forth
+      const scratchArmX = isScratching ? 10 + Math.sin(Date.now() * 0.04) * 8 : 10;
+      ctx.fillRect(12, -18, 6, 10);
+      ctx.fillRect(scratchArmX, -9, 8, 12);
+
+      ctx.restore();
+    }
+
+    function renderStage() {
+      if (!canvasWidth || !canvasHeight) return;
+
+      const city = CITIES[GAME.activeCityIdx];
+      const char = CHARACTERS[GAME.activeDjIdx];
+
+      // 1. Sky Gradient
+      const sky = stageCtx.createLinearGradient(0, 0, 0, canvasHeight);
+      sky.addColorStop(0, city.skyGrad[0]);
+      sky.addColorStop(1, city.skyGrad[1] || city.skyGrad[0]);
+      stageCtx.fillStyle = sky;
+      stageCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+      // 2. City Skylines (Pixel buildings with glowing windows)
+      const bldgY = canvasHeight * 0.45;
+      const bldgW = Math.max(28, canvasWidth / 14);
+      for (let i = 0; i < 18; i++) {
+        const h = 50 + ((i * 37) % 80);
+        const bx = i * bldgW - 10;
+        stageCtx.fillStyle = city.buildingColors[i % city.buildingColors.length];
+        stageCtx.fillRect(bx, bldgY - h, bldgW - 2, h + 80);
+
+        // Pixel Windows
+        stageCtx.fillStyle = (i % 2 === 0 || GAME.fever) ? city.windowColor : '#252140';
+        for (let wy = bldgY - h + 8; wy < bldgY + 20; wy += 14) {
+          if ((i + wy) % 3 !== 0) {
+            stageCtx.fillRect(bx + 4, wy, 4, 5);
+            stageCtx.fillRect(bx + bldgW - 10, wy, 4, 5);
+          }
+        }
+      }
+
+      // 3. Dynamic Laser Beams
+      laserAngle += GAME.fever ? 0.06 : 0.02;
+      const centerX = canvasWidth * 0.5;
+      const djCenterY = canvasHeight * 0.72;
+
+      stageCtx.save();
+      stageCtx.globalAlpha = GAME.fever ? 0.75 : 0.35;
+      const laserCount = GAME.fever ? 6 : 4;
+      for (let l = 0; l < laserCount; l++) {
+        const offset = (l * Math.PI) / laserCount;
+        const beamX = centerX + Math.cos(laserAngle + offset) * (canvasWidth * 0.6);
+        stageCtx.strokeStyle = l % 2 === 0 ? city.accent : '#00f3ff';
+        stageCtx.lineWidth = GAME.fever ? 5 : 3;
+        stageCtx.beginPath();
+        stageCtx.moveTo(centerX, djCenterY - 40);
+        stageCtx.lineTo(beamX, 0);
+        stageCtx.stroke();
+      }
+      stageCtx.restore();
+
+      // 4. DJ Booth & Equipment Table
+      const boothW = Math.min(180, canvasWidth * 0.55);
+      const boothX = centerX - boothW / 2;
+      const boothY = djCenterY - 14;
+
+      // Draw Avatar behind the booth
+      const isScratching = (Date.now() - lastScratchEventTime < 250);
+      drawPixelDJAvatar(stageCtx, centerX, boothY, char, isScratching, GAME.beatStep);
+
+      // DJ Booth Front Panel
+      stageCtx.fillStyle = '#0f0e22';
+      stageCtx.fillRect(boothX, boothY, boothW, canvasHeight - boothY);
+      stageCtx.strokeStyle = city.accent;
+      stageCtx.lineWidth = 3;
+      stageCtx.strokeRect(boothX, boothY, boothW, canvasHeight - boothY);
+
+      // Neon Equalizer Graphic on Booth Front
+      const bars = 8;
+      const barW = (boothW - 20) / bars;
+      for (let b = 0; b < bars; b++) {
+        const barH = 5 + Math.abs(Math.sin(Date.now() * 0.01 + b) * 20) * (GAME.fever ? 1.5 : 1);
+        stageCtx.fillStyle = b % 2 === 0 ? '#00f3ff' : '#ff007f';
+        stageCtx.fillRect(boothX + 10 + b * barW, boothY + 35 - barH, barW - 3, barH);
+      }
+
+      // DJ Booth Text Badge
+      stageCtx.fillStyle = '#ffe600';
+      stageCtx.font = '8px "Press Start 2P"';
+      stageCtx.textAlign = 'center';
+      stageCtx.fillText(char.name, centerX, boothY + 16);
+
+      // 5. Crowd Dancers Bobbing and Jumping to Beat
+      const crowdBaseY = canvasHeight - 2;
+      const jumpAmount = Math.abs(Math.sin(Date.now() * 0.007 * (GAME.bpm / 120))) * (GAME.fever ? 14 : 7);
+
+      crowdDancers.forEach(d => {
+        const dx = d.xRel * canvasWidth;
+        // Don't render dancers blocking front-center of DJ booth
+        if (Math.abs(dx - centerX) < boothW * 0.32) return;
+
+        const dy = crowdBaseY - d.height - (jumpAmount * (0.8 + 0.4 * Math.sin(d.jumpPhase)));
+
+        // Silhouette Body
+        stageCtx.fillStyle = '#080614';
+        stageCtx.fillRect(dx - 5, dy, 10, d.height + 20);
+
+        // Dancer Head
+        stageCtx.fillStyle = d.headColor;
+        stageCtx.fillRect(dx - 4, dy - 7, 8, 7);
+
+        // Glow Stick if equipped
+        if (d.glowStick) {
+          stageCtx.fillStyle = d.glowStick;
+          stageCtx.fillRect(dx + 5, dy - 12 - (jumpAmount * 0.5), 3, 10);
+        }
+      });
+
+      // 6. Confetti Particle Update & Draw
+      for (let i = confettiParticles.length - 1; i >= 0; i--) {
+        const p = confettiParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.18; // gravity
+        p.life--;
+        stageCtx.fillStyle = p.color;
+        stageCtx.fillRect(p.x, p.y, p.size, p.size);
+        if (p.life <= 0) confettiParticles.splice(i, 1);
+      }
+
+      requestAnimationFrame(renderStage);
+    }
+
+    let lastBeatTick = performance.now();
+    const beatTrack = document.getElementById('beatTrack');
+    const beatIndicators = [
+      document.getElementById('beatLight1'),
+      document.getElementById('beatLight2'),
+      document.getElementById('beatLight3'),
+      document.getElementById('beatLight4')
+    ];
+
+    function createBeatParticle() {
+      const dot = document.createElement('div');
+      dot.className = 'absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded bg-yellow-400 border border-white';
+      dot.style.left = '0%';
+      beatTrack.appendChild(dot);
+
+      const startTime = performance.now();
+      const duration = (60 / GAME.bpm) * 1000 * 2; // travel across
+
+      function move() {
+        const elapsed = performance.now() - startTime;
+        const progress = elapsed / duration;
+        if (progress >= 1) {
+          dot.remove();
+        } else {
+          dot.style.left = `${progress * 100}%`;
+          requestAnimationFrame(move);
+        }
+      }
+      requestAnimationFrame(move);
+    }
+
+    function checkBeatAccuracy() {
+      const interval = (60 / GAME.bpm) * 1000;
+      const now = performance.now();
+      const diff = Math.min((now - lastBeatTick), Math.abs(now - (lastBeatTick + interval)));
+
+      if (diff < 90) {
+        showScorePopup("PERFECT! 🎯", "#39ff14");
+        addHype(8);
+        addScore(150);
+      } else if (diff < 180) {
+        showScorePopup("COOL! ✨", "#00f3ff");
+        addHype(4);
+        addScore(80);
+      } else {
+        addHype(2);
+        addScore(30);
+      }
+    }
+
+    function addScore(pts) {
+      GAME.combo++;
+      const multiplier = GAME.fever ? 2 : 1;
+      GAME.score += pts * multiplier;
+      document.getElementById('comboBadge').textContent = `${GAME.combo}x`;
+    }
+
+    function addHype(amount) {
+      GAME.hype = Math.min(100, GAME.hype + amount);
+      updateHypeUI();
+      if (GAME.hype >= 100 && !GAME.fever) {
+        // Flash Bass Drop button
+        document.getElementById('btnBassDrop').classList.add('fever-active');
+      }
+    }
+
+    function updateHypeUI() {
+      const hypeBar = document.getElementById('hypeBar');
+      const hypePct = document.getElementById('hypePct');
+      hypeBar.style.width = `${GAME.hype}%`;
+      hypePct.textContent = `${Math.round(GAME.hype)}%`;
+    }
+
+    // Floating Score Text in Stage
+    const floatContainer = document.getElementById('floatingTextContainer');
+    function showScorePopup(text, color = '#ffe600') {
+      const el = document.createElement('div');
+      el.textContent = text;
+      el.style.color = color;
+      el.style.textShadow = `0 0 8px ${color}`;
+      el.className = 'absolute font-bold text-xs sm:text-sm transition-all duration-700 pointer-events-none';
+      el.style.left = `${40 + Math.random() * 20}%`;
+      el.style.top = '65%';
+      floatContainer.appendChild(el);
+
+      requestAnimationFrame(() => {
+        el.style.transform = 'translateY(-40px) scale(1.15)';
+        el.style.opacity = '0';
+      });
+
+      setTimeout(() => el.remove(), 750);
+    }
+
+    let bpmClockTimer = null;
+    function runBpmClock() {
+      if (bpmClockTimer) clearTimeout(bpmClockTimer);
+
+      const intervalMs = (60 / GAME.bpm) * 1000;
+      lastBeatTick = performance.now();
+
+      // Trigger Beat UI Lights
+      const lightIdx = GAME.beatStep % 4;
+      beatIndicators.forEach((ind, i) => {
+        if (i === lightIdx) {
+          ind.classList.remove('bg-red-950', 'bg-yellow-950', 'bg-green-950', 'bg-cyan-950');
+          ind.classList.add(i === 0 ? 'bg-red-400' : 'bg-yellow-300');
+        } else {
+          ind.className = 'w-2.5 h-2.5 rounded-full border border-gray-600 bg-black/60';
+        }
+      });
+
+      // Generate beat target tick
+      if (lightIdx === 0) {
+        createBeatParticle();
+      }
+
+      // Background rhythmic pulse if audio is alive
+      if (audioCtx && audioCtx.state === 'running') {
+        const time = audioCtx.currentTime;
+        if (lightIdx === 0) {
+          synthKick(time);
+        } else if (lightIdx === 2) {
+          synthSnare(time);
+        } else {
+          synthHiHat(time);
+        }
+
+        // Chiptune background riff
+        if (lightIdx % 2 === 0) {
+          synthChiptune(time);
+        }
+      }
+
+      // Natural hype decay
+      if (!GAME.fever && GAME.hype > 15) {
+        GAME.hype = Math.max(15, GAME.hype - 0.35);
+        updateHypeUI();
+      }
+
+      // Fever mode timer countdown
+      if (GAME.fever) {
+        spawnFeverConfetti();
+        GAME.feverTimer--;
+        if (GAME.feverTimer <= 0) {
+          GAME.fever = false;
+          document.body.classList.remove('fever-active');
+          document.getElementById('btnBassDrop').classList.remove('fever-active');
+        }
+      }
+
+      GAME.beatStep++;
+      bpmClockTimer = setTimeout(runBpmClock, intervalMs);
+    }
+
+    const PAD_ACTIONS = [
+      () => synthKick(),
+      () => synthSnare(),
+      () => synthHiHat(),
+      () => synthAcid(),
+      () => synthChiptune(),
+      () => synthLaser(),
+      () => synthAirhorn(),
+      () => synthCrowdShout()
+    ];
+
+    const padButtons = document.querySelectorAll('.arcade-pad');
+    padButtons.forEach((pad, index) => {
+      const trigger = () => {
+        getAudioContext();
+        pad.classList.add('pad-active');
+        setTimeout(() => pad.classList.remove('pad-active'), 100);
+
+        if (PAD_ACTIONS[index]) PAD_ACTIONS[index]();
+        checkBeatAccuracy();
+      };
+
+      pad.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        trigger();
+      });
+    });
+
+    // Keyboard Hotkeys for Desktop playability
+    const KEY_PAD_MAP = {
+      '1': 0, '2': 1, '3': 2, '4': 3,
+      'q': 4, 'w': 5, 'e': 6, 'r': 7,
+      'Q': 4, 'W': 5, 'E': 6, 'R': 7
+    };
+    window.addEventListener('keydown', (e) => {
+      if (KEY_PAD_MAP[e.key] !== undefined) {
+        const padIndex = KEY_PAD_MAP[e.key];
+        const btn = padButtons[padIndex];
+        if (btn) {
+          btn.classList.add('pad-active');
+          setTimeout(() => btn.classList.remove('pad-active'), 100);
+          PAD_ACTIONS[padIndex]();
+          checkBeatAccuracy();
+        }
+      } else if (e.code === 'Space') {
+        e.preventDefault();
+        triggerFeverDrop();
+      }
+    });
+
+    const vinylRecord = document.getElementById('vinylRecord');
+    let isScratchingVinyl = false;
+    let lastAngle = 0;
+    let vinylRotation = 0;
+    let lastScratchEventTime = 0;
+
+    function getAngle(e, el) {
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+      return Math.atan2(clientY - cy, clientX - cx);
+    }
+
+    vinylRecord.addEventListener('pointerdown', (e) => {
+      getAudioContext();
+      isScratchingVinyl = true;
+      lastAngle = getAngle(e, vinylRecord);
+      lastScratchEventTime = Date.now();
+      vinylRecord.setPointerCapture(e.pointerId);
+    });
+
+    vinylRecord.addEventListener('pointermove', (e) => {
+      if (!isScratchingVinyl) return;
+      const angle = getAngle(e, vinylRecord);
+      let delta = angle - lastAngle;
+
+      // Handle radian wrap-around
+      if (delta > Math.PI) delta -= Math.PI * 2;
+      if (delta < -Math.PI) delta += Math.PI * 2;
+
+      vinylRotation += delta * (180 / Math.PI);
+      vinylRecord.style.transform = `rotate(${vinylRotation}deg)`;
+
+      const speed = delta * 15;
+      playScratchSound(speed);
+      lastAngle = angle;
+      lastScratchEventTime = Date.now();
+
+      addHype(1);
+      addScore(10);
+    });
+
+    const stopScratch = (e) => {
+      if (isScratchingVinyl) {
+        isScratchingVinyl = false;
+        try { vinylRecord.releasePointerCapture(e.pointerId); } catch(err){}
+      }
+    };
+    vinylRecord.addEventListener('pointerup', stopScratch);
+    vinylRecord.addEventListener('pointercancel', stopScratch);
+
+    // Continuous smooth turntable motor rotation when idle
+    function idleVinylMotor() {
+      if (!isScratchingVinyl) {
+        vinylRotation += 0.75 * (GAME.bpm / 120);
+        vinylRecord.style.transform = `rotate(${vinylRotation}deg)`;
+      }
+      requestAnimationFrame(idleVinylMotor);
+    }
+    requestAnimationFrame(idleVinylMotor);
+
+    function triggerFeverDrop() {
+      getAudioContext();
+      playBassDropExplosion();
+      GAME.fever = true;
+      GAME.feverTimer = 40; // ~10 seconds at normal BPM
+      GAME.hype = 100;
+      updateHypeUI();
+
+      showScorePopup("💥 DROP THE BASS! 💥", "#ff007f");
+      spawnFeverConfetti();
+      document.body.classList.add('fever-active');
+      document.getElementById('btnBassDrop').classList.add('fever-active');
+    }
+    document.getElementById('btnBassDrop').addEventListener('click', triggerFeverDrop);
+
+    // BPM Slider
+    const bpmSlider = document.getElementById('bpmSlider');
+    const bpmValue = document.getElementById('bpmValue');
+    bpmSlider.addEventListener('input', (e) => {
+      GAME.bpm = parseInt(e.target.value);
+      bpmValue.textContent = GAME.bpm;
+      runBpmClock();
+    });
+
+    // Crossfader: Balances Channel A (Beats) vs Channel B (Chiptune synths)
+    const crossFader = document.getElementById('crossFader');
+    crossFader.addEventListener('input', (e) => {
+      getAudioContext();
+      const val = parseInt(e.target.value) / 100;
+      GAME.crossfade = val;
+      if (channelAGain && channelBGain) {
+        channelAGain.gain.setValueAtTime(1 - val, audioCtx.currentTime);
+        channelBGain.gain.setValueAtTime(val, audioCtx.currentTime);
+      }
+    });
+
+    // Randomize City & Skyline Button
+    const btnRandomCity = document.getElementById('btnRandomCity');
+    const cityTag = document.getElementById('cityTag');
+    btnRandomCity.addEventListener('click', () => {
+      getAudioContext();
+      GAME.activeCityIdx = (GAME.activeCityIdx + 1) % CITIES.length;
+      cityTag.textContent = CITIES[GAME.activeCityIdx].name;
+      showScorePopup(`🌆 ${CITIES[GAME.activeCityIdx].name}`, CITIES[GAME.activeCityIdx].accent);
+      synthChiptune();
+    });
+
+    // CRT Scanline Toggle
+    const btnToggleCRT = document.getElementById('btnToggleCRT');
+    const crtOverlay = document.getElementById('crtOverlay');
+    btnToggleCRT.addEventListener('click', () => {
+      crtOverlay.classList.toggle('disabled');
+      btnToggleCRT.classList.toggle('text-[#00f3ff]');
+    });
+
+    const characterModal = document.getElementById('characterModal');
+    const btnSelectDJ = document.getElementById('btnSelectDJ');
+    const btnCloseModal = document.getElementById('btnCloseModal');
+    const characterList = document.getElementById('characterList');
+    const djNameShort = document.getElementById('djNameShort');
+
+    function populateCharacters() {
+      characterList.innerHTML = '';
+      CHARACTERS.forEach((char, idx) => {
+        const item = document.createElement('button');
+        item.className = `p-2 rounded-lg border-2 text-left flex items-center gap-2 transition active:scale-95 ${idx === GAME.activeDjIdx ? 'border-[#ffe600] bg-[#27234d]' : 'border-[#2d2952] bg-[#1a1738] hover:border-gray-400'}`;
+        item.innerHTML = `
+          <span class="text-xl">${char.icon}</span>
+          <div class="flex flex-col overflow-hidden">
+            <span class="text-[8px] font-bold text-white truncate">${char.name}</span>
+            <span class="text-[6px] text-gray-400 truncate">${char.desc}</span>
+          </div>
+        `;
+        item.addEventListener('click', () => {
+          GAME.activeDjIdx = idx;
+          djNameShort.textContent = char.name.split(' ')[1] || char.name;
+          characterModal.classList.add('hidden');
+          showScorePopup(`🎧 ${char.name}!`, char.color);
+          synthLaser();
+          populateCharacters();
+        });
+        characterList.appendChild(item);
+      });
+    }
+
+    btnSelectDJ.addEventListener('click', () => {
+      populateCharacters();
+      characterModal.classList.remove('hidden');
+    });
+
+    btnCloseModal.addEventListener('click', () => {
+      characterModal.classList.add('hidden');
+    });
+
+    window.addEventListener('load', () => {
+      resizeStage();
+      runBpmClock();
+      requestAnimationFrame(renderStage);
+    });
+
+    // Global first-touch unlock for AudioContext
+    window.addEventListener('pointerdown', () => {
+      getAudioContext();
+    }, { once: true });
+  </script>
+</body>
+</html>
