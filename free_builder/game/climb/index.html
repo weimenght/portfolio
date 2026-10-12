@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>CRAG MASTER</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    html, body {
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      background-color: #030712;
+      color: #67e8f9;
+      font-family: 'Press Start 2P', monospace;
+    }
+
+    canvas {
+      image-rendering: -moz-crisp-edges;
+      image-rendering: -webkit-crisp-edges;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    .crt-layer {
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.22) 50%
+      ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.02),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 0, 255, 0.02)
+      );
+      background-size: 100% 3px, 6px 100%;
+      pointer-events: none;
+    }
+
+    .crt-vignette {
+      box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.85);
+      pointer-events: none;
+    }
+
+    .neon-cyan { text-shadow: 0 0 6px #22d3ee, 0 0 14px #0891b2; }
+    .neon-gold { text-shadow: 0 0 6px #f59e0b, 0 0 14px #b45309; }
+    .neon-rose { text-shadow: 0 0 6px #f43f5e, 0 0 14px #be123c; }
+    .neon-green { text-shadow: 0 0 6px #10b981, 0 0 14px #047857; }
+
+    .pixel-btn {
+      position: relative;
+      border: 2px solid #22d3ee;
+      background-color: #0f172a;
+      transition: transform 0.08s ease, background-color 0.1s ease;
+      box-shadow: 2px 2px 0px #000000;
+    }
+    .pixel-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0px 0px 0px #000000;
+    }
+
+    @keyframes slipPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 15px #ef4444; }
+      50% { transform: scale(1.04); box-shadow: 0 0 32px #dc2626; }
+    }
+    .animate-slip-pulse {
+      animation: slipPulse 0.4s infinite alternate ease-in-out;
+    }
+
+    @keyframes flowGlow {
+      0%, 100% { border-color: #f59e0b; }
+      50% { border-color: #ec4899; }
+    }
+    .flow-active {
+      animation: flowGlow 0.6s infinite alternate;
+    }
+  </style>
+</head>
+<body class="w-full h-full flex flex-col items-center justify-center p-0 select-none bg-black">
+
+  <div id="appContainer" class="w-full max-w-md h-full h-[100dvh] flex flex-col relative overflow-hidden bg-[#050811] border-x border-[#1e293b]/70 shadow-2xl">
+
+    <!-- Top Minimal Status Bar -->
+    <header class="w-full flex items-center justify-between px-2.5 py-1.5 bg-[#0a0f1d] border-b border-[#1e293b] text-[8.5px] z-30 shrink-0">
+      <div class="flex items-center space-x-1.5 truncate">
+        <span class="inline-block w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+        <span id="topCragBadge" class="text-amber-400 font-bold truncate">Montserrat (Pebbles)</span>
+      </div>
+      
+      <div class="flex items-center space-x-1.5 shrink-0">
+        <span id="topWeatherBadge" class="text-[7.5px] text-cyan-300 bg-gray-900 px-1.5 py-0.5 rounded border border-gray-700">☀️ Clear</span>
+        <button id="toggleCrtBtn" class="px-1.5 py-0.5 bg-gray-900 text-gray-400 border border-gray-700 rounded text-[7px]">CRT</button>
+        <button id="toggleAudioBtn" class="px-2 py-0.5 bg-gray-800 text-[#67e8f9] border border-gray-600 rounded text-[7.5px]">
+          🔊 <span id="audioStatusText">ON</span>
+        </button>
+      </div>
+    </header>
+
+    <div id="canvasWrapper" class="relative flex-1 w-full h-full overflow-hidden bg-stone-900">
+      <canvas id="gameCanvas" class="w-full h-full block cursor-pointer"></canvas>
+
+      <!-- Retro CRT Scanline & Vignette Effect Layer -->
+      <div id="crtOverlay" class="absolute inset-0 crt-layer crt-vignette pointer-events-none"></div>
+
+      <!-- In-Game HUD (Compact mobile layout) -->
+      <div id="inGameHud" class="absolute inset-x-0 top-0 p-2 pointer-events-none flex flex-col gap-1.5 z-20 hidden">
+        <!-- Top HUD Row -->
+        <div class="flex justify-between items-start">
+          <!-- Forearm Grip / Stamina Box -->
+          <div class="flex flex-col gap-0.5 bg-black/90 p-1.5 rounded border border-cyan-500/50 backdrop-blur-sm pointer-events-auto shadow-lg">
+            <div class="flex items-center justify-between text-[7px]">
+              <span class="text-amber-300 font-bold">FOREARM GRIP</span>
+              <span id="hudGripPct" class="text-emerald-400 font-bold">100%</span>
+            </div>
+            <!-- Grip Bar -->
+            <div class="w-28 sm:w-32 h-2.5 bg-gray-950 border border-gray-700 rounded-sm overflow-hidden p-0.5">
+              <div id="hudGripBar" class="h-full bg-emerald-400 w-full transition-all duration-100"></div>
+            </div>
+            <!-- Status & Pitch Level -->
+            <div class="flex justify-between items-center text-[6.5px] mt-0.5">
+              <span id="hudHoldStatus" class="text-emerald-300 font-bold truncate max-w-[110px]">🟢 JUG REST</span>
+              <span id="hudGradeTag" class="text-amber-300 font-bold ml-1">5.7</span>
+            </div>
+          </div>
+
+          <!-- Flow State & Altitude / Score Box -->
+          <div class="flex flex-col items-end gap-1">
+            <div id="flowBox" class="bg-black/90 px-2 py-1 rounded border border-gray-700 pointer-events-auto flex items-center gap-1">
+              <span class="text-[7px] text-gray-400">FLOW:</span>
+              <span id="hudFlowMultiplier" class="text-[8px] text-gray-500 font-bold">1.0x</span>
+            </div>
+
+            <div class="bg-black/90 px-2 py-1 rounded border border-cyan-500/50 text-right pointer-events-auto shadow-lg">
+              <div class="text-[6.5px] text-gray-400">ALTITUDE / SCORE</div>
+              <div class="text-[9px] text-white font-bold">
+                <span id="hudAltitude" class="text-yellow-300">0.0m</span>
+                <span class="text-gray-500">|</span>
+                <span id="hudScore" class="text-cyan-300">0000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Beta Tip Pill -->
+        <div id="holdBetaPill" class="self-center bg-black/90 px-2.5 py-0.5 rounded-full border border-cyan-400/80 text-[7px] text-cyan-300 shadow-md opacity-90 flex items-center gap-1">
+          <span>🎯 REACH UPWARD TO ASCEND</span>
+        </div>
+      </div>
+
+      <!-- Emergency Slip Rescue Banner -->
+      <div id="slipRescueBanner" class="absolute inset-x-3 top-1/4 p-2.5 bg-red-950/95 border-2 border-red-500 rounded-lg shadow-2xl z-40 hidden flex flex-col items-center text-center animate-slip-pulse">
+        <div class="text-red-400 text-[10px] font-bold neon-rose mb-1">⚠️ LOSING GRIP! RE-LATCH!</div>
+        <p class="text-[7.5px] text-white mb-2">Tap any nearby hold or press emergency latch:</p>
+        <button id="emergencyCatchBtn" class="w-full py-2 bg-yellow-400 hover:bg-yellow-300 active:scale-95 text-black font-bold text-[8.5px] rounded border-2 border-white shadow-lg">
+          ✋ RE-LATCH HOLD (<span id="slipCountDownText">2.5s</span>)
+        </button>
+      </div>
+
+      <!-- Elevation Pitch Milestone Banner -->
+      <div id="milestoneBanner" class="absolute top-1/4 inset-x-0 mx-auto w-max max-w-[85%] py-1.5 px-3 bg-yellow-400 text-black border-2 border-white rounded font-bold text-center text-[9px] tracking-wider shadow-2xl opacity-0 -translate-y-4 transition-all duration-300 pointer-events-none z-30">
+        🧗 PITCH COMPLETED!
+      </div>
+
+      <!-- Title & Compact Setup Screen (Strictly fits 1 mobile screen without scroll) -->
+      <div id="titleScreen" class="absolute inset-0 bg-black/95 flex flex-col justify-between p-3 z-30 overflow-hidden">
+        <!-- Title and Crag Info -->
+        <div class="text-center pt-0.5">
+          <h1 class="text-base sm:text-lg text-[#67e8f9] neon-cyan tracking-wider leading-tight">
+            CRAG MASTER
+          </h1>
+          <p class="text-[7.5px] text-amber-400 tracking-widest mt-0.5">GLOBAL ASCENT</p>
+        </div>
+
+        <!-- Current Crag Card -->
+        <div class="p-1.5 bg-[#0f172a] border border-cyan-500/60 rounded text-[7.5px] space-y-1">
+          <div class="flex items-center justify-between border-b border-gray-800 pb-1">
+            <div class="flex items-center gap-1.5 truncate">
+              <span id="locIcon" class="text-sm">🏰</span>
+              <div class="truncate">
+                <span class="text-[6.5px] text-gray-400 block">DESTINATION CRAG</span>
+                <span id="locName" class="text-white font-bold truncate">Montserrat (Catalonia)</span>
+              </div>
+            </div>
+            <button id="rerollCragBtn" class="px-1.5 py-0.5 bg-gray-800 hover:bg-gray-700 text-cyan-300 border border-cyan-500 rounded text-[6.5px] active:scale-95 shrink-0">
+              🎲 REROLL
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-1 text-[6.5px]">
+            <div>
+              <span class="text-gray-400">ATMOSPHERE:</span>
+              <span id="timeName" class="text-cyan-300 font-semibold block">Early Dawn</span>
+            </div>
+            <div>
+              <span class="text-gray-400">WEATHER:</span>
+              <span id="weatherName" class="text-amber-300 font-semibold block">☀️ Clear</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Climber Name Input (Starts completely blank) -->
+        <div class="bg-[#0b101b] p-1.5 rounded border border-gray-800">
+          <label class="text-[7px] text-gray-300 mb-0.5 flex justify-between items-center">
+            <span>ENTER YOUR CALLSIGN:</span>
+            <span class="text-red-400 text-[6px]">*Required</span>
+          </label>
+          <input 
+            id="callsignInput" 
+            type="text" 
+            maxlength="14" 
+            placeholder="Type your name..."
+            class="w-full bg-black border border-cyan-500/80 px-2 py-1 text-yellow-300 text-[10px] rounded focus:outline-none focus:border-cyan-400 font-mono tracking-wide"
+          />
+          <div id="nameRequiredWarn" class="text-red-400 text-[6.5px] mt-0.5 hidden">
+            ⚠️ Please type your climber callsign to record your ascent!
+          </div>
+        </div>
+
+        <!-- Compact Character Selector (Fits 1 screen on small phones) -->
+        <div class="bg-[#0b101b] p-1.5 rounded border border-gray-800">
+          <div class="flex justify-between items-center mb-1 text-[7px]">
+            <span class="text-gray-400">SELECT ROSTER</span>
+            <span id="rosterTag" class="text-[6px] px-1 py-0.5 bg-cyan-950 text-cyan-400 rounded border border-cyan-800">HUMAN</span>
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            <button id="prevCharBtn" class="px-2 py-2 bg-gray-800 active:bg-gray-700 text-white rounded text-[10px] border border-gray-700">◀</button>
+            
+            <div class="flex-1 flex items-center gap-2 bg-black/60 p-1.5 rounded border border-gray-800 min-h-[46px]">
+              <div class="w-9 h-9 bg-neutral-950 border border-cyan-400/80 rounded flex items-center justify-center shrink-0">
+                <canvas id="charPreviewCanvas" width="36" height="36" class="w-full h-full"></canvas>
+              </div>
+              <div class="flex-1 overflow-hidden leading-tight">
+                <div id="charNameText" class="text-[8px] text-yellow-300 font-bold truncate">Alex (Precision)</div>
+                <div id="charPerkText" class="text-[6.5px] text-emerald-400 mt-0.5 truncate">Perk: -30% pump drain on vertical crags.</div>
+                <div id="charBioText" class="text-[6px] text-gray-400 mt-0.5 truncate">Speed prodigy with laser focus.</div>
+              </div>
+            </div>
+
+            <button id="nextCharBtn" class="px-2 py-2 bg-gray-800 active:bg-gray-700 text-white rounded text-[10px] border border-gray-700">▶</button>
+          </div>
+        </div>
+
+        <!-- Compact Pitch Difficulty Scale Legend -->
+        <div class="p-1 bg-[#09111c] border border-cyan-800/40 rounded text-[6.5px] text-gray-300 space-y-0.5">
+          <div class="text-cyan-300 font-bold flex justify-between">
+            <span>ASCENT PITCHES:</span>
+            <span class="text-yellow-400">FLOW STREAK = 5X SCORE</span>
+          </div>
+          <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[6px]">
+            <div>0-50m: P1 Approach (Jugs)</div>
+            <div>50-120m: P2 Tech (Crimps)</div>
+            <div>120-220m: P3 The Crux (Choss)</div>
+            <div>220m+: P4 Summit Overhang</div>
+          </div>
+        </div>
+
+        <!-- Launch & Leaderboard Buttons -->
+        <div class="flex flex-col gap-1 pt-0.5 pb-0.5">
+          <button id="startClimbBtn" class="w-full py-2 bg-[#67e8f9] hover:bg-cyan-400 active:scale-95 text-black font-bold text-[10px] rounded border border-white pixel-btn tracking-wider">
+            🧗 ASCEND CLIFF
+          </button>
+          <button id="showLeaderboardBtn" class="w-full py-1 bg-gray-800 hover:bg-gray-700 text-yellow-300 border border-yellow-600 rounded text-[7.5px] flex items-center justify-center gap-1">
+            🏆 SUMMIT LEADERBOARD
+          </button>
+        </div>
+      </div>
+
+      <!-- Game Over Screen -->
+      <div id="gameOverScreen" class="absolute inset-0 bg-black/95 flex flex-col items-center justify-center p-3 z-30 hidden">
+        <div class="w-full bg-[#0d131f] border-2 border-red-500 rounded-lg p-3 text-center shadow-2xl relative">
+          <h2 class="text-red-500 text-sm font-bold neon-rose mb-0.5">LOST YOUR GRIP!</h2>
+          <p id="fallQuoteText" class="text-[7.5px] text-gray-400 italic mb-2">"Gravity never blinks."</p>
+
+          <div class="grid grid-cols-2 gap-1.5 my-1.5 text-left text-[7.5px]">
+            <div class="p-1.5 bg-black border border-gray-800 rounded">
+              <span class="text-gray-400 block text-[6px]">PEAK ALTITUDE</span>
+              <span id="finalAltText" class="text-yellow-400 font-bold text-[10px]">0.0m</span>
+            </div>
+            <div class="p-1.5 bg-black border border-gray-800 rounded">
+              <span class="text-gray-400 block text-[6px]">ROUTE GRADE</span>
+              <span id="finalGradeText" class="text-emerald-400 font-bold text-[10px]">5.7</span>
+            </div>
+            <div class="p-1.5 bg-black border border-gray-800 rounded">
+              <span class="text-gray-400 block text-[6px]">MAX FLOW COMBO</span>
+              <span id="finalComboText" class="text-pink-400 font-bold text-[10px]">x1.0</span>
+            </div>
+            <div class="p-1.5 bg-black border border-gray-800 rounded">
+              <span class="text-gray-400 block text-[6px]">TOTAL SCORE</span>
+              <span id="finalScoreText" class="text-cyan-300 font-bold text-[10px]">0</span>
+            </div>
+          </div>
+
+          <div class="text-[6.5px] text-gray-400 mb-2 flex items-center justify-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+            <span id="d1SyncStatus">Ascent recorded.</span>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <button id="retryClimbBtn" class="w-full py-1.5 bg-[#67e8f9] hover:bg-cyan-400 active:scale-95 text-black font-bold text-[9px] rounded border border-white pixel-btn">
+              🔄 CLIMB AGAIN
+            </button>
+            <button id="gameOverLbBtn" class="w-full py-1 bg-yellow-600 hover:bg-yellow-500 text-black font-bold text-[8px] rounded border border-yellow-300">
+              🏆 VIEW LEADERBOARD
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- In-Game Footer Action Bar -->
+    <footer id="inGameFooterBar" class="w-full px-2 py-1 bg-[#090e1a] border-t border-[#1e293b] flex items-center justify-between text-[7.5px] shrink-0 z-20">
+      <!-- Beta View Look-Up Button -->
+      <button id="toggleBetaViewBtn" class="px-2 py-1 bg-[#132235] hover:bg-[#1d3553] active:scale-95 text-cyan-300 border border-cyan-500 rounded text-[7px] flex items-center gap-1 transition-all">
+        <span>👁️</span>
+        <span id="betaViewBtnText">BETA VIEW</span>
+      </button>
+
+      <!-- Active Hand Target Indicator -->
+      <div class="flex items-center gap-1 px-2 py-0.5 bg-black/70 rounded border border-gray-800 text-[6.5px]">
+        <span class="text-gray-400">HAND:</span>
+        <span id="nextHandIndicator" class="text-cyan-300 font-bold">LEFT ◀</span>
+      </div>
+
+      <!-- Quick Chalk Button -->
+      <button id="chalkQuickBtn" class="px-2 py-1 bg-amber-600 hover:bg-amber-500 active:scale-95 text-black font-bold border border-yellow-300 rounded text-[7px] shadow-lg flex items-center gap-1 transition-all">
+        <span>🧤</span>
+        <span>CHALK</span>
+        <span id="chalkCdText" class="text-[6px] text-yellow-950 bg-yellow-300 px-0.5 rounded">RDY</span>
+      </button>
+    </footer>
+
+  </div>
+
+  <!-- Clean Summit Leaderboard Modal (No settings / no fake names) -->
+  <div id="leaderboardModal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-3 hidden">
+    <div class="w-full max-w-md bg-[#0a0f1b] border-2 border-yellow-400 rounded-lg p-3 shadow-2xl flex flex-col max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-gray-800 pb-1.5 mb-1.5">
+        <div class="flex items-center gap-1.5">
+          <span class="text-sm">🏆</span>
+          <div>
+            <h3 class="text-[9px] text-yellow-400 neon-gold font-bold">SUMMIT ASCENT LEADERBOARD</h3>
+            <!-- <p class="text-[6.5px] text-gray-400">Authentic free-solo ascents</p> -->
+          </div>
+        </div>
+        <button id="closeLbBtn" class="text-gray-400 hover:text-white text-sm font-bold p-1">✕</button>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="flex items-center justify-between mb-1.5 text-[7px] gap-1">
+        <div class="flex gap-1">
+          <button class="lb-filter-btn px-2 py-0.5 bg-yellow-500 text-black font-bold rounded" data-filter="ALL">ALL-TIME</button>
+          <button class="lb-filter-btn px-2 py-0.5 bg-gray-800 text-gray-300 hover:bg-gray-700 rounded" data-filter="TODAY">TODAY</button>
+          <button class="lb-filter-btn px-2 py-0.5 bg-gray-800 text-gray-300 hover:bg-gray-700 rounded" data-filter="PERSONAL">MINE</button>
+        </div>
+        <button id="refreshLbDataBtn" class="px-1.5 py-0.5 bg-gray-800 hover:bg-gray-700 text-cyan-300 border border-cyan-500 rounded text-[6.5px]">
+          🔄 REFRESH
+        </button>
+      </div>
+
+      <!-- Leaderboard Scroll Table -->
+      <div class="flex-1 overflow-y-auto border border-gray-800 rounded bg-black/70 p-1 min-h-[160px]">
+        <table class="w-full text-left text-[7px]">
+          <thead>
+            <tr class="border-b border-gray-800 text-gray-400 pb-0.5">
+              <th class="p-1">#</th>
+              <th class="p-1">CLIMBER</th>
+              <th class="p-1">CRAG</th>
+              <th class="p-1">HEIGHT</th>
+              <th class="p-1 text-right">SCORE</th>
+              <th class="p-1 text-right">DATE</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardRows">
+            <!-- Dynamic Real Entries Only -->
+          </tbody>
+        </table>
+      </div>
+
+<!--
+      <div class="mt-1.5 pt-1 border-t border-gray-800 flex items-center justify-between text-[6.5px] text-gray-400">
+        <span>Verified Crag Records</span>
+        <span class="text-yellow-400">Only genuine ascents logged</span>
+      </div>
+-->
+
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="retroToast" class="fixed bottom-12 inset-x-0 mx-auto w-max max-w-[85%] px-3 py-1 bg-cyan-950 border border-cyan-400 text-cyan-300 text-[7px] rounded shadow-xl opacity-0 pointer-events-none transition-opacity duration-200 z-50 text-center">
+    Toast Message
+  </div>
+
+  <script>
+    // Cloudflare D1 Backend Endpoint (Clean background integration)
+    const CLOUDFLARE_D1_WORKER_URL = "https://crag-leaderboard.enzowmeng.workers.dev/api/climbs"; 
+
+    class RetroSoundFX {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+        this.musicTimer = null;
+        this.isMusicPlaying = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playGrabStone() {
+        if (!this.enabled || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(200, t);
+          osc.frequency.exponentialRampToValueAtTime(360, t + 0.04);
+          gain.gain.setValueAtTime(0.18, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.08);
+        } catch(e) {}
+      }
+
+      playDynoLunge() {
+        if (!this.enabled || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, t);
+          osc.frequency.exponentialRampToValueAtTime(680, t + 0.12);
+          gain.gain.setValueAtTime(0.15, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.15);
+        } catch(e) {}
+      }
+
+      playChalkPuff() {
+        if (!this.enabled || !this.ctx) return;
+        try {
+          const bufferSize = this.ctx.sampleRate * 0.12;
+          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+          }
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = buffer;
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.frequency.value = 1700;
+          const gain = this.ctx.createGain();
+          gain.gain.setValueAtTime(0.24, this.ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.11);
+          noise.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+          noise.start();
+        } catch(e) {}
+      }
+
+      playSlipAlert() {
+        if (!this.enabled || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(480, t);
+          osc.frequency.linearRampToValueAtTime(240, t + 0.18);
+          gain.gain.setValueAtTime(0.24, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.19);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.2);
+        } catch(e) {}
+      }
+
+      playCatchSave() {
+        if (!this.enabled || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(260, t);
+          osc.frequency.exponentialRampToValueAtTime(720, t + 0.12);
+          gain.gain.setValueAtTime(0.24, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.14);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.15);
+        } catch(e) {}
+      }
+
+      playItemCollect() {
+        if (!this.enabled || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(587.33, t); // D5
+          osc.frequency.setValueAtTime(880, t + 0.08); // A5
+          gain.gain.setValueAtTime(0.2, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.22);
+        } catch(e) {}
+      }
+
+      playMonasteryBell() {
+        if (!this.enabled || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(329.63, t);
+          gain.gain.setValueAtTime(0.18, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.82);
+        } catch(e) {}
+      }
+
+      playEagleCry() {
+        if (!this.enabled || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(850, t);
+          osc.frequency.linearRampToValueAtTime(1150, t + 0.15);
+          osc.frequency.linearRampToValueAtTime(600, t + 0.35);
+          gain.gain.setValueAtTime(0.12, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.38);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.39);
+        } catch(e) {}
+      }
+
+      playRockBreak() {
+        if (!this.enabled || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(120, t);
+          osc.frequency.linearRampToValueAtTime(45, t + 0.18);
+          gain.gain.setValueAtTime(0.24, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.21);
+        } catch(e) {}
+      }
+
+      playFreeFall() {
+        if (!this.enabled || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(780, t);
+          osc.frequency.exponentialRampToValueAtTime(70, t + 0.7);
+          gain.gain.setValueAtTime(0.28, t);
+          gain.gain.linearRampToValueAtTime(0.01, t + 0.75);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.76);
+        } catch(e) {}
+      }
+
+      playMilestoneFanfare() {
+        if (!this.enabled || !this.ctx) return;
+        const notes = [261.63, 329.63, 392.00, 523.25, 659.25];
+        notes.forEach((freq, idx) => {
+          setTimeout(() => {
+            if (!this.enabled || !this.ctx) return;
+            const t = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, t);
+            gain.gain.setValueAtTime(0.1, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(t);
+            osc.stop(t + 0.13);
+          }, idx * 70);
+        });
+      }
+
+      startChiptuneLoop() {
+        if (this.isMusicPlaying) return;
+        this.isMusicPlaying = true;
+        const bassline = [110, 110, 130.81, 146.83, 98, 98, 110, 123.47];
+        let step = 0;
+        const tick = () => {
+          if (!this.isMusicPlaying) return;
+          if (this.enabled && this.ctx && this.ctx.state === 'running') {
+            try {
+              const t = this.ctx.currentTime;
+              const osc = this.ctx.createOscillator();
+              const gain = this.ctx.createGain();
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(bassline[step % bassline.length], t);
+              gain.gain.setValueAtTime(0.03, t);
+              gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+              osc.connect(gain);
+              gain.connect(this.ctx.destination);
+              osc.start(t);
+              osc.stop(t + 0.22);
+            } catch(e) {}
+          }
+          step++;
+          this.musicTimer = setTimeout(tick, 270);
+        };
+        tick();
+      }
+
+      stopChiptuneLoop() {
+        this.isMusicPlaying = false;
+        if (this.musicTimer) clearTimeout(this.musicTimer);
+      }
+    }
+
+    const sound = new RetroSoundFX();
+
+    const CRAGS = [
+      {
+        id: 'montserrat',
+        name: 'Montserrat (Catalonia, Spain)',
+        icon: '🏰',
+        type: 'CONGLOMERATE',
+        desc: 'Pinkish-ochre needles with rounded conglomerate cobblestones.',
+        baseRock: '#a2624f',
+        darkRock: '#713b2d',
+        accentRock: '#c7846f',
+        crackColor: '#451f16',
+        seamColor: '#fed7aa',
+        pebbleColor: '#d97706',
+        surprise: 'BELL'
+      },
+      {
+        id: 'yangshuo',
+        name: 'Yangshuo Moon Hill (Guilin, China)',
+        icon: '🎋',
+        type: 'KARST',
+        desc: 'Iconic limestone karst, vertical stalactites & misty emerald peaks.',
+        baseRock: '#475569',
+        darkRock: '#1e293b',
+        accentRock: '#64748b',
+        crackColor: '#0f172a',
+        seamColor: '#86efac',
+        mossColor: '#166534',
+        surprise: 'SWALLOW'
+      },
+      {
+        id: 'baihe',
+        name: 'Baihe Gorge (Beijing, China)',
+        icon: '🦅',
+        type: 'GRANITE_CRACK',
+        desc: 'Steep granite split cracks in White River canyon.',
+        baseRock: '#57534e',
+        darkRock: '#292524',
+        accentRock: '#78716c',
+        crackColor: '#1c1917',
+        seamColor: '#e7e5e4',
+        surprise: 'EAGLE'
+      },
+      {
+        id: 'siurana',
+        name: 'Siurana (Catalonia, Spain)',
+        icon: '☀️',
+        type: 'LIMESTONE_POCKETS',
+        desc: 'Golden limestone crimpy pockets and sharp vertical roofs.',
+        baseRock: '#b45309',
+        darkRock: '#78350f',
+        accentRock: '#d97706',
+        crackColor: '#451a03',
+        seamColor: '#fef08a',
+        surprise: 'GOAT'
+      },
+      {
+        id: 'verdon',
+        name: 'Verdon Gorge (France)',
+        icon: '🌊',
+        type: 'VERDON_CANYON',
+        desc: 'Dizzying turquoise canyon, vertical silver limestone runnels.',
+        baseRock: '#64748b',
+        darkRock: '#334155',
+        accentRock: '#94a3b8',
+        crackColor: '#1e293b',
+        seamColor: '#38bdf8',
+        waterColor: '#0ea5e9',
+        surprise: 'SWALLOW'
+      },
+      {
+        id: 'elcap',
+        name: 'El Capitan (Yosemite, USA)',
+        icon: '🌲',
+        type: 'GRANITE_MONOLITH',
+        desc: 'Sheer granite monolith with pristine vertical quartz dikes.',
+        baseRock: '#4b5563',
+        darkRock: '#1f2937',
+        accentRock: '#6b7280',
+        crackColor: '#111827',
+        seamColor: '#f3f4f6',
+        surprise: 'EAGLE'
+      }
+    ];
+
+    const TIMES = [
+      { id: 'dawn', name: 'Early Dawn', skyTop: '#3b0764', skyBot: '#fdba74', light: 0.95 },
+      { id: 'noon', name: 'High Noon', skyTop: '#0284c7', skyBot: '#bae6fd', light: 1.0 },
+      { id: 'sunset', name: 'Golden Sunset', skyTop: '#b45309', skyBot: '#fed7aa', light: 0.92 },
+      { id: 'night', name: 'Starry Night', skyTop: '#020617', skyBot: '#1e1b4b', light: 0.72 }
+    ];
+
+    const WEATHERS = [
+      { id: 'clear', name: '☀️ Clear & Crisp', friction: 1.0, rain: false, wind: false },
+      { id: 'foggy', name: '🌫️ Misty Fog', friction: 0.96, rain: false, wind: false },
+      { id: 'breezy', name: '💨 Alpine Breeze', friction: 0.93, rain: false, wind: true },
+      { id: 'rain', name: '🌧️ Rain Slick', friction: 0.86, rain: true, wind: false }
+    ];
+
+    const CHARACTERS = [
+      {
+        id: 'alex',
+        name: 'Alex (Precision)',
+        category: 'HUMAN',
+        shirtColor: '#facc15',
+        pantsColor: '#9333ea',
+        skinColor: '#fbcfe8',
+        staminaRate: 0.7,
+        reachBonus: 6,
+        perk: '-30% grip drain on vertical crags.',
+        bio: 'Speed soloist with surgical foot precision.',
+        drawIcon: (ctx, x, y) => drawHumanIcon(ctx, x, y, '#facc15', '#9333ea', '#fed7aa')
+      },
+      {
+        id: 'lynn',
+        name: 'Lynn (Endurance)',
+        category: 'HUMAN',
+        shirtColor: '#ec4899',
+        pantsColor: '#3b82f6',
+        skinColor: '#fed7aa',
+        staminaRate: 0.75,
+        reachBonus: 14,
+        perk: '+20% reach radius on technical crimps.',
+        bio: 'First free ascent big wall pioneer.',
+        drawIcon: (ctx, x, y) => drawHumanIcon(ctx, x, y, '#ec4899', '#3b82f6', '#fed7aa')
+      },
+      {
+        id: 'tommy',
+        name: 'Tommy (Power Dyno)',
+        category: 'HUMAN',
+        shirtColor: '#f97316',
+        pantsColor: '#1e293b',
+        skinColor: '#fed7aa',
+        staminaRate: 0.72,
+        reachBonus: 10,
+        perk: '+50% dyno score, faster recovery on Jugs.',
+        bio: 'Iron tendon warrior of Dawn Wall.',
+        drawIcon: (ctx, x, y) => drawHumanIcon(ctx, x, y, '#f97316', '#1e293b', '#fed7aa')
+      },
+      {
+        id: 'billy',
+        name: 'Billy the Ibex',
+        category: 'ANIMAL',
+        shirtColor: '#e2e8f0',
+        pantsColor: '#78350f',
+        skinColor: '#475569',
+        staminaRate: 0.65,
+        reachBonus: 12,
+        perk: 'Hoof Friction: Slopers drain 50% less.',
+        bio: 'Laughs at 90-degree overhangs. Baaa!',
+        drawIcon: (ctx, x, y) => drawGoatIcon(ctx, x, y)
+      },
+      {
+        id: 'bandit',
+        name: 'Bandit Raccoon',
+        category: 'ANIMAL',
+        shirtColor: '#64748b',
+        pantsColor: '#334155',
+        skinColor: '#0f172a',
+        staminaRate: 0.8,
+        reachBonus: 8,
+        perk: 'Scramble: +40% score on hidden pockets.',
+        bio: 'Nimble paws hunting shiny carabiners.',
+        drawIcon: (ctx, x, y) => drawRaccoonIcon(ctx, x, y)
+      },
+      {
+        id: 'zorg',
+        name: 'Zorg Alien',
+        category: 'EASTER EGG',
+        shirtColor: '#a855f7',
+        pantsColor: '#581c87',
+        skinColor: '#38bdf8',
+        staminaRate: 0.65,
+        reachBonus: 22,
+        perk: 'Anti-grav tentacles: huge reach envelope.',
+        bio: 'Interstellar tourist summiting Earth.',
+        drawIcon: (ctx, x, y) => drawAlienIcon(ctx, x, y)
+      },
+      {
+        id: 'wukong',
+        name: 'Master Wukong',
+        category: 'EASTER EGG',
+        shirtColor: '#ef4444',
+        pantsColor: '#ca8a04',
+        skinColor: '#fbbf24',
+        staminaRate: 0.6,
+        reachBonus: 16,
+        perk: 'Cloud Step: Dynos cost 0 grip, 2x Flow Combo!',
+        bio: 'Monkey King ascending peaks on somersault clouds.',
+        drawIcon: (ctx, x, y) => drawWukongIcon(ctx, x, y)
+      }
+    ];
+
+    const HOLD_TYPES = {
+      JUG: {
+        id: 'jug',
+        name: 'Bucket Jug (Rest Hold)',
+        tag: 'REST JUG',
+        pumpRate: -0.05, // Actively RECOVERS grip! Unlimited reading time!
+        score: 30,
+        colorHex: '#10b981',
+        draw: (ctx, x, y, active) => {
+          ctx.fillStyle = '#064e3b';
+          ctx.fillRect(x - 9, y + 3, 18, 5);
+          ctx.fillStyle = '#10b981';
+          ctx.fillRect(x - 8, y - 3, 16, 6);
+          ctx.fillStyle = '#ecfdf5';
+          ctx.fillRect(x - 7, y - 4, 14, 2); // heavy chalk
+          if (active) {
+            ctx.strokeStyle = '#34d399';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x - 10, y - 6, 20, 14);
+          }
+        }
+      },
+      POCKET: {
+        id: 'pocket',
+        name: 'Limestone Pocket',
+        tag: 'POCKET (NEUTRAL)',
+        pumpRate: 0.0, // 0% drain! Neutral rest hold
+        score: 40,
+        colorHex: '#06b6d4',
+        draw: (ctx, x, y, active) => {
+          ctx.fillStyle = '#083344';
+          ctx.beginPath();
+          ctx.ellipse(x, y + 1, 8, 5.5, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#06b6d4';
+          ctx.beginPath();
+          ctx.ellipse(x, y - 1, 7, 4, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#e0f2fe';
+          ctx.fillRect(x - 3, y - 3, 6, 1.5);
+          if (active) {
+            ctx.strokeStyle = '#22d3ee';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x - 9, y - 6, 18, 13);
+          }
+        }
+      },
+      CRIMP: {
+        id: 'crimp',
+        name: 'Razor Crimp',
+        tag: 'CRIMP (SLOW DRAIN)',
+        pumpRate: 0.045, // Gentle drain (~22s hang)
+        score: 55,
+        colorHex: '#f59e0b',
+        draw: (ctx, x, y, active) => {
+          ctx.fillStyle = '#451a03';
+          ctx.fillRect(x - 7, y + 2, 14, 3.5);
+          ctx.fillStyle = '#f59e0b';
+          ctx.fillRect(x - 6, y - 2, 12, 4);
+          ctx.fillStyle = '#fef3c7';
+          ctx.fillRect(x - 5, y - 3, 10, 1.5);
+          if (active) {
+            ctx.strokeStyle = '#fbbf24';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x - 8, y - 5, 16, 10);
+          }
+        }
+      },
+      SLOPER: {
+        id: 'sloper',
+        name: 'Granite Sloper',
+        tag: 'SLOPER (SLOW DRAIN)',
+        pumpRate: 0.055,
+        score: 50,
+        colorHex: '#f97316',
+        draw: (ctx, x, y, active) => {
+          ctx.fillStyle = '#7c2d12';
+          ctx.beginPath();
+          ctx.arc(x, y + 2, 8.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#f97316';
+          ctx.beginPath();
+          ctx.arc(x, y - 1, 7.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+          ctx.fillRect(x - 4, y - 4, 8, 2.5);
+          if (active) {
+            ctx.strokeStyle = '#fb923c';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x - 9, y - 8, 18, 16);
+          }
+        }
+      },
+      CHOSS: {
+        id: 'choss',
+        name: 'Fragile Choss Flake',
+        tag: 'CHOSS (CRACKS OVER 6s)',
+        pumpRate: 0.06,
+        score: 85,
+        crumble: true,
+        colorHex: '#ef4444',
+        draw: (ctx, x, y, active, timer) => {
+          ctx.fillStyle = '#450a0a';
+          ctx.fillRect(x - 8, y + 2, 16, 4.5);
+          ctx.fillStyle = '#dc2626';
+          ctx.fillRect(x - 7, y - 3, 14, 5.5);
+          ctx.strokeStyle = timer > 0 ? '#ffffff' : '#7f1d1d';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(x - 5, y - 1);
+          ctx.lineTo(x, y + 1);
+          ctx.lineTo(x + 5, y - 2);
+          ctx.stroke();
+          if (active) {
+            ctx.strokeStyle = '#f87171';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x - 9, y - 5, 18, 12);
+          }
+        }
+      }
+    };
+
+    class CragStorageService {
+      constructor() {
+        this.storageKey = 'crag_master_authentic_ascents_v4';
+      }
+
+      async getScores() {
+        if (CLOUDFLARE_D1_WORKER_URL) {
+          try {
+            const res = await fetch(CLOUDFLARE_D1_WORKER_URL, { method: 'GET' });
+            if (res.ok) {
+              const data = await res.json();
+              return Array.isArray(data) ? data : (data.results || []);
+            }
+          } catch(e) {}
+        }
+        try {
+          const list = JSON.parse(localStorage.getItem(this.storageKey) || '[]');
+          return list.sort((a, b) => b.score - a.score);
+        } catch(e) { return []; }
+      }
+
+      async saveScore(entry) {
+        if (CLOUDFLARE_D1_WORKER_URL) {
+          try {
+            await fetch(CLOUDFLARE_D1_WORKER_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(entry)
+            });
+          } catch(e) {}
+        }
+        try {
+          const list = JSON.parse(localStorage.getItem(this.storageKey) || '[]');
+          list.push(entry);
+          list.sort((a, b) => b.score - a.score);
+          localStorage.setItem(this.storageKey, JSON.stringify(list.slice(0, 100)));
+        } catch(e) {}
+      }
+    }
+
+    const storage = new CragStorageService();
+
+    function drawHumanIcon(ctx, x, y, shirt, pants, skin) {
+      ctx.fillStyle = skin;
+      ctx.fillRect(x - 3, y - 7, 6, 6);
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(x - 3, y - 8, 6, 2);
+      ctx.fillStyle = shirt;
+      ctx.fillRect(x - 4, y - 1, 8, 7);
+      ctx.fillStyle = pants;
+      ctx.fillRect(x - 4, y + 6, 8, 4);
+      ctx.fillStyle = skin;
+      ctx.fillRect(x - 7, y - 3, 3, 6);
+      ctx.fillRect(x + 4, y - 3, 3, 6);
+    }
+
+    function drawGoatIcon(ctx, x, y) {
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(x - 5, y - 3, 10, 7);
+      ctx.fillStyle = '#f1f5f9';
+      ctx.fillRect(x - 2, y - 7, 6, 5);
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(x - 1, y - 10, 2, 4);
+      ctx.fillRect(x + 3, y - 10, 2, 4);
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(x - 4, y + 4, 3, 4);
+      ctx.fillRect(x + 1, y + 4, 3, 4);
+    }
+
+    function drawRaccoonIcon(ctx, x, y) {
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(x - 4, y - 3, 8, 7);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(x - 4, y - 6, 8, 3);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(x - 2, y - 5, 1.5, 1.5);
+      ctx.fillRect(x + 1, y - 5, 1.5, 1.5);
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(x + 4, y - 1, 4, 3);
+    }
+
+    function drawAlienIcon(ctx, x, y) {
+      ctx.fillStyle = '#a855f7';
+      ctx.fillRect(x - 5, y - 8, 10, 7);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(x - 2, y - 5, 4, 3);
+      ctx.fillStyle = '#c084fc';
+      ctx.fillRect(x - 5, y - 1, 3, 7);
+      ctx.fillRect(x - 1, y - 1, 3, 8);
+      ctx.fillRect(x + 3, y - 1, 3, 7);
+    }
+
+    function drawWukongIcon(ctx, x, y) {
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(x - 4, y - 7, 8, 7);
+      // Golden Crown (Circlet)
+      ctx.fillStyle = '#facc15';
+      ctx.fillRect(x - 5, y - 8, 10, 2);
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(x - 5, y, 10, 7);
+      ctx.fillStyle = '#ca8a04';
+      ctx.fillRect(x - 4, y + 7, 8, 4);
+      // Cloud puff underneath
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(x - 6, y + 10, 12, 3);
+    }
+
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const previewCanvas = document.getElementById('charPreviewCanvas');
+    const previewCtx = previewCanvas.getContext('2d');
+
+    const STATES = { TITLE: 0, PLAYING: 1, GAMEOVER: 2 };
+    let gameState = STATES.TITLE;
+
+    // Randomize initial roster and environment upon load!
+    let charIndex = Math.floor(Math.random() * CHARACTERS.length);
+    let currentChar = CHARACTERS[charIndex];
+    let currentCrag = CRAGS[Math.floor(Math.random() * CRAGS.length)];
+    let currentTime = TIMES[Math.floor(Math.random() * TIMES.length)];
+    let currentWeather = WEATHERS[Math.floor(Math.random() * WEATHERS.length)];
+    let callsign = '';
+
+    let cameraY = 0;
+    let targetCameraY = 0;
+    let isBetaView = false;
+    let betaPanOffset = 0;
+    let nextMilestone = 50;
+
+    const climber = {
+      x: 180,
+      y: 80,
+      targetX: 180,
+      targetY: 80,
+      
+      leftHand: { x: 165, y: 110, targetX: 165, targetY: 110, hold: null, lerp: 1 },
+      rightHand: { x: 195, y: 110, targetX: 195, targetY: 110, hold: null, lerp: 1 },
+      
+      leftFoot: { x: 165, y: 45 },
+      rightFoot: { x: 195, y: 45 },
+
+      grip: 100,
+      chalkCooldown: 0,
+      holdsLatched: 0,
+      altitude: 0,
+      score: 0,
+      
+      // Flow state mechanics
+      flowMultiplier: 1.0,
+      lastMoveTime: 0,
+
+      // Slip recovery system
+      isSlipping: false,
+      slipTimer: 0,
+      falling: false,
+      fallVelocity: 0,
+      
+      animTick: 0,
+      activeHandToggle: 0
+    };
+
+    let rockHolds = [];
+    let rockCracks = [];
+    let rockParticles = [];
+    let collectibles = [];
+    let ambientCreatures = [];
+    let highestHoldY = 60;
+    let holdCounter = 1;
+
+    function resizeViewport() {
+      const wrapper = document.getElementById('canvasWrapper');
+      canvas.width = wrapper.clientWidth;
+      canvas.height = wrapper.clientHeight;
+    }
+    window.addEventListener('resize', resizeViewport);
+
+    function randomizeCragAndAtmosphere() {
+      currentCrag = CRAGS[Math.floor(Math.random() * CRAGS.length)];
+      currentTime = TIMES[Math.floor(Math.random() * TIMES.length)];
+      currentWeather = WEATHERS[Math.floor(Math.random() * WEATHERS.length)];
+      updateAtmosphereUI();
+    }
+
+    function updateAtmosphereUI() {
+      document.getElementById('topCragBadge').innerText = currentCrag.name.split(' (')[0];
+      document.getElementById('topWeatherBadge').innerText = currentWeather.name.split(' ')[0] + ' ' + currentTime.name.split(' ')[0];
+      
+      document.getElementById('locIcon').innerText = currentCrag.icon;
+      document.getElementById('locName').innerText = currentCrag.name;
+      document.getElementById('timeName').innerText = currentTime.name;
+      document.getElementById('weatherName').innerText = currentWeather.name;
+    }
+
+    function generateInitialCrag() {
+      rockHolds = [];
+      rockCracks = [];
+      rockParticles = [];
+      collectibles = [];
+      ambientCreatures = [];
+      highestHoldY = 60;
+      holdCounter = 1;
+      cameraY = 0;
+      targetCameraY = 0;
+      betaPanOffset = 0;
+      isBetaView = false;
+
+      // Crag geological fissures
+      for (let i = 0; i < 45; i++) {
+        rockCracks.push({
+          x: Math.random() * canvas.width,
+          y: i * 40 + Math.random() * 20,
+          length: 30 + Math.random() * 55,
+          angle: (Math.random() - 0.5) * 0.45,
+          color: Math.random() > 0.4 ? currentCrag.crackColor : currentCrag.seamColor,
+          width: Math.random() > 0.5 ? 2 : 1,
+          isPebble: currentCrag.type === 'CONGLOMERATE' && Math.random() < 0.6
+        });
+      }
+
+      // Starting Base Holds
+      const baseHoldL = {
+        id: holdCounter++,
+        x: canvas.width * 0.42,
+        y: 85,
+        type: HOLD_TYPES.JUG,
+        crumbTimer: 0,
+        crumbled: false
+      };
+      const baseHoldR = {
+        id: holdCounter++,
+        x: canvas.width * 0.58,
+        y: 90,
+        type: HOLD_TYPES.JUG,
+        crumbTimer: 0,
+        crumbled: false
+      };
+
+      rockHolds.push(baseHoldL, baseHoldR);
+
+      climber.leftHand.hold = baseHoldL;
+      climber.leftHand.x = baseHoldL.x;
+      climber.leftHand.y = baseHoldL.y;
+      climber.leftHand.targetX = baseHoldL.x;
+      climber.leftHand.targetY = baseHoldL.y;
+
+      climber.rightHand.hold = baseHoldR;
+      climber.rightHand.x = baseHoldR.x;
+      climber.rightHand.y = baseHoldR.y;
+      climber.rightHand.targetX = baseHoldR.x;
+      climber.rightHand.targetY = baseHoldR.y;
+
+      climber.x = (baseHoldL.x + baseHoldR.x) / 2;
+      climber.y = (baseHoldL.y + baseHoldR.y) / 2 - 25;
+      climber.targetX = climber.x;
+      climber.targetY = climber.y;
+
+      highestHoldY = 120;
+
+      for (let r = 0; r < 18; r++) {
+        spawnProgressiveHoldBand();
+      }
+    }
+
+    function getPitchDifficulty(altMeters) {
+      if (altMeters < 50) {
+        return {
+          pitchName: 'Pitch 1 (Approach)',
+          grade: '5.7',
+          spacing: 34,
+          jugChance: 0.52,
+          pocketChance: 0.30,
+          crimpChance: 0.13,
+          sloperChance: 0.05,
+          chossChance: 0.0,
+          mult: 1.0
+        };
+      } else if (altMeters < 120) {
+        return {
+          pitchName: 'Pitch 2 (Technical Face)',
+          grade: '5.10b',
+          spacing: 42,
+          jugChance: 0.25,
+          pocketChance: 0.25,
+          crimpChance: 0.32,
+          sloperChance: 0.14,
+          chossChance: 0.04,
+          mult: 1.5
+        };
+      } else if (altMeters < 220) {
+        return {
+          pitchName: 'Pitch 3 (The Crux)',
+          grade: '5.13a',
+          spacing: 52,
+          jugChance: 0.12,
+          pocketChance: 0.18,
+          crimpChance: 0.42,
+          sloperChance: 0.16,
+          chossChance: 0.12,
+          mult: 2.2
+        };
+      } else {
+        return {
+          pitchName: 'Pitch 4 (Summit Overhang)',
+          grade: '5.15d',
+          spacing: 62,
+          jugChance: 0.06,
+          pocketChance: 0.12,
+          crimpChance: 0.44,
+          sloperChance: 0.20,
+          chossChance: 0.18,
+          mult: 3.5
+        };
+      }
+    }
+
+    function spawnProgressiveHoldBand() {
+      const currentAlt = highestHoldY / 7.5;
+      const pitch = getPitchDifficulty(currentAlt);
+
+      highestHoldY += pitch.spacing + (Math.random() * 14 - 7);
+      const count = Math.random() < 0.4 ? 2 : 3;
+      const colWidth = (canvas.width - 60) / count;
+
+      for (let c = 0; c < count; c++) {
+        const xPos = 30 + c * colWidth + (Math.random() * 20 - 10);
+        const roll = Math.random();
+
+        let holdType = HOLD_TYPES.JUG;
+        if (roll < pitch.jugChance) {
+          holdType = HOLD_TYPES.JUG;
+        } else if (roll < pitch.jugChance + pitch.pocketChance) {
+          holdType = HOLD_TYPES.POCKET;
+        } else if (roll < pitch.jugChance + pitch.pocketChance + pitch.crimpChance) {
+          holdType = HOLD_TYPES.CRIMP;
+        } else if (roll < pitch.jugChance + pitch.pocketChance + pitch.crimpChance + pitch.sloperChance) {
+          holdType = HOLD_TYPES.SLOPER;
+        } else {
+          holdType = HOLD_TYPES.CHOSS;
+        }
+
+        rockHolds.push({
+          id: holdCounter++,
+          x: Math.max(28, Math.min(canvas.width - 28, xPos)),
+          y: highestHoldY,
+          type: holdType,
+          crumbTimer: 0,
+          crumbled: false
+        });
+      }
+
+      // Spawn Collectibles: Golden Carabiners or Cliff Flowers
+      if (Math.random() < 0.18 && highestHoldY > 100) {
+        const isFlower = Math.random() < 0.45;
+        collectibles.push({
+          id: 'item_' + holdCounter,
+          x: 25 + Math.random() * (canvas.width - 50),
+          y: highestHoldY + 12,
+          type: isFlower ? 'FLOWER' : 'CARABINER',
+          collected: false
+        });
+      }
+
+      // Ambient Crag Creatures
+      if (Math.random() < 0.08 && highestHoldY > 140) {
+        ambientCreatures.push({
+          x: Math.random() < 0.5 ? 20 : canvas.width - 20,
+          y: highestHoldY,
+          type: currentCrag.surprise,
+          triggered: false
+        });
+      }
+    }
+
+    function getReachInfo(hold) {
+      const dist = Math.hypot(hold.x - climber.x, hold.y - climber.y);
+      const normalReach = 90 + currentChar.reachBonus;
+      const dynoReach = 145 + currentChar.reachBonus;
+
+      if (dist <= normalReach && hold.y > climber.y - 12) {
+        return { reachable: true, isDyno: false, dist };
+      } else if (dist <= dynoReach && hold.y > climber.y - 12) {
+        return { reachable: true, isDyno: true, dist };
+      }
+      return { reachable: false, isDyno: false, dist };
+    }
+
+    function attemptGrabHold(hold) {
+      if (gameState !== STATES.PLAYING || climber.falling || hold.crumbled) return;
+      sound.init();
+
+      const reach = getReachInfo(hold);
+      if (!reach.reachable) {
+        showHoldFeedbackToast('⚠️ Hold out of reach! Step closer.');
+        return;
+      }
+
+      if (climber.isSlipping) {
+        recoverFromSlip(hold);
+        return;
+      }
+
+      // Check Flow State combo streak
+      const now = Date.now();
+      if (climber.lastMoveTime > 0 && (now - climber.lastMoveTime) < 3600) {
+        climber.flowMultiplier = Math.min(5.0, parseFloat((climber.flowMultiplier + (currentChar.id === 'wukong' ? 0.6 : 0.3)).toFixed(1)));
+        climber.grip = Math.min(100, climber.grip + 4); // Flow momentum recovery bonus!
+      } else {
+        climber.flowMultiplier = 1.0;
+      }
+      climber.lastMoveTime = now;
+
+      // Select reaching hand
+      let reachHand = climber.leftHand;
+      if (climber.leftHand.hold?.id === hold.id) {
+        reachHand = climber.rightHand;
+      } else if (climber.rightHand.hold?.id === hold.id) {
+        reachHand = climber.leftHand;
+      } else {
+        if (climber.activeHandToggle === 0) {
+          reachHand = climber.leftHand;
+          climber.activeHandToggle = 1;
+        } else {
+          reachHand = climber.rightHand;
+          climber.activeHandToggle = 0;
+        }
+      }
+
+      updateHandIndicatorUI();
+
+      reachHand.hold = hold;
+      reachHand.targetX = hold.x;
+      reachHand.targetY = hold.y;
+      reachHand.lerp = 0;
+
+      const alt = hold.y / 7.5;
+      const pitch = getPitchDifficulty(alt);
+
+      if (reach.isDyno) {
+        const dynoCost = currentChar.id === 'wukong' ? 0 : (10 / currentChar.staminaRate);
+        climber.grip = Math.max(15, climber.grip - dynoCost);
+        climber.score += Math.floor(hold.type.score * 2.0 * pitch.mult * climber.flowMultiplier);
+        sound.playDynoLunge();
+        spawnChalkDust(hold.x, hold.y, 14);
+        showHoldFeedbackToast(`🚀 DYNO LATCH! +${Math.floor(hold.type.score * 2.0 * pitch.mult * climber.flowMultiplier)} pts`);
+      } else {
+        climber.score += Math.floor(hold.type.score * pitch.mult * climber.flowMultiplier);
+        sound.playGrabStone();
+        spawnChalkDust(hold.x, hold.y, 4);
+        showHoldFeedbackToast(`✓ LATCHED ${hold.type.tag}`);
+      }
+
+      climber.holdsLatched++;
+
+      // Pull torso upward smoothly
+      const otherHand = (reachHand === climber.leftHand) ? climber.rightHand : climber.leftHand;
+      const avgX = (reachHand.targetX + otherHand.targetX) / 2;
+      const avgY = (reachHand.targetY + otherHand.targetY) / 2;
+
+      climber.targetX = avgX;
+      climber.targetY = avgY - 25;
+
+      climber.altitude = Math.max(climber.altitude, alt);
+
+      // Check collectibles within grab radius
+      collectibles.forEach(item => {
+        if (!item.collected && Math.hypot(item.x - climber.x, item.y - climber.y) < 55) {
+          item.collected = true;
+          sound.playItemCollect();
+          if (item.type === 'FLOWER') {
+            climber.grip = Math.min(100, climber.grip + 35);
+            showHoldFeedbackToast('🌸 CLIFF FLOWER: +35% GRIP RECOVERED!');
+          } else {
+            climber.score += 250;
+            showHoldFeedbackToast('🟡 GOLDEN CARABINER: +250 PTS!');
+          }
+        }
+      });
+
+      if (climber.altitude >= nextMilestone) {
+        triggerMilestone(nextMilestone);
+        nextMilestone += 50;
+      }
+    }
+
+    function useChalkPowder() {
+      if (climber.chalkCooldown <= 0 && !climber.falling && gameState === STATES.PLAYING) {
+        sound.init();
+        climber.grip = Math.min(100, climber.grip + 10);
+        climber.chalkCooldown = 1200; // 20s
+        sound.playChalkPuff();
+        spawnChalkDust(climber.x, climber.y - 12, 20);
+
+        if (climber.isSlipping) {
+          recoverFromSlip(null);
+        } else {
+          showHoldFeedbackToast('🧤 CHALK APPLIED: GRIP RESTORED');
+        }
+      }
+    }
+
+    function enterSlipState() {
+      if (climber.isSlipping || climber.falling) return;
+
+      climber.isSlipping = true;
+      climber.slipTimer = 150; // 2.5 seconds
+      climber.flowMultiplier = 1.0;
+      sound.playSlipAlert();
+
+      document.getElementById('slipRescueBanner').classList.remove('hidden');
+      updateSlipCountdownDisplay();
+    }
+
+    function recoverFromSlip(savedHold) {
+      climber.isSlipping = false;
+      climber.slipTimer = 0;
+      climber.grip = 60;
+      sound.playCatchSave();
+      document.getElementById('slipRescueBanner').classList.add('hidden');
+      showHoldFeedbackToast('✋ RE-LATCHED! GRIP RECOVERED!');
+
+      if (savedHold) {
+        climber.leftHand.hold = savedHold;
+        climber.leftHand.targetX = savedHold.x;
+        climber.leftHand.targetY = savedHold.y;
+        climber.targetX = savedHold.x;
+        climber.targetY = savedHold.y - 25;
+      }
+    }
+
+    function updateSlipCountdownDisplay() {
+      const sec = (climber.slipTimer / 60).toFixed(1);
+      document.getElementById('slipCountDownText').innerText = `${sec}s`;
+    }
+
+    function triggerFinalFall() {
+      if (climber.falling) return;
+      climber.isSlipping = false;
+      document.getElementById('slipRescueBanner').classList.add('hidden');
+      climber.falling = true;
+      climber.fallVelocity = 2.4;
+      sound.playFreeFall();
+
+      setTimeout(() => {
+        concludeClimb();
+      }, 1000);
+    }
+
+    function concludeClimb() {
+      gameState = STATES.GAMEOVER;
+      sound.stopChiptuneLoop();
+
+      const pitch = getPitchDifficulty(climber.altitude);
+
+      document.getElementById('finalAltText').innerText = `${climber.altitude.toFixed(1)}m`;
+      document.getElementById('finalGradeText').innerText = pitch.grade;
+      document.getElementById('finalComboText').innerText = `x${climber.flowMultiplier.toFixed(1)}`;
+      document.getElementById('finalScoreText').innerText = climber.score;
+
+      const quotes = [
+        "Gravity never blinks.",
+        "A split second of fatigue on sheer stone.",
+        "Take your time to study the sequence next pitch!",
+        "The crag always remains.",
+        "Smooth movement builds summit speed."
+      ];
+      document.getElementById('fallQuoteText').innerText = `"${quotes[Math.floor(Math.random() * quotes.length)]}"`;
+
+      saveAscentRecord();
+
+      document.getElementById('inGameHud').classList.add('hidden');
+      document.getElementById('gameOverScreen').classList.remove('hidden');
+    }
+
+    async function saveAscentRecord() {
+      const status = document.getElementById('d1SyncStatus');
+      status.innerText = 'Logging ascent to crag records...';
+
+      const entry = {
+        id: 'climb_' + Date.now(),
+        name: callsign || 'Anonymous',
+        character: currentChar.name,
+        location: currentCrag.name.split(' (')[0],
+        weather: currentWeather.name.split(' ')[1] || 'Clear',
+        score: climber.score,
+        height: parseFloat(climber.altitude.toFixed(1)),
+        created_at: new Date().toISOString().substring(0, 10)
+      };
+
+      await storage.saveScore(entry);
+      status.innerText = '✓ Ascent recorded!';
+    }
+
+    function spawnChalkDust(x, y, count) {
+      for (let i = 0; i < count; i++) {
+        rockParticles.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 2.5,
+          vy: (Math.random() - 0.5) * 2.5,
+          size: Math.random() * 3 + 1,
+          color: 'rgba(255, 255, 255, 0.85)',
+          life: 1.0,
+          decay: 0.04
+        });
+      }
+    }
+
+    function triggerMilestone(dist) {
+      sound.playMilestoneFanfare();
+      const banner = document.getElementById('milestoneBanner');
+      banner.innerText = `🧗 ${dist}m ELEVATION REACHED!`;
+      banner.classList.remove('opacity-0', '-translate-y-4');
+      banner.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        banner.classList.add('opacity-0', '-translate-y-4');
+        banner.classList.remove('opacity-100', 'translate-y-0');
+      }, 2200);
+    }
+
+    function showHoldFeedbackToast(msg) {
+      const pill = document.getElementById('holdBetaPill');
+      pill.innerHTML = `<span>${msg}</span>`;
+      pill.classList.remove('opacity-0');
+      pill.classList.add('opacity-100');
+    }
+
+    function updateHandIndicatorUI() {
+      const ind = document.getElementById('nextHandIndicator');
+      if (climber.activeHandToggle === 0) {
+        ind.className = 'text-cyan-300 font-bold';
+        ind.innerText = 'LEFT ◀';
+      } else {
+        ind.className = 'text-amber-300 font-bold';
+        ind.innerText = 'RIGHT ▶';
+      }
+    }
+
+    function updatePhysics() {
+      if (gameState !== STATES.PLAYING) return;
+
+      climber.animTick++;
+
+      if (!climber.falling) {
+        climber.x += (climber.targetX - climber.x) * 0.16;
+        climber.y += (climber.targetY - climber.y) * 0.16;
+
+        if (climber.leftHand.lerp < 1) {
+          climber.leftHand.lerp = Math.min(1, climber.leftHand.lerp + 0.25);
+          climber.leftHand.x += (climber.leftHand.targetX - climber.leftHand.x) * 0.3;
+          climber.leftHand.y += (climber.leftHand.targetY - climber.leftHand.y) * 0.3;
+        }
+        if (climber.rightHand.lerp < 1) {
+          climber.rightHand.lerp = Math.min(1, climber.rightHand.lerp + 0.25);
+          climber.rightHand.x += (climber.rightHand.targetX - climber.rightHand.x) * 0.3;
+          climber.rightHand.y += (climber.rightHand.targetY - climber.rightHand.y) * 0.3;
+        }
+
+        climber.leftFoot.x = climber.x - 10 + Math.sin(climber.animTick * 0.1) * 2;
+        climber.leftFoot.y = climber.y - 24;
+        climber.rightFoot.x = climber.x + 10 + Math.cos(climber.animTick * 0.1) * 2;
+        climber.rightFoot.y = climber.y - 24;
+
+        if (!isBetaView) {
+          let netGripRate = 0;
+          let currentHoldStatusText = "🟢 RESTING ON HOLD";
+
+          const holds = [climber.leftHand.hold, climber.rightHand.hold].filter(Boolean);
+          if (holds.length > 0) {
+            const hasJug = holds.some(h => h.type.id === 'jug');
+            const hasPocket = holds.some(h => h.type.id === 'pocket');
+            const hasCrimp = holds.some(h => h.type.id === 'crimp');
+            const hasSloper = holds.some(h => h.type.id === 'sloper');
+            const hasChoss = holds.some(h => h.type.id === 'choss');
+
+            if (hasJug) {
+              netGripRate = -0.05 * currentChar.staminaRate;
+              currentHoldStatusText = "🟢 JUG: RECOVERING GRIP";
+            } else if (hasPocket) {
+              netGripRate = 0.0;
+              currentHoldStatusText = "🔵 POCKET: ZERO DRAIN (REST)";
+            } else if (hasCrimp) {
+              netGripRate = 0.045 * currentChar.staminaRate;
+              currentHoldStatusText = "🟡 CRIMP: SLOW PUMP";
+            } else if (hasSloper) {
+              const sloperMod = currentChar.id === 'billy' ? 0.5 : 1.0;
+              netGripRate = 0.055 * currentChar.staminaRate * sloperMod;
+              currentHoldStatusText = "🟠 SLOPER: SLOW PUMP";
+            } else if (hasChoss) {
+              netGripRate = 0.06 * currentChar.staminaRate;
+              currentHoldStatusText = "🔴 CHOSS: CRACKING!";
+            }
+          }
+
+          climber.grip = Math.max(0, Math.min(100, climber.grip - netGripRate));
+          document.getElementById('hudHoldStatus').innerText = currentHoldStatusText;
+
+          holds.forEach(h => {
+            if (h && h.type.crumble) {
+              h.crumbTimer++;
+              if (h.crumbTimer > 360) {
+                h.crumbled = true;
+                sound.playRockBreak();
+                spawnChalkDust(h.x, h.y, 16);
+                enterSlipState();
+              }
+            }
+          });
+
+          if (climber.grip <= 0 && !climber.isSlipping) {
+            enterSlipState();
+          }
+
+          if (climber.chalkCooldown > 0) climber.chalkCooldown--;
+        }
+
+        if (climber.isSlipping) {
+          climber.slipTimer--;
+          updateSlipCountdownDisplay();
+          if (climber.slipTimer <= 0) {
+            triggerFinalFall();
+          }
+        }
+      } else {
+        climber.fallVelocity += 0.55;
+        climber.y -= climber.fallVelocity;
+      }
+
+      // Camera Tracking & Smooth Pan
+      targetCameraY = Math.max(0, climber.y - canvas.height * 0.40);
+      const desiredBetaOffset = isBetaView ? 240 : 0;
+      betaPanOffset += (desiredBetaOffset - betaPanOffset) * 0.12;
+      cameraY += ((targetCameraY + betaPanOffset) - cameraY) * 0.14;
+
+      while (highestHoldY - (cameraY + betaPanOffset) < canvas.height + 160) {
+        spawnProgressiveHoldBand();
+      }
+
+      for (let i = rockParticles.length - 1; i >= 0; i--) {
+        const p = rockParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= p.decay;
+        if (p.life <= 0) rockParticles.splice(i, 1);
+      }
+
+      // Update HUD
+      const gripPct = Math.max(0, Math.floor(climber.grip));
+      document.getElementById('hudGripPct').innerText = `${gripPct}%`;
+      const fillBar = document.getElementById('hudGripBar');
+      fillBar.style.width = `${gripPct}%`;
+
+      if (gripPct < 25) {
+        fillBar.className = 'h-full bg-red-600 w-full animate-pulse';
+      } else if (gripPct < 55) {
+        fillBar.className = 'h-full bg-yellow-400 w-full';
+      } else {
+        fillBar.className = 'h-full bg-emerald-400 w-full';
+      }
+
+      const pitch = getPitchDifficulty(climber.altitude);
+      document.getElementById('hudGradeTag').innerText = pitch.grade;
+      document.getElementById('hudAltitude').innerText = `${climber.altitude.toFixed(1)}m`;
+      document.getElementById('hudScore').innerText = climber.score.toString().padStart(4, '0');
+
+      const flowText = document.getElementById('hudFlowMultiplier');
+      const flowBox = document.getElementById('flowBox');
+      if (climber.flowMultiplier > 1.0) {
+        flowText.innerText = `${climber.flowMultiplier.toFixed(1)}x`;
+        flowText.className = 'text-[8px] text-pink-400 font-bold';
+        flowBox.classList.add('flow-active');
+      } else {
+        flowText.innerText = '1.0x';
+        flowText.className = 'text-[8px] text-gray-500 font-bold';
+        flowBox.classList.remove('flow-active');
+      }
+
+      const cdText = document.getElementById('chalkCdText');
+      if (climber.chalkCooldown > 0) {
+        cdText.innerText = `${(climber.chalkCooldown / 60).toFixed(1)}s`;
+      } else {
+        cdText.innerText = 'RDY';
+      }
+    }
+
+    function renderRockFace() {
+      ctx.fillStyle = currentCrag.baseRock;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Render crag-specific geology
+      rockCracks.forEach(cr => {
+        const sy = canvas.height - (cr.y - cameraY);
+        if (sy < -40 || sy > canvas.height + 40) return;
+
+        if (cr.isPebble) {
+          // Montserrat Conglomerate rounded pebbles
+          ctx.fillStyle = currentCrag.pebbleColor;
+          ctx.beginPath();
+          ctx.ellipse(cr.x, sy, 7, 5, 0.4, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          // Standard fissure lines
+          ctx.strokeStyle = cr.color;
+          ctx.lineWidth = cr.width;
+          ctx.beginPath();
+          ctx.moveTo(cr.x, sy);
+          ctx.lineTo(cr.x + cr.length * cr.angle, sy + cr.length);
+          ctx.stroke();
+        }
+      });
+
+      // Side pillars
+      ctx.fillStyle = currentCrag.darkRock;
+      ctx.fillRect(0, 0, 14, canvas.height);
+      ctx.fillRect(canvas.width - 14, 0, 14, canvas.height);
+
+      // Render Collectibles (Carabiners and Flowers)
+      collectibles.forEach(item => {
+        if (item.collected) return;
+        const sy = canvas.height - (item.y - cameraY);
+        if (sy < -20 || sy > canvas.height + 20) return;
+
+        if (item.type === 'FLOWER') {
+          ctx.font = '13px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('🌸', item.x, sy);
+        } else {
+          ctx.fillStyle = '#facc15';
+          ctx.fillRect(item.x - 3, sy - 5, 6, 9);
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(item.x - 1.5, sy - 3.5, 3, 6);
+        }
+      });
+
+      // Render Geological Holds
+      rockHolds.forEach(h => {
+        if (h.crumbled) return;
+        const sy = canvas.height - (h.y - cameraY);
+        if (sy < -30 || sy > canvas.height + 30) return;
+
+        const reach = getReachInfo(h);
+        h.type.draw(ctx, h.x, sy, reach.reachable, h.crumbTimer);
+
+        if (reach.reachable && !reach.isDyno) {
+          ctx.strokeStyle = h.type.colorHex;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(h.x, sy, 16, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.fillStyle = climber.activeHandToggle === 0 ? '#22d3ee' : '#f59e0b';
+          ctx.beginPath();
+          ctx.arc(h.x, sy - 14, 3, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (reach.reachable && reach.isDyno) {
+          ctx.strokeStyle = 'rgba(245, 158, 11, 0.85)';
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([4, 4]);
+          ctx.beginPath();
+          ctx.arc(h.x, sy, 19, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          ctx.font = '7px monospace';
+          ctx.fillStyle = '#f59e0b';
+          ctx.textAlign = 'center';
+          ctx.fillText('DYNO', h.x, sy - 13);
+        }
+
+        if (isBetaView && sy > 40 && sy < canvas.height - 40) {
+          ctx.font = '6.5px monospace';
+          ctx.fillStyle = h.type.colorHex;
+          ctx.textAlign = 'center';
+          ctx.fillText(h.type.tag.split(' ')[0], h.x, sy + 14);
+        }
+      });
+
+      // Ambient Crag Surprises (Eagles, Bells, Swallows, Goats)
+      ambientCreatures.forEach(c => {
+        const sy = canvas.height - (c.y - cameraY);
+        if (sy < -30 || sy > canvas.height + 30) return;
+        ctx.font = '14px sans-serif';
+        ctx.textAlign = 'center';
+        if (c.type === 'EAGLE') ctx.fillText('🦅', c.x, sy);
+        else if (c.type === 'SWALLOW') ctx.fillText('🕊️', c.x, sy);
+        else if (c.type === 'GOAT') ctx.fillText('🐐', c.x, sy);
+        else if (c.type === 'BELL') ctx.fillText('🔔', c.x, sy);
+      });
+    }
+
+    function renderClimberKinematics() {
+      if (gameState !== STATES.PLAYING && gameState !== STATES.GAMEOVER) return;
+
+      const bodyScreenX = climber.x;
+      const bodyScreenY = canvas.height - (climber.y - cameraY);
+
+      const lhX = climber.leftHand.x;
+      const lhY = canvas.height - (climber.leftHand.y - cameraY);
+      const rhX = climber.rightHand.x;
+      const rhY = canvas.height - (climber.rightHand.y - cameraY);
+
+      const lfX = climber.leftFoot.x;
+      const lfY = canvas.height - (climber.leftFoot.y - cameraY);
+      const rfX = climber.rightFoot.x;
+      const rfY = canvas.height - (climber.rightFoot.y - cameraY);
+
+      ctx.lineWidth = 3;
+
+      // Left Arm
+      ctx.strokeStyle = currentChar.skinColor;
+      ctx.beginPath();
+      ctx.moveTo(bodyScreenX - 5, bodyScreenY - 6);
+      ctx.lineTo((bodyScreenX - 5 + lhX) / 2 - 3, (bodyScreenY - 6 + lhY) / 2);
+      ctx.lineTo(lhX, lhY);
+      ctx.stroke();
+
+      // Right Arm
+      ctx.beginPath();
+      ctx.moveTo(bodyScreenX + 5, bodyScreenY - 6);
+      ctx.lineTo((bodyScreenX + 5 + rhX) / 2 + 3, (bodyScreenY - 6 + rhY) / 2);
+      ctx.lineTo(rhX, rhY);
+      ctx.stroke();
+
+      // Left Leg
+      ctx.strokeStyle = currentChar.pantsColor;
+      ctx.beginPath();
+      ctx.moveTo(bodyScreenX - 4, bodyScreenY + 10);
+      ctx.lineTo((bodyScreenX - 4 + lfX) / 2 - 4, (bodyScreenY + 10 + lfY) / 2);
+      ctx.lineTo(lfX, lfY);
+      ctx.stroke();
+
+      // Right Leg
+      ctx.beginPath();
+      ctx.moveTo(bodyScreenX + 4, bodyScreenY + 10);
+      ctx.lineTo((bodyScreenX + 4 + rfX) / 2 + 4, (bodyScreenY + 10 + rfY) / 2);
+      ctx.lineTo(rfX, rfY);
+      ctx.stroke();
+
+      // Torso & Pants
+      ctx.fillStyle = currentChar.shirtColor;
+      ctx.fillRect(bodyScreenX - 6, bodyScreenY - 8, 12, 16);
+
+      ctx.fillStyle = currentChar.pantsColor;
+      ctx.fillRect(bodyScreenX - 6, bodyScreenY + 6, 12, 6);
+
+      // Head & Hair
+      ctx.fillStyle = currentChar.skinColor;
+      ctx.fillRect(bodyScreenX - 4, bodyScreenY - 17, 8, 8);
+
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(bodyScreenX - 4, bodyScreenY - 19, 8, 3);
+
+      // Chalk bag
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(bodyScreenX - 2.5, bodyScreenY + 5, 5, 4);
+
+      // Shoes
+      ctx.fillStyle = '#f97316';
+      ctx.fillRect(lfX - 3, lfY - 2, 6, 4);
+      ctx.fillRect(rfX - 3, rfY - 2, 6, 4);
+
+      // Hands
+      ctx.fillStyle = '#22d3ee';
+      ctx.fillRect(lhX - 2.5, lhY - 2.5, 5, 5);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(rhX - 2.5, rhY - 2.5, 5, 5);
+
+      // Special visual aura for Master Wukong
+      if (currentChar.id === 'wukong') {
+        ctx.fillStyle = 'rgba(254, 240, 138, 0.45)';
+        ctx.beginPath();
+        ctx.arc(bodyScreenX, bodyScreenY + 14, 12, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function renderParticles() {
+      rockParticles.forEach(p => {
+        const sy = canvas.height - (p.y - cameraY);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, sy, p.size, p.size);
+      });
+    }
+
+    function gameLoop() {
+      updatePhysics();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      renderRockFace();
+      renderClimberKinematics();
+      renderParticles();
+      requestAnimationFrame(gameLoop);
+    }
+
+    canvas.addEventListener('pointerdown', (e) => {
+      if (gameState !== STATES.PLAYING) return;
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      const worldY = (canvas.height - clickY) + cameraY;
+      const worldX = clickX;
+
+      let closest = null;
+      let minDist = 58;
+
+      rockHolds.forEach(h => {
+        const d = Math.hypot(h.x - worldX, h.y - worldY);
+        if (d < minDist) {
+          minDist = d;
+          closest = h;
+        }
+      });
+
+      if (closest) {
+        attemptGrabHold(closest);
+      } else {
+        sound.init();
+      }
+    });
+
+    const betaBtn = document.getElementById('toggleBetaViewBtn');
+    betaBtn.addEventListener('click', () => {
+      isBetaView = !isBetaView;
+      const btnText = document.getElementById('betaViewBtnText');
+      if (isBetaView) {
+        betaBtn.className = 'px-2 py-1 bg-cyan-600 text-black font-bold border border-white rounded text-[7px] flex items-center gap-1 transition-all';
+        btnText.innerText = 'EXIT BETA';
+        showHoldFeedbackToast('👁️ BETA INSPECTION: PANNED 15m AHEAD');
+      } else {
+        betaBtn.className = 'px-2 py-1 bg-[#132235] hover:bg-[#1d3553] active:scale-95 text-cyan-300 border border-cyan-500 rounded text-[7px] flex items-center gap-1 transition-all';
+        btnText.innerText = 'BETA VIEW';
+      }
+      sound.playGrabStone();
+    });
+
+    document.getElementById('emergencyCatchBtn').addEventListener('click', () => {
+      let bestHold = null;
+      let minDist = 180;
+      rockHolds.forEach(h => {
+        if (!h.crumbled) {
+          const d = Math.hypot(h.x - climber.x, h.y - climber.y);
+          if (d < minDist) {
+            minDist = d;
+            bestHold = h;
+          }
+        }
+      });
+      recoverFromSlip(bestHold);
+    });
+
+    function updateCharacterPreview() {
+      previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+      const c = CHARACTERS[charIndex];
+      currentChar = c;
+
+      document.getElementById('charNameText').innerText = c.name;
+      document.getElementById('charPerkText').innerText = c.perk;
+      document.getElementById('charBioText').innerText = c.bio;
+      document.getElementById('rosterTag').innerText = c.category;
+
+      c.drawIcon(previewCtx, 18, 18);
+    }
+
+    document.getElementById('prevCharBtn').addEventListener('click', () => {
+      charIndex = (charIndex - 1 + CHARACTERS.length) % CHARACTERS.length;
+      updateCharacterPreview();
+      sound.playGrabStone();
+    });
+
+    document.getElementById('nextCharBtn').addEventListener('click', () => {
+      charIndex = (charIndex + 1) % CHARACTERS.length;
+      updateCharacterPreview();
+      sound.playGrabStone();
+    });
+
+    document.getElementById('rerollCragBtn').addEventListener('click', () => {
+      randomizeCragAndAtmosphere();
+      sound.playGrabStone();
+    });
+
+    document.getElementById('chalkQuickBtn').addEventListener('click', useChalkPowder);
+
+    async function showLeaderboard(filter = 'ALL') {
+      const tbody = document.getElementById('leaderboardRows');
+      tbody.innerHTML = '<tr><td colspan="6" class="p-2 text-center text-gray-500">Loading ascents...</td></tr>';
+      
+      const scores = await storage.getScores();
+      let filtered = scores;
+
+      if (filter === 'TODAY') {
+        const today = new Date().toISOString().substring(0, 10);
+        filtered = scores.filter(s => (s.created_at || '').includes(today));
+      } else if (filter === 'PERSONAL') {
+        const myName = (document.getElementById('callsignInput').value || '').trim().toLowerCase();
+        filtered = scores.filter(s => myName && (s.name || '').toLowerCase() === myName);
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500 text-[6.5px]">No ascents logged yet.<br>Claim the First Ascent (FA)!</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = '';
+      filtered.slice(0, 30).forEach((entry, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-900 hover:bg-gray-900/50';
+        let medal = `${idx + 1}`;
+        if (idx === 0) medal = '🥇';
+        else if (idx === 1) medal = '🥈';
+        else if (idx === 2) medal = '🥉';
+
+        tr.innerHTML = `
+          <td class="p-1 font-bold text-yellow-400">${medal}</td>
+          <td class="p-1 font-bold text-cyan-300 truncate max-w-[75px]">${escapeHtml(entry.name || 'Anonymous')}</td>
+          <td class="p-1 text-gray-400 truncate max-w-[65px]">${escapeHtml(entry.location || 'Crag')}</td>
+          <td class="p-1 text-emerald-400">${(entry.height || 0).toFixed(1)}m</td>
+          <td class="p-1 text-right font-bold text-amber-300">${entry.score || 0}</td>
+          <td class="p-1 text-right text-gray-500">${(entry.created_at || '').substring(5)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    const lbModal = document.getElementById('leaderboardModal');
+
+    document.getElementById('showLeaderboardBtn').addEventListener('click', () => {
+      lbModal.classList.remove('hidden');
+      showLeaderboard('ALL');
+      sound.playGrabStone();
+    });
+
+    document.getElementById('gameOverLbBtn').addEventListener('click', () => {
+      lbModal.classList.remove('hidden');
+      showLeaderboard('ALL');
+      sound.playGrabStone();
+    });
+
+    document.getElementById('closeLbBtn').addEventListener('click', () => lbModal.classList.add('hidden'));
+    document.getElementById('refreshLbDataBtn').addEventListener('click', () => {
+      showLeaderboard('ALL');
+      sound.playGrabStone();
+    });
+
+    document.querySelectorAll('.lb-filter-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.lb-filter-btn').forEach(b => {
+          b.className = 'lb-filter-btn px-2 py-0.5 bg-gray-800 text-gray-300 hover:bg-gray-700 rounded';
+        });
+        e.target.className = 'lb-filter-btn px-2 py-0.5 bg-yellow-500 text-black font-bold rounded';
+        showLeaderboard(e.target.dataset.filter);
+        sound.playGrabStone();
+      });
+    });
+
+    document.getElementById('toggleCrtBtn').addEventListener('click', (e) => {
+      const crt = document.getElementById('crtOverlay');
+      crt.classList.toggle('hidden');
+      e.target.classList.toggle('text-cyan-400');
+    });
+
+    document.getElementById('toggleAudioBtn').addEventListener('click', () => {
+      sound.enabled = !sound.enabled;
+      document.getElementById('audioStatusText').innerText = sound.enabled ? 'ON' : 'OFF';
+      if (!sound.enabled) sound.stopChiptuneLoop();
+      else if (gameState === STATES.PLAYING) sound.startChiptuneLoop();
+    });
+
+    function startClimbingSession() {
+      const inputEl = document.getElementById('callsignInput');
+      const val = inputEl.value.trim();
+
+      if (!val) {
+        document.getElementById('nameRequiredWarn').classList.remove('hidden');
+        inputEl.focus();
+        return;
+      }
+
+      document.getElementById('nameRequiredWarn').classList.add('hidden');
+      callsign = val;
+
+      sound.init();
+
+      climber.grip = 100;
+      climber.chalkCooldown = 0;
+      climber.score = 0;
+      climber.altitude = 0;
+      climber.holdsLatched = 0;
+      climber.flowMultiplier = 1.0;
+      climber.lastMoveTime = 0;
+      climber.falling = false;
+      climber.isSlipping = false;
+      climber.activeHandToggle = 0;
+      nextMilestone = 50;
+
+      generateInitialCrag();
+      updateHandIndicatorUI();
+
+      document.getElementById('titleScreen').classList.add('hidden');
+      document.getElementById('gameOverScreen').classList.add('hidden');
+      document.getElementById('slipRescueBanner').classList.add('hidden');
+      document.getElementById('inGameHud').classList.remove('hidden');
+
+      gameState = STATES.PLAYING;
+      sound.playMilestoneFanfare();
+      sound.startChiptuneLoop();
+    }
+
+    document.getElementById('startClimbBtn').addEventListener('click', startClimbingSession);
+    document.getElementById('retryClimbBtn').addEventListener('click', () => {
+      randomizeCragAndAtmosphere();
+      startClimbingSession();
+    });
+
+    window.onload = function() {
+      resizeViewport();
+      randomizeCragAndAtmosphere();
+      updateCharacterPreview();
+      gameLoop();
+    };
+  </script>
+</body>
+</html>
