@@ -1,30 +1,77 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-stone-100">
+<html lang="es" class="h-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Vocabulario Español — Diccionario & Tarjetas de Memoria</title>
+  <title>Aprender Español</title>
+  
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            // Paleta inspirada en los colores de España (Rojigualda)
+            esp: {
+              red: {
+                50: '#fff1f2',
+                100: '#ffe4e6',
+                200: '#fecdd3',
+                500: '#f43f5e',
+                600: '#e11d48',
+                700: '#c60b1e', // Rojo Bandera de España Oficial
+                800: '#9f1239',
+                900: '#881337',
+                950: '#4c0519',
+              },
+              gold: {
+                50: '#fefce8',
+                100: '#fef9c3',
+                200: '#fef08a',
+                300: '#fde047',
+                400: '#facc15',
+                500: '#ffc400', // Amarillo Gualda Oficial
+                600: '#eab308',
+                700: '#ca8a04',
+                800: '#854d0e',
+                900: '#713f12',
+              },
+              day: {
+                bg: '#FAF7F2',       // Tono pergamino / arena cálido
+                card: '#FFFFFF',
+                surface: '#F4EFEA',
+                border: '#E8DFD8'
+              },
+              night: {
+                bg: '#121011',       // Noche carbón ibérica
+                card: '#1C191A',
+                surface: '#252123',
+                border: '#332D30'
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
-    :root {
-      --esp-red: #c60b1e;
-      --esp-gold: #ffc400;
-    }
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .font-display {
-      font-family: 'Playfair Display', Georgia, serif;
-    }
-    .font-mono {
-      font-family: 'JetBrains Mono', monospace;
-    }
-    /* Bandera Rojigualda de España: franja central doble */
-    .bandera-rojigualda {
+    /* Rojigualda de España */
+    .bandera-espana {
       background: linear-gradient(
         to bottom,
         #c60b1e 0%,
@@ -35,9 +82,20 @@
         #c60b1e 100%
       );
     }
-    .perspective-1000 {
-      perspective: 1000px;
+    .bandera-espana-h {
+      background: linear-gradient(
+        to right,
+        #c60b1e 0%,
+        #c60b1e 25%,
+        #ffc400 25%,
+        #ffc400 75%,
+        #c60b1e 75%,
+        #c60b1e 100%
+      );
     }
+
+    /* 3D Flip Card */
+    .perspective-1000 { perspective: 1000px; }
     .transform-style-3d {
       transform-style: preserve-3d;
       -webkit-transform-style: preserve-3d;
@@ -46,1724 +104,1554 @@
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
     }
-    .rotate-y-180 {
-      transform: rotateY(180deg);
-    }
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f5f5f4;
-    }
+    .rotate-y-180 { transform: rotateY(180deg); }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb {
-      background: #d6d3d1;
+      background: rgba(198, 11, 30, 0.25);
       border-radius: 9999px;
     }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #a8a29e;
+    .dark ::-webkit-scrollbar-thumb {
+      background: rgba(255, 196, 0, 0.25);
     }
-    @keyframes pulse-gentle {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.85; transform: scale(1.02); }
+
+    /* Landscape Mode Optimizations */
+    @media (orientation: landscape) and (max-height: 540px) {
+      .landscape-compact-card {
+        height: 14rem !important;
+      }
+      .landscape-compact-padding {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+      }
+      .landscape-hide {
+        display: none !important;
+      }
     }
-    .animate-pulse-gentle {
-      animation: pulse-gentle 2.5s infinite ease-in-out;
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
     }
+    .animate-shake { animation: shake 0.35s ease-in-out; }
   </style>
 </head>
-<body class="min-h-full flex flex-col text-stone-900 selection:bg-amber-200 selection:text-red-950">
 
-  <!-- Franja Superior Rojigualda de España -->
-  <div class="h-2.5 w-full bandera-rojigualda fixed top-0 left-0 z-40 shadow-xs"></div>
+<body class="min-h-full flex flex-col bg-esp-day-bg text-stone-900 dark:bg-esp-night-bg dark:text-stone-100 transition-colors duration-200 selection:bg-esp-gold-300 selection:text-esp-red-950 font-sans">
 
-  <!-- Barra de progreso sutil superior -->
-  <div id="corpusProgressBarTrack" class="fixed top-2.5 left-0 w-full h-1 bg-stone-200/50 z-40 transition-opacity duration-300 opacity-0 pointer-events-none">
-    <div id="corpusProgressBar" class="h-full bg-gradient-to-r from-red-600 via-amber-400 to-red-600 transition-all duration-200 w-0"></div>
-  </div>
+  <!-- Franja Superior Rojigualda -->
+  <div class="h-2 w-full bandera-espana fixed top-0 left-0 z-50 shadow-xs"></div>
 
   <!-- Barra de Navegación Principal -->
-  <header class="sticky top-2.5 z-30 bg-white/95 backdrop-blur-md border-b border-amber-200/60 shadow-xs">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+  <header class="sticky top-2 z-40 bg-white/95 dark:bg-esp-night-card/95 backdrop-blur-md border-b border-esp-day-border dark:border-esp-night-border shadow-xs transition-colors">
+    <div class="max-w-5xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2">
       
-      <!-- Logotipo & Título -->
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-600 via-amber-500 to-red-700 text-white flex items-center justify-center font-black text-lg shadow-sm border border-amber-300">
+      <!-- Brand & Título -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bandera-espana-h text-white flex items-center justify-center font-black text-xs sm:text-sm shadow-xs border border-esp-gold-400">
           ES
         </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="font-bold text-base sm:text-lg tracking-tight text-stone-900 leading-none">
-              Vocabulario Español
-            </h1>
-            <span id="corpusWordCountBadge" class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
-              0 palabras
-            </span>
-          </div>
-          <p id="headerSubtitle" class="text-[11px] text-stone-500 flex items-center gap-1.5 mt-0.5">
-            <span id="serverStatusDot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-            <span id="headerStatusText" class="truncate max-w-[210px] sm:max-w-none">Iniciando corpus en /corpus/...</span>
-          </p>
+        <div class="leading-none">
+          <span class="font-serif font-bold text-base sm:text-lg tracking-tight text-stone-900 dark:text-stone-100">
+            Vocabulario & Verbo
+          </span>
+          <span class="hidden sm:inline-block text-[10px] uppercase font-bold tracking-wider text-esp-red-700 dark:text-esp-gold-400 ml-1.5 px-1.5 py-0.5 rounded bg-esp-red-50 dark:bg-esp-night-surface">
+            Edición España
+          </span>
         </div>
       </div>
 
-      <!-- Pestañas Principales: Diccionario vs Tarjetas -->
-      <nav class="flex items-center bg-stone-100 p-1 rounded-2xl border border-stone-200/80 shadow-inner">
+      <!-- Los 2 Pilares de Navegación: [TARJETAS] y [VERBO] -->
+      <nav class="flex items-center bg-stone-100 dark:bg-esp-night-surface p-1 rounded-2xl border border-esp-day-border dark:border-esp-night-border">
+        <!-- Función 1: Tarjetas -->
         <button 
-          id="tabBtnDict" 
-          type="button" 
-          onclick="switchView('dictionary')" 
-          class="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs bg-white text-red-700"
+          id="navBtnTarjetas" 
+          onclick="app.switchMainTab('tarjetas')"
+          class="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs bg-white dark:bg-esp-night-card text-esp-red-700 dark:text-esp-gold-400"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
-          <span>Diccionario</span>
-        </button>
-        <button 
-          id="tabBtnCards" 
-          type="button" 
-          onclick="switchView('flashcards')" 
-          class="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all text-stone-600 hover:text-stone-900"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg>
+          <i data-lucide="layers" class="w-4 h-4"></i>
           <span>Tarjetas</span>
+        </button>
+
+        <!-- Función 2: Verbo -->
+        <button 
+          id="navBtnVerbo" 
+          onclick="app.switchMainTab('verbo')"
+          class="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+        >
+          <i data-lucide="flame" class="w-4 h-4"></i>
+          <span>Verbo</span>
         </button>
       </nav>
 
-      <!-- Botones de Utilidad (Índice A-Z y Cuaderno de Guardadas) -->
-      <div class="flex items-center gap-1.5 sm:gap-2">
+      <!-- Selector de Modo Día / Noche & Audio -->
+      <div class="flex items-center gap-1 sm:gap-2">
+        <!-- Toggle Audio SFX -->
         <button 
-          type="button" 
-          onclick="openIndexModal()" 
-          title="Ver índice completo A-Z"
-          class="p-2 rounded-xl text-stone-600 hover:text-stone-900 hover:bg-stone-100 border border-stone-200 transition-colors"
+          onclick="app.toggleSoundEffects()" 
+          id="sfxToggleBtn"
+          class="p-2 rounded-xl text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 hover:bg-stone-100 dark:hover:bg-esp-night-surface transition-colors"
+          title="Alternar Efectos de Sonido"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-          </svg>
+          <i data-lucide="volume-2" class="w-4 h-4" id="sfxIcon"></i>
         </button>
+
+        <!-- Toggle Modo Día / Noche (España Luz vs Noche) -->
         <button 
-          type="button" 
-          onclick="toggleSavedDrawer()" 
-          title="Cuaderno de palabras guardadas"
-          class="relative p-2 rounded-xl text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-300 transition-colors"
+          onclick="app.toggleTheme()" 
+          id="themeToggleBtn"
+          class="p-2 rounded-xl bg-esp-day-surface dark:bg-esp-night-surface border border-esp-day-border dark:border-esp-night-border text-esp-red-700 dark:text-esp-gold-400 hover:scale-105 active:scale-95 transition-all"
+          title="Cambiar entre Modo Día y Noche"
         >
-          <svg class="w-4 h-4 fill-amber-500 text-amber-600" viewBox="0 0 20 20">
-            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-          </svg>
-          <span id="savedBadgeCount" class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 bg-red-600 text-white rounded-full text-[10px] font-extrabold flex items-center justify-center border-2 border-white">
-            0
-          </span>
+          <i data-lucide="moon" class="w-4 h-4 hidden dark:block"></i>
+          <i data-lucide="sun" class="w-4 h-4 block dark:hidden"></i>
         </button>
       </div>
+
     </div>
   </header>
 
-  <!-- Contenedor Central Dinámico -->
-  <main class="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 pb-20">
+  <!-- Contenedor Principal Dinámico -->
+  <main class="flex-1 max-w-4xl w-full mx-auto p-3 sm:p-6 pb-16 flex flex-col">
 
-    <!-- ========================================== -->
-    <!-- VISTA 1: DICCIONARIO (BÚSQUEDA Y RESULTADOS)-->
-    <!-- ========================================== -->
-    <section id="viewDictionary" class="space-y-6">
+    <!-- ============================================================= -->
+    <!-- FUNCIÓN 1: TARJETAS (VOCABULARIO & LISTA COMPLETA DEL CORPUS) -->
+    <!-- ============================================================= -->
+    <section id="sectionTarjetas" class="space-y-4 flex-1 flex flex-col">
       
-      <!-- Caja de Búsqueda Principal -->
-      <div class="bg-gradient-to-b from-white via-amber-50/30 to-white rounded-3xl p-6 sm:p-10 border border-amber-200/70 shadow-sm text-center relative overflow-hidden">
-        <div class="absolute -top-24 -right-24 w-48 h-48 bg-amber-200/40 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-red-100/40 rounded-full blur-3xl pointer-events-none"></div>
-        
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200 mb-3 shadow-2xs">
-          <span>🇪🇸</span> Explorador Lexicográfico Español
-        </span>
-        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-stone-900 font-display mb-2">
-          ¿Qué palabra deseas consultar?
-        </h2>
-        <p class="text-xs sm:text-sm text-stone-600 max-w-md mx-auto mb-6">
-          Búsqueda en tiempo real en todos los archivos cargados desde el directorio <code class="text-amber-900 font-mono bg-amber-100 px-1 py-0.5 rounded">/corpus/</code>.
-        </p>
-
-        <!-- Formulario de Búsqueda con Autocompletado -->
-        <div class="relative max-w-xl mx-auto">
-          <form onsubmit="event.preventDefault(); executeSearch();" class="relative flex items-center">
-            <input 
-              type="text" 
-              id="searchInput" 
-              placeholder="Ej: software, algoritmo, aleación..." 
-              autocomplete="off"
-              spellcheck="false"
-              oninput="handleSearchInput(event)"
-              class="w-full pl-12 pr-28 py-4 bg-white rounded-2xl border-2 border-stone-200 focus:border-red-600 focus:outline-none focus:ring-4 focus:ring-red-100 text-stone-900 placeholder:text-stone-400 font-medium text-base shadow-sm transition-all"
-            />
-            <div class="absolute left-4 text-stone-400 pointer-events-none">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <div class="absolute right-2 flex items-center gap-1">
-              <button 
-                type="button" 
-                id="clearSearchBtn" 
-                onclick="clearSearch()" 
-                class="hidden p-2 text-stone-400 hover:text-stone-700 rounded-xl transition-colors"
-                title="Limpiar"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-              <button 
-                type="submit" 
-                class="px-4 py-2 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs active:scale-95 transition-all"
-              >
-                Buscar
-              </button>
-            </div>
-          </form>
-
-          <!-- Menú de Autocompletado -->
-          <div id="autocompleteMenu" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl border border-amber-200/80 shadow-xl overflow-hidden z-20 text-left max-h-64 overflow-y-auto"></div>
+      <!-- Sub-barra de navegación bajo Tarjetas: [Práctica de Tarjetas] / [Lista del Corpus] -->
+      <div class="bg-white dark:bg-esp-night-card rounded-2xl p-2.5 sm:p-3 border border-esp-day-border dark:border-esp-night-border shadow-xs flex flex-wrap items-center justify-between gap-2.5">
+        <div class="inline-flex rounded-xl bg-stone-100 dark:bg-esp-night-surface p-1 text-xs font-bold">
+          <button 
+            id="subTabFlashcardsBtn" 
+            onclick="app.switchTarjetasSubTab('cards')"
+            class="px-3 py-1.5 rounded-lg bg-white dark:bg-esp-night-card text-esp-red-700 dark:text-esp-gold-400 shadow-xs flex items-center gap-1.5 transition-all"
+          >
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span>Práctica</span>
+          </button>
+          <button 
+            id="subTabCorpusListBtn" 
+            onclick="app.switchTarjetasSubTab('list')"
+            class="px-3 py-1.5 rounded-lg text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 flex items-center gap-1.5 transition-all"
+          >
+            <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+            <span>Lista del Corpus (<span id="tarjetasCorpusCountPill">0</span>)</span>
+          </button>
         </div>
 
-        <!-- Sugerencias Rápidas -->
-        <div class="mt-4 flex flex-wrap items-center justify-center gap-1.5 text-xs">
-          <span class="text-stone-400 font-medium">Ejemplos:</span>
-          <button type="button" onclick="quickLookup('algoritmo')" class="px-2 py-1 rounded-lg bg-white hover:bg-amber-100 text-stone-700 hover:text-amber-900 border border-stone-200 transition-colors font-mono">algoritmo</button>
-          <button type="button" onclick="quickLookup('software')" class="px-2 py-1 rounded-lg bg-white hover:bg-amber-100 text-stone-700 hover:text-amber-900 border border-stone-200 transition-colors font-mono">software</button>
-          <button type="button" onclick="quickLookup('aleación')" class="px-2 py-1 rounded-lg bg-white hover:bg-amber-100 text-stone-700 hover:text-amber-900 border border-stone-200 transition-colors font-mono">aleación</button>
-          <button type="button" onclick="pickRandomWord()" class="px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold border border-amber-300 transition-colors flex items-center gap-1">
-            <span>🎲</span> Aleatoria
+        <!-- Acciones rápidas de Tarjetas -->
+        <div class="flex items-center gap-2 text-xs">
+          <button 
+            onclick="app.shuffleCards()" 
+            class="px-2.5 py-1.5 rounded-lg border border-esp-day-border dark:border-esp-night-border hover:bg-stone-100 dark:hover:bg-esp-night-surface font-semibold flex items-center gap-1 transition"
+          >
+            <i data-lucide="shuffle" class="w-3.5 h-3.5 text-esp-red-700 dark:text-esp-gold-400"></i>
+            <span class="hidden sm:inline">Barajar</span>
           </button>
+
+          <span class="px-2 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold text-[11px]">
+            <span id="fcMasteredCount">0</span> Dominadas
+          </span>
+          <span class="px-2 py-1 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 font-bold text-[11px]">
+            <span id="fcReviewCount">0</span> Repasar
+          </span>
         </div>
       </div>
 
-      <!-- Tarjeta de Resultado del Diccionario -->
-      <div id="dictionaryResultCard" class="hidden bg-white rounded-3xl p-6 sm:p-8 border border-amber-200 shadow-md space-y-6">
+      <!-- VISTA 1.A: PRÁCTICA CON TARJETAS GIRATORIAS 3D -->
+      <div id="tarjetasSubViewCards" class="space-y-4 flex-1 flex flex-col justify-center">
         
-        <!-- Cabecera del Término -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-100">
-          <div>
-            <div class="flex items-center gap-3">
-              <h3 id="dictResultWord" class="text-2xl sm:text-3xl font-extrabold text-stone-900 font-display"></h3>
-              <span id="dictResultGrammar" class="px-3 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300"></span>
+        <!-- Indicador de Progreso -->
+        <div class="space-y-1">
+          <div class="flex justify-between text-[11px] text-stone-500 dark:text-stone-400 font-medium px-1">
+            <span>Tarjeta <strong id="fcCurrentIdxNum" class="text-stone-900 dark:text-stone-100 font-mono">1</strong> de <span id="fcTotalNum" class="font-mono">0</span></span>
+            <span class="hidden sm:inline">Presiona Espacio o toca para girar &bull; Flechas &larr; &rarr;</span>
+          </div>
+          <div class="w-full bg-stone-200 dark:bg-esp-night-surface rounded-full h-1.5 overflow-hidden">
+            <div id="fcSessionProgressBar" class="h-full bg-gradient-to-r from-esp-red-700 via-esp-gold-500 to-emerald-500 transition-all duration-300 w-0"></div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 3D Flip (Optimizada para Móvil Vertical y Apaisado) -->
+        <div class="perspective-1000 w-full max-w-lg mx-auto h-72 sm:h-84 landscape-compact-card select-none cursor-pointer" onclick="app.flipCard()">
+          <div id="flashcard3D" class="relative w-full h-full transform-style-3d transition-transform duration-500 rounded-3xl shadow-md border-2 border-esp-gold-400 dark:border-esp-red-800/80">
+            
+            <!-- ANVERSO (Front): Español + Fonética + Audio -->
+            <div class="absolute inset-0 w-full h-full rounded-3xl p-5 sm:p-8 flex flex-col justify-between backface-hidden bg-white dark:bg-esp-night-card">
+              <div class="flex items-center justify-between text-xs">
+                <span class="px-2.5 py-0.5 rounded-full bg-esp-red-50 dark:bg-esp-red-950/60 text-esp-red-700 dark:text-esp-red-200 font-bold border border-esp-red-200 dark:border-esp-red-900">
+                  Español
+                </span>
+                <span id="fcStarredBadge" class="hidden text-amber-500 font-bold text-xs">⭐ Guardada</span>
+                <span class="text-stone-400 text-[11px] flex items-center gap-1">
+                  <span>Tocar para ver traducción</span>
+                  <i data-lucide="rotate-cw" class="w-3 h-3"></i>
+                </span>
+              </div>
+
+              <!-- Centro -->
+              <div class="text-center my-auto space-y-2">
+                <h3 id="fcFrontWord" class="text-3xl sm:text-5xl font-extrabold text-stone-900 dark:text-stone-100 font-serif tracking-tight"></h3>
+                <div class="flex items-center justify-center gap-2">
+                  <span id="fcFrontIpa" class="font-mono text-xs sm:text-sm text-stone-500 dark:text-stone-400 bg-stone-100 dark:bg-esp-night-surface px-2 py-0.5 rounded-md"></span>
+                  <button 
+                    type="button" 
+                    onclick="event.stopPropagation(); app.speakCurrentWord();" 
+                    class="p-1.5 rounded-lg bg-esp-red-50 dark:bg-esp-red-950/50 text-esp-red-700 dark:text-esp-red-300 hover:scale-110 transition"
+                    title="Escuchar pronunciación"
+                  >
+                    <i data-lucide="volume-2" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Pie Anverso -->
+              <div class="flex items-center justify-between text-[11px] text-stone-400 pt-2 border-t border-stone-100 dark:border-esp-night-border">
+                <span id="fcFrontGrammar" class="font-semibold text-esp-red-700 dark:text-esp-gold-400"></span>
+                <span id="fcFrontSource" class="font-mono truncate max-w-[150px]"></span>
+              </div>
             </div>
-            <div class="flex items-center gap-3 mt-1.5">
-              <span id="dictResultIpa" class="font-mono text-sm text-stone-500 bg-stone-50 px-2 py-0.5 rounded-md border border-stone-200"></span>
+
+            <!-- REVERSO (Back): Inglés + Frase de Ejemplo + Audio -->
+            <div class="absolute inset-0 w-full h-full rounded-3xl p-5 sm:p-8 flex flex-col justify-between backface-hidden rotate-y-180 bg-stone-900 dark:bg-black text-white border-2 border-esp-gold-400">
+              <div class="flex items-center justify-between text-xs">
+                <span class="px-2.5 py-0.5 rounded-full bg-esp-gold-500/20 text-esp-gold-400 font-bold border border-esp-gold-500/40">
+                  Significado & Uso
+                </span>
+                <span class="text-stone-400 text-[11px]">Girar de nuevo</span>
+              </div>
+
+              <!-- Centro Reverso -->
+              <div class="my-auto space-y-3 text-center px-2">
+                <div>
+                  <span class="text-[10px] uppercase font-bold text-esp-gold-400 tracking-wider">Traducción</span>
+                  <h4 id="fcBackMeaning" class="text-xl sm:text-2xl font-bold text-esp-gold-200 font-serif"></h4>
+                </div>
+
+                <div class="bg-stone-800/80 dark:bg-stone-900 p-3 rounded-xl border border-stone-700 text-left">
+                  <div class="flex items-start justify-between gap-2">
+                    <p id="fcBackExample" class="text-xs sm:text-sm text-stone-200 italic"></p>
+                    <button 
+                      type="button" 
+                      onclick="event.stopPropagation(); app.speakCurrentExample();" 
+                      class="text-esp-gold-400 hover:text-esp-gold-300 p-1 shrink-0" 
+                      title="Escuchar frase"
+                    >
+                      <i data-lucide="volume-2" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pie Reverso -->
+              <div class="text-center text-[10px] text-stone-400">
+                Usa los botones inferiores para clasificar tu aprendizaje
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Controles de Navegación & Clasificación -->
+        <div class="max-w-lg mx-auto w-full space-y-2">
+          <div class="grid grid-cols-3 gap-2">
+            <button 
+              type="button" 
+              onclick="app.prevCard()" 
+              class="py-2.5 px-3 bg-white dark:bg-esp-night-card hover:bg-stone-50 dark:hover:bg-esp-night-surface border border-esp-day-border dark:border-esp-night-border font-bold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-1 active:scale-95 transition"
+            >
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+              <span>Anterior</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="app.flipCard()" 
+              class="py-2.5 px-3 bg-esp-gold-500 hover:bg-esp-gold-600 text-stone-950 font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-1 active:scale-95 transition shadow-xs"
+            >
+              <i data-lucide="repeat" class="w-4 h-4"></i>
+              <span>Girar</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="app.nextCard()" 
+              class="py-2.5 px-3 bg-white dark:bg-esp-night-card hover:bg-stone-50 dark:hover:bg-esp-night-surface border border-esp-day-border dark:border-esp-night-border font-bold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-1 active:scale-95 transition"
+            >
+              <span>Siguiente</span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <!-- Evaluación Rápida (1: Repasar, 2: Dominada) -->
+          <div class="grid grid-cols-2 gap-2">
+            <button 
+              type="button" 
+              onclick="app.markCard('review')" 
+              class="py-2 px-3 bg-amber-50 dark:bg-amber-950/30 hover:bg-amber-100 border border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition"
+            >
+              <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-600"></i>
+              <span>Repasar (1)</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="app.markCard('mastered')" 
+              class="py-2 px-3 bg-emerald-50 dark:bg-emerald-950/30 hover:bg-emerald-100 border border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition"
+            >
+              <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i>
+              <span>Dominada (2)</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- VISTA 1.B: LISTA COMPLETA DEL CORPUS (Búsqueda, Filtro y Audio) -->
+      <div id="tarjetasSubViewList" class="hidden space-y-3 flex-1 flex flex-col">
+        <div class="bg-white dark:bg-esp-night-card rounded-2xl p-4 border border-esp-day-border dark:border-esp-night-border shadow-xs space-y-3">
+          
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div>
+              <h3 class="font-bold text-base text-stone-900 dark:text-stone-100 font-serif">Índice Completo del Corpus</h3>
+              <p class="text-xs text-stone-500 dark:text-stone-400">Consulta y practica cualquier término extraído de la base léxica.</p>
+            </div>
+            
+            <!-- Botón para importar .txt locales si el usuario lo desea -->
+            <div class="flex items-center gap-2">
               <button 
-                type="button" 
-                onclick="speakCurrentDictWord()" 
-                class="inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-lg transition-colors border border-red-200"
-                title="Escuchar pronunciación en español"
+                onclick="document.getElementById('corpusTxtFileInput').click()"
+                class="px-3 py-1.5 rounded-xl bg-stone-100 dark:bg-esp-night-surface hover:bg-stone-200 dark:hover:bg-stone-800 text-xs font-bold border border-esp-day-border dark:border-esp-night-border flex items-center gap-1.5 transition"
+                title="Cargar archivo .txt propio"
               >
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                </svg>
-                <span>Pronunciar</span>
+                <i data-lucide="upload" class="w-3.5 h-3.5 text-esp-red-700 dark:text-esp-gold-400"></i>
+                <span>Añadir .txt</span>
               </button>
+              <input type="file" id="corpusTxtFileInput" accept=".txt" multiple class="hidden" onchange="app.handleLocalFileUpload(event)">
             </div>
           </div>
 
-          <!-- Acciones sobre la palabra -->
-          <div class="flex items-center gap-2">
-            <button 
-              type="button" 
-              id="dictBookmarkBtn" 
-              onclick="toggleBookmarkCurrentDict()" 
-              class="px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 bg-stone-50 text-stone-700 border-stone-200 hover:bg-amber-50 hover:text-amber-900"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-              </svg>
-              <span id="dictBookmarkBtnLabel">Guardar</span>
-            </button>
-            <button 
-              type="button" 
-              onclick="sendToFlashcardsView()" 
-              class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-400 hover:bg-amber-500 text-stone-950 shadow-xs transition-transform active:scale-95 flex items-center gap-1.5"
-            >
-              <span>Practicar en Tarjeta</span>
-              <span>→</span>
-            </button>
+          <!-- Búsqueda en Vivo -->
+          <div class="relative">
+            <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input 
+              type="text" 
+              id="corpusSearchInput" 
+              oninput="app.filterCorpusList()"
+              placeholder="Buscar por palabra en español o traducción..." 
+              class="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-stone-50 dark:bg-esp-night-surface rounded-xl border border-esp-day-border dark:border-esp-night-border focus:border-esp-red-600 focus:outline-none"
+            />
           </div>
         </div>
 
-        <!-- Significado en Inglés -->
-        <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-stone-400 mb-1">
-            Significado en Inglés:
-          </label>
-          <p id="dictResultMeaning" class="text-lg sm:text-xl font-bold text-red-900"></p>
-        </div>
-
-        <!-- Frases de Ejemplo del Corpus -->
-        <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
-            Ejemplos del Corpus:
-          </label>
-          <div id="dictResultExamplesContainer" class="space-y-2"></div>
-        </div>
-
-        <!-- Archivo de Procedencia -->
-        <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-xs text-stone-400">
-          <span>Fuente(s) en el servidor:</span>
-          <span id="dictResultSources" class="font-mono text-stone-600 font-medium"></span>
+        <!-- Lista scrollable del Corpus -->
+        <div class="bg-white dark:bg-esp-night-card rounded-2xl border border-esp-day-border dark:border-esp-night-border p-2 overflow-hidden flex-1">
+          <div id="corpusTableContainer" class="max-h-[50vh] sm:max-h-[60vh] overflow-y-auto divide-y divide-stone-100 dark:divide-esp-night-border text-xs sm:text-sm">
+            <!-- Rellenado dinámicamente -->
+          </div>
         </div>
       </div>
 
     </section>
 
-    <!-- ========================================== -->
-    <!-- VISTA 2: TARJETAS DE MEMORIA (FLASHCARDS)  -->
-    <!-- ========================================== -->
-    <section id="viewFlashcards" class="hidden space-y-6">
-
-      <!-- Barra de Filtro de Colección y Botón de Barajar -->
-      <div class="bg-white rounded-3xl p-4 sm:p-5 border border-amber-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <!-- ============================================================= -->
+    <!-- FUNCIÓN 2: VERBO (ORTOGRAFÍA COMPLETA, OPCIÓN MÚLTIPLE & TABLAS)-->
+    <!-- ============================================================= -->
+    <section id="sectionVerbo" class="hidden space-y-4 flex-1 flex flex-col">
+      
+      <!-- Sub-barra del Modo Verbo: [Modo 1: Ortografía] / [Modo 2: Opción Múltiple] + [Ver Tablas] -->
+      <div class="bg-white dark:bg-esp-night-card rounded-2xl p-2.5 sm:p-3 border border-esp-day-border dark:border-esp-night-border shadow-xs flex flex-wrap items-center justify-between gap-2.5">
         
-        <div class="flex items-center gap-3">
-          <label class="text-xs font-bold text-stone-500 uppercase tracking-wider whitespace-nowrap">Colección:</label>
-          <select 
-            id="fcDeckFilter" 
-            onchange="handleDeckFilterChange()" 
-            class="w-full sm:w-auto text-xs sm:text-sm font-semibold px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400 text-stone-900"
+        <!-- Toggle 2 Modos de Práctica -->
+        <div class="inline-flex rounded-xl bg-stone-100 dark:bg-esp-night-surface p-1 text-xs font-bold">
+          <button 
+            id="verbModeFullBtn" 
+            onclick="app.switchVerbMode('full')"
+            class="px-3 py-1.5 rounded-lg bg-white dark:bg-esp-night-card text-esp-red-700 dark:text-esp-gold-400 shadow-xs flex items-center gap-1.5 transition-all"
           >
-            <option value="all">Todo el Corpus</option>
-            <option value="saved">⭐ Guardadas en el Cuaderno</option>
-          </select>
+            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+            <span>1. Ortografía Completa</span>
+          </button>
+          <button 
+            id="verbModeChoiceBtn" 
+            onclick="app.switchVerbMode('choice')"
+            class="px-3 py-1.5 rounded-lg text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 flex items-center gap-1.5 transition-all"
+          >
+            <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+            <span>2. Opción Múltiple</span>
+          </button>
         </div>
 
-        <!-- Contadores de Dominio y Botón Barajar -->
-        <div class="flex items-center justify-between sm:justify-end gap-3 text-xs">
-          <div class="flex items-center gap-2">
-            <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
-              <span id="fcMasteredCount">0</span> Dominadas
-            </span>
-            <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-bold">
-              <span id="fcReviewCount">0</span> Por Repasar
-            </span>
+        <!-- Botón para alternar Tablas de Conjugación / Referencias Rápidas -->
+        <button 
+          id="toggleVerbTablesBtn"
+          onclick="app.toggleVerbTables()" 
+          class="px-3 py-1.5 rounded-xl border border-esp-day-border dark:border-esp-night-border hover:bg-stone-100 dark:hover:bg-esp-night-surface text-xs font-bold flex items-center gap-1.5 text-stone-700 dark:text-stone-200 transition"
+        >
+          <i data-lucide="table" class="w-3.5 h-3.5 text-esp-red-700 dark:text-esp-gold-400"></i>
+          <span id="toggleVerbTablesText">Ver Tablas de Conjugación</span>
+        </button>
+
+      </div>
+
+      <!-- PANEL DESPLEGABLE: TABLAS DE CONJUGACIÓN & REFERENCIAS RÁPIDAS -->
+      <div id="verbTablesPanel" class="hidden bg-white dark:bg-esp-night-card rounded-2xl p-4 sm:p-6 border border-esp-day-border dark:border-esp-night-border shadow-md space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-100 dark:border-esp-night-border">
+          <div>
+            <h3 class="font-serif font-bold text-xl text-stone-900 dark:text-stone-100 flex items-center gap-2">
+              <span>Tablas de Referencia Verbal</span>
+              <span class="text-xs font-sans px-2 py-0.5 rounded-md bg-esp-red-50 dark:bg-esp-red-950 text-esp-red-700 dark:text-esp-gold-300">Con audio nativo</span>
+            </h3>
+            <p class="text-xs text-stone-500 dark:text-stone-400">Selecciona un verbo para inspeccionar su conjugación completa.</p>
           </div>
-          <button 
-            type="button" 
-            onclick="shuffleFlashcards()" 
-            class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold flex items-center gap-1 transition-colors border border-stone-200"
-            title="Barajar tarjetas"
-          >
-            <span>🔀</span>
-            <span>Barajar</span>
-          </button>
+
+          <!-- Selector de Verbo -->
+          <div class="w-full sm:w-56">
+            <select 
+              id="verbTableSelect" 
+              onchange="app.renderVerbMatrix(this.value)"
+              class="w-full p-2 bg-stone-50 dark:bg-esp-night-surface border border-esp-day-border dark:border-esp-night-border rounded-xl text-xs font-bold focus:outline-none"
+            >
+              <!-- Verbos inyectados por JS -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Detalles del Verbo Seleccionado -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs bg-stone-50 dark:bg-esp-night-surface p-3 rounded-xl">
+          <div>Infinitivo: <strong id="matrixInfinitive" class="text-esp-red-700 dark:text-esp-gold-400 font-bold ml-1">ser</strong></div>
+          <div>Gerundio: <strong id="matrixGerundio" class="font-semibold text-stone-800 dark:text-stone-200 ml-1">siendo</strong></div>
+          <div>Participio: <strong id="matrixParticipio" class="font-semibold text-stone-800 dark:text-stone-200 ml-1">sido</strong></div>
+        </div>
+
+        <!-- Matriz de Tiempos Principales -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="border-b border-stone-200 dark:border-esp-night-border text-stone-400 uppercase text-[10px]">
+                <th class="py-2 px-2">Pronombre</th>
+                <th class="py-2 px-2">Presente</th>
+                <th class="py-2 px-2">Pret. Indefinido</th>
+                <th class="py-2 px-2">Pret. Imperfecto</th>
+                <th class="py-2 px-2">Futuro</th>
+                <th class="py-2 px-2">Condicional</th>
+                <th class="py-2 px-2">Subjuntivo</th>
+              </tr>
+            </thead>
+            <tbody id="matrixTableBody" class="divide-y divide-stone-100 dark:divide-esp-night-border font-medium">
+              <!-- Inyectado por JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Regla de irregularidad -->
+        <div class="text-[11px] bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 p-2.5 rounded-xl text-amber-900 dark:text-amber-200 flex items-start gap-1.5">
+          <i data-lucide="info" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+          <div><strong class="font-bold">Nota de Irregularidad: </strong><span id="matrixRuleText"></span></div>
         </div>
       </div>
 
-      <!-- Barra de Progreso de la Sesión -->
-      <div class="space-y-1">
-        <div class="flex items-center justify-between text-xs text-stone-500 font-medium px-1">
-          <span>Progreso de sesión:</span>
-          <span>
-            <strong id="fcCurrentIndex" class="text-stone-900 font-mono">1</strong> / 
-            <span id="fcTotalCount" class="font-mono">0</span>
-          </span>
-        </div>
-        <div class="w-full bg-stone-200/80 rounded-full h-2 overflow-hidden">
-          <div id="fcProgressBar" class="h-full bg-gradient-to-r from-red-600 via-amber-400 to-emerald-500 transition-all duration-300 w-0"></div>
-        </div>
-      </div>
-
-      <!-- Tarjeta 3D Giratoria -->
-      <div class="perspective-1000 w-full max-w-xl mx-auto h-80 sm:h-96 select-none cursor-pointer" onclick="flipFlashcard()">
-        <div id="flashcardElement" class="relative w-full h-full transform-style-3d transition-transform duration-500 rounded-3xl shadow-xl border-2 border-amber-300">
-          
-          <!-- CARA 1 (FRONT): Término en Español + Audio -->
-          <div class="absolute inset-0 w-full h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between backface-hidden bg-gradient-to-b from-white via-amber-50/20 to-orange-50/30">
-            <div class="flex items-center justify-between text-xs">
-              <div class="flex items-center gap-1.5">
-                <span id="fcFrontBadge" class="px-2.5 py-1 rounded-full bg-red-100 text-red-800 font-bold border border-red-200">
-                  Español
-                </span>
-                <span id="fcPriorityBadge" class="hidden px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 font-extrabold border border-amber-300 text-[11px] flex items-center gap-1 shadow-2xs">
-                  ⭐ Prioritaria
-                </span>
-              </div>
-              <span class="text-stone-400 font-medium flex items-center gap-1">
-                <span>Toca para girar</span>
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                </svg>
+      <!-- MODO 1: ORTOGRAFÍA COMPLETA (FILL-IN-THE-BLANK DRILL) -->
+      <div id="verbFullDrillContainer" class="bg-white dark:bg-esp-night-card rounded-3xl p-5 sm:p-8 border border-esp-day-border dark:border-esp-night-border shadow-sm space-y-5">
+        
+        <!-- Cabecera del Ejercicio -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-stone-100 dark:border-esp-night-border gap-2">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 id="drillInfinitive" class="text-3xl font-serif font-bold text-stone-900 dark:text-stone-100">tener</h3>
+              <button onclick="app.speakDrillVerb()" class="p-1 rounded-lg hover:bg-stone-100 dark:hover:bg-esp-night-surface text-stone-400 hover:text-stone-700 dark:hover:text-stone-200">
+                <i data-lucide="volume-2" class="w-4 h-4"></i>
+              </button>
+              <span id="drillCategoryTag" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-esp-red-50 dark:bg-esp-red-950/60 text-esp-red-700 dark:text-esp-gold-300 border border-esp-red-200 dark:border-esp-red-900">
+                IRREGULAR
               </span>
             </div>
+            <p id="drillEnglishMeaning" class="text-xs sm:text-sm text-stone-500 dark:text-stone-400">to have / to possess</p>
+          </div>
 
-            <!-- Centro del Front -->
-            <div class="text-center my-auto space-y-3">
-              <h2 id="fcFrontWord" class="text-3xl sm:text-5xl font-extrabold text-stone-950 font-display tracking-tight"></h2>
-              <div class="flex items-center justify-center gap-2">
-                <span id="fcFrontIpa" class="font-mono text-sm text-stone-500 bg-white/80 px-2.5 py-0.5 rounded-lg border border-amber-200"></span>
-                <button 
-                  type="button" 
-                  onclick="event.stopPropagation(); speakCurrentFlashcard();" 
-                  class="p-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 transition-colors border border-red-200"
-                  title="Reproducir audio en español"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                  </svg>
-                </button>
-              </div>
+          <div class="flex items-center gap-2 text-xs">
+            <!-- Streak counter -->
+            <div class="flex items-center gap-1 px-3 py-1 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl text-amber-900 dark:text-amber-200 font-bold">
+              <i data-lucide="flame" class="w-4 h-4 text-amber-500 fill-amber-500"></i>
+              <span>Racha: <strong id="drillStreakCount">0</strong></span>
             </div>
+          </div>
+        </div>
 
-            <!-- Pie del Front -->
-            <div class="flex items-center justify-between text-xs text-stone-400 pt-2 border-t border-amber-100/80">
-              <span id="fcFrontGrammar" class="font-semibold text-amber-900"></span>
-              <span id="fcFrontSource" class="font-mono truncate max-w-[160px]"></span>
+        <!-- Parámetros gramaticales objetivos -->
+        <div class="grid grid-cols-2 gap-3 text-center">
+          <div class="bg-stone-50 dark:bg-esp-night-surface p-3 rounded-2xl border border-esp-day-border dark:border-esp-night-border">
+            <span class="text-[10px] uppercase font-bold text-stone-400 tracking-wider">Tiempo / Modo</span>
+            <div id="drillTenseText" class="text-xs sm:text-sm font-bold text-esp-red-700 dark:text-esp-gold-400 mt-0.5">Pretérito Indefinido</div>
+          </div>
+          <div class="bg-stone-50 dark:bg-esp-night-surface p-3 rounded-2xl border border-esp-day-border dark:border-esp-night-border">
+            <span class="text-[10px] uppercase font-bold text-stone-400 tracking-wider">Pronombre</span>
+            <div id="drillPronounText" class="text-sm sm:text-base font-extrabold text-stone-900 dark:text-stone-100 mt-0.5">yo</div>
+          </div>
+        </div>
+
+        <!-- Formulario con caja de texto y teclado de acentos -->
+        <form onsubmit="app.handleFullDrillSubmit(event)" class="space-y-3">
+          <div class="relative">
+            <input 
+              type="text" 
+              id="drillInput"
+              autocomplete="off"
+              autocorrect="off"
+              spellcheck="false"
+              placeholder="Escribe la forma conjugada..."
+              class="w-full text-base sm:text-xl font-bold px-4 py-3.5 rounded-2xl border-2 border-stone-200 dark:border-esp-night-border focus:border-esp-red-600 dark:focus:border-esp-gold-500 bg-white dark:bg-esp-night-surface text-stone-900 dark:text-stone-100 outline-none transition shadow-inner"
+            />
+            <button 
+              type="button" 
+              id="drillAudioAnswerBtn"
+              onclick="app.speakDrillAnswer()" 
+              class="hidden absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl text-stone-400 hover:text-stone-800 dark:hover:text-stone-200"
+              title="Escuchar respuesta"
+            >
+              <i data-lucide="volume-2" class="w-5 h-5"></i>
+            </button>
+          </div>
+
+          <!-- Teclado rápido de Tildes y Caracteres Españoles -->
+          <div class="flex items-center justify-between flex-wrap gap-1 pt-1">
+            <span class="text-[11px] text-stone-400 font-medium">Tildes:</span>
+            <div class="flex flex-wrap gap-1">
+              <button type="button" onclick="app.insertChar('á')" class="w-7 h-7 rounded-lg bg-stone-100 dark:bg-esp-night-surface hover:bg-stone-200 text-xs font-bold border border-esp-day-border dark:border-esp-night-border transition">á</button>
+              <button type="button" onclick="app.insertChar('é')" class="w-7 h-7 rounded-lg bg-stone-100 dark:bg-esp-night-surface hover:bg-stone-200 text-xs font-bold border border-esp-day-border dark:border-esp-night-border transition">é</button>
+              <button type="button" onclick="app.insertChar('í')" class="w-7 h-7 rounded-lg bg-stone-100 dark:bg-esp-night-surface hover:bg-stone-200 text-xs font-bold border border-esp-day-border dark:border-esp-night-border transition">í</button>
+              <button type="button" onclick="app.insertChar('ó')" class="w-7 h-7 rounded-lg bg-stone-100 dark:bg-esp-night-surface hover:bg-stone-200 text-xs font-bold border border-esp-day-border dark:border-esp-night-border transition">ó</button>
+              <button type="button" onclick="app.insertChar('ú')" class="w-7 h-7 rounded-lg bg-stone-100 dark:bg-esp-night-surface hover:bg-stone-200 text-xs font-bold border border-esp-day-border dark:border-esp-night-border transition">ú</button>
+              <button type="button" onclick="app.insertChar('ñ')" class="w-7 h-7 rounded-lg bg-stone-100 dark:bg-esp-night-surface hover:bg-stone-200 text-xs font-bold border border-esp-day-border dark:border-esp-night-border transition">ñ</button>
+              <button type="button" onclick="app.insertChar('ü')" class="w-7 h-7 rounded-lg bg-stone-100 dark:bg-esp-night-surface hover:bg-stone-200 text-xs font-bold border border-esp-day-border dark:border-esp-night-border transition">ü</button>
             </div>
           </div>
 
-          <!-- CARA 2 (BACK): Traducción en Inglés + Contexto Real -->
-          <div class="absolute inset-0 w-full h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between backface-hidden rotate-y-180 bg-gradient-to-b from-stone-900 via-stone-900 to-stone-950 text-white border-2 border-amber-400">
-            <div class="flex items-center justify-between text-xs">
-              <span class="px-2.5 py-1 rounded-full bg-amber-400/20 text-amber-300 font-bold border border-amber-400/40">
-                Significado & Ejemplo
-              </span>
-              <span class="text-stone-400 font-medium flex items-center gap-1">
-                <span>Girar al frente</span>
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                </svg>
-              </span>
-            </div>
-
-            <!-- Centro del Back -->
-            <div class="my-auto space-y-4 text-center px-2">
-              <div>
-                <label class="text-[11px] font-bold text-amber-400 uppercase tracking-wider block mb-1">Traducción:</label>
-                <h3 id="fcBackTranslation" class="text-2xl sm:text-3xl font-extrabold text-amber-300 font-display"></h3>
-              </div>
-              <div class="bg-stone-800/80 p-3.5 rounded-2xl border border-stone-700">
-                <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-1">Contexto Real:</label>
-                <p id="fcBackExample" class="text-xs sm:text-sm text-stone-200 italic"></p>
-                <button 
-                  type="button" 
-                  onclick="event.stopPropagation(); speakCurrentFlashcardSentence();" 
-                  class="mt-2 text-xs font-bold text-amber-400 hover:text-amber-300 flex items-center justify-center gap-1 mx-auto"
-                >
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                  </svg>
-                  <span>Escuchar Frase</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Pie del Back -->
-            <div class="text-center text-[11px] text-stone-400">
-              Usa <kbd class="bg-stone-800 px-1 py-0.5 rounded text-amber-300">Espacio</kbd> o las flechas <kbd class="bg-stone-800 px-1 py-0.5 rounded text-amber-300">←</kbd> <kbd class="bg-stone-800 px-1 py-0.5 rounded text-amber-300">→</kbd>
-            </div>
+          <!-- Botones de Acción -->
+          <div class="flex items-center gap-2 pt-2">
+            <button 
+              type="submit" 
+              id="drillSubmitBtn"
+              class="flex-1 py-3 px-4 rounded-xl bg-esp-red-700 hover:bg-esp-red-800 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-1.5 shadow-sm active:scale-98"
+            >
+              <span>Comprobar</span>
+              <i data-lucide="check" class="w-4 h-4"></i>
+            </button>
+            <button 
+              type="button" 
+              onclick="app.showDrillHint()"
+              class="py-3 px-3 rounded-xl border border-esp-day-border dark:border-esp-night-border hover:bg-stone-100 dark:hover:bg-esp-night-surface text-stone-600 dark:text-stone-300 font-semibold text-xs flex items-center gap-1"
+              title="Mostrar pista"
+            >
+              <i data-lucide="help-circle" class="w-4 h-4 text-amber-500"></i>
+              <span class="hidden sm:inline">Pista</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="app.skipDrill()"
+              class="py-3 px-3 rounded-xl border border-esp-day-border dark:border-esp-night-border hover:bg-stone-100 dark:hover:bg-esp-night-surface text-stone-400 text-xs"
+            >
+              Pasar
+            </button>
           </div>
+        </form>
 
+        <!-- Banner de Retroalimentación Inteligente (Detección de tilde omitida o erratas) -->
+        <div id="drillFeedbackBox" class="hidden rounded-2xl p-4 border text-xs sm:text-sm font-semibold transition-all">
+          <!-- Inyectado por JS -->
         </div>
+
       </div>
 
-      <!-- Botones de Navegación y Evaluación -->
-      <div class="max-w-xl mx-auto flex flex-col gap-3">
-        <!-- Navegación Anterior / Girar / Siguiente -->
-        <div class="grid grid-cols-3 gap-2">
-          <button 
-            type="button" 
-            onclick="prevFlashcard()" 
-            class="py-3 px-4 bg-white hover:bg-stone-50 border border-stone-200 text-stone-800 font-bold rounded-2xl shadow-xs transition-transform active:scale-95 flex items-center justify-center gap-1 text-xs sm:text-sm"
-          >
-            <span>←</span>
-            <span>Anterior</span>
-          </button>
-          <button 
-            type="button" 
-            onclick="flipFlashcard()" 
-            class="py-3 px-4 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-stone-950 font-extrabold rounded-2xl shadow-xs transition-transform active:scale-95 flex items-center justify-center gap-1 text-xs sm:text-sm"
-          >
-            <span>Girar</span>
-          </button>
-          <button 
-            type="button" 
-            onclick="nextFlashcard()" 
-            class="py-3 px-4 bg-white hover:bg-stone-50 border border-stone-200 text-stone-800 font-bold rounded-2xl shadow-xs transition-transform active:scale-95 flex items-center justify-center gap-1 text-xs sm:text-sm"
-          >
-            <span>Siguiente</span>
-            <span>→</span>
-          </button>
+      <!-- MODO 2: OPCIÓN MÚLTIPLE (MULTIPLE CHOICE SPRINT) -->
+      <div id="verbChoiceDrillContainer" class="hidden bg-white dark:bg-esp-night-card rounded-3xl p-5 sm:p-8 border border-esp-day-border dark:border-esp-night-border shadow-sm space-y-5">
+        
+        <div class="flex items-center justify-between pb-3 border-b border-stone-100 dark:border-esp-night-border">
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-esp-red-700 dark:text-esp-gold-400">Reconocimiento Rápido</span>
+            <h4 class="font-serif font-bold text-xl text-stone-900 dark:text-stone-100">Elige la forma correcta</h4>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] text-stone-400 block">Puntuación</span>
+            <span id="choiceScoreText" class="font-bold text-base text-esp-red-700 dark:text-esp-gold-400 font-mono">0 pts</span>
+          </div>
         </div>
 
-        <!-- Botones de Estudio: Repasar vs Dominada -->
-        <div class="grid grid-cols-2 gap-2">
-          <button 
-            type="button" 
-            onclick="markFlashcardStatus('review')" 
-            class="py-2.5 px-4 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-950 font-bold rounded-2xl transition-colors flex items-center justify-center gap-1.5 text-xs"
-          >
-            <span>⏳</span>
-            <span>Marcar para Repasar (1)</span>
-          </button>
-          <button 
-            type="button" 
-            onclick="markFlashcardStatus('mastered')" 
-            class="py-2.5 px-4 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-bold rounded-2xl transition-colors flex items-center justify-center gap-1.5 text-xs"
-          >
-            <span>✅</span>
-            <span>Marcar Dominada (2)</span>
-          </button>
+        <!-- Pregunta -->
+        <div class="text-center bg-stone-50 dark:bg-esp-night-surface p-4 rounded-2xl border border-esp-day-border dark:border-esp-night-border space-y-1">
+          <div class="text-[10px] uppercase font-bold text-stone-400">Conjugación de</div>
+          <div class="text-2xl font-serif font-bold text-stone-900 dark:text-stone-100" id="choiceVerbInfinitive">hacer</div>
+          <div class="flex items-center justify-center gap-2 text-xs pt-1">
+            <span class="px-2 py-0.5 rounded-md bg-white dark:bg-esp-night-card font-bold border border-esp-day-border dark:border-esp-night-border" id="choicePronoun">él / ella</span>
+            <span class="px-2 py-0.5 rounded-md bg-esp-gold-100 dark:bg-esp-gold-950/60 text-esp-gold-900 dark:text-esp-gold-300 font-bold border border-esp-gold-300 dark:border-esp-gold-800" id="choiceTense">Pretérito Indefinido</span>
+          </div>
         </div>
+
+        <!-- 4 Opciones -->
+        <div id="choiceButtonsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- 4 botones generados por JS -->
+        </div>
+
+        <!-- Feedback de opción múltiple -->
+        <div id="choiceFeedbackBanner" class="hidden p-3 rounded-xl text-center text-xs font-bold border"></div>
+
       </div>
 
     </section>
 
   </main>
 
-  <!-- ========================================== -->
-  <!-- MODAL PROMINENTE: PROGRESIÓN DE CARGA      -->
-  <!-- ========================================== -->
-  <div id="corpusLoadingModal" class="fixed inset-0 z-50 bg-stone-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 transition-opacity duration-300">
-    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border-2 border-amber-300 overflow-hidden transform transition-all">
-      <div class="h-2 w-full bandera-rojigualda"></div>
-      
-      <div class="p-5 sm:p-6 space-y-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-600 via-amber-500 to-red-700 text-white flex items-center justify-center shadow-md animate-pulse">
-              <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            </div>
-            <div>
-              <h3 id="modalLoadingTitle" class="text-base font-bold text-stone-900 font-display">
-                Sincronizando el Corpus...
-              </h3>
-              <p class="text-xs text-stone-500">Buscando archivos .txt en /corpus/</p>
-            </div>
-          </div>
-          <span id="modalLoadingPercentBadge" class="text-xs font-black px-2.5 py-1 rounded-full bg-red-100 text-red-800 border border-red-200">
-            0%
-          </span>
-        </div>
-
-        <!-- Barra de progreso -->
-        <div class="w-full bg-stone-100 rounded-full h-3 overflow-hidden p-0.5 border border-amber-200 shadow-inner">
-          <div id="modalLoadingProgressBar" class="h-full bg-gradient-to-r from-red-600 via-amber-400 to-emerald-500 rounded-full transition-all duration-300 w-0"></div>
-        </div>
-
-        <!-- Estado y Métricas -->
-        <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3 text-xs space-y-1.5">
-          <div class="flex items-center justify-between text-stone-700">
-            <span class="text-stone-500">Actividad:</span>
-            <span id="modalCurrentActionText" class="font-medium text-amber-950 truncate max-w-[220px]">Sondeando directorio...</span>
-          </div>
-          <div class="flex items-center justify-between text-stone-700 pt-1 border-t border-amber-100">
-            <span>Archivos detectados:</span>
-            <span id="modalFilesCount" class="font-bold text-stone-900 font-mono">0 archivos</span>
-          </div>
-          <div class="flex items-center justify-between text-stone-700">
-            <span>Palabras procesadas:</span>
-            <span id="modalWordsCount" class="font-bold text-emerald-700 font-mono">0 palabras</span>
-          </div>
-        </div>
-
-        <!-- Ficheros cargados -->
-        <div>
-          <label class="block text-[11px] font-bold text-stone-600 uppercase tracking-wider mb-1.5">
-            Archivos procesados:
-          </label>
-          <div id="modalLoadedFilesChips" class="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto p-2 bg-stone-50 rounded-xl border border-stone-200/80">
-            <span class="text-xs text-stone-400 italic">Buscando archivos...</span>
-          </div>
-        </div>
-
-        <!-- Aviso y botones directos si el servidor no permite listar automáticamente -->
-        <div id="modalAutoScanNotice" class="hidden p-3 bg-amber-50 border border-amber-300 rounded-2xl text-xs space-y-2">
-          <p class="text-amber-950 font-medium">
-            💡 <strong>Aviso:</strong> El servidor no permite listar automáticamente el directorio <code class="bg-amber-100 px-1 py-0.5 rounded font-mono">/corpus/</code> o estás ejecutando la página en local (<code class="font-mono">file://</code>).
-          </p>
-          <div class="flex flex-wrap gap-2 pt-1">
-            <button 
-              type="button" 
-              onclick="document.getElementById('corpusFolderPicker').click()" 
-              class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95 flex items-center gap-1.5"
-            >
-              <span>📁</span> Elegir carpeta /corpus/
-            </button>
-            <button 
-              type="button" 
-              onclick="document.getElementById('corpusFilesPicker').click()" 
-              class="px-3 py-1.5 bg-stone-800 hover:bg-stone-900 text-white rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95 flex items-center gap-1.5"
-            >
-              <span>📄</span> Elegir archivos .txt
-            </button>
-          </div>
-        </div>
-
-        <!-- Inputs ocultos para cargar carpeta o archivos directamente -->
-        <input type="file" id="corpusFolderPicker" webkitdirectory directory multiple class="hidden" onchange="handleLocalFolderPicker(event)">
-        <input type="file" id="corpusFilesPicker" accept=".txt" multiple class="hidden" onchange="handleLocalFilesPicker(event)">
-
-        <!-- Formulario para añadir nombre de archivo manualmente -->
-        <div class="pt-2 border-t border-stone-100 flex items-center gap-2">
-          <input 
-            type="text" 
-            id="modalCustomFilenameInput" 
-            placeholder="Ej: vocabulario.txt o batch_1.txt" 
-            class="flex-1 text-xs px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
-            onkeydown="if(event.key==='Enter') addCustomServerFile()"
-          />
-          <button 
-            type="button" 
-            onclick="addCustomServerFile()" 
-            class="px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-xl text-xs font-bold transition-colors whitespace-nowrap"
-          >
-            + Añadir
-          </button>
-          <button 
-            type="button" 
-            id="modalDismissBtn" 
-            onclick="closeCorpusLoadingModal()" 
-            class="px-3 py-2 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-bold transition-colors"
-          >
-            Cerrar
-          </button>
-        </div>
-
-      </div>
+  <!-- Pie de Página -->
+  <footer class="mt-auto py-3 bg-white/60 dark:bg-esp-night-card/60 border-t border-esp-day-border dark:border-esp-night-border text-center text-[11px] text-stone-400">
+    <div class="max-w-4xl mx-auto px-4 flex items-center justify-between">
+      <span>España Lexicografía & Verbos</span>
+      <span>Voz Web Speech API en Español</span>
     </div>
+  </footer>
+
+  <!-- Toast de Notificaciones -->
+  <div id="toast" class="fixed bottom-4 right-4 z-50 pointer-events-none transition-all duration-300 opacity-0 transform translate-y-2">
+    <div id="toastInner" class="bg-stone-900 text-white text-xs font-bold px-4 py-2.5 rounded-2xl shadow-xl border border-stone-700 flex items-center gap-2"></div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- MODAL: ÍNDICE COMPLETO A - Z DEL CORPUS    -->
-  <!-- ========================================== -->
-  <div id="indexModal" class="hidden fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6">
-    <div class="bg-white w-full max-w-2xl max-h-[85vh] rounded-3xl shadow-2xl border border-amber-200 flex flex-col overflow-hidden">
-      
-      <div class="p-4 sm:p-5 border-b border-stone-100 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <h3 class="font-bold text-base sm:text-lg text-stone-900 font-display">Índice Léxico del Corpus</h3>
-          <span id="indexModalTotalCount" class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold border border-amber-300">0</span>
-        </div>
-        <button type="button" onclick="closeIndexModal()" class="p-2 text-stone-400 hover:text-stone-700 rounded-xl">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
-      </div>
-
-      <!-- Filtro en el índice -->
-      <div class="p-3 sm:p-4 bg-stone-50 border-b border-stone-100 flex flex-col sm:flex-row gap-2">
-        <input 
-          type="text" 
-          id="indexSearchFilterInput" 
-          placeholder="Filtrar palabras en el índice..." 
-          oninput="renderIndexWordList()"
-          class="flex-1 text-xs sm:text-sm px-3 py-2 bg-white border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
-        />
-        <select 
-          id="indexFileFilterSelect" 
-          onchange="renderIndexWordList()"
-          class="text-xs sm:text-sm px-3 py-2 bg-white border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
-        >
-          <option value="all">Todos los archivos</option>
-        </select>
-      </div>
-
-      <!-- Lista de palabras -->
-      <div id="indexWordsList" class="flex-1 overflow-y-auto p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs"></div>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- PANEL LATERAL: CUADERNO DE PALABRAS GUARDADAS -->
-  <!-- ========================================== -->
-  <div id="savedWordsDrawer" class="hidden fixed inset-0 z-50 bg-stone-950/40 backdrop-blur-xs flex justify-end">
-    <div class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col border-l border-amber-200">
-      
-      <div class="p-4 sm:p-5 border-b border-stone-100 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span class="text-lg">⭐</span>
-          <h3 class="font-bold text-base text-stone-900 font-display">Palabras Guardadas</h3>
-          <span id="savedDrawerCountBadge" class="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-800 font-bold border border-red-200">0</span>
-        </div>
-        <button type="button" onclick="toggleSavedDrawer()" class="p-2 text-stone-400 hover:text-stone-700 rounded-xl">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
-      </div>
-
-      <div class="p-3 bg-amber-50 border-b border-amber-100 text-xs text-amber-950 flex items-center justify-between">
-        <span>Las palabras guardadas se priorizan en las Tarjetas.</span>
-        <button type="button" onclick="clearAllSavedWords()" class="text-red-700 font-bold hover:underline">Vaciar</button>
-      </div>
-
-      <div id="savedWordsListContainer" class="flex-1 overflow-y-auto p-4 divide-y divide-stone-100"></div>
-    </div>
-  </div>
-
-  <!-- Contenedor de Notificaciones Toast -->
-  <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
-
+  <!-- ============================================================== -->
+  <!-- JAVASCRIPT: LÓGICA COMPLETA, CORPUS & BASE DE DATOS VERBAL     -->
+  <!-- ============================================================== -->
   <script>
-    /* ==========================================================
-       ESTADO GLOBAL DE LA APLICACIÓN (ESPAÑOL)
-       ========================================================== */
-    const State = {
-      corpus: [],            // Lista de entradas [{ word, meaningEn, examples: [], sourceFiles: [], ipa, grammar }]
-      corpusMap: new Map(),  // Mapa para búsqueda O(1) normalizada
-      loadedFiles: [],       // Archivos cargados [{ name, count }]
-      savedWords: new Set(), // Palabras destacadas en el cuaderno
-      fcMastered: new Set(), // Palabras dominadas en flashcards
-      fcReview: new Set(),   // Palabras marcadas para repasar
-      fcDeck: [],            // Mazo actual en estudio
-      fcIndex: 0,            // Índice de la tarjeta actual
-      fcIsFlipped: false,    // Estado de giro de la tarjeta
-      activeView: 'dictionary', // 'dictionary' | 'flashcards'
-      currentDictEntry: null    // Palabra activa en el diccionario
+    /* Pronombres estándar */
+    const PRONOUNS = [
+      { key: 'yo', label: 'yo', eng: 'I' },
+      { key: 'tu', label: 'tú', eng: 'you' },
+      { key: 'el', label: 'él / ella / usted', eng: 'he / she' },
+      { key: 'nosotros', label: 'nosotros', eng: 'we' },
+      { key: 'vosotros', label: 'vosotros', eng: 'you all (ES)' },
+      { key: 'ellos', label: 'ellos / ellas / ustedes', eng: 'they' }
+    ];
+
+    /* Metadatos de Tiempos */
+    const TENSE_METADATA = {
+      pres: 'Presente',
+      pret_indef: 'Pretérito Indefinido',
+      pret_imp: 'Pretérito Imperfecto',
+      fut: 'Futuro Simple',
+      cond: 'Condicional Simple',
+      subj_pres: 'Presente de Subjuntivo'
     };
 
-    /* Rutas candidatas para el directorio corpus */
-    const CORPUS_PATHS = ['corpus/', '/corpus/'];
-
-    /* Petición fetch resiliente con límite de tiempo para evitar bloqueos infinitos */
-    async function fetchWithTimeout(url, options = {}, timeoutMs = 1400) {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-      try {
-        const response = await fetch(url, { ...options, signal: controller.signal });
-        clearTimeout(timeoutId);
-        return response;
-      } catch (err) {
-        clearTimeout(timeoutId);
-        throw err;
-      }
-    }
-
-    /* Corpus inicial de seguridad en español */
-    const SEED_CORPUS_RAW = `el software\tsoftware\tEs necesario actualizar el software de gestión interna.
-el algoritmo\talgorithm\tEl algoritmo procesa millones de datos por segundo.
-la aleación\talloy\tEsta pieza está hecha de una aleación de acero y titanio.
-la alteración\talteration / mutation\tSe detectó una alteración genética en las células.
-el análisis\tanalysis\tLos resultados del análisis se publicarán pronto.
-la batería\tbattery\tLa batería del vehículo eléctrico dura muchas horas.
-el desarrollo\tdevelopment\tEl desarrollo de este proyecto duró seis meses.
-el dispositivo\tdevice\tPuedes conectar tu teléfono con este dispositivo.
-la energía renovable\trenewable energy\tLa energía renovable es fundamental para el futuro del planeta.
-el microscopio\tmicroscope\tExaminaron la muestra con un microscopio de alta precisión.`;
-
-    /* Normalización de caracteres y artículos en español */
-    function normalizeSpanish(text) {
-      if (!text) return '';
-      return text.toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '') // Quitar acentos y diacríticos
-        .replace(/^(el|la|los|las|un|una|unos|unas)\s+/, '') // Quitar artículos
-        .trim();
-    }
-
-    /* Generador fonético IPA adaptado al español */
-    function generateSpanishIPA(word) {
-      if (!word) return '';
-      let clean = word.toLowerCase().trim();
-      clean = clean.replace(/^(el|la|los|las|un|una)\s*/, '');
-      let ipa = clean
-        .replace(/ch/g, 'tʃ')
-        .replace(/ll/g, 'ʝ')
-        .replace(/y(?=[aeiouáéíóú])/g, 'ʝ')
-        .replace(/rr/g, 'r')
-        .replace(/r/g, 'ɾ')
-        .replace(/qu([eiéí])/g, 'k$1')
-        .replace(/gu([eiéí])/g, 'ɡ$1')
-        .replace(/gü([eiéí])/g, 'ɡw$1')
-        .replace(/c([eiéí])/g, 'θ$1')
-        .replace(/z/g, 'θ')
-        .replace(/j/g, 'x')
-        .replace(/g([eiéí])/g, 'x$1')
-        .replace(/v/g, 'b');
-      return `[${ipa}]`;
-    }
-
-    /* Inferencia de categoría gramatical en español */
-    function guessGrammar(word) {
-      const clean = word.toLowerCase().trim();
-      if (clean.startsWith('el ')) return 'sustantivo masc.';
-      if (clean.startsWith('la ')) return 'sustantivo fem.';
-      if (clean.endsWith('ar') || clean.endsWith('er') || clean.endsWith('ir')) return 'verbo';
-      if (clean.endsWith('ble') || clean.endsWith('al') || clean.endsWith('ico') || clean.endsWith('ica') || clean.endsWith('oso') || clean.endsWith('osa')) return 'adjetivo';
-      return 'sustantivo';
-    }
-
-    function loadPersistedData() {
-      try {
-        const saved = localStorage.getItem('esp_saved_words');
-        if (saved) State.savedWords = new Set(JSON.parse(saved));
-        const mastered = localStorage.getItem('esp_fc_mastered');
-        if (mastered) State.fcMastered = new Set(JSON.parse(mastered));
-        const review = localStorage.getItem('esp_fc_review');
-        if (review) State.fcReview = new Set(JSON.parse(review));
-      } catch (e) {
-        console.warn("Almacenamiento no accesible:", e);
-      }
-      updateSavedBadge();
-    }
-
-    function persistSavedWords() {
-      try {
-        localStorage.setItem('esp_saved_words', JSON.stringify(Array.from(State.savedWords)));
-      } catch (e) {}
-      updateSavedBadge();
-    }
-
-    function showToast(message, icon = 'ℹ️') {
-      const container = document.getElementById('toastContainer');
-      if (!container) return;
-      const toast = document.createElement('div');
-      toast.className = 'px-4 py-2.5 rounded-2xl bg-stone-900/90 text-white text-xs font-semibold shadow-xl flex items-center gap-2 border border-stone-700 animate-in fade-in slide-in-from-bottom-2 duration-200';
-      toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
-      container.appendChild(toast);
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transition = 'opacity 0.3s ease';
-        setTimeout(() => toast.remove(), 300);
-      }, 2500);
-    }
-
-    /* Síntesis de Voz Web Speech API en Español (es-ES) */
-    function speakSpanish(text) {
-      if (!('speechSynthesis' in window) || !text) return;
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'es-ES';
-      utterance.rate = 0.94;
-      const voices = window.speechSynthesis.getVoices();
-      const esVoice = voices.find(v => v.lang === 'es-ES' || v.lang === 'es_ES') || voices.find(v => v.lang.startsWith('es'));
-      if (esVoice) utterance.voice = esVoice;
-      window.speechSynthesis.speak(utterance);
-    }
-
-    function parseCorpusLines(rawText, sourceFileName) {
-      if (!rawText) return [];
-      const lines = rawText.replace(/^\uFEFF/, '').split(/\r?\n/);
-      const results = [];
-
-      for (let line of lines) {
-        line = line.trim();
-        if (!line || line.startsWith('#') || line.startsWith('Format:') || line.startsWith('===') || line.startsWith('---')) {
-          continue;
+    /* Base de Datos de Verbos Esenciales en Español (25+ Verbos Clave) */
+    const VERB_BANK = [
+      {
+        infinitive: 'ser', english: 'to be (essence / origin)', category: 'irregular',
+        gerundio: 'siendo', participio: 'sido',
+        rule: 'Totalmente irregular en presente, pretérito e imperfecto.',
+        forms: {
+          pres: ['soy', 'eres', 'es', 'somos', 'sois', 'son'],
+          pret_indef: ['fui', 'fuiste', 'fue', 'fuimos', 'fuisteis', 'fueron'],
+          pret_imp: ['era', 'eras', 'era', 'éramos', 'erais', 'eran'],
+          fut: ['seré', 'serás', 'será', 'seremos', 'seréis', 'serán'],
+          cond: ['sería', 'serías', 'sería', 'seríamos', 'seríais', 'serían'],
+          subj_pres: ['sea', 'seas', 'sea', 'seamos', 'seáis', 'sean']
         }
-
-        let parts = [];
-        if (line.includes('\t')) {
-          parts = line.split('\t');
-        } else if (line.includes(' | ')) {
-          parts = line.split(' | ');
-        } else if (line.includes(' - ')) {
-          parts = line.split(' - ');
-        } else if (line.includes(';')) {
-          parts = line.split(';');
+      },
+      {
+        infinitive: 'estar', english: 'to be (state / location)', category: 'irregular',
+        gerundio: 'estando', participio: 'estado',
+        rule: 'Tildes en presente indicativo y raíz fuerte estuv- en indefinido.',
+        forms: {
+          pres: ['estoy', 'estás', 'está', 'estamos', 'estáis', 'están'],
+          pret_indef: ['estuve', 'estuviste', 'estuvo', 'estuvimos', 'estuvisteis', 'estuvieron'],
+          pret_imp: ['estaba', 'estabas', 'estaba', 'estábamos', 'estabais', 'estaban'],
+          fut: ['estaré', 'estarás', 'estará', 'estaremos', 'estaréis', 'estarán'],
+          cond: ['estaría', 'estarías', 'estaría', 'estaríamos', 'estaríais', 'estarían'],
+          subj_pres: ['esté', 'estés', 'esté', 'estemos', 'estéis', 'estén']
         }
-
-        if (parts.length >= 2) {
-          const word = parts[0].trim().replace(/^["']|["']$/g, '');
-          const meaningEn = parts[1].trim().replace(/^["']|["']$/g, '');
-          const example = parts[2] ? parts[2].trim().replace(/^["']|["']$/g, '') : '';
-          
-          if (word && meaningEn) {
-            results.push({
-              word,
-              meaningEn,
-              examples: example ? [example] : [],
-              sourceFiles: [sourceFileName],
-              ipa: generateSpanishIPA(word),
-              grammar: guessGrammar(word)
-            });
-          }
+      },
+      {
+        infinitive: 'ir', english: 'to go', category: 'irregular',
+        gerundio: 'yendo', participio: 'ido',
+        rule: 'Comparte indefinido con "ser" (fui, fuiste...); raíz v- en presente.',
+        forms: {
+          pres: ['voy', 'vas', 'va', 'vamos', 'vais', 'van'],
+          pret_indef: ['fui', 'fuiste', 'fue', 'fuimos', 'fuisteis', 'fueron'],
+          pret_imp: ['iba', 'ibas', 'iba', 'íbamos', 'ibais', 'iban'],
+          fut: ['iré', 'irás', 'irá', 'iremos', 'iréis', 'irán'],
+          cond: ['iría', 'irías', 'iría', 'iríamos', 'iríais', 'irían'],
+          subj_pres: ['vaya', 'vayas', 'vaya', 'vayamos', 'vayáis', 'vayan']
         }
-      }
-      return results;
-    }
-
-    async function discoverFilesFromDirectory() {
-      const discovered = new Set();
-
-      // En modo local file:///, el navegador bloquea fetch por seguridad (CORS)
-      if (window.location.protocol === 'file:') {
-        console.warn("Detectado entorno local file:///. fetch está restringido por el navegador.");
-        return [];
-      }
-
-      // 1. Buscar manifiestos estructurados en paralelo
-      const manifests = ['files.json', 'corpus.json', 'manifest.json', 'list.txt', 'files.txt'];
-      const manifestPromises = [];
-
-      for (const basePath of CORPUS_PATHS) {
-        for (const man of manifests) {
-          manifestPromises.push(
-            fetchWithTimeout(`${basePath}${man}`, { cache: 'no-cache' }, 1200)
-              .then(async res => {
-                if (!res.ok) return;
-                if (man.endsWith('.json')) {
-                  const list = await res.json();
-                  if (Array.isArray(list)) {
-                    list.forEach(item => {
-                      const fn = typeof item === 'string' ? item : (item.name || item.file);
-                      if (fn && fn.toLowerCase().endsWith('.txt')) discovered.add(fn);
-                    });
-                  }
-                } else {
-                  const txt = await res.text();
-                  txt.split(/\r?\n/).forEach(f => {
-                    const tr = f.trim();
-                    if (tr && tr.toLowerCase().endsWith('.txt')) discovered.add(tr);
-                  });
-                }
-              })
-              .catch(() => {})
-          );
+      },
+      {
+        infinitive: 'tener', english: 'to have / possess', category: 'irregular',
+        gerundio: 'teniendo', participio: 'tenido',
+        rule: 'Verbo de primera persona en -go (tengo); raíz tuv- en indefinido.',
+        forms: {
+          pres: ['tengo', 'tienes', 'tiene', 'tenemos', 'tenéis', 'tienen'],
+          pret_indef: ['tuve', 'tuviste', 'tuvo', 'tuvimos', 'tuvisteis', 'tuvieron'],
+          pret_imp: ['tenía', 'tenías', 'tenía', 'teníamos', 'teníais', 'tenían'],
+          fut: ['tendré', 'tendrás', 'tendrá', 'tendremos', 'tendréis', 'tendrán'],
+          cond: ['tendría', 'tendrías', 'tendría', 'tendríamos', 'tendríais', 'tendrían'],
+          subj_pres: ['tenga', 'tengas', 'tenga', 'tengamos', 'tengáis', 'tengan']
+        }
+      },
+      {
+        infinitive: 'hacer', english: 'to do / to make', category: 'irregular',
+        gerundio: 'haciendo', participio: 'hecho',
+        rule: 'Participio "hecho"; pretérito fuerte "hic-" con z en él (hizo).',
+        forms: {
+          pres: ['hago', 'haces', 'hace', 'hacemos', 'hacéis', 'hacen'],
+          pret_indef: ['hice', 'hiciste', 'hizo', 'hicimos', 'hicisteis', 'hicieron'],
+          pret_imp: ['hacía', 'hacías', 'hacía', 'hacíamos', 'hacíais', 'hacían'],
+          fut: ['haré', 'harás', 'hará', 'haremos', 'haréis', 'harán'],
+          cond: ['haría', 'harías', 'haría', 'haríamos', 'haríais', 'harían'],
+          subj_pres: ['haga', 'hagas', 'haga', 'hagamos', 'hagáis', 'hagan']
+        }
+      },
+      {
+        infinitive: 'decir', english: 'to say / to tell', category: 'irregular',
+        gerundio: 'diciendo', participio: 'dicho',
+        rule: 'Participio "dicho"; raíz dij- en indefinido sin "i" en 3ª plural (dijeron).',
+        forms: {
+          pres: ['digo', 'dices', 'dice', 'decimos', 'decís', 'dicen'],
+          pret_indef: ['dije', 'dijiste', 'dijo', 'dijimos', 'dijisteis', 'dijeron'],
+          pret_imp: ['decía', 'decías', 'decía', 'decíamos', 'decíais', 'decían'],
+          fut: ['diré', 'dirás', 'dirá', 'diremos', 'diréis', 'dirán'],
+          cond: ['diría', 'dirías', 'diría', 'diríamos', 'diríais', 'dirían'],
+          subj_pres: ['diga', 'digas', 'diga', 'digamos', 'digáis', 'digan']
+        }
+      },
+      {
+        infinitive: 'poder', english: 'to be able / can', category: 'irregular',
+        gerundio: 'pudiendo', participio: 'podido',
+        rule: 'Diptongación o->ue; indefinido fuerte "pud-"; futuro "podr-".',
+        forms: {
+          pres: ['puedo', 'puedes', 'puede', 'podemos', 'podéis', 'pueden'],
+          pret_indef: ['pude', 'pudiste', 'pudo', 'pudimos', 'pudisteis', 'pudieron'],
+          pret_imp: ['podía', 'podías', 'podía', 'podíamos', 'podíais', 'podían'],
+          fut: ['podré', 'podrás', 'podrá', 'podremos', 'podréis', 'podrán'],
+          cond: ['podría', 'podrías', 'podría', 'podríamos', 'podríais', 'podrían'],
+          subj_pres: ['pueda', 'puedas', 'pueda', 'podamos', 'podáis', 'puedan']
+        }
+      },
+      {
+        infinitive: 'poner', english: 'to put / place', category: 'irregular',
+        gerundio: 'poniendo', participio: 'puesto',
+        rule: 'Participio "puesto"; raíz pus- en indefinido; futuro "pondr-".',
+        forms: {
+          pres: ['pongo', 'pones', 'pone', 'ponemos', 'ponéis', 'ponen'],
+          pret_indef: ['puse', 'pusiste', 'puso', 'pusimos', 'pusisteis', 'pusieron'],
+          pret_imp: ['ponía', 'ponías', 'ponía', 'poníamos', 'poníais', 'ponían'],
+          fut: ['pondré', 'pondrás', 'pondrá', 'pondremos', 'pondréis', 'pondrán'],
+          cond: ['pondría', 'pondrías', 'pondría', 'pondríamos', 'pondríais', 'pondrían'],
+          subj_pres: ['ponga', 'pongas', 'ponga', 'pongamos', 'pongáis', 'pongan']
+        }
+      },
+      {
+        infinitive: 'querer', english: 'to want / love', category: 'irregular',
+        gerundio: 'queriendo', participio: 'querido',
+        rule: 'Diptongación e->ie; indefinido fuerte "quis-"; futuro "querr-".',
+        forms: {
+          pres: ['quiero', 'quieres', 'quiere', 'queremos', 'queréis', 'quieren'],
+          pret_indef: ['quise', 'quisiste', 'quiso', 'quisimos', 'quisisteis', 'quisieron'],
+          pret_imp: ['quería', 'querías', 'quería', 'queríamos', 'queríais', 'querían'],
+          fut: ['querré', 'querrás', 'querrá', 'querremos', 'querréis', 'querrán'],
+          cond: ['querría', 'querrías', 'querría', 'querríamos', 'querríais', 'querrían'],
+          subj_pres: ['quiera', 'quieras', 'quiera', 'queramos', 'queráis', 'quieran']
+        }
+      },
+      {
+        infinitive: 'saber', english: 'to know (facts / how to)', category: 'irregular',
+        gerundio: 'sabiendo', participio: 'sabido',
+        rule: 'Yo "sé" con tilde diacrítica; raíz sup- en indefinido; futuro "sabr-".',
+        forms: {
+          pres: ['sé', 'sabes', 'sabe', 'sabemos', 'sabéis', 'saben'],
+          pret_indef: ['supe', 'supiste', 'supo', 'supimos', 'supisteis', 'supieron'],
+          pret_imp: ['sabía', 'sabías', 'sabía', 'sabíamos', 'sabíais', 'sabían'],
+          fut: ['sabré', 'sabrás', 'sabrá', 'sabremos', 'sabréis', 'sabrán'],
+          cond: ['sabría', 'sabrías', 'sabría', 'sabríamos', 'sabríais', 'sabrían'],
+          subj_pres: ['sepa', 'sepas', 'sepa', 'sepamos', 'sepáis', 'sepan']
+        }
+      },
+      {
+        infinitive: 'hablar', english: 'to speak / talk', category: 'regular',
+        gerundio: 'hablando', participio: 'hablado',
+        rule: 'Modelo regular de la primera conjugación en -ar.',
+        forms: {
+          pres: ['hablo', 'hablas', 'habla', 'hablamos', 'habláis', 'hablan'],
+          pret_indef: ['hablé', 'hablaste', 'habló', 'hablamos', 'hablasteis', 'hablaron'],
+          pret_imp: ['hablaba', 'hablabas', 'hablaba', 'hablábamos', 'hablabais', 'hablaban'],
+          fut: ['hablaré', 'hablarás', 'hablará', 'hablaremos', 'hablaréis', 'hablarán'],
+          cond: ['hablaría', 'hablarías', 'hablaría', 'hablaríamos', 'hablaríais', 'hablarían'],
+          subj_pres: ['hable', 'hables', 'hable', 'hablemos', 'habléis', 'hablen']
+        }
+      },
+      {
+        infinitive: 'comer', english: 'to eat', category: 'regular',
+        gerundio: 'comiendo', participio: 'comido',
+        rule: 'Modelo regular de la segunda conjugación en -er.',
+        forms: {
+          pres: ['como', 'comes', 'come', 'comemos', 'coméis', 'comen'],
+          pret_indef: ['comí', 'comiste', 'comió', 'comimos', 'comisteis', 'comieron'],
+          pret_imp: ['comía', 'comías', 'comía', 'comíamos', 'comíais', 'comían'],
+          fut: ['comeré', 'comerás', 'comerá', 'comeremos', 'comeréis', 'comerán'],
+          cond: ['comería', 'comerías', 'comería', 'comeríamos', 'comeríais', 'comerían'],
+          subj_pres: ['coma', 'comas', 'coma', 'comamos', 'comáis', 'coman']
+        }
+      },
+      {
+        infinitive: 'vivir', english: 'to live', category: 'regular',
+        gerundio: 'viviendo', participio: 'vivido',
+        rule: 'Modelo regular de la tercera conjugación en -ir.',
+        forms: {
+          pres: ['vivo', 'vives', 'vive', 'vivimos', 'vivís', 'viven'],
+          pret_indef: ['viví', 'viviste', 'vivió', 'vivimos', 'vivisteis', 'vivieron'],
+          pret_imp: ['vivía', 'vivías', 'vivía', 'vivíamos', 'vivíais', 'vivían'],
+          fut: ['viviré', 'vivirás', 'vivirá', 'viviremos', 'viviréis', 'vivirán'],
+          cond: ['viviría', 'vivirías', 'viviría', 'viviríamos', 'viviríais', 'vivirían'],
+          subj_pres: ['viva', 'vivas', 'viva', 'vivamos', 'viváis', 'vivan']
         }
       }
-      await Promise.allSettled(manifestPromises);
+    ];
 
-      // 2. Probar autoíndice del servidor (Apache, Nginx, Python) en paralelo
-      const dirPromises = CORPUS_PATHS.map(async basePath => {
-        try {
-          const res = await fetchWithTimeout(basePath, { cache: 'no-cache' }, 1500);
-          if (res.ok) {
-            const contentType = res.headers.get('content-type') || '';
-            if (contentType.includes('json')) {
-              const list = await res.json();
-              if (Array.isArray(list)) {
-                list.forEach(item => {
-                  const fn = typeof item === 'string' ? item : item.name;
-                  if (fn && fn.toLowerCase().endsWith('.txt')) discovered.add(fn);
-                });
-              }
-            } else {
-              const html = await res.text();
-              const regex = /href=["']?([^"' >\n\r\t]+\.txt)(?:[?#][^"' >\n\r\t]*)?["']?/gi;
-              let match;
-              while ((match = regex.exec(html)) !== null) {
-                let fn = match[1];
-                if (fn.includes('/')) fn = fn.split('/').pop();
-                try { fn = decodeURIComponent(fn); } catch (e) {}
-                if (fn && fn.toLowerCase().endsWith('.txt')) discovered.add(fn);
-              }
-            }
-          }
-        } catch (e) {}
-      });
-      await Promise.allSettled(dirPromises);
+    /* Corpus Inicial de Respaldo */
+    const SEED_CORPUS = [
+      { word: 'el software', meaningEn: 'software', example: 'Es necesario actualizar el software de gestión.', ipa: '[softweɾ]', grammar: 'sustantivo masc.' },
+      { word: 'el algoritmo', meaningEn: 'algorithm', example: 'El algoritmo optimiza el rendimiento del sistema.', ipa: '[alɣoˈɾidmo]', grammar: 'sustantivo masc.' },
+      { word: 'la aleación', meaningEn: 'alloy', example: 'La pieza está compuesta por una aleación ligera.', ipa: '[aleaˈθjon]', grammar: 'sustantivo fem.' },
+      { word: 'el análisis', meaningEn: 'analysis', example: 'El análisis de los datos arrojó resultados positivos.', ipa: '[aˈnalisis]', grammar: 'sustantivo masc.' },
+      { word: 'el dispositivo', meaningEn: 'device', example: 'Conectó el dispositivo a la red inalámbrica.', ipa: '[disposiˈtiβo]', grammar: 'sustantivo masc.' },
+      { word: 'la batería', meaningEn: 'battery', example: 'La batería del vehículo tiene gran autonomía.', ipa: '[bateˈɾia]', grammar: 'sustantivo fem.' },
+      { word: 'la energía renovable', meaningEn: 'renewable energy', example: 'España lidera en energía renovable solar y eólica.', ipa: '[eneɾˈxia renoˈβaβle]', grammar: 'sustantivo fem.' },
+      { word: 'el desarrollo', meaningEn: 'development', example: 'El desarrollo de la aplicación avanzó rápidamente.', ipa: '[desaˈroʎo]', grammar: 'sustantivo masc.' },
+      { word: 'el microscopio', meaningEn: 'microscope', example: 'Examinaron la estructura celular con el microscopio.', ipa: '[mikɾosˈkopjo]', grammar: 'sustantivo masc.' },
+      { word: 'la alteración', meaningEn: 'alteration / change', example: 'No se detectó ninguna alteración en la muestra.', ipa: '[alteɾaˈθjon]', grammar: 'sustantivo fem.' }
+    ];
 
-      // 3. Prospección rápida en paralelo de nombres habituales
-      const probeList = [
-        'example.txt', 'ejemplo.txt', 'ciencia.txt', 'tecnologia.txt',
-        'vocabulario.txt', 'vocab.txt', 'palabras.txt', 'corpus.txt',
-        'Spanish_B2_Corpus_Science_Tech_Batch_12.txt', 'Spanish_Corpus_Batch_1.txt'
-      ];
-      for (let i = 1; i <= 15; i++) {
-        probeList.push(`batch_${i}.txt`);
-        probeList.push(`vocab_${i}.txt`);
-        probeList.push(`Spanish_Corpus_Batch_${i}.txt`);
-      }
+    /* Normalizador de texto para comparaciones léxicas */
+    function normalizeText(str) {
+      if (!str) return '';
+      return str.toLowerCase().trim()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/^(el|la|los|las|un|una)\s+/, '');
+    }
 
-      // Archivos personales guardados por el usuario
-      try {
-        const custom = JSON.parse(localStorage.getItem('esp_custom_files') || '[]');
-        custom.forEach(f => { if (!probeList.includes(f)) probeList.push(f); });
-      } catch (e) {}
-
-      const probePromises = probeList.filter(p => !discovered.has(p)).map(async probe => {
-        for (const basePath of CORPUS_PATHS) {
-          try {
-            const res = await fetchWithTimeout(`${basePath}${probe}`, { method: 'HEAD', cache: 'no-cache' }, 900);
-            if (res.ok) {
-              discovered.add(probe);
-              break;
-            }
-          } catch (e) {}
+    /* Levenshtein para detección de erratas cercanas */
+    function levenshtein(a, b) {
+      const an = a ? a.length : 0;
+      const bn = b ? b.length : 0;
+      if (an === 0) return bn;
+      if (bn === 0) return an;
+      const m = Array(an + 1).fill(null).map(() => Array(bn + 1).fill(null));
+      for (let i = 0; i <= an; i++) m[i][0] = i;
+      for (let j = 0; j <= bn; j++) m[0][j] = j;
+      for (let i = 1; i <= an; i++) {
+        for (let j = 1; j <= bn; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          m[i][j] = Math.min(m[i - 1][j] + 1, m[i][j - 1] + 1, m[i - 1][j - 1] + cost);
         }
-      });
-      await Promise.allSettled(probePromises);
-
-      return Array.from(discovered);
+      }
+      return m[an][bn];
     }
 
-    function setCorpusProgress(percent, actionText = null, wordCount = null) {
-      const pct = Math.min(Math.max(percent, 0), 100);
+    /* EVALUADOR INTELIGENTE DE CONJUGACIÓN (Exacto, Tilde omitida, Errata, Incorrecto) */
+    function evaluateVerbAnswer(userVal, target) {
+      const u = userVal.trim().toLowerCase();
+      const t = target.trim().toLowerCase();
+      if (u === t) return { status: 'correct', message: '¡Excelente! Forma exacta.' };
 
-      const track = document.getElementById('corpusProgressBarTrack');
-      const bar = document.getElementById('corpusProgressBar');
-      if (track && bar) {
-        track.classList.remove('opacity-0');
-        bar.style.width = `${pct}%`;
+      const nu = normalizeText(u);
+      const nt = normalizeText(t);
+      if (nu === nt) {
+        return {
+          status: 'accent',
+          message: `¡Casi! Omitiste la tilde obligatoria. Forma correcta: "${target}".`,
+          details: 'En español la tilde distingue tiempos (ej. hablo vs. habló).'
+        };
       }
 
-      const modalBar = document.getElementById('modalLoadingProgressBar');
-      const modalPct = document.getElementById('modalLoadingPercentBadge');
-      const modalAction = document.getElementById('modalCurrentActionText');
-      const modalFiles = document.getElementById('modalFilesCount');
-      const modalWords = document.getElementById('modalWordsCount');
-      const modalBadge = document.getElementById('modalLoadedFilesChips');
-
-      if (modalBar) modalBar.style.width = `${pct}%`;
-      if (modalPct) modalPct.innerText = `${Math.round(pct)}%`;
-      if (modalAction && actionText) modalAction.innerText = actionText;
-      if (modalFiles) modalFiles.innerText = `${State.loadedFiles.length} archivo(s)`;
-      if (modalWords && wordCount !== null) modalWords.innerText = `${wordCount} palabras`;
-
-      if (modalBadge && State.loadedFiles.length > 0) {
-        modalBadge.innerHTML = State.loadedFiles.map(f => `
-          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-900 font-mono text-[10px] font-bold border border-emerald-300">
-            <span>✓</span>
-            <span class="truncate max-w-[120px]">${f.name}</span>
-            <span class="text-emerald-700 bg-emerald-200/60 px-1 rounded">${f.count}</span>
-          </span>
-        `).join('');
+      if (levenshtein(nu, nt) <= 1) {
+        return {
+          status: 'typo',
+          message: `Cerca. Errata leve en la raíz o desinencia: "${target}".`
+        };
       }
+
+      return {
+        status: 'incorrect',
+        message: `Incorrecto. La forma correcta es "${target}".`
+      };
     }
 
-    function openCorpusLoadingModal() {
-      const modal = document.getElementById('corpusLoadingModal');
-      if (modal) modal.classList.remove('hidden');
-    }
+    /* CLASE PRINCIPAL DE LA APLICACIÓN */
+    class SpanishApp {
+      constructor() {
+        this.currentMainTab = 'tarjetas'; // 'tarjetas' | 'verbo'
+        this.tarjetasSubTab = 'cards';    // 'cards' | 'list'
+        this.verbMode = 'full';           // 'full' | 'choice'
+        this.isVerbTablesVisible = false;
 
-    function closeCorpusLoadingModal() {
-      const modal = document.getElementById('corpusLoadingModal');
-      if (modal) modal.classList.add('hidden');
-      const track = document.getElementById('corpusProgressBarTrack');
-      if (track) track.classList.add('opacity-0');
-    }
+        // Datos del Corpus
+        this.corpus = [...SEED_CORPUS];
+        this.masteredCards = new Set();
+        this.reviewCards = new Set();
+        this.savedCards = new Set();
+        this.currentCardIdx = 0;
+        this.isCardFlipped = false;
 
-    /* Aplicar un conjunto de entradas al diccionario y tarjetas */
-    function applyCorpusEntries(allEntries, saveToCache = false) {
-      State.corpus = [];
-      State.corpusMap.clear();
+        // Estado del Ejercicio de Verbos
+        this.currentDrill = null;
+        this.drillStreak = 0;
+        this.drillHintStage = 0;
 
-      allEntries.forEach(entry => {
-        const key = normalizeSpanish(entry.word);
-        if (State.corpusMap.has(key)) {
-          const existing = State.corpusMap.get(key);
-          entry.sourceFiles.forEach(s => {
-            if (!existing.sourceFiles.includes(s)) existing.sourceFiles.push(s);
-          });
-          entry.examples.forEach(ex => {
-            if (!existing.examples.includes(ex)) existing.examples.push(ex);
-          });
-          if (entry.meaningEn && !existing.meaningEn.toLowerCase().includes(entry.meaningEn.toLowerCase())) {
-            existing.meaningEn = `${existing.meaningEn} / ${entry.meaningEn}`;
-          }
+        // Opción Múltiple
+        this.choiceItem = null;
+        this.choiceScore = 0;
+
+        // Audio
+        this.sfxEnabled = true;
+        this.audioCtx = null;
+      }
+
+      init() {
+        this.loadStorage();
+        this.initTheme();
+        this.initVoice();
+        this.populateVerbSelect();
+        this.renderCorpusList();
+        this.loadNewFlashcard();
+        this.loadNewDrill();
+        this.loadNewChoiceQuestion();
+        this.setupKeyboardShortcuts();
+        lucide.createIcons();
+      }
+
+      /* Gestión del Tema Día / Noche (Colores de España) */
+      initTheme() {
+        const saved = localStorage.getItem('esp_theme');
+        if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
         } else {
-          State.corpusMap.set(key, entry);
-          State.corpus.push(entry);
+          document.documentElement.classList.remove('dark');
         }
-      });
+      }
 
-      if (saveToCache) {
+      toggleTheme() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('esp_theme', isDark ? 'dark' : 'light');
+        this.showToast(isDark ? 'Modo Noche activado' : 'Modo Día activado');
+        lucide.createIcons();
+      }
+
+      /* Audio Sintetizador (Web Audio API) y Speech */
+      initVoice() {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.onvoiceschanged = () => {};
+        }
+      }
+
+      speak(text) {
+        if (!('speechSynthesis' in window) || !text) return;
+        window.speechSynthesis.cancel();
+        const ut = new SpeechSynthesisUtterance(text);
+        ut.lang = 'es-ES';
+        ut.rate = 0.95;
+        const voices = window.speechSynthesis.getVoices();
+        const v = voices.find(x => x.lang === 'es-ES' || x.lang.startsWith('es'));
+        if (v) ut.voice = v;
+        window.speechSynthesis.speak(ut);
+      }
+
+      playTone(freq, type = 'sine', duration = 0.12) {
+        if (!this.sfxEnabled) return;
         try {
-          localStorage.setItem('esp_cached_corpus', JSON.stringify(State.corpus));
-          localStorage.setItem('esp_cached_files', JSON.stringify(State.loadedFiles));
+          if (!this.audioCtx) this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = this.audioCtx.createOscillator();
+          const gain = this.audioCtx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.1, this.audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.audioCtx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.audioCtx.destination);
+          osc.start();
+          osc.stop(this.audioCtx.currentTime + duration);
         } catch (e) {}
       }
 
-      updateStatsUI();
-      syncDeckSelectOptions();
-      initFlashcardsDeck();
-    }
-
-    async function scanAndLoadCorpus() {
-      openCorpusLoadingModal();
-      const notice = document.getElementById('modalAutoScanNotice');
-      if (notice) notice.classList.add('hidden');
-
-      setCorpusProgress(15, 'Sondeando directorio /corpus/...', 0);
-
-      let files = [];
-      try {
-        files = await discoverFilesFromDirectory();
-      } catch (err) {
-        console.warn("Error durante el sondeo de archivos:", err);
+      toggleSoundEffects() {
+        this.sfxEnabled = !this.sfxEnabled;
+        const icon = document.getElementById('sfxIcon');
+        if (icon) {
+          icon.setAttribute('data-lucide', this.sfxEnabled ? 'volume-2' : 'volume-x');
+          lucide.createIcons();
+        }
+        this.showToast(this.sfxEnabled ? 'Sonido activado' : 'Sonido silenciado');
       }
 
-      setCorpusProgress(40, `Detectados ${files.length} archivo(s)...`, 0);
+      /* Notificaciones Toast */
+      showToast(msg) {
+        const toast = document.getElementById('toast');
+        const inner = document.getElementById('toastInner');
+        if (!toast || !inner) return;
+        inner.innerText = msg;
+        toast.classList.remove('opacity-0', 'translate-y-2');
+        clearTimeout(this.toastTimer);
+        this.toastTimer = setTimeout(() => {
+          toast.classList.add('opacity-0', 'translate-y-2');
+        }, 2200);
+      }
 
-      let allEntries = [];
-      const successfulFiles = [];
+      /* NAVEGACIÓN: 2 PILARES PRINCIPALES */
+      switchMainTab(tab) {
+        this.currentMainTab = tab;
+        const secTarjetas = document.getElementById('sectionTarjetas');
+        const secVerbo = document.getElementById('sectionVerbo');
+        const btnTarjetas = document.getElementById('navBtnTarjetas');
+        const btnVerbo = document.getElementById('navBtnVerbo');
 
-      if (files.length > 0) {
-        const totalFiles = files.length;
-        for (let i = 0; i < totalFiles; i++) {
-          const filename = files[i];
-          const pct = 40 + Math.round(((i + 1) / totalFiles) * 50);
-          setCorpusProgress(pct, `Cargando: ${filename}`, allEntries.length);
+        if (tab === 'tarjetas') {
+          secTarjetas.classList.remove('hidden');
+          secVerbo.classList.add('hidden');
+          btnTarjetas.className = "flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs bg-white dark:bg-esp-night-card text-esp-red-700 dark:text-esp-gold-400";
+          btnVerbo.className = "flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100";
+        } else {
+          secTarjetas.classList.add('hidden');
+          secVerbo.classList.remove('hidden');
+          btnVerbo.className = "flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs bg-white dark:bg-esp-night-card text-esp-red-700 dark:text-esp-gold-400";
+          btnTarjetas.className = "flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100";
+        }
+        lucide.createIcons();
+      }
 
-          let content = null;
-          for (const basePath of CORPUS_PATHS) {
-            try {
-              const res = await fetchWithTimeout(`${basePath}${filename}`, { cache: 'no-cache' }, 2000);
-              if (res.ok) {
-                const text = await res.text();
-                if (text && !text.trim().startsWith('<!DOCTYPE')) {
-                  content = text;
-                  break;
-                }
-              }
-            } catch (e) {}
-          }
+      /* SUB-NAVEGACIÓN: TARJETAS (Práctica 3D vs Lista del Corpus) */
+      switchTarjetasSubTab(sub) {
+        this.tarjetasSubTab = sub;
+        const viewCards = document.getElementById('tarjetasSubViewCards');
+        const viewList = document.getElementById('tarjetasSubViewList');
+        const btnCards = document.getElementById('subTabFlashcardsBtn');
+        const btnList = document.getElementById('subTabCorpusListBtn');
 
-          if (content) {
-            const parsed = parseCorpusLines(content, filename);
-            if (parsed.length > 0) {
-              successfulFiles.push({ name: filename, count: parsed.length });
-              allEntries = allEntries.concat(parsed);
-              State.loadedFiles = [...successfulFiles];
-              setCorpusProgress(pct, `Procesado: ${filename} (${parsed.length} palabras)`, allEntries.length);
-            }
+        if (sub === 'cards') {
+          viewCards.classList.remove('hidden');
+          viewList.classList.add('hidden');
+          btnCards.className = "px-3 py-1.5 rounded-lg bg-white dark:bg-esp-night-card text-esp-red-700 dark:text-esp-gold-400 shadow-xs flex items-center gap-1.5 transition-all";
+          btnList.className = "px-3 py-1.5 rounded-lg text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 flex items-center gap-1.5 transition-all";
+        } else {
+          viewCards.classList.add('hidden');
+          viewList.classList.remove('hidden');
+          btnList.className = "px-3 py-1.5 rounded-lg bg-white dark:bg-esp-night-card text-esp-red-700 dark:text-esp-gold-400 shadow-xs flex items-center gap-1.5 transition-all";
+          btnCards.className = "px-3 py-1.5 rounded-lg text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 flex items-center gap-1.5 transition-all";
+          this.renderCorpusList();
+        }
+        lucide.createIcons();
+      }
+
+      /* SUB-NAVEGACIÓN: VERBO (Ortografía vs Opción Múltiple) */
+      switchVerbMode(mode) {
+        this.verbMode = mode;
+        const contFull = document.getElementById('verbFullDrillContainer');
+        const contChoice = document.getElementById('verbChoiceDrillContainer');
+        const btnFull = document.getElementById('verbModeFullBtn');
+        const btnChoice = document.getElementById('verbModeChoiceBtn');
+
+        if (mode === 'full') {
+          contFull.classList.remove('hidden');
+          contChoice.classList.add('hidden');
+          btnFull.className = "px-3 py-1.5 rounded-lg bg-white dark:bg-esp-night-card text-esp-red-700 dark:text-esp-gold-400 shadow-xs flex items-center gap-1.5 transition-all";
+          btnChoice.className = "px-3 py-1.5 rounded-lg text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 flex items-center gap-1.5 transition-all";
+        } else {
+          contFull.classList.add('hidden');
+          contChoice.classList.remove('hidden');
+          btnChoice.className = "px-3 py-1.5 rounded-lg bg-white dark:bg-esp-night-card text-esp-red-700 dark:text-esp-gold-400 shadow-xs flex items-center gap-1.5 transition-all";
+          btnFull.className = "px-3 py-1.5 rounded-lg text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 flex items-center gap-1.5 transition-all";
+        }
+        lucide.createIcons();
+      }
+
+      toggleVerbTables() {
+        this.isVerbTablesVisible = !this.isVerbTablesVisible;
+        const panel = document.getElementById('verbTablesPanel');
+        const text = document.getElementById('toggleVerbTablesText');
+        if (panel) {
+          panel.classList.toggle('hidden', !this.isVerbTablesVisible);
+          text.textContent = this.isVerbTablesVisible ? 'Ocultar Tablas' : 'Ver Tablas de Conjugación';
+          if (this.isVerbTablesVisible) {
+            this.renderVerbMatrix(document.getElementById('verbTableSelect').value || 'ser');
           }
         }
       }
 
-      // Si no se han detectado archivos a través del servidor web
-      if (successfulFiles.length === 0) {
-        if (notice) notice.classList.remove('hidden');
+      /* ============================================================== */
+      /* MÓDULO 1: TARJETAS & CORPUS                                    */
+      /* ============================================================== */
+      loadNewFlashcard() {
+        if (this.corpus.length === 0) return;
+        this.isCardFlipped = false;
+        const cardEl = document.getElementById('flashcard3D');
+        if (cardEl) cardEl.classList.remove('rotate-y-180');
 
-        // Intentar restaurar última sesión de la caché
-        let restoredFromCache = false;
-        try {
-          const cached = localStorage.getItem('esp_cached_corpus');
-          if (cached) {
-            const cachedEntries = JSON.parse(cached);
-            if (Array.isArray(cachedEntries) && cachedEntries.length > 0) {
-              allEntries = cachedEntries;
-              State.loadedFiles = JSON.parse(localStorage.getItem('esp_cached_files') || '[]');
-              restoredFromCache = true;
-            }
-          }
-        } catch (e) {}
+        const total = this.corpus.length;
+        if (this.currentCardIdx >= total) this.currentCardIdx = 0;
+        const item = this.corpus[this.currentCardIdx];
 
-        if (!restoredFromCache) {
-          const seedParsed = parseCorpusLines(SEED_CORPUS_RAW, 'semilla_inicial.txt');
-          allEntries = seedParsed;
-          successfulFiles.push({ name: 'semilla_inicial.txt (ejemplo)', count: seedParsed.length });
-          State.loadedFiles = successfulFiles;
+        document.getElementById('fcCurrentIdxNum').innerText = this.currentCardIdx + 1;
+        document.getElementById('fcTotalNum').innerText = total;
+        document.getElementById('tarjetasCorpusCountPill').innerText = total;
+        document.getElementById('fcMasteredCount').innerText = this.masteredCards.size;
+        document.getElementById('fcReviewCount').innerText = this.reviewCards.size;
+
+        const pBar = document.getElementById('fcSessionProgressBar');
+        if (pBar) pBar.style.width = `${((this.currentCardIdx + 1) / total) * 100}%`;
+
+        document.getElementById('fcFrontWord').innerText = item.word;
+        document.getElementById('fcFrontIpa').innerText = item.ipa || '';
+        document.getElementById('fcFrontGrammar').innerText = item.grammar || 'sustantivo';
+        document.getElementById('fcFrontSource').innerText = item.source || 'corpus central';
+        document.getElementById('fcBackMeaning').innerText = item.meaningEn;
+        document.getElementById('fcBackExample').innerText = item.example ? `"${item.example}"` : 'Sin ejemplo registrado.';
+
+        const starred = document.getElementById('fcStarredBadge');
+        if (starred) starred.classList.toggle('hidden', !this.savedCards.has(item.word));
+      }
+
+      flipCard() {
+        const cardEl = document.getElementById('flashcard3D');
+        if (!cardEl) return;
+        this.isCardFlipped = !this.isCardFlipped;
+        cardEl.classList.toggle('rotate-y-180', this.isCardFlipped);
+      }
+
+      nextCard() {
+        if (this.corpus.length === 0) return;
+        this.currentCardIdx = (this.currentCardIdx + 1) % this.corpus.length;
+        this.loadNewFlashcard();
+      }
+
+      prevCard() {
+        if (this.corpus.length === 0) return;
+        this.currentCardIdx = (this.currentCardIdx - 1 + this.corpus.length) % this.corpus.length;
+        this.loadNewFlashcard();
+      }
+
+      markCard(status) {
+        if (this.corpus.length === 0) return;
+        const w = this.corpus[this.currentCardIdx].word;
+        if (status === 'mastered') {
+          this.masteredCards.add(w);
+          this.reviewCards.delete(w);
+          this.playTone(523.25, 'sine', 0.15); // C5
+          this.showToast(`"${w}" dominada`);
+        } else {
+          this.reviewCards.add(w);
+          this.masteredCards.delete(w);
+          this.playTone(392, 'triangle', 0.15);
+          this.showToast(`"${w}" para repasar`);
         }
+        this.saveStorage();
+        this.nextCard();
       }
 
-      applyCorpusEntries(allEntries);
-
-      setCorpusProgress(100, `¡Listo! ${State.corpus.length} palabras cargadas`, State.corpus.length);
-      const dot = document.getElementById('serverStatusDot');
-      if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-500';
-      const statusText = document.getElementById('headerStatusText');
-      if (statusText) statusText.innerText = `${State.loadedFiles.length} archivo(s) activos`;
-
-      // Si se cargaron archivos reales del servidor, cerrar automáticamente
-      if (successfulFiles.length > 0 && successfulFiles[0].name !== 'semilla_inicial.txt (ejemplo)') {
-        setTimeout(closeCorpusLoadingModal, 1800);
-      }
-    }
-
-    /* Cargador de archivos locales: selección de carpeta */
-    async function handleLocalFolderPicker(event) {
-      const files = Array.from(event.target.files || []).filter(f => f.name.toLowerCase().endsWith('.txt'));
-      if (files.length === 0) {
-        showToast('No se encontró ningún archivo .txt en la carpeta seleccionada', '⚠️');
-        return;
-      }
-      await processLocalFileList(files);
-    }
-
-    /* Cargador de archivos locales: selección de archivos individuales */
-    async function handleLocalFilesPicker(event) {
-      const files = Array.from(event.target.files || []).filter(f => f.name.toLowerCase().endsWith('.txt'));
-      if (files.length === 0) {
-        showToast('Selecciona uno o más archivos .txt', '⚠️');
-        return;
-      }
-      await processLocalFileList(files);
-    }
-
-    /* Procesamiento directo de los archivos seleccionados desde el navegador */
-    async function processLocalFileList(files) {
-      openCorpusLoadingModal();
-      setCorpusProgress(25, `Procesando ${files.length} archivo(s) locales...`, 0);
-
-      let allEntries = [];
-      const loaded = [];
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const pct = 25 + Math.round(((i + 1) / files.length) * 70);
-        setCorpusProgress(pct, `Leyendo: ${file.name}`, allEntries.length);
-
-        try {
-          const text = await file.text();
-          const parsed = parseCorpusLines(text, file.name);
-          if (parsed.length > 0) {
-            loaded.push({ name: file.name, count: parsed.length });
-            allEntries = allEntries.concat(parsed);
-          }
-        } catch (err) {
-          console.warn("Error leyendo archivo local:", file.name, err);
+      shuffleCards() {
+        for (let i = this.corpus.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [this.corpus[i], this.corpus[j]] = [this.corpus[j], this.corpus[i]];
         }
+        this.currentCardIdx = 0;
+        this.loadNewFlashcard();
+        this.renderCorpusList();
+        this.showToast('Tarjetas barajadas');
       }
 
-      if (allEntries.length > 0) {
-        State.loadedFiles = loaded;
-        applyCorpusEntries(allEntries, true);
-        setCorpusProgress(100, `¡Cargadas ${State.corpus.length} palabras de ${loaded.length} archivo(s)!`, State.corpus.length);
-
-        const notice = document.getElementById('modalAutoScanNotice');
-        if (notice) notice.classList.add('hidden');
-
-        showToast(`${State.corpus.length} palabras importadas con éxito`, '✅');
-        setTimeout(closeCorpusLoadingModal, 1500);
-      } else {
-        showToast('Los archivos seleccionados no contienen datos de vocabulario válidos', '⚠️');
+      speakCurrentWord() {
+        if (this.corpus.length === 0) return;
+        this.speak(this.corpus[this.currentCardIdx].word);
       }
-    }
 
-    function addCustomServerFile() {
-      const input = document.getElementById('modalCustomFilenameInput');
-      const val = input ? input.value.trim() : '';
-      if (!val || !val.endsWith('.txt')) {
-        showToast('El archivo debe terminar en .txt', '⚠️');
-        return;
+      speakCurrentExample() {
+        if (this.corpus.length === 0) return;
+        const ex = this.corpus[this.currentCardIdx].example;
+        if (ex) this.speak(ex);
       }
-      try {
-        const custom = JSON.parse(localStorage.getItem('esp_custom_files') || '[]');
-        if (!custom.includes(val)) {
-          custom.push(val);
-          localStorage.setItem('esp_custom_files', JSON.stringify(custom));
+
+      /* Lista Completa del Corpus (Sub-herramienta bajo Tarjetas) */
+      renderCorpusList(filter = '') {
+        const container = document.getElementById('corpusTableContainer');
+        if (!container) return;
+        const q = normalizeText(filter);
+
+        const filtered = this.corpus.filter(item => {
+          return normalizeText(item.word).includes(q) || item.meaningEn.toLowerCase().includes(q);
+        });
+
+        if (filtered.length === 0) {
+          container.innerHTML = `<p class="p-6 text-center text-stone-400 italic">No se encontraron términos que coincidan con "${filter}".</p>`;
+          return;
         }
-      } catch (e) {}
-      input.value = '';
-      showToast(`Añadido "${val}". Re-sondeando directorio...`, '📄');
-      scanAndLoadCorpus();
-    }
 
-    function updateStatsUI() {
-      const badge = document.getElementById('corpusWordCountBadge');
-      if (badge) {
-        badge.innerText = `${State.corpus.length} palabras`;
-        badge.classList.remove('hidden');
-      }
-      const indexTotal = document.getElementById('indexModalTotalCount');
-      if (indexTotal) indexTotal.innerText = State.corpus.length;
-    }
-
-    function switchView(viewName) {
-      State.activeView = viewName;
-      const dictSec = document.getElementById('viewDictionary');
-      const cardsSec = document.getElementById('viewFlashcards');
-      const tabDict = document.getElementById('tabBtnDict');
-      const tabCards = document.getElementById('tabBtnCards');
-
-      if (viewName === 'dictionary') {
-        dictSec?.classList.remove('hidden');
-        cardsSec?.classList.add('hidden');
-        tabDict?.classList.add('bg-white', 'text-red-700', 'shadow-xs');
-        tabDict?.classList.remove('text-stone-600');
-        tabCards?.classList.remove('bg-white', 'text-red-700', 'shadow-xs');
-        tabCards?.classList.add('text-stone-600');
-      } else {
-        dictSec?.classList.add('hidden');
-        cardsSec?.classList.remove('hidden');
-        tabCards?.classList.add('bg-white', 'text-red-700', 'shadow-xs');
-        tabCards?.classList.remove('text-stone-600');
-        tabDict?.classList.remove('bg-white', 'text-red-700', 'shadow-xs');
-        tabDict?.classList.add('text-stone-600');
-        renderCurrentFlashcard();
-      }
-    }
-
-    function handleSearchInput(e) {
-      const val = e.target.value;
-      const clearBtn = document.getElementById('clearSearchBtn');
-      if (clearBtn) clearBtn.classList.toggle('hidden', !val);
-
-      const menu = document.getElementById('autocompleteMenu');
-      if (!menu) return;
-
-      const query = normalizeSpanish(val);
-      if (query.length === 0) {
-        menu.classList.add('hidden');
-        return;
-      }
-
-      const matches = State.corpus.filter(item => {
-        return normalizeSpanish(item.word).includes(query) || item.meaningEn.toLowerCase().includes(query);
-      }).slice(0, 8);
-
-      if (matches.length === 0) {
-        menu.classList.add('hidden');
-        return;
-      }
-
-      menu.innerHTML = matches.map(item => `
-        <button 
-          type="button" 
-          onclick="selectAutocompleteWord('${item.word.replace(/'/g, "\\'")}')" 
-          class="w-full px-4 py-2.5 text-left hover:bg-amber-50 border-b border-stone-100 last:border-none flex items-center justify-between transition-colors"
-        >
-          <div class="flex items-center gap-2">
-            <span class="font-bold text-stone-900">${item.word}</span>
-            <span class="text-xs text-stone-500 font-mono">${item.ipa}</span>
-          </div>
-          <span class="text-xs text-red-700 font-medium truncate max-w-[180px]">${item.meaningEn}</span>
-        </button>
-      `).join('');
-
-      menu.classList.remove('hidden');
-    }
-
-    function clearSearch() {
-      const input = document.getElementById('searchInput');
-      if (input) input.value = '';
-      const clearBtn = document.getElementById('clearSearchBtn');
-      if (clearBtn) clearBtn.classList.add('hidden');
-      const menu = document.getElementById('autocompleteMenu');
-      if (menu) menu.classList.add('hidden');
-      const card = document.getElementById('dictionaryResultCard');
-      if (card) card.classList.add('hidden');
-      State.currentDictEntry = null;
-    }
-
-    function selectAutocompleteWord(word) {
-      const input = document.getElementById('searchInput');
-      if (input) input.value = word;
-      const menu = document.getElementById('autocompleteMenu');
-      if (menu) menu.classList.add('hidden');
-      executeSearch();
-    }
-
-    function quickLookup(word) {
-      const input = document.getElementById('searchInput');
-      if (input) input.value = word;
-      executeSearch();
-    }
-
-    function pickRandomWord() {
-      if (State.corpus.length === 0) return;
-      const randomItem = State.corpus[Math.floor(Math.random() * State.corpus.length)];
-      quickLookup(randomItem.word);
-    }
-
-    function executeSearch() {
-      const input = document.getElementById('searchInput');
-      const query = normalizeSpanish(input ? input.value : '');
-      if (!query) return;
-
-      const menu = document.getElementById('autocompleteMenu');
-      if (menu) menu.classList.add('hidden');
-
-      let entry = State.corpusMap.get(query);
-      if (!entry) {
-        entry = State.corpus.find(item => normalizeSpanish(item.word) === query) ||
-                State.corpus.find(item => normalizeSpanish(item.word).includes(query));
-      }
-
-      const card = document.getElementById('dictionaryResultCard');
-      if (!entry) {
-        showToast(`No se encontró "${input.value}" en el corpus`, '🔍');
-        if (card) card.classList.add('hidden');
-        return;
-      }
-
-      State.currentDictEntry = entry;
-      renderDictionaryResult(entry);
-    }
-
-    function renderDictionaryResult(entry) {
-      const card = document.getElementById('dictionaryResultCard');
-      if (!card) return;
-
-      document.getElementById('dictResultWord').innerText = entry.word;
-      document.getElementById('dictResultGrammar').innerText = entry.grammar;
-      document.getElementById('dictResultIpa').innerText = entry.ipa;
-      document.getElementById('dictResultMeaning').innerText = entry.meaningEn;
-      document.getElementById('dictResultSources').innerText = entry.sourceFiles.join(', ');
-
-      const exContainer = document.getElementById('dictResultExamplesContainer');
-      if (exContainer) {
-        if (entry.examples.length > 0) {
-          exContainer.innerHTML = entry.examples.map(ex => `
-            <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200 text-stone-800 text-sm flex items-start justify-between gap-3">
-              <span class="italic">"${ex}"</span>
+        container.innerHTML = filtered.map((item, idx) => `
+          <div class="py-2.5 px-3 flex items-center justify-between gap-3 hover:bg-stone-50 dark:hover:bg-esp-night-surface transition rounded-xl">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <strong class="font-bold text-stone-900 dark:text-stone-100 text-sm">${item.word}</strong>
+                <span class="font-mono text-[11px] text-stone-400">${item.ipa || ''}</span>
+              </div>
+              <p class="text-xs text-esp-red-700 dark:text-esp-gold-400 font-medium truncate">${item.meaningEn}</p>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
               <button 
-                type="button" 
-                onclick="speakSpanish('${ex.replace(/'/g, "\\'")}')" 
-                class="text-stone-400 hover:text-red-700 p-1 shrink-0 transition-colors"
-                title="Escuchar frase en español"
+                onclick="app.speak('${item.word.replace(/'/g, "\\'")}')" 
+                class="p-1.5 text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition" 
+                title="Escuchar"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
+                <i data-lucide="volume-2" class="w-4 h-4"></i>
+              </button>
+              <button 
+                onclick="app.practiceWordFromList('${item.word.replace(/'/g, "\\'")}')"
+                class="px-2.5 py-1 bg-stone-100 dark:bg-stone-800 hover:bg-esp-gold-500 hover:text-stone-950 rounded-lg text-xs font-bold transition"
+                title="Practicar en Tarjeta"
+              >
+                Tarjeta &rarr;
               </button>
             </div>
-          `).join('');
+          </div>
+        `).join('');
+
+        lucide.createIcons();
+      }
+
+      filterCorpusList() {
+        const q = document.getElementById('corpusSearchInput')?.value || '';
+        this.renderCorpusList(q);
+      }
+
+      practiceWordFromList(word) {
+        const idx = this.corpus.findIndex(x => x.word === word);
+        if (idx !== -1) {
+          this.currentCardIdx = idx;
+          this.switchTarjetasSubTab('cards');
+          this.loadNewFlashcard();
+        }
+      }
+
+      handleLocalFileUpload(e) {
+        const files = Array.from(e.target.files || []);
+        if (files.length === 0) return;
+        files.forEach(file => {
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            const lines = evt.target.result.split(/\r?\n/);
+            lines.forEach(line => {
+              const parts = line.split('\t');
+              if (parts.length >= 2 && parts[0].trim()) {
+                this.corpus.push({
+                  word: parts[0].trim(),
+                  meaningEn: parts[1].trim(),
+                  example: parts[2] ? parts[2].trim() : '',
+                  ipa: '',
+                  grammar: 'sustantivo'
+                });
+              }
+            });
+            this.showToast(`${files.length} archivo(s) procesados`);
+            this.loadNewFlashcard();
+            this.renderCorpusList();
+          };
+          reader.readAsText(file);
+        });
+      }
+
+      /* ============================================================== */
+      /* MÓDULO 2: VERBO (ORTOGRAFÍA & OPCIÓN MÚLTIPLE + TABLAS)        */
+      /* ============================================================== */
+      populateVerbSelect() {
+        const select = document.getElementById('verbTableSelect');
+        if (!select) return;
+        select.innerHTML = VERB_BANK.map(v => `
+          <option value="${v.infinitive}">${v.infinitive.toUpperCase()} — ${v.english}</option>
+        `).join('');
+      }
+
+      renderVerbMatrix(infinitive) {
+        const verb = VERB_BANK.find(v => v.infinitive === infinitive) || VERB_BANK[0];
+        document.getElementById('matrixInfinitive').innerText = verb.infinitive;
+        document.getElementById('matrixGerundio').innerText = verb.gerundio;
+        document.getElementById('matrixParticipio').innerText = verb.participio;
+        document.getElementById('matrixRuleText').innerText = verb.rule;
+
+        const tbody = document.getElementById('matrixTableBody');
+        if (!tbody) return;
+
+        tbody.innerHTML = PRONOUNS.map((p, idx) => `
+          <tr class="hover:bg-stone-50 dark:hover:bg-esp-night-surface/60 transition cursor-pointer" onclick="app.speak('${p.label} ${verb.forms.pres[idx]}')">
+            <td class="py-2 px-2 font-bold text-stone-800 dark:text-stone-200">${p.label}</td>
+            <td class="py-2 px-2 font-semibold text-esp-red-700 dark:text-esp-gold-400">${verb.forms.pres[idx]}</td>
+            <td class="py-2 px-2 font-semibold text-stone-800 dark:text-stone-200">${verb.forms.pret_indef[idx]}</td>
+            <td class="py-2 px-2 text-stone-700 dark:text-stone-300">${verb.forms.pret_imp[idx]}</td>
+            <td class="py-2 px-2 text-stone-700 dark:text-stone-300">${verb.forms.fut[idx]}</td>
+            <td class="py-2 px-2 text-stone-700 dark:text-stone-300">${verb.forms.cond[idx]}</td>
+            <td class="py-2 px-2 font-semibold text-azulejo-700 dark:text-amber-300">${verb.forms.subj_pres[idx]}</td>
+          </tr>
+        `).join('');
+      }
+
+      /* MODO 1: ORTOGRAFÍA COMPLETA (FILL-IN) */
+      loadNewDrill() {
+        this.drillHintStage = 0;
+        const verb = VERB_BANK[Math.floor(Math.random() * VERB_BANK.length)];
+        const tenses = ['pres', 'pret_indef', 'pret_imp', 'fut', 'subj_pres'];
+        const tenseKey = tenses[Math.floor(Math.random() * tenses.length)];
+        const personIdx = Math.floor(Math.random() * 6);
+
+        this.currentDrill = {
+          verb,
+          tenseKey,
+          tenseName: TENSE_METADATA[tenseKey],
+          personIdx,
+          pronoun: PRONOUNS[personIdx],
+          targetAnswer: verb.forms[tenseKey][personIdx]
+        };
+
+        document.getElementById('drillInfinitive').innerText = verb.infinitive;
+        document.getElementById('drillEnglishMeaning').innerText = verb.english;
+        document.getElementById('drillCategoryTag').innerText = verb.category.toUpperCase();
+        document.getElementById('drillTenseText').innerText = this.currentDrill.tenseName;
+        document.getElementById('drillPronounText').innerText = this.currentDrill.pronoun.label;
+        document.getElementById('drillStreakCount').innerText = this.drillStreak;
+
+        const input = document.getElementById('drillInput');
+        input.value = '';
+        input.disabled = false;
+        input.className = "w-full text-base sm:text-xl font-bold px-4 py-3.5 rounded-2xl border-2 border-stone-200 dark:border-esp-night-border focus:border-esp-red-600 dark:focus:border-esp-gold-500 bg-white dark:bg-esp-night-surface text-stone-900 dark:text-stone-100 outline-none transition shadow-inner";
+
+        const audioBtn = document.getElementById('drillAudioAnswerBtn');
+        if (audioBtn) audioBtn.classList.add('hidden');
+
+        const fBox = document.getElementById('drillFeedbackBox');
+        if (fBox) fBox.classList.add('hidden');
+
+        const submitBtn = document.getElementById('drillSubmitBtn');
+        submitBtn.innerHTML = `<span>Comprobar</span><i data-lucide="check" class="w-4 h-4"></i>`;
+        submitBtn.className = "flex-1 py-3 px-4 rounded-xl bg-esp-red-700 hover:bg-esp-red-800 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-1.5 shadow-sm active:scale-98";
+
+        lucide.createIcons();
+      }
+
+      handleFullDrillSubmit(e) {
+        if (e) e.preventDefault();
+        const input = document.getElementById('drillInput');
+        const submitBtn = document.getElementById('drillSubmitBtn');
+
+        // Si ya está comprobado, el siguiente clic avanza
+        if (input.disabled) {
+          this.loadNewDrill();
+          return;
+        }
+
+        const userVal = input.value.trim();
+        if (!userVal) {
+          input.classList.add('animate-shake');
+          setTimeout(() => input.classList.remove('animate-shake'), 350);
+          return;
+        }
+
+        const target = this.currentDrill.targetAnswer;
+        const evalRes = evaluateVerbAnswer(userVal, target);
+        const fBox = document.getElementById('drillFeedbackBox');
+        const audioBtn = document.getElementById('drillAudioAnswerBtn');
+
+        fBox.classList.remove('hidden');
+        if (audioBtn) audioBtn.classList.remove('hidden');
+        input.disabled = true;
+
+        submitBtn.innerHTML = `<span>Siguiente Verbo</span><i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+        submitBtn.className = "flex-1 py-3 px-4 rounded-xl bg-stone-900 dark:bg-esp-gold-500 hover:bg-stone-800 text-white dark:text-stone-950 font-bold text-xs sm:text-sm transition flex items-center justify-center gap-1.5 shadow-sm active:scale-98";
+
+        if (evalRes.status === 'correct') {
+          this.drillStreak++;
+          this.playTone(523.25, 'sine', 0.15); // C5
+          fBox.className = "rounded-2xl p-4 border bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 text-xs sm:text-sm font-semibold";
+          fBox.innerHTML = `
+            <div class="font-bold text-emerald-800 dark:text-emerald-300">¡Correcto!</div>
+            <div>${evalRes.message}</div>
+          `;
+        } else if (evalRes.status === 'accent') {
+          this.playTone(440, 'triangle', 0.15); // Warning
+          fBox.className = "rounded-2xl p-4 border bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200 text-xs sm:text-sm font-semibold";
+          fBox.innerHTML = `
+            <div class="font-bold text-amber-800 dark:text-amber-300">¡Cuidado con la Tilde!</div>
+            <div>${evalRes.message}</div>
+            <div class="text-[11px] mt-1 text-stone-500 dark:text-stone-400">${evalRes.details || ''}</div>
+          `;
         } else {
-          exContainer.innerHTML = `<p class="text-xs text-stone-400 italic">Sin frases registradas.</p>`;
+          this.drillStreak = 0;
+          this.playTone(220, 'sawtooth', 0.2); // Error
+          fBox.className = "rounded-2xl p-4 border bg-esp-red-50 dark:bg-esp-red-950/40 border-esp-red-300 dark:border-esp-red-800 text-esp-red-900 dark:text-esp-red-200 text-xs sm:text-sm font-semibold";
+          fBox.innerHTML = `
+            <div class="font-bold text-esp-red-800 dark:text-esp-red-300">Forma no coincidente</div>
+            <div>${evalRes.message}</div>
+            <div class="text-[11px] mt-1 text-stone-500 dark:text-stone-400">Regla: ${this.currentDrill.verb.rule}</div>
+          `;
         }
+
+        document.getElementById('drillStreakCount').innerText = this.drillStreak;
+        lucide.createIcons();
       }
 
-      updateDictBookmarkBtn();
-      card.classList.remove('hidden');
-    }
-
-    function speakCurrentDictWord() {
-      if (State.currentDictEntry) speakSpanish(State.currentDictEntry.word);
-    }
-
-    function toggleBookmarkCurrentDict() {
-      if (!State.currentDictEntry) return;
-      const word = State.currentDictEntry.word;
-      if (State.savedWords.has(word)) {
-        State.savedWords.delete(word);
-        showToast(`"${word}" eliminada del cuaderno`, '⭐');
-      } else {
-        State.savedWords.add(word);
-        showToast(`"${word}" guardada en el cuaderno`, '⭐');
-      }
-      persistSavedWords();
-      updateDictBookmarkBtn();
-      initFlashcardsDeck();
-    }
-
-    function updateDictBookmarkBtn() {
-      const btn = document.getElementById('dictBookmarkBtn');
-      const label = document.getElementById('dictBookmarkBtnLabel');
-      if (!btn || !State.currentDictEntry) return;
-
-      const isSaved = State.savedWords.has(State.currentDictEntry.word);
-      if (isSaved) {
-        btn.className = 'px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 bg-amber-100 text-amber-950 border-amber-300';
-        if (label) label.innerText = 'Guardada ⭐';
-      } else {
-        btn.className = 'px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 bg-stone-50 text-stone-700 border-stone-200 hover:bg-amber-50 hover:text-amber-900';
-        if (label) label.innerText = 'Guardar';
-      }
-    }
-
-    function updateSavedBadge() {
-      const count = State.savedWords.size;
-      const b1 = document.getElementById('savedBadgeCount');
-      const b2 = document.getElementById('savedDrawerCountBadge');
-      if (b1) b1.innerText = count;
-      if (b2) b2.innerText = count;
-      renderSavedWordsList();
-    }
-
-    function toggleSavedDrawer() {
-      const drawer = document.getElementById('savedWordsDrawer');
-      if (!drawer) return;
-      drawer.classList.toggle('hidden');
-      if (!drawer.classList.contains('hidden')) renderSavedWordsList();
-    }
-
-    function renderSavedWordsList() {
-      const container = document.getElementById('savedWordsListContainer');
-      if (!container) return;
-
-      if (State.savedWords.size === 0) {
-        container.innerHTML = `<p class="text-xs text-stone-400 italic text-center py-8">No tienes ninguna palabra guardada todavía.</p>`;
-        return;
+      showDrillHint() {
+        if (!this.currentDrill) return;
+        const input = document.getElementById('drillInput');
+        const target = this.currentDrill.targetAnswer;
+        this.drillHintStage++;
+        if (this.drillHintStage === 1) input.value = target.slice(0, 1);
+        else if (this.drillHintStage === 2) input.value = target.slice(0, 2);
+        else input.value = target.slice(0, Math.ceil(target.length / 2));
+        input.focus();
       }
 
-      container.innerHTML = Array.from(State.savedWords).map(w => {
-        const entry = State.corpusMap.get(normalizeSpanish(w));
-        const meaning = entry ? entry.meaningEn : '';
-        return `
-          <div class="py-2.5 flex items-center justify-between gap-2">
-            <button type="button" onclick="quickLookup('${w.replace(/'/g, "\\'")}')" class="text-left font-bold text-stone-900 hover:text-red-700 text-xs sm:text-sm">
-              ${w} <span class="text-stone-400 text-xs font-normal">(${meaning})</span>
-            </button>
-            <button type="button" onclick="removeSavedWord('${w.replace(/'/g, "\\'")}')" class="text-stone-400 hover:text-red-700 p-1">
-              ✕
-            </button>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function removeSavedWord(w) {
-      State.savedWords.delete(w);
-      persistSavedWords();
-      updateDictBookmarkBtn();
-      initFlashcardsDeck();
-    }
-
-    function clearAllSavedWords() {
-      State.savedWords.clear();
-      persistSavedWords();
-      updateDictBookmarkBtn();
-      initFlashcardsDeck();
-      showToast('Cuaderno vaciado', '🧹');
-    }
-
-    function sendToFlashcardsView() {
-      if (!State.currentDictEntry) return;
-      switchView('flashcards');
-      const targetIdx = State.fcDeck.findIndex(item => item.word === State.currentDictEntry.word);
-      if (targetIdx !== -1) {
-        State.fcIndex = targetIdx;
-        renderCurrentFlashcard();
-      }
-    }
-
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
-    function syncDeckSelectOptions() {
-      const select = document.getElementById('fcDeckFilter');
-      const indexFileSelect = document.getElementById('indexFileFilterSelect');
-      if (!select) return;
-
-      const fileOptions = State.loadedFiles.map(f => `
-        <option value="file:${f.name}">Archivo: ${f.name}</option>
-      `).join('');
-
-      select.innerHTML = `
-        <option value="all">Todo el Corpus (${State.corpus.length})</option>
-        <option value="saved">⭐ Guardadas (${State.savedWords.size})</option>
-        ${fileOptions}
-      `;
-
-      if (indexFileSelect) {
-        indexFileSelect.innerHTML = `
-          <option value="all">Todos los archivos</option>
-          ${State.loadedFiles.map(f => `<option value="${f.name}">${f.name}</option>`).join('')}
-        `;
-      }
-    }
-
-    function handleDeckFilterChange() {
-      initFlashcardsDeck();
-    }
-
-    function initFlashcardsDeck() {
-      const select = document.getElementById('fcDeckFilter');
-      const val = select ? select.value : 'all';
-
-      let pool = [];
-      if (val === 'saved') {
-        pool = State.corpus.filter(item => State.savedWords.has(item.word));
-      } else if (val.startsWith('file:')) {
-        const filename = val.replace('file:', '');
-        pool = State.corpus.filter(item => item.sourceFiles.includes(filename));
-      } else {
-        pool = [...State.corpus];
+      skipDrill() {
+        this.drillStreak = 0;
+        this.loadNewDrill();
       }
 
-      if (pool.length === 0) pool = [...State.corpus];
-
-      // Requisito Clave: Aleatorizar y priorizar las palabras guardadas (van delante, barajadas)
-      const savedPart = pool.filter(item => State.savedWords.has(item.word));
-      const regularPart = pool.filter(item => !State.savedWords.has(item.word));
-
-      shuffleArray(savedPart);
-      shuffleArray(regularPart);
-
-      State.fcDeck = [...savedPart, ...regularPart];
-      State.fcIndex = 0;
-      State.fcIsFlipped = false;
-
-      renderCurrentFlashcard();
-    }
-
-    function shuffleFlashcards() {
-      if (State.fcDeck.length === 0) return;
-      const savedPart = State.fcDeck.filter(item => State.savedWords.has(item.word));
-      const regularPart = State.fcDeck.filter(item => !State.savedWords.has(item.word));
-
-      shuffleArray(savedPart);
-      shuffleArray(regularPart);
-
-      State.fcDeck = [...savedPart, ...regularPart];
-      State.fcIndex = 0;
-      State.fcIsFlipped = false;
-      renderCurrentFlashcard();
-      showToast('Tarjetas barajadas (guardadas priorizadas)', '🔀');
-    }
-
-    function renderCurrentFlashcard() {
-      const cardEl = document.getElementById('flashcardElement');
-      if (cardEl && State.fcIsFlipped) {
-        cardEl.classList.remove('rotate-y-180');
-        State.fcIsFlipped = false;
+      insertChar(c) {
+        const input = document.getElementById('drillInput');
+        if (!input || input.disabled) return;
+        const s = input.selectionStart || input.value.length;
+        const e = input.selectionEnd || input.value.length;
+        input.value = input.value.substring(0, s) + c + input.value.substring(e);
+        input.focus();
+        input.selectionStart = input.selectionEnd = s + 1;
       }
 
-      const total = State.fcDeck.length;
-      document.getElementById('fcCurrentIndex').innerText = total > 0 ? State.fcIndex + 1 : 0;
-      document.getElementById('fcTotalCount').innerText = total;
-      document.getElementById('fcMasteredCount').innerText = State.fcMastered.size;
-      document.getElementById('fcReviewCount').innerText = State.fcReview.size;
-
-      const bar = document.getElementById('fcProgressBar');
-      if (bar && total > 0) {
-        bar.style.width = `${((State.fcIndex + 1) / total) * 100}%`;
+      speakDrillVerb() {
+        if (this.currentDrill) this.speak(this.currentDrill.verb.infinitive);
       }
 
-      if (total === 0) return;
-
-      const item = State.fcDeck[State.fcIndex];
-      document.getElementById('fcFrontWord').innerText = item.word;
-      document.getElementById('fcFrontIpa').innerText = item.ipa;
-      document.getElementById('fcFrontGrammar').innerText = item.grammar;
-      document.getElementById('fcFrontSource').innerText = item.sourceFiles.join(', ');
-
-      const priorityBadge = document.getElementById('fcPriorityBadge');
-      if (priorityBadge) {
-        priorityBadge.classList.toggle('hidden', !State.savedWords.has(item.word));
+      speakDrillAnswer() {
+        if (this.currentDrill) this.speak(this.currentDrill.targetAnswer);
       }
 
-      document.getElementById('fcBackTranslation').innerText = item.meaningEn;
-      document.getElementById('fcBackExample').innerText = item.examples.length > 0 ? `"${item.examples[0]}"` : 'Sin frase registrada.';
-    }
+      /* MODO 2: OPCIÓN MÚLTIPLE (CHOICE SPRINT) */
+      loadNewChoiceQuestion() {
+        const verb = VERB_BANK[Math.floor(Math.random() * VERB_BANK.length)];
+        const tenses = ['pres', 'pret_indef', 'pret_imp', 'fut'];
+        const tenseKey = tenses[Math.floor(Math.random() * tenses.length)];
+        const personIdx = Math.floor(Math.random() * 6);
+        const target = verb.forms[tenseKey][personIdx];
 
-    function flipFlashcard() {
-      const cardEl = document.getElementById('flashcardElement');
-      if (!cardEl) return;
-      State.fcIsFlipped = !State.fcIsFlipped;
-      cardEl.classList.toggle('rotate-y-180', State.fcIsFlipped);
-    }
+        this.choiceItem = { verb, tenseKey, personIdx, target };
 
-    function nextFlashcard() {
-      if (State.fcDeck.length === 0) return;
-      State.fcIndex = (State.fcIndex + 1) % State.fcDeck.length;
-      renderCurrentFlashcard();
-    }
+        document.getElementById('choiceVerbInfinitive').innerText = verb.infinitive;
+        document.getElementById('choicePronoun').innerText = PRONOUNS[personIdx].label;
+        document.getElementById('choiceTense').innerText = TENSE_METADATA[tenseKey];
+        document.getElementById('choiceScoreText').innerText = `${this.choiceScore} pts`;
 
-    function prevFlashcard() {
-      if (State.fcDeck.length === 0) return;
-      State.fcIndex = (State.fcIndex - 1 + State.fcDeck.length) % State.fcDeck.length;
-      renderCurrentFlashcard();
-    }
+        const feedback = document.getElementById('choiceFeedbackBanner');
+        if (feedback) feedback.classList.add('hidden');
 
-    function markFlashcardStatus(type) {
-      if (State.fcDeck.length === 0) return;
-      const item = State.fcDeck[State.fcIndex];
-
-      if (type === 'mastered') {
-        State.fcMastered.add(item.word);
-        State.fcReview.delete(item.word);
-        showToast(`"${item.word}" dominada`, '✅');
-      } else {
-        State.fcReview.add(item.word);
-        State.fcMastered.delete(item.word);
-        showToast(`"${item.word}" marcada para repasar`, '⏳');
-      }
-
-      try {
-        localStorage.setItem('esp_fc_mastered', JSON.stringify(Array.from(State.fcMastered)));
-        localStorage.setItem('esp_fc_review', JSON.stringify(Array.from(State.fcReview)));
-      } catch (e) {}
-
-      nextFlashcard();
-    }
-
-    function speakCurrentFlashcard() {
-      if (State.fcDeck.length === 0) return;
-      speakSpanish(State.fcDeck[State.fcIndex].word);
-    }
-
-    function speakCurrentFlashcardSentence() {
-      if (State.fcDeck.length === 0) return;
-      const item = State.fcDeck[State.fcIndex];
-      if (item.examples.length > 0) speakSpanish(item.examples[0]);
-    }
-
-    function openIndexModal() {
-      const modal = document.getElementById('indexModal');
-      if (modal) {
-        modal.classList.remove('hidden');
-        renderIndexWordList();
-      }
-    }
-
-    function closeIndexModal() {
-      const modal = document.getElementById('indexModal');
-      if (modal) modal.classList.add('hidden');
-    }
-
-    function renderIndexWordList() {
-      const container = document.getElementById('indexWordsList');
-      if (!container) return;
-
-      const searchFilter = normalizeSpanish(document.getElementById('indexSearchFilterInput')?.value || '');
-      const fileFilter = document.getElementById('indexFileFilterSelect')?.value || 'all';
-
-      const filtered = State.corpus.filter(item => {
-        const matchesText = !searchFilter || normalizeSpanish(item.word).includes(searchFilter) || item.meaningEn.toLowerCase().includes(searchFilter);
-        const matchesFile = fileFilter === 'all' || item.sourceFiles.includes(fileFilter);
-        return matchesText && matchesFile;
-      });
-
-      if (filtered.length === 0) {
-        container.innerHTML = `<p class="col-span-2 text-center text-stone-400 py-6 italic">No se encontraron palabras con estos filtros.</p>`;
-        return;
-      }
-
-      container.innerHTML = filtered.map(item => `
-        <div class="p-2.5 bg-stone-50 hover:bg-amber-50 rounded-xl border border-stone-200 transition-colors flex items-center justify-between">
-          <div>
-            <button type="button" onclick="closeIndexModal(); quickLookup('${item.word.replace(/'/g, "\\'")}')" class="font-bold text-stone-900 hover:text-red-700 text-left">
-              ${item.word}
-            </button>
-            <p class="text-[11px] text-stone-500 truncate max-w-[170px]">${item.meaningEn}</p>
-          </div>
-          <span class="text-[10px] font-mono text-stone-400 px-1.5 py-0.5 bg-white rounded border border-stone-200">
-            ${item.sourceFiles[0] || ''}
-          </span>
-        </div>
-      `).join('');
-    }
-
-    function setupKeyboardShortcuts() {
-      document.addEventListener('keydown', e => {
-        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
-
-        if (State.activeView === 'flashcards') {
-          if (e.code === 'Space') {
-            e.preventDefault();
-            flipFlashcard();
-          } else if (e.code === 'ArrowRight') {
-            nextFlashcard();
-          } else if (e.code === 'ArrowLeft') {
-            prevFlashcard();
-          } else if (e.key === '1') {
-            markFlashcardStatus('review');
-          } else if (e.key === '2') {
-            markFlashcardStatus('mastered');
+        // Generar 1 correcta + 3 distractores
+        const options = new Set([target]);
+        for (let i = 0; i < 6; i++) {
+          if (i !== personIdx) {
+            const form = verb.forms[tenseKey][i];
+            if (form) options.add(form);
           }
+          if (options.size >= 3) break;
         }
-      });
+        while (options.size < 4) {
+          const randV = VERB_BANK[Math.floor(Math.random() * VERB_BANK.length)];
+          const cand = randV.forms[tenseKey][personIdx];
+          if (cand) options.add(cand);
+        }
+
+        const optsArr = Array.from(options).sort(() => Math.random() - 0.5);
+        const grid = document.getElementById('choiceButtonsGrid');
+        if (!grid) return;
+
+        grid.innerHTML = optsArr.map(opt => `
+          <button 
+            type="button" 
+            onclick="app.handleChoiceSelect('${opt}', '${target}', this)"
+            class="p-4 rounded-2xl border-2 border-stone-200 dark:border-esp-night-border bg-stone-50 dark:bg-esp-night-surface hover:border-esp-red-600 dark:hover:border-esp-gold-400 text-stone-900 dark:text-stone-100 font-bold text-base transition flex items-center justify-between"
+          >
+            <span>${opt}</span>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-stone-300"></i>
+          </button>
+        `).join('');
+
+        lucide.createIcons();
+      }
+
+      handleChoiceSelect(selected, target, btn) {
+        const allBtns = document.getElementById('choiceButtonsGrid').querySelectorAll('button');
+        allBtns.forEach(b => b.disabled = true);
+        const feedback = document.getElementById('choiceFeedbackBanner');
+        feedback.classList.remove('hidden');
+
+        if (selected === target) {
+          this.choiceScore += 100;
+          this.playTone(523.25, 'sine', 0.15);
+          btn.className = "p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-900 dark:text-emerald-200 font-bold text-base transition flex items-center justify-between";
+          feedback.className = "p-3 rounded-xl text-center text-xs font-bold border bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200";
+          feedback.textContent = `¡Correcto! +100 puntos (${target})`;
+        } else {
+          this.playTone(220, 'sawtooth', 0.2);
+          btn.className = "p-4 rounded-2xl border-2 border-esp-red-500 bg-esp-red-50 dark:bg-esp-red-950/50 text-esp-red-900 dark:text-esp-red-200 font-bold text-base transition flex items-center justify-between";
+          feedback.className = "p-3 rounded-xl text-center text-xs font-bold border bg-esp-red-50 dark:bg-esp-red-950/40 border-esp-red-300 dark:border-esp-red-800 text-esp-red-900 dark:text-esp-red-200";
+          feedback.textContent = `Incorrecto. La forma correcta es "${target}".`;
+          allBtns.forEach(b => {
+            if (b.innerText.trim().startsWith(target)) {
+              b.classList.add('border-emerald-500', 'bg-emerald-50');
+            }
+          });
+        }
+
+        document.getElementById('choiceScoreText').innerText = `${this.choiceScore} pts`;
+        setTimeout(() => this.loadNewChoiceQuestion(), 1400);
+      }
+
+      /* Persistencia Local */
+      loadStorage() {
+        try {
+          const mastered = localStorage.getItem('esp_app_mastered');
+          if (mastered) this.masteredCards = new Set(JSON.parse(mastered));
+          const review = localStorage.getItem('esp_app_review');
+          if (review) this.reviewCards = new Set(JSON.parse(review));
+        } catch (e) {}
+      }
+
+      saveStorage() {
+        try {
+          localStorage.setItem('esp_app_mastered', JSON.stringify(Array.from(this.masteredCards)));
+          localStorage.setItem('esp_app_review', JSON.stringify(Array.from(this.reviewCards)));
+        } catch (e) {}
+      }
+
+      /* Atajos de teclado en escritorio */
+      setupKeyboardShortcuts() {
+        document.addEventListener('keydown', e => {
+          if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+          if (this.currentMainTab === 'tarjetas' && this.tarjetasSubTab === 'cards') {
+            if (e.code === 'Space') {
+              e.preventDefault();
+              this.flipCard();
+            } else if (e.code === 'ArrowRight') {
+              this.nextCard();
+            } else if (e.code === 'ArrowLeft') {
+              this.prevCard();
+            } else if (e.key === '1') {
+              this.markCard('review');
+            } else if (e.key === '2') {
+              this.markCard('mastered');
+            }
+          }
+        });
+      }
     }
 
-    function setupTouchSwipeGestures() {
-      let touchStartX = 0;
-      let touchEndX = 0;
-      const card = document.getElementById('flashcardElement');
-      if (!card) return;
-
-      card.addEventListener('touchstart', e => {
-        touchStartX = e.changedTouches[0].screenX;
-      }, { passive: true });
-
-      card.addEventListener('touchend', e => {
-        touchEndX = e.changedTouches[0].screenX;
-        const diff = touchEndX - touchStartX;
-        if (Math.abs(diff) > 50) {
-          if (diff < 0) nextFlashcard();
-          else prevFlashcard();
-        }
-      }, { passive: true });
-    }
-
+    let app;
     window.addEventListener('DOMContentLoaded', () => {
-      loadPersistedData();
-      setupKeyboardShortcuts();
-      setupTouchSwipeGestures();
-      scanAndLoadCorpus();
+      app = new SpanishApp();
+      app.init();
     });
   </script>
 </body>
