@@ -925,7 +925,7 @@
       }
 
       async syncCloudflareD1() {
-        if (!API_BASE || API_BASE.includes('<your-subdomain>')) return;
+        if (!API_BASE || API_BASE.includes('enzowmeng')) return;
         try {
           const res = await fetch(`${API_BASE}/api/words`);
           if (!res.ok) return;
@@ -955,7 +955,7 @@
       }
 
       async syncMistakesFromD1() {
-        if (!API_BASE || API_BASE.includes('<your-subdomain>')) return;
+        if (!API_BASE || API_BASE.includes('enzowmeng')) return;
         try {
           const res = await fetch(`${API_BASE}/api/verb-mistakes`);
           if (!res.ok) return;
@@ -1031,7 +1031,7 @@
         if (status === 'mastered') this.beep(520);
         else this.beep(350);
 
-        if (current.id && API_BASE && !API_BASE.includes('<your-subdomain>')) {
+        if (current.id && API_BASE && !API_BASE.includes('enzowmeng')) {
           try {
             await fetch(`${API_BASE}/api/words/${current.id}`, {
               method: 'PATCH',
@@ -1062,7 +1062,7 @@
         const current = this.activeDeck[this.cardIdx];
         current.is_saved = !current.is_saved;
 
-        if (current.id && API_BASE && !API_BASE.includes('<your-subdomain>')) {
+        if (current.id && API_BASE && !API_BASE.includes('enzowmeng')) {
           try {
             await fetch(`${API_BASE}/api/words/${current.id}`, {
               method: 'PATCH',
@@ -1084,7 +1084,7 @@
         const statusIndicator = document.getElementById('noteSavedStatus');
         if (statusIndicator) statusIndicator.classList.remove('opacity-0');
 
-        if (current.id && API_BASE && !API_BASE.includes('<your-subdomain>')) {
+        if (current.id && API_BASE && !API_BASE.includes('enzowmeng')) {
           try {
             await fetch(`${API_BASE}/api/words/${current.id}`, {
               method: 'PATCH',
@@ -1128,7 +1128,7 @@
         if (!id || !word || !meaning) return;
 
         try {
-          if (API_BASE && !API_BASE.includes('<your-subdomain>')) {
+          if (API_BASE && !API_BASE.includes('enzowmeng')) {
             const res = await fetch(`${API_BASE}/api/words/${id}`, {
               method: 'PATCH',
               headers: { 'Content-Type': 'application/json' },
@@ -1171,7 +1171,7 @@
         if (!confirm(`¿Eliminar definitivamente ${wordLabel} de la base de datos?`)) return;
 
         try {
-          if (API_BASE && !API_BASE.includes('<your-subdomain>')) {
+          if (API_BASE && !API_BASE.includes('enzowmeng')) {
             const res = await fetch(`${API_BASE}/api/words/${id}`, { method: 'DELETE' });
             if (!res.ok) throw new Error('Error al eliminar');
           }
@@ -1205,7 +1205,7 @@
           last_attempt: userAttempt
         };
 
-        if (API_BASE && !API_BASE.includes('<your-subdomain>')) {
+        if (API_BASE && !API_BASE.includes('enzowmeng')) {
           try {
             await fetch(`${API_BASE}/api/verb-mistakes`, {
               method: 'POST',
@@ -1223,7 +1223,7 @@
         const match = this.mistakesVault.find(
           m => m.infinitive === infinitive && m.tense_key === tenseKey && m.person_idx === personIdx
         );
-        if (match && match.id && API_BASE && !API_BASE.includes('<your-subdomain>')) {
+        if (match && match.id && API_BASE && !API_BASE.includes('enzowmeng')) {
           try {
             await fetch(`${API_BASE}/api/verb-mistakes/${match.id}`, { method: 'DELETE' });
             await this.syncMistakesFromD1();
@@ -1233,7 +1233,7 @@
       }
 
       async clearMistakes() {
-        if (API_BASE && !API_BASE.includes('<your-subdomain>')) {
+        if (API_BASE && !API_BASE.includes('enzowmeng')) {
           try {
             await fetch(`${API_BASE}/api/verb-mistakes`, { method: 'DELETE' });
             this.mistakesVault = [];
