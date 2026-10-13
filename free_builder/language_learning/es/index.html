@@ -1204,43 +1204,100 @@
           target_answer: item.target,
           last_attempt: userAttempt
         };
-
+      
+        // 1. Actualización optimista local en memoria
+        const existingIdx = this.mistakesVault.findIndex(
+          m => m.infinitive === payload.infinitive &&
+               m.tense_key === payload.tense_key &&
+               m.person_idx === payload.person_idx
+        );
+      
+        if (existingIdx !== -1) {
+          this.mistakesVault[existingIdx].count = (this.mistakesVault[existingIdx].count || 1) + 1;
+          this.mistakesVault[existingIdx].last_attempt = userAttempt;
+        } else {
+          this.mistakesVault.push({
+            ...payload,
+            id: Date.now(),
+            count: 1
+          });
+        }
+      
+        this.updateBadges();
+        if (this.verboSub === 'mistakes') {
+          this.renderMistakesList();
+        }
+      
+        // 2. Persistencia en Cloudflare D1
         if (API_BASE && !API_BASE.includes('<your-subdomain>')) {
           try {
-            await fetch(`${API_BASE}/api/verb-mistakes`, {
+            const res = await fetch(`${API_BASE}/api/verb-mistakes`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(payload)
             });
+      
+            if (!res.ok) {
+              const errorText = await res.text();
+              console.error(`[D1 Error ${res.status}] No se pudo guardar el error:`, errorText);
+              return;
+            }
+      
             await this.syncMistakesFromD1();
-          } catch (e) {}
+            this.updateBadges();
+            if (this.verboSub === 'mistakes') {
+              this.renderMistakesList();
+            }
+          } catch (err) {
+            console.error('[Network/CORS Error] Fallo al enviar error a D1:', err);
+          }
         }
-
-        this.updateBadges();
       }
-
-      async removeMistake(infinitive, tenseKey, personIdx) {
-        const match = this.mistakesVault.find(
-          m => m.infinitive === infinitive && m.tense_key === tenseKey && m.person_idx === personIdx
-        );
-        if (match && match.id && API_BASE && !API_BASE.includes('e<your-subdomain>')) {
-          try {
-            await fetch(`${API_BASE}/api/verb-mistakes/${match.id}`, { method: 'DELETE' });
-            await this.syncMistakesFromD1();
-          } catch (e) {}
+      
+      async syncMistakesFromD1() {
+        if (!API_BASE || API_BASE.includes('<your-subdomain>')) return;
+        try {
+          const res = await fetch(`${API_BASE}/api/verb-mistakes`);
+          if (!res.ok) {
+            console.error(`[D1 Error ${res.status}] Error al obtener verb-mistakes:`, await res.text());
+            return;
+          }
+      
+          const payload = await res.json();
+          // Soporte para respuestas directas [] o empaquetadas en { results: [] }
+          const rows = Array.isArray(payload)
+            ? payload
+            : (payload.results || payload.data || []);
+      
+          if (Array.isArray(rows)) {
+            this.mistakesVault = rows.map(r => ({
+              ...r,
+              count: r.count || 1
+            }));
+            this.updateBadges();
+            if (this.verboSub === 'mistakes') {
+              this.renderMistakesList();
+            }
+          }
+        } catch (e) {
+          console.warn('Conexión con errores en D1 en espera:', e);
         }
-        this.updateBadges();
       }
-
+      
       async clearMistakes() {
-        if (API_BASE && !API_BASE.includes('<your-subdomain>')) {
-          try {
-            await fetch(`${API_BASE}/api/verb-mistakes`, { method: 'DELETE' });
-            this.mistakesVault = [];
-          } catch (e) {}
-        }
+        if (!confirm('¿Seguro que deseas vaciar el historial de errores?')) return;
+        this.mistakesVault = [];
         this.updateBadges();
         this.renderMistakesList();
+      
+        if (API_BASE && !API_BASE.includes('<your-subdomain>')) {
+          try {
+            const res = await fetch(`${API_BASE}/api/verb-mistakes`, { method: 'DELETE' });
+            if (!res.ok) console.error('Error al borrar errores en D1:', await res.text());
+          } catch (e) {
+            console.error('Error de red al borrar errores:', e);
+          }
+        }
       }
 
       async handleNewWordSubmit(e) {
