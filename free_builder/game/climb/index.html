@@ -29,6 +29,18 @@
       font-family: 'Press Start 2P', monospace;
     }
 
+    /* Minimal custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b101b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 2px;
+    }
+
     canvas {
       image-rendering: -moz-crisp-edges;
       image-rendering: -webkit-crisp-edges;
@@ -39,19 +51,19 @@
     .crt-layer {
       background: linear-gradient(
         rgba(18, 16, 16, 0) 50%, 
-        rgba(0, 0, 0, 0.22) 50%
+        rgba(0, 0, 0, 0.28) 50%
       ), linear-gradient(
         90deg,
         rgba(255, 0, 0, 0.02),
         rgba(0, 255, 0, 0.01),
-        rgba(0, 0, 255, 0.02)
+        rgba(0, 255, 0, 0.02)
       );
       background-size: 100% 3px, 6px 100%;
       pointer-events: none;
     }
 
     .crt-vignette {
-      box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.85);
+      box-shadow: inset 0 0 75px rgba(0, 0, 0, 0.90);
       pointer-events: none;
     }
 
@@ -74,10 +86,18 @@
 
     @keyframes slipPulse {
       0%, 100% { transform: scale(1); box-shadow: 0 0 15px #ef4444; }
-      50% { transform: scale(1.04); box-shadow: 0 0 32px #dc2626; }
+      50% { transform: scale(1.03); box-shadow: 0 0 32px #dc2626; }
     }
     .animate-slip-pulse {
-      animation: slipPulse 0.4s infinite alternate ease-in-out;
+      animation: slipPulse 0.35s infinite alternate ease-in-out;
+    }
+
+    @keyframes barnDoorWobble {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+    .barn-door-shake {
+      animation: barnDoorWobble 0.2s infinite ease-in-out;
     }
 
     @keyframes flowGlow {
@@ -85,67 +105,76 @@
       50% { border-color: #ec4899; }
     }
     .flow-active {
-      animation: flowGlow 0.6s infinite alternate;
+      animation: flowGlow 0.5s infinite alternate;
     }
   </style>
 </head>
 <body class="w-full h-full flex flex-col items-center justify-center p-0 select-none bg-black">
 
+  <!-- Mobile Layout Container with Fixed Bounds to Prevent Overflow -->
   <div id="appContainer" class="w-full max-w-md h-full h-[100dvh] flex flex-col relative overflow-hidden bg-[#050811] border-x border-[#1e293b]/70 shadow-2xl">
 
     <!-- Top Minimal Status Bar -->
-    <header class="w-full flex items-center justify-between px-2.5 py-1.5 bg-[#0a0f1d] border-b border-[#1e293b] text-[8.5px] z-30 shrink-0">
-      <div class="flex items-center space-x-1.5 truncate">
-        <span class="inline-block w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+    <header class="w-full flex items-center justify-between px-2 py-1 bg-[#0a0f1d] border-b border-[#1e293b] text-[8px] z-30 shrink-0">
+      <div class="flex items-center space-x-1.5 truncate max-w-[55%] min-w-0">
+        <span class="inline-block w-2 h-2 bg-emerald-400 rounded-full animate-pulse shrink-0"></span>
         <span id="topCragBadge" class="text-amber-400 font-bold truncate">Montserrat (Pebbles)</span>
       </div>
       
-      <div class="flex items-center space-x-1.5 shrink-0">
-        <span id="topWeatherBadge" class="text-[7.5px] text-cyan-300 bg-gray-900 px-1.5 py-0.5 rounded border border-gray-700">☀️ Clear</span>
-        <button id="toggleCrtBtn" class="px-1.5 py-0.5 bg-gray-900 text-gray-400 border border-gray-700 rounded text-[7px]">CRT</button>
-        <button id="toggleAudioBtn" class="px-2 py-0.5 bg-gray-800 text-[#67e8f9] border border-gray-600 rounded text-[7.5px]">
+      <div class="flex items-center space-x-1 shrink-0">
+        <span id="topWeatherBadge" class="text-[6.5px] text-cyan-300 bg-gray-900 px-1 py-0.5 rounded border border-gray-700">☀️ Crisp</span>
+        <button id="toggleCrtBtn" class="px-1.5 py-0.5 bg-gray-900 text-gray-400 border border-gray-700 rounded text-[6.5px] hover:text-white">CRT</button>
+        <button id="toggleAudioBtn" class="px-1.5 py-0.5 bg-gray-800 text-[#67e8f9] border border-gray-600 rounded text-[6.5px]">
           🔊 <span id="audioStatusText">ON</span>
         </button>
       </div>
     </header>
 
+    <!-- Canvas & Playfield Wrapper -->
     <div id="canvasWrapper" class="relative flex-1 w-full h-full overflow-hidden bg-stone-900">
       <canvas id="gameCanvas" class="w-full h-full block cursor-pointer"></canvas>
 
       <!-- Retro CRT Scanline & Vignette Effect Layer -->
       <div id="crtOverlay" class="absolute inset-0 crt-layer crt-vignette pointer-events-none"></div>
 
-      <!-- In-Game HUD (Compact mobile layout) -->
-      <div id="inGameHud" class="absolute inset-x-0 top-0 p-2 pointer-events-none flex flex-col gap-1.5 z-20 hidden">
+      <!-- In-Game Technical HUD -->
+      <div id="inGameHud" class="absolute inset-x-0 top-0 p-1.5 pointer-events-none flex flex-col gap-1 z-20 hidden">
         <!-- Top HUD Row -->
-        <div class="flex justify-between items-start">
-          <!-- Forearm Grip / Stamina Box -->
-          <div class="flex flex-col gap-0.5 bg-black/90 p-1.5 rounded border border-cyan-500/50 backdrop-blur-sm pointer-events-auto shadow-lg">
-            <div class="flex items-center justify-between text-[7px]">
-              <span class="text-amber-300 font-bold">FOREARM GRIP</span>
+        <div class="flex justify-between items-start gap-1">
+          <!-- Forearm Pump Bar & Instability -->
+          <div class="flex flex-col gap-0.5 bg-black/90 p-1.5 rounded border border-cyan-500/50 backdrop-blur-sm pointer-events-auto shadow-lg max-w-[55%]">
+            <div class="flex items-center justify-between text-[6.5px] gap-2">
+              <span class="text-amber-300 font-bold">FOREARM PUMP</span>
               <span id="hudGripPct" class="text-emerald-400 font-bold">100%</span>
             </div>
-            <!-- Grip Bar -->
+            
+            <!-- Grip / Stamina Progress Bar -->
             <div class="w-28 sm:w-32 h-2.5 bg-gray-950 border border-gray-700 rounded-sm overflow-hidden p-0.5">
-              <div id="hudGripBar" class="h-full bg-emerald-400 w-full transition-all duration-100"></div>
+              <div id="hudGripBar" class="h-full bg-emerald-400 w-full transition-all duration-75"></div>
             </div>
-            <!-- Status & Pitch Level -->
-            <div class="flex justify-between items-center text-[6.5px] mt-0.5">
-              <span id="hudHoldStatus" class="text-emerald-300 font-bold truncate max-w-[110px]">🟢 JUG REST</span>
-              <span id="hudGradeTag" class="text-amber-300 font-bold ml-1">5.7</span>
+
+            <!-- Real-World Lactic Acid & Hold Status -->
+            <div class="flex justify-between items-center text-[5.5px] mt-0.5">
+              <span id="hudHoldStatus" class="text-emerald-300 font-bold truncate max-w-[85px]">🟢 JUG REST</span>
+              <span id="hudGradeTag" class="text-amber-300 font-bold ml-1">5.6</span>
+            </div>
+
+            <!-- Rotational Barn-Door Warning Badge -->
+            <div id="hudBarnDoorWarning" class="text-[5px] text-red-400 font-bold uppercase hidden animate-pulse">
+              ⚠️ BARN-DOOR TORQUE (2.5x DRAIN)
             </div>
           </div>
 
-          <!-- Flow State & Altitude / Score Box -->
-          <div class="flex flex-col items-end gap-1">
-            <div id="flowBox" class="bg-black/90 px-2 py-1 rounded border border-gray-700 pointer-events-auto flex items-center gap-1">
-              <span class="text-[7px] text-gray-400">FLOW:</span>
-              <span id="hudFlowMultiplier" class="text-[8px] text-gray-500 font-bold">1.0x</span>
+          <!-- Flow State & Altitude / Route Reading Score -->
+          <div class="flex flex-col items-end gap-1 shrink-0">
+            <div id="flowBox" class="bg-black/90 px-2 py-0.5 rounded border border-gray-700 pointer-events-auto flex items-center gap-1 shadow">
+              <span class="text-[6px] text-gray-400">FLOW:</span>
+              <span id="hudFlowMultiplier" class="text-[7px] text-gray-500 font-bold">1.0x</span>
             </div>
 
             <div class="bg-black/90 px-2 py-1 rounded border border-cyan-500/50 text-right pointer-events-auto shadow-lg">
-              <div class="text-[6.5px] text-gray-400">ALTITUDE / SCORE</div>
-              <div class="text-[9px] text-white font-bold">
+              <div class="text-[5.5px] text-gray-400">ALTITUDE / SCORE</div>
+              <div class="text-[8px] text-white font-bold">
                 <span id="hudAltitude" class="text-yellow-300">0.0m</span>
                 <span class="text-gray-500">|</span>
                 <span id="hudScore" class="text-cyan-300">0000</span>
@@ -154,166 +183,255 @@
           </div>
         </div>
 
-        <!-- Beta Tip Pill -->
-        <div id="holdBetaPill" class="self-center bg-black/90 px-2.5 py-0.5 rounded-full border border-cyan-400/80 text-[7px] text-cyan-300 shadow-md opacity-90 flex items-center gap-1">
-          <span>🎯 REACH UPWARD TO ASCEND</span>
+        <!-- Strategy Beta Coach Pill -->
+        <div id="holdBetaPill" class="self-center bg-black/90 px-2.5 py-0.5 rounded-full border border-cyan-400/80 text-[6px] text-cyan-300 shadow-md opacity-90 flex items-center gap-1">
+          <span>🎯 PLAN SEQUENCE • SHAKE OUT ON JUGS</span>
+        </div>
+      </div>
+
+      <!-- Beta Inspection Overlay Banner -->
+      <div id="betaInspectionBanner" class="absolute inset-x-2 top-2 p-2 bg-[#082f49]/95 border-2 border-cyan-400 rounded-lg shadow-2xl z-30 hidden flex flex-col items-center text-center">
+        <div class="text-cyan-300 font-bold text-[8px] flex items-center gap-1 mb-0.5">
+          <span>👁️ ROUTE READING & BETA INSPECTION</span>
+        </div>
+        <p class="text-[6px] text-gray-200 mb-1 leading-normal">
+          Drag / Pan vertically to memorize rest jugs vs crux crimps. Commit to route when ready!
+        </p>
+        <div class="flex gap-1.5 w-full">
+          <button id="panUpBetaBtn" class="flex-1 py-1 bg-cyan-900 active:bg-cyan-800 text-cyan-200 text-[6.5px] rounded border border-cyan-600">
+            ⬆️ PAN UP (LOOK AHEAD)
+          </button>
+          <button id="commitAscentBtn" class="flex-1 py-1 bg-emerald-500 active:bg-emerald-400 text-black font-bold text-[6.5px] rounded border border-white">
+            🧗 COMMIT & ASCEND
+          </button>
         </div>
       </div>
 
       <!-- Emergency Slip Rescue Banner -->
       <div id="slipRescueBanner" class="absolute inset-x-3 top-1/4 p-2.5 bg-red-950/95 border-2 border-red-500 rounded-lg shadow-2xl z-40 hidden flex flex-col items-center text-center animate-slip-pulse">
-        <div class="text-red-400 text-[10px] font-bold neon-rose mb-1">⚠️ LOSING GRIP! RE-LATCH!</div>
-        <p class="text-[7.5px] text-white mb-2">Tap any nearby hold or press emergency latch:</p>
-        <button id="emergencyCatchBtn" class="w-full py-2 bg-yellow-400 hover:bg-yellow-300 active:scale-95 text-black font-bold text-[8.5px] rounded border-2 border-white shadow-lg">
-          ✋ RE-LATCH HOLD (<span id="slipCountDownText">2.5s</span>)
+        <div class="text-red-400 text-[8.5px] font-bold neon-rose mb-1">⚠️ LOSING GRIP! SLIPPING!</div>
+        <p class="text-[6.5px] text-white mb-2">Tap any nearby hold or emergency re-latch:</p>
+        <button id="emergencyCatchBtn" class="w-full py-2 bg-yellow-400 hover:bg-yellow-300 active:scale-95 text-black font-bold text-[7.5px] rounded border-2 border-white shadow-lg">
+          ✋ RE-LATCH HOLD (<span id="slipCountDownText">2.0s</span>)
         </button>
       </div>
 
       <!-- Elevation Pitch Milestone Banner -->
-      <div id="milestoneBanner" class="absolute top-1/4 inset-x-0 mx-auto w-max max-w-[85%] py-1.5 px-3 bg-yellow-400 text-black border-2 border-white rounded font-bold text-center text-[9px] tracking-wider shadow-2xl opacity-0 -translate-y-4 transition-all duration-300 pointer-events-none z-30">
+      <div id="milestoneBanner" class="absolute top-1/4 inset-x-0 mx-auto w-max max-w-[85%] py-1.5 px-3 bg-yellow-400 text-black border-2 border-white rounded font-bold text-center text-[8px] tracking-wider shadow-2xl opacity-0 -translate-y-4 transition-all duration-300 pointer-events-none z-30">
         🧗 PITCH COMPLETED!
       </div>
 
-      <!-- Title & Compact Setup Screen (Strictly fits 1 mobile screen without scroll) -->
-      <div id="titleScreen" class="absolute inset-0 bg-black/95 flex flex-col justify-between p-3 z-30 overflow-hidden">
-        <!-- Title and Crag Info -->
-        <div class="text-center pt-0.5">
-          <h1 class="text-base sm:text-lg text-[#67e8f9] neon-cyan tracking-wider leading-tight">
+      <!-- Boulder Bro Beta Spray Toast -->
+      <div id="betaSprayToast" class="absolute bottom-16 inset-x-4 mx-auto p-1.5 bg-[#172554]/95 border-2 border-blue-400 rounded text-cyan-200 text-[6px] leading-relaxed shadow-2xl opacity-0 transition-opacity duration-300 pointer-events-none z-30 text-center">
+        🗣️ "Dude just drop-knee and heel hook!"
+      </div>
+
+      <!-- Title & Setup Screen (Strictly fitted, never overflows horizontally) -->
+      <div id="titleScreen" class="absolute inset-0 bg-[#050811]/98 flex flex-col p-2.5 z-30 overflow-y-auto w-full">
+        
+        <!-- Header Title Banner -->
+        <div class="text-center pt-1 pb-1 shrink-0">
+          <h1 class="text-sm sm:text-base text-[#67e8f9] neon-cyan tracking-wider">
             CRAG MASTER
           </h1>
-          <p class="text-[7.5px] text-amber-400 tracking-widest mt-0.5">GLOBAL ASCENT</p>
+          <p class="text-[6.5px] text-amber-400 tracking-widest mt-0.5">AUTHENTIC MULTI-PITCH • 5.6 TO 5.15d</p>
         </div>
 
-        <!-- Current Crag Card -->
-        <div class="p-1.5 bg-[#0f172a] border border-cyan-500/60 rounded text-[7.5px] space-y-1">
-          <div class="flex items-center justify-between border-b border-gray-800 pb-1">
-            <div class="flex items-center gap-1.5 truncate">
-              <span id="locIcon" class="text-sm">🏰</span>
-              <div class="truncate">
-                <span class="text-[6.5px] text-gray-400 block">DESTINATION CRAG</span>
-                <span id="locName" class="text-white font-bold truncate">Montserrat (Catalonia)</span>
+        <div class="flex flex-col gap-1.5 flex-1 pb-2 w-full min-w-0">
+          
+          <!-- Destination Crag Card -->
+          <div class="p-1.5 bg-[#0f172a] border border-cyan-500/60 rounded text-[6.5px] space-y-1 shrink-0 shadow-md w-full min-w-0">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-1 w-full min-w-0">
+              <div class="flex items-center gap-1.5 truncate max-w-[65%] min-w-0">
+                <span id="locIcon" class="text-sm shrink-0">🏰</span>
+                <div class="truncate min-w-0">
+                  <span class="text-[5.5px] text-gray-400 block uppercase">Destination Crag</span>
+                  <span id="locName" class="text-white font-bold truncate block">Montserrat (Catalonia)</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1 shrink-0">
+                <button id="openCragDrawerBtn" class="px-1.5 py-1 bg-cyan-900 active:bg-cyan-800 text-cyan-200 border border-cyan-400 rounded text-[6px]">
+                  🗺️ SITES
+                </button>
+                <button id="rerollCragBtn" class="px-1.5 py-1 bg-gray-800 active:bg-gray-700 text-amber-300 border border-amber-500 rounded text-[6px]">
+                  🎲
+                </button>
               </div>
             </div>
-            <button id="rerollCragBtn" class="px-1.5 py-0.5 bg-gray-800 hover:bg-gray-700 text-cyan-300 border border-cyan-500 rounded text-[6.5px] active:scale-95 shrink-0">
-              🎲 REROLL
+
+            <p id="cragDescText" class="text-[5.5px] text-gray-300 leading-normal truncate">
+              Pinkish-ochre conglomerate needles with rounded cobblestone jugs.
+            </p>
+
+            <div class="grid grid-cols-2 gap-1 text-[6px] pt-0.5 border-t border-gray-800/80">
+              <div>
+                <span class="text-gray-400">ATMOSPHERE:</span>
+                <span id="timeName" class="text-cyan-300 font-semibold block truncate">Early Dawn (Sending)</span>
+              </div>
+              <div>
+                <span class="text-gray-400">FRICTION:</span>
+                <span id="weatherName" class="text-amber-300 font-semibold block truncate">☀️ Crisp (+10%)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Climber Name Input -->
+          <div class="bg-[#0b101b] p-1.5 rounded border border-gray-800 shrink-0 w-full min-w-0">
+            <label class="text-[6px] text-gray-300 mb-0.5 flex justify-between items-center">
+              <span>ENTER YOUR CALLSIGN:</span>
+              <span class="text-red-400 text-[5px]">*Required</span>
+            </label>
+            <input 
+              id="callsignInput" 
+              type="text" 
+              maxlength="14" 
+              placeholder="e.g. FreeSoloist..."
+              class="w-full bg-black border border-cyan-500/80 px-2 py-1 text-yellow-300 text-[8.5px] rounded focus:outline-none focus:border-cyan-300 font-mono tracking-wide"
+            />
+            <div id="nameRequiredWarn" class="text-red-400 text-[5.5px] mt-0.5 hidden">
+              ⚠️ Please type your climber callsign to record your ascent!
+            </div>
+          </div>
+
+          <!-- Mobile-Perfect Character Choosing Box (Completely Adaptive, Never Cut Off) -->
+          <div class="bg-[#0b101b] p-1.5 rounded border border-cyan-500/40 shrink-0 flex flex-col gap-1 shadow-md w-full min-w-0 overflow-hidden">
+            
+            <div class="flex justify-between items-center text-[6.5px] w-full min-w-0">
+              <span class="text-gray-300 font-bold uppercase truncate">Choose Climber Roster</span>
+              <span id="rosterTag" class="text-[5.5px] px-1.5 py-0.5 bg-cyan-950 text-cyan-300 font-bold rounded border border-cyan-700 shrink-0">
+                HUMAN
+              </span>
+            </div>
+
+            <!-- Touch Carousel Row with Spacious Touch-Friendly Navigation -->
+            <div class="flex items-center gap-1.5 w-full min-w-0">
+              <!-- Left Arrow Button (44px tap target size) -->
+              <button id="prevCharBtn" class="w-10 h-10 min-w-[40px] bg-gray-800 active:bg-cyan-900 text-white rounded border border-cyan-500 flex items-center justify-center text-xs shrink-0 select-none">
+                ◀
+              </button>
+              
+              <!-- Character Card Body (Adaptive flex-1) -->
+              <div class="flex-1 min-w-0 bg-black/80 p-1.5 rounded border border-gray-800 flex items-center gap-2 overflow-hidden">
+                <div class="w-10 h-10 bg-neutral-950 border border-cyan-400 rounded flex items-center justify-center shrink-0">
+                  <canvas id="charPreviewCanvas" width="40" height="40" class="w-full h-full"></canvas>
+                </div>
+                <div class="flex-1 min-w-0 overflow-hidden leading-tight">
+                  <div id="charNameText" class="text-[7.5px] text-yellow-300 font-bold truncate">Alex (Precision)</div>
+                  
+                  <!-- Stat bars -->
+                  <div class="flex items-center gap-1 text-[5.5px] text-gray-400 mt-0.5 truncate font-mono">
+                    <span>STA:</span><span id="statStamina" class="text-emerald-400">████░</span>
+                    <span>RCH:</span><span id="statReach" class="text-cyan-400">███░░</span>
+                  </div>
+
+                  <div id="charPerkText" class="text-[5.5px] text-emerald-400 mt-0.5 truncate">
+                    Perk: -30% forearm pump drain on vertical crags.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Arrow Button (44px tap target size) -->
+              <button id="nextCharBtn" class="w-10 h-10 min-w-[40px] bg-gray-800 active:bg-cyan-900 text-white rounded border border-cyan-500 flex items-center justify-center text-xs shrink-0 select-none">
+                ▶
+              </button>
+            </div>
+
+            <!-- Climber Bio Description -->
+            <div id="charBioText" class="text-[5.5px] text-gray-400 bg-black/40 px-1.5 py-1 rounded border border-gray-900 truncate w-full">
+              Speed soloist with surgical foot precision on sheer granite.
+            </div>
+          </div>
+
+          <!-- Strategy & Route Reading Training Note -->
+          <div class="p-1.5 bg-[#09111c] border border-cyan-800/40 rounded text-[5.5px] text-gray-300 space-y-0.5 shrink-0 w-full min-w-0">
+            <div class="text-cyan-300 font-bold flex justify-between">
+              <span>PRO STRATEGY TIPS:</span>
+              <span class="text-amber-400">1-ARM HANG = 2.5x DRAIN</span>
+            </div>
+            <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[5px]">
+              <div>• 🟢 Jug: Recovers pump</div>
+              <div>• 🟡 Crimp: Heavy pump</div>
+              <div>• 🔴 Choss: Crumbles in 4s</div>
+              <div>• 🫲 Shakeout: Flush acid</div>
+            </div>
+          </div>
+
+          <!-- Launch & Beta Route Inspection Buttons -->
+          <div class="flex flex-col gap-1 pt-1 mt-auto shrink-0 w-full">
+            <button id="startWithBetaBtn" class="w-full py-2 bg-cyan-700 hover:bg-cyan-600 active:scale-95 text-cyan-100 font-bold text-[7.5px] rounded border border-cyan-400 flex items-center justify-center gap-1">
+              👁️ INSPECT ROUTE & READ BETA FIRST
+            </button>
+            <button id="startClimbBtn" class="w-full py-2 bg-[#67e8f9] hover:bg-cyan-400 active:scale-95 text-black font-bold text-[8.5px] rounded border border-white pixel-btn tracking-wider flex items-center justify-center gap-1 shadow-lg">
+              🧗 COMMENCE ASCENT (INSTANT)
+            </button>
+            <button id="showLeaderboardBtn" class="w-full py-1 bg-gray-800 hover:bg-gray-700 text-yellow-300 border border-yellow-600 rounded text-[6.5px] flex items-center justify-center gap-1">
+              🏆 SUMMIT LEADERBOARD
             </button>
           </div>
 
-          <div class="grid grid-cols-2 gap-1 text-[6.5px]">
-            <div>
-              <span class="text-gray-400">ATMOSPHERE:</span>
-              <span id="timeName" class="text-cyan-300 font-semibold block">Early Dawn</span>
-            </div>
-            <div>
-              <span class="text-gray-400">WEATHER:</span>
-              <span id="weatherName" class="text-amber-300 font-semibold block">☀️ Clear</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Climber Name Input (Starts completely blank) -->
-        <div class="bg-[#0b101b] p-1.5 rounded border border-gray-800">
-          <label class="text-[7px] text-gray-300 mb-0.5 flex justify-between items-center">
-            <span>ENTER YOUR CALLSIGN:</span>
-            <span class="text-red-400 text-[6px]">*Required</span>
-          </label>
-          <input 
-            id="callsignInput" 
-            type="text" 
-            maxlength="14" 
-            placeholder="Type your name..."
-            class="w-full bg-black border border-cyan-500/80 px-2 py-1 text-yellow-300 text-[10px] rounded focus:outline-none focus:border-cyan-400 font-mono tracking-wide"
-          />
-          <div id="nameRequiredWarn" class="text-red-400 text-[6.5px] mt-0.5 hidden">
-            ⚠️ Please type your climber callsign to record your ascent!
-          </div>
-        </div>
-
-        <!-- Compact Character Selector (Fits 1 screen on small phones) -->
-        <div class="bg-[#0b101b] p-1.5 rounded border border-gray-800">
-          <div class="flex justify-between items-center mb-1 text-[7px]">
-            <span class="text-gray-400">SELECT ROSTER</span>
-            <span id="rosterTag" class="text-[6px] px-1 py-0.5 bg-cyan-950 text-cyan-400 rounded border border-cyan-800">HUMAN</span>
-          </div>
-
-          <div class="flex items-center gap-1.5">
-            <button id="prevCharBtn" class="px-2 py-2 bg-gray-800 active:bg-gray-700 text-white rounded text-[10px] border border-gray-700">◀</button>
-            
-            <div class="flex-1 flex items-center gap-2 bg-black/60 p-1.5 rounded border border-gray-800 min-h-[46px]">
-              <div class="w-9 h-9 bg-neutral-950 border border-cyan-400/80 rounded flex items-center justify-center shrink-0">
-                <canvas id="charPreviewCanvas" width="36" height="36" class="w-full h-full"></canvas>
-              </div>
-              <div class="flex-1 overflow-hidden leading-tight">
-                <div id="charNameText" class="text-[8px] text-yellow-300 font-bold truncate">Alex (Precision)</div>
-                <div id="charPerkText" class="text-[6.5px] text-emerald-400 mt-0.5 truncate">Perk: -30% pump drain on vertical crags.</div>
-                <div id="charBioText" class="text-[6px] text-gray-400 mt-0.5 truncate">Speed prodigy with laser focus.</div>
-              </div>
-            </div>
-
-            <button id="nextCharBtn" class="px-2 py-2 bg-gray-800 active:bg-gray-700 text-white rounded text-[10px] border border-gray-700">▶</button>
-          </div>
-        </div>
-
-        <!-- Compact Pitch Difficulty Scale Legend -->
-        <div class="p-1 bg-[#09111c] border border-cyan-800/40 rounded text-[6.5px] text-gray-300 space-y-0.5">
-          <div class="text-cyan-300 font-bold flex justify-between">
-            <span>ASCENT PITCHES:</span>
-            <span class="text-yellow-400">FLOW STREAK = 5X SCORE</span>
-          </div>
-          <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[6px]">
-            <div>0-50m: P1 Approach (Jugs)</div>
-            <div>50-120m: P2 Tech (Crimps)</div>
-            <div>120-220m: P3 The Crux (Choss)</div>
-            <div>220m+: P4 Summit Overhang</div>
-          </div>
-        </div>
-
-        <!-- Launch & Leaderboard Buttons -->
-        <div class="flex flex-col gap-1 pt-0.5 pb-0.5">
-          <button id="startClimbBtn" class="w-full py-2 bg-[#67e8f9] hover:bg-cyan-400 active:scale-95 text-black font-bold text-[10px] rounded border border-white pixel-btn tracking-wider">
-            🧗 ASCEND CLIFF
-          </button>
-          <button id="showLeaderboardBtn" class="w-full py-1 bg-gray-800 hover:bg-gray-700 text-yellow-300 border border-yellow-600 rounded text-[7.5px] flex items-center justify-center gap-1">
-            🏆 SUMMIT LEADERBOARD
-          </button>
         </div>
       </div>
 
-      <!-- Game Over Screen -->
-      <div id="gameOverScreen" class="absolute inset-0 bg-black/95 flex flex-col items-center justify-center p-3 z-30 hidden">
-        <div class="w-full bg-[#0d131f] border-2 border-red-500 rounded-lg p-3 text-center shadow-2xl relative">
-          <h2 class="text-red-500 text-sm font-bold neon-rose mb-0.5">LOST YOUR GRIP!</h2>
-          <p id="fallQuoteText" class="text-[7.5px] text-gray-400 italic mb-2">"Gravity never blinks."</p>
+      <!-- Crag Selection Drawer / Modal -->
+      <div id="cragDrawerModal" class="absolute inset-0 bg-black/95 z-40 hidden flex flex-col p-2.5 overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-gray-800 pb-1.5 mb-1.5 shrink-0">
+          <div class="text-cyan-300 font-bold text-[8px] flex items-center gap-1.5">
+            <span>🗺️</span>
+            <span>CLIMBING SITES (12 WORLD DESTINATIONS)</span>
+          </div>
+          <button id="closeCragDrawerBtn" class="text-gray-400 hover:text-white text-xs font-bold px-2 py-1">✕</button>
+        </div>
 
-          <div class="grid grid-cols-2 gap-1.5 my-1.5 text-left text-[7.5px]">
-            <div class="p-1.5 bg-black border border-gray-800 rounded">
-              <span class="text-gray-400 block text-[6px]">PEAK ALTITUDE</span>
-              <span id="finalAltText" class="text-yellow-400 font-bold text-[10px]">0.0m</span>
+        <div id="cragsListGrid" class="grid grid-cols-1 gap-1 flex-1 overflow-y-auto">
+          <!-- Dynamically populated crags list -->
+        </div>
+      </div>
+
+      <!-- Game Over & Climbing Tactics Screen -->
+      <div id="gameOverScreen" class="absolute inset-0 bg-black/95 flex flex-col items-center justify-center p-3 z-30 hidden overflow-y-auto">
+        <div class="w-full bg-[#0d131f] border-2 border-red-500 rounded-lg p-2.5 text-center shadow-2xl relative my-auto">
+          <h2 class="text-red-500 text-xs sm:text-sm font-bold neon-rose mb-0.5">LOST YOUR GRIP!</h2>
+          
+          <!-- Authentic Climber Quote or Tactical Advice Box -->
+          <div class="bg-black/80 border border-cyan-500/50 rounded p-2 my-1.5 text-left">
+            <div class="flex items-center justify-between text-[5.5px] text-cyan-400 font-bold uppercase mb-0.5">
+              <span id="fallCardTypeBadge">🧗 CLIMBING TACTIC</span>
+              <span id="fallAuthorBadge">COACH BETA</span>
             </div>
-            <div class="p-1.5 bg-black border border-gray-800 rounded">
-              <span class="text-gray-400 block text-[6px]">ROUTE GRADE</span>
-              <span id="finalGradeText" class="text-emerald-400 font-bold text-[10px]">5.7</span>
+            <p id="fallQuoteText" class="text-[6.5px] text-amber-200 italic leading-relaxed">
+              "Straight arms conserve up to 60% of forearm energy. Never hold a tight bent-arm lock-off when reading holds!"
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-1 my-1.5 text-left text-[6.5px]">
+            <div class="p-1 bg-black border border-gray-800 rounded">
+              <span class="text-gray-400 block text-[5px]">PEAK ALTITUDE</span>
+              <span id="finalAltText" class="text-yellow-400 font-bold text-[8.5px]">0.0m</span>
             </div>
-            <div class="p-1.5 bg-black border border-gray-800 rounded">
-              <span class="text-gray-400 block text-[6px]">MAX FLOW COMBO</span>
-              <span id="finalComboText" class="text-pink-400 font-bold text-[10px]">x1.0</span>
+            <div class="p-1 bg-black border border-gray-800 rounded">
+              <span class="text-gray-400 block text-[5px]">MAX PITCH GRADE</span>
+              <span id="finalGradeText" class="text-emerald-400 font-bold text-[8.5px]">5.6</span>
             </div>
-            <div class="p-1.5 bg-black border border-gray-800 rounded">
-              <span class="text-gray-400 block text-[6px]">TOTAL SCORE</span>
-              <span id="finalScoreText" class="text-cyan-300 font-bold text-[10px]">0</span>
+            <div class="p-1 bg-black border border-gray-800 rounded">
+              <span class="text-gray-400 block text-[5px]">MAX FLOW COMBO</span>
+              <span id="finalComboText" class="text-pink-400 font-bold text-[8.5px]">x1.0</span>
+            </div>
+            <div class="p-1 bg-black border border-gray-800 rounded">
+              <span class="text-gray-400 block text-[5px]">TOTAL ASCENT SCORE</span>
+              <span id="finalScoreText" class="text-cyan-300 font-bold text-[8.5px]">0</span>
             </div>
           </div>
 
-          <div class="text-[6.5px] text-gray-400 mb-2 flex items-center justify-center gap-1">
+          <div class="text-[5.5px] text-gray-400 mb-2 flex items-center justify-center gap-1">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
-            <span id="d1SyncStatus">Ascent recorded.</span>
+            <span id="d1SyncStatus">Ascent verified & saved.</span>
           </div>
 
-          <div class="flex flex-col gap-1.5">
-            <button id="retryClimbBtn" class="w-full py-1.5 bg-[#67e8f9] hover:bg-cyan-400 active:scale-95 text-black font-bold text-[9px] rounded border border-white pixel-btn">
+          <div class="flex flex-col gap-1">
+            <button id="retryClimbBtn" class="w-full py-2 bg-[#67e8f9] hover:bg-cyan-400 active:scale-95 text-black font-bold text-[8px] rounded border border-white pixel-btn">
               🔄 CLIMB AGAIN
             </button>
-            <button id="gameOverLbBtn" class="w-full py-1 bg-yellow-600 hover:bg-yellow-500 text-black font-bold text-[8px] rounded border border-yellow-300">
+            <button id="gameOverLbBtn" class="w-full py-1 bg-yellow-600 hover:bg-yellow-500 text-black font-bold text-[7px] rounded border border-yellow-300">
               🏆 VIEW LEADERBOARD
             </button>
           </div>
@@ -323,60 +441,68 @@
     </div>
 
     <!-- In-Game Footer Action Bar -->
-    <footer id="inGameFooterBar" class="w-full px-2 py-1 bg-[#090e1a] border-t border-[#1e293b] flex items-center justify-between text-[7.5px] shrink-0 z-20">
+    <footer id="inGameFooterBar" class="w-full px-1.5 py-1 bg-[#090e1a] border-t border-[#1e293b] flex items-center justify-between text-[6.5px] shrink-0 z-20 gap-1">
       <!-- Beta View Look-Up Button -->
-      <button id="toggleBetaViewBtn" class="px-2 py-1 bg-[#132235] hover:bg-[#1d3553] active:scale-95 text-cyan-300 border border-cyan-500 rounded text-[7px] flex items-center gap-1 transition-all">
+      <button id="toggleBetaViewBtn" class="px-2 py-1 bg-[#132235] active:scale-95 text-cyan-300 border border-cyan-500 rounded text-[6px] flex items-center gap-0.5">
         <span>👁️</span>
-        <span id="betaViewBtnText">BETA VIEW</span>
+        <span id="betaViewBtnText">BETA</span>
+      </button>
+
+      <!-- Dedicated Real-World Shakeout Button -->
+      <button id="shakeoutBtn" class="px-2 py-1 bg-[#064e3b] active:scale-95 text-emerald-300 border border-emerald-500 rounded text-[6px] flex items-center gap-0.5">
+        <span>🫲</span>
+        <span>SHAKE</span>
+      </button>
+
+      <!-- Quick Chalk Button -->
+      <button id="chalkQuickBtn" class="px-2 py-1 bg-amber-600 active:scale-95 text-black font-bold border border-yellow-300 rounded text-[6px] flex items-center gap-0.5">
+        <span>🧤</span>
+        <span>CHALK</span>
+        <span id="chalkCdText" class="text-[5px] text-yellow-950 bg-yellow-300 px-0.5 rounded">RDY</span>
+      </button>
+
+      <!-- Adam Ondra Power Scream Easter Egg Button -->
+      <button id="ondraScreamBtn" class="px-2 py-1 bg-red-800 active:scale-95 text-red-200 border border-red-400 rounded text-[6px] flex items-center gap-0.5">
+        <span>🗣️</span>
+        <span id="screamText">SCREAM</span>
       </button>
 
       <!-- Active Hand Target Indicator -->
-      <div class="flex items-center gap-1 px-2 py-0.5 bg-black/70 rounded border border-gray-800 text-[6.5px]">
-        <span class="text-gray-400">HAND:</span>
-        <span id="nextHandIndicator" class="text-cyan-300 font-bold">LEFT ◀</span>
+      <div class="flex items-center gap-0.5 px-1 py-0.5 bg-black/70 rounded border border-gray-800 text-[5.5px] shrink-0">
+        <span id="nextHandIndicator" class="text-cyan-300 font-bold">L ◀</span>
       </div>
-
-      <!-- Quick Chalk Button -->
-      <button id="chalkQuickBtn" class="px-2 py-1 bg-amber-600 hover:bg-amber-500 active:scale-95 text-black font-bold border border-yellow-300 rounded text-[7px] shadow-lg flex items-center gap-1 transition-all">
-        <span>🧤</span>
-        <span>CHALK</span>
-        <span id="chalkCdText" class="text-[6px] text-yellow-950 bg-yellow-300 px-0.5 rounded">RDY</span>
-      </button>
     </footer>
 
   </div>
 
-  <!-- Clean Summit Leaderboard Modal (No settings / no fake names) -->
+  <!-- Summit Leaderboard Modal -->
   <div id="leaderboardModal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-3 hidden">
-    <div class="w-full max-w-md bg-[#0a0f1b] border-2 border-yellow-400 rounded-lg p-3 shadow-2xl flex flex-col max-h-[90vh]">
+    <div class="w-full max-w-md bg-[#0a0f1b] border-2 border-yellow-400 rounded-lg p-2.5 shadow-2xl flex flex-col max-h-[90vh]">
       
       <!-- Modal Header -->
-      <div class="flex items-center justify-between border-b border-gray-800 pb-1.5 mb-1.5">
+      <div class="flex items-center justify-between border-b border-gray-800 pb-1 mb-1 shrink-0">
         <div class="flex items-center gap-1.5">
           <span class="text-sm">🏆</span>
-          <div>
-            <h3 class="text-[9px] text-yellow-400 neon-gold font-bold">SUMMIT ASCENT LEADERBOARD</h3>
-            <!-- <p class="text-[6.5px] text-gray-400">Authentic free-solo ascents</p> -->
-          </div>
+          <h3 class="text-[8px] text-yellow-400 font-bold">SUMMIT ASCENT RECORDS</h3>
         </div>
         <button id="closeLbBtn" class="text-gray-400 hover:text-white text-sm font-bold p-1">✕</button>
       </div>
 
       <!-- Filter Tabs -->
-      <div class="flex items-center justify-between mb-1.5 text-[7px] gap-1">
+      <div class="flex items-center justify-between mb-1 text-[6px] gap-1 shrink-0">
         <div class="flex gap-1">
           <button class="lb-filter-btn px-2 py-0.5 bg-yellow-500 text-black font-bold rounded" data-filter="ALL">ALL-TIME</button>
           <button class="lb-filter-btn px-2 py-0.5 bg-gray-800 text-gray-300 hover:bg-gray-700 rounded" data-filter="TODAY">TODAY</button>
           <button class="lb-filter-btn px-2 py-0.5 bg-gray-800 text-gray-300 hover:bg-gray-700 rounded" data-filter="PERSONAL">MINE</button>
         </div>
-        <button id="refreshLbDataBtn" class="px-1.5 py-0.5 bg-gray-800 hover:bg-gray-700 text-cyan-300 border border-cyan-500 rounded text-[6.5px]">
+        <button id="refreshLbDataBtn" class="px-1.5 py-0.5 bg-gray-800 hover:bg-gray-700 text-cyan-300 border border-cyan-500 rounded text-[5.5px]">
           🔄 REFRESH
         </button>
       </div>
 
       <!-- Leaderboard Scroll Table -->
       <div class="flex-1 overflow-y-auto border border-gray-800 rounded bg-black/70 p-1 min-h-[160px]">
-        <table class="w-full text-left text-[7px]">
+        <table class="w-full text-left text-[6px]">
           <thead>
             <tr class="border-b border-gray-800 text-gray-400 pb-0.5">
               <th class="p-1">#</th>
@@ -384,32 +510,18 @@
               <th class="p-1">CRAG</th>
               <th class="p-1">HEIGHT</th>
               <th class="p-1 text-right">SCORE</th>
-              <th class="p-1 text-right">DATE</th>
             </tr>
           </thead>
           <tbody id="leaderboardRows">
-            <!-- Dynamic Real Entries Only -->
+            <!-- Dynamic Entries -->
           </tbody>
         </table>
       </div>
 
-<!--
-      <div class="mt-1.5 pt-1 border-t border-gray-800 flex items-center justify-between text-[6.5px] text-gray-400">
-        <span>Verified Crag Records</span>
-        <span class="text-yellow-400">Only genuine ascents logged</span>
-      </div>
--->
-
     </div>
   </div>
 
-  <!-- Toast Notification -->
-  <div id="retroToast" class="fixed bottom-12 inset-x-0 mx-auto w-max max-w-[85%] px-3 py-1 bg-cyan-950 border border-cyan-400 text-cyan-300 text-[7px] rounded shadow-xl opacity-0 pointer-events-none transition-opacity duration-200 z-50 text-center">
-    Toast Message
-  </div>
-
   <script>
-    // Cloudflare D1 Backend Endpoint (Clean background integration)
     const CLOUDFLARE_D1_WORKER_URL = "https://crag-leaderboard.enzowmeng.workers.dev/api/climbs"; 
 
     class RetroSoundFX {
@@ -418,6 +530,7 @@
         this.enabled = true;
         this.musicTimer = null;
         this.isMusicPlaying = false;
+        this.heartbeatTimer = null;
       }
 
       init() {
@@ -437,14 +550,14 @@
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(200, t);
-          osc.frequency.exponentialRampToValueAtTime(360, t + 0.04);
-          gain.gain.setValueAtTime(0.18, t);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+          osc.frequency.setValueAtTime(220, t);
+          osc.frequency.exponentialRampToValueAtTime(380, t + 0.04);
+          gain.gain.setValueAtTime(0.16, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
           osc.start(t);
-          osc.stop(t + 0.08);
+          osc.stop(t + 0.07);
         } catch(e) {}
       }
 
@@ -455,9 +568,9 @@
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(220, t);
-          osc.frequency.exponentialRampToValueAtTime(680, t + 0.12);
-          gain.gain.setValueAtTime(0.15, t);
+          osc.frequency.setValueAtTime(240, t);
+          osc.frequency.exponentialRampToValueAtTime(760, t + 0.12);
+          gain.gain.setValueAtTime(0.18, t);
           gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
@@ -469,24 +582,60 @@
       playChalkPuff() {
         if (!this.enabled || !this.ctx) return;
         try {
-          const bufferSize = this.ctx.sampleRate * 0.12;
+          const bufferSize = this.ctx.sampleRate * 0.11;
           const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
           const data = buffer.getChannelData(0);
           for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.28));
           }
           const noise = this.ctx.createBufferSource();
           noise.buffer = buffer;
           const filter = this.ctx.createBiquadFilter();
           filter.type = 'bandpass';
-          filter.frequency.value = 1700;
+          filter.frequency.value = 1800;
           const gain = this.ctx.createGain();
-          gain.gain.setValueAtTime(0.24, this.ctx.currentTime);
-          gain.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.11);
+          gain.gain.setValueAtTime(0.22, this.ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.1);
           noise.connect(filter);
           filter.connect(gain);
           gain.connect(this.ctx.destination);
           noise.start();
+        } catch(e) {}
+      }
+
+      playHeartbeatThump() {
+        if (!this.enabled || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(70, t);
+          osc.frequency.exponentialRampToValueAtTime(35, t + 0.12);
+          gain.gain.setValueAtTime(0.25, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.15);
+        } catch(e) {}
+      }
+
+      playShakeoutBreath() {
+        if (!this.enabled || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(320, t);
+          osc.frequency.linearRampToValueAtTime(200, t + 0.16);
+          gain.gain.setValueAtTime(0.14, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.19);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.2);
         } catch(e) {}
       }
 
@@ -497,9 +646,9 @@
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(480, t);
-          osc.frequency.linearRampToValueAtTime(240, t + 0.18);
-          gain.gain.setValueAtTime(0.24, t);
+          osc.frequency.setValueAtTime(520, t);
+          osc.frequency.linearRampToValueAtTime(200, t + 0.18);
+          gain.gain.setValueAtTime(0.25, t);
           gain.gain.exponentialRampToValueAtTime(0.01, t + 0.19);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
@@ -516,13 +665,45 @@
           const gain = this.ctx.createGain();
           osc.type = 'triangle';
           osc.frequency.setValueAtTime(260, t);
-          osc.frequency.exponentialRampToValueAtTime(720, t + 0.12);
+          osc.frequency.exponentialRampToValueAtTime(800, t + 0.13);
           gain.gain.setValueAtTime(0.24, t);
-          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.14);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
           osc.start(t);
-          osc.stop(t + 0.15);
+          osc.stop(t + 0.16);
+        } catch(e) {}
+      }
+
+      playOndraPowerScream() {
+        if (!this.enabled || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc1.type = 'sawtooth';
+          osc2.type = 'sawtooth';
+          
+          osc1.frequency.setValueAtTime(310, t);
+          osc1.frequency.linearRampToValueAtTime(800, t + 0.12);
+          osc1.frequency.linearRampToValueAtTime(640, t + 0.45);
+
+          osc2.frequency.setValueAtTime(318, t);
+          osc2.frequency.linearRampToValueAtTime(818, t + 0.12);
+          osc2.frequency.linearRampToValueAtTime(652, t + 0.45);
+
+          gain.gain.setValueAtTime(0.32, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc1.start(t);
+          osc2.start(t);
+          osc1.stop(t + 0.52);
+          osc2.stop(t + 0.52);
         } catch(e) {}
       }
 
@@ -533,50 +714,14 @@
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(587.33, t); // D5
-          osc.frequency.setValueAtTime(880, t + 0.08); // A5
+          osc.frequency.setValueAtTime(587.33, t);
+          osc.frequency.setValueAtTime(987.77, t + 0.07);
           gain.gain.setValueAtTime(0.2, t);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
           osc.start(t);
-          osc.stop(t + 0.22);
-        } catch(e) {}
-      }
-
-      playMonasteryBell() {
-        if (!this.enabled || !this.ctx) return;
-        try {
-          const t = this.ctx.currentTime;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(329.63, t);
-          gain.gain.setValueAtTime(0.18, t);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(t);
-          osc.stop(t + 0.82);
-        } catch(e) {}
-      }
-
-      playEagleCry() {
-        if (!this.enabled || !this.ctx) return;
-        try {
-          const t = this.ctx.currentTime;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(850, t);
-          osc.frequency.linearRampToValueAtTime(1150, t + 0.15);
-          osc.frequency.linearRampToValueAtTime(600, t + 0.35);
-          gain.gain.setValueAtTime(0.12, t);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.38);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(t);
-          osc.stop(t + 0.39);
+          osc.stop(t + 0.2);
         } catch(e) {}
       }
 
@@ -587,14 +732,14 @@
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(120, t);
-          osc.frequency.linearRampToValueAtTime(45, t + 0.18);
-          gain.gain.setValueAtTime(0.24, t);
+          osc.frequency.setValueAtTime(140, t);
+          osc.frequency.linearRampToValueAtTime(40, t + 0.18);
+          gain.gain.setValueAtTime(0.26, t);
           gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
           osc.start(t);
-          osc.stop(t + 0.21);
+          osc.stop(t + 0.22);
         } catch(e) {}
       }
 
@@ -605,14 +750,14 @@
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(780, t);
-          osc.frequency.exponentialRampToValueAtTime(70, t + 0.7);
+          osc.frequency.setValueAtTime(800, t);
+          osc.frequency.exponentialRampToValueAtTime(65, t + 0.65);
           gain.gain.setValueAtTime(0.28, t);
-          gain.gain.linearRampToValueAtTime(0.01, t + 0.75);
+          gain.gain.linearRampToValueAtTime(0.01, t + 0.7);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
           osc.start(t);
-          osc.stop(t + 0.76);
+          osc.stop(t + 0.72);
         } catch(e) {}
       }
 
@@ -627,13 +772,13 @@
             const gain = this.ctx.createGain();
             osc.type = 'square';
             osc.frequency.setValueAtTime(freq, t);
-            gain.gain.setValueAtTime(0.1, t);
+            gain.gain.setValueAtTime(0.09, t);
             gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
             osc.connect(gain);
             gain.connect(this.ctx.destination);
             osc.start(t);
             osc.stop(t + 0.13);
-          }, idx * 70);
+          }, idx * 65);
         });
       }
 
@@ -651,12 +796,12 @@
               const gain = this.ctx.createGain();
               osc.type = 'triangle';
               osc.frequency.setValueAtTime(bassline[step % bassline.length], t);
-              gain.gain.setValueAtTime(0.03, t);
-              gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+              gain.gain.setValueAtTime(0.025, t);
+              gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
               osc.connect(gain);
               gain.connect(this.ctx.destination);
               osc.start(t);
-              osc.stop(t + 0.22);
+              osc.stop(t + 0.2);
             } catch(e) {}
           }
           step++;
@@ -693,7 +838,7 @@
         name: 'Yangshuo Moon Hill (Guilin, China)',
         icon: '🎋',
         type: 'KARST',
-        desc: 'Iconic limestone karst, vertical stalactites & misty emerald peaks.',
+        desc: 'Limestone karst, vertical stalactites & emerald mist peaks.',
         baseRock: '#475569',
         darkRock: '#1e293b',
         accentRock: '#64748b',
@@ -707,7 +852,7 @@
         name: 'Baihe Gorge (Beijing, China)',
         icon: '🦅',
         type: 'GRANITE_CRACK',
-        desc: 'Steep granite split cracks in White River canyon.',
+        desc: 'Split granite finger cracks in White River canyon.',
         baseRock: '#57534e',
         darkRock: '#292524',
         accentRock: '#78716c',
@@ -733,7 +878,7 @@
         name: 'Verdon Gorge (France)',
         icon: '🌊',
         type: 'VERDON_CANYON',
-        desc: 'Dizzying turquoise canyon, vertical silver limestone runnels.',
+        desc: 'Dizzying 700m canyon, silver limestone tufa runnels.',
         baseRock: '#64748b',
         darkRock: '#334155',
         accentRock: '#94a3b8',
@@ -753,22 +898,100 @@
         accentRock: '#6b7280',
         crackColor: '#111827',
         seamColor: '#f3f4f6',
+        surprise: 'CAMPERVAN'
+      },
+      {
+        id: 'flatanger',
+        name: 'Flatanger Hanshelleren (Norway)',
+        icon: '🌌',
+        type: 'GRANITE_CAVE',
+        desc: 'Massive dark cave roof home to Silence 5.15d & Northern Lights.',
+        baseRock: '#334155',
+        darkRock: '#0f172a',
+        accentRock: '#475569',
+        crackColor: '#020617',
+        seamColor: '#a7f3d0',
+        surprise: 'AURORA'
+      },
+      {
+        id: 'ceuse',
+        name: 'Céüse (Hautes-Alpes, France)',
+        icon: '🧗',
+        type: 'BLUE_LIMESTONE',
+        desc: 'Iconic blue-streak limestone band, home of Biographie.',
+        baseRock: '#52525b',
+        darkRock: '#27272a',
+        accentRock: '#71717a',
+        crackColor: '#18181b',
+        seamColor: '#60a5fa',
         surprise: 'EAGLE'
+      },
+      {
+        id: 'kalymnos',
+        name: 'Kalymnos (Aegean Sea, Greece)',
+        icon: '🏖️',
+        type: 'TUFA_LIMESTONE',
+        desc: 'Sun-drenched massive tufas over deep turquoise Mediterranean waters.',
+        baseRock: '#9a3412',
+        darkRock: '#6c2009',
+        accentRock: '#c2410c',
+        crackColor: '#431407',
+        seamColor: '#fdba74',
+        surprise: 'GOAT'
+      },
+      {
+        id: 'redriver',
+        name: 'Red River Gorge (Kentucky, USA)',
+        icon: '🍂',
+        type: 'SANDSTONE_ROOF',
+        desc: 'Overhanging Corbin sandstone jug haul roofs in autumn woods.',
+        baseRock: '#7c2d12',
+        darkRock: '#451a03',
+        accentRock: '#9a3412',
+        crackColor: '#270e02',
+        seamColor: '#fde047',
+        surprise: 'RACOON'
+      },
+      {
+        id: 'fontainebleau',
+        name: 'Fontainebleau (France)',
+        icon: '🪵',
+        type: 'SANDSTONE_BLUFF',
+        desc: 'Centuries-old technical sandstone bluffs and friction slopers.',
+        baseRock: '#78716c',
+        darkRock: '#44403c',
+        accentRock: '#a8a29e',
+        crackColor: '#292524',
+        seamColor: '#fed7aa',
+        surprise: 'SQUIRREL'
+      },
+      {
+        id: 'fitzroy',
+        name: 'Mount Fitz Roy (Patagonia)',
+        icon: '❄️',
+        type: 'ALPINIST_SPIRE',
+        desc: 'Alpine granite spires swept by howling Patagonian winds.',
+        baseRock: '#374151',
+        darkRock: '#111827',
+        accentRock: '#4b5563',
+        crackColor: '#030712',
+        seamColor: '#e0f2fe',
+        surprise: 'CONDOR'
       }
     ];
 
     const TIMES = [
-      { id: 'dawn', name: 'Early Dawn', skyTop: '#3b0764', skyBot: '#fdba74', light: 0.95 },
-      { id: 'noon', name: 'High Noon', skyTop: '#0284c7', skyBot: '#bae6fd', light: 1.0 },
-      { id: 'sunset', name: 'Golden Sunset', skyTop: '#b45309', skyBot: '#fed7aa', light: 0.92 },
-      { id: 'night', name: 'Starry Night', skyTop: '#020617', skyBot: '#1e1b4b', light: 0.72 }
+      { id: 'dawn', name: 'Early Dawn (Sending)', skyTop: '#3b0764', skyBot: '#fdba74', light: 0.95, frictionMod: 1.10 },
+      { id: 'noon', name: 'High Noon (Greasy)', skyTop: '#0284c7', skyBot: '#bae6fd', light: 1.0, frictionMod: 0.88 },
+      { id: 'sunset', name: 'Golden Sunset', skyTop: '#b45309', skyBot: '#fed7aa', light: 0.92, frictionMod: 1.0 },
+      { id: 'night', name: 'Starry Night', skyTop: '#020617', skyBot: '#1e1b4b', light: 0.72, frictionMod: 1.05 }
     ];
 
     const WEATHERS = [
-      { id: 'clear', name: '☀️ Clear & Crisp', friction: 1.0, rain: false, wind: false },
-      { id: 'foggy', name: '🌫️ Misty Fog', friction: 0.96, rain: false, wind: false },
-      { id: 'breezy', name: '💨 Alpine Breeze', friction: 0.93, rain: false, wind: true },
-      { id: 'rain', name: '🌧️ Rain Slick', friction: 0.86, rain: true, wind: false }
+      { id: 'clear', name: '☀️ Crisp Air', friction: 1.0, rain: false, wind: false },
+      { id: 'foggy', name: '🌫️ Misty Fog', friction: 0.94, rain: false, wind: false },
+      { id: 'breezy', name: '💨 Alpine Breeze', friction: 0.92, rain: false, wind: true },
+      { id: 'rain', name: '🌧️ Rain Slick', friction: 0.78, rain: true, wind: false }
     ];
 
     const CHARACTERS = [
@@ -779,11 +1002,12 @@
         shirtColor: '#facc15',
         pantsColor: '#9333ea',
         skinColor: '#fbcfe8',
-        staminaRate: 0.7,
+        staminaRate: 0.80,
         reachBonus: 6,
-        perk: '-30% grip drain on vertical crags.',
+        stats: { sta: '████░', rch: '███░░' },
+        perk: '-30% forearm pump drain on vertical crags.',
         bio: 'Speed soloist with surgical foot precision.',
-        drawIcon: (ctx, x, y) => drawHumanIcon(ctx, x, y, '#facc15', '#9333ea', '#fed7aa')
+        drawIcon: (ctx, x, y) => drawHumanSprite(ctx, x, y, '#facc15', '#9333ea', '#fed7aa', '#451a03')
       },
       {
         id: 'lynn',
@@ -792,49 +1016,67 @@
         shirtColor: '#ec4899',
         pantsColor: '#3b82f6',
         skinColor: '#fed7aa',
-        staminaRate: 0.75,
+        staminaRate: 0.68,
         reachBonus: 14,
-        perk: '+20% reach radius on technical crimps.',
-        bio: 'First free ascent big wall pioneer.',
-        drawIcon: (ctx, x, y) => drawHumanIcon(ctx, x, y, '#ec4899', '#3b82f6', '#fed7aa')
+        stats: { sta: '█████', rch: '████░' },
+        perk: '+20% reach envelope, steady forearm pump recovery.',
+        bio: 'First free ascent pioneer of The Nose on El Cap.',
+        drawIcon: (ctx, x, y) => drawHumanSprite(ctx, x, y, '#ec4899', '#3b82f6', '#fed7aa', '#eab308')
       },
       {
         id: 'tommy',
-        name: 'Tommy (Power Dyno)',
+        name: 'Tommy (Power)',
         category: 'HUMAN',
         shirtColor: '#f97316',
         pantsColor: '#1e293b',
         skinColor: '#fed7aa',
-        staminaRate: 0.72,
+        staminaRate: 0.74,
         reachBonus: 10,
+        stats: { sta: '████░', rch: '███░░' },
         perk: '+50% dyno score, faster recovery on Jugs.',
-        bio: 'Iron tendon warrior of Dawn Wall.',
-        drawIcon: (ctx, x, y) => drawHumanIcon(ctx, x, y, '#f97316', '#1e293b', '#fed7aa')
+        bio: 'Iron-tendon warrior who conquered the Dawn Wall.',
+        drawIcon: (ctx, x, y) => drawHumanSprite(ctx, x, y, '#f97316', '#1e293b', '#fed7aa', '#78350f')
+      },
+      {
+        id: 'adam',
+        name: 'Adam (The Screamer)',
+        category: 'LEGEND',
+        shirtColor: '#ef4444',
+        pantsColor: '#1d4ed8',
+        skinColor: '#fed7aa',
+        staminaRate: 0.64,
+        reachBonus: 12,
+        stats: { sta: '█████', rch: '████░' },
+        perk: 'Power Scream: Freezes forearm pump for 3s during crux!',
+        bio: 'Sends 5.15d with thunderous power screams across valleys.',
+        drawIcon: (ctx, x, y) => drawHumanSprite(ctx, x, y, '#ef4444', '#1d4ed8', '#fed7aa', '#172554')
       },
       {
         id: 'billy',
         name: 'Billy the Ibex',
-        category: 'ANIMAL',
+        category: 'FAUNA',
         shirtColor: '#e2e8f0',
         pantsColor: '#78350f',
         skinColor: '#475569',
         staminaRate: 0.65,
-        reachBonus: 12,
+        reachBonus: 10,
+        stats: { sta: '█████', rch: '███░░' },
         perk: 'Hoof Friction: Slopers drain 50% less.',
-        bio: 'Laughs at 90-degree overhangs. Baaa!',
+        bio: 'Laughs at 90-degree overhangs. True crag native!',
         drawIcon: (ctx, x, y) => drawGoatIcon(ctx, x, y)
       },
       {
         id: 'bandit',
         name: 'Bandit Raccoon',
-        category: 'ANIMAL',
+        category: 'FAUNA',
         shirtColor: '#64748b',
         pantsColor: '#334155',
         skinColor: '#0f172a',
-        staminaRate: 0.8,
+        staminaRate: 0.82,
         reachBonus: 8,
-        perk: 'Scramble: +40% score on hidden pockets.',
-        bio: 'Nimble paws hunting shiny carabiners.',
+        stats: { sta: '███░░', rch: '███░░' },
+        perk: 'Scramble: +40% score on hidden booty cams.',
+        bio: 'Nimble paws hunting shiny carabiners and snacks.',
         drawIcon: (ctx, x, y) => drawRaccoonIcon(ctx, x, y)
       },
       {
@@ -844,10 +1086,11 @@
         shirtColor: '#a855f7',
         pantsColor: '#581c87',
         skinColor: '#38bdf8',
-        staminaRate: 0.65,
+        staminaRate: 0.66,
         reachBonus: 22,
+        stats: { sta: '████░', rch: '█████' },
         perk: 'Anti-grav tentacles: huge reach envelope.',
-        bio: 'Interstellar tourist summiting Earth.',
+        bio: 'Interstellar tourist summiting Earth peaks.',
         drawIcon: (ctx, x, y) => drawAlienIcon(ctx, x, y)
       },
       {
@@ -857,20 +1100,85 @@
         shirtColor: '#ef4444',
         pantsColor: '#ca8a04',
         skinColor: '#fbbf24',
-        staminaRate: 0.6,
+        staminaRate: 0.58,
         reachBonus: 16,
-        perk: 'Cloud Step: Dynos cost 0 grip, 2x Flow Combo!',
+        stats: { sta: '█████', rch: '█████' },
+        perk: 'Cloud Step: Dynos cost 0 pump, 2x Flow Combo!',
         bio: 'Monkey King ascending peaks on somersault clouds.',
         drawIcon: (ctx, x, y) => drawWukongIcon(ctx, x, y)
+      }
+    ];
+
+    /* Authentic Climber Quotes & Real-World Tactics Deck for Failure Screen */
+    const FAILURE_DECKS = [
+      {
+        type: 'QUOTE',
+        author: 'Wolfgang Güllich',
+        text: '"There is no such thing as too much power, only lack of endurance. Coffee is an integral part of climbing."'
+      },
+      {
+        type: 'QUOTE',
+        author: 'Lynn Hill',
+        text: '"Climbing is as much about technique and mental strategy as physical strength. It goes, boys!"'
+      },
+      {
+        type: 'QUOTE',
+        author: 'Alex Honnold',
+        text: '"If you\'re hesitating on the wall, you\'re pumping out. Make a plan on the ground, then execute with commitment."'
+      },
+      {
+        type: 'QUOTE',
+        author: 'Tommy Caldwell',
+        text: '"Failure is part of the process. If you aren\'t falling, you\'re not trying at your true limit."'
+      },
+      {
+        type: 'QUOTE',
+        author: 'Royal Robbins',
+        text: '"In climbing you are always on your own, testing your self-reliance against nature\'s raw vertical forces."'
+      },
+      {
+        type: 'QUOTE',
+        author: 'Adam Ondra',
+        text: '"The power scream isn\'t just noise—it forces total core engagement and maximizes recruitment at the crux!"'
+      },
+      {
+        type: 'QUOTE',
+        author: 'Steph Davis',
+        text: '"Breathe deeply from your belly. Panic burns twice as much oxygen as pulling on stone."'
+      },
+      {
+        type: 'TACTIC',
+        author: 'COACH BETA: STRAIGHT ARMS',
+        text: 'Straight arms conserve up to 60% of bicep energy. Hang on your skeletal structure while looking for the next hold!'
+      },
+      {
+        type: 'TACTIC',
+        author: 'COACH BETA: COUNTERBALANCE',
+        text: 'Flag your outside foot out wide! Counterbalancing eliminates the rotational "barn-door" torque that rips fingers off holds.'
+      },
+      {
+        type: 'TACTIC',
+        author: 'COACH BETA: CHALK TIMING',
+        text: 'Never chalk in the middle of a crux sequence! Chalk up completely at the resting jug before launching into hard moves.'
+      },
+      {
+        type: 'TACTIC',
+        author: 'COACH BETA: ROUTE READING',
+        text: 'Read the route beforehand. If you know which hand takes which hold, you avoid cross-overs and matched traps.'
+      },
+      {
+        type: 'TACTIC',
+        author: 'COACH BETA: SHAKEOUT DISCIPLINE',
+        text: 'Drop your arm below your heart on rest jugs. Shaking out flushes lactic acid so you don\'t flash-pump.'
       }
     ];
 
     const HOLD_TYPES = {
       JUG: {
         id: 'jug',
-        name: 'Bucket Jug (Rest Hold)',
+        name: 'Bucket Jug (Rest)',
         tag: 'REST JUG',
-        pumpRate: -0.02, // Actively RECOVERS grip! Unlimited reading time!
+        pumpRate: -0.045, // Active lactic acid flush!
         score: 30,
         colorHex: '#10b981',
         draw: (ctx, x, y, active) => {
@@ -879,7 +1187,7 @@
           ctx.fillStyle = '#10b981';
           ctx.fillRect(x - 8, y - 3, 16, 6);
           ctx.fillStyle = '#ecfdf5';
-          ctx.fillRect(x - 7, y - 4, 14, 2); // heavy chalk
+          ctx.fillRect(x - 7, y - 4, 14, 2);
           if (active) {
             ctx.strokeStyle = '#34d399';
             ctx.lineWidth = 2;
@@ -891,8 +1199,8 @@
         id: 'pocket',
         name: 'Limestone Pocket',
         tag: 'POCKET (NEUTRAL)',
-        pumpRate: 0.0, // 0% drain! Neutral rest hold
-        score: 40,
+        pumpRate: 0.02,
+        score: 45,
         colorHex: '#06b6d4',
         draw: (ctx, x, y, active) => {
           ctx.fillStyle = '#083344';
@@ -914,10 +1222,10 @@
       },
       CRIMP: {
         id: 'crimp',
-        name: 'Razor Crimp',
-        tag: 'CRIMP (SLOW DRAIN)',
-        pumpRate: 0.09, // Gentle drain (~22s hang)
-        score: 55,
+        name: 'Technical Crimp',
+        tag: 'CRIMP (STEADY PUMP)',
+        pumpRate: 0.10,
+        score: 65,
         colorHex: '#f59e0b',
         draw: (ctx, x, y, active) => {
           ctx.fillStyle = '#451a03';
@@ -933,45 +1241,66 @@
           }
         }
       },
+      MICRO_CRIMP: {
+        id: 'micro_crimp',
+        name: 'Razor Micro-Crimp',
+        tag: 'MICRO-CRIMP (VIOLENT DRAIN)',
+        pumpRate: 0.22, // Severe tendon strain!
+        score: 100,
+        colorHex: '#f43f5e',
+        draw: (ctx, x, y, active) => {
+          ctx.fillStyle = '#881337';
+          ctx.fillRect(x - 5, y + 1, 10, 3);
+          ctx.fillStyle = '#f43f5e';
+          ctx.fillRect(x - 4, y - 2, 8, 3);
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(x - 3, y - 3, 6, 1);
+          if (active) {
+            ctx.strokeStyle = '#fb7185';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x - 6, y - 5, 12, 9);
+          }
+        }
+      },
       SLOPER: {
         id: 'sloper',
-        name: 'Granite Sloper',
-        tag: 'SLOPER (SLOW DRAIN)',
-        pumpRate: 0.11,
-        score: 50,
-        colorHex: '#f97316',
+        name: 'Greasy Sloper',
+        tag: 'SLOPER (FRICTION DEPENDENT)',
+        pumpRate: 0.14,
+        score: 70,
+        colorHex: '#ea580c',
         draw: (ctx, x, y, active) => {
           ctx.fillStyle = '#7c2d12';
           ctx.beginPath();
-          ctx.arc(x, y + 2, 8.5, 0, Math.PI * 2);
+          ctx.arc(x, y + 2, 9, 0, Math.PI * 2);
           ctx.fill();
-          ctx.fillStyle = '#f97316';
+          ctx.fillStyle = '#ea580c';
           ctx.beginPath();
-          ctx.arc(x, y - 1, 7.5, 0, Math.PI * 2);
+          ctx.arc(x, y - 1, 8, 0, Math.PI * 2);
           ctx.fill();
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-          ctx.fillRect(x - 4, y - 4, 8, 2.5);
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+          ctx.fillRect(x - 4, y - 4, 8, 2);
           if (active) {
             ctx.strokeStyle = '#fb923c';
             ctx.lineWidth = 2;
-            ctx.strokeRect(x - 9, y - 8, 18, 16);
+            ctx.strokeRect(x - 10, y - 8, 20, 16);
           }
         }
       },
       CHOSS: {
         id: 'choss',
-        name: 'Fragile Choss Flake',
-        tag: 'CHOSS (CRACKS OVER 6s)',
-        pumpRate: 0.12,
-        score: 85,
+        name: 'Brittle Choss Flake',
+        tag: 'CHOSS (CRUMBLES IN 4.0s!)',
+        pumpRate: 0.16,
+        score: 95,
         crumble: true,
-        colorHex: '#ef4444',
+        colorHex: '#dc2626',
         draw: (ctx, x, y, active, timer) => {
           ctx.fillStyle = '#450a0a';
           ctx.fillRect(x - 8, y + 2, 16, 4.5);
           ctx.fillStyle = '#dc2626';
           ctx.fillRect(x - 7, y - 3, 14, 5.5);
-          ctx.strokeStyle = timer > 0 ? '#ffffff' : '#7f1d1d';
+          ctx.strokeStyle = timer > 0 ? '#fef08a' : '#7f1d1d';
           ctx.lineWidth = 1.5;
           ctx.beginPath();
           ctx.moveTo(x - 5, y - 1);
@@ -984,12 +1313,60 @@
             ctx.strokeRect(x - 9, y - 5, 18, 12);
           }
         }
+      },
+      PINK_ONE: {
+        id: 'pink_one',
+        name: 'The Pink One in the Corner',
+        tag: 'MYTHIC GYM HOLD (5X SCORE)',
+        pumpRate: -0.16,
+        score: 350,
+        easterEgg: true,
+        colorHex: '#ec4899',
+        draw: (ctx, x, y, active) => {
+          ctx.fillStyle = '#831843';
+          ctx.fillRect(x - 10, y + 2, 20, 6);
+          ctx.fillStyle = '#ec4899';
+          ctx.fillRect(x - 9, y - 4, 18, 6);
+          ctx.fillStyle = '#fdf2f8';
+          ctx.fillRect(x - 8, y - 5, 16, 2);
+          if (active) {
+            ctx.strokeStyle = '#f472b6';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x - 11, y - 7, 22, 16);
+          }
+        }
       }
     };
 
+    const GRADE_TABLE = [
+      { minAlt: 0, grade: '5.6', pitchName: 'Approach Jug Ladder', spacing: 32, jug: 0.55, pocket: 0.30, crimp: 0.12, micro: 0.0, sloper: 0.03, choss: 0.0, mult: 1.0 },
+      { minAlt: 35, grade: '5.7', pitchName: 'Comfortable Face', spacing: 36, jug: 0.44, pocket: 0.32, crimp: 0.18, micro: 0.0, sloper: 0.06, choss: 0.0, mult: 1.15 },
+      { minAlt: 75, grade: '5.8', pitchName: 'Moderate Pitch', spacing: 40, jug: 0.34, pocket: 0.30, crimp: 0.24, micro: 0.0, sloper: 0.10, choss: 0.02, mult: 1.3 },
+      { minAlt: 125, grade: '5.9', pitchName: 'Vertical Face', spacing: 44, jug: 0.26, pocket: 0.28, crimp: 0.28, micro: 0.03, sloper: 0.12, choss: 0.03, mult: 1.5 },
+      { minAlt: 180, grade: '5.10a', pitchName: 'Technical Footwork', spacing: 48, jug: 0.20, pocket: 0.25, crimp: 0.34, micro: 0.05, sloper: 0.12, choss: 0.04, mult: 1.75 },
+      { minAlt: 245, grade: '5.10c', pitchName: 'Sustained Sequencing', spacing: 52, jug: 0.16, pocket: 0.22, crimp: 0.36, micro: 0.08, sloper: 0.13, choss: 0.05, mult: 2.0 },
+      { minAlt: 320, grade: '5.11a', pitchName: 'Overhang Entry', spacing: 56, jug: 0.12, pocket: 0.20, crimp: 0.38, micro: 0.12, sloper: 0.12, choss: 0.06, mult: 2.3 },
+      { minAlt: 400, grade: '5.11d', pitchName: 'Crux Endurance', spacing: 60, jug: 0.10, pocket: 0.18, crimp: 0.38, micro: 0.16, sloper: 0.11, choss: 0.07, mult: 2.65 },
+      { minAlt: 490, grade: '5.12b', pitchName: 'The Technical Wall', spacing: 64, jug: 0.08, pocket: 0.16, crimp: 0.36, micro: 0.20, sloper: 0.12, choss: 0.08, mult: 3.1 },
+      { minAlt: 590, grade: '5.13a', pitchName: 'Razor Pockets', spacing: 68, jug: 0.06, pocket: 0.14, crimp: 0.34, micro: 0.24, sloper: 0.13, choss: 0.09, mult: 3.7 },
+      { minAlt: 700, grade: '5.13d', pitchName: 'Dynamic Crux Wall', spacing: 72, jug: 0.05, pocket: 0.12, crimp: 0.32, micro: 0.28, sloper: 0.13, choss: 0.10, mult: 4.4 },
+      { minAlt: 820, grade: '5.14b', pitchName: 'Severe Roof Section', spacing: 76, jug: 0.04, pocket: 0.10, crimp: 0.30, micro: 0.32, sloper: 0.13, choss: 0.11, mult: 5.2 },
+      { minAlt: 950, grade: '5.15a', pitchName: 'World-Class Boulders', spacing: 80, jug: 0.03, pocket: 0.08, crimp: 0.28, micro: 0.36, sloper: 0.14, choss: 0.11, mult: 6.2 },
+      { minAlt: 1100, grade: '5.15d', pitchName: 'Silence / B.I.G. Roof', spacing: 84, jug: 0.02, pocket: 0.06, crimp: 0.26, micro: 0.40, sloper: 0.14, choss: 0.12, mult: 7.5 }
+    ];
+
+    function getPitchDifficulty(altMeters) {
+      for (let i = GRADE_TABLE.length - 1; i >= 0; i--) {
+        if (altMeters >= GRADE_TABLE[i].minAlt) {
+          return { ...GRADE_TABLE[i], index: i };
+        }
+      }
+      return { ...GRADE_TABLE[0], index: 0 };
+    }
+
     class CragStorageService {
       constructor() {
-        this.storageKey = 'crag_master_authentic_ascents_v4';
+        this.storageKey = 'crag_master_authentic_ascents_v6';
       }
 
       async getScores() {
@@ -1029,69 +1406,67 @@
 
     const storage = new CragStorageService();
 
-    function drawHumanIcon(ctx, x, y, shirt, pants, skin) {
+    function drawHumanSprite(ctx, x, y, shirt, pants, skin, hair) {
       ctx.fillStyle = skin;
-      ctx.fillRect(x - 3, y - 7, 6, 6);
-      ctx.fillStyle = '#78350f';
-      ctx.fillRect(x - 3, y - 8, 6, 2);
+      ctx.fillRect(x - 4, y - 8, 8, 8);
+      ctx.fillStyle = hair;
+      ctx.fillRect(x - 4, y - 9, 8, 3);
       ctx.fillStyle = shirt;
-      ctx.fillRect(x - 4, y - 1, 8, 7);
+      ctx.fillRect(x - 5, y, 10, 8);
       ctx.fillStyle = pants;
-      ctx.fillRect(x - 4, y + 6, 8, 4);
+      ctx.fillRect(x - 5, y + 8, 10, 5);
       ctx.fillStyle = skin;
-      ctx.fillRect(x - 7, y - 3, 3, 6);
-      ctx.fillRect(x + 4, y - 3, 3, 6);
+      ctx.fillRect(x - 8, y - 2, 3, 7);
+      ctx.fillRect(x + 5, y - 2, 3, 7);
     }
 
     function drawGoatIcon(ctx, x, y) {
       ctx.fillStyle = '#cbd5e1';
-      ctx.fillRect(x - 5, y - 3, 10, 7);
+      ctx.fillRect(x - 6, y - 4, 12, 9);
       ctx.fillStyle = '#f1f5f9';
-      ctx.fillRect(x - 2, y - 7, 6, 5);
+      ctx.fillRect(x - 3, y - 9, 8, 6);
       ctx.fillStyle = '#475569';
-      ctx.fillRect(x - 1, y - 10, 2, 4);
-      ctx.fillRect(x + 3, y - 10, 2, 4);
+      ctx.fillRect(x - 2, y - 13, 3, 5);
+      ctx.fillRect(x + 3, y - 13, 3, 5);
       ctx.fillStyle = '#334155';
-      ctx.fillRect(x - 4, y + 4, 3, 4);
-      ctx.fillRect(x + 1, y + 4, 3, 4);
+      ctx.fillRect(x - 5, y + 5, 4, 5);
+      ctx.fillRect(x + 1, y + 5, 4, 5);
     }
 
     function drawRaccoonIcon(ctx, x, y) {
       ctx.fillStyle = '#64748b';
-      ctx.fillRect(x - 4, y - 3, 8, 7);
+      ctx.fillRect(x - 5, y - 4, 10, 9);
       ctx.fillStyle = '#0f172a';
-      ctx.fillRect(x - 4, y - 6, 8, 3);
+      ctx.fillRect(x - 5, y - 8, 10, 4);
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(x - 2, y - 5, 1.5, 1.5);
-      ctx.fillRect(x + 1, y - 5, 1.5, 1.5);
+      ctx.fillRect(x - 3, y - 7, 2, 2);
+      ctx.fillRect(x + 1, y - 7, 2, 2);
       ctx.fillStyle = '#334155';
-      ctx.fillRect(x + 4, y - 1, 4, 3);
+      ctx.fillRect(x + 5, y - 2, 5, 4);
     }
 
     function drawAlienIcon(ctx, x, y) {
       ctx.fillStyle = '#a855f7';
-      ctx.fillRect(x - 5, y - 8, 10, 7);
+      ctx.fillRect(x - 6, y - 10, 12, 8);
       ctx.fillStyle = '#38bdf8';
-      ctx.fillRect(x - 2, y - 5, 4, 3);
+      ctx.fillRect(x - 3, y - 7, 6, 4);
       ctx.fillStyle = '#c084fc';
-      ctx.fillRect(x - 5, y - 1, 3, 7);
-      ctx.fillRect(x - 1, y - 1, 3, 8);
-      ctx.fillRect(x + 3, y - 1, 3, 7);
+      ctx.fillRect(x - 6, y - 2, 4, 9);
+      ctx.fillRect(x - 1, y - 2, 4, 10);
+      ctx.fillRect(x + 4, y - 2, 4, 9);
     }
 
     function drawWukongIcon(ctx, x, y) {
       ctx.fillStyle = '#fbbf24';
-      ctx.fillRect(x - 4, y - 7, 8, 7);
-      // Golden Crown (Circlet)
+      ctx.fillRect(x - 5, y - 9, 10, 8);
       ctx.fillStyle = '#facc15';
-      ctx.fillRect(x - 5, y - 8, 10, 2);
+      ctx.fillRect(x - 6, y - 10, 12, 2);
       ctx.fillStyle = '#ef4444';
-      ctx.fillRect(x - 5, y, 10, 7);
+      ctx.fillRect(x - 6, y - 1, 12, 8);
       ctx.fillStyle = '#ca8a04';
-      ctx.fillRect(x - 4, y + 7, 8, 4);
-      // Cloud puff underneath
+      ctx.fillRect(x - 5, y + 7, 10, 5);
       ctx.fillStyle = '#f8fafc';
-      ctx.fillRect(x - 6, y + 10, 12, 3);
+      ctx.fillRect(x - 7, y + 11, 14, 4);
     }
 
     const canvas = document.getElementById('gameCanvas');
@@ -1099,22 +1474,21 @@
     const previewCanvas = document.getElementById('charPreviewCanvas');
     const previewCtx = previewCanvas.getContext('2d');
 
-    const STATES = { TITLE: 0, PLAYING: 1, GAMEOVER: 2 };
+    const STATES = { TITLE: 0, BETA_INSPECT: 1, PLAYING: 2, GAMEOVER: 3 };
     let gameState = STATES.TITLE;
 
-    // Randomize initial roster and environment upon load!
-    let charIndex = Math.floor(Math.random() * CHARACTERS.length);
+    let charIndex = 0;
     let currentChar = CHARACTERS[charIndex];
-    let currentCrag = CRAGS[Math.floor(Math.random() * CRAGS.length)];
-    let currentTime = TIMES[Math.floor(Math.random() * TIMES.length)];
-    let currentWeather = WEATHERS[Math.floor(Math.random() * WEATHERS.length)];
-    let callsign = '';
+    let currentCrag = CRAGS[0];
+    let currentTime = TIMES[0];
+    let currentWeather = WEATHERS[0];
+    let callsign = localStorage.getItem('crag_callsign') || '';
 
     let cameraY = 0;
     let targetCameraY = 0;
     let isBetaView = false;
     let betaPanOffset = 0;
-    let nextMilestone = 50;
+    let currentPitchIndex = 0;
 
     const climber = {
       x: 180,
@@ -1128,17 +1502,22 @@
       leftFoot: { x: 165, y: 45 },
       rightFoot: { x: 195, y: 45 },
 
-      grip: 100,
+      grip: 100, // 100 = fresh, 0 = pumped out/slip
+      sweatFriction: 1.0,
       chalkCooldown: 0,
+      screamCooldown: 0,
+      screamDuration: 0,
+      isShaking: false,
+      shakeTimer: 0,
+      isBarnDoor: false,
+      focusBuffTimer: 0,
       holdsLatched: 0,
       altitude: 0,
       score: 0,
       
-      // Flow state mechanics
       flowMultiplier: 1.0,
       lastMoveTime: 0,
 
-      // Slip recovery system
       isSlipping: false,
       slipTimer: 0,
       falling: false,
@@ -1170,14 +1549,25 @@
       updateAtmosphereUI();
     }
 
+    function selectCragById(id) {
+      const crag = CRAGS.find(c => c.id === id);
+      if (crag) {
+        currentCrag = crag;
+        updateAtmosphereUI();
+        document.getElementById('cragDrawerModal').classList.add('hidden');
+        sound.playGrabStone();
+      }
+    }
+
     function updateAtmosphereUI() {
       document.getElementById('topCragBadge').innerText = currentCrag.name.split(' (')[0];
       document.getElementById('topWeatherBadge').innerText = currentWeather.name.split(' ')[0] + ' ' + currentTime.name.split(' ')[0];
       
       document.getElementById('locIcon').innerText = currentCrag.icon;
       document.getElementById('locName').innerText = currentCrag.name;
+      document.getElementById('cragDescText').innerText = currentCrag.desc;
       document.getElementById('timeName').innerText = currentTime.name;
-      document.getElementById('weatherName').innerText = currentWeather.name;
+      document.getElementById('weatherName').innerText = `${currentWeather.name} (${Math.round(currentWeather.friction * currentTime.frictionMod * 100)}%)`;
     }
 
     function generateInitialCrag() {
@@ -1192,21 +1582,22 @@
       targetCameraY = 0;
       betaPanOffset = 0;
       isBetaView = false;
+      currentPitchIndex = 0;
 
       // Crag geological fissures
-      for (let i = 0; i < 45; i++) {
+      for (let i = 0; i < 55; i++) {
         rockCracks.push({
           x: Math.random() * canvas.width,
-          y: i * 40 + Math.random() * 20,
-          length: 30 + Math.random() * 55,
+          y: i * 36 + Math.random() * 20,
+          length: 28 + Math.random() * 55,
           angle: (Math.random() - 0.5) * 0.45,
           color: Math.random() > 0.4 ? currentCrag.crackColor : currentCrag.seamColor,
           width: Math.random() > 0.5 ? 2 : 1,
-          isPebble: currentCrag.type === 'CONGLOMERATE' && Math.random() < 0.6
+          isPebble: currentCrag.type === 'CONGLOMERATE' && Math.random() < 0.65
         });
       }
 
-      // Starting Base Holds
+      // Starting Base Jug Holds
       const baseHoldL = {
         id: holdCounter++,
         x: canvas.width * 0.42,
@@ -1245,83 +1636,46 @@
 
       highestHoldY = 120;
 
-      for (let r = 0; r < 18; r++) {
+      for (let r = 0; r < 20; r++) {
         spawnProgressiveHoldBand();
       }
     }
 
-    function getPitchDifficulty(altMeters) {
-      if (altMeters < 50) {
-        return {
-          pitchName: 'Pitch 1 (Approach)',
-          grade: '5.7',
-          spacing: 34,
-          jugChance: 0.52,
-          pocketChance: 0.30,
-          crimpChance: 0.13,
-          sloperChance: 0.05,
-          chossChance: 0.0,
-          mult: 1.0
-        };
-      } else if (altMeters < 120) {
-        return {
-          pitchName: 'Pitch 2 (Technical Face)',
-          grade: '5.10b',
-          spacing: 42,
-          jugChance: 0.25,
-          pocketChance: 0.25,
-          crimpChance: 0.32,
-          sloperChance: 0.14,
-          chossChance: 0.04,
-          mult: 1.5
-        };
-      } else if (altMeters < 220) {
-        return {
-          pitchName: 'Pitch 3 (The Crux)',
-          grade: '5.13a',
-          spacing: 52,
-          jugChance: 0.12,
-          pocketChance: 0.18,
-          crimpChance: 0.42,
-          sloperChance: 0.16,
-          chossChance: 0.12,
-          mult: 2.2
-        };
-      } else {
-        return {
-          pitchName: 'Pitch 4 (Summit Overhang)',
-          grade: '5.15d',
-          spacing: 62,
-          jugChance: 0.06,
-          pocketChance: 0.12,
-          crimpChance: 0.44,
-          sloperChance: 0.20,
-          chossChance: 0.18,
-          mult: 3.5
-        };
-      }
-    }
-
     function spawnProgressiveHoldBand() {
-      const currentAlt = highestHoldY / 7.5;
+      const currentAlt = highestHoldY / 8.0;
       const pitch = getPitchDifficulty(currentAlt);
 
-      highestHoldY += pitch.spacing + (Math.random() * 14 - 7);
-      const count = Math.random() < 0.4 ? 2 : 3;
+      highestHoldY += pitch.spacing + (Math.random() * 12 - 6);
+      const count = Math.random() < 0.45 ? 2 : 3;
       const colWidth = (canvas.width - 60) / count;
 
       for (let c = 0; c < count; c++) {
-        const xPos = 30 + c * colWidth + (Math.random() * 20 - 10);
+        const xPos = 30 + c * colWidth + (Math.random() * 18 - 9);
         const roll = Math.random();
 
+        // Rare 1.5% chance to spawn "The Pink One in the Corner" easter egg
+        if (Math.random() < 0.015 && highestHoldY > 120) {
+          rockHolds.push({
+            id: holdCounter++,
+            x: Math.max(28, Math.min(canvas.width - 28, xPos)),
+            y: highestHoldY,
+            type: HOLD_TYPES.PINK_ONE,
+            crumbTimer: 0,
+            crumbled: false
+          });
+          continue;
+        }
+
         let holdType = HOLD_TYPES.JUG;
-        if (roll < pitch.jugChance) {
+        if (roll < pitch.jug) {
           holdType = HOLD_TYPES.JUG;
-        } else if (roll < pitch.jugChance + pitch.pocketChance) {
+        } else if (roll < pitch.jug + pitch.pocket) {
           holdType = HOLD_TYPES.POCKET;
-        } else if (roll < pitch.jugChance + pitch.pocketChance + pitch.crimpChance) {
+        } else if (roll < pitch.jug + pitch.pocket + pitch.crimp) {
           holdType = HOLD_TYPES.CRIMP;
-        } else if (roll < pitch.jugChance + pitch.pocketChance + pitch.crimpChance + pitch.sloperChance) {
+        } else if (roll < pitch.jug + pitch.pocket + pitch.crimp + pitch.micro) {
+          holdType = HOLD_TYPES.MICRO_CRIMP;
+        } else if (roll < pitch.jug + pitch.pocket + pitch.crimp + pitch.micro + pitch.sloper) {
           holdType = HOLD_TYPES.SLOPER;
         } else {
           holdType = HOLD_TYPES.CHOSS;
@@ -1337,20 +1691,25 @@
         });
       }
 
-      // Spawn Collectibles: Golden Carabiners or Cliff Flowers
-      if (Math.random() < 0.18 && highestHoldY > 100) {
-        const isFlower = Math.random() < 0.45;
+      // Collectibles: #0.75 Cams, Summit Gummy Bears, Edelweiss, Golden Carabiners
+      if (Math.random() < 0.22 && highestHoldY > 100) {
+        const rollItem = Math.random();
+        let itemType = 'CARABINER';
+        if (rollItem < 0.3) itemType = 'CAM';
+        else if (rollItem < 0.55) itemType = 'GUMMY';
+        else if (rollItem < 0.8) itemType = 'FLOWER';
+
         collectibles.push({
           id: 'item_' + holdCounter,
           x: 25 + Math.random() * (canvas.width - 50),
           y: highestHoldY + 12,
-          type: isFlower ? 'FLOWER' : 'CARABINER',
+          type: itemType,
           collected: false
         });
       }
 
       // Ambient Crag Creatures
-      if (Math.random() < 0.08 && highestHoldY > 140) {
+      if (Math.random() < 0.1 && highestHoldY > 140) {
         ambientCreatures.push({
           x: Math.random() < 0.5 ? 20 : canvas.width - 20,
           y: highestHoldY,
@@ -1362,15 +1721,22 @@
 
     function getReachInfo(hold) {
       const dist = Math.hypot(hold.x - climber.x, hold.y - climber.y);
-      const normalReach = 90 + currentChar.reachBonus;
+      const normalReach = 85 + currentChar.reachBonus;
       const dynoReach = 145 + currentChar.reachBonus;
 
-      if (dist <= normalReach && hold.y > climber.y - 12) {
+      if (dist <= normalReach && hold.y > climber.y - 14) {
         return { reachable: true, isDyno: false, dist };
-      } else if (dist <= dynoReach && hold.y > climber.y - 12) {
+      } else if (dist <= dynoReach && hold.y > climber.y - 14) {
         return { reachable: true, isDyno: true, dist };
       }
       return { reachable: false, isDyno: false, dist };
+    }
+
+    function checkRotationalBarnDoor(targetX) {
+      // Reaching across opposite side without footing creates rotational barn-door
+      const isReachingCross = (climber.activeHandToggle === 0 && targetX > climber.rightHand.x + 22) ||
+                              (climber.activeHandToggle === 1 && targetX < climber.leftHand.x - 22);
+      return isReachingCross;
     }
 
     function attemptGrabHold(hold) {
@@ -1388,11 +1754,21 @@
         return;
       }
 
-      // Check Flow State combo streak
+      // Rotational Barn-door detection
+      climber.isBarnDoor = checkRotationalBarnDoor(hold.x);
+      const barnDoorWarningEl = document.getElementById('hudBarnDoorWarning');
+      if (climber.isBarnDoor) {
+        barnDoorWarningEl.classList.remove('hidden');
+        sound.playSlipAlert();
+      } else {
+        barnDoorWarningEl.classList.add('hidden');
+      }
+
+      // Flow State combo streak
       const now = Date.now();
-      if (climber.lastMoveTime > 0 && (now - climber.lastMoveTime) < 3600) {
+      if (climber.lastMoveTime > 0 && (now - climber.lastMoveTime) < 3800) {
         climber.flowMultiplier = Math.min(5.0, parseFloat((climber.flowMultiplier + (currentChar.id === 'wukong' ? 0.6 : 0.3)).toFixed(1)));
-        climber.grip = Math.min(100, climber.grip + 4); // Flow momentum recovery bonus!
+        climber.grip = Math.min(100, climber.grip + 3.0);
       } else {
         climber.flowMultiplier = 1.0;
       }
@@ -1421,21 +1797,41 @@
       reachHand.targetY = hold.y;
       reachHand.lerp = 0;
 
-      const alt = hold.y / 7.5;
+      const alt = hold.y / 8.0;
       const pitch = getPitchDifficulty(alt);
 
+      // Pitch milestone verification
+      if (pitch.index > currentPitchIndex) {
+        currentPitchIndex = pitch.index;
+        triggerMilestone(pitch.grade, pitch.pitchName);
+      }
+
+      // Dyno Lunge check
       if (reach.isDyno) {
-        const dynoCost = currentChar.id === 'wukong' ? 0 : (10 / currentChar.staminaRate);
-        climber.grip = Math.max(15, climber.grip - dynoCost);
-        climber.score += Math.floor(hold.type.score * 2.0 * pitch.mult * climber.flowMultiplier);
+        const dynoCost = currentChar.id === 'wukong' ? 0 : Math.max(10, (16 / currentChar.staminaRate));
+        climber.grip = Math.max(6, climber.grip - dynoCost);
+        climber.score += Math.floor(hold.type.score * 2.5 * pitch.mult * climber.flowMultiplier);
         sound.playDynoLunge();
-        spawnChalkDust(hold.x, hold.y, 14);
-        showHoldFeedbackToast(`🚀 DYNO LATCH! +${Math.floor(hold.type.score * 2.0 * pitch.mult * climber.flowMultiplier)} pts`);
+        spawnChalkDust(hold.x, hold.y, 16, '#fef08a');
+        showHoldFeedbackToast(`🚀 DYNO LATCH! +${Math.floor(hold.type.score * 2.5 * pitch.mult * climber.flowMultiplier)} pts`);
+        
+        if (climber.grip < 20 && Math.random() < 0.45) {
+          enterSlipState();
+        }
       } else {
         climber.score += Math.floor(hold.type.score * pitch.mult * climber.flowMultiplier);
         sound.playGrabStone();
-        spawnChalkDust(hold.x, hold.y, 4);
+        spawnChalkDust(hold.x, hold.y, 5, '#ffffff');
         showHoldFeedbackToast(`✓ LATCHED ${hold.type.tag}`);
+      }
+
+      // Easter Egg: The Pink One in the Corner
+      if (hold.type.easterEgg) {
+        climber.grip = 100;
+        climber.score += 1500;
+        sound.playMilestoneFanfare();
+        spawnChalkDust(hold.x, hold.y, 25, '#ec4899');
+        showHoldFeedbackToast('🌈 PINK ONE IN THE CORNER! +1500 PTS FULL RECOVERY!');
       }
 
       climber.holdsLatched++;
@@ -1450,14 +1846,20 @@
 
       climber.altitude = Math.max(climber.altitude, alt);
 
-      // Check collectibles within grab radius
+      // Collectibles check within grab radius
       collectibles.forEach(item => {
-        if (!item.collected && Math.hypot(item.x - climber.x, item.y - climber.y) < 55) {
+        if (!item.collected && Math.hypot(item.x - climber.x, item.y - climber.y) < 56) {
           item.collected = true;
           sound.playItemCollect();
           if (item.type === 'FLOWER') {
-            climber.grip = Math.min(100, climber.grip + 10);
-            showHoldFeedbackToast('🌸 CLIFF FLOWER: +10 % GRIP RECOVERED!');
+            climber.grip = Math.min(100, climber.grip + 14);
+            showHoldFeedbackToast('🌸 EDELWEISS: +14% GRIP RECOVERED!');
+          } else if (item.type === 'GUMMY') {
+            climber.grip = Math.min(100, climber.grip + 25);
+            showHoldFeedbackToast('🐻 HARIBO GUMMY BEARS: +25% STAMINA BURST!');
+          } else if (item.type === 'CAM') {
+            climber.score += 350;
+            showHoldFeedbackToast('🔩 #0.75 CAMALOT BOOTY: +350 PTS!');
           } else {
             climber.score += 250;
             showHoldFeedbackToast('🟡 GOLDEN CARABINER: +250 PTS!');
@@ -1465,33 +1867,70 @@
         }
       });
 
-      if (climber.altitude >= nextMilestone) {
-        triggerMilestone(nextMilestone);
-        nextMilestone += 50;
+      // Occasional Boulder Bro Beta Spray popup
+      if (Math.random() < 0.12 && climber.holdsLatched > 3) {
+        triggerBetaSprayToast();
       }
+    }
+
+    function useShakeoutAction() {
+      if (gameState !== STATES.PLAYING || climber.falling) return;
+      sound.init();
+
+      const holds = [climber.leftHand.hold, climber.rightHand.hold].filter(Boolean);
+      const onGoodHold = holds.some(h => h.type.id === 'jug' || h.type.id === 'pocket');
+
+      if (!onGoodHold && climber.grip < 25) {
+        showHoldFeedbackToast('⚠️ CANNOT SHAKE OUT ON CRIMP! FIND A REST JUG!');
+        return;
+      }
+
+      sound.playShakeoutBreath();
+      climber.isShaking = true;
+      climber.shakeTimer = 80; // 1.3s shakeout
+      climber.grip = Math.min(100, climber.grip + 10);
+      spawnChalkDust(climber.x - 8, climber.y - 10, 6, '#e2e8f0');
+      showHoldFeedbackToast('🫲 SHAKING OUT FOREARM: +10% LACTIC FLUSH');
     }
 
     function useChalkPowder() {
       if (climber.chalkCooldown <= 0 && !climber.falling && gameState === STATES.PLAYING) {
         sound.init();
         climber.grip = Math.min(100, climber.grip + 10);
-        climber.chalkCooldown = 1200; // 20s
+        climber.sweatFriction = 1.0;
+        climber.chalkCooldown = 960; // 16s cooldown
         sound.playChalkPuff();
-        spawnChalkDust(climber.x, climber.y - 12, 20);
+        spawnChalkDust(climber.x, climber.y - 12, 18, '#ffffff');
 
         if (climber.isSlipping) {
           recoverFromSlip(null);
         } else {
-          showHoldFeedbackToast('🧤 CHALK APPLIED: GRIP RESTORED');
+          showHoldFeedbackToast('🧤 CHALK APPLIED: SWEAT WIPED & FRICTION 100%');
         }
       }
+    }
+
+    function useOndraPowerScream() {
+      if (gameState !== STATES.PLAYING || climber.falling) return;
+      if (climber.screamCooldown > 0) {
+        showHoldFeedbackToast('⏳ VOCAL CHORDS RESTING...');
+        return;
+      }
+
+      sound.init();
+      sound.playOndraPowerScream();
+      climber.screamDuration = 180; // 3 seconds freeze pump!
+      climber.screamCooldown = 1800; // 30s cooldown
+      climber.flowMultiplier = Math.min(5.0, climber.flowMultiplier + 1.0);
+      spawnChalkDust(climber.x, climber.y - 18, 22, '#ef4444');
+      showHoldFeedbackToast('🗣️ "AAAAATTTTTTT!" PUMP DRAIN FROZEN FOR 3s!');
     }
 
     function enterSlipState() {
       if (climber.isSlipping || climber.falling) return;
 
       climber.isSlipping = true;
-      climber.slipTimer = 150; // 2.5 seconds
+      climber.slipTimer = 120; // 2.0 seconds
       climber.flowMultiplier = 1.0;
       sound.playSlipAlert();
 
@@ -1502,7 +1941,7 @@
     function recoverFromSlip(savedHold) {
       climber.isSlipping = false;
       climber.slipTimer = 0;
-      climber.grip = 60;
+      climber.grip = 55;
       sound.playCatchSave();
       document.getElementById('slipRescueBanner').classList.add('hidden');
       showHoldFeedbackToast('✋ RE-LATCHED! GRIP RECOVERED!');
@@ -1531,7 +1970,7 @@
 
       setTimeout(() => {
         concludeClimb();
-      }, 1000);
+      }, 1100);
     }
 
     function concludeClimb() {
@@ -1545,14 +1984,11 @@
       document.getElementById('finalComboText').innerText = `x${climber.flowMultiplier.toFixed(1)}`;
       document.getElementById('finalScoreText').innerText = climber.score;
 
-      const quotes = [
-        "Gravity never blinks.",
-        "A split second of fatigue on sheer stone.",
-        "Take your time to study the sequence next pitch!",
-        "The crag always remains.",
-        "Smooth movement builds summit speed."
-      ];
-      document.getElementById('fallQuoteText').innerText = `"${quotes[Math.floor(Math.random() * quotes.length)]}"`;
+      // Select from authentic climber quotes & coaching tactics
+      const item = FAILURE_DECKS[Math.floor(Math.random() * FAILURE_DECKS.length)];
+      document.getElementById('fallCardTypeBadge').innerText = item.type;
+      document.getElementById('fallAuthorBadge').innerText = item.author;
+      document.getElementById('fallQuoteText').innerText = item.text;
 
       saveAscentRecord();
 
@@ -1564,11 +2000,14 @@
       const status = document.getElementById('d1SyncStatus');
       status.innerText = 'Logging ascent to crag records...';
 
+      const pitch = getPitchDifficulty(climber.altitude);
+
       const entry = {
         id: 'climb_' + Date.now(),
         name: callsign || 'Anonymous',
         character: currentChar.name,
         location: currentCrag.name.split(' (')[0],
+        grade: pitch.grade,
         weather: currentWeather.name.split(' ')[1] || 'Clear',
         score: climber.score,
         height: parseFloat(climber.altitude.toFixed(1)),
@@ -1576,34 +2015,34 @@
       };
 
       await storage.saveScore(entry);
-      status.innerText = '✓ Ascent recorded!';
+      status.innerText = '✓ Ascent recorded in crag annals!';
     }
 
-    function spawnChalkDust(x, y, count) {
+    function spawnChalkDust(x, y, count, color = '#ffffff') {
       for (let i = 0; i < count; i++) {
         rockParticles.push({
           x: x,
           y: y,
-          vx: (Math.random() - 0.5) * 2.5,
-          vy: (Math.random() - 0.5) * 2.5,
+          vx: (Math.random() - 0.5) * 2.8,
+          vy: (Math.random() - 0.5) * 2.8,
           size: Math.random() * 3 + 1,
-          color: 'rgba(255, 255, 255, 0.85)',
+          color: color,
           life: 1.0,
           decay: 0.04
         });
       }
     }
 
-    function triggerMilestone(dist) {
+    function triggerMilestone(grade, name) {
       sound.playMilestoneFanfare();
       const banner = document.getElementById('milestoneBanner');
-      banner.innerText = `🧗 ${dist}m ELEVATION REACHED!`;
+      banner.innerText = `🧗 PITCH CRUX: ${grade} (${name})!`;
       banner.classList.remove('opacity-0', '-translate-y-4');
       banner.classList.add('opacity-100', 'translate-y-0');
       setTimeout(() => {
         banner.classList.add('opacity-0', '-translate-y-4');
         banner.classList.remove('opacity-100', 'translate-y-0');
-      }, 2200);
+      }, 2500);
     }
 
     function showHoldFeedbackToast(msg) {
@@ -1613,23 +2052,42 @@
       pill.classList.add('opacity-100');
     }
 
+    function triggerBetaSprayToast() {
+      const tips = [
+        '🗣️ "Dude just drop-knee and heel hook!"',
+        '🗣️ "That micro-crimp is totally positive, bro!"',
+        '🗣️ "Soft for the grade at my gym!"',
+        '🗣️ "Have you tried matching on that crimp?"',
+        '🗣️ "Brush the tick marks before you send!"',
+        '🗣️ "Trust your feet! Smear with the toe rubber!"'
+      ];
+      const toast = document.getElementById('betaSprayToast');
+      toast.innerText = tips[Math.floor(Math.random() * tips.length)];
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2800);
+    }
+
     function updateHandIndicatorUI() {
       const ind = document.getElementById('nextHandIndicator');
       if (climber.activeHandToggle === 0) {
         ind.className = 'text-cyan-300 font-bold';
-        ind.innerText = 'LEFT ◀';
+        ind.innerText = 'L ◀';
       } else {
         ind.className = 'text-amber-300 font-bold';
-        ind.innerText = 'RIGHT ▶';
+        ind.innerText = 'R ▶';
       }
     }
 
     function updatePhysics() {
-      if (gameState !== STATES.PLAYING) return;
+      if (gameState !== STATES.PLAYING && gameState !== STATES.BETA_INSPECT) return;
 
       climber.animTick++;
 
-      if (!climber.falling) {
+      if (gameState === STATES.PLAYING && !climber.falling) {
         climber.x += (climber.targetX - climber.x) * 0.16;
         climber.y += (climber.targetY - climber.y) * 0.16;
 
@@ -1649,47 +2107,100 @@
         climber.rightFoot.x = climber.x + 10 + Math.cos(climber.animTick * 0.1) * 2;
         climber.rightFoot.y = climber.y - 24;
 
+        if (climber.screamDuration > 0) {
+          climber.screamDuration--;
+        }
+
+        if (climber.focusBuffTimer > 0) {
+          climber.focusBuffTimer--;
+        }
+
+        // Slight sweat buildup over time reducing stone friction
+        climber.sweatFriction = Math.max(0.75, climber.sweatFriction - 0.0001);
+
         if (!isBetaView) {
           let netGripRate = 0;
           let currentHoldStatusText = "🟢 RESTING ON HOLD";
 
           const holds = [climber.leftHand.hold, climber.rightHand.hold].filter(Boolean);
+          const isHangingOneHand = climber.leftHand.lerp < 1 || climber.rightHand.lerp < 1 || climber.isShaking;
+
           if (holds.length > 0) {
+            let baseRate = 0;
+            const hasPink = holds.some(h => h.type.id === 'pink_one');
             const hasJug = holds.some(h => h.type.id === 'jug');
             const hasPocket = holds.some(h => h.type.id === 'pocket');
             const hasCrimp = holds.some(h => h.type.id === 'crimp');
+            const hasMicro = holds.some(h => h.type.id === 'micro_crimp');
             const hasSloper = holds.some(h => h.type.id === 'sloper');
             const hasChoss = holds.some(h => h.type.id === 'choss');
 
-            if (hasJug) {
-              netGripRate = -0.02 * currentChar.staminaRate;
+            if (hasPink) {
+              baseRate = HOLD_TYPES.PINK_ONE.pumpRate;
+              currentHoldStatusText = "🌈 PINK ONE: RECOVERING";
+            } else if (hasJug) {
+              baseRate = HOLD_TYPES.JUG.pumpRate * currentChar.staminaRate;
               currentHoldStatusText = "🟢 JUG: RECOVERING GRIP";
             } else if (hasPocket) {
-              netGripRate = 0.0;
-              currentHoldStatusText = "🔵 POCKET: ZERO DRAIN (REST)";
+              baseRate = HOLD_TYPES.POCKET.pumpRate * currentChar.staminaRate;
+              currentHoldStatusText = "🔵 POCKET: SLIGHT DRAIN";
             } else if (hasCrimp) {
-              netGripRate = 0.09 * currentChar.staminaRate;
-              currentHoldStatusText = "🟡 CRIMP: SLOW PUMP";
+              baseRate = HOLD_TYPES.CRIMP.pumpRate * currentChar.staminaRate;
+              currentHoldStatusText = "🟡 CRIMP: STEADY PUMP";
+            } else if (hasMicro) {
+              baseRate = HOLD_TYPES.MICRO_CRIMP.pumpRate * currentChar.staminaRate;
+              currentHoldStatusText = "🔴 MICRO-CRIMP: HEAVY PUMP";
             } else if (hasSloper) {
               const sloperMod = currentChar.id === 'billy' ? 0.5 : 1.0;
-              netGripRate = 0.11 * currentChar.staminaRate * sloperMod;
-              currentHoldStatusText = "🟠 SLOPER: SLOW PUMP";
+              const totalFriction = currentWeather.friction * currentTime.frictionMod * climber.sweatFriction;
+              baseRate = (HOLD_TYPES.SLOPER.pumpRate / totalFriction) * currentChar.staminaRate * sloperMod;
+              currentHoldStatusText = "🟠 SLOPER: FRICTION PUMP";
             } else if (hasChoss) {
-              netGripRate = 0.12 * currentChar.staminaRate;
+              baseRate = HOLD_TYPES.CHOSS.pumpRate * currentChar.staminaRate;
               currentHoldStatusText = "🔴 CHOSS: CRACKING!";
             }
+
+            // Real-World One-Hand Hanging Penalty: 2.5x drain multiplier when reaching!
+            if (isHangingOneHand && baseRate > 0) {
+              baseRate *= 2.5;
+              currentHoldStatusText += " (1-ARM 2.5x PUMP)";
+            }
+
+            // Barn-door rotational penalty: adds an extra 1.8x drain
+            if (climber.isBarnDoor && baseRate > 0) {
+              baseRate *= 1.8;
+            }
+
+            // Focus on-sight buff from reading route beforehand
+            if (climber.focusBuffTimer > 0 && baseRate > 0) {
+              baseRate *= 0.75;
+            }
+
+            netGripRate = baseRate;
+          }
+
+          // If Adam Ondra power scream is active, freeze pump drain!
+          if (climber.screamDuration > 0) {
+            netGripRate = Math.min(0, netGripRate);
+            currentHoldStatusText = "🗣️ SCREAM: PUMP FROZEN!";
           }
 
           climber.grip = Math.max(0, Math.min(100, climber.grip - netGripRate));
           document.getElementById('hudHoldStatus').innerText = currentHoldStatusText;
 
+          // Heartbeat audio warning when pumped (>70% pump / <30% grip)
+          if (climber.grip < 30 && climber.animTick % 40 === 0) {
+            sound.playHeartbeatThump();
+          }
+
+          // Choss crumble timer
           holds.forEach(h => {
             if (h && h.type.crumble) {
               h.crumbTimer++;
-              if (h.crumbTimer > 360) {
+              if (h.crumbTimer > 240) { // 4.0 seconds
                 h.crumbled = true;
                 sound.playRockBreak();
-                spawnChalkDust(h.x, h.y, 16);
+                spawnChalkDust(h.x, h.y, 20, '#dc2626');
                 enterSlipState();
               }
             }
@@ -1700,6 +2211,11 @@
           }
 
           if (climber.chalkCooldown > 0) climber.chalkCooldown--;
+          if (climber.screamCooldown > 0) climber.screamCooldown--;
+          if (climber.shakeTimer > 0) {
+            climber.shakeTimer--;
+            if (climber.shakeTimer <= 0) climber.isShaking = false;
+          }
         }
 
         if (climber.isSlipping) {
@@ -1709,14 +2225,14 @@
             triggerFinalFall();
           }
         }
-      } else {
+      } else if (climber.falling) {
         climber.fallVelocity += 0.55;
         climber.y -= climber.fallVelocity;
       }
 
       // Camera Tracking & Smooth Pan
       targetCameraY = Math.max(0, climber.y - canvas.height * 0.40);
-      const desiredBetaOffset = isBetaView ? 240 : 0;
+      const desiredBetaOffset = isBetaView ? 240 : (gameState === STATES.BETA_INSPECT ? betaPanOffset : 0);
       betaPanOffset += (desiredBetaOffset - betaPanOffset) * 0.12;
       cameraY += ((targetCameraY + betaPanOffset) - cameraY) * 0.14;
 
@@ -1732,7 +2248,7 @@
         if (p.life <= 0) rockParticles.splice(i, 1);
       }
 
-      // Update HUD
+      // Update HUD elements
       const gripPct = Math.max(0, Math.floor(climber.grip));
       document.getElementById('hudGripPct').innerText = `${gripPct}%`;
       const fillBar = document.getElementById('hudGripBar');
@@ -1755,11 +2271,11 @@
       const flowBox = document.getElementById('flowBox');
       if (climber.flowMultiplier > 1.0) {
         flowText.innerText = `${climber.flowMultiplier.toFixed(1)}x`;
-        flowText.className = 'text-[8px] text-pink-400 font-bold';
+        flowText.className = 'text-[7px] text-pink-400 font-bold';
         flowBox.classList.add('flow-active');
       } else {
         flowText.innerText = '1.0x';
-        flowText.className = 'text-[8px] text-gray-500 font-bold';
+        flowText.className = 'text-[7px] text-gray-500 font-bold';
         flowBox.classList.remove('flow-active');
       }
 
@@ -1769,25 +2285,30 @@
       } else {
         cdText.innerText = 'RDY';
       }
+
+      const screamBtnText = document.getElementById('screamText');
+      if (climber.screamCooldown > 0) {
+        screamBtnText.innerText = `${Math.ceil(climber.screamCooldown / 60)}s`;
+      } else {
+        screamBtnText.innerText = 'SCREAM';
+      }
     }
 
     function renderRockFace() {
       ctx.fillStyle = currentCrag.baseRock;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Render crag-specific geology
+      // Render crag geological fissures & rock layers
       rockCracks.forEach(cr => {
         const sy = canvas.height - (cr.y - cameraY);
         if (sy < -40 || sy > canvas.height + 40) return;
 
         if (cr.isPebble) {
-          // Montserrat Conglomerate rounded pebbles
           ctx.fillStyle = currentCrag.pebbleColor;
           ctx.beginPath();
           ctx.ellipse(cr.x, sy, 7, 5, 0.4, 0, Math.PI * 2);
           ctx.fill();
         } else {
-          // Standard fissure lines
           ctx.strokeStyle = cr.color;
           ctx.lineWidth = cr.width;
           ctx.beginPath();
@@ -1802,16 +2323,20 @@
       ctx.fillRect(0, 0, 14, canvas.height);
       ctx.fillRect(canvas.width - 14, 0, 14, canvas.height);
 
-      // Render Collectibles (Carabiners and Flowers)
+      // Collectibles
       collectibles.forEach(item => {
         if (item.collected) return;
         const sy = canvas.height - (item.y - cameraY);
         if (sy < -20 || sy > canvas.height + 20) return;
 
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = 'center';
         if (item.type === 'FLOWER') {
-          ctx.font = '13px sans-serif';
-          ctx.textAlign = 'center';
           ctx.fillText('🌸', item.x, sy);
+        } else if (item.type === 'GUMMY') {
+          ctx.fillText('🐻', item.x, sy);
+        } else if (item.type === 'CAM') {
+          ctx.fillText('🔩', item.x, sy);
         } else {
           ctx.fillStyle = '#facc15';
           ctx.fillRect(item.x - 3, sy - 5, 6, 9);
@@ -1829,7 +2354,7 @@
         const reach = getReachInfo(h);
         h.type.draw(ctx, h.x, sy, reach.reachable, h.crumbTimer);
 
-        if (reach.reachable && !reach.isDyno) {
+        if (reach.reachable && !reach.isDyno && gameState === STATES.PLAYING) {
           ctx.strokeStyle = h.type.colorHex;
           ctx.lineWidth = 1.5;
           ctx.beginPath();
@@ -1840,7 +2365,7 @@
           ctx.beginPath();
           ctx.arc(h.x, sy - 14, 3, 0, Math.PI * 2);
           ctx.fill();
-        } else if (reach.reachable && reach.isDyno) {
+        } else if (reach.reachable && reach.isDyno && gameState === STATES.PLAYING) {
           ctx.strokeStyle = 'rgba(245, 158, 11, 0.85)';
           ctx.lineWidth = 1.5;
           ctx.setLineDash([4, 4]);
@@ -1849,21 +2374,22 @@
           ctx.stroke();
           ctx.setLineDash([]);
 
-          ctx.font = '7px monospace';
+          ctx.font = '6px monospace';
           ctx.fillStyle = '#f59e0b';
           ctx.textAlign = 'center';
           ctx.fillText('DYNO', h.x, sy - 13);
         }
 
-        if (isBetaView && sy > 40 && sy < canvas.height - 40) {
-          ctx.font = '6.5px monospace';
+        // Annotations during Beta Reading or Inspection
+        if ((isBetaView || gameState === STATES.BETA_INSPECT) && sy > 30 && sy < canvas.height - 30) {
+          ctx.font = '5.5px monospace';
           ctx.fillStyle = h.type.colorHex;
           ctx.textAlign = 'center';
-          ctx.fillText(h.type.tag.split(' ')[0], h.x, sy + 14);
+          ctx.fillText(h.type.tag.split(' ')[0], h.x, sy + 13);
         }
       });
 
-      // Ambient Crag Surprises (Eagles, Bells, Swallows, Goats)
+      // Ambient Crag Surprises
       ambientCreatures.forEach(c => {
         const sy = canvas.height - (c.y - cameraY);
         if (sy < -30 || sy > canvas.height + 30) return;
@@ -1873,11 +2399,14 @@
         else if (c.type === 'SWALLOW') ctx.fillText('🕊️', c.x, sy);
         else if (c.type === 'GOAT') ctx.fillText('🐐', c.x, sy);
         else if (c.type === 'BELL') ctx.fillText('🔔', c.x, sy);
+        else if (c.type === 'CAMPERVAN') ctx.fillText('🚐', c.x, sy);
+        else if (c.type === 'AURORA') ctx.fillText('🌌', c.x, sy);
+        else if (c.type === 'CONDOR') ctx.fillText('🦅', c.x, sy);
       });
     }
 
     function renderClimberKinematics() {
-      if (gameState !== STATES.PLAYING && gameState !== STATES.GAMEOVER) return;
+      if (gameState === STATES.TITLE) return;
 
       const bodyScreenX = climber.x;
       const bodyScreenY = canvas.height - (climber.y - cameraY);
@@ -1953,12 +2482,21 @@
       ctx.fillStyle = '#f59e0b';
       ctx.fillRect(rhX - 2.5, rhY - 2.5, 5, 5);
 
-      // Special visual aura for Master Wukong
+      // Master Wukong visual aura
       if (currentChar.id === 'wukong') {
         ctx.fillStyle = 'rgba(254, 240, 138, 0.45)';
         ctx.beginPath();
         ctx.arc(bodyScreenX, bodyScreenY + 14, 12, 0, Math.PI * 2);
         ctx.fill();
+      }
+
+      // Adam Ondra scream blast ring
+      if (climber.screamDuration > 0) {
+        ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(bodyScreenX, bodyScreenY - 12, (180 - climber.screamDuration) % 25 + 10, 0, Math.PI * 2);
+        ctx.stroke();
       }
     }
 
@@ -2011,12 +2549,12 @@
       isBetaView = !isBetaView;
       const btnText = document.getElementById('betaViewBtnText');
       if (isBetaView) {
-        betaBtn.className = 'px-2 py-1 bg-cyan-600 text-black font-bold border border-white rounded text-[7px] flex items-center gap-1 transition-all';
-        btnText.innerText = 'EXIT BETA';
+        betaBtn.className = 'px-2 py-1 bg-cyan-600 text-black font-bold border border-white rounded text-[6px] flex items-center gap-0.5';
+        btnText.innerText = 'EXIT';
         showHoldFeedbackToast('👁️ BETA INSPECTION: PANNED 15m AHEAD');
       } else {
-        betaBtn.className = 'px-2 py-1 bg-[#132235] hover:bg-[#1d3553] active:scale-95 text-cyan-300 border border-cyan-500 rounded text-[7px] flex items-center gap-1 transition-all';
-        btnText.innerText = 'BETA VIEW';
+        betaBtn.className = 'px-2 py-1 bg-[#132235] active:scale-95 text-cyan-300 border border-cyan-500 rounded text-[6px] flex items-center gap-0.5';
+        btnText.innerText = 'BETA';
       }
       sound.playGrabStone();
     });
@@ -2046,16 +2584,21 @@
       document.getElementById('charBioText').innerText = c.bio;
       document.getElementById('rosterTag').innerText = c.category;
 
-      c.drawIcon(previewCtx, 18, 18);
+      document.getElementById('statStamina').innerText = c.stats.sta;
+      document.getElementById('statReach').innerText = c.stats.rch;
+
+      c.drawIcon(previewCtx, 20, 20);
     }
 
-    document.getElementById('prevCharBtn').addEventListener('click', () => {
+    document.getElementById('prevCharBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
       charIndex = (charIndex - 1 + CHARACTERS.length) % CHARACTERS.length;
       updateCharacterPreview();
       sound.playGrabStone();
     });
 
-    document.getElementById('nextCharBtn').addEventListener('click', () => {
+    document.getElementById('nextCharBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
       charIndex = (charIndex + 1) % CHARACTERS.length;
       updateCharacterPreview();
       sound.playGrabStone();
@@ -2066,11 +2609,44 @@
       sound.playGrabStone();
     });
 
+    document.getElementById('shakeoutBtn').addEventListener('click', useShakeoutAction);
     document.getElementById('chalkQuickBtn').addEventListener('click', useChalkPowder);
+    document.getElementById('ondraScreamBtn').addEventListener('click', useOndraPowerScream);
+
+    function populateCragDrawerList() {
+      const container = document.getElementById('cragsListGrid');
+      container.innerHTML = '';
+      CRAGS.forEach(crag => {
+        const item = document.createElement('div');
+        item.className = 'p-1.5 bg-[#0f172a] hover:bg-cyan-950 border border-cyan-800/60 rounded flex items-center justify-between cursor-pointer transition-all';
+        item.innerHTML = `
+          <div class="flex items-center gap-1.5 truncate max-w-[80%]">
+            <span class="text-base">${crag.icon}</span>
+            <div class="truncate">
+              <span class="text-[7px] text-white font-bold block truncate">${crag.name}</span>
+              <span class="text-[5.5px] text-gray-400 block truncate">${crag.desc}</span>
+            </div>
+          </div>
+          <button class="px-1.5 py-0.5 bg-cyan-700 text-black font-bold text-[6px] rounded shrink-0">SELECT</button>
+        `;
+        item.addEventListener('click', () => selectCragById(crag.id));
+        container.appendChild(item);
+      });
+    }
+
+    document.getElementById('openCragDrawerBtn').addEventListener('click', () => {
+      populateCragDrawerList();
+      document.getElementById('cragDrawerModal').classList.remove('hidden');
+      sound.playGrabStone();
+    });
+
+    document.getElementById('closeCragDrawerBtn').addEventListener('click', () => {
+      document.getElementById('cragDrawerModal').classList.add('hidden');
+    });
 
     async function showLeaderboard(filter = 'ALL') {
       const tbody = document.getElementById('leaderboardRows');
-      tbody.innerHTML = '<tr><td colspan="6" class="p-2 text-center text-gray-500">Loading ascents...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" class="p-2 text-center text-gray-500">Loading ascents...</td></tr>';
       
       const scores = await storage.getScores();
       let filtered = scores;
@@ -2084,7 +2660,7 @@
       }
 
       if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500 text-[6.5px]">No ascents logged yet.<br>Claim the First Ascent (FA)!</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="p-3 text-center text-gray-500 text-[5.5px]">No ascents logged yet.<br>Claim the First Ascent (FA)!</td></tr>';
         return;
       }
 
@@ -2099,11 +2675,10 @@
 
         tr.innerHTML = `
           <td class="p-1 font-bold text-yellow-400">${medal}</td>
-          <td class="p-1 font-bold text-cyan-300 truncate max-w-[75px]">${escapeHtml(entry.name || 'Anonymous')}</td>
-          <td class="p-1 text-gray-400 truncate max-w-[65px]">${escapeHtml(entry.location || 'Crag')}</td>
+          <td class="p-1 font-bold text-cyan-300 truncate max-w-[85px]">${escapeHtml(entry.name || 'Anonymous')}</td>
+          <td class="p-1 text-gray-400 truncate max-w-[70px]">${escapeHtml(entry.location || 'Crag')}</td>
           <td class="p-1 text-emerald-400">${(entry.height || 0).toFixed(1)}m</td>
           <td class="p-1 text-right font-bold text-amber-300">${entry.score || 0}</td>
-          <td class="p-1 text-right text-gray-500">${(entry.created_at || '').substring(5)}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -2157,23 +2732,30 @@
       else if (gameState === STATES.PLAYING) sound.startChiptuneLoop();
     });
 
-    function startClimbingSession() {
+    function validateCallsign() {
       const inputEl = document.getElementById('callsignInput');
       const val = inputEl.value.trim();
 
       if (!val) {
         document.getElementById('nameRequiredWarn').classList.remove('hidden');
         inputEl.focus();
-        return;
+        return false;
       }
 
       document.getElementById('nameRequiredWarn').classList.add('hidden');
       callsign = val;
+      localStorage.setItem('crag_callsign', callsign);
+      return true;
+    }
 
-      sound.init();
-
+    function initClimberState() {
       climber.grip = 100;
+      climber.sweatFriction = 1.0;
       climber.chalkCooldown = 0;
+      climber.screamCooldown = 0;
+      climber.screamDuration = 0;
+      climber.isShaking = false;
+      climber.isBarnDoor = false;
       climber.score = 0;
       climber.altitude = 0;
       climber.holdsLatched = 0;
@@ -2182,14 +2764,51 @@
       climber.falling = false;
       climber.isSlipping = false;
       climber.activeHandToggle = 0;
-      nextMilestone = 50;
+      currentPitchIndex = 0;
 
       generateInitialCrag();
       updateHandIndicatorUI();
+    }
+
+    document.getElementById('startWithBetaBtn').addEventListener('click', () => {
+      if (!validateCallsign()) return;
+      sound.init();
+      initClimberState();
+
+      gameState = STATES.BETA_INSPECT;
+      betaPanOffset = 220; // Pan 25m up the cliff to preview holds!
+
+      document.getElementById('titleScreen').classList.add('hidden');
+      document.getElementById('betaInspectionBanner').classList.remove('hidden');
+      document.getElementById('inGameHud').classList.remove('hidden');
+      sound.playMilestoneFanfare();
+    });
+
+    document.getElementById('panUpBetaBtn').addEventListener('click', () => {
+      betaPanOffset = Math.min(600, betaPanOffset + 140);
+      sound.playGrabStone();
+    });
+
+    document.getElementById('commitAscentBtn').addEventListener('click', () => {
+      betaPanOffset = 0;
+      gameState = STATES.PLAYING;
+      climber.focusBuffTimer = 480; // 8 seconds of On-Sight pump resistance buff!
+
+      document.getElementById('betaInspectionBanner').classList.add('hidden');
+      sound.playGrabStone();
+      sound.startChiptuneLoop();
+      showHoldFeedbackToast('🎯 ON-SIGHT FOCUS: +25% PUMP RESISTANCE FOR 8s!');
+    });
+
+    function startDirectClimb() {
+      if (!validateCallsign()) return;
+      sound.init();
+      initClimberState();
 
       document.getElementById('titleScreen').classList.add('hidden');
       document.getElementById('gameOverScreen').classList.add('hidden');
       document.getElementById('slipRescueBanner').classList.add('hidden');
+      document.getElementById('betaInspectionBanner').classList.add('hidden');
       document.getElementById('inGameHud').classList.remove('hidden');
 
       gameState = STATES.PLAYING;
@@ -2197,15 +2816,18 @@
       sound.startChiptuneLoop();
     }
 
-    document.getElementById('startClimbBtn').addEventListener('click', startClimbingSession);
+    document.getElementById('startClimbBtn').addEventListener('click', startDirectClimb);
     document.getElementById('retryClimbBtn').addEventListener('click', () => {
       randomizeCragAndAtmosphere();
-      startClimbingSession();
+      startDirectClimb();
     });
 
     window.onload = function() {
       resizeViewport();
       randomizeCragAndAtmosphere();
+      if (callsign) {
+        document.getElementById('callsignInput').value = callsign;
+      }
       updateCharacterPreview();
       gameLoop();
     };
