@@ -5,7 +5,7 @@
         author: 'FREE//BUILDER',
         genre: 'TACTICAL FREE-SOLO CLIMBER',
         desc: 'Tactical stone ascent engine from 5.6 to 5.15d. Manage forearm pump, chalk up, plan crux sequences, and shake out on jugs.',
-        url: 'https://wei-meng.org/free-builder/game/climb'
+        url: 'climb'
       },
       {
         code: 'DJ',
@@ -14,7 +14,7 @@
         author: 'FREE//BUILDER',
         genre: '8-BIT VINYL & TURNTABLE MIXER',
         desc: 'Spin analog acetate discs, beatmatch tempo oscillators, and drop synth loops across retro radio frequencies.',
-        url: 'https://wei-meng.org/free-builder/game/dj'
+        url: 'dj'
       },
       {
         code: 'BAR',
@@ -23,5 +23,5 @@
         genre: 'HOSPITALITY SIMULATION',
         author: 'FREE//BUILDER',
         desc: 'Taste the cocktails, chat with the bartender, spend some chill time in the speakeasy.',
-        url: 'https://wei-meng.org/free-builder/game/bar'
+        url: 'bar'
       }
