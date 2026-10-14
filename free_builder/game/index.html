@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MEMEX-68 // AUTO-SENSING MAINFRAME REPERTORY</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #060906;
+      --term-green: #33ff66;
+      --term-dim: #1a8c38;
+      --term-glow: rgba(51, 255, 102, 0.45);
+      --cursor-color: #33ff66;
+      --paper-line: rgba(51, 255, 102, 0.12);
+    }
+
+    body.amber-theme {
+      --bg-color: #0c0802;
+      --term-green: #ffb000;
+      --term-dim: #996a00;
+      --term-glow: rgba(255, 176, 0, 0.45);
+      --cursor-color: #ffb000;
+      --paper-line: rgba(255, 176, 0, 0.12);
+    }
+
+    body.paper-theme {
+      --bg-color: #e6dfcf;
+      --term-green: #1f1d18;
+      --term-dim: #605948;
+      --term-glow: transparent;
+      --cursor-color: #1f1d18;
+      --paper-line: rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: var(--bg-color);
+      color: var(--term-green);
+      font-family: 'VT323', 'Share Tech Mono', monospace;
+      font-size: 19px;
+      line-height: 1.25;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 6px var(--term-glow);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .crt-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 50;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.35) 50%
+      ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 0, 255, 0.03)
+      );
+      background-size: 100% 3px, 6px 100%;
+      box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.85);
+    }
+
+    .paper-theme .crt-overlay {
+      display: none;
+    }
+
+    #terminalFrame {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 980px;
+      height: 100%;
+      margin: 0 auto;
+      padding: 12px 18px;
+      position: relative;
+    }
+
+    header {
+      border-bottom: 2px solid var(--term-green);
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .hardware-tags span {
+      margin-left: 8px;
+      padding: 1px 6px;
+      border: 1px solid var(--term-dim);
+    }
+
+    #screenBuffer {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 8px;
+      display: flex;
+      flex-direction: column;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .log-line {
+      margin: 1.5px 0;
+    }
+    .log-line.system { color: var(--term-green); }
+    .log-line.dim { color: var(--term-dim); }
+    .log-line.highlight { color: #fff; text-shadow: 0 0 10px #fff; }
+    .paper-theme .log-line.highlight { color: #8b0000; text-shadow: none; font-weight: bold; }
+    .log-line.interrupt { color: #facc15; text-shadow: 0 0 8px rgba(250, 204, 21, 0.7); }
+    .paper-theme .log-line.interrupt { color: #b45309; text-shadow: none; font-weight: bold; }
+    .log-line.error { color: #ff4d4d; text-shadow: 0 0 8px rgba(255,77,77,0.6); }
+
+    #inputRow {
+      display: flex;
+      align-items: center;
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px dashed var(--term-dim);
+      flex-shrink: 0;
+    }
+
+    .prompt-label {
+      font-weight: bold;
+      margin-right: 6px;
+      user-select: none;
+    }
+
+    #commandInput {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: 21px;
+      color: inherit;
+      text-transform: uppercase;
+      caret-color: transparent;
+      text-shadow: inherit;
+    }
+
+    .custom-cursor {
+      display: inline-block;
+      width: 11px;
+      height: 19px;
+      background: var(--cursor-color);
+      vertical-align: text-bottom;
+      animation: cursorBlink 0.8s steps(2, start) infinite;
+    }
+
+    @keyframes cursorBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    #quickDialBar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-top: 8px;
+      border-top: 1px solid var(--term-dim);
+      margin-top: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-key {
+      background: rgba(0, 0, 0, 0.4);
+      color: var(--term-green);
+      border: 1px solid var(--term-dim);
+      font-family: inherit;
+      font-size: 14px;
+      padding: 3px 8px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.1s;
+    }
+    .paper-theme .btn-key {
+      background: #d8d0be;
+    }
+    .btn-key:hover, .btn-key:active {
+      background: var(--term-green);
+      color: var(--bg-color);
+      text-shadow: none;
+    }
+
+    .btn-key.game-btn {
+      border-color: var(--term-green);
+      font-weight: bold;
+    }
+
+    .ascii-box {
+      border: 1px solid var(--term-dim);
+      padding: 8px 12px;
+      margin: 6px 0;
+      background: rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="crt-overlay"></div>
+
+  <div id="terminalFrame">
+    <header>
+      <div>SYSTEM: MEMEX-68 TIME-SHARING (TTY-04)</div>
+      <div class="hardware-tags">
+        <span id="watcherTag">WATCHER: [AUTO-SCAN]</span>
+        <span id="dataStatusTag">SRC: [GAME.TXT]</span>
+        <span id="audioTag">AUDIO: [ON]</span>
+      </div>
+    </header>
+
+    <div id="screenBuffer" onclick="focusInput()"></div>
+
+    <div id="inputRow">
+      <span class="prompt-label">EXEC&gt;</span>
+      <input type="text" id="commandInput" autocomplete="off" spellcheck="false" autofocus />
+      <span class="custom-cursor"></span>
+    </div>
+
+    <!-- Quick Buttons: Generated & updated dynamically when new entries appear -->
+    <div id="quickDialBar"></div>
+  </div>
+
+  <script>
+    /* =========================================================================
+       AUDIO HARDWARE SUBSYSTEM: Mechanical ASR-33 Teletype Synthesis
+       ========================================================================= */
+    class MainframeAudio {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playKeyClick() {
+        if (this.muted || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const filter = this.ctx.createBiquadFilter();
+
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(140 + Math.random() * 80, t);
+          osc.frequency.exponentialRampToValueAtTime(30, t + 0.025);
+
+          filter.type = 'bandpass';
+          filter.frequency.value = 1600;
+
+          gain.gain.setValueAtTime(0.12, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(t);
+          osc.stop(t + 0.035);
+        } catch (e) {}
+      }
+
+      playBell() {
+        if (this.muted || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(2048, t);
+
+          gain.gain.setValueAtTime(0.2, t);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.65);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(t);
+          osc.stop(t + 0.7);
+        } catch (e) {}
+      }
+
+      playTapeMotor() {
+        if (this.muted || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(180, t);
+          osc.frequency.linearRampToValueAtTime(420, t + 0.18);
+          osc.frequency.linearRampToValueAtTime(90, t + 0.4);
+
+          gain.gain.setValueAtTime(0.08, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(t);
+          osc.stop(t + 0.43);
+        } catch (e) {}
+      }
+    }
+
+    const sound = new MainframeAudio();
+
+    /* =========================================================================
+       MAINFRAME REPERTORY CATALOG STATE
+       ========================================================================= */
+    const DEFAULT_GAMES = [
+      {
+        code: 'CLIMB',
+        altCode: 'CM-01',
+        title: 'CLIMB MASTER',
+        author: 'FREE//BUILDER',
+        genre: 'TACTICAL FREE-SOLO CLIMBER',
+        desc: 'Tactical stone ascent engine from 5.6 to 5.15d. Manage forearm pump, chalk up, plan crux sequences, and shake out on jugs.',
+        url: 'https://wei-meng.org/free_builder/game/climb/'
+      },
+      {
+        code: 'DJ',
+        altCode: 'RD-02',
+        title: 'RETRO DJ',
+        author: 'FREE//BUILDER',
+        genre: '8-BIT VINYL & TURNTABLE MIXER',
+        desc: 'Spin analog acetate discs, beatmatch tempo oscillators, and drop synth loops across retro radio frequencies.',
+        url: 'https://wei-meng.org/free_builder/game/dj/'
+      },
+      {
+        code: 'BAR',
+        altCode: 'TB-03',
+        title: 'WEI/'S BAR & COFFEE',
+        genre: 'HOSPITALITY SIMULATION',
+        author: 'FREE//BUILDER',
+        desc: 'Taste the cocktails, chat with the bartender, spend some chill time in the speakeasy.',
+        url: 'https://wei-meng.org/free_builder/game/bar/'
+      }
+    ];
+
+    let GAME_CATALOG = [...DEFAULT_GAMES];
+    let lastLoadedRawContent = "";
+    let isInitialBoot = true;
+
+    /* =========================================================================
+       DYNAMIC GAME.TXT PARSER (SUPPORTS BLOCKS, INI & JSON)
+       ========================================================================= */
+    function parseGameText(text) {
+      const clean = text.trim();
+      if (!clean) return [];
+
+      if (clean.startsWith('[') || clean.startsWith('{')) {
+        try {
+          const parsed = JSON.parse(clean);
+          const list = Array.isArray(parsed) ? parsed : [parsed];
+          return list.map(normalizeGameEntry);
+        } catch (e) {}
+      }
+
+      const lines = clean.split(/\r?\n/);
+      const games = [];
+      let current = null;
+
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('#') || trimmed.startsWith('//')) return;
+
+        const colonIdx = trimmed.indexOf(':');
+        if (colonIdx === -1) return;
+
+        const key = trimmed.slice(0, colonIdx).trim().toUpperCase();
+        const val = trimmed.slice(colonIdx + 1).trim();
+
+        if (key === 'CODE' || key === 'GAME' || key === 'PROGRAM') {
+          if (current && (current.code || current.title)) {
+            games.push(normalizeGameEntry(current, games.length));
+          }
+          current = { code: val.toUpperCase() };
+        } else if (current) {
+          if (key === 'TITLE' || key === 'NAME') current.title = val;
+          else if (key === 'ID' || key === 'ALT' || key === 'SECTOR') current.altCode = val;
+          else if (key === 'DESC' || key === 'INTRO' || key === 'SUMMARY') current.desc = val;
+          else if (key === 'URL' || key === 'LINK' || key === 'FILE' || key === 'PATH') current.url = val;
+          else if (key === 'GENRE' || key === 'TYPE') current.genre = val;
+          else if (key === 'AUTHOR' || key === 'DEV') current.author = val;
+        }
+      });
+
+      if (current && (current.code || current.title)) {
+        games.push(normalizeGameEntry(current, games.length));
+      }
+
+      return games;
+    }
+
+    function normalizeGameEntry(entry, idx = 0) {
+      const code = (entry.code || entry.id || `GAME${idx + 1}`).toUpperCase().replace(/\s+/g, '');
+      return {
+        code: code,
+        altCode: entry.altCode || entry.id || `TAPE-0${idx + 1}`,
+        title: entry.title || entry.name || code,
+        genre: entry.genre || 'INTERACTIVE SIMULATION',
+        author: entry.author || 'MAINFRAME ARCHIVE',
+        desc: entry.desc || entry.intro || 'No telemetry dossier logged on magnetic tape.',
+        url: entry.url || entry.link || '#'
+      };
+    }
+
+    /* =========================================================================
+       AUTONOMOUS TAPE SENSING DAEMON (POLLS GAME.TXT FOR LIVE UPDATES)
+       ========================================================================= */
+    async function inspectGameFileForUpdates() {
+      const dataStatusTag = document.getElementById('dataStatusTag');
+
+      try {
+        const response = await fetch('./game.txt?t=' + Date.now(), { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const rawText = await response.text();
+
+        // Skip if content has not changed
+        if (rawText.trim() === lastLoadedRawContent.trim()) {
+          return;
+        }
+
+        const freshCatalog = parseGameText(rawText);
+        if (freshCatalog.length === 0) return;
+
+        // Detect new and updated games compared to current catalog
+        const prevCodes = new Set(GAME_CATALOG.map(g => g.code));
+        const newEntries = freshCatalog.filter(g => !prevCodes.has(g.code));
+        const urlUpdatedEntries = freshCatalog.filter(g => {
+          const old = GAME_CATALOG.find(o => o.code === g.code);
+          return old && (old.url !== g.url || old.title !== g.title);
+        });
+
+        GAME_CATALOG = freshCatalog;
+        lastLoadedRawContent = rawText;
+        dataStatusTag.textContent = 'SRC: [GAME.TXT LIVE]';
+        updateQuickDialButtons();
+
+        // If this is an autonomous update after boot, trigger mechanical teleprinter interrupt
+        if (!isInitialBoot) {
+          if (newEntries.length > 0 || urlUpdatedEntries.length > 0) {
+            sound.playTapeMotor();
+            sound.playBell();
+
+            print(" ");
+            print("=================================================================", "interrupt");
+            print("   [DAEMON INTERRUPT: MAGNETIC TAPE HEAD SENSES NEW DIRECTORY]   ", "interrupt");
+            print("=================================================================", "interrupt");
+
+            newEntries.forEach(g => {
+              print(`+ MOUNTED NEW PROGRAM: [${g.code}] "${g.title}" -> ${g.url}`, "highlight");
+            });
+
+            urlUpdatedEntries.forEach(g => {
+              print(`* RE-ALIGNED SECTOR [${g.code}]: NEW TARGET -> ${g.url}`, "system");
+            });
+
+            print(`TOTAL ACTIVE APPLICATIONS IN CORE: ${GAME_CATALOG.length}`, "dim");
+            print(`TYPE "CATALOG" TO INSPECT, OR USE "RUN <CODE>" IMMEDIATELY.`, "dim");
+            print(" ");
+          }
+        }
+
+        return { success: true, count: freshCatalog.length };
+      } catch (err) {
+        if (isInitialBoot) {
+          dataStatusTag.textContent = 'SRC: [ROM STANDBY]';
+          updateQuickDialButtons();
+        }
+        return { success: false, error: err.message };
+      }
+    }
+
+    /* =========================================================================
+       DYNAMIC BUTTON REGENERATOR
+       ========================================================================= */
+    function updateQuickDialButtons() {
+      const container = document.getElementById('quickDialBar');
+      container.innerHTML = '';
+
+      // Standard fixed utility actions
+      const coreActions = [
+        { label: 'HELP', cmd: 'HELP' },
+        { label: 'CATALOG', cmd: 'CATALOG' },
+        { label: 'CLEAR', cmd: 'CLEAR' },
+        { label: 'THEME', cmd: 'THEME' }
+      ];
+
+      coreActions.forEach(btn => {
+        const b = document.createElement('button');
+        b.className = 'btn-key';
+        b.textContent = btn.label;
+        b.onclick = () => executeCmd(btn.cmd);
+        container.appendChild(b);
+      });
+
+      // Dynamically add a RUN button for EVERY game currently discovered
+      GAME_CATALOG.forEach(game => {
+        const b = document.createElement('button');
+        b.className = 'btn-key game-btn';
+        b.textContent = `RUN ${game.code}`;
+        b.title = `${game.title} (${game.url})`;
+        b.onclick = () => executeCmd(`RUN ${game.code}`);
+        container.appendChild(b);
+      });
+    }
+
+    /* =========================================================================
+       TERMINAL I/O & INTERPRETER
+       ========================================================================= */
+    const screen = document.getElementById('screenBuffer');
+    const input = document.getElementById('commandInput');
+    const audioTag = document.getElementById('audioTag');
+    let cmdHistory = [];
+    let historyIdx = -1;
+    let themeIndex = 0;
+    const themes = ['', 'amber-theme', 'paper-theme'];
+    const themeNames = ['P1-GREEN PHOSPHOR', 'P3-AMBER PHOSPHOR', 'TTY-33 TELEPRINTER PAPER'];
+
+    function focusInput() {
+      input.focus();
+    }
+
+    function print(text = '', className = 'system') {
+      const line = document.createElement('div');
+      line.className = `log-line ${className}`;
+      line.textContent = text;
+      screen.appendChild(line);
+      screen.scrollTop = screen.scrollHeight;
+    }
+
+    function printRawHTML(html) {
+      const line = document.createElement('div');
+      line.className = 'log-line';
+      line.innerHTML = html;
+      screen.appendChild(line);
+      screen.scrollTop = screen.scrollHeight;
+    }
+
+    function clearScreen() {
+      screen.innerHTML = '';
+    }
+
+    async function bootSequence() {
+      clearScreen();
+      sound.playTapeMotor();
+      print("INITIALIZING MEMEX-68 SUPERVISORY SYSTEM...", "dim");
+      print("CORE STORAGE: 32,768 WORDS VERIFIED [PARITY CHECK OK]", "dim");
+      print("ENGAGING AUTO-SENSING TAPE DAEMON ON [./game.txt]...", "dim");
+
+      const loadRes = await inspectGameFileForUpdates();
+      isInitialBoot = false;
+
+      if (loadRes && loadRes.success) {
+        print(`[OK] ./game.txt MOUNTED: ${loadRes.count} APPLICATION SECTORS VERIFIED.`, "highlight");
+      } else {
+        print(`[STANDBY] ACCESS TO ./game.txt UNREACHABLE VIA CURRENT PROTOCOL.`, "dim");
+        print(`[RESERVE] ENGAGED CORE ROM REGISTRY (CLIMB, DJ, BAR).`, "system");
+      }
+
+      print(" ");
+      print("=================================================================", "highlight");
+      print("     MEMEX-68 // INTERACTIVE TIME-SHARING REPERTORY TERMINAL     ", "highlight");
+      print("              AUTO-DETECTING EXPEDITION GAME REPERTORY           ", "system");
+      print("=================================================================", "highlight");
+      print(" ");
+      print("COMMANDS:");
+      print("  CATALOG       - LIST ALL MOUNTED PROGRAMS");
+      print("  RUN <CODE>    - EXECUTE PROGRAM (E.G. 'RUN CLIMB', 'RUN DJ', 'RUN BAR')");
+      print("  INFO <CODE>   - VIEW SYNOPSIS & INSTRUCTIONS");
+      print("  RELOAD        - FORCE DISK POLL ON ./game.txt");
+      print("  HELP          - DISPLAY OPERATOR COMMAND GLOSSARY");
+      print(" ");
+      print("[DAEMON ACTIVE: NEW ENTRIES IN GAME.TXT WILL AUTO-MOUNT IN REAL-TIME]", "dim");
+      print(" ");
+      sound.playBell();
+
+      // Launch continuous background tape inspection every 4000ms
+      setInterval(inspectGameFileForUpdates, 4000);
+    }
+
+    async function executeCmd(rawCmd) {
+      sound.init();
+      const cmdStr = (rawCmd !== undefined ? rawCmd : input.value).trim();
+      if (!cmdStr && rawCmd === undefined) return;
+
+      print(`EXEC> ${cmdStr}`, 'highlight');
+      sound.playKeyClick();
+
+      if (rawCmd === undefined) {
+        cmdHistory.push(cmdStr);
+        historyIdx = cmdHistory.length;
+        input.value = '';
+      }
+
+      const tokens = cmdStr.toUpperCase().split(/\s+/);
+      const action = tokens[0];
+      const arg = tokens.slice(1).join(' ');
+
+      switch (action) {
+        case 'HELP':
+        case '?':
+          displayHelp();
+          break;
+
+        case 'CATALOG':
+        case 'DIR':
+        case 'LIST':
+        case 'LS':
+          displayCatalog();
+          break;
+
+        case 'RUN':
+        case 'LOAD':
+        case 'PLAY':
+        case 'GO':
+          if (!arg) {
+            print("ERROR: PARAMETER MISSING. SPECIFY PROGRAM CODE (E.G., RUN CLIMB)", "error");
+            sound.playBell();
+          } else {
+            launchProgram(arg);
+          }
+          break;
+
+        case 'RELOAD':
+        case 'REFRESH':
+        case 'SYNC':
+          sound.playTapeMotor();
+          print("FORCING IMMEDIATE HARDWARE SCAN OF ./game.txt...", "dim");
+          lastLoadedRawContent = ""; // Reset cache to force refresh
+          await inspectGameFileForUpdates();
+          print(`[COMPLETE] CURRENT DIRECTORY CONTAINS ${GAME_CATALOG.length} MOUNTED PROGRAMS.`, "highlight");
+          sound.playBell();
+          break;
+
+        case 'INFO':
+        case 'DESC':
+          if (!arg) {
+            print("ERROR: SPECIFY PROGRAM CODE (E.G., INFO CLIMB)", "error");
+          } else {
+            displayGameInfo(arg);
+          }
+          break;
+
+        case 'CLEAR':
+        case 'CLS':
+          clearScreen();
+          break;
+
+        case 'THEME':
+        case 'COLOR':
+        case 'PALETTE':
+          cycleTheme();
+          break;
+
+        case 'AUDIO':
+        case 'SOUND':
+          toggleAudio();
+          break;
+
+        case 'BELL':
+          sound.playBell();
+          print("[TELEX CHIME: 2048 HZ AUDIBLE SIGNAL TRANSMITTED]", "dim");
+          break;
+
+        default:
+          // Check if user directly typed a known game code (e.g. "CLIMB", "DJ", "BAR")
+          const directMatch = GAME_CATALOG.find(g => 
+            g.code === action || 
+            g.altCode.toUpperCase() === action ||
+            g.title.toUpperCase().replace(/\s+/g, '') === action
+          );
+          if (directMatch) {
+            launchProgram(directMatch.code);
+          } else {
+            print(`UNKNOWN OPERATOR COMMAND: "${action}". TYPE "HELP" OR "CATALOG".`, "error");
+            sound.playBell();
+          }
+          break;
+      }
+
+      screen.scrollTop = screen.scrollHeight;
+    }
+
+    function displayCatalog() {
+      sound.playTapeMotor();
+      print(" ");
+      print("----------------- TAPE ARCHIVE SOFTWARE CATALOG -----------------", "highlight");
+      print("CODE    ID       TITLE                           GENRE", "dim");
+      print("-----------------------------------------------------------------", "dim");
+
+      GAME_CATALOG.forEach(g => {
+        const paddedCode = (g.code + "       ").slice(0, 7);
+        const paddedId = (g.altCode + "        ").slice(0, 8);
+        const paddedTitle = (g.title + "                               ").slice(0, 31);
+        print(`${paddedCode} ${paddedId} ${paddedTitle} ${g.genre}`, 'system');
+      });
+
+      print("-----------------------------------------------------------------", "dim");
+      print(`TOTAL PROGRAM TAPES REGISTERED: ${GAME_CATALOG.length}`, "dim");
+      print("TO LAUNCH : TYPE  RUN <CODE>   (E.G. RUN " + (GAME_CATALOG[0]?.code || 'CLIMB') + ")", "highlight");
+      print("TO EXAMINE: TYPE  INFO <CODE>", "dim");
+      print(" ");
+    }
+
+    function launchProgram(codeQuery) {
+      const q = codeQuery.trim().toUpperCase().replace(/\s+/g, '');
+      const match = GAME_CATALOG.find(g => 
+        g.code === q || 
+        g.altCode.toUpperCase().replace(/\s+/g, '') === q || 
+        g.title.toUpperCase().replace(/\s+/g, '') === q ||
+        g.title.toUpperCase().includes(codeQuery.trim().toUpperCase())
+      );
+
+      if (!match) {
+        print(`PROGRAM "${codeQuery}" NOT FOUND ON MAGNETIC TAPE.`, "error");
+        print(`CHECK MOUNTED REPERTORY VIA "CATALOG" COMMAND.`, "dim");
+        sound.playBell();
+        return;
+      }
+
+      sound.playTapeMotor();
+      print(" ");
+      print(`[SEEKING MAGNETIC TAPE SECTOR: ${match.code} // ${match.altCode}]...`, "dim");
+
+      setTimeout(() => {
+        sound.playBell();
+        print(" ");
+        print("=================================================================", "highlight");
+        print(`  PROGRAM: ${match.title}`, "highlight");
+        print(`  CLASS  : ${match.genre}`, "system");
+        print(`  ORIGIN : ${match.author}`, "dim");
+        print("=================================================================", "highlight");
+        print(match.desc);
+        print(" ");
+        print(`[+] TTY DATA CARRIER ESTABLISHED TO: ${match.url}`, "highlight");
+
+        printRawHTML(`
+          <div class="ascii-box">
+            <div>&gt;&gt;&gt; HOST READY FOR IMMEDIATE LAUNCH &lt;&lt;&lt;</div>
+            <div style="margin-top:6px;">
+              <a href="${match.url}" target="_blank" style="color:inherit; text-decoration:underline; font-weight:bold;">
+                [CLICK HERE TO ENGAGE PROGRAM: ${match.title}]
+              </a>
+            </div>
+          </div>
+        `);
+      }, 450);
+    }
+
+    function displayGameInfo(codeQuery) {
+      const q = codeQuery.trim().toUpperCase().replace(/\s+/g, '');
+      const match = GAME_CATALOG.find(g => 
+        g.code === q || 
+        g.altCode.toUpperCase().replace(/\s+/g, '') === q || 
+        g.title.toUpperCase().replace(/\s+/g, '') === q
+      );
+
+      if (!match) {
+        print(`FILE "${codeQuery}" NOT FOUND IN FILE REGISTRY.`, "error");
+        return;
+      }
+
+      print(" ");
+      print(`--- TECHNICAL DOSSIER: ${match.code} // ${match.altCode} ---`, "highlight");
+      print(`TITLE   : ${match.title}`);
+      print(`GENRE   : ${match.genre}`);
+      print(`DEV     : ${match.author}`);
+      print(`TARGET  : ${match.url}`);
+      print(`SUMMARY : ${match.desc}`);
+      print(`EXECUTE : TYPE "RUN ${match.code}"`);
+      print(" ");
+    }
+
+    function displayHelp() {
+      print(" ");
+      print("================ OPERATOR COMMAND GLOSSARY ================", "highlight");
+      print("  CATALOG / DIR      - DISPLAY DIRECTORY OF MOUNTED GAMES");
+      print("  RUN <CODE>         - LOAD & LAUNCH GAME (E.G. RUN CLIMB, RUN DJ, RUN BAR)");
+      print("  INFO <CODE>        - RETRIEVE GAME DOSSIER & LINK INFO");
+      print("  RELOAD             - FORCE IMMEDIATE DISK POLL ON ./game.txt");
+      print("  CLEAR / CLS        - CLEAR TERMINAL SCREEN BUFFER");
+      print("  THEME              - CYCLE CRT PHOSPHORS (GREEN / AMBER / PAPER)");
+      print("  AUDIO              - TOGGLE MECHANICAL TELETYPE NOISE");
+      print("  BELL               - RING PHYSICAL TELEPRINTER BELL");
+      print("===========================================================", "highlight");
+      print("ACTIVE PROGRAM CODES: " + GAME_CATALOG.map(g => g.code).join(', '));
+      print(" ");
+    }
+
+    function cycleTheme() {
+      themeIndex = (themeIndex + 1) % themes.length;
+      document.body.className = themes[themeIndex];
+      print(`PHOSPHOR EMISSION PALETTE SWITCHED: [${themeNames[themeIndex]}]`, "highlight");
+    }
+
+    function toggleAudio() {
+      sound.init();
+      sound.muted = !sound.muted;
+      audioTag.textContent = `AUDIO: [${sound.muted ? 'MUTED' : 'ON'}]`;
+      print(`TELETYPE AUDIO HARDWARE IS NOW ${sound.muted ? 'OFFLINE' : 'ONLINE'}.`, 'system');
+      if (!sound.muted) sound.playBell();
+    }
+
+    input.addEventListener('keydown', (e) => {
+      sound.init();
+      sound.playKeyClick();
+
+      if (e.key === 'Enter') {
+        executeCmd();
+      } else if (e.key === 'ArrowUp') {
+        if (cmdHistory.length > 0 && historyIdx > 0) {
+          historyIdx--;
+          input.value = cmdHistory[historyIdx];
+        }
+        e.preventDefault();
+      } else if (e.key === 'ArrowDown') {
+        if (historyIdx < cmdHistory.length - 1) {
+          historyIdx++;
+          input.value = cmdHistory[historyIdx];
+        } else {
+          historyIdx = cmdHistory.length;
+          input.value = '';
+        }
+        e.preventDefault();
+      }
+    });
+
+    window.onload = () => {
+      bootSequence();
+      focusInput();
+    };
+  </script>
+</body>
+</html>
