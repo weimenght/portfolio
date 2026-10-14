@@ -234,7 +234,7 @@
           <h1 class="text-sm sm:text-base text-[#67e8f9] neon-cyan tracking-wider">
             CRAG MASTER
           </h1>
-          <p class="text-[6.5px] text-amber-400 tracking-widest mt-0.5">AUTHENTIC MULTI-PITCH • 5.6 TO 5.15d</p>
+          <p class="text-[6.5px] text-amber-400 tracking-widest mt-0.5">MULTI-PITCH 5.6 TO 5.15d</p>
         </div>
 
         <div class="flex flex-col gap-1.5 flex-1 pb-2 w-full min-w-0">
@@ -997,7 +997,7 @@
     const CHARACTERS = [
       {
         id: 'alex',
-        name: 'Alex (Precision)',
+        name: 'Alex',
         category: 'HUMAN',
         shirtColor: '#facc15',
         pantsColor: '#9333ea',
@@ -1011,7 +1011,7 @@
       },
       {
         id: 'lynn',
-        name: 'Lynn (Endurance)',
+        name: 'Lynn',
         category: 'HUMAN',
         shirtColor: '#ec4899',
         pantsColor: '#3b82f6',
@@ -1025,7 +1025,7 @@
       },
       {
         id: 'tommy',
-        name: 'Tommy (Power)',
+        name: 'Tommy',
         category: 'HUMAN',
         shirtColor: '#f97316',
         pantsColor: '#1e293b',
@@ -1039,8 +1039,8 @@
       },
       {
         id: 'adam',
-        name: 'Adam (The Screamer)',
-        category: 'LEGEND',
+        name: 'Adam',
+        category: 'HUMAN',
         shirtColor: '#ef4444',
         pantsColor: '#1d4ed8',
         skinColor: '#fed7aa',
@@ -1920,7 +1920,7 @@
       sound.init();
       sound.playOndraPowerScream();
       climber.screamDuration = 180; // 3 seconds freeze pump!
-      climber.screamCooldown = 1800; // 30s cooldown
+      climber.screamCooldown = 18000; // 300s cooldown
       climber.flowMultiplier = Math.min(5.0, climber.flowMultiplier + 1.0);
       spawnChalkDust(climber.x, climber.y - 18, 22, '#ef4444');
       showHoldFeedbackToast('🗣️ "AAAAATTTTTTT!" PUMP DRAIN FROZEN FOR 3s!');
