@@ -22,6 +22,6 @@
         title: 'THE SPEAKEASY BAR TENDER',
         genre: 'HOSPITALITY SIMULATION & MIXOLOGY',
         author: 'FREE//BUILDER',
-        desc: '',
+        desc: 'Taste the cocktails, chat with the bartender, spend some chill time in the speakeasy.',
         url: 'https://wei-meng.org/free-builder/game/bar/'
       }
