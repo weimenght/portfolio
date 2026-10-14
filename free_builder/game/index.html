@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>MEMEX-68 // GAME REPERTORY</title>
+  <title>GAME REPERTORY</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -598,7 +598,7 @@
       print(" ");
       print("COMMANDS:");
       print("  CATALOG       - LIST ALL MOUNTED PROGRAMS");
-      print("  RUN <CODE>    - EXECUTE PROGRAM (E.G. 'RUN CLIMB', 'RUN DJ', 'RUN BAR')");
+      print("  RUN <CODE>    - EXECUTE PROGRAM (E.G. 'RUN TAPE-01')");
       print("  INFO <CODE>   - VIEW SYNOPSIS & INSTRUCTIONS");
       print("  RELOAD        - FORCE DISK POLL ON ./game.txt");
       print("  HELP          - DISPLAY OPERATOR COMMAND GLOSSARY");
@@ -647,7 +647,7 @@
         case 'PLAY':
         case 'GO':
           if (!arg) {
-            print("ERROR: PARAMETER MISSING. SPECIFY PROGRAM CODE (E.G., RUN CLIMB)", "error");
+            print("ERROR: PARAMETER MISSING. SPECIFY PROGRAM CODE (E.G., RUN TAPE-01)", "error");
             sound.playBell();
           } else {
             launchProgram(arg);
@@ -808,7 +808,7 @@
       print(" ");
       print("================ OPERATOR COMMAND GLOSSARY ================", "highlight");
       print("  CATALOG / DIR      - DISPLAY DIRECTORY OF MOUNTED GAMES");
-      print("  RUN <CODE>         - LOAD & LAUNCH GAME (E.G. RUN CLIMB, RUN DJ, RUN BAR)");
+      print("  RUN <CODE>         - LOAD & LAUNCH GAME (E.G. RUN TAPE-01)");
       print("  INFO <CODE>        - RETRIEVE GAME DOSSIER & LINK INFO");
       print("  RELOAD             - FORCE IMMEDIATE DISK POLL ON ./game.txt");
       print("  CLEAR / CLS        - CLEAR TERMINAL SCREEN BUFFER");
