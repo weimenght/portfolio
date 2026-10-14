@@ -5,7 +5,7 @@
         author: 'FREE//BUILDER',
         genre: 'TACTICAL FREE-SOLO CLIMBER',
         desc: 'Tactical stone ascent engine from 5.6 to 5.15d. Manage forearm pump, chalk up, plan crux sequences, and shake out on jugs.',
-        url: climb'
+        url: climb
       },
       {
         code: 'DJ',
