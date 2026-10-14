@@ -1,1 +1,27 @@
-
+{
+        code: 'CLIMB',
+        altCode: 'CM-01',
+        title: 'CRAG MASTER',
+        author: 'FREE//BUILDER',
+        genre: 'TACTICAL FREE-SOLO CLIMBER',
+        desc: 'Tactical stone ascent engine from 5.6 to 5.15d. Manage forearm pump, chalk up, plan crux sequences, and shake out on jugs.',
+        url: 'https://wei-meng.org/free-builder/game/climb/'
+      },
+      {
+        code: 'DJ',
+        altCode: 'RD-02',
+        title: 'RETRO DJ',
+        author: 'FREE//BUILDER',
+        genre: '8-BIT VINYL & TURNTABLE MIXER',
+        desc: 'Spin analog acetate discs, beatmatch tempo oscillators, and drop synth loops across retro radio frequencies.',
+        url: 'https://wei-meng.org/free-builder/game/dj/'
+      },
+      {
+        code: 'BAR',
+        altCode: 'TB-03',
+        title: 'THE SPEAKEASY BAR TENDER',
+        genre: 'HOSPITALITY SIMULATION & MIXOLOGY',
+        author: 'FREE//BUILDER',
+        desc: '',
+        url: 'https://wei-meng.org/free-builder/game/bar/'
+      }
