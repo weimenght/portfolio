@@ -656,39 +656,6 @@
         async function handleLogin(isUpdatingInfo) {
             const errEl = document.getElementById('login-error');
             errEl.classList.add('hidden');
-        
-            const nameInput = document.getElementById('login-name').value.trim();
-            const passInput = document.getElementById('login-pass').value.trim();
-        
-            if (!nameInput || !passInput) {
-                errEl.innerText = t('errInvalidCreds');
-                errEl.classList.remove('hidden');
-                return;
-            }
-        
-            // Immediate local session bypass for testing
-            currentUser = {
-                id: 'local-user-1',
-                name: nameInput,
-                city: nameInput.toLowerCase() === 'mei' ? 'Beijing' : 'Barcelona',
-                password: passInput,
-                mood: 'warm'
-            };
-            partnerUser = {
-                id: 'local-user-2',
-                name: nameInput.toLowerCase() === 'mei' ? 'Alex' : 'Mei',
-                city: nameInput.toLowerCase() === 'mei' ? 'Barcelona' : 'Beijing',
-                mood: 'calm'
-            };
-        
-            localStorage.setItem('handoff_logged_in_id', currentUser.id);
-            await enterApp();
-        }
-
-        <!--
-        async function handleLogin(isUpdatingInfo) {
-            const errEl = document.getElementById('login-error');
-            errEl.classList.add('hidden');
 
             if (!supabaseClient && !initSupabase()) {
                 errEl.innerText = t('errNoSupabase');
@@ -748,7 +715,6 @@
             localStorage.setItem('handoff_logged_in_id', currentUser.id);
             await enterApp();
         }
-        -->
 
         async function restoreSessionFromSupabase() {
             const savedId = localStorage.getItem('handoff_logged_in_id');
