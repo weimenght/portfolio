@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Handoff</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { -webkit-tap-highlight-color: transparent; transition: background 1.2s ease, color 0.6s ease; }
+        input, textarea, select { font-size: 16px !important; }
+        .glass { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body id="app-body" class="bg-slate-950 text-white font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-amber-400 selection:text-black">
+
+    <!-- TOP BAR: LANGUAGE + ACCOUNT CONTROLS -->
+    <nav class="w-full max-w-md mx-auto px-6 pt-5 pb-1 flex items-center justify-between text-xs z-30">
+        <div class="flex space-x-1 glass px-2 py-1 rounded-full">
+            <button onclick="setLang('en')" id="lang-en" class="px-2 py-0.5 rounded-full transition">EN</button>
+            <button onclick="setLang('zh-CN')" id="lang-zh-CN" class="px-2 py-0.5 rounded-full transition">简</button>
+            <button onclick="setLang('zh-TW')" id="lang-zh-TW" class="px-2 py-0.5 rounded-full transition">繁</button>
+            <button onclick="setLang('es')" id="lang-es" class="px-2 py-0.5 rounded-full transition">ES</button>
+        </div>
+
+        <div id="nav-user-controls" class="hidden flex items-center space-x-2">
+            <button onclick="openEditModal()" class="glass px-3 py-1 rounded-full opacity-80 hover:opacity-100 transition flex items-center space-x-1">
+                <span>⚙</span>
+                <span data-i18n="editAccount">Account</span>
+            </button>
+            <button onclick="logout()" class="glass px-3 py-1 rounded-full opacity-60 hover:opacity-100 transition" data-i18n="logout">Exit</button>
+        </div>
+    </nav>
+
+    <!-- ================================================================= -->
+    <!-- SCREEN 1: SUPABASE LOGIN & CREDENTIAL UPDATER                     -->
+    <!-- ================================================================= -->
+    <section id="login-screen" class="w-full max-w-md mx-auto px-6 py-8 flex-1 flex flex-col justify-center">
+        <div class="glass rounded-3xl p-7 space-y-6 shadow-2xl">
+            <div class="space-y-1">
+                <h1 class="text-2xl font-light tracking-tight" data-i18n="appTitle">Twilight Handoff</h1>
+                <p class="text-xs opacity-60" data-i18n="loginSub">Sign in with your account</p>
+            </div>
+
+            <!-- Dynamic Supabase Connection Config (if not set in code) -->
+            <div id="supabase-config-banner" class="hidden p-4 rounded-2xl bg-amber-500/10 border border-amber-400/30 space-y-2.5 text-xs">
+                <div class="font-semibold text-amber-300" data-i18n="dbConfigTitle">Connect Database</div>
+                <input id="cfg-url" type="text" placeholder="https://your-project.supabase.co" class="w-full glass rounded-xl px-3 py-2 text-xs focus:outline-none">
+                <input id="cfg-key" type="password" placeholder="Supabase Anon Public Key" class="w-full glass rounded-xl px-3 py-2 text-xs focus:outline-none">
+                <button onclick="saveSupabaseConfig()" class="w-full py-2 rounded-xl bg-amber-400 text-black font-semibold text-xs" data-i18n="connectDbBtn">Save & Connect</button>
+            </div>
+
+            <!-- Login Form -->
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[11px] uppercase tracking-wider opacity-60 block mb-1" data-i18n="nameLabel">Name</label>
+                    <input id="login-name" type="text" class="w-full glass rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-white/50">
+                </div>
+                <div>
+                    <label class="text-[11px] uppercase tracking-wider opacity-60 block mb-1" data-i18n="passLabel">Password</label>
+                    <input id="login-pass" type="password" class="w-full glass rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-white/50">
+                </div>
+
+                <!-- Toggle Update Info Section on Login Page -->
+                <div class="pt-1">
+                    <button type="button" onclick="toggleLoginUpdateBox()" class="text-xs underline opacity-60 hover:opacity-100 transition" data-i18n="wantToChangeInfo">
+                        Update my Name, City, or Password →
+                    </button>
+                </div>
+
+                <!-- Collapsible Info Update Box (Verifies previous info in Supabase first) -->
+                <div id="login-update-box" class="hidden p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+                    <p class="text-[11px] opacity-60" data-i18n="updateHint">Verify your current Name & Password above, then enter new details below:</p>
+                    <div>
+                        <label class="text-[10px] uppercase opacity-50 block mb-1" data-i18n="newNameLabel">New Name</label>
+                        <input id="update-new-name" type="text" class="w-full glass rounded-xl px-3 py-2 text-xs focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase opacity-50 block mb-1" data-i18n="newCityLabel">Your City</label>
+                        <input id="update-new-city" type="text" data-i18n-placeholder="cityInputPlaceholder" placeholder="e.g. Beijing, Barcelona" class="w-full glass rounded-xl px-3 py-2 text-xs focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase opacity-50 block mb-1" data-i18n="newPassLabel">New Password</label>
+                        <input id="update-new-pass" type="password" class="w-full glass rounded-xl px-3 py-2 text-xs focus:outline-none">
+                    </div>
+                </div>
+
+                <p id="login-error" class="text-xs text-rose-400 hidden"></p>
+
+                <div class="flex space-x-2 pt-2">
+                    <button id="login-submit-btn" onclick="handleLogin(false)" class="flex-1 py-3 rounded-full bg-white text-black text-xs font-semibold tracking-wide hover:opacity-90 transition" data-i18n="loginBtn">
+                        Enter
+                    </button>
+                    <button id="save-login-btn" onclick="handleLogin(true)" class="hidden flex-1 py-3 rounded-full bg-amber-400 text-black text-xs font-semibold tracking-wide hover:opacity-90 transition" data-i18n="VerifyAndUpdateBtn">
+                        Verify & Update
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- SCREEN 2: MAIN APPLICATION                                        -->
+    <!-- ================================================================= -->
+    <div id="app-screen" class="hidden flex-1 flex flex-col justify-between">
+
+        <!-- HEADER: DYNAMIC NAME, GEOCODED CITY, LIVE TIME & WEATHER -->
+        <header class="w-full max-w-md mx-auto px-6 pt-4 pb-3 flex items-center justify-between">
+            <!-- You -->
+            <div class="flex flex-col">
+                <span class="text-[10px] uppercase tracking-widest opacity-50" data-i18n="youTag">You</span>
+                <div class="flex items-baseline space-x-1.5 mt-0.5">
+                    <span id="name-you" class="text-sm font-semibold text-white">--</span>
+                    <span class="opacity-40 text-xs">·</span>
+                    <span id="label-you" class="text-xs font-medium uppercase tracking-wider text-amber-300">--</span>
+                </div>
+                <div id="time-you" class="text-3xl font-light tracking-tight mt-0.5">--:--</div>
+                <div id="weather-you" class="text-xs opacity-60 mt-0.5">--</div>
+            </div>
+
+            <!-- Auto Mode Badge -->
+            <div class="flex flex-col items-center justify-center px-3 py-1.5 rounded-full glass">
+                <span id="mode-pill" class="text-[10px] font-mono uppercase tracking-widest">--</span>
+            </div>
+
+            <!-- Partner -->
+            <div class="flex flex-col text-right items-end">
+                <div class="flex items-center space-x-1.5">
+                    <span id="partner-mood-dot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+                    <span class="text-[10px] uppercase tracking-widest opacity-50" data-i18n="partnerTag">Partner</span>
+                </div>
+                <div class="flex items-baseline space-x-1.5 mt-0.5">
+                    <span id="name-partner" class="text-sm font-semibold text-white">--</span>
+                    <span class="opacity-40 text-xs">·</span>
+                    <span id="label-partner" class="text-xs font-medium uppercase tracking-wider text-amber-300">--</span>
+                </div>
+                <div id="time-partner" class="text-3xl font-light tracking-tight mt-0.5">--:--</div>
+                <div id="weather-partner" class="text-xs opacity-60 mt-0.5">--</div>
+            </div>
+        </header>
+
+        <!-- MAIN INTERACTION STACK -->
+        <main class="w-full max-w-md mx-auto px-6 py-3 flex-1 flex flex-col justify-center space-y-4">
+
+            <!-- VIBE SELECTOR -->
+            <div class="glass rounded-3xl p-4 space-y-2.5">
+                <div class="flex items-center justify-between text-xs px-1">
+                    <span class="opacity-60" data-i18n="yourVibe">Your vibe (colors partner's sky)</span>
+                    <span id="current-vibe-label" class="font-mono text-[11px] opacity-80"></span>
+                </div>
+                <div class="flex space-x-1.5 overflow-x-auto no-scrollbar pb-1" id="mood-buttons">
+                    <!-- Good -->
+                    <button onclick="setMyMood('radiant')" data-mood="radiant" class="shrink-0 px-3 py-1.5 rounded-full glass text-xs opacity-60 hover:opacity-100 transition" data-i18n="vibeRadiant">☀️ Radiant</button>
+                    <button onclick="setMyMood('warm')" data-mood="warm" class="shrink-0 px-3 py-1.5 rounded-full glass text-xs opacity-60 hover:opacity-100 transition" data-i18n="vibeWarm">✨ Warm</button>
+                    <button onclick="setMyMood('playful')" data-mood="playful" class="shrink-0 px-3 py-1.5 rounded-full glass text-xs opacity-60 hover:opacity-100 transition" data-i18n="vibePlayful">🎈 Playful</button>
+                    <!-- Neutral -->
+                    <button onclick="setMyMood('calm')" data-mood="calm" class="shrink-0 px-3 py-1.5 rounded-full glass text-xs opacity-60 hover:opacity-100 transition" data-i18n="vibeCalm">🌊 Calm</button>
+                    <button onclick="setMyMood('focus')" data-mood="focus" class="shrink-0 px-3 py-1.5 rounded-full glass text-xs opacity-60 hover:opacity-100 transition" data-i18n="vibeFocus">⚡ Focus</button>
+                    <button onclick="setMyMood('drifting')" data-mood="drifting" class="shrink-0 px-3 py-1.5 rounded-full glass text-xs opacity-60 hover:opacity-100 transition" data-i18n="vibeDrifting">☁️ Drifting</button>
+                    <!-- Low / Bad -->
+                    <button onclick="setMyMood('drained')" data-mood="drained" class="shrink-0 px-3 py-1.5 rounded-full glass text-xs opacity-60 hover:opacity-100 transition" data-i18n="vibeDrained">🥀 Drained</button>
+                    <button onclick="setMyMood('overwhelmed')" data-mood="overwhelmed" class="shrink-0 px-3 py-1.5 rounded-full glass text-xs opacity-60 hover:opacity-100 transition" data-i18n="vibeOverwhelmed">🌧️ Overwhelmed</button>
+                    <button onclick="setMyMood('missing')" data-mood="missing" class="shrink-0 px-3 py-1.5 rounded-full glass text-xs opacity-60 hover:opacity-100 transition" data-i18n="vibeMissing">🌙 Missing You</button>
+                </div>
+            </div>
+
+            <!-- 1. INCOMING CAPSULE CARD -->
+            <div id="incoming-card" class="glass rounded-3xl p-6 transition-all duration-500">
+                <div class="flex items-center justify-between text-xs opacity-70 mb-3">
+                    <span id="incoming-from" class="font-medium">--</span>
+                    <span id="incoming-status" class="font-mono uppercase tracking-wider text-amber-300">--</span>
+                </div>
+
+                <!-- Empty State -->
+                <div id="state-empty" class="py-3 text-center text-sm opacity-40 font-light" data-i18n="emptyCapsule">
+                    No locked thoughts waiting right now.
+                </div>
+
+                <!-- Locked State -->
+                <div id="state-locked" class="hidden space-y-4">
+                    <p class="text-lg font-light leading-relaxed break-words">
+                        <span id="masked-dots" class="opacity-30 select-none tracking-widest"></span>
+                        <span id="teaser-words" class="font-normal underline underline-offset-4 text-amber-300"></span>
+                    </p>
+                    <div class="flex items-center space-x-2 pt-1">
+                        <input id="guess-input" type="text" data-i18n-placeholder="guessPlaceholder" class="w-full bg-transparent border-b border-current/20 py-2 text-sm focus:outline-none focus:border-current transition placeholder:opacity-40">
+                        <button onclick="unlockCapsule()" class="px-4 py-2 rounded-full bg-white text-black text-xs font-medium tracking-wide shrink-0 hover:opacity-90 transition" data-i18n="unlockBtn">
+                            Unlock
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Unlocked State -->
+                <div id="state-unlocked" class="hidden space-y-3">
+                    <p id="full-sentence" class="text-lg font-light leading-relaxed break-words"></p>
+                    <p id="guess-result" class="text-xs opacity-60 italic border-l-2 border-current/40 pl-3 py-0.5"></p>
+                    <div id="audio-player-wrap" class="hidden pt-2">
+                        <audio id="capsule-audio" controls playsinline preload="metadata" class="w-full h-10 rounded-lg"></audio>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. COMPOSER CARD -->
+            <div id="composer-card" class="glass rounded-3xl p-6 space-y-4 transition-all duration-500">
+                <div class="flex justify-between items-center">
+                    <span id="composer-prompt" class="text-xs opacity-70">--</span>
+                    <span id="partner-sleep-badge" class="text-[10px] font-mono uppercase px-2.5 py-0.5 rounded-full glass">--</span>
+                </div>
+
+                <textarea id="composer-input" rows="2" data-i18n-placeholder="composerPlaceholder" class="w-full bg-transparent text-lg font-light placeholder:opacity-30 focus:outline-none resize-none leading-relaxed"></textarea>
+
+                <!-- Cross-Browser Recorded Audio Preview -->
+                <div id="recorded-preview-wrap" class="hidden flex items-center justify-between text-xs py-2 px-3 rounded-2xl glass">
+                    <audio id="recorded-preview" controls playsinline class="h-8 w-52"></audio>
+                    <button type="button" onclick="clearRecording()" class="text-[11px] opacity-60 hover:opacity-100 px-2 py-1" data-i18n="clearAudio">✕ Clear</button>
+                </div>
+
+                <p id="mic-error-msg" class="text-[11px] text-rose-300 hidden"></p>
+
+                <div class="flex items-center justify-between pt-2 border-t border-current/10">
+                    <button type="button" id="mic-btn" onclick="toggleRecording()" class="flex items-center space-x-2 text-xs opacity-90 hover:opacity-100 transition py-2.5 px-4 rounded-full glass active:scale-95">
+                        <span id="mic-dot" class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                        <span id="mic-label" data-i18n="recordAudio">Record 6s sound</span>
+                        <span id="mic-timer" class="font-mono text-[11px] text-amber-300 hidden">6.0s</span>
+                    </button>
+
+                    <button type="button" onclick="sendHandoff()" id="send-btn" class="px-6 py-2.5 rounded-full bg-white text-black text-xs font-medium tracking-wide hover:opacity-90 transition">
+                        <span data-i18n="sendBtn">Send</span>
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL: IN-APP ACCOUNT EDITOR -->
+    <div id="edit-modal" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 hidden flex items-center justify-center p-6">
+        <div class="glass rounded-3xl p-6 w-full max-w-sm space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-sm font-semibold uppercase tracking-wider" data-i18n="editAccount">Update Account</h3>
+                <button onclick="closeEditModal()" class="text-xs opacity-60 hover:opacity-100">✕</button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="opacity-60 block mb-1" data-i18n="currentPassVerify">Current Password (Required)</label>
+                    <input id="modal-curr-pass" type="password" class="w-full glass rounded-xl px-3 py-2">
+                </div>
+                <div>
+                    <label class="opacity-60 block mb-1" data-i18n="newNameLabel">New Name</label>
+                    <input id="modal-new-name" type="text" class="w-full glass rounded-xl px-3 py-2">
+                </div>
+                <div>
+                    <label class="opacity-60 block mb-1" data-i18n="newCityLabel">Your City</label>
+                    <input id="modal-new-city" type="text" data-i18n-placeholder="cityInputPlaceholder" class="w-full glass rounded-xl px-3 py-2">
+                </div>
+                <div>
+                    <label class="opacity-60 block mb-1" data-i18n="newPassLabel">New Password (Optional)</label>
+                    <input id="modal-new-pass" type="password" class="w-full glass rounded-xl px-3 py-2">
+                </div>
+                <p id="modal-msg" class="text-amber-300 hidden"></p>
+            </div>
+            <button onclick="saveAccountFromModal()" class="w-full py-2.5 rounded-full bg-white text-black text-xs font-semibold" data-i18n="saveChanges">Save Changes</button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="w-full max-w-md mx-auto px-6 py-4 flex items-center justify-between text-[11px] opacity-40">
+        <span id="sync-indicator">--</span>
+        <span id="sky-desc">--</span>
+    </footer>
+
+    <script>
+        // ============================================================================
+        // 1. SUPABASE INITIALIZATION (No Hardcoded Accounts or Cities)
+        // ============================================================================
+        // Paste your Supabase URL and Anon Key below, or enter them once in the UI prompt
+        const ENV_SUPABASE_URL = 'https://uxbozndyjqizcxpzvjko.supabase.co'; 
+        const ENV_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4Ym96bmR5anFpemN4cHp2amtvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNTQ2MDMsImV4cCI6MjEwNzkzMDYwM30.PZn_0AHNlof5se5N3cZNo2hv2ohjHV-oLLyKn6IFwME'; 
+
+        let supabaseClient = null;
+
+        function initSupabase() {
+            const url = ENV_SUPABASE_URL || localStorage.getItem('handoff_sb_url') || '';
+            const key = ENV_SUPABASE_ANON_KEY || localStorage.getItem('handoff_sb_key') || '';
+            const banner = document.getElementById('supabase-config-banner');
+
+            if (url && key) {
+                supabaseClient = window.supabase.createClient(url, key);
+                banner.classList.add('hidden');
+                document.getElementById('sync-indicator').innerText = 'Supabase Connected';
+                return true;
+            } else {
+                banner.classList.remove('hidden');
+                document.getElementById('sync-indicator').innerText = 'Awaiting Supabase Keys';
+                return false;
+            }
+        }
+
+        function saveSupabaseConfig() {
+            const url = document.getElementById('cfg-url').value.trim();
+            const key = document.getElementById('cfg-key').value.trim();
+            if (!url || !key) return;
+            localStorage.setItem('handoff_sb_url', url);
+            localStorage.setItem('handoff_sb_key', key);
+            initSupabase();
+        }
+
+        // ============================================================================
+        // 2. FULL 4-LANGUAGE I18N DICTIONARY (EN, ZH-CN, ZH-TW, ES)
+        // ============================================================================
+        const I18N = {
+            'en': {
+                appTitle: 'Twilight Handoff',
+                loginSub: 'Sign in with your account',
+                dbConfigTitle: 'Connect Database',
+                connectDbBtn: 'Save & Connect',
+                nameLabel: 'Name',
+                passLabel: 'Password',
+                wantToChangeInfo: 'Update my Name, City, or Password →',
+                updateHint: 'Verify your current Name & Password above, then enter updates:',
+                newNameLabel: 'New Name',
+                newCityLabel: 'City',
+                cityInputPlaceholder: 'Any city name...',
+                newPassLabel: 'New Password (optional)',
+                loginBtn: 'Enter',
+                VerifyAndUpdateBtn: 'Verify & Update',
+                editAccount: 'Account',
+                logout: 'Exit',
+                youTag: 'You',
+                partnerTag: 'Partner',
+                yourVibe: 'Your vibe',
+                vibeRadiant: '☀️ Radiant',
+                vibeWarm: '✨ Warm',
+                vibePlayful: '🎈 Playful',
+                vibeCalm: '🌊 Calm',
+                vibeFocus: '⚡ Focus',
+                vibeDrifting: '☁️ Drifting',
+                vibeDrained: '🥀 Drained',
+                vibeOverwhelmed: '🌧️ Overwhelmed',
+                vibeMissing: '🌙 Missing You',
+                emptyCapsule: 'No locked thoughts waiting right now.',
+                guessPlaceholder: 'Complete their thought to unlock...',
+                unlockBtn: 'Unlock',
+                composerPlaceholder: 'Write a thought (partner only sees the ending first)...',
+                recordAudio: 'Record 6s sound',
+                recordingNow: 'Tap to stop',
+                soundAttached: 'Sound ready ✓',
+                clearAudio: '✕ Clear',
+                sendBtn: 'Send',
+                sending: 'Sending...',
+                sent: 'Sent ✓',
+                modeRelay: 'Live Relay',
+                modeDispatch: 'Night Dispatch',
+                awake: 'Awake ☀️',
+                sleeping: 'Sleeping 🌙',
+                promptSleep: 'Silent capsule for',
+                promptAwake: 'Live half-thought for',
+                fromCity: 'From',
+                statusLocked: 'Locked',
+                statusUnlocked: 'Unlocked',
+                statusQuiet: 'Quiet',
+                completedWith: 'Completed with:',
+                unlockedDirect: 'Unlocked directly',
+                skySynced: 'Sky synced to',
+                currentPassVerify: 'Current Password (Required)',
+                saveChanges: 'Save Changes',
+                errInvalidCreds: 'Invalid Name or Password.',
+                errNoSupabase: 'Please configure your Supabase URL & Anon Key first.',
+                errMicPerm: 'Microphone access denied or unavailable. Ensure HTTPS.',
+                weatherClear: 'Clear', weatherCloudy: 'Cloudy', weatherMist: 'Mist', weatherRain: 'Rain', weatherSnow: 'Snow', weatherStorm: 'Storm'
+            },
+            'zh-CN': {
+                appTitle: '暮光交接',
+                loginSub: '使用账号登录',
+                dbConfigTitle: '连接数据库',
+                connectDbBtn: '保存并连接',
+                nameLabel: '名字',
+                passLabel: '密码',
+                wantToChangeInfo: '修改我的名字、所在城市或密码 →',
+                updateHint: '请先在上方输入当前正确的名字和密码以验证身份，再填写新信息：',
+                newNameLabel: '新名字',
+                newCityLabel: '所在城市',
+                cityInputPlaceholder: '输入任意城市名称...',
+                newPassLabel: '新密码（不改请留空）',
+                loginBtn: '进入空间',
+                VerifyAndUpdateBtn: '验证并保存修改',
+                editAccount: '账户设置',
+                logout: '退出',
+                youTag: '你',
+                partnerTag: '伴侣',
+                yourVibe: '此刻状态',
+                vibeRadiant: '☀️ 明媚',
+                vibeWarm: '✨ 温暖',
+                vibePlayful: '🎈 雀跃',
+                vibeCalm: '🌊 平静',
+                vibeFocus: '⚡ 专注',
+                vibeDrifting: '☁️ 放空',
+                vibeDrained: '🥀 疲惫',
+                vibeOverwhelmed: '🌧️ 烦闷',
+                vibeMissing: '🌙 想你',
+                emptyCapsule: '此刻还没有待解锁的思绪。',
+                guessPlaceholder: '试着接完这句话以解锁全文...',
+                unlockBtn: '解锁',
+                composerPlaceholder: '写下一句话（对方起初只能看到结尾几个字）...',
+                recordAudio: '录制 6 秒声音',
+                recordingNow: '点击停止录制',
+                soundAttached: '声音已就绪 ✓',
+                clearAudio: '✕ 清除',
+                sendBtn: '投递',
+                sending: '投递中...',
+                sent: '已投递 ✓',
+                modeRelay: '实时接力',
+                modeDispatch: '夜间胶囊',
+                awake: '清醒 ☀️',
+                sleeping: '安睡 🌙',
+                promptSleep: '留一枚晨间胶囊给',
+                promptAwake: '发起半句话接力给',
+                fromCity: '来自',
+                statusLocked: '待解锁',
+                statusUnlocked: '已解锁',
+                statusQuiet: '宁静',
+                completedWith: '你的续写：',
+                unlockedDirect: '直接解锁',
+                skySynced: '天空已同步至',
+                currentPassVerify: '当前密码（必填验证）',
+                saveChanges: '保存修改',
+                errInvalidCreds: '验证失败：名字或密码不正确。',
+                errNoSupabase: '请先配置 Supabase URL 和 Key。',
+                errMicPerm: '无法访问麦克风，请确认浏览器已授权且处于 HTTPS 环境。',
+                weatherClear: '晴朗', weatherCloudy: '多云', weatherMist: '薄雾', weatherRain: '降雨', weatherSnow: '降雪', weatherStorm: '雷雨'
+            },
+            'zh-TW': {
+                appTitle: 'Handoff',
+                loginSub: '使用帳號登入',
+                dbConfigTitle: '連接資料庫',
+                connectDbBtn: '儲存並連接',
+                nameLabel: '名字',
+                passLabel: '密碼',
+                wantToChangeInfo: '修改我的名字、所在城市或密碼 →',
+                updateHint: '請先在上方輸入目前正確的名字和密碼以驗證身分，再填寫新資訊：',
+                newNameLabel: '新名字',
+                newCityLabel: '所在城市',
+                cityInputPlaceholder: '輸入任意城市名稱...',
+                newPassLabel: '新密碼（不改請留空）',
+                loginBtn: '進入空間',
+                VerifyAndUpdateBtn: '驗證並儲存修改',
+                editAccount: '帳戶設定',
+                logout: '登出',
+                youTag: '你',
+                partnerTag: '伴侶',
+                yourVibe: '此刻狀態',
+                vibeRadiant: '☀️ 明媚',
+                vibeWarm: '✨ 溫暖',
+                vibePlayful: '🎈 雀躍',
+                vibeCalm: '🌊 平靜',
+                vibeFocus: '⚡ 專注',
+                vibeDrifting: '☁️ 放空',
+                vibeDrained: '🥀 疲憊',
+                vibeOverwhelmed: '🌧️ 煩悶',
+                vibeMissing: '🌙 想你',
+                emptyCapsule: '此刻還沒有待解鎖的思緒。',
+                guessPlaceholder: '試著接完這句話以解鎖全文...',
+                unlockBtn: '解鎖',
+                composerPlaceholder: '寫下一句話（對方起初只能看到結尾幾個字）...',
+                recordAudio: '錄製 6 秒聲音',
+                recordingNow: '點擊停止錄製',
+                soundAttached: '聲音已就緒 ✓',
+                clearAudio: '✕ 清除',
+                sendBtn: '投遞',
+                sending: '投遞中...',
+                sent: '已投遞 ✓',
+                modeRelay: '即時接力',
+                modeDispatch: '夜間膠囊',
+                awake: '清醒 ☀️',
+                sleeping: '安睡 🌙',
+                promptSleep: '留一枚晨間膠囊給',
+                promptAwake: '發起半句話接力給',
+                fromCity: '來自',
+                statusLocked: '待解鎖',
+                statusUnlocked: '已解鎖',
+                statusQuiet: '寧靜',
+                completedWith: '你的續寫：',
+                unlockedDirect: '直接解鎖',
+                skySynced: '天空已同步至',
+                currentPassVerify: '目前密碼（必填驗證）',
+                saveChanges: '儲存修改',
+                errInvalidCreds: '驗證失敗：名字或密碼不正確。',
+                errNoSupabase: '請先設定 Supabase URL 和 Key。',
+                errMicPerm: '無法存取麥克風，請確認瀏覽器已授權且處於 HTTPS 環境。',
+                weatherClear: '晴朗', weatherCloudy: '多雲', weatherMist: '薄霧', weatherRain: '降雨', weatherSnow: '降雪', weatherStorm: '雷雨'
+            },
+            'es': {
+                appTitle: 'Relevo del Crepúsculo',
+                loginSub: 'Inicia sesión con tu cuenta',
+                dbConfigTitle: 'Conectar Base de Datos',
+                connectDbBtn: 'Guardar y Conectar',
+                nameLabel: 'Nombre',
+                passLabel: 'Contraseña',
+                wantToChangeInfo: 'Cambiar mi nombre, ciudad o contraseña →',
+                updateHint: 'Verifica tu nombre y contraseña actuales arriba y escribe los nuevos datos:',
+                newNameLabel: 'Nuevo Nombre',
+                newCityLabel: 'Tu Ciudad',
+                cityInputPlaceholder: 'Cualquier ciudad...',
+                newPassLabel: 'Nueva Contraseña (opcional)',
+                loginBtn: 'Entrar',
+                VerifyAndUpdateBtn: 'Verificar y Guardar',
+                editAccount: 'Cuenta',
+                logout: 'Salir',
+                youTag: 'Tú',
+                partnerTag: 'Pareja',
+                yourVibe: 'Tu vibra',
+                vibeRadiant: '☀️ Radiante',
+                vibeWarm: '✨ Cálido',
+                vibePlayful: '🎈 Juguetón',
+                vibeCalm: '🌊 Calma',
+                vibeFocus: '⚡ Enfoque',
+                vibeDrifting: '☁️ Flotando',
+                vibeDrained: '🥀 Agotado',
+                vibeOverwhelmed: '🌧️ Abrumado',
+                vibeMissing: '🌙 Extrañándote',
+                emptyCapsule: 'No hay pensamientos bloqueados ahora.',
+                guessPlaceholder: 'Completa su frase para desbloquear...',
+                unlockBtn: 'Abrir',
+                composerPlaceholder: 'Escribe algo (solo verá el final primero)...',
+                recordAudio: 'Grabar 6s de sonido',
+                recordingNow: 'Toca para parar',
+                soundAttached: 'Sonido listo ✓',
+                clearAudio: '✕ Borrar',
+                sendBtn: 'Enviar',
+                sending: 'Enviando...',
+                sent: 'Enviado ✓',
+                modeRelay: 'Relevo Vivo',
+                modeDispatch: 'Cápsula Nocturna',
+                awake: 'Despierto ☀️',
+                sleeping: 'Durmiendo 🌙',
+                promptSleep: 'Cápsula silenciosa para',
+                promptAwake: 'Relevo en vivo para',
+                fromCity: 'De',
+                statusLocked: 'Bloqueado',
+                statusUnlocked: 'Abierto',
+                statusQuiet: 'Calma',
+                completedWith: 'Completado con:',
+                unlockedDirect: 'Abierto directamente',
+                skySynced: 'Cielo sincronizado con',
+                currentPassVerify: 'Contraseña Actual (Requerida)',
+                saveChanges: 'Guardar Cambios',
+                errInvalidCreds: 'Nombre o contraseña incorrectos.',
+                errNoSupabase: 'Configura primero tu URL y clave de Supabase.',
+                errMicPerm: 'Permiso de micrófono denegado o requiere HTTPS.',
+                weatherClear: 'Despejado', weatherCloudy: 'Nublado', weatherMist: 'Niebla', weatherRain: 'Lluvia', weatherSnow: 'Nieve', weatherStorm: 'Tormenta'
+            }
+        };
+
+        let currentLang = localStorage.getItem('handoff_lang') || detectBrowserLang();
+
+        function detectBrowserLang() {
+            const nav = (navigator.language || 'en').toLowerCase();
+            if (nav.includes('zh-tw') || nav.includes('zh-hk')) return 'zh-TW';
+            if (nav.includes('zh')) return 'zh-CN';
+            if (nav.includes('es')) return 'es';
+            return 'en';
+        }
+
+        function t(key) {
+            return (I18N[currentLang] && I18N[currentLang][key]) || I18N['en'][key] || key;
+        }
+
+        function getApiLangCode() {
+            if (currentLang.startsWith('zh')) return 'zh';
+            if (currentLang === 'es') return 'es';
+            return 'en';
+        }
+
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('handoff_lang', lang);
+
+            ['en', 'zh-CN', 'zh-TW', 'es'].forEach(l => {
+                const btn = document.getElementById(`lang-${l}`);
+                if (l === lang) {
+                    btn.className = 'px-2 py-0.5 rounded-full bg-white text-black font-medium transition';
+                } else {
+                    btn.className = 'px-2 py-0.5 rounded-full opacity-60 hover:opacity-100 transition';
+                }
+            });
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                el.innerText = t(el.getAttribute('data-i18n'));
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+            });
+
+            if (currentUser) {
+                refreshAllLocationsAndWeather();
+                renderCapsule();
+            }
+        }
+
+        // ============================================================================
+        // 3. MULTILINGUAL PARTIAL MESSAGE TEASER SCHEME (EN, ES, ZH-CN, ZH-TW)
+        // ============================================================================
+        function computeMultilingualTeaser(rawText) {
+            const clean = (rawText || '').trim();
+            if (!clean) return { mask: '••••••', reveal: '...' };
+
+            const cjkRegex = /[\u4e00-\u9fa5]/g;
+            const cjkMatches = clean.match(cjkRegex);
+            const isPrimarilyCJK = cjkMatches && (cjkMatches.length / clean.length > 0.25);
+
+            if (isPrimarilyCJK) {
+                const chars = Array.from(clean);
+                const total = chars.length;
+                if (total <= 2) return { mask: '•• ', reveal: chars[total - 1] };
+                const revealCount = Math.min(5, Math.max(2, Math.ceil(total * 0.32)));
+                const hiddenCount = Math.min(12, Math.max(4, total - revealCount));
+                return {
+                    mask: '•'.repeat(hiddenCount) + ' ',
+                    reveal: chars.slice(-revealCount).join('')
+                };
+            } else {
+                const words = clean.split(/\s+/);
+                if (words.length <= 2) {
+                    const half = Math.ceil(clean.length / 2);
+                    return { mask: '•••••• ', reveal: clean.slice(half) };
+                }
+                const revealWordsCount = Math.min(3, Math.max(1, Math.floor(words.length * 0.4)));
+                return {
+                    mask: '•••••••••••• ',
+                    reveal: words.slice(-revealWordsCount).join(' ')
+                };
+            }
+        }
+
+        // ============================================================================
+        // 4. DIRECT SUPABASE AUTH & ACCOUNT MANAGEMENT
+        // ============================================================================
+        let currentUser = null;
+        let partnerUser = null;
+
+        function toggleLoginUpdateBox() {
+            const box = document.getElementById('login-update-box');
+            const saveBtn = document.getElementById('save-login-btn');
+            const isHidden = box.classList.contains('hidden');
+            if (isHidden) {
+                box.classList.remove('hidden');
+                saveBtn.classList.remove('hidden');
+            } else {
+                box.classList.add('hidden');
+                saveBtn.classList.add('hidden');
+            }
+        }
+
+        async function handleLogin(isUpdatingInfo) {
+            const errEl = document.getElementById('login-error');
+            errEl.classList.add('hidden');
+
+            if (!supabaseClient && !initSupabase()) {
+                errEl.innerText = t('errNoSupabase');
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            const nameInput = document.getElementById('login-name').value.trim();
+            const passInput = document.getElementById('login-pass').value.trim();
+
+            if (!nameInput || !passInput) {
+                errEl.innerText = t('errInvalidCreds');
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            // 1. Verify credentials directly against Supabase `accounts` table
+            const { data: matchedAccount, error } = await supabaseClient
+                .from('accounts')
+                .select('*')
+                .ilike('name', nameInput)
+                .eq('password', passInput)
+                .maybeSingle();
+
+            if (error || !matchedAccount) {
+                errEl.innerText = t('errInvalidCreds');
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            let activeAccount = matchedAccount;
+
+            // 2. If user requested an update on the login screen after verifying old credentials
+            if (isUpdatingInfo) {
+                const newName = document.getElementById('update-new-name').value.trim() || matchedAccount.name;
+                const newCity = document.getElementById('update-new-city').value.trim() || matchedAccount.city;
+                const newPass = document.getElementById('update-new-pass').value.trim() || matchedAccount.password;
+
+                const { data: updated, error: updateErr } = await supabaseClient
+                    .from('accounts')
+                    .update({
+                        name: newName,
+                        city: newCity,
+                        password: newPass,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', matchedAccount.id)
+                    .select()
+                    .single();
+
+                if (!updateErr && updated) {
+                    activeAccount = updated;
+                }
+            }
+
+            currentUser = activeAccount;
+            localStorage.setItem('handoff_logged_in_id', currentUser.id);
+            await enterApp();
+        }
+
+        async function restoreSessionFromSupabase() {
+            const savedId = localStorage.getItem('handoff_logged_in_id');
+            if (!savedId || !supabaseClient) return;
+
+            const { data } = await supabaseClient
+                .from('accounts')
+                .select('*')
+                .eq('id', savedId)
+                .maybeSingle();
+
+            if (data) {
+                currentUser = data;
+                await enterApp();
+            }
+        }
+
+        function openEditModal() {
+            if (!currentUser) return;
+            document.getElementById('modal-curr-pass').value = '';
+            document.getElementById('modal-new-name').value = currentUser.name;
+            document.getElementById('modal-new-city').value = currentUser.city;
+            document.getElementById('modal-new-pass').value = '';
+            document.getElementById('modal-msg').classList.add('hidden');
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+
+        async function saveAccountFromModal() {
+            const currPass = document.getElementById('modal-curr-pass').value.trim();
+            const msgEl = document.getElementById('modal-msg');
+
+            // Re-verify against current password
+            if (currPass !== currentUser.password) {
+                msgEl.innerText = t('errInvalidCreds');
+                msgEl.classList.remove('hidden');
+                return;
+            }
+
+            const newName = document.getElementById('modal-new-name').value.trim() || currentUser.name;
+            const newCity = document.getElementById('modal-new-city').value.trim() || currentUser.city;
+            const newPass = document.getElementById('modal-new-pass').value.trim() || currentUser.password;
+
+            const { data: updated, error } = await supabaseClient
+                .from('accounts')
+                .update({
+                    name: newName,
+                    city: newCity,
+                    password: newPass,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', currentUser.id)
+                .select()
+                .single();
+
+            if (!error && updated) {
+                currentUser = updated;
+                closeEditModal();
+                await refreshAllLocationsAndWeather();
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            partnerUser = null;
+            localStorage.removeItem('handoff_logged_in_id');
+            document.getElementById('app-screen').classList.add('hidden');
+            document.getElementById('nav-user-controls').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        // Pulls the fresh row for both currentUser and partnerUser directly from Supabase
+        async function syncAccountsFromSupabase() {
+            if (!currentUser || !supabaseClient) return;
+
+            const { data: meData } = await supabaseClient
+                .from('accounts')
+                .select('*')
+                .eq('id', currentUser.id)
+                .maybeSingle();
+            if (meData) currentUser = meData;
+
+            const { data: partnerData } = await supabaseClient
+                .from('accounts')
+                .select('*')
+                .neq('id', currentUser.id)
+                .order('updated_at', { ascending: false })
+                .limit(1);
+
+            partnerUser = (partnerData && partnerData.length > 0) ? partnerData[0] : null;
+        }
+
+        // ============================================================================
+        // 5. LIVE GEOCODING + WEATHER LOCATION API (Open-Meteo Geocoding & Forecast)
+        // ============================================================================
+        // Resolves ANY city name stored in Supabase into { displayName, lat, lon, timezone, temp, weatherKey, isDay, localHour }
+        const locationWeatherCache = {};
+
+        async function resolveCityAndWeather(rawCityName) {
+            if (!rawCityName) return null;
+            const lang = getApiLangCode();
+            const cacheKey = `${rawCityName.toLowerCase()}_${lang}`;
+
+            try {
+                // Step 1: Geocode the city string via Open-Meteo Geocoding API
+                const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(rawCityName)}&count=1&language=${lang}&format=json`;
+                const geoRes = await fetch(geoUrl);
+                const geoJson = await geoRes.json();
+
+                if (!geoJson.results || geoJson.results.length === 0) {
+                    return { displayName: rawCityName, tz: 'UTC', temp: '--', weatherKey: 'weatherClear', isDay: 1 };
+                }
+
+                const place = geoJson.results[0];
+                const lat = place.latitude;
+                const lon = place.longitude;
+                const tz = place.timezone || 'UTC';
+                const displayName = place.name || rawCityName;
+
+                // Step 2: Fetch live weather & day/night status via Open-Meteo Forecast API
+                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,is_day&timezone=auto`;
+                const weatherRes = await fetch(weatherUrl);
+                const weatherJson = await weatherRes.json();
+
+                const curr = weatherJson.current || {};
+                const resolvedTz = weatherJson.timezone || tz;
+
+                const info = {
+                    displayName: displayName,
+                    tz: resolvedTz,
+                    temp: curr.temperature_2m !== undefined ? Math.round(curr.temperature_2m) : '--',
+                    weatherKey: decodeWeatherKey(curr.weather_code || 0),
+                    isDay: curr.is_day !== undefined ? curr.is_day : 1
+                };
+
+                locationWeatherCache[cacheKey] = info;
+                return info;
+            } catch (e) {
+                return locationWeatherCache[cacheKey] || { displayName: rawCityName, tz: 'UTC', temp: '--', weatherKey: 'weatherClear', isDay: 1 };
+            }
+        }
+
+        function decodeWeatherKey(code) {
+            if (code === 0) return 'weatherClear';
+            if (code <= 3) return 'weatherCloudy';
+            if (code <= 48) return 'weatherMist';
+            if (code <= 67) return 'weatherRain';
+            if (code <= 77) return 'weatherSnow';
+            return 'weatherStorm';
+        }
+
+        function getCityHour(tz) {
+            try {
+                const str = new Date().toLocaleTimeString('en-US', { timeZone: tz, hour: '2-digit', hour12: false });
+                return parseInt(str, 10);
+            } catch (e) {
+                return new Date().getUTCHours();
+            }
+        }
+
+        function getCityTimeStr(tz) {
+            try {
+                return new Date().toLocaleTimeString('en-US', { timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false });
+            } catch (e) {
+                return '--:--';
+            }
+        }
+
+        // ============================================================================
+        // 6. DYNAMIC ATMOSPHERE & UI RENDERING
+        // ============================================================================
+        const VIBE_PALETTE = {
+            radiant:     { color: '#b45309', dot: 'bg-amber-300', i18n: 'vibeRadiant' },
+            warm:        { color: '#7c2d12', dot: 'bg-orange-400', i18n: 'vibeWarm' },
+            playful:     { color: '#831843', dot: 'bg-pink-400', i18n: 'vibePlayful' },
+            calm:        { color: '#0f172a', dot: 'bg-sky-400', i18n: 'vibeCalm' },
+            focus:       { color: '#111827', dot: 'bg-emerald-400', i18n: 'vibeFocus' },
+            drifting:    { color: '#1e1b4b', dot: 'bg-indigo-300', i18n: 'vibeDrifting' },
+            drained:     { color: '#27272a', dot: 'bg-stone-400', i18n: 'vibeDrained' },
+            overwhelmed: { color: '#172554', dot: 'bg-blue-500', i18n: 'vibeOverwhelmed' },
+            missing:     { color: '#3b0764', dot: 'bg-purple-400', i18n: 'vibeMissing' }
+        };
+
+        let myLocationInfo = null;
+        let partnerLocationInfo = null;
+
+        async function refreshAllLocationsAndWeather() {
+            await syncAccountsFromSupabase();
+            if (!currentUser) return;
+
+            myLocationInfo = await resolveCityAndWeather(currentUser.city);
+            if (partnerUser && partnerUser.city) {
+                partnerLocationInfo = await resolveCityAndWeather(partnerUser.city);
+            } else {
+                partnerLocationInfo = null;
+            }
+            renderEnvironment();
+        }
+
+        function renderEnvironment() {
+            if (!currentUser) return;
+
+            // Render Your Info
+            document.getElementById('name-you').innerText = currentUser.name;
+            document.getElementById('label-you').innerText = myLocationInfo ? myLocationInfo.displayName : currentUser.city;
+            document.getElementById('time-you').innerText = myLocationInfo ? getCityTimeStr(myLocationInfo.tz) : '--:--';
+            document.getElementById('weather-you').innerText = myLocationInfo
+                ? `${t(myLocationInfo.weatherKey)} · ${myLocationInfo.temp}°C`
+                : '--';
+
+            // Render Partner Info directly from Supabase partner row + Geocoded Weather API
+            if (partnerUser && partnerLocationInfo) {
+                const pMoodKey = partnerUser.mood && VIBE_PALETTE[partnerUser.mood] ? partnerUser.mood : 'calm';
+                const pMoodObj = VIBE_PALETTE[pMoodKey];
+
+                document.getElementById('name-partner').innerText = partnerUser.name;
+                document.getElementById('label-partner').innerText = partnerLocationInfo.displayName;
+                document.getElementById('time-partner').innerText = getCityTimeStr(partnerLocationInfo.tz);
+                document.getElementById('weather-partner').innerText = `${t(partnerLocationInfo.weatherKey)} · ${partnerLocationInfo.temp}°C · ${t(pMoodObj.i18n)}`;
+                document.getElementById('partner-mood-dot').className = `w-2 h-2 rounded-full ${pMoodObj.dot}`;
+                document.getElementById('sky-desc').innerText = `${t('skySynced')} ${partnerUser.name} (${partnerLocationInfo.displayName})`;
+
+                const pHour = getCityHour(partnerLocationInfo.tz);
+                const isSleeping = (pHour >= 23 || pHour < 7);
+                const isDawnDusk = (pHour >= 7 && pHour <= 9) || (pHour >= 18 && pHour <= 22);
+
+                let topSky = '#090d16';
+                if (partnerLocationInfo.isDay === 1 && !isSleeping) {
+                    topSky = (partnerLocationInfo.weatherKey === 'weatherRain' || partnerLocationInfo.weatherKey === 'weatherMist')
+                        ? '#334155'
+                        : '#0369a1';
+                } else if (isDawnDusk) {
+                    topSky = '#431407';
+                }
+
+                document.getElementById('app-body').style.background = `linear-gradient(165deg, ${topSky} 0%, ${pMoodObj.color} 100%)`;
+
+                document.getElementById('mode-pill').innerText = isSleeping ? t('modeDispatch') : t('modeRelay');
+                document.getElementById('partner-sleep-badge').innerText = `${partnerUser.name} · ${isSleeping ? t('sleeping') : t('awake')}`;
+                document.getElementById('composer-prompt').innerText = `${isSleeping ? t('promptSleep') : t('promptAwake')} ${partnerUser.name} (${partnerLocationInfo.displayName})`;
+            } else {
+                document.getElementById('name-partner').innerText = '--';
+                document.getElementById('label-partner').innerText = '--';
+                document.getElementById('time-partner').innerText = '--:--';
+                document.getElementById('weather-partner').innerText = '--';
+            }
+
+            // Highlight My Active Vibe
+            const myMoodKey = currentUser.mood || 'warm';
+            document.getElementById('current-vibe-label').innerText = t((VIBE_PALETTE[myMoodKey] || VIBE_PALETTE.warm).i18n);
+            document.querySelectorAll('#mood-buttons button').forEach(btn => {
+                if (btn.dataset.mood === myMoodKey) {
+                    btn.classList.remove('opacity-60');
+                    btn.classList.add('opacity-100', 'ring-1', 'ring-white');
+                } else {
+                    btn.classList.add('opacity-60');
+                    btn.classList.remove('opacity-100', 'ring-1', 'ring-white');
+                }
+            });
+        }
+
+        async function setMyMood(moodKey) {
+            if (!currentUser || !supabaseClient) return;
+            currentUser.mood = moodKey;
+            renderEnvironment();
+
+            await supabaseClient
+                .from('accounts')
+                .update({ mood: moodKey, updated_at: new Date().toISOString() })
+                .eq('id', currentUser.id);
+        }
+
+        // ============================================================================
+        // 7. CROSS-BROWSER / CROSS-OS AUDIO RECORDER (Safari, Chrome, Firefox)
+        // ============================================================================
+        let mediaRecorder = null;
+        let activeStream = null;
+        let audioChunks = [];
+        let recordedBlob = null;
+        let recordedMimeType = '';
+        let recordedExt = 'm4a';
+        let isRecording = false;
+        let recordTimeout = null;
+        let countdownInterval = null;
+        let activeCapsule = null;
+
+        function getSupportedAudioFormat() {
+            if (typeof MediaRecorder === 'undefined') return { mimeType: '', ext: 'wav' };
+            const candidates = [
+                { mimeType: 'audio/mp4', ext: 'm4a' },
+                { mimeType: 'audio/mp4;codecs=mp4a.40.2', ext: 'm4a' },
+                { mimeType: 'audio/aac', ext: 'aac' },
+                { mimeType: 'audio/webm;codecs=opus', ext: 'webm' },
+                { mimeType: 'audio/webm', ext: 'webm' },
+                { mimeType: 'audio/ogg;codecs=opus', ext: 'ogg' },
+                { mimeType: 'audio/ogg', ext: 'ogg' }
+            ];
+            for (const c of candidates) {
+                try {
+                    if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(c.mimeType)) {
+                        return c;
+                    }
+                } catch (e) {}
+            }
+            return { mimeType: '', ext: 'webm' };
+        }
+
+        async function toggleRecording() {
+            const errEl = document.getElementById('mic-error-msg');
+            errEl.classList.add('hidden');
+
+            if (isRecording) {
+                stopRecording();
+                return;
+            }
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                errEl.innerText = t('errMicPerm');
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                activeStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const format = getSupportedAudioFormat();
+                recordedMimeType = format.mimeType;
+                recordedExt = format.ext;
+
+                audioChunks = [];
+                mediaRecorder = recordedMimeType
+                    ? new MediaRecorder(activeStream, { mimeType: recordedMimeType })
+                    : new MediaRecorder(activeStream);
+
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data && event.data.size > 0) audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const finalType = mediaRecorder.mimeType || recordedMimeType || 'audio/mp4';
+                    recordedBlob = new Blob(audioChunks, { type: finalType });
+                    recordedMimeType = finalType;
+
+                    const previewEl = document.getElementById('recorded-preview');
+                    previewEl.src = URL.createObjectURL(recordedBlob);
+                    previewEl.load();
+                    document.getElementById('recorded-preview-wrap').classList.remove('hidden');
+
+                    if (activeStream) {
+                        activeStream.getTracks().forEach(track => track.stop());
+                        activeStream = null;
+                    }
+                };
+
+                mediaRecorder.start(200);
+                isRecording = true;
+
+                const dot = document.getElementById('mic-dot');
+                const label = document.getElementById('mic-label');
+                const timerEl = document.getElementById('mic-timer');
+
+                dot.classList.add('animate-ping');
+                label.innerText = t('recordingNow');
+                timerEl.classList.remove('hidden');
+
+                let remaining = 6.0;
+                timerEl.innerText = `${remaining.toFixed(1)}s`;
+                countdownInterval = setInterval(() => {
+                    remaining = Math.max(0, remaining - 0.2);
+                    timerEl.innerText = `${remaining.toFixed(1)}s`;
+                }, 200);
+
+                recordTimeout = setTimeout(() => {
+                    if (isRecording) stopRecording();
+                }, 6000);
+
+            } catch (err) {
+                errEl.innerText = t('errMicPerm');
+                errEl.classList.remove('hidden');
+            }
+        }
+
+        function stopRecording() {
+            clearTimeout(recordTimeout);
+            clearInterval(countdownInterval);
+            isRecording = false;
+
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                try { mediaRecorder.stop(); } catch (e) {}
+            }
+
+            document.getElementById('mic-dot').classList.remove('animate-ping');
+            document.getElementById('mic-label').innerText = t('soundAttached');
+            document.getElementById('mic-timer').classList.add('hidden');
+        }
+
+        function clearRecording() {
+            recordedBlob = null;
+            audioChunks = [];
+            const previewEl = document.getElementById('recorded-preview');
+            previewEl.pause();
+            previewEl.removeAttribute('src');
+            document.getElementById('recorded-preview-wrap').classList.add('hidden');
+            document.getElementById('mic-label').innerText = t('recordAudio');
+        }
+
+        // ============================================================================
+        // 8. DIRECT SUPABASE CAPSULE STORAGE & SYNC
+        // ============================================================================
+        async function sendHandoff() {
+            if (!currentUser || !supabaseClient) return;
+            const input = document.getElementById('composer-input');
+            const text = input.value.trim();
+            if (!text && !recordedBlob) return;
+
+            const sendBtn = document.getElementById('send-btn');
+            sendBtn.innerText = t('sending');
+
+            const fullText = text || '🎙️ (6s)';
+            const teaserObj = computeMultilingualTeaser(fullText);
+
+            let audioUrl = null;
+            if (recordedBlob) {
+                const fileName = `${Date.now()}_${currentUser.id}.${recordedExt || 'm4a'}`;
+                const { data, error } = await supabaseClient.storage
+                    .from('soundbites')
+                    .upload(fileName, recordedBlob, {
+                        contentType: recordedMimeType || 'audio/mp4',
+                        upsert: true
+                    });
+                if (!error && data) {
+                    const { data: pub } = supabaseClient.storage.from('soundbites').getPublicUrl(fileName);
+                    audioUrl = pub.publicUrl;
+                }
+            }
+
+            const payload = {
+                id: Date.now().toString(),
+                sender: currentUser.city,
+                sender_name: currentUser.name,
+                full_text: fullText,
+                teaser: teaserObj.reveal,
+                audio_url: audioUrl,
+                unlocked: false,
+                guess: '',
+                created_at: new Date().toISOString()
+            };
+
+            await supabaseClient.from('capsules').insert([payload]);
+
+            input.value = '';
+            clearRecording();
+            sendBtn.innerText = t('sent');
+            setTimeout(() => { sendBtn.innerText = t('sendBtn'); }, 1500);
+            await loadLatestCapsule();
+        }
+
+        async function loadLatestCapsule() {
+            if (!supabaseClient) return;
+            const { data } = await supabaseClient
+                .from('capsules')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(1);
+
+            activeCapsule = (data && data.length > 0) ? data[0] : null;
+            renderCapsule();
+        }
+
+        function renderCapsule() {
+            const emptyEl = document.getElementById('state-empty');
+            const lockedEl = document.getElementById('state-locked');
+            const unlockedEl = document.getElementById('state-unlocked');
+            const statusEl = document.getElementById('incoming-status');
+            const fromEl = document.getElementById('incoming-from');
+
+            if (!activeCapsule) {
+                emptyEl.classList.remove('hidden');
+                lockedEl.classList.add('hidden');
+                unlockedEl.classList.add('hidden');
+                statusEl.innerText = t('statusQuiet');
+                fromEl.innerText = partnerUser ? `${partnerUser.name} (${partnerUser.city})` : '--';
+                return;
+            }
+
+            emptyEl.classList.add('hidden');
+            fromEl.innerText = `${t('fromCity')} ${activeCapsule.sender_name || ''} (${activeCapsule.sender || ''})`;
+
+            if (!activeCapsule.unlocked) {
+                lockedEl.classList.remove('hidden');
+                unlockedEl.classList.add('hidden');
+                statusEl.innerText = t('statusLocked');
+
+                const teaserParts = computeMultilingualTeaser(activeCapsule.full_text);
+                document.getElementById('masked-dots').innerText = teaserParts.mask;
+                document.getElementById('teaser-words').innerText = teaserParts.reveal;
+            } else {
+                lockedEl.classList.add('hidden');
+                unlockedEl.classList.remove('hidden');
+                statusEl.innerText = t('statusUnlocked');
+                document.getElementById('full-sentence').innerText = `"${activeCapsule.full_text}"`;
+                document.getElementById('guess-result').innerText = activeCapsule.guess
+                    ? `${t('completedWith')} "${activeCapsule.guess}"`
+                    : t('unlockedDirect');
+
+                const audioWrap = document.getElementById('audio-player-wrap');
+                const audioEl = document.getElementById('capsule-audio');
+                if (activeCapsule.audio_url) {
+                    audioWrap.classList.remove('hidden');
+                    if (audioEl.src !== activeCapsule.audio_url) {
+                        audioEl.src = activeCapsule.audio_url;
+                        audioEl.load();
+                    }
+                } else {
+                    audioWrap.classList.add('hidden');
+                }
+            }
+        }
+
+        async function unlockCapsule() {
+            if (!activeCapsule || !supabaseClient) return;
+            const guess = document.getElementById('guess-input').value.trim();
+            await supabaseClient
+                .from('capsules')
+                .update({ unlocked: true, guess: guess })
+                .eq('id', activeCapsule.id);
+            document.getElementById('guess-input').value = '';
+            await loadLatestCapsule();
+        }
+
+        async function enterApp() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('app-screen').classList.remove('hidden');
+            document.getElementById('nav-user-controls').classList.remove('hidden');
+            await refreshAllLocationsAndWeather();
+            await loadLatestCapsule();
+        }
+
+        // Boot
+        initSupabase();
+        setLang(currentLang);
+        restoreSessionFromSupabase();
+
+        // Live Clock & Supabase Sync Poll
+        setInterval(() => {
+            if (currentUser) renderEnvironment();
+        }, 1000);
+
+        setInterval(async () => {
+            if (currentUser && supabaseClient) {
+                await refreshAllLocationsAndWeather();
+                await loadLatestCapsule();
+            }
+        }, 15000);
+    </script>
+</body>
+</html>
