@@ -743,7 +743,7 @@
             if (url && key) {
                 supabaseClient = window.supabase.createClient(url, key);
                 show('supabase-config-banner', false);
-                setText('sync-indicator', 'Supabase Live');
+                setText('sync-indicator', 'Live');
                 return true;
             }
             show('supabase-config-banner', true);
@@ -760,7 +760,7 @@
             lsSet('handoff_sb_key', key);
             supabaseClient = window.supabase.createClient(url, key);
             show('supabase-config-banner', false);
-            setText('sync-indicator', 'Supabase Live');
+            setText('sync-indicator', 'Live');
             await restoreSupabaseSession();
         }
 
@@ -805,7 +805,7 @@
                 tabSignIn: 'Sign In',
                 tabSignUp: 'First-Time Setup',
                 loginIdLabel: 'Username or Email',
-                loginIdPlaceholder: 'e.g. wei or wei@email.com',
+                loginIdPlaceholder: 'e.g. name or name@email.com',
                 passLabel: 'Password (min 6 chars)',
                 displayNameLabel: 'Your Name',
                 cityLabel: 'Your City',
@@ -866,7 +866,7 @@
                 outgoingWaiting: 'Last thought sent · waiting for {name} to unlock',
                 outgoingScheduled: 'Scheduled · arrives {time} their time',
                 outgoingUnlocked: '{name} unlocked it.',
-                skySynced: 'Sky synced to',
+                skySynced: 'Synced to',
                 timelineTitle: 'Your capsules',
                 timelineEmpty: 'Nothing here yet.',
                 timelineYou: 'You sent',
@@ -903,7 +903,7 @@
                 tabSignIn: '登录',
                 tabSignUp: '首次注册',
                 loginIdLabel: '用户名或邮箱',
-                loginIdPlaceholder: '例如：wei 或 wei@email.com',
+                loginIdPlaceholder: '例如：name 或 name@email.com',
                 passLabel: '密码（至少 6 位）',
                 displayNameLabel: '你的名字',
                 cityLabel: '所在城市',
@@ -964,7 +964,7 @@
                 outgoingWaiting: '上次投递 · 等待 {name} 解锁',
                 outgoingScheduled: '已定时 · 对方时间 {time} 送达',
                 outgoingUnlocked: '{name} 已解锁。',
-                skySynced: '天空同步至',
+                skySynced: '同步至',
                 timelineTitle: '你们的胶囊',
                 timelineEmpty: '这里还空空的。',
                 timelineYou: '你发出的',
@@ -1001,7 +1001,7 @@
                 tabSignIn: '登入',
                 tabSignUp: '首次註冊',
                 loginIdLabel: '使用者名稱或信箱',
-                loginIdPlaceholder: '例如：wei 或 wei@email.com',
+                loginIdPlaceholder: '例如：name 或 name@email.com',
                 passLabel: '密碼（至少 6 位）',
                 displayNameLabel: '你的名字',
                 cityLabel: '所在城市',
@@ -1062,7 +1062,7 @@
                 outgoingWaiting: '上次投遞 · 等待 {name} 解鎖',
                 outgoingScheduled: '已定時 · 對方時間 {time} 送達',
                 outgoingUnlocked: '{name} 已解鎖。',
-                skySynced: '天空同步至',
+                skySynced: '同步至',
                 timelineTitle: '你們的膠囊',
                 timelineEmpty: '這裡還空空的。',
                 timelineYou: '你寄出的',
@@ -1099,7 +1099,7 @@
                 tabSignIn: 'Entrar',
                 tabSignUp: 'Registro Inicial',
                 loginIdLabel: 'Usuario o Correo',
-                loginIdPlaceholder: 'ej. jane o jane@email.com',
+                loginIdPlaceholder: 'ej. name o name@email.com',
                 passLabel: 'Contraseña (mín. 6 caracteres)',
                 displayNameLabel: 'Tu Nombre',
                 cityLabel: 'Tu Ciudad',
@@ -1160,7 +1160,7 @@
                 outgoingWaiting: 'Último envío · esperando a que {name} lo abra',
                 outgoingScheduled: 'Programado · llega a las {time} su hora',
                 outgoingUnlocked: '{name} lo abrió.',
-                skySynced: 'Cielo sincronizado con',
+                skySynced: 'Sincronizado con',
                 timelineTitle: 'Vuestras cápsulas',
                 timelineEmpty: 'Aún no hay nada.',
                 timelineYou: 'Enviaste',
@@ -1197,7 +1197,7 @@
                 tabSignIn: 'Entrar',
                 tabSignUp: 'Primer Registre',
                 loginIdLabel: 'Usuari o Correu',
-                loginIdPlaceholder: 'ex. jane o jane@email.com',
+                loginIdPlaceholder: 'ex. name o name@email.com',
                 passLabel: 'Contrasenya (mín. 6 caràcters)',
                 displayNameLabel: 'El teu Nom',
                 cityLabel: 'La teva Ciutat',
@@ -1258,7 +1258,7 @@
                 outgoingWaiting: 'Últim enviament · esperant que {name} l’obri',
                 outgoingScheduled: 'Programat · arriba a les {time} la seva hora',
                 outgoingUnlocked: '{name} l’ha obert.',
-                skySynced: 'Cel sincronitzat amb',
+                skySynced: 'Sincronitzat amb',
                 timelineTitle: 'Les vostres càpsules',
                 timelineEmpty: 'Encara no hi ha res.',
                 timelineYou: 'Has enviat',
