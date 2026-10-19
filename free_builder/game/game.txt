@@ -24,4 +24,13 @@
         author: 'FREE//BUILDER',
         desc: 'Taste the cocktails, chat with the bartender, spend some chill time in the speakeasy.',
         url: bar
-      }
+      },
+      {
+        code: 'Couple',
+        altCode: 'TB-04',
+        title: 'TWIGHT HANDOFF',
+        genre: 'RELATIONSHIP +',
+        author: 'FREE//BUILDER',
+        desc: 'Interact with your partner, feel their emotion and guess what they want to say to you.',
+        url: love
+      },
