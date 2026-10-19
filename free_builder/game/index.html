@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="theme-color" content="#060906">
   <title>GAME REPERTORY</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,6 +17,17 @@
       --term-glow: rgba(51, 255, 102, 0.45);
       --cursor-color: #33ff66;
       --paper-line: rgba(51, 255, 102, 0.12);
+      --hi-color: #ffffff;
+      --hi-glow: 0 0 10px #ffffff;
+      --interrupt: #facc15;
+      --interrupt-glow: 0 0 8px rgba(250, 204, 21, 0.7);
+      --error: #ff4d4d;
+      --btn-bg: rgba(0, 0, 0, 0.4);
+
+      --fs: 19px;
+      --input-fs: 21px;
+      --pad-x: 18px;
+      --app-h: 100dvh;
     }
 
     body.amber-theme {
@@ -25,6 +37,8 @@
       --term-glow: rgba(255, 176, 0, 0.45);
       --cursor-color: #ffb000;
       --paper-line: rgba(255, 176, 0, 0.12);
+      --hi-color: #fff4dc;
+      --hi-glow: 0 0 10px rgba(255, 220, 160, 0.9);
     }
 
     body.paper-theme {
@@ -34,6 +48,12 @@
       --term-glow: transparent;
       --cursor-color: #1f1d18;
       --paper-line: rgba(0, 0, 0, 0.08);
+      --hi-color: #8b0000;
+      --hi-glow: none;
+      --interrupt: #b45309;
+      --interrupt-glow: none;
+      --error: #b91c1c;
+      --btn-bg: #d8d0be;
     }
 
     * {
@@ -46,16 +66,28 @@
     html, body {
       width: 100%;
       height: 100%;
-      height: 100dvh;
+      height: var(--app-h);
       overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    body {
       background-color: var(--bg-color);
       color: var(--term-green);
       font-family: 'VT323', 'Share Tech Mono', monospace;
-      font-size: 19px;
+      font-size: var(--fs);
       line-height: 1.25;
       letter-spacing: 0.5px;
       text-shadow: 0 0 6px var(--term-glow);
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
       transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    ::selection {
+      background: var(--term-green);
+      color: var(--bg-color);
+      text-shadow: none;
     }
 
     .crt-overlay {
@@ -64,7 +96,7 @@
       pointer-events: none;
       z-index: 50;
       background: linear-gradient(
-        rgba(18, 16, 16, 0) 50%, 
+        rgba(18, 16, 16, 0) 50%,
         rgba(0, 0, 0, 0.35) 50%
       ), linear-gradient(
         90deg,
@@ -76,8 +108,13 @@
       box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.85);
     }
 
-    .paper-theme .crt-overlay {
-      display: none;
+    .paper-theme .crt-overlay { display: none; }
+
+    /* Faint ruled lines on teleprinter paper */
+    .paper-theme #screenBuffer {
+      background-image: linear-gradient(var(--paper-line) 1px, transparent 1px);
+      background-size: 100% 1.25em;
+      background-attachment: local;
     }
 
     #terminalFrame {
@@ -87,7 +124,11 @@
       max-width: 980px;
       height: 100%;
       margin: 0 auto;
-      padding: 12px 18px;
+      padding:
+        calc(12px + env(safe-area-inset-top))
+        calc(var(--pad-x) + env(safe-area-inset-right))
+        calc(10px + env(safe-area-inset-bottom))
+        calc(var(--pad-x) + env(safe-area-inset-left));
       position: relative;
     }
 
@@ -96,39 +137,127 @@
       padding-bottom: 6px;
       margin-bottom: 10px;
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
+      gap: 4px 12px;
       font-size: 15px;
       text-transform: uppercase;
       flex-shrink: 0;
     }
 
+    .brand { white-space: nowrap; }
+
+    .hardware-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
     .hardware-tags span {
-      margin-left: 8px;
       padding: 1px 6px;
       border: 1px solid var(--term-dim);
+      white-space: nowrap;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .hardware-tags span.ping {
+      border-color: var(--term-green);
+    }
+
+    .hardware-tags span.warn {
+      color: var(--interrupt);
+      border-color: var(--interrupt);
+      text-shadow: var(--interrupt-glow);
     }
 
     #screenBuffer {
       flex: 1;
+      min-height: 0;
       overflow-y: auto;
+      overflow-x: hidden;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
       padding-right: 8px;
-      display: flex;
-      flex-direction: column;
       white-space: pre-wrap;
       word-break: break-word;
+      scrollbar-width: thin;
+      scrollbar-color: var(--term-dim) transparent;
     }
 
-    .log-line {
-      margin: 1.5px 0;
-    }
+    #screenBuffer::-webkit-scrollbar { width: 6px; }
+    #screenBuffer::-webkit-scrollbar-thumb { background: var(--term-dim); }
+    #screenBuffer::-webkit-scrollbar-track { background: transparent; }
+
+    .log-line { margin: 1.5px 0; min-height: 1.25em; }
     .log-line.system { color: var(--term-green); }
     .log-line.dim { color: var(--term-dim); }
-    .log-line.highlight { color: #fff; text-shadow: 0 0 10px #fff; }
-    .paper-theme .log-line.highlight { color: #8b0000; text-shadow: none; font-weight: bold; }
-    .log-line.interrupt { color: #facc15; text-shadow: 0 0 8px rgba(250, 204, 21, 0.7); }
-    .paper-theme .log-line.interrupt { color: #b45309; text-shadow: none; font-weight: bold; }
-    .log-line.error { color: #ff4d4d; text-shadow: 0 0 8px rgba(255,77,77,0.6); }
+    .log-line.highlight { color: var(--hi-color); text-shadow: var(--hi-glow); }
+    .paper-theme .log-line.highlight { font-weight: bold; }
+    .log-line.interrupt { color: var(--interrupt); text-shadow: var(--interrupt-glow); }
+    .paper-theme .log-line.interrupt { font-weight: bold; }
+    .log-line.error { color: var(--error); text-shadow: 0 0 8px rgba(255, 77, 77, 0.6); }
+    .paper-theme .log-line.error { text-shadow: none; }
+    .log-line.echo { color: var(--hi-color); text-shadow: var(--hi-glow); margin-top: 6px; }
+
+    /* Tappable program codes inside the printout */
+    .cmd-link {
+      cursor: pointer;
+      color: inherit;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 3px;
+      outline: none;
+    }
+    .cmd-link:focus-visible,
+    .cmd-link:active {
+      background: var(--term-green);
+      color: var(--bg-color);
+      text-shadow: none;
+      text-decoration: none;
+    }
+    @media (hover: hover) {
+      .cmd-link:hover {
+        background: var(--term-green);
+        color: var(--bg-color);
+        text-shadow: none;
+        text-decoration: none;
+      }
+    }
+
+    .ascii-box {
+      border: 1px solid var(--term-dim);
+      padding: 8px 12px;
+      margin: 6px 0;
+      background: rgba(0, 0, 0, 0.2);
+      white-space: normal;
+    }
+    .paper-theme .ascii-box { background: rgba(0, 0, 0, 0.04); }
+
+    .launch-link {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 6px 10px;
+      border: 1px solid var(--term-green);
+      color: inherit;
+      font-weight: bold;
+      text-decoration: none;
+      touch-action: manipulation;
+    }
+    .launch-link:focus-visible,
+    .launch-link:active {
+      background: var(--term-green);
+      color: var(--bg-color);
+      text-shadow: none;
+      outline: none;
+    }
+    @media (hover: hover) {
+      .launch-link:hover {
+        background: var(--term-green);
+        color: var(--bg-color);
+        text-shadow: none;
+      }
+    }
 
     #inputRow {
       display: flex;
@@ -137,34 +266,85 @@
       padding-top: 6px;
       border-top: 1px dashed var(--term-dim);
       flex-shrink: 0;
+      cursor: text;
     }
 
     .prompt-label {
       font-weight: bold;
       margin-right: 6px;
       user-select: none;
+      -webkit-user-select: none;
+      font-size: var(--input-fs);
+    }
+
+    .input-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      font-size: var(--input-fs);
     }
 
     #commandInput {
-      flex: 1;
+      width: 100%;
+      min-width: 0;
       background: transparent;
       border: none;
       outline: none;
+      border-radius: 0;
+      -webkit-appearance: none;
+      appearance: none;
       font-family: inherit;
-      font-size: 21px;
+      font-size: 1em;
+      letter-spacing: inherit;
       color: inherit;
       text-transform: uppercase;
       caret-color: transparent;
       text-shadow: inherit;
+      padding: 0;
+      line-height: 1.3;
+    }
+
+    #commandInput::placeholder {
+      color: var(--term-dim);
+      opacity: 1;
+      text-shadow: none;
+    }
+    #commandInput:focus::placeholder { color: transparent; }
+
+    /* Invisible twin used to measure text up to the caret */
+    #inputMirror {
+      position: absolute;
+      left: 0;
+      top: 0;
+      visibility: hidden;
+      white-space: pre;
+      font: inherit;
+      font-size: 1em;
+      letter-spacing: inherit;
+      text-transform: uppercase;
+      pointer-events: none;
     }
 
     .custom-cursor {
-      display: inline-block;
-      width: 11px;
-      height: 19px;
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 0.5em;
+      height: 0.95em;
+      margin-top: -0.5em;
       background: var(--cursor-color);
-      vertical-align: text-bottom;
+      box-shadow: 0 0 6px var(--term-glow);
+      pointer-events: none;
       animation: cursorBlink 0.8s steps(2, start) infinite;
+    }
+
+    .input-wrap:not(.focused) .custom-cursor {
+      background: transparent;
+      outline: 1px solid var(--term-dim);
+      box-shadow: none;
+      animation: none;
     }
 
     @keyframes cursorBlink {
@@ -180,26 +360,42 @@
       border-top: 1px solid var(--term-dim);
       margin-top: 8px;
       flex-shrink: 0;
+      scrollbar-width: none;
     }
+    #quickDialBar::-webkit-scrollbar { display: none; }
 
     .btn-key {
-      background: rgba(0, 0, 0, 0.4);
+      background: var(--btn-bg);
       color: var(--term-green);
       border: 1px solid var(--term-dim);
+      border-radius: 0;
       font-family: inherit;
-      font-size: 14px;
-      padding: 3px 8px;
+      font-size: 15px;
+      letter-spacing: inherit;
+      text-shadow: inherit;
+      padding: 4px 9px;
+      min-height: 30px;
       cursor: pointer;
       text-transform: uppercase;
-      transition: all 0.1s;
+      white-space: nowrap;
+      touch-action: manipulation;
+      transition: background 0.1s, color 0.1s;
     }
-    .paper-theme .btn-key {
-      background: #d8d0be;
-    }
-    .btn-key:hover, .btn-key:active {
+    .btn-key:active {
       background: var(--term-green);
       color: var(--bg-color);
       text-shadow: none;
+    }
+    .btn-key:focus-visible {
+      outline: 1px dashed var(--term-green);
+      outline-offset: 2px;
+    }
+    @media (hover: hover) {
+      .btn-key:hover {
+        background: var(--term-green);
+        color: var(--bg-color);
+        text-shadow: none;
+      }
     }
 
     .btn-key.game-btn {
@@ -207,11 +403,54 @@
       font-weight: bold;
     }
 
-    .ascii-box {
-      border: 1px solid var(--term-dim);
-      padding: 8px 12px;
-      margin: 6px 0;
-      background: rgba(0, 0, 0, 0.2);
+    /* ---------- Phones & narrow windows ---------- */
+    @media (max-width: 600px) {
+      :root {
+        --fs: 17px;
+        --input-fs: 19px;
+        --pad-x: 12px;
+      }
+      header { font-size: 12px; margin-bottom: 8px; }
+      .brand-prefix { display: none; }
+      .hardware-tags { gap: 4px; }
+      .hardware-tags span { padding: 0 4px; }
+
+      /* One swipeable row of keys instead of a tall stack */
+      #quickDialBar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        margin-left: calc(-1 * var(--pad-x));
+        margin-right: calc(-1 * var(--pad-x));
+        padding-left: var(--pad-x);
+        padding-right: var(--pad-x);
+        scroll-padding: 0 var(--pad-x);
+      }
+      .btn-key {
+        flex: 0 0 auto;
+        min-height: 40px;
+        padding: 6px 12px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      #watcherTag { display: none; }
+    }
+
+    /* Short viewports: landscape phones, or the on-screen keyboard is up */
+    @media (max-height: 460px) {
+      header { margin-bottom: 4px; padding-bottom: 4px; }
+      #quickDialBar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-top: 6px;
+        margin-top: 6px;
+      }
+      .btn-key { flex: 0 0 auto; min-height: 34px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .custom-cursor { animation: none; }
+      body { transition: none; }
     }
   </style>
 </head>
@@ -221,7 +460,7 @@
 
   <div id="terminalFrame">
     <header>
-      <div>FREE//BUILDER: MEMEX-68 GAME REPERTORY</div>
+      <div class="brand"><span class="brand-prefix">FREE//BUILDER: </span>MEMEX-68 GAME REPERTORY</div>
       <div class="hardware-tags">
         <span id="watcherTag">WATCHER: [AUTO-SCAN]</span>
         <span id="dataStatusTag">SRC: [GAME.TXT]</span>
@@ -229,16 +468,23 @@
       </div>
     </header>
 
-    <div id="screenBuffer" onclick="focusInput()"></div>
+    <div id="screenBuffer" role="log" aria-live="polite"></div>
 
     <div id="inputRow">
-      <span class="prompt-label">EXEC&gt;</span>
-      <input type="text" id="commandInput" autocomplete="off" spellcheck="false" autofocus />
-      <span class="custom-cursor"></span>
+      <label class="prompt-label" for="commandInput">EXEC&gt;</label>
+      <div class="input-wrap" id="inputWrap">
+        <input type="text" id="commandInput"
+               autocomplete="off" autocorrect="off" autocapitalize="characters"
+               spellcheck="false" enterkeyhint="go"
+               placeholder="TAP A KEY BELOW OR TYPE A COMMAND"
+               aria-label="Terminal command" />
+        <span id="inputMirror" aria-hidden="true"></span>
+        <span class="custom-cursor" id="customCursor" aria-hidden="true"></span>
+      </div>
     </div>
 
     <!-- Quick Buttons: Generated & updated dynamically when new entries appear -->
-    <div id="quickDialBar"></div>
+    <div id="quickDialBar" role="toolbar" aria-label="Quick commands"></div>
   </div>
 
   <script>
@@ -249,6 +495,7 @@
       constructor() {
         this.ctx = null;
         this.muted = false;
+        this.lastClick = 0;
       }
 
       init() {
@@ -261,8 +508,16 @@
         }
       }
 
+      ready() {
+        return !this.muted && this.ctx && this.ctx.state === 'running';
+      }
+
       playKeyClick() {
-        if (this.muted || !this.ctx) return;
+        if (!this.ready()) return;
+        // Debounce so auto-repeat / fast typing doesn't turn into a buzz
+        const now = performance.now();
+        if (now - this.lastClick < 22) return;
+        this.lastClick = now;
         try {
           const t = this.ctx.currentTime;
           const osc = this.ctx.createOscillator();
@@ -289,7 +544,7 @@
       }
 
       playBell() {
-        if (this.muted || !this.ctx) return;
+        if (!this.ready()) return;
         try {
           const t = this.ctx.currentTime;
           const osc = this.ctx.createOscillator();
@@ -310,7 +565,7 @@
       }
 
       playTapeMotor() {
-        if (this.muted || !this.ctx) return;
+        if (!this.ready()) return;
         try {
           const t = this.ctx.currentTime;
           const osc = this.ctx.createOscillator();
@@ -368,9 +623,12 @@
       }
     ];
 
+    const POLL_MS = 4000;
     let GAME_CATALOG = [...DEFAULT_GAMES];
     let lastLoadedRawContent = "";
     let isInitialBoot = true;
+    let srcState = 'boot';           // boot | live | lost | rom
+    let lastLaunch = null;
 
     /* =========================================================================
        DYNAMIC GAME.TXT PARSER (SUPPORTS BLOCKS, INI & JSON)
@@ -383,7 +641,7 @@
         try {
           const parsed = JSON.parse(clean);
           const list = Array.isArray(parsed) ? parsed : [parsed];
-          return list.map(normalizeGameEntry);
+          return list.map((e, i) => normalizeGameEntry(e, i));
         } catch (e) {}
       }
 
@@ -424,82 +682,140 @@
     }
 
     function normalizeGameEntry(entry, idx = 0) {
-      const code = (entry.code || entry.id || `GAME${idx + 1}`).toUpperCase().replace(/\s+/g, '');
+      const seq = String(idx + 1).padStart(2, '0');
+      const code = String(entry.code || entry.id || `GAME${idx + 1}`).toUpperCase().replace(/\s+/g, '');
       return {
         code: code,
-        altCode: entry.altCode || entry.id || `TAPE-0${idx + 1}`,
-        title: entry.title || entry.name || code,
-        genre: entry.genre || 'INTERACTIVE SIMULATION',
-        author: entry.author || 'MAINFRAME ARCHIVE',
-        desc: entry.desc || entry.intro || 'No telemetry dossier logged on magnetic tape.',
-        url: entry.url || entry.link || '#'
+        altCode: String(entry.altCode || entry.id || `TAPE-${seq}`).toUpperCase(),
+        title: String(entry.title || entry.name || code).toUpperCase(),
+        genre: String(entry.genre || 'INTERACTIVE SIMULATION').toUpperCase(),
+        author: String(entry.author || 'MAINFRAME ARCHIVE').toUpperCase(),
+        desc: String(entry.desc || entry.intro || 'No telemetry dossier logged on magnetic tape.'),
+        url: safeUrl(entry.url || entry.link || '#')
       };
+    }
+
+    // game.txt is external input: never let it smuggle in a script URL
+    function safeUrl(u) {
+      const s = String(u || '').trim();
+      if (!s || /^(javascript|data|vbscript):/i.test(s.replace(/[\s\u0000-\u001f]/g, ''))) return '#';
+      return s;
+    }
+
+    function findGame(query, loose = true) {
+      const raw = String(query || '').trim().toUpperCase();
+      const q = raw.replace(/\s+/g, '');
+      if (!q) return null;
+      const squash = s => s.toUpperCase().replace(/\s+/g, '');
+      return GAME_CATALOG.find(g => g.code === q)
+          || GAME_CATALOG.find(g => squash(g.altCode) === q)
+          || GAME_CATALOG.find(g => squash(g.title) === q)
+          || (loose ? GAME_CATALOG.find(g => g.title.includes(raw)) : null)
+          || null;
     }
 
     /* =========================================================================
        AUTONOMOUS TAPE SENSING DAEMON (POLLS GAME.TXT FOR LIVE UPDATES)
        ========================================================================= */
-    async function inspectGameFileForUpdates() {
-      const dataStatusTag = document.getElementById('dataStatusTag');
+    const dataStatusTag = document.getElementById('dataStatusTag');
+    const watcherTag = document.getElementById('watcherTag');
+    let pollBusy = false;
+
+    function setSrcTag(text, warn = false) {
+      dataStatusTag.textContent = text;
+      dataStatusTag.classList.toggle('warn', warn);
+    }
+
+    function pingWatcher() {
+      watcherTag.classList.add('ping');
+      setTimeout(() => watcherTag.classList.remove('ping'), 260);
+    }
+
+    async function inspectGameFileForUpdates(opts = {}) {
+      const force = opts.force === true;
+      if (pollBusy) return { success: false, error: 'SCAN ALREADY IN PROGRESS' };
+      // Don't burn requests while the tab is in the background
+      if (!force && !isInitialBoot && document.hidden) return { success: true, idle: true };
+
+      pollBusy = true;
+      pingWatcher();
 
       try {
         const response = await fetch('./game.txt?t=' + Date.now(), { cache: 'no-store' });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const rawText = await response.text();
 
+        if (srcState === 'lost') {
+          print("[DAEMON] CARRIER RESTORED ON ./game.txt.", "dim");
+        }
+        if (srcState !== 'rom' || rawText.trim()) {
+          srcState = 'live';
+          setSrcTag('SRC: [GAME.TXT LIVE]');
+        }
+
         // Skip if content has not changed
         if (rawText.trim() === lastLoadedRawContent.trim()) {
-          return;
+          return { success: true, count: GAME_CATALOG.length, unchanged: true };
         }
 
         const freshCatalog = parseGameText(rawText);
-        if (freshCatalog.length === 0) return;
+        if (freshCatalog.length === 0) {
+          return { success: false, error: 'NO VALID PROGRAM ENTRIES FOUND' };
+        }
 
-        // Detect new and updated games compared to current catalog
+        // Detect new, updated and removed games compared to current catalog
         const prevCodes = new Set(GAME_CATALOG.map(g => g.code));
+        const freshCodes = new Set(freshCatalog.map(g => g.code));
         const newEntries = freshCatalog.filter(g => !prevCodes.has(g.code));
-        const urlUpdatedEntries = freshCatalog.filter(g => {
+        const removedEntries = GAME_CATALOG.filter(g => !freshCodes.has(g.code));
+        const updatedEntries = freshCatalog.filter(g => {
           const old = GAME_CATALOG.find(o => o.code === g.code);
           return old && (old.url !== g.url || old.title !== g.title);
         });
 
         GAME_CATALOG = freshCatalog;
         lastLoadedRawContent = rawText;
-        dataStatusTag.textContent = 'SRC: [GAME.TXT LIVE]';
         updateQuickDialButtons();
 
-        // If this is an autonomous update after boot, trigger mechanical teleprinter interrupt
-        if (!isInitialBoot) {
-          if (newEntries.length > 0 || urlUpdatedEntries.length > 0) {
-            sound.playTapeMotor();
-            sound.playBell();
+        // Autonomous update after boot: mechanical teleprinter interrupt
+        if (!isInitialBoot && (newEntries.length || updatedEntries.length || removedEntries.length)) {
+          sound.playTapeMotor();
+          sound.playBell();
 
-            print(" ");
-            print("=================================================================", "interrupt");
-            print("   [DAEMON INTERRUPT: MAGNETIC TAPE HEAD SENSES NEW DIRECTORY]   ", "interrupt");
-            print("=================================================================", "interrupt");
+          print(" ");
+          print(rule('='), "interrupt");
+          print(center(fit("[DAEMON INTERRUPT: MAGNETIC TAPE HEAD SENSES NEW DIRECTORY]", "[DAEMON INTERRUPT: NEW DIRECTORY]")), "interrupt");
+          print(rule('='), "interrupt");
 
-            newEntries.forEach(g => {
-              print(`+ MOUNTED NEW PROGRAM: [${g.code}] "${g.title}" -> ${g.url}`, "highlight");
-            });
+          newEntries.forEach(g => {
+            printParts(["+ MOUNTED NEW PROGRAM: [", cmdLink(g.code, `RUN ${g.code}`), `] "${g.title}" -> ${g.url}`], "highlight");
+          });
+          updatedEntries.forEach(g => {
+            printParts(["* RE-ALIGNED SECTOR [", cmdLink(g.code, `INFO ${g.code}`), `]: NEW TARGET -> ${g.url}`], "system");
+          });
+          removedEntries.forEach(g => {
+            print(`- UNMOUNTED PROGRAM: [${g.code}] "${g.title}"`, "dim");
+          });
 
-            urlUpdatedEntries.forEach(g => {
-              print(`* RE-ALIGNED SECTOR [${g.code}]: NEW TARGET -> ${g.url}`, "system");
-            });
-
-            print(`TOTAL ACTIVE APPLICATIONS IN CORE: ${GAME_CATALOG.length}`, "dim");
-            print(`TYPE "CATALOG" TO INSPECT, OR USE "RUN <CODE>" IMMEDIATELY.`, "dim");
-            print(" ");
-          }
+          print(`TOTAL ACTIVE APPLICATIONS IN CORE: ${GAME_CATALOG.length}`, "dim");
+          print(`TYPE "CATALOG" TO INSPECT, OR USE "RUN <CODE>" IMMEDIATELY.`, "dim");
+          print(" ");
         }
 
         return { success: true, count: freshCatalog.length };
       } catch (err) {
-        if (isInitialBoot) {
-          dataStatusTag.textContent = 'SRC: [ROM STANDBY]';
-          updateQuickDialButtons();
+        if (isInitialBoot || srcState === 'rom') {
+          srcState = 'rom';
+          setSrcTag('SRC: [ROM STANDBY]');
+          if (isInitialBoot) updateQuickDialButtons();
+        } else if (srcState === 'live') {
+          srcState = 'lost';
+          setSrcTag('SRC: [LINK LOST]', true);
+          print("[DAEMON] ./game.txt CARRIER LOST. HOLDING LAST KNOWN DIRECTORY.", "dim");
         }
         return { success: false, error: err.message };
+      } finally {
+        pollBusy = false;
       }
     }
 
@@ -508,121 +824,197 @@
        ========================================================================= */
     function updateQuickDialButtons() {
       const container = document.getElementById('quickDialBar');
+      const keepScroll = container.scrollLeft;
       container.innerHTML = '';
 
-      // Standard fixed utility actions
       const coreActions = [
         { label: 'HELP', cmd: 'HELP' },
         { label: 'CATALOG', cmd: 'CATALOG' },
         { label: 'CLEAR', cmd: 'CLEAR' },
-        { label: 'THEME', cmd: 'THEME' }
+        { label: 'THEME', cmd: 'THEME' },
+        { label: 'AUDIO', cmd: 'AUDIO' }
       ];
 
-      coreActions.forEach(btn => {
+      const addBtn = (label, cmd, cls, title) => {
         const b = document.createElement('button');
-        b.className = 'btn-key';
-        b.textContent = btn.label;
-        b.onclick = () => executeCmd(btn.cmd);
+        b.type = 'button';
+        b.className = cls;
+        b.textContent = label;
+        if (title) b.title = title;
+        b.addEventListener('click', () => {
+          executeCmd(cmd);
+          if (!isCoarse) focusInput();
+        });
         container.appendChild(b);
-      });
+      };
 
-      // Dynamically add a RUN button for EVERY game currently discovered
+      // Game keys first: they're the reason anyone opens this terminal
       GAME_CATALOG.forEach(game => {
-        const b = document.createElement('button');
-        b.className = 'btn-key game-btn';
-        b.textContent = `RUN ${game.code}`;
-        b.title = `${game.title} (${game.url})`;
-        b.onclick = () => executeCmd(`RUN ${game.code}`);
-        container.appendChild(b);
+        addBtn(`RUN ${game.code}`, `RUN ${game.code}`, 'btn-key game-btn', `${game.title} (${game.url})`);
       });
+      coreActions.forEach(a => addBtn(a.label, a.cmd, 'btn-key'));
+
+      container.scrollLeft = keepScroll;
     }
 
     /* =========================================================================
-       TERMINAL I/O & INTERPRETER
+       TELEPRINTER OUTPUT: line queue, responsive column width
        ========================================================================= */
     const screen = document.getElementById('screenBuffer');
     const input = document.getElementById('commandInput');
+    const inputWrap = document.getElementById('inputWrap');
+    const inputRow = document.getElementById('inputRow');
+    const mirror = document.getElementById('inputMirror');
+    const cursorEl = document.getElementById('customCursor');
     const audioTag = document.getElementById('audioTag');
+
+    const isCoarse = window.matchMedia('(pointer: coarse)').matches;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const LINE_DELAY = reduceMotion ? 0 : 14;
+
+    let COLS = 65;
+
+    function measureCols() {
+      const probe = document.createElement('span');
+      probe.textContent = 'M'.repeat(20);
+      probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;';
+      screen.appendChild(probe);
+      const charW = probe.getBoundingClientRect().width / 20 || 9;
+      probe.remove();
+      const avail = screen.clientWidth - 12;
+      COLS = Math.max(24, Math.min(65, Math.floor(avail / charW)));
+    }
+
+    const rule = (ch = '-') => ch.repeat(COLS);
+    const fit = (long, short) => (long.length <= COLS ? long : short);
+    function center(text) {
+      if (text.length >= COLS) return text;
+      return ' '.repeat(Math.floor((COLS - text.length) / 2)) + text;
+    }
+    function pad(s, n) {
+      s = String(s);
+      if (s.length > n) return s.slice(0, Math.max(0, n - 1)) + '~';
+      return s + ' '.repeat(n - s.length);
+    }
+
+    const outQueue = [];
+    let drainTimer = null;
+    let forceScroll = false;
+
+    function nearBottom() {
+      return screen.scrollHeight - screen.scrollTop - screen.clientHeight < 60;
+    }
+
+    function emit(node) {
+      outQueue.push(node);
+      if (!drainTimer) drainStep();
+    }
+
+    function drainStep() {
+      if (!outQueue.length) { drainTimer = null; forceScroll = false; return; }
+      const stick = forceScroll || nearBottom();
+      const batch = LINE_DELAY === 0 ? outQueue.length : (outQueue.length > 30 ? 6 : 1);
+      for (let i = 0; i < batch && outQueue.length; i++) screen.appendChild(outQueue.shift());
+      if (stick) screen.scrollTop = screen.scrollHeight;
+      drainTimer = setTimeout(drainStep, LINE_DELAY);
+    }
+
+    function flushOutput() {
+      while (outQueue.length) screen.appendChild(outQueue.shift());
+      screen.scrollTop = screen.scrollHeight;
+    }
+
+    function makeLine(cls) {
+      const d = document.createElement('div');
+      d.className = `log-line ${cls}`;
+      return d;
+    }
+
+    function print(text = ' ', className = 'system') {
+      const d = makeLine(className);
+      d.textContent = text === '' ? ' ' : text;
+      emit(d);
+    }
+
+    function printParts(parts, className = 'system') {
+      const d = makeLine(className);
+      parts.forEach(p => d.append(typeof p === 'string' ? document.createTextNode(p) : p));
+      emit(d);
+    }
+
+    function cmdLink(label, cmd) {
+      const s = document.createElement('span');
+      s.className = 'cmd-link';
+      s.textContent = label;
+      s.setAttribute('role', 'button');
+      s.tabIndex = 0;
+      s.addEventListener('click', e => { e.stopPropagation(); executeCmd(cmd); });
+      s.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); executeCmd(cmd); }
+      });
+      return s;
+    }
+
+    let launchTimer = null;
+
+    function clearScreen() {
+      outQueue.length = 0;
+      clearTimeout(launchTimer);
+      screen.innerHTML = '';
+    }
+
+    function focusInput() {
+      input.focus({ preventScroll: true });
+    }
+
+    /* =========================================================================
+       BLOCK CURSOR THAT FOLLOWS THE CARET
+       ========================================================================= */
+    function updateCursor() {
+      const pos = input.selectionStart == null ? input.value.length : input.selectionStart;
+      mirror.textContent = input.value.slice(0, pos);
+      const textW = mirror.getBoundingClientRect().width;
+      const maxX = Math.max(0, input.clientWidth - cursorEl.offsetWidth);
+      const x = Math.max(0, Math.min(textW - input.scrollLeft, maxX));
+      cursorEl.style.transform = `translateX(${x}px)`;
+    }
+
+    function restartBlink() {
+      cursorEl.style.animation = 'none';
+      void cursorEl.offsetWidth;
+      cursorEl.style.animation = '';
+    }
+
+    /* =========================================================================
+       INTERPRETER
+       ========================================================================= */
     let cmdHistory = [];
     let historyIdx = -1;
     let themeIndex = 0;
     const themes = ['', 'amber-theme', 'paper-theme'];
     const themeNames = ['P1-GREEN PHOSPHOR', 'P3-AMBER PHOSPHOR', 'TTY-33 TELEPRINTER PAPER'];
+    const themeColors = ['#060906', '#0c0802', '#e6dfcf'];
+    const COMMANDS = ['HELP', 'CATALOG', 'RUN', 'INFO', 'OPEN', 'RELOAD', 'CLEAR', 'THEME', 'AUDIO', 'BELL'];
+    const ARG_COMMANDS = ['RUN', 'LOAD', 'PLAY', 'GO', 'INFO', 'DESC'];
 
-    function focusInput() {
-      input.focus();
-    }
-
-    function print(text = '', className = 'system') {
-      const line = document.createElement('div');
-      line.className = `log-line ${className}`;
-      line.textContent = text;
-      screen.appendChild(line);
-      screen.scrollTop = screen.scrollHeight;
-    }
-
-    function printRawHTML(html) {
-      const line = document.createElement('div');
-      line.className = 'log-line';
-      line.innerHTML = html;
-      screen.appendChild(line);
-      screen.scrollTop = screen.scrollHeight;
-    }
-
-    function clearScreen() {
-      screen.innerHTML = '';
-    }
-
-    async function bootSequence() {
-      clearScreen();
-      sound.playTapeMotor();
-      print("INITIALIZING MEMEX-68 SUPERVISORY SYSTEM...", "dim");
-      print("CORE STORAGE: 32,768 WORDS VERIFIED [PARITY CHECK OK]", "dim");
-      print("ENGAGING AUTO-SENSING TAPE DAEMON ON [./game.txt]...", "dim");
-
-      const loadRes = await inspectGameFileForUpdates();
-      isInitialBoot = false;
-
-      if (loadRes && loadRes.success) {
-        print(`[OK] ./game.txt MOUNTED: ${loadRes.count} APPLICATION SECTORS VERIFIED.`, "highlight");
-      } else {
-        print(`[STANDBY] ACCESS TO ./game.txt UNREACHABLE VIA CURRENT PROTOCOL.`, "dim");
-        print(`[RESERVE] ENGAGED CORE ROM REGISTRY (CLIMB, DJ, BAR).`, "system");
-      }
-
-      print(" ");
-      print("=================================================================", "highlight");
-      print("     MEMEX-68 // INTERACTIVE TIME-SHARING REPERTORY TERMINAL     ", "highlight");
-      print("              AUTO-DETECTING EXPEDITION GAME REPERTORY           ", "system");
-      print("=================================================================", "highlight");
-      print(" ");
-      print("COMMANDS:");
-      print("  CATALOG       - LIST ALL MOUNTED PROGRAMS");
-      print("  RUN <CODE>    - EXECUTE PROGRAM (E.G. 'RUN TAPE-01')");
-      print("  INFO <CODE>   - VIEW SYNOPSIS & INSTRUCTIONS");
-      print("  RELOAD        - FORCE DISK POLL ON ./game.txt");
-      print("  HELP          - DISPLAY OPERATOR COMMAND GLOSSARY");
-      print(" ");
-      print("[DAEMON ACTIVE: NEW ENTRIES IN GAME.TXT WILL AUTO-MOUNT IN REAL-TIME]", "dim");
-      print(" ");
-      sound.playBell();
-
-      // Launch continuous background tape inspection every 4000ms
-      setInterval(inspectGameFileForUpdates, 4000);
-    }
+    const exampleCode = () => (GAME_CATALOG[0] && GAME_CATALOG[0].code) || 'CLIMB';
 
     async function executeCmd(rawCmd) {
       sound.init();
-      const cmdStr = (rawCmd !== undefined ? rawCmd : input.value).trim();
-      if (!cmdStr && rawCmd === undefined) return;
+      const fromInput = rawCmd === undefined;
+      const cmdStr = (fromInput ? input.value : rawCmd).trim();
+      if (!cmdStr) return;
 
-      print(`EXEC> ${cmdStr}`, 'highlight');
+      flushOutput();
+      forceScroll = true;
+      print(`EXEC> ${cmdStr.toUpperCase()}`, 'echo');
       sound.playKeyClick();
 
-      if (rawCmd === undefined) {
-        cmdHistory.push(cmdStr);
+      if (fromInput) {
+        if (cmdHistory[cmdHistory.length - 1] !== cmdStr) cmdHistory.push(cmdStr);
         historyIdx = cmdHistory.length;
         input.value = '';
+        updateCursor();
       }
 
       const tokens = cmdStr.toUpperCase().split(/\s+/);
@@ -647,28 +1039,39 @@
         case 'PLAY':
         case 'GO':
           if (!arg) {
-            print("ERROR: PARAMETER MISSING. SPECIFY PROGRAM CODE (E.G., RUN TAPE-01)", "error");
+            print(`ERROR: PARAMETER MISSING. SPECIFY PROGRAM CODE (E.G., RUN ${exampleCode()})`, "error");
             sound.playBell();
           } else {
             launchProgram(arg);
           }
           break;
 
+        case 'OPEN':
+        case 'ENGAGE':
+          openProgram(arg);
+          break;
+
         case 'RELOAD':
         case 'REFRESH':
-        case 'SYNC':
+        case 'SYNC': {
           sound.playTapeMotor();
           print("FORCING IMMEDIATE HARDWARE SCAN OF ./game.txt...", "dim");
           lastLoadedRawContent = ""; // Reset cache to force refresh
-          await inspectGameFileForUpdates();
-          print(`[COMPLETE] CURRENT DIRECTORY CONTAINS ${GAME_CATALOG.length} MOUNTED PROGRAMS.`, "highlight");
+          const res = await inspectGameFileForUpdates({ force: true });
+          if (res.success) {
+            print(`[COMPLETE] CURRENT DIRECTORY CONTAINS ${GAME_CATALOG.length} MOUNTED PROGRAMS.`, "highlight");
+          } else {
+            print(`[FAULT] SCAN FAILED: ${String(res.error).toUpperCase()}`, "error");
+            print(`[RESERVE] ${GAME_CATALOG.length} PROGRAMS REMAIN IN CORE.`, "dim");
+          }
           sound.playBell();
           break;
+        }
 
         case 'INFO':
         case 'DESC':
           if (!arg) {
-            print("ERROR: SPECIFY PROGRAM CODE (E.G., INFO CLIMB)", "error");
+            print(`ERROR: SPECIFY PROGRAM CODE (E.G., INFO ${exampleCode()})`, "error");
           } else {
             displayGameInfo(arg);
           }
@@ -695,13 +1098,9 @@
           print("[TELEX CHIME: 2048 HZ AUDIBLE SIGNAL TRANSMITTED]", "dim");
           break;
 
-        default:
-          // Check if user directly typed a known game code (e.g. "CLIMB", "DJ", "BAR")
-          const directMatch = GAME_CATALOG.find(g => 
-            g.code === action || 
-            g.altCode.toUpperCase() === action ||
-            g.title.toUpperCase().replace(/\s+/g, '') === action
-          );
+        default: {
+          // Directly typed a known game code (e.g. "CLIMB", "DJ", "BAR")
+          const directMatch = findGame(cmdStr, false);
           if (directMatch) {
             launchProgram(directMatch.code);
           } else {
@@ -709,40 +1108,47 @@
             sound.playBell();
           }
           break;
+        }
       }
-
-      screen.scrollTop = screen.scrollHeight;
     }
 
     function displayCatalog() {
       sound.playTapeMotor();
       print(" ");
-      print("----------------- TAPE ARCHIVE SOFTWARE CATALOG -----------------", "highlight");
-      print("CODE    ID       TITLE                           GENRE", "dim");
-      print("-----------------------------------------------------------------", "dim");
+      print(center(fit("TAPE ARCHIVE SOFTWARE CATALOG", "SOFTWARE CATALOG")), "highlight");
+      print(rule('-'), "dim");
 
-      GAME_CATALOG.forEach(g => {
-        const paddedCode = (g.code + "       ").slice(0, 7);
-        const paddedId = (g.altCode + "        ").slice(0, 8);
-        const paddedTitle = (g.title + "                               ").slice(0, 31);
-        print(`${paddedCode} ${paddedId} ${paddedTitle} ${g.genre}`, 'system');
-      });
+      const wide = COLS >= 56;
+      if (wide) {
+        const titleW = Math.min(26, Math.max(12, ...GAME_CATALOG.map(g => g.title.length)));
+        const genreW = Math.max(8, COLS - 7 - 1 - 8 - 1 - titleW - 1);
+        print(`${pad('CODE', 7)} ${pad('ID', 8)} ${pad('TITLE', titleW)} ${pad('GENRE', genreW).trimEnd()}`, "dim");
+        print(rule('-'), "dim");
+        GAME_CATALOG.forEach(g => {
+          const code = g.code.length > 7 ? g.code.slice(0, 6) + '~' : g.code;
+          printParts([
+            cmdLink(code, `RUN ${g.code}`),
+            ' '.repeat(Math.max(1, 8 - code.length)),
+            `${pad(g.altCode, 8)} ${pad(g.title, titleW)} ${pad(g.genre, genreW).trimEnd()}`
+          ], 'system');
+        });
+      } else {
+        // Stacked record layout for phone-width paper
+        GAME_CATALOG.forEach(g => {
+          printParts(['[', cmdLink(g.code, `RUN ${g.code}`), `] ${g.title}`], 'system');
+          print(`   ${g.altCode} / ${g.genre}`, 'dim');
+        });
+      }
 
-      print("-----------------------------------------------------------------", "dim");
+      print(rule('-'), "dim");
       print(`TOTAL PROGRAM TAPES REGISTERED: ${GAME_CATALOG.length}`, "dim");
-      print("TO LAUNCH : TYPE  RUN <CODE>   (E.G. RUN " + (GAME_CATALOG[0]?.code || 'CLIMB') + ")", "highlight");
+      print(`TO LAUNCH : TYPE  RUN <CODE>   (OR TAP A CODE)`, "highlight");
       print("TO EXAMINE: TYPE  INFO <CODE>", "dim");
       print(" ");
     }
 
     function launchProgram(codeQuery) {
-      const q = codeQuery.trim().toUpperCase().replace(/\s+/g, '');
-      const match = GAME_CATALOG.find(g => 
-        g.code === q || 
-        g.altCode.toUpperCase().replace(/\s+/g, '') === q || 
-        g.title.toUpperCase().replace(/\s+/g, '') === q ||
-        g.title.toUpperCase().includes(codeQuery.trim().toUpperCase())
-      );
+      const match = findGame(codeQuery, true);
 
       if (!match) {
         print(`PROGRAM "${codeQuery}" NOT FOUND ON MAGNETIC TAPE.`, "error");
@@ -755,38 +1161,60 @@
       print(" ");
       print(`[SEEKING MAGNETIC TAPE SECTOR: ${match.code} // ${match.altCode}]...`, "dim");
 
-      setTimeout(() => {
+      clearTimeout(launchTimer);
+      launchTimer = setTimeout(() => {
         sound.playBell();
+        lastLaunch = match;
+        forceScroll = true;
         print(" ");
-        print("=================================================================", "highlight");
+        print(rule('='), "highlight");
         print(`  PROGRAM: ${match.title}`, "highlight");
         print(`  CLASS  : ${match.genre}`, "system");
         print(`  ORIGIN : ${match.author}`, "dim");
-        print("=================================================================", "highlight");
+        print(rule('='), "highlight");
         print(match.desc);
         print(" ");
         print(`[+] TTY DATA CARRIER ESTABLISHED TO: ${match.url}`, "highlight");
 
-        printRawHTML(`
-          <div class="ascii-box">
-            <div>&gt;&gt;&gt; HOST READY FOR IMMEDIATE LAUNCH &lt;&lt;&lt;</div>
-            <div style="margin-top:6px;">
-              <a href="${match.url}" target="_blank" style="color:inherit; text-decoration:underline; font-weight:bold;">
-                [CLICK HERE TO ENGAGE PROGRAM: ${match.title}]
-              </a>
-            </div>
-          </div>
-        `);
+        const box = document.createElement('div');
+        box.className = 'log-line ascii-box';
+        const head = document.createElement('div');
+        head.textContent = '>>> HOST READY FOR IMMEDIATE LAUNCH <<<';
+        const link = document.createElement('a');
+        link.className = 'launch-link';
+        link.href = match.url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.textContent = `[ ENGAGE PROGRAM: ${match.title} ]`;
+        link.addEventListener('click', () => sound.playKeyClick());
+        const hint = document.createElement('div');
+        hint.className = 'dim';
+        hint.style.cssText = 'margin-top:6px;color:var(--term-dim);';
+        hint.textContent = 'OR TYPE "OPEN" TO ENGAGE FROM THE KEYBOARD.';
+        box.append(head, link, hint);
+        emit(box);
       }, 450);
     }
 
+    function openProgram(arg) {
+      const target = arg ? findGame(arg, true) : lastLaunch;
+      if (!target) {
+        print('ERROR: NO PROGRAM ARMED. USE "RUN <CODE>" FIRST.', 'error');
+        sound.playBell();
+        return;
+      }
+      if (target.url === '#') {
+        print(`ERROR: PROGRAM ${target.code} HAS NO TARGET ADDRESS ON TAPE.`, 'error');
+        return;
+      }
+      const win = window.open(target.url, '_blank', 'noopener');
+      print(win === null && !isCoarse
+        ? '[BLOCKED] HOST REFUSED POP-OUT. USE THE ENGAGE LINK ABOVE.'
+        : `[ENGAGED] ${target.title} -> ${target.url}`, win === null && !isCoarse ? 'error' : 'highlight');
+    }
+
     function displayGameInfo(codeQuery) {
-      const q = codeQuery.trim().toUpperCase().replace(/\s+/g, '');
-      const match = GAME_CATALOG.find(g => 
-        g.code === q || 
-        g.altCode.toUpperCase().replace(/\s+/g, '') === q || 
-        g.title.toUpperCase().replace(/\s+/g, '') === q
-      );
+      const match = findGame(codeQuery, true);
 
       if (!match) {
         print(`FILE "${codeQuery}" NOT FOUND IN FILE REGISTRY.`, "error");
@@ -800,29 +1228,71 @@
       print(`DEV     : ${match.author}`);
       print(`TARGET  : ${match.url}`);
       print(`SUMMARY : ${match.desc}`);
-      print(`EXECUTE : TYPE "RUN ${match.code}"`);
+      printParts(['EXECUTE : ', cmdLink(`RUN ${match.code}`, `RUN ${match.code}`)]);
       print(" ");
     }
 
     function displayHelp() {
+      const ex = exampleCode();
       print(" ");
-      print("================ OPERATOR COMMAND GLOSSARY ================", "highlight");
-      print("  CATALOG / DIR      - DISPLAY DIRECTORY OF MOUNTED GAMES");
-      print("  RUN <CODE>         - LOAD & LAUNCH GAME (E.G. RUN TAPE-01)");
-      print("  INFO <CODE>        - RETRIEVE GAME DOSSIER & LINK INFO");
-      print("  RELOAD             - FORCE IMMEDIATE DISK POLL ON ./game.txt");
-      print("  CLEAR / CLS        - CLEAR TERMINAL SCREEN BUFFER");
-      print("  THEME              - CYCLE CRT PHOSPHORS (GREEN / AMBER / PAPER)");
-      print("  AUDIO              - TOGGLE MECHANICAL TELETYPE NOISE");
-      print("  BELL               - RING PHYSICAL TELEPRINTER BELL");
-      print("===========================================================", "highlight");
-      print("ACTIVE PROGRAM CODES: " + GAME_CATALOG.map(g => g.code).join(', '));
+      print(center(fit("OPERATOR COMMAND GLOSSARY", "COMMANDS")), "highlight");
+      print(rule('='), "highlight");
+      const rows = [
+        ['CATALOG / DIR', 'DISPLAY DIRECTORY OF MOUNTED GAMES'],
+        ['RUN <CODE>', `LOAD & LAUNCH GAME (E.G. RUN ${ex})`],
+        ['OPEN', 'ENGAGE THE LAST ARMED PROGRAM'],
+        ['INFO <CODE>', 'RETRIEVE GAME DOSSIER & LINK INFO'],
+        ['RELOAD', 'FORCE IMMEDIATE DISK POLL ON ./game.txt'],
+        ['CLEAR / CLS', 'CLEAR TERMINAL SCREEN BUFFER'],
+        ['THEME', 'CYCLE CRT PHOSPHORS (GREEN / AMBER / PAPER)'],
+        ['AUDIO', 'TOGGLE MECHANICAL TELETYPE NOISE'],
+        ['BELL', 'RING PHYSICAL TELEPRINTER BELL']
+      ];
+      if (COLS >= 56) {
+        rows.forEach(([c, d]) => print(`  ${pad(c, 17)}- ${d}`));
+      } else {
+        rows.forEach(([c, d]) => { print(`  ${c}`); print(`    ${d}`, 'dim'); });
+      }
+      print(rule('='), "highlight");
+      if (!isCoarse) print("KEYS: TAB COMPLETE / UP-DOWN HISTORY / ESC CLEAR LINE / CTRL+L CLS", "dim");
+      const parts = ['ACTIVE PROGRAM CODES: '];
+      GAME_CATALOG.forEach((g, i) => {
+        if (i) parts.push(', ');
+        parts.push(cmdLink(g.code, `RUN ${g.code}`));
+      });
+      printParts(parts);
       print(" ");
+    }
+
+    /* =========================================================================
+       PREFERENCES (theme / audio survive a reload)
+       ========================================================================= */
+    function savePrefs() {
+      try {
+        localStorage.setItem('memex68', JSON.stringify({ theme: themeIndex, muted: sound.muted }));
+      } catch (e) {}
+    }
+
+    function loadPrefs() {
+      try {
+        const p = JSON.parse(localStorage.getItem('memex68') || '{}');
+        if (Number.isInteger(p.theme) && p.theme >= 0 && p.theme < themes.length) themeIndex = p.theme;
+        sound.muted = !!p.muted;
+      } catch (e) {}
+      applyTheme();
+      audioTag.textContent = `AUDIO: [${sound.muted ? 'MUTED' : 'ON'}]`;
+    }
+
+    function applyTheme() {
+      document.body.className = themes[themeIndex];
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', themeColors[themeIndex]);
     }
 
     function cycleTheme() {
       themeIndex = (themeIndex + 1) % themes.length;
-      document.body.className = themes[themeIndex];
+      applyTheme();
+      savePrefs();
       print(`PHOSPHOR EMISSION PALETTE SWITCHED: [${themeNames[themeIndex]}]`, "highlight");
     }
 
@@ -830,15 +1300,51 @@
       sound.init();
       sound.muted = !sound.muted;
       audioTag.textContent = `AUDIO: [${sound.muted ? 'MUTED' : 'ON'}]`;
+      savePrefs();
       print(`TELETYPE AUDIO HARDWARE IS NOW ${sound.muted ? 'OFFLINE' : 'ONLINE'}.`, 'system');
-      if (!sound.muted) sound.playBell();
+      if (!sound.muted) setTimeout(() => sound.playBell(), 30);
     }
 
-    input.addEventListener('keydown', (e) => {
-      sound.init();
-      sound.playKeyClick();
+    /* =========================================================================
+       TAB COMPLETION
+       ========================================================================= */
+    function tabComplete() {
+      const v = input.value.toUpperCase().replace(/^\s+/, '');
+      const parts = v.split(/\s+/);
+      let pool, prefix;
+      if (parts.length === 1) {
+        pool = [...COMMANDS, ...GAME_CATALOG.map(g => g.code)];
+        prefix = parts[0];
+      } else if (parts.length === 2 && ARG_COMMANDS.includes(parts[0])) {
+        pool = GAME_CATALOG.map(g => g.code);
+        prefix = parts[1];
+      } else {
+        return;
+      }
+      const hits = [...new Set(pool)].filter(c => c.startsWith(prefix));
+      if (hits.length === 1) {
+        parts[parts.length - 1] = hits[0];
+        const needsArg = parts.length === 1 && (hits[0] === 'RUN' || hits[0] === 'INFO');
+        input.value = parts.join(' ') + (needsArg ? ' ' : '');
+      } else if (hits.length > 1) {
+        print(hits.join('  '), 'dim');
+      } else {
+        sound.playBell();
+      }
+      updateCursor();
+    }
 
+    /* =========================================================================
+       INPUT WIRING
+       ========================================================================= */
+    // Unlock audio on the first real gesture (required by mobile browsers)
+    ['pointerdown', 'keydown'].forEach(evt =>
+      window.addEventListener(evt, () => sound.init(), { passive: true })
+    );
+
+    input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
+        e.preventDefault();
         executeCmd();
       } else if (e.key === 'ArrowUp') {
         if (cmdHistory.length > 0 && historyIdx > 0) {
@@ -846,6 +1352,10 @@
           input.value = cmdHistory[historyIdx];
         }
         e.preventDefault();
+        requestAnimationFrame(() => {
+          input.setSelectionRange(input.value.length, input.value.length);
+          updateCursor();
+        });
       } else if (e.key === 'ArrowDown') {
         if (historyIdx < cmdHistory.length - 1) {
           historyIdx++;
@@ -855,13 +1365,152 @@
           input.value = '';
         }
         e.preventDefault();
+        requestAnimationFrame(updateCursor);
+      } else if (e.key === 'Tab' && input.value.trim()) {
+        e.preventDefault();
+        tabComplete();
+      } else if (e.key === 'Escape') {
+        input.value = '';
+        historyIdx = cmdHistory.length;
+        updateCursor();
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'l') {
+        e.preventDefault();
+        clearScreen();
       }
     });
 
-    window.onload = () => {
-      bootSequence();
+    // 'input' fires for physical and on-screen keyboards alike
+    input.addEventListener('input', () => {
+      sound.playKeyClick();
+      restartBlink();
+      updateCursor();
+    });
+
+    ['keyup', 'click', 'select', 'scroll'].forEach(evt => input.addEventListener(evt, updateCursor));
+    document.addEventListener('selectionchange', () => {
+      if (document.activeElement === input) updateCursor();
+    });
+    input.addEventListener('focus', () => { inputWrap.classList.add('focused'); updateCursor(); });
+    input.addEventListener('blur', () => inputWrap.classList.remove('focused'));
+
+    // Tapping the prompt row always brings up the keyboard
+    inputRow.addEventListener('click', (e) => {
+      if (e.target !== input) focusInput();
+    });
+
+    // On desktop, clicking the paper focuses the prompt (unless selecting text
+    // or clicking a link). On touch, tapping the paper just scrolls/reads.
+    screen.addEventListener('click', (e) => {
+      if (isCoarse) return;
+      if (e.target.closest('a, button, .cmd-link')) return;
+      if (String(window.getSelection() || '')) return;
       focusInput();
+    });
+
+    // Typing anywhere on desktop lands in the prompt
+    document.addEventListener('keydown', (e) => {
+      if (document.activeElement === input) return;
+      if (e.target.closest && e.target.closest('button, a, .cmd-link')) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Tab') return;
+      }
+      if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) focusInput();
+    });
+
+    /* =========================================================================
+       VIEWPORT: keep the prompt above on-screen keyboards, re-flow on resize
+       ========================================================================= */
+    function syncViewport() {
+      const stick = nearBottom();
+      const vv = window.visualViewport;
+      if (vv) {
+        document.documentElement.style.setProperty('--app-h', `${Math.round(vv.height)}px`);
+        // iOS scrolls the whole page when the keyboard opens; pin it back
+        if (window.scrollY !== 0) window.scrollTo(0, 0);
+      }
+      measureCols();
+      updateCursor();
+      if (stick) screen.scrollTop = screen.scrollHeight;
+    }
+
+    let resizeTimer = null;
+    const onResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(syncViewport, 60);
     };
+    window.addEventListener('resize', onResize);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', onResize);
+      window.visualViewport.addEventListener('scroll', () => {
+        if (window.scrollY !== 0) window.scrollTo(0, 0);
+      });
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && !isInitialBoot) inspectGameFileForUpdates();
+    });
+
+    /* =========================================================================
+       BOOT
+       ========================================================================= */
+    async function bootSequence() {
+      clearScreen();
+      measureCols();
+      sound.playTapeMotor();
+      print("INITIALIZING MEMEX-68 SUPERVISORY SYSTEM...", "dim");
+      print("CORE STORAGE: 32,768 WORDS VERIFIED [PARITY CHECK OK]", "dim");
+      print("ENGAGING AUTO-SENSING TAPE DAEMON ON [./game.txt]...", "dim");
+
+      const loadRes = await inspectGameFileForUpdates({ force: true });
+      isInitialBoot = false;
+
+      if (loadRes && loadRes.success) {
+        print(`[OK] ./game.txt MOUNTED: ${loadRes.count} APPLICATION SECTORS VERIFIED.`, "highlight");
+      } else {
+        print(`[STANDBY] ACCESS TO ./game.txt UNREACHABLE VIA CURRENT PROTOCOL.`, "dim");
+        print(`[RESERVE] ENGAGED CORE ROM REGISTRY (${GAME_CATALOG.map(g => g.code).join(', ')}).`, "system");
+      }
+
+      print(" ");
+      print(rule('='), "highlight");
+      print(center(fit("MEMEX-68 // INTERACTIVE TIME-SHARING REPERTORY TERMINAL", "MEMEX-68 // TIME-SHARING TERMINAL")), "highlight");
+      print(center(fit("AUTO-DETECTING EXPEDITION GAME REPERTORY", "EXPEDITION GAME REPERTORY")), "system");
+      print(rule('='), "highlight");
+      print(" ");
+      print("COMMANDS:");
+      const ex = exampleCode();
+      const cmds = [
+        ['CATALOG', 'LIST ALL MOUNTED PROGRAMS'],
+        ['RUN <CODE>', `EXECUTE PROGRAM (E.G. 'RUN ${ex}')`],
+        ['INFO <CODE>', 'VIEW SYNOPSIS & INSTRUCTIONS'],
+        ['RELOAD', 'FORCE DISK POLL ON ./game.txt'],
+        ['HELP', 'DISPLAY OPERATOR COMMAND GLOSSARY']
+      ];
+      if (COLS >= 50) {
+        cmds.forEach(([c, d]) => print(`  ${pad(c, 14)}- ${d}`));
+      } else {
+        cmds.forEach(([c, d]) => { print(`  ${c}`); print(`    ${d}`, 'dim'); });
+      }
+      print(" ");
+      print(fit("[DAEMON ACTIVE: NEW ENTRIES IN GAME.TXT WILL AUTO-MOUNT IN REAL-TIME]",
+                "[DAEMON ACTIVE: GAME.TXT AUTO-MOUNTS LIVE]"), "dim");
+      if (isCoarse) print("[TAP A KEY BELOW, OR TAP THE EXEC> LINE TO TYPE]", "dim");
+      print(" ");
+      sound.playBell();
+
+      // Continuous background tape inspection
+      setInterval(inspectGameFileForUpdates, POLL_MS);
+    }
+
+    window.addEventListener('load', () => {
+      loadPrefs();
+      syncViewport();
+      bootSequence();
+      // Don't pop the on-screen keyboard uninvited on phones
+      if (!isCoarse) focusInput();
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => { measureCols(); updateCursor(); });
+      }
+    });
   </script>
 </body>
 </html>
