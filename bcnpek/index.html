@@ -1,0 +1,2665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Pinch-zoom stays allowed (accessibility). interactive-widget lets Android shrink the layout when the keyboard opens. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+    <meta name="color-scheme" content="dark">
+    <meta name="format-detection" content="telephone=no">
+    <title>Handoff</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#090d16" id="meta-theme-color">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Handoff">
+    <link rel="icon" href="./icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* ------------------------------------------------------------------
+           APP SHELL: one screen, sized to the *visible* viewport (--app-h is
+           kept in sync with visualViewport by JS, so the on-screen keyboard
+           and mobile browser bars never push content off screen).
+           Spacing and type scale with available height.
+           Note: Tailwind's CDN styles load after this block, so rules here that
+           set display use :not(.hidden) and never fight Tailwind's .hidden.
+           ------------------------------------------------------------------ */
+        :root {
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-left: env(safe-area-inset-left, 0px);
+            --safe-right: env(safe-area-inset-right, 0px);
+            --app-h: 100vh;
+            --gap: clamp(0.45rem, calc(var(--app-h) * 0.016), 0.875rem);
+            --inner-gap: clamp(0.4rem, calc(var(--app-h) * 0.013), 0.8rem);
+            --pad: clamp(0.75rem, calc(var(--app-h) * 0.021), 1.25rem);
+            --pad-tight: clamp(0.55rem, calc(var(--app-h) * 0.014), 0.85rem);
+            color-scheme: dark;
+        }
+        @supports (height: 100dvh) { :root { --app-h: 100dvh; } }
+
+        html {
+            height: 100%;
+            overflow: hidden;
+            overscroll-behavior: none;            /* no pull-to-refresh / rubber band */
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            touch-action: manipulation;           /* no double-tap zoom delay */
+            background: #090d16;
+        }
+        body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+            overscroll-behavior: none;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            transition: background 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+            font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+                "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC",
+                sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
+        }
+        html:lang(zh-TW) body {
+            font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+                "PingFang TC", "Hiragino Sans CNS", "Microsoft JhengHei", "Noto Sans TC", "Noto Sans CJK TC",
+                sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
+        }
+        input, textarea, .selectable { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
+        input, textarea, select { font-size: 16px !important; } /* < 16px makes iOS zoom on focus */
+        button { -webkit-touch-callout: none; touch-action: manipulation; }
+        :focus-visible { outline: 2px solid #fcd34d; outline-offset: 2px; }
+        :focus:not(:focus-visible) { outline: none; }
+
+        .app-shell {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--app-h);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
+            will-change: transform;
+        }
+        .wrap { width: 100%; max-width: 28rem; margin: 0 auto; padding-left: 1rem; padding-right: 1rem; }
+        @media (min-width: 380px) { .wrap { padding-left: 1.25rem; padding-right: 1.25rem; } }
+
+        .topbar {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            height: clamp(2.9rem, calc(var(--app-h) * 0.068), 3.4rem);
+            position: relative;
+            z-index: 30;
+        }
+        .icon-btn {
+            width: 2.5rem; height: 2.5rem;
+            border-radius: 9999px;
+            display: inline-flex; align-items: center; justify-content: center;
+            flex: 0 0 auto;
+            transition: opacity .15s, transform .15s;
+        }
+        .icon-btn:active { transform: scale(0.94); }
+        .icon-btn svg { width: 1.1rem; height: 1.1rem; }
+
+        .screen:not(.hidden) { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+        #login-screen { overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+        .login-inner { min-height: 100%; display: flex; flex-direction: column; justify-content: center; padding-top: 0.5rem; padding-bottom: 1rem; }
+        .login-card { padding: clamp(1.1rem, calc(var(--app-h) * 0.03), 1.75rem); }
+        .login-card > * + * { margin-top: clamp(0.85rem, calc(var(--app-h) * 0.022), 1.25rem); }
+
+        .app-header {
+            flex: 0 0 auto;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: var(--gap);
+        }
+        .clock {
+            font-size: clamp(1.5rem, calc(var(--app-h) * 0.043), 2.25rem);
+            line-height: 1.1;
+            font-weight: 300;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.03em;
+            white-space: nowrap;
+        }
+        @media (max-width: 340px) { .clock { font-size: 1.45rem; } }
+
+        #app-main {
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap);
+            overflow-y: auto;                  /* last resort only; normally everything fits */
+            overscroll-behavior: contain;
+        }
+        #app-screen { padding-bottom: var(--gap); }
+        .card { border-radius: clamp(1.1rem, calc(var(--app-h) * 0.03), 1.65rem); padding: var(--pad); flex: 0 0 auto; min-width: 0; }
+        .card:not(.hidden) { display: flex; flex-direction: column; gap: var(--inner-gap); }
+        .card-tight { padding: var(--pad-tight) var(--pad); }
+
+        #incoming-card { flex: 1 1 auto; }
+        .incoming-body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+        .state:not(.hidden) { display: flex; flex-direction: column; min-height: 0; gap: var(--inner-gap); }
+        .scroll-text { overflow-y: auto; min-height: 1.6em; flex: 0 1 auto; overscroll-behavior: contain; }
+        .msg-text {
+            font-size: clamp(1rem, calc(var(--app-h) * 0.024), 1.2rem);
+            line-height: 1.55;
+            font-weight: 300;
+            overflow-wrap: anywhere;
+        }
+        .composer-body:not(.hidden) { display: flex; flex-direction: column; gap: var(--inner-gap); min-height: 0; }
+        #composer-input {
+            min-height: 2.9em;
+            max-height: calc(var(--app-h) * 0.2);
+            overflow-y: auto;
+            font-size: clamp(1rem, calc(var(--app-h) * 0.024), 1.15rem) !important;
+        }
+
+        .vibe-strip {
+            -webkit-mask-image: linear-gradient(to right, transparent 0, #000 10px, #000 calc(100% - 24px), transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0, #000 10px, #000 calc(100% - 24px), transparent 100%);
+            padding-left: 4px; padding-right: 16px;
+            scroll-snap-type: x proximity;
+        }
+        .vibe-strip > button { scroll-snap-align: start; }
+
+        .footer:not(.hidden) { flex: 0 0 auto; display: flex; }
+
+        /* Short screens: drop the decoration first, never the content */
+        @media (max-height: 740px) { .footer { display: none !important; } }
+        @media (max-height: 700px) {
+            :root { --gap: 0.5rem; }
+            .tag-row, .vibe-label { display: none !important; }
+            #composer-input { min-height: 1.7em; }
+            .icon-btn { width: 2.25rem; height: 2.25rem; }
+        }
+        @media (max-height: 660px) { .overlap-legend { display: none !important; } }
+        @media (max-height: 620px) {
+            .field-label { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+            .login-sub { display: none; }
+        }
+        @media (max-height: 620px) {
+            /* Together window collapses to one row: label + bar side by side */
+            #overlap-card:not(.hidden) { flex-direction: row; align-items: center; gap: 0.75rem; }
+            #overlap-card > :first-child { flex: 0 1 auto; max-width: 58%; }
+            #overlap-card > :first-child #overlap-text { text-align: left; }
+            #overlap-card > .relative { flex: 1 1 auto; min-width: 4rem; }
+            #overlap-card .hide-narrow { display: none !important; }
+            .topbar { height: 2.65rem; }
+        }
+        @media (max-height: 600px) { #outgoing-receipt { display: none !important; } }
+        @media (max-width: 399px) { .hide-narrow { display: none !important; } }
+
+        /* Wide screens (tablet/desktop) and landscape phones: two columns */
+        @media (min-width: 720px) and (min-height: 560px), (orientation: landscape) and (max-height: 540px) and (min-width: 560px) {
+            .wrap { max-width: 60rem; }
+            .app-header { max-width: 42rem; width: 100%; margin: 0 auto; }
+            .login-card { width: 100%; max-width: 26rem; margin-left: auto; margin-right: auto; }
+            #app-main {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+                grid-template-rows: auto auto minmax(0, 1fr);
+                grid-template-areas: "overlap incoming" "vibe incoming" "composer incoming";
+            }
+            #overlap-card { grid-area: overlap; }
+            #vibe-card { grid-area: vibe; }
+            #composer-card { grid-area: composer; min-height: 0; }
+            #incoming-card { grid-area: incoming; min-height: 0; }
+            #composer-card .composer-body { flex: 1 1 auto; }
+            #composer-input { flex: 1 1 auto; max-height: none; }
+            .footer { display: none !important; }
+        }
+
+        @media (orientation: landscape) and (max-height: 540px) and (min-width: 560px) {
+            #composer-input { flex: 0 1 auto; min-height: 1.7em; max-height: 3.3em; }
+            #composer-input::placeholder { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        }
+
+        /* Landscape phones: sign-in card splits into two columns */
+        @media (orientation: landscape) and (max-height: 540px) and (min-width: 560px) {
+            .login-card {
+                max-width: 46rem;
+                display: grid;
+                grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+                column-gap: 1.5rem;
+                row-gap: 0.75rem;
+                align-content: center;
+            }
+            .login-card > * + * { margin-top: 0; }
+            .login-card > :not(form) { grid-column: 1; }
+            .login-card > form { grid-column: 2; grid-row: 1 / span 4; align-self: center; }
+        }
+
+        /* Keyboard open on touch devices: keep only what you're typing into */
+        .kb-open #overlap-card, .kb-open #vibe-card, .kb-open .footer, .kb-open .weather-line { display: none !important; }
+        .kb-open .clock { font-size: 1.2rem; }
+        .kb-open .app-header { padding-bottom: 0.4rem; }
+        .kb-open[data-focus="incoming"] #composer-card { display: none !important; }
+        .kb-open[data-focus="composer"] #incoming-card { display: none !important; }
+        @media (max-height: 480px) { .kb-open .topbar { display: none !important; } }
+        @media (max-height: 300px) { .kb-open .app-header { display: none !important; } }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.065);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.22), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .glass-subtle {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+            .glass { background: rgba(22, 28, 44, 0.86); }
+            .glass-subtle { background: rgba(255, 255, 255, 0.09); }
+        }
+        .solid-panel { background: rgba(15, 20, 32, 0.97); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 16px 40px rgba(0,0,0,.45); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        select option { color: #000; }
+
+        /* Bottom sheets (centered dialogs on large screens) */
+        .sheet-backdrop {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 50;
+            align-items: flex-end;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            padding: 0.75rem calc(0.75rem + var(--safe-right)) calc(0.75rem + var(--safe-bottom)) calc(0.75rem + var(--safe-left));
+        }
+        .sheet-backdrop:not(.hidden) { display: flex; }
+        .sheet {
+            width: 100%;
+            max-width: 28rem;
+            max-height: calc(var(--app-h) - var(--safe-top) - var(--safe-bottom) - 1.5rem);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            animation: sheet-up .28s cubic-bezier(.22, 1, .36, 1);
+        }
+        @media (min-width: 640px) and (min-height: 600px) { .sheet-backdrop { align-items: center; } }
+        @keyframes sheet-up { from { transform: translateY(28px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+        .toast {
+            position: absolute;
+            left: 50%;
+            bottom: calc(var(--safe-bottom) + 1rem);
+            transform: translateX(-50%);
+            z-index: 60;
+            width: max-content;
+            max-width: calc(100% - 2rem);
+            animation: sheet-up .25s ease-out;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { transition: none !important; animation: none !important; }
+        }
+    </style>
+</head>
+<body id="app-body" class="bg-[#090d16] text-white antialiased selection:bg-amber-300 selection:text-black">
+<div id="shell" class="app-shell">
+
+    <!-- TOP BAR -->
+    <nav class="topbar wrap">
+        <div class="relative">
+            <button id="lang-btn" type="button" onclick="toggleLangMenu(event)" aria-haspopup="menu" aria-expanded="false" aria-controls="lang-menu"
+                    class="h-10 pl-3 pr-2.5 rounded-full glass-subtle text-[12px] font-medium flex items-center gap-1.5 active:scale-95 transition">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 opacity-70" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+                <span id="lang-current">EN</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-3 h-3 opacity-50" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div id="lang-menu" role="menu" class="hidden absolute left-0 top-full mt-2 min-w-[10.5rem] rounded-2xl solid-panel py-1.5 z-50">
+                <button role="menuitemradio" data-lang="en" lang="en" onclick="pickLang('en')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-white/10 flex items-center justify-between gap-3">English<span class="check opacity-0">✓</span></button>
+                <button role="menuitemradio" data-lang="zh-CN" lang="zh-CN" onclick="pickLang('zh-CN')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-white/10 flex items-center justify-between gap-3">简体中文<span class="check opacity-0">✓</span></button>
+                <button role="menuitemradio" data-lang="zh-TW" lang="zh-TW" onclick="pickLang('zh-TW')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-white/10 flex items-center justify-between gap-3">繁體中文<span class="check opacity-0">✓</span></button>
+                <button role="menuitemradio" data-lang="es" lang="es" onclick="pickLang('es')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-white/10 flex items-center justify-between gap-3">Español<span class="check opacity-0">✓</span></button>
+                <button role="menuitemradio" data-lang="ca" lang="ca" onclick="pickLang('ca')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-white/10 flex items-center justify-between gap-3">Català<span class="check opacity-0">✓</span></button>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+            <button id="install-btn" type="button" onclick="installApp()" class="hidden icon-btn glass-subtle opacity-80 hover:opacity-100" data-i18n-aria="install" data-i18n-title="install">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14"/></svg>
+            </button>
+            <div id="nav-user-controls" class="hidden flex items-center gap-1.5">
+                <button type="button" onclick="openTimeline()" class="icon-btn glass-subtle opacity-80 hover:opacity-100" data-i18n-aria="timeline" data-i18n-title="timeline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+                </button>
+                <button type="button" onclick="openEditModal()" class="icon-btn glass-subtle opacity-80 hover:opacity-100" data-i18n-aria="editAccount" data-i18n-title="editAccount">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5c1.2-3.3 3.9-5 7-5s5.8 1.7 7 5"/></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================================================================= -->
+    <!-- SCREEN 1: AUTHENTICATION                                          -->
+    <!-- ================================================================= -->
+    <section id="login-screen" class="screen">
+        <div class="login-inner wrap">
+            <div class="login-card glass rounded-[28px]">
+                <div class="space-y-1 text-center">
+                    <h1 class="text-2xl font-light tracking-tight" data-i18n="appTitle">Twilight Handoff</h1>
+                    <p class="login-sub text-xs opacity-55" data-i18n="loginSub">Asynchronous presence across timezones</p>
+                </div>
+
+                <!-- Fallback config banner, only if supabase.txt is missing or empty -->
+                <div id="supabase-config-banner" class="hidden p-4 rounded-2xl bg-amber-500/10 border border-amber-400/25 space-y-2.5 text-xs">
+                    <div class="font-medium text-amber-300" data-i18n="dbConfigTitle">supabase.txt not found — enter keys:</div>
+                    <input id="cfg-url" type="text" autocapitalize="none" autocorrect="off" placeholder="Project ID or https://xyz.supabase.co" aria-label="Supabase URL" class="w-full glass-subtle rounded-xl px-3 py-2 focus:outline-none">
+                    <input id="cfg-key" type="password" placeholder="Supabase Anon Public Key" aria-label="Supabase anon key" class="w-full glass-subtle rounded-xl px-3 py-2 focus:outline-none">
+                    <button onclick="saveSupabaseConfig()" class="w-full py-2.5 rounded-xl bg-amber-400 text-black font-semibold text-xs active:scale-[0.98] transition" data-i18n="connectDbBtn">Connect</button>
+                </div>
+
+                <div class="grid grid-cols-2 rounded-full glass-subtle p-1 text-xs" role="tablist">
+                    <button id="tab-signin" role="tab" onclick="switchAuthTab('signin')" class="py-2 px-2 rounded-full bg-white text-black font-medium transition truncate" data-i18n="tabSignIn">Sign In</button>
+                    <button id="tab-signup" role="tab" onclick="switchAuthTab('signup')" class="py-2 px-2 rounded-full opacity-60 hover:opacity-100 transition truncate" data-i18n="tabSignUp">First-Time Setup</button>
+                </div>
+
+                <form class="space-y-3" onsubmit="event.preventDefault(); handleAuthSubmit();">
+                    <div>
+                        <label for="login-identifier" class="field-label text-[11px] uppercase tracking-wider opacity-55 block mb-1.5 pl-1" data-i18n="loginIdLabel">Username or Email</label>
+                        <input id="login-identifier" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next" data-i18n-placeholder="loginIdPlaceholder" class="w-full glass-subtle rounded-2xl px-4 py-3 focus:outline-none focus:border-white/40 transition">
+                    </div>
+                    <div>
+                        <label for="login-pass" class="field-label text-[11px] uppercase tracking-wider opacity-55 block mb-1.5 pl-1" data-i18n="passLabel">Password</label>
+                        <input id="login-pass" type="password" autocomplete="current-password" enterkeyhint="go" data-i18n-placeholder="passLabel" class="w-full glass-subtle rounded-2xl px-4 py-3 focus:outline-none focus:border-white/40 transition">
+                    </div>
+
+                    <div id="signup-extra-fields" class="hidden relative grid grid-cols-1 min-[340px]:grid-cols-2 gap-3 pt-3 border-t border-white/10">
+                        <div class="min-w-0">
+                            <label for="signup-name" class="field-label text-[11px] uppercase tracking-wider opacity-55 block mb-1.5 pl-1" data-i18n="displayNameLabel">Your Name</label>
+                            <input id="signup-name" type="text" autocomplete="nickname" enterkeyhint="next" data-i18n-placeholder="displayNameLabel" class="w-full glass-subtle rounded-2xl px-4 py-2.5 focus:outline-none">
+                        </div>
+                        <div class="min-w-0">
+                            <label for="signup-city" class="field-label text-[11px] uppercase tracking-wider opacity-55 block mb-1.5 pl-1" data-i18n="cityLabel">Your City</label>
+                            <input id="signup-city" type="text" autocomplete="off" autocorrect="off" enterkeyhint="done" role="combobox" aria-autocomplete="list" aria-controls="signup-city-list" data-i18n-placeholder="cityInputPlaceholder" class="w-full glass-subtle rounded-2xl px-4 py-2.5 focus:outline-none">
+                        </div>
+                        <div id="signup-city-list" role="listbox" class="hidden absolute left-0 right-0 bottom-full mb-1 z-40 rounded-2xl solid-panel overflow-hidden text-sm"></div>
+                    </div>
+
+                    <p id="login-error" role="alert" class="text-xs text-rose-300 hidden px-1"></p>
+
+                    <button id="login-submit-btn" type="submit" class="w-full py-3.5 rounded-full bg-white text-black text-sm font-semibold tracking-wide hover:opacity-95 active:scale-[0.98] transition disabled:opacity-50">Enter</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- SCREEN 2: MAIN APPLICATION                                        -->
+    <!-- ================================================================= -->
+    <div id="app-screen" class="screen hidden">
+
+        <header class="app-header wrap">
+            <div class="flex flex-col min-w-0">
+                <span class="tag-row text-[10px] uppercase tracking-widest opacity-45 truncate" data-i18n="youTag">You</span>
+                <div class="flex items-center gap-1 mt-0.5 min-w-0">
+                    <span id="name-you" class="text-xs font-semibold text-white truncate shrink">--</span>
+                    <span class="opacity-35 text-[10px] shrink-0" aria-hidden="true">·</span>
+                    <span id="label-you" class="text-[11px] font-medium text-amber-300 truncate shrink">--</span>
+                </div>
+                <div id="time-you" class="clock mt-0.5">--:--</div>
+                <div id="weather-you" class="weather-line text-[11px] opacity-60 truncate mt-0.5">--</div>
+            </div>
+
+            <div class="flex flex-col items-center justify-center" aria-hidden="false">
+                <span class="w-px h-3 bg-white/20" aria-hidden="true"></span>
+                <span id="tz-diff" class="my-1 px-2 py-0.5 rounded-full glass-subtle text-[10px] font-mono tabular-nums whitespace-nowrap">--</span>
+                <span class="w-px h-3 bg-white/20" aria-hidden="true"></span>
+            </div>
+
+            <div class="flex flex-col text-right items-end min-w-0">
+                <span class="tag-row text-[10px] uppercase tracking-widest opacity-45 truncate" data-i18n="partnerTag">Partner</span>
+                <div class="flex items-center justify-end gap-1 mt-0.5 w-full min-w-0">
+                    <span id="partner-mood-dot" class="w-2 h-2 rounded-full bg-amber-400 shrink-0 self-center" aria-hidden="true"></span>
+                    <span id="name-partner" class="text-xs font-semibold text-white truncate shrink">--</span>
+                    <span class="opacity-35 text-[10px] shrink-0" aria-hidden="true">·</span>
+                    <span id="label-partner" class="text-[11px] font-medium text-amber-300 truncate shrink">--</span>
+                </div>
+                <div id="time-partner" class="clock mt-0.5">--:--</div>
+                <div id="weather-partner" class="weather-line text-[11px] opacity-60 truncate mt-0.5 w-full">--</div>
+            </div>
+        </header>
+
+        <main id="app-main" class="wrap no-scrollbar">
+
+            <!-- TOGETHER WINDOW -->
+            <div id="overlap-card" class="hidden glass card card-tight" role="group" data-i18n-aria="overlapTitle">
+                <div class="flex items-center justify-between text-[11px] gap-2 min-w-0">
+                    <span class="opacity-55 shrink-0 hide-narrow" data-i18n="overlapTitle">Together window</span>
+                    <span id="overlap-text" class="font-medium text-amber-200 truncate text-right flex-1 min-w-0">--</span>
+                </div>
+                <div class="relative">
+                    <div id="overlap-bar" class="h-2.5 rounded-full overflow-hidden flex bg-white/5" aria-hidden="true"></div>
+                    <div id="overlap-marker" class="absolute -top-1 -bottom-1 w-0.5 rounded bg-white shadow" aria-hidden="true"></div>
+                </div>
+                <div class="overlap-legend flex items-center justify-between text-[10px] opacity-55 gap-2 min-w-0">
+                    <span class="shrink-0">00:00</span>
+                    <span class="flex items-center gap-2.5 min-w-0">
+                        <span class="flex items-center gap-1 min-w-0"><span class="w-2 h-2 rounded-sm bg-white/30 shrink-0"></span><span class="truncate" data-i18n="legendYou">You</span></span>
+                        <span class="flex items-center gap-1 min-w-0"><span class="w-2 h-2 rounded-sm bg-sky-300/50 shrink-0"></span><span id="legend-partner" class="truncate max-w-[5.5rem]">--</span></span>
+                        <span class="flex items-center gap-1 min-w-0"><span class="w-2 h-2 rounded-sm bg-amber-300 shrink-0"></span><span class="truncate" data-i18n="legendBoth">Both</span></span>
+                    </span>
+                    <span class="shrink-0">24:00</span>
+                </div>
+            </div>
+
+            <!-- VIBE -->
+            <div id="vibe-card" class="glass card card-tight">
+                <div class="vibe-label flex items-center justify-between text-[11px] px-1 gap-2 min-w-0">
+                    <span class="opacity-55 truncate" data-i18n="yourVibe">Your vibe (colors partner's sky)</span>
+                    <span id="current-vibe-label" class="font-medium text-amber-200 shrink-0"></span>
+                </div>
+                <div class="vibe-strip flex gap-1.5 overflow-x-auto no-scrollbar py-0.5 -mx-1" id="mood-buttons">
+                    <button onclick="setMyMood('radiant')" data-mood="radiant" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeRadiant">☀️ Radiant</button>
+                    <button onclick="setMyMood('warm')" data-mood="warm" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeWarm">✨ Warm</button>
+                    <button onclick="setMyMood('playful')" data-mood="playful" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibePlayful">🎈 Playful</button>
+                    <button onclick="setMyMood('calm')" data-mood="calm" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeCalm">🌊 Calm</button>
+                    <button onclick="setMyMood('focus')" data-mood="focus" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeFocus">⚡ Focus</button>
+                    <button onclick="setMyMood('drifting')" data-mood="drifting" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeDrifting">☁️ Drifting</button>
+                    <button onclick="setMyMood('drained')" data-mood="drained" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeDrained">🥀 Drained</button>
+                    <button onclick="setMyMood('overwhelmed')" data-mood="overwhelmed" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeOverwhelmed">🌧️ Overwhelmed</button>
+                    <button onclick="setMyMood('missing')" data-mood="missing" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeMissing">🌙 Missing You</button>
+                </div>
+            </div>
+
+            <!-- INCOMING CAPSULE -->
+            <div id="incoming-card" class="glass card" aria-live="polite">
+                <div class="flex items-center justify-between text-[11px] opacity-65 gap-2 shrink-0 min-w-0">
+                    <span id="incoming-from" class="font-medium truncate min-w-0">--</span>
+                    <span class="flex items-center gap-2 shrink-0">
+                        <span id="incoming-queue" class="hidden text-[10px] px-2 py-0.5 rounded-full bg-amber-300/20 text-amber-200 whitespace-nowrap"></span>
+                        <span id="incoming-status" class="font-mono uppercase tracking-wider text-amber-300 whitespace-nowrap">--</span>
+                    </span>
+                </div>
+
+                <div class="incoming-body">
+                    <div id="state-empty" class="state text-center text-xs opacity-40 font-light py-1" data-i18n="emptyCapsule">No locked thoughts from your partner right now.</div>
+
+                    <div id="state-scheduled" class="state hidden text-center text-xs opacity-70 font-light">
+                        <p><span aria-hidden="true">✉️ </span><span id="scheduled-text"></span></p>
+                    </div>
+
+                    <div id="state-locked" class="state hidden">
+                        <p id="locked-text" class="msg-text scroll-text no-scrollbar">
+                            <span id="masked-dots" class="opacity-30 tracking-widest" aria-hidden="true"></span>
+                            <span id="teaser-words" class="font-normal underline decoration-amber-300/60 underline-offset-4 text-amber-200"></span>
+                        </p>
+                        <p id="sound-only-text" class="hidden msg-text" data-i18n="soundOnly">🎙️ A sound is waiting for you</p>
+
+                        <form id="guess-row" class="flex items-center gap-2 shrink-0" onsubmit="event.preventDefault(); unlockCapsule(false);">
+                            <input id="guess-input" type="text" autocomplete="off" enterkeyhint="send" data-i18n-placeholder="guessPlaceholder" data-i18n-aria="guessPlaceholder" class="w-full min-w-0 bg-transparent border-b border-white/20 py-1.5 focus:outline-none focus:border-amber-300 transition placeholder:opacity-40">
+                            <button type="submit" class="px-4 py-2 rounded-full bg-white text-black text-xs font-semibold tracking-wide shrink-0 hover:opacity-90 active:scale-95 transition whitespace-nowrap" data-i18n="unlockBtn">Unlock</button>
+                        </form>
+                        <p id="guess-hint" class="hidden text-[11px] text-amber-200/90 shrink-0"></p>
+                        <div class="flex justify-end shrink-0">
+                            <button id="reveal-link" type="button" onclick="unlockCapsule(true)" class="text-[11px] underline decoration-white/30 underline-offset-4 opacity-55 hover:opacity-100 transition py-1" data-i18n="revealNoGuess">Reveal without guessing</button>
+                            <button id="listen-btn" type="button" onclick="unlockCapsule(true)" class="hidden px-4 py-2 rounded-full bg-white text-black text-xs font-semibold active:scale-95 transition" data-i18n="listenBtn">Listen</button>
+                        </div>
+                    </div>
+
+                    <div id="state-unlocked" class="state hidden">
+                        <p id="full-sentence" class="msg-text scroll-text no-scrollbar selectable"></p>
+                        <p id="guess-result" class="text-xs opacity-65 italic border-l-2 border-amber-300/50 pl-3 py-0.5 shrink-0"></p>
+                        <div id="audio-player-wrap" class="hidden shrink-0">
+                            <audio id="capsule-audio" controls playsinline preload="metadata" class="w-full h-9 rounded-lg"></audio>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COMPOSER -->
+            <div id="composer-card" class="glass card">
+                <div class="flex justify-between items-center gap-2 shrink-0 min-w-0">
+                    <span id="composer-prompt" class="text-[11px] opacity-65 truncate min-w-0">--</span>
+                    <span id="partner-sleep-badge" class="text-[10px] font-mono uppercase px-2.5 py-0.5 rounded-full glass-subtle shrink-0 truncate max-w-[55%]">--</span>
+                </div>
+
+                <!-- Pairing: shown until you're connected to your partner -->
+                <div id="pair-panel" class="hidden flex flex-col gap-2.5 shrink-0">
+                    <p class="text-xs opacity-75" data-i18n="pairTitle">Connect with your partner</p>
+                    <div id="invite-box" class="hidden flex items-center justify-between gap-2 rounded-2xl glass-subtle px-3.5 py-2">
+                        <div class="min-w-0">
+                            <span class="text-[10px] opacity-60 block truncate" data-i18n="pairYourCode">Your code · valid 24h</span>
+                            <span id="invite-code" class="font-mono text-lg tracking-[0.3em] text-amber-200 selectable">------</span>
+                        </div>
+                        <button type="button" onclick="shareInvite()" class="shrink-0 px-3.5 py-1.5 rounded-full bg-white text-black text-xs font-semibold active:scale-95 transition" data-i18n="pairShare">Share</button>
+                    </div>
+                    <button id="invite-create-btn" type="button" onclick="createInvite()" class="w-full py-2.5 rounded-full glass-subtle text-xs font-medium active:scale-[0.98] transition" data-i18n="pairCreate">Create invite code</button>
+                    <form class="flex items-center gap-2" onsubmit="event.preventDefault(); joinWithCode();">
+                        <input id="join-code" type="text" maxlength="8" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="go" data-i18n-placeholder="pairEnter" data-i18n-aria="pairEnter" class="w-full min-w-0 bg-transparent border-b border-white/20 py-1.5 uppercase tracking-[0.2em] font-mono focus:outline-none focus:border-amber-300 transition placeholder:opacity-40 placeholder:tracking-normal placeholder:normal-case placeholder:font-sans">
+                        <button type="submit" class="shrink-0 px-4 py-2 rounded-full bg-white text-black text-xs font-semibold active:scale-95 transition whitespace-nowrap" data-i18n="pairJoin">Join</button>
+                    </form>
+                    <p id="pair-msg" role="alert" class="hidden text-[11px] text-amber-200"></p>
+                </div>
+
+                <div id="composer-body" class="composer-body">
+                    <textarea id="composer-input" rows="1" maxlength="500" enterkeyhint="enter" data-i18n-placeholder="composerPlaceholder" data-i18n-aria="composerPlaceholder" class="w-full bg-transparent font-light placeholder:opacity-30 focus:outline-none resize-none leading-relaxed no-scrollbar"></textarea>
+
+                    <div id="recorded-preview-wrap" class="hidden flex items-center justify-between gap-2 text-xs py-1.5 px-3 rounded-2xl glass-subtle shrink-0">
+                        <audio id="recorded-preview" controls playsinline class="h-8 flex-1 min-w-0"></audio>
+                        <button type="button" onclick="clearRecording()" class="text-[11px] opacity-60 hover:opacity-100 px-2 py-1 shrink-0" data-i18n="clearAudio">✕ Clear</button>
+                    </div>
+
+                    <p id="mic-error-msg" role="alert" class="text-[11px] text-rose-300 hidden shrink-0"></p>
+                    <p id="send-error" role="alert" class="text-[11px] text-rose-300 hidden shrink-0"></p>
+
+                    <div class="flex items-center justify-between gap-2 pt-2 border-t border-white/10 shrink-0">
+                        <button type="button" id="mic-btn" onclick="toggleRecording()" class="flex items-center gap-2 text-xs opacity-90 hover:opacity-100 transition py-2 px-3.5 rounded-full glass-subtle active:scale-95 min-w-0">
+                            <span id="mic-dot" class="w-2 h-2 rounded-full bg-red-500 shrink-0" aria-hidden="true"></span>
+                            <span id="mic-label" class="truncate">Record 6s sound</span>
+                            <span id="mic-timer" class="font-mono tabular-nums text-[11px] text-amber-300 hidden shrink-0">6.0s</span>
+                        </button>
+
+                        <label id="schedule-row" class="hidden shrink-0 cursor-pointer ml-auto">
+                            <input id="schedule-toggle" type="checkbox" checked class="peer sr-only">
+                            <span id="schedule-label" class="flex items-center gap-1 px-2.5 py-2 rounded-full border border-white/10 text-[11px] whitespace-nowrap opacity-55 transition peer-checked:opacity-100 peer-checked:bg-amber-300/20 peer-checked:text-amber-200 peer-checked:border-amber-300/40 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-300">--</span>
+                        </label>
+
+                        <button type="button" onclick="sendHandoff()" id="send-btn" class="px-6 py-2.5 rounded-full bg-white text-black text-xs font-semibold tracking-wide hover:opacity-90 active:scale-95 transition disabled:opacity-50 shrink-0 whitespace-nowrap">
+                            <span id="send-label">Send</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="outgoing-receipt" class="hidden pt-2 border-t border-white/10 text-[11px] opacity-60 flex items-center justify-between gap-2 shrink-0 min-w-0">
+                    <span id="outgoing-receipt-text" class="truncate min-w-0">--</span>
+                    <span id="outgoing-receipt-badge" class="font-mono text-[9px] uppercase px-2 py-0.5 rounded-full glass-subtle shrink-0 whitespace-nowrap">--</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer wrap items-center justify-between text-[10px] opacity-40 py-1.5 gap-2">
+        <span id="sync-indicator" class="shrink-0">--</span>
+        <span id="sky-desc" class="truncate min-w-0"></span>
+    </footer>
+
+    <!-- SHEET: ACCOUNT -->
+    <div id="edit-modal" class="sheet-backdrop hidden" onclick="if(event.target===this) closeEditModal()">
+        <div class="sheet glass rounded-[28px] p-6 space-y-4 no-scrollbar" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
+            <div class="flex justify-between items-center">
+                <h3 id="edit-modal-title" class="text-xs font-semibold uppercase tracking-wider opacity-80" data-i18n="editAccount">Account</h3>
+                <button onclick="closeEditModal()" class="icon-btn -mr-2 opacity-60 hover:opacity-100" data-i18n-aria="close" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                </button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label for="modal-new-name" class="opacity-60 block mb-1" data-i18n="newNameLabel">Display Name</label>
+                    <input id="modal-new-name" type="text" class="w-full glass-subtle rounded-xl px-3.5 py-2.5 focus:outline-none">
+                </div>
+                <div class="relative">
+                    <label for="modal-new-city" class="opacity-60 block mb-1" data-i18n="cityLabel">Your City</label>
+                    <input id="modal-new-city" type="text" autocomplete="off" autocorrect="off" role="combobox" aria-autocomplete="list" aria-controls="modal-city-list" data-i18n-placeholder="cityInputPlaceholder" class="w-full glass-subtle rounded-xl px-3.5 py-2.5 focus:outline-none">
+                    <div id="modal-city-list" role="listbox" class="hidden absolute left-0 right-0 mt-1 z-50 rounded-2xl solid-panel overflow-hidden text-sm"></div>
+                </div>
+                <div>
+                    <span class="opacity-60 block mb-1" data-i18n="sleepHoursLabel">Sleep hours</span>
+                    <div class="flex items-center gap-2">
+                        <select id="modal-sleep-start" aria-label="Sleep start" class="flex-1 min-w-0 glass-subtle rounded-xl px-3 py-2 focus:outline-none bg-transparent"></select>
+                        <span class="opacity-60 shrink-0" data-i18n="sleepTo">to</span>
+                        <select id="modal-sleep-end" aria-label="Wake up" class="flex-1 min-w-0 glass-subtle rounded-xl px-3 py-2 focus:outline-none bg-transparent"></select>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between gap-2 pt-1">
+                    <div class="min-w-0">
+                        <span class="opacity-60 block" data-i18n="partnerLabel">Partner</span>
+                        <span id="partner-status" class="text-[11px] opacity-80 block truncate">--</span>
+                    </div>
+                    <button id="unpair-btn" type="button" onclick="unpairPartner()" class="hidden shrink-0 px-3.5 py-1.5 rounded-full glass-subtle text-[11px] text-rose-300/90 active:scale-95 transition" data-i18n="unpair">Unpair</button>
+                </div>
+                <div class="flex items-center justify-between gap-2 pt-1">
+                    <div class="min-w-0">
+                        <span class="opacity-60 block" data-i18n="notifLabel">Notifications</span>
+                        <span id="notif-status" class="text-[11px] opacity-80 block">--</span>
+                    </div>
+                    <button id="notif-btn" type="button" onclick="togglePush()" class="hidden shrink-0 px-3.5 py-1.5 rounded-full glass-subtle text-[11px] active:scale-95 transition disabled:opacity-50">--</button>
+                </div>
+                <div class="pt-2 border-t border-white/10 space-y-3">
+                    <span class="opacity-60 block" data-i18n="passwordSection">Change password (optional)</span>
+                    <div>
+                        <label for="modal-curr-pass" class="opacity-60 block mb-1" data-i18n="currentPassVerify">Current password</label>
+                        <input id="modal-curr-pass" type="password" autocomplete="current-password" class="w-full glass-subtle rounded-xl px-3.5 py-2.5 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="modal-new-pass" class="opacity-60 block mb-1" data-i18n="newPassLabel">New password</label>
+                        <input id="modal-new-pass" type="password" autocomplete="new-password" class="w-full glass-subtle rounded-xl px-3.5 py-2.5 focus:outline-none">
+                    </div>
+                </div>
+                <p id="modal-msg" role="alert" class="text-amber-300 hidden"></p>
+            </div>
+            <button id="modal-save-btn" onclick="saveAccountFromModal()" class="w-full py-3 rounded-full bg-white text-black text-sm font-semibold active:scale-[0.98] transition disabled:opacity-50" data-i18n="saveChanges">Save Changes</button>
+            <button onclick="closeEditModal(); logout();" class="w-full py-2.5 rounded-full text-xs text-rose-300/90 hover:bg-white/5 transition" data-i18n="logout">Exit</button>
+        </div>
+    </div>
+
+    <!-- SHEET: TIMELINE -->
+    <div id="timeline-modal" class="sheet-backdrop hidden" onclick="if(event.target===this) closeTimeline()">
+        <div class="sheet glass rounded-[28px] p-5 flex flex-col no-scrollbar" role="dialog" aria-modal="true" aria-labelledby="timeline-title">
+            <div class="flex justify-between items-center pb-2 shrink-0">
+                <h3 id="timeline-title" class="text-xs font-semibold uppercase tracking-wider opacity-80" data-i18n="timelineTitle">Your capsules</h3>
+                <button onclick="closeTimeline()" class="icon-btn -mr-2 opacity-60 hover:opacity-100" data-i18n-aria="close" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                </button>
+            </div>
+            <div id="timeline-list" class="space-y-2.5"></div>
+        </div>
+    </div>
+
+    <div id="toast" role="status" aria-live="polite" class="toast hidden solid-panel rounded-full px-4 py-2.5 text-xs text-center"></div>
+</div>
+
+    <script>
+        // ============================================================================
+        // 0. SMALL HELPERS
+        // ============================================================================
+        const $ = (id) => document.getElementById(id);
+        const pad = (n) => String(n).padStart(2, '0');
+        function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+        function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+        function lsGetJSON(k) { const v = lsGet(k); if (!v) return null; try { return JSON.parse(v); } catch (e) { return null; } }
+        function show(el, on = true) { (typeof el === 'string' ? $(el) : el).classList.toggle('hidden', !on); }
+        function showMsg(id, text) { const el = $(id); el.textContent = text; el.classList.remove('hidden'); }
+        function hideMsg(id) { $(id).classList.add('hidden'); }
+        function setText(id, text) { const el = $(id); if (el && el.textContent !== text) el.textContent = text; }
+
+        // ============================================================================
+        // 1. CONFIG: ./supabase.txt (URL, anon key, optional VAPID public key)
+        // ============================================================================
+        let supabaseClient = null;
+        let realtimeChannel = null;
+        let vapidPublicKey = '';
+        let usernameDomain = '';   // optional: lets people sign in with a plain username (see SETUP.md)
+
+        function normalizeSupabaseUrl(raw) {
+            const val = (raw || '').trim().replace(/^["']|["']$/g, '');
+            if (!val) return '';
+            if (val.startsWith('http://') || val.startsWith('https://')) return val;
+            return `https://${val}.supabase.co`;
+        }
+
+        function parseSupabaseTxt(text) {
+            let url = '', key = '', vapid = '', domain = '';
+            const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith('#'));
+            for (const line of lines) {
+                if (!line.includes('=')) continue;
+                const idx = line.indexOf('=');
+                const k = line.slice(0, idx).trim().toUpperCase();
+                const v = line.slice(idx + 1).trim().replace(/^["']|["']$/g, '');
+                // Order matters: VAPID_PUBLIC_KEY also contains "KEY".
+                if (k.includes('VAPID')) vapid = v;
+                else if (k.includes('DOMAIN')) domain = v.replace(/^@/, '').toLowerCase();
+                else if (k.includes('URL') || k.includes('ID')) url = normalizeSupabaseUrl(v);
+                else if (k.includes('KEY') || k.includes('ANON')) key = v;
+            }
+            // Plain format: line 1 = ID/URL, line 2 = anon key, optional line 3 = VAPID public key
+            if (!url && !key && lines.length >= 2) {
+                url = normalizeSupabaseUrl(lines[0]);
+                key = lines[1].replace(/^["']|["']$/g, '');
+                vapid = (lines[2] || '').replace(/^["']|["']$/g, '');
+            }
+            return { url, key, vapid, domain };
+        }
+
+        async function loadSupabaseConfig() {
+            let url = '', key = '';
+            try {
+                const res = await fetch('./supabase.txt', { cache: 'no-store' });
+                if (res.ok) {
+                    const parsed = parseSupabaseTxt(await res.text());
+                    url = parsed.url; key = parsed.key; vapidPublicKey = parsed.vapid; usernameDomain = parsed.domain;
+                }
+            } catch (e) { /* fall back to localStorage */ }
+
+            if (!url || !key) {
+                url = lsGet('handoff_sb_url') || '';
+                key = lsGet('handoff_sb_key') || '';
+            }
+
+            if (url && key && isSecretKey(key)) {
+                show('supabase-config-banner', true);
+                setText('sync-indicator', 'Unsafe key');
+                showMsg('login-error', t('errSecretKey'));
+                return false;
+            }
+            applyIdentifierMode();
+            if (url && key) {
+                supabaseClient = window.supabase.createClient(url, key);
+                show('supabase-config-banner', false);
+                setText('sync-indicator', 'Supabase Live');
+                return true;
+            }
+            show('supabase-config-banner', true);
+            setText('sync-indicator', 'Config Needed');
+            return false;
+        }
+
+        async function saveSupabaseConfig() {
+            const url = normalizeSupabaseUrl($('cfg-url').value.trim());
+            const key = $('cfg-key').value.trim();
+            if (!url || !key) return;
+            if (isSecretKey(key)) { showMsg('login-error', t('errSecretKey')); return; }
+            lsSet('handoff_sb_url', url);
+            lsSet('handoff_sb_key', key);
+            supabaseClient = window.supabase.createClient(url, key);
+            show('supabase-config-banner', false);
+            setText('sync-indicator', 'Supabase Live');
+            await restoreSupabaseSession();
+        }
+
+        // Never let the service-role / secret key into the browser: it bypasses all security rules.
+        function isSecretKey(key) {
+            if (/^sb_secret_/i.test(key)) return true;
+            try {
+                const payload = JSON.parse(atob(key.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+                return payload && payload.role === 'service_role';
+            } catch (e) { return false; }
+        }
+
+        // Real email addresses by default. A plain username only works when USERNAME_DOMAIN
+        // is set in supabase.txt to a domain you control (and email confirmation is off).
+        function normalizeIdentifierToEmail(input) {
+            const clean = input.trim().toLowerCase();
+            if (!clean) return '';
+            if (clean.includes('@')) return clean;
+            return usernameDomain ? `${clean.replace(/\s+/g, '')}@${usernameDomain}` : '';
+        }
+
+        function applyIdentifierMode() {
+            const label = document.querySelector('label[for="login-identifier"]');
+            const input = $('login-identifier');
+            label.setAttribute('data-i18n', usernameDomain ? 'loginIdLabel' : 'emailLabel');
+            input.setAttribute('data-i18n-placeholder', usernameDomain ? 'loginIdPlaceholder' : 'emailPlaceholder');
+            input.type = usernameDomain ? 'text' : 'email';
+            input.autocomplete = usernameDomain ? 'username' : 'email';
+            label.textContent = t(label.getAttribute('data-i18n'));
+            input.placeholder = t(input.getAttribute('data-i18n-placeholder'));
+        }
+
+        // ============================================================================
+        // 2. I18N (EN, ZH-CN, ZH-TW, ES, CA). Strings may contain {placeholders}.
+        // ============================================================================
+        const I18N = {
+            'en': {
+                appTitle: 'Twilight Handoff',
+                loginSub: 'Asynchronous presence across timezones',
+                dbConfigTitle: 'supabase.txt not found — enter keys:',
+                connectDbBtn: 'Connect',
+                tabSignIn: 'Sign In',
+                tabSignUp: 'First-Time Setup',
+                loginIdLabel: 'Username or Email',
+                loginIdPlaceholder: 'e.g. wei or wei@email.com',
+                passLabel: 'Password (min 6 chars)',
+                displayNameLabel: 'Your Name',
+                cityLabel: 'Your City',
+                cityInputPlaceholder: 'Start typing any city…',
+                citySearching: 'Searching…',
+                cityNoResults: 'No matching city',
+                loginBtn: 'Enter',
+                signupBtn: 'Create account',
+                editAccount: 'Account',
+                timeline: 'Timeline',
+                logout: 'Exit',
+                youTag: 'You',
+                partnerTag: 'Partner',
+                yourVibe: 'Your vibe (colors partner’s sky)',
+                vibeRadiant: '☀️ Radiant', vibeWarm: '✨ Warm', vibePlayful: '🎈 Playful', vibeCalm: '🌊 Calm', vibeFocus: '⚡ Focus',
+                vibeDrifting: '☁️ Drifting', vibeDrained: '🥀 Drained', vibeOverwhelmed: '🌧️ Overwhelmed', vibeMissing: '🌙 Missing You',
+                overlapTitle: 'Together window',
+                overlapNow: 'Both awake now · until {time}',
+                overlapRange: 'Both awake {range}',
+                overlapNone: 'No shared awake hours today',
+                legendYou: 'You',
+                legendPartner: '{name}',
+                legendBoth: 'Both',
+                emptyCapsule: 'No locked thoughts from your partner right now.',
+                guessPlaceholder: 'Guess how their thought begins…',
+                unlockBtn: 'Unlock',
+                revealNoGuess: 'Reveal without guessing',
+                guessFirst: 'Type a guess first — or reveal without guessing.',
+                soundOnly: '🎙️ A sound is waiting for you',
+                listenBtn: 'Listen',
+                composerPlaceholder: 'Write a thought (partner sees only the ending first)...',
+                recordAudio: 'Record 6s sound',
+                recordingNow: 'Tap to stop',
+                soundAttached: 'Sound ready ✓',
+                clearAudio: '✕ Clear',
+                sendBtn: 'Send',
+                sending: 'Sending…',
+                sent: 'Sent ✓',
+                scheduleToggle: 'Deliver when they wake ({time} their time)',
+                noPartner: 'Waiting for your partner to join — ask them to sign up.',
+                modeRelay: 'Live Relay',
+                modeDispatch: 'Night Dispatch',
+                awake: 'Awake ☀️',
+                sleeping: 'Sleeping 🌙',
+                promptSleep: 'Silent capsule for',
+                promptAwake: 'Live half-thought for',
+                fromCity: 'From',
+                statusLocked: 'Locked',
+                statusUnlocked: 'Unlocked',
+                statusQuiet: 'Quiet',
+                statusScheduled: 'On its way',
+                arriving: 'A capsule from {name} is on its way · arrives {time}',
+                queueMore: 'more waiting',
+                yourGuess: 'Your guess:',
+                theirGuess: 'Their guess:',
+                unlockedDirect: 'Revealed without a guess',
+                scoreExact: 'Spot on 🎯', scoreClose: 'So close ✨', scoreSome: 'Partly there', scoreMiss: 'Way off 😄',
+                outgoingWaiting: 'Last thought sent · waiting for {name} to unlock',
+                outgoingScheduled: 'Scheduled · arrives {time} their time',
+                outgoingUnlocked: '{name} unlocked it.',
+                skySynced: 'Sky synced to',
+                timelineTitle: 'Your capsules',
+                timelineEmpty: 'Nothing here yet.',
+                timelineYou: 'You sent',
+                timelineFrom: 'From {name}',
+                newNameLabel: 'Display Name',
+                sleepHoursLabel: 'Sleep hours',
+                sleepTo: 'to',
+                notifLabel: 'Notifications',
+                notifEnable: 'Turn on', notifDisable: 'Turn off', notifOn: 'On ✓', notifOff: 'Off',
+                notifBlocked: 'Blocked in browser settings',
+                notifUnsupported: 'Not supported in this browser',
+                notifIosHint: 'On iPhone, add Handoff to your Home Screen first.',
+                notifNotConfigured: 'Push isn’t set up (no VAPID key in supabase.txt)',
+                passwordSection: 'Change password (optional)',
+                currentPassVerify: 'Current password',
+                newPassLabel: 'New password',
+                saveChanges: 'Save Changes',
+                close: 'Close', emailLabel: "Email", emailPlaceholder: "you@email.com", errNeedEmail: "Please sign in with your email address.", checkEmail: "Check your inbox and confirm your email, then sign in here.", errSecretKey: "supabase.txt contains a secret (service role) key. Use the anon / publishable key instead.", pairTitle: "Connect with your partner: create a code and send it, or enter theirs.", pairCreate: "Create invite code", pairYourCode: "Your code · valid 24 hours", pairShare: "Share", pairCopied: "Invite copied ✓", pairEnter: "Partner’s code", pairJoin: "Join", pairShareText: "Join me on Twilight Handoff — my code is {code}", errCodeInvalid: "That code is wrong or has expired.", errCodeOwn: "That’s your own code — send it to your partner.", errAlreadyPaired: "One of you is already paired with someone.", partnerLabel: "Partner", notPaired: "Not paired yet", unpair: "Unpair", unpairConfirm: "Unpair from {name}? Your past capsules stay in your timeline.", install: 'Install app', iosInstallHint: 'Tap the Share button, then “Add to Home Screen”.', language: 'Language',
+                errInvalidCreds: 'Invalid credentials (password min 6 chars).',
+                errNoSupabase: 'Configure supabase.txt or enter keys above.',
+                errMicPerm: 'Microphone unavailable. Ensure HTTPS permission.',
+                errCityRequired: 'Please choose your city from the list.',
+                errNeedCurrentPass: 'Enter your current password to set a new one.',
+                errPassShort: 'New password must be at least 6 characters.',
+                errSendFailed: 'Couldn’t send — your message is kept. Try again.',
+                errGeneric: 'Something went wrong. Please try again.',
+                weatherClear: 'Clear', weatherCloudy: 'Cloudy', weatherMist: 'Mist', weatherRain: 'Rain', weatherSnow: 'Snow', weatherStorm: 'Storm'
+            },
+            'zh-CN': {
+                appTitle: '暮光交接',
+                loginSub: '跨越时区的异步陪伴与思绪接力',
+                dbConfigTitle: '未检测到 supabase.txt — 请输入密钥：',
+                connectDbBtn: '保存并连接',
+                tabSignIn: '登录',
+                tabSignUp: '首次注册',
+                loginIdLabel: '用户名或邮箱',
+                loginIdPlaceholder: '例如：wei 或 wei@email.com',
+                passLabel: '密码（至少 6 位）',
+                displayNameLabel: '你的名字',
+                cityLabel: '所在城市',
+                cityInputPlaceholder: '输入任意城市…',
+                citySearching: '搜索中…',
+                cityNoResults: '没有匹配的城市',
+                loginBtn: '进入空间',
+                signupBtn: '创建账户',
+                editAccount: '账户',
+                timeline: '时间线',
+                logout: '退出',
+                youTag: '你',
+                partnerTag: '伴侣',
+                yourVibe: '此刻状态（渲染对方的天空背景）',
+                vibeRadiant: '☀️ 明媚', vibeWarm: '✨ 温暖', vibePlayful: '🎈 雀跃', vibeCalm: '🌊 平静', vibeFocus: '⚡ 专注',
+                vibeDrifting: '☁️ 放空', vibeDrained: '🥀 疲惫', vibeOverwhelmed: '🌧️ 烦闷', vibeMissing: '🌙 想你',
+                overlapTitle: '共同清醒时段',
+                overlapNow: '此刻你们都醒着 · 直到 {time}',
+                overlapRange: '都醒着：{range}',
+                overlapNone: '今天没有共同清醒的时段',
+                legendYou: '你',
+                legendPartner: '{name}',
+                legendBoth: '都醒着',
+                emptyCapsule: '此刻还没有来自伴侣的待解锁思绪。',
+                guessPlaceholder: '猜猜这句话是怎么开头的…',
+                unlockBtn: '解锁',
+                revealNoGuess: '不猜，直接揭晓',
+                guessFirst: '先写下你的猜测，或选择直接揭晓。',
+                soundOnly: '🎙️ 有一段声音在等你',
+                listenBtn: '收听',
+                composerPlaceholder: '写下一句话（对方起初只能看到结尾几个字）...',
+                recordAudio: '录制 6 秒声音',
+                recordingNow: '点击停止',
+                soundAttached: '声音已就绪 ✓',
+                clearAudio: '✕ 清除',
+                sendBtn: '投递',
+                sending: '投递中…',
+                sent: '已投递 ✓',
+                scheduleToggle: '在对方醒来时送达（对方时间 {time}）',
+                noPartner: '正在等待伴侣加入 — 请让对方注册。',
+                modeRelay: '实时接力',
+                modeDispatch: '夜间胶囊',
+                awake: '清醒 ☀️',
+                sleeping: '安睡 🌙',
+                promptSleep: '留一枚晨间胶囊给',
+                promptAwake: '发起半句话接力给',
+                fromCity: '来自',
+                statusLocked: '待解锁',
+                statusUnlocked: '已解锁',
+                statusQuiet: '宁静',
+                statusScheduled: '在路上',
+                arriving: '{name} 的胶囊正在路上 · {time} 送达',
+                queueMore: '条待解锁',
+                yourGuess: '你的猜测：',
+                theirGuess: '对方的猜测：',
+                unlockedDirect: '未猜测直接揭晓',
+                scoreExact: '完全猜中 🎯', scoreClose: '非常接近 ✨', scoreSome: '猜中一部分', scoreMiss: '差得有点远 😄',
+                outgoingWaiting: '上次投递 · 等待 {name} 解锁',
+                outgoingScheduled: '已定时 · 对方时间 {time} 送达',
+                outgoingUnlocked: '{name} 已解锁。',
+                skySynced: '天空同步至',
+                timelineTitle: '你们的胶囊',
+                timelineEmpty: '这里还空空的。',
+                timelineYou: '你发出的',
+                timelineFrom: '来自 {name}',
+                newNameLabel: '显示名称',
+                sleepHoursLabel: '睡眠时间',
+                sleepTo: '至',
+                notifLabel: '通知',
+                notifEnable: '开启', notifDisable: '关闭', notifOn: '已开启 ✓', notifOff: '未开启',
+                notifBlocked: '已在浏览器设置中被阻止',
+                notifUnsupported: '此浏览器不支持',
+                notifIosHint: '在 iPhone 上，请先将 Handoff 添加到主屏幕。',
+                notifNotConfigured: '尚未配置推送（supabase.txt 中缺少 VAPID 密钥）',
+                passwordSection: '修改密码（选填）',
+                currentPassVerify: '当前密码',
+                newPassLabel: '新密码',
+                saveChanges: '保存修改',
+                close: '关闭', emailLabel: "邮箱", emailPlaceholder: "you@email.com", errNeedEmail: "请使用邮箱地址登录。", checkEmail: "请查收邮件并确认邮箱，然后在这里登录。", errSecretKey: "supabase.txt 中是 secret（service role）密钥，请改用 anon / publishable 公钥。", pairTitle: "与伴侣连接：创建邀请码发给对方，或输入对方的邀请码。", pairCreate: "创建邀请码", pairYourCode: "你的邀请码 · 24 小时内有效", pairShare: "分享", pairCopied: "邀请已复制 ✓", pairEnter: "伴侣的邀请码", pairJoin: "加入", pairShareText: "来暮光交接找我吧，我的邀请码是 {code}", errCodeInvalid: "邀请码错误或已过期。", errCodeOwn: "这是你自己的邀请码，请发给伴侣。", errAlreadyPaired: "你们中有人已经与他人配对。", partnerLabel: "伴侣", notPaired: "尚未配对", unpair: "解除配对", unpairConfirm: "确定与 {name} 解除配对吗？过往胶囊仍会保留在时间线中。", install: '安装应用', iosInstallHint: '点击“分享”按钮，然后选择“添加到主屏幕”。', language: '语言',
+                errInvalidCreds: '账号或密码错误（密码至少 6 位）。',
+                errNoSupabase: '请配置 supabase.txt 或在上方输入密钥。',
+                errMicPerm: '无法访问麦克风，请确认 HTTPS 权限。',
+                errCityRequired: '请从列表中选择你的城市。',
+                errNeedCurrentPass: '设置新密码前请输入当前密码。',
+                errPassShort: '新密码至少需要 6 位。',
+                errSendFailed: '投递失败 — 内容已保留，请重试。',
+                errGeneric: '出了点问题，请重试。',
+                weatherClear: '晴朗', weatherCloudy: '多云', weatherMist: '薄雾', weatherRain: '降雨', weatherSnow: '降雪', weatherStorm: '雷雨'
+            },
+            'zh-TW': {
+                appTitle: '暮光交接',
+                loginSub: '跨越時區的非同步陪伴與思緒接力',
+                dbConfigTitle: '未偵測到 supabase.txt — 請輸入金鑰：',
+                connectDbBtn: '儲存並連接',
+                tabSignIn: '登入',
+                tabSignUp: '首次註冊',
+                loginIdLabel: '使用者名稱或信箱',
+                loginIdPlaceholder: '例如：wei 或 wei@email.com',
+                passLabel: '密碼（至少 6 位）',
+                displayNameLabel: '你的名字',
+                cityLabel: '所在城市',
+                cityInputPlaceholder: '輸入任意城市…',
+                citySearching: '搜尋中…',
+                cityNoResults: '沒有符合的城市',
+                loginBtn: '進入空間',
+                signupBtn: '建立帳戶',
+                editAccount: '帳戶',
+                timeline: '時間軸',
+                logout: '登出',
+                youTag: '你',
+                partnerTag: '伴侶',
+                yourVibe: '此刻狀態（渲染對方的天空背景）',
+                vibeRadiant: '☀️ 明媚', vibeWarm: '✨ 溫暖', vibePlayful: '🎈 雀躍', vibeCalm: '🌊 平靜', vibeFocus: '⚡ 專注',
+                vibeDrifting: '☁️ 放空', vibeDrained: '🥀 疲憊', vibeOverwhelmed: '🌧️ 煩悶', vibeMissing: '🌙 想你',
+                overlapTitle: '共同清醒時段',
+                overlapNow: '此刻你們都醒著 · 直到 {time}',
+                overlapRange: '都醒著：{range}',
+                overlapNone: '今天沒有共同清醒的時段',
+                legendYou: '你',
+                legendPartner: '{name}',
+                legendBoth: '都醒著',
+                emptyCapsule: '此刻還沒有來自伴侶的待解鎖思緒。',
+                guessPlaceholder: '猜猜這句話是怎麼開頭的…',
+                unlockBtn: '解鎖',
+                revealNoGuess: '不猜，直接揭曉',
+                guessFirst: '先寫下你的猜測，或選擇直接揭曉。',
+                soundOnly: '🎙️ 有一段聲音在等你',
+                listenBtn: '收聽',
+                composerPlaceholder: '寫下一句話（對方起初只能看到結尾幾個字）...',
+                recordAudio: '錄製 6 秒聲音',
+                recordingNow: '點擊停止',
+                soundAttached: '聲音已就緒 ✓',
+                clearAudio: '✕ 清除',
+                sendBtn: '投遞',
+                sending: '投遞中…',
+                sent: '已投遞 ✓',
+                scheduleToggle: '在對方醒來時送達（對方時間 {time}）',
+                noPartner: '正在等待伴侶加入 — 請讓對方註冊。',
+                modeRelay: '即時接力',
+                modeDispatch: '夜間膠囊',
+                awake: '清醒 ☀️',
+                sleeping: '安睡 🌙',
+                promptSleep: '留一枚晨間膠囊給',
+                promptAwake: '發起半句話接力給',
+                fromCity: '來自',
+                statusLocked: '待解鎖',
+                statusUnlocked: '已解鎖',
+                statusQuiet: '寧靜',
+                statusScheduled: '在路上',
+                arriving: '{name} 的膠囊正在路上 · {time} 送達',
+                queueMore: '則待解鎖',
+                yourGuess: '你的猜測：',
+                theirGuess: '對方的猜測：',
+                unlockedDirect: '未猜測直接揭曉',
+                scoreExact: '完全猜中 🎯', scoreClose: '非常接近 ✨', scoreSome: '猜中一部分', scoreMiss: '差得有點遠 😄',
+                outgoingWaiting: '上次投遞 · 等待 {name} 解鎖',
+                outgoingScheduled: '已定時 · 對方時間 {time} 送達',
+                outgoingUnlocked: '{name} 已解鎖。',
+                skySynced: '天空同步至',
+                timelineTitle: '你們的膠囊',
+                timelineEmpty: '這裡還空空的。',
+                timelineYou: '你寄出的',
+                timelineFrom: '來自 {name}',
+                newNameLabel: '顯示名稱',
+                sleepHoursLabel: '睡眠時間',
+                sleepTo: '至',
+                notifLabel: '通知',
+                notifEnable: '開啟', notifDisable: '關閉', notifOn: '已開啟 ✓', notifOff: '未開啟',
+                notifBlocked: '已在瀏覽器設定中被封鎖',
+                notifUnsupported: '此瀏覽器不支援',
+                notifIosHint: '在 iPhone 上，請先將 Handoff 加入主畫面。',
+                notifNotConfigured: '尚未設定推播（supabase.txt 中缺少 VAPID 金鑰）',
+                passwordSection: '修改密碼（選填）',
+                currentPassVerify: '目前密碼',
+                newPassLabel: '新密碼',
+                saveChanges: '儲存修改',
+                close: '關閉', emailLabel: "信箱", emailPlaceholder: "you@email.com", errNeedEmail: "請使用信箱地址登入。", checkEmail: "請查收郵件並確認信箱，然後在這裡登入。", errSecretKey: "supabase.txt 中是 secret（service role）金鑰，請改用 anon / publishable 公鑰。", pairTitle: "與伴侶連結：建立邀請碼傳給對方，或輸入對方的邀請碼。", pairCreate: "建立邀請碼", pairYourCode: "你的邀請碼 · 24 小時內有效", pairShare: "分享", pairCopied: "邀請已複製 ✓", pairEnter: "伴侶的邀請碼", pairJoin: "加入", pairShareText: "來暮光交接找我吧，我的邀請碼是 {code}", errCodeInvalid: "邀請碼錯誤或已過期。", errCodeOwn: "這是你自己的邀請碼，請傳給伴侶。", errAlreadyPaired: "你們之中有人已經與他人配對。", partnerLabel: "伴侶", notPaired: "尚未配對", unpair: "解除配對", unpairConfirm: "確定與 {name} 解除配對嗎？過往膠囊仍會保留在時間軸中。", install: '安裝 App', iosInstallHint: '點擊「分享」按鈕，然後選擇「加入主畫面」。', language: '語言',
+                errInvalidCreds: '帳號或密碼錯誤（密碼至少 6 位）。',
+                errNoSupabase: '請設定 supabase.txt 或在上方輸入金鑰。',
+                errMicPerm: '無法存取麥克風，請確認 HTTPS 權限。',
+                errCityRequired: '請從清單中選擇你的城市。',
+                errNeedCurrentPass: '設定新密碼前請輸入目前密碼。',
+                errPassShort: '新密碼至少需要 6 位。',
+                errSendFailed: '投遞失敗 — 內容已保留，請重試。',
+                errGeneric: '發生錯誤，請重試。',
+                weatherClear: '晴朗', weatherCloudy: '多雲', weatherMist: '薄霧', weatherRain: '降雨', weatherSnow: '降雪', weatherStorm: '雷雨'
+            },
+            'es': {
+                appTitle: 'Relevo del Crepúsculo',
+                loginSub: 'Presencia asíncrona entre zonas horarias',
+                dbConfigTitle: 'supabase.txt no detectado — ingresa claves:',
+                connectDbBtn: 'Conectar',
+                tabSignIn: 'Entrar',
+                tabSignUp: 'Registro Inicial',
+                loginIdLabel: 'Usuario o Correo',
+                loginIdPlaceholder: 'ej. jane o jane@email.com',
+                passLabel: 'Contraseña (mín. 6 caracteres)',
+                displayNameLabel: 'Tu Nombre',
+                cityLabel: 'Tu Ciudad',
+                cityInputPlaceholder: 'Escribe cualquier ciudad…',
+                citySearching: 'Buscando…',
+                cityNoResults: 'Ninguna ciudad coincide',
+                loginBtn: 'Entrar',
+                signupBtn: 'Crear cuenta',
+                editAccount: 'Cuenta',
+                timeline: 'Historial',
+                logout: 'Salir',
+                youTag: 'Tú',
+                partnerTag: 'Pareja',
+                yourVibe: 'Tu vibra (pinta el cielo de tu pareja)',
+                vibeRadiant: '☀️ Radiante', vibeWarm: '✨ Cálido', vibePlayful: '🎈 Juguetón', vibeCalm: '🌊 Calma', vibeFocus: '⚡ Enfoque',
+                vibeDrifting: '☁️ Flotando', vibeDrained: '🥀 Agotado', vibeOverwhelmed: '🌧️ Abrumado', vibeMissing: '🌙 Extrañándote',
+                overlapTitle: 'Ventana juntos',
+                overlapNow: 'Ambos despiertos ahora · hasta las {time}',
+                overlapRange: 'Ambos despiertos {range}',
+                overlapNone: 'Hoy no coincidís despiertos',
+                legendYou: 'Tú',
+                legendPartner: '{name}',
+                legendBoth: 'Ambos',
+                emptyCapsule: 'No hay pensamientos bloqueados de tu pareja.',
+                guessPlaceholder: 'Adivina cómo empieza su frase…',
+                unlockBtn: 'Abrir',
+                revealNoGuess: 'Revelar sin adivinar',
+                guessFirst: 'Escribe una suposición primero, o revela sin adivinar.',
+                soundOnly: '🎙️ Un sonido te está esperando',
+                listenBtn: 'Escuchar',
+                composerPlaceholder: 'Escribe algo (solo verá el final primero)...',
+                recordAudio: 'Grabar 6s de sonido',
+                recordingNow: 'Toca para parar',
+                soundAttached: 'Sonido listo ✓',
+                clearAudio: '✕ Borrar',
+                sendBtn: 'Enviar',
+                sending: 'Enviando…',
+                sent: 'Enviado ✓',
+                scheduleToggle: 'Entregar al despertar ({time} su hora)',
+                noPartner: 'Esperando a que tu pareja se una — pídele que se registre.',
+                modeRelay: 'Relevo Vivo',
+                modeDispatch: 'Cápsula Nocturna',
+                awake: 'Despierto ☀️',
+                sleeping: 'Durmiendo 🌙',
+                promptSleep: 'Cápsula silenciosa para',
+                promptAwake: 'Relevo en vivo para',
+                fromCity: 'De',
+                statusLocked: 'Bloqueado',
+                statusUnlocked: 'Abierto',
+                statusQuiet: 'Calma',
+                statusScheduled: 'En camino',
+                arriving: 'Una cápsula de {name} está en camino · llega a las {time}',
+                queueMore: 'más esperando',
+                yourGuess: 'Tu suposición:',
+                theirGuess: 'Su suposición:',
+                unlockedDirect: 'Revelado sin adivinar',
+                scoreExact: '¡Exacto! 🎯', scoreClose: 'Muy cerca ✨', scoreSome: 'En parte', scoreMiss: 'Ni de cerca 😄',
+                outgoingWaiting: 'Último envío · esperando a que {name} lo abra',
+                outgoingScheduled: 'Programado · llega a las {time} su hora',
+                outgoingUnlocked: '{name} lo abrió.',
+                skySynced: 'Cielo sincronizado con',
+                timelineTitle: 'Vuestras cápsulas',
+                timelineEmpty: 'Aún no hay nada.',
+                timelineYou: 'Enviaste',
+                timelineFrom: 'De {name}',
+                newNameLabel: 'Nombre visible',
+                sleepHoursLabel: 'Horas de sueño',
+                sleepTo: 'a',
+                notifLabel: 'Notificaciones',
+                notifEnable: 'Activar', notifDisable: 'Desactivar', notifOn: 'Activadas ✓', notifOff: 'Desactivadas',
+                notifBlocked: 'Bloqueadas en el navegador',
+                notifUnsupported: 'No compatibles con este navegador',
+                notifIosHint: 'En iPhone, añade Handoff a la pantalla de inicio primero.',
+                notifNotConfigured: 'Push no configurado (falta la clave VAPID en supabase.txt)',
+                passwordSection: 'Cambiar contraseña (opcional)',
+                currentPassVerify: 'Contraseña actual',
+                newPassLabel: 'Nueva contraseña',
+                saveChanges: 'Guardar Cambios',
+                close: 'Cerrar', emailLabel: "Correo", emailPlaceholder: "tu@correo.com", errNeedEmail: "Entra con tu dirección de correo.", checkEmail: "Revisa tu bandeja de entrada, confirma tu correo y luego entra aquí.", errSecretKey: "supabase.txt contiene una clave secreta (service role). Usa la clave anon / publishable.", pairTitle: "Conecta con tu pareja: crea un código y envíaselo, o introduce el suyo.", pairCreate: "Crear código de invitación", pairYourCode: "Tu código · válido 24 horas", pairShare: "Compartir", pairCopied: "Invitación copiada ✓", pairEnter: "Código de tu pareja", pairJoin: "Unirme", pairShareText: "Únete a mí en Relevo del Crepúsculo — mi código es {code}", errCodeInvalid: "El código es incorrecto o ha caducado.", errCodeOwn: "Ese es tu propio código: envíaselo a tu pareja.", errAlreadyPaired: "Uno de los dos ya está emparejado con otra persona.", partnerLabel: "Pareja", notPaired: "Aún sin emparejar", unpair: "Desemparejar", unpairConfirm: "¿Desemparejarte de {name}? Tus cápsulas anteriores seguirán en el historial.", install: 'Instalar app', iosInstallHint: 'Toca Compartir y luego «Añadir a pantalla de inicio».', language: 'Idioma',
+                errInvalidCreds: 'Error de acceso. Revisa usuario y contraseña.',
+                errNoSupabase: 'Configura supabase.txt primero.',
+                errMicPerm: 'Micrófono no disponible. Requiere HTTPS.',
+                errCityRequired: 'Elige tu ciudad de la lista.',
+                errNeedCurrentPass: 'Introduce tu contraseña actual para cambiarla.',
+                errPassShort: 'La nueva contraseña necesita al menos 6 caracteres.',
+                errSendFailed: 'No se pudo enviar — tu mensaje se conserva. Inténtalo de nuevo.',
+                errGeneric: 'Algo salió mal. Inténtalo de nuevo.',
+                weatherClear: 'Despejado', weatherCloudy: 'Nublado', weatherMist: 'Niebla', weatherRain: 'Lluvia', weatherSnow: 'Nieve', weatherStorm: 'Tormenta'
+            },
+            'ca': {
+                appTitle: 'Relleu del Crepuscle',
+                loginSub: 'Presència asíncrona entre fusos horaris',
+                dbConfigTitle: 'supabase.txt no detectat — introdueix claus:',
+                connectDbBtn: 'Connectar',
+                tabSignIn: 'Entrar',
+                tabSignUp: 'Primer Registre',
+                loginIdLabel: 'Usuari o Correu',
+                loginIdPlaceholder: 'ex. jane o jane@email.com',
+                passLabel: 'Contrasenya (mín. 6 caràcters)',
+                displayNameLabel: 'El teu Nom',
+                cityLabel: 'La teva Ciutat',
+                cityInputPlaceholder: 'Escriu qualsevol ciutat…',
+                citySearching: 'Cercant…',
+                cityNoResults: 'Cap ciutat coincideix',
+                loginBtn: 'Entrar',
+                signupBtn: 'Crear compte',
+                editAccount: 'Compte',
+                timeline: 'Historial',
+                logout: 'Sortir',
+                youTag: 'Tu',
+                partnerTag: 'Parella',
+                yourVibe: 'La teva vibra (pinta el cel de la parella)',
+                vibeRadiant: '☀️ Radiant', vibeWarm: '✨ Càlid', vibePlayful: '🎈 Juganer', vibeCalm: '🌊 Calma', vibeFocus: '⚡ Concentrat',
+                vibeDrifting: '☁️ Flotant', vibeDrained: '🥀 Esgotat', vibeOverwhelmed: '🌧️ Aclaparat', vibeMissing: '🌙 T’enyoro',
+                overlapTitle: 'Finestra junts',
+                overlapNow: 'Desperts tots dos ara · fins a les {time}',
+                overlapRange: 'Desperts tots dos {range}',
+                overlapNone: 'Avui no coincidiu desperts',
+                legendYou: 'Tu',
+                legendPartner: '{name}',
+                legendBoth: 'Tots dos',
+                emptyCapsule: 'No hi ha pensaments bloquejats de la teva parella.',
+                guessPlaceholder: 'Endevina com comença la frase…',
+                unlockBtn: 'Obrir',
+                revealNoGuess: 'Revelar sense endevinar',
+                guessFirst: 'Escriu una suposició primer, o revela sense endevinar.',
+                soundOnly: '🎙️ Un so t’està esperant',
+                listenBtn: 'Escoltar',
+                composerPlaceholder: 'Escriu un pensament (només en veurà el final primer)...',
+                recordAudio: 'Gravar 6s de so',
+                recordingNow: 'Toca per aturar',
+                soundAttached: 'So a punt ✓',
+                clearAudio: '✕ Esborrar',
+                sendBtn: 'Enviar',
+                sending: 'Enviant…',
+                sent: 'Enviat ✓',
+                scheduleToggle: 'Lliurar quan es desperti ({time} la seva hora)',
+                noPartner: 'Esperant que la teva parella s’uneixi — demana-li que es registri.',
+                modeRelay: 'Relleu Viu',
+                modeDispatch: 'Càpsula Nocturna',
+                awake: 'Despert ☀️',
+                sleeping: 'Dormint 🌙',
+                promptSleep: 'Càpsula silenciosa per a',
+                promptAwake: 'Relleu en viu per a',
+                fromCity: 'De',
+                statusLocked: 'Bloquejat',
+                statusUnlocked: 'Obert',
+                statusQuiet: 'Calma',
+                statusScheduled: 'En camí',
+                arriving: 'Una càpsula de {name} és en camí · arriba a les {time}',
+                queueMore: 'més esperant',
+                yourGuess: 'La teva suposició:',
+                theirGuess: 'La seva suposició:',
+                unlockedDirect: 'Revelat sense endevinar',
+                scoreExact: 'Exacte! 🎯', scoreClose: 'Molt a prop ✨', scoreSome: 'En part', scoreMiss: 'Ni de lluny 😄',
+                outgoingWaiting: 'Últim enviament · esperant que {name} l’obri',
+                outgoingScheduled: 'Programat · arriba a les {time} la seva hora',
+                outgoingUnlocked: '{name} l’ha obert.',
+                skySynced: 'Cel sincronitzat amb',
+                timelineTitle: 'Les vostres càpsules',
+                timelineEmpty: 'Encara no hi ha res.',
+                timelineYou: 'Has enviat',
+                timelineFrom: 'De {name}',
+                newNameLabel: 'Nom visible',
+                sleepHoursLabel: 'Hores de son',
+                sleepTo: 'a',
+                notifLabel: 'Notificacions',
+                notifEnable: 'Activar', notifDisable: 'Desactivar', notifOn: 'Activades ✓', notifOff: 'Desactivades',
+                notifBlocked: 'Bloquejades al navegador',
+                notifUnsupported: 'No compatibles amb aquest navegador',
+                notifIosHint: 'A l’iPhone, afegeix Handoff a la pantalla d’inici primer.',
+                notifNotConfigured: 'Push no configurat (falta la clau VAPID a supabase.txt)',
+                passwordSection: 'Canviar contrasenya (opcional)',
+                currentPassVerify: 'Contrasenya actual',
+                newPassLabel: 'Nova contrasenya',
+                saveChanges: 'Desar Canvis',
+                close: 'Tancar', emailLabel: "Correu", emailPlaceholder: "tu@correu.cat", errNeedEmail: "Entra amb la teva adreça de correu.", checkEmail: "Revisa la safata d’entrada, confirma el correu i després entra aquí.", errSecretKey: "supabase.txt conté una clau secreta (service role). Fes servir la clau anon / publishable.", pairTitle: "Connecta amb la teva parella: crea un codi i envia-l’hi, o introdueix el seu.", pairCreate: "Crear codi d’invitació", pairYourCode: "El teu codi · vàlid 24 hores", pairShare: "Compartir", pairCopied: "Invitació copiada ✓", pairEnter: "Codi de la parella", pairJoin: "Unir-me", pairShareText: "Uneix-te a mi a Relleu del Crepuscle — el meu codi és {code}", errCodeInvalid: "El codi és incorrecte o ha caducat.", errCodeOwn: "Aquest és el teu codi: envia’l a la teva parella.", errAlreadyPaired: "Un de vosaltres ja està aparellat amb algú altre.", partnerLabel: "Parella", notPaired: "Encara sense parella", unpair: "Desaparellar", unpairConfirm: "Vols desaparellar-te de {name}? Les càpsules anteriors es quedaran a l’historial.", install: 'Instal·lar app', iosInstallHint: 'Toca Compartir i després «Afegeix a la pantalla d’inici».', language: 'Idioma',
+                errInvalidCreds: 'Error d’autenticació. Revisa usuari i contrasenya.',
+                errNoSupabase: 'Configura el fitxer supabase.txt primer.',
+                errMicPerm: 'Micròfon no disponible. Cal connexió HTTPS.',
+                errCityRequired: 'Tria la teva ciutat de la llista.',
+                errNeedCurrentPass: 'Introdueix la contrasenya actual per canviar-la.',
+                errPassShort: 'La nova contrasenya necessita almenys 6 caràcters.',
+                errSendFailed: 'No s’ha pogut enviar — el missatge es conserva. Torna-ho a provar.',
+                errGeneric: 'Alguna cosa ha fallat. Torna-ho a provar.',
+                weatherClear: 'Serè', weatherCloudy: 'Ennuvolat', weatherMist: 'Boira', weatherRain: 'Pluja', weatherSnow: 'Neu', weatherStorm: 'Tempesta'
+            }
+        };
+
+        let currentLang = lsGet('handoff_lang') || detectBrowserLang();
+        let authMode = 'signin';
+
+        function detectBrowserLang() {
+            const nav = (navigator.language || 'en').toLowerCase();
+            if (nav.startsWith('ca')) return 'ca';
+            if (nav.includes('zh-tw') || nav.includes('zh-hk') || nav.includes('hant')) return 'zh-TW';
+            if (nav.startsWith('zh')) return 'zh-CN';
+            if (nav.startsWith('es')) return 'es';
+            return 'en';
+        }
+
+        function t(key, vars) {
+            let s = (I18N[currentLang] && I18N[currentLang][key]) || I18N['en'][key] || key;
+            if (vars) for (const k in vars) s = s.split(`{${k}}`).join(vars[k]);
+            return s;
+        }
+
+        function getApiLangCode() {
+            if (currentLang.startsWith('zh')) return 'zh';
+            if (currentLang === 'ca' || currentLang === 'es') return currentLang;
+            return 'en';
+        }
+
+        function setLang(lang) {
+            currentLang = lang;
+            lsSet('handoff_lang', lang);
+            document.documentElement.lang = lang;
+
+            setText('lang-current', LANG_SHORT[lang] || 'EN');
+            document.querySelectorAll('#lang-menu [data-lang]').forEach(b => {
+                const on = b.dataset.lang === lang;
+                b.setAttribute('aria-checked', on ? 'true' : 'false');
+                b.classList.toggle('text-amber-300', on);
+                b.querySelector('.check').classList.toggle('opacity-0', !on);
+            });
+            document.title = t('appTitle');
+
+            document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
+            document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria'))); });
+            document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.getAttribute('data-i18n-title')); });
+
+            // Elements whose text depends on state (no data-i18n, so the line above can't clobber them)
+            $('login-submit-btn').textContent = authMode === 'signup' ? t('signupBtn') : t('loginBtn');
+            updateMicLabel();
+            if (!sending) setSendLabel('sendBtn');
+
+            if (currentUser) {
+                // Re-render only — no weather refetch. Localized city labels load lazily and are cached.
+                renderEnvironment();
+                renderCapsules();
+                if (!$('edit-modal').classList.contains('hidden')) refreshPushStatus();
+                getPushSub().then(sub => { if (sub) savePushSub(sub); });
+            }
+        }
+
+        const LANG_SHORT = { 'en': 'EN', 'zh-CN': '简', 'zh-TW': '繁', 'es': 'ES', 'ca': 'CA' };
+        function toggleLangMenu(e) {
+            if (e) e.stopPropagation();
+            const open = $('lang-menu').classList.contains('hidden');
+            show('lang-menu', open);
+            $('lang-btn').setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (open) { const cur = document.querySelector(`#lang-menu [data-lang="${currentLang}"]`); if (cur) cur.focus(); }
+        }
+        function closeLangMenu() { show('lang-menu', false); $('lang-btn').setAttribute('aria-expanded', 'false'); }
+        function pickLang(lang) { closeLangMenu(); setLang(lang); $('lang-btn').focus(); }
+        document.addEventListener('click', e => { if (!e.target.closest('#lang-menu') && !e.target.closest('#lang-btn')) closeLangMenu(); });
+
+        function switchAuthTab(mode) {
+            authMode = mode;
+            const active = 'py-1.5 rounded-full bg-white text-black font-medium transition';
+            const idle = 'py-1.5 rounded-full opacity-60 hover:opacity-100 transition';
+            $('tab-signup').className = mode === 'signup' ? active : idle;
+            $('tab-signin').className = mode === 'signup' ? idle : active;
+            $('tab-signup').setAttribute('aria-selected', mode === 'signup');
+            $('tab-signin').setAttribute('aria-selected', mode !== 'signup');
+            show('signup-extra-fields', mode === 'signup');
+            $('login-pass').autocomplete = mode === 'signup' ? 'new-password' : 'current-password';
+            $('login-submit-btn').textContent = mode === 'signup' ? t('signupBtn') : t('loginBtn');
+            hideMsg('login-error');
+        }
+
+        // ============================================================================
+        // 3. TIME HELPERS (cached Intl formatters, sleep windows, wake-up scheduling)
+        // ============================================================================
+        const fmtCache = {};
+        function partsIn(tz, date = new Date()) {
+            let f = fmtCache[tz];
+            if (!f) {
+                try { f = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }); }
+                catch (e) { f = new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }); }
+                fmtCache[tz] = f;
+            }
+            const p = f.formatToParts(date);
+            const h = parseInt(p.find(x => x.type === 'hour').value, 10) % 24;
+            const m = parseInt(p.find(x => x.type === 'minute').value, 10);
+            return { h, m };
+        }
+        function hourFloat(tz, date) { const { h, m } = partsIn(tz, date); return h + m / 60; }
+        function timeStr(tz, date) { const { h, m } = partsIn(tz, date); return `${pad(h)}:${pad(m)}`; }
+        const fullFmtCache = {};
+        function localAsUTC(tz, date) {
+            let f = fullFmtCache[tz];
+            if (!f) {
+                const opts = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' };
+                try { f = new Intl.DateTimeFormat('en-US', { ...opts, timeZone: tz }); }
+                catch (e) { f = new Intl.DateTimeFormat('en-US', { ...opts, timeZone: 'UTC' }); }
+                fullFmtCache[tz] = f;
+            }
+            const p = {};
+            f.formatToParts(date).forEach(x => { p[x.type] = x.value; });
+            return Date.UTC(+p.year, +p.month - 1, +p.day, (+p.hour) % 24, +p.minute);
+        }
+        // UTC offset of `tz` in minutes at `date` (DST-aware, works in every browser with Intl).
+        function tzOffsetMin(tz, date = new Date()) {
+            const d = new Date(Math.floor(date.getTime() / 60000) * 60000);
+            return Math.round((localAsUTC(tz, d) - d.getTime()) / 60000);
+        }
+        function formatTzDiff(mins) {
+            if (mins === 0) return '±0h';
+            const a = Math.abs(mins), h = Math.floor(a / 60), m = a % 60;
+            return `${mins > 0 ? '+' : '−'}${h}h${m ? pad(m) : ''}`;
+        }
+        function tzOf(acc) { return (acc && acc.tz) || 'UTC'; }
+        function sleepStart(acc) { return (acc && Number.isInteger(acc.sleep_start)) ? acc.sleep_start : 23; }
+        function sleepEnd(acc) { return (acc && Number.isInteger(acc.sleep_end)) ? acc.sleep_end : 7; }
+
+        function isAsleep(hf, start, end) {
+            if (start === end) return false;
+            return start > end ? (hf >= start || hf < end) : (hf >= start && hf < end);
+        }
+        function accountAsleep(acc, date) { return isAsleep(hourFloat(tzOf(acc), date), sleepStart(acc), sleepEnd(acc)); }
+
+        // Next moment the clock in `tz` reads wakeHour:00 (searched in 15-min steps, up to ~27h ahead).
+        function nextWakeUp(tz, wakeHour, from = Date.now()) {
+            const step = 15 * 60000;
+            const t0 = Math.ceil(from / step) * step;
+            for (let i = 0; i < 4 * 27; i++) {
+                const d = new Date(t0 + i * step);
+                const { h, m } = partsIn(tz, d);
+                if (h === wakeHour && m < 15) return new Date(d.getTime() - m * 60000);
+            }
+            return null;
+        }
+
+        // 48 half-hour slots across *your* local day: who's awake in each.
+        function computeOverlap(me, partner, now = new Date()) {
+            const myTz = tzOf(me);
+            const { h, m } = partsIn(myTz, now);
+            const base = now.getTime() - (h * 60 + m) * 60000 - now.getSeconds() * 1000 - now.getMilliseconds();
+            const slots = [];
+            for (let i = 0; i < 48; i++) {
+                const probe = new Date(base + i * 1800000 + 60000);
+                slots.push({ me: !accountAsleep(me, probe), pa: !accountAsleep(partner, probe) });
+            }
+            const segs = [];
+            let cur = null;
+            slots.forEach((s, i) => {
+                if (s.me && s.pa) { if (!cur) cur = { from: i, to: i }; else cur.to = i; }
+                else if (cur) { segs.push(cur); cur = null; }
+            });
+            if (cur) segs.push(cur);
+            const slotLabel = (i) => i >= 48 ? '24:00' : timeStr(myTz, new Date(base + i * 1800000));
+            return { slots, segs, nowIdx: Math.floor((h * 60 + m) / 30), nowFrac: (h * 60 + m) / 1440, slotLabel };
+        }
+
+        // ============================================================================
+        // 4. TEASER + GUESS SCORING (single source of truth)
+        // ============================================================================
+        const SOUND_ONLY = '🎙️';
+        function isSoundOnly(c) { return !!c.sound_only; }
+        // Generic mask: the receiver never has the hidden text, so its length can't leak either.
+        function maskFor(teaser) { return /[\u3040-\u30ff\u3400-\u9fff\uf900-\ufaff\uac00-\ud7af]/.test(teaser || '') ? '••••••' : '••••••••••••'; }
+
+        function computeTeaser(rawText) {
+            const clean = (rawText || '').trim();
+            if (!clean) return { mask: '••••••', reveal: '', hidden: '' };
+            const chars = Array.from(clean);
+            const cjkCount = (clean.match(/[\u3040-\u30ff\u3400-\u9fff\uf900-\ufaff\uac00-\ud7af]/g) || []).length;
+
+            if (cjkCount / chars.length > 0.25) {
+                const total = chars.length;
+                const revealCount = total <= 3 ? (total >= 2 ? 1 : 0) : Math.min(5, Math.max(2, Math.ceil(total * 0.3)));
+                return {
+                    mask: '•'.repeat(Math.min(12, Math.max(4, total - revealCount))),
+                    reveal: chars.slice(total - revealCount).join(''),
+                    hidden: chars.slice(0, total - revealCount).join('')
+                };
+            }
+
+            const words = clean.split(/\s+/);
+            if (words.length === 1) {
+                // Single word: show at most the last third, and nothing for very short words.
+                const n = chars.length;
+                const rc = n <= 3 ? 0 : Math.min(3, Math.floor(n / 3));
+                return { mask: '••••••', reveal: rc ? chars.slice(n - rc).join('') : '', hidden: chars.slice(0, n - rc).join('') };
+            }
+            const revealWords = words.length <= 3 ? 1 : Math.min(3, Math.max(1, Math.floor(words.length * 0.4)));
+            return {
+                mask: '••••••••••••',
+                reveal: words.slice(-revealWords).join(' '),
+                hidden: words.slice(0, -revealWords).join(' ')
+            };
+        }
+
+        function scoreLabel(score) {
+            if (score === null || score === undefined) return '';
+            if (score >= 0.85) return t('scoreExact');
+            if (score >= 0.55) return t('scoreClose');
+            if (score >= 0.25) return t('scoreSome');
+            return t('scoreMiss');
+        }
+        function guessSummary(c, labelKey) {
+            if (!c.guess) return t('unlockedDirect');
+            const label = scoreLabel(c.guess_score);
+            return `${t(labelKey)} "${c.guess}"${label ? ' · ' + label : ''}`;
+        }
+
+        // ============================================================================
+        // 5. GEOCODING + WEATHER (coordinates stored on the account; weather cached 15 min)
+        // ============================================================================
+        const WEATHER_TTL = 15 * 60 * 1000;
+        const weatherCache = {};
+        const labelInflight = {};
+
+        async function geocodeSearch(name, count = 5) {
+            const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=${count}&language=${getApiLangCode()}&format=json`;
+            const res = await fetch(url);
+            const json = await res.json();
+            return (json.results || []).map(p => ({
+                name: p.name,
+                lat: p.latitude,
+                lon: p.longitude,
+                tz: p.timezone || 'UTC',
+                region: [p.admin1, p.country].filter(Boolean).join(', ')
+            }));
+        }
+
+        // Backfill coordinates for accounts created before the migration (one geocode, then cached).
+        async function ensureCoords(acc, persist) {
+            if (!acc || !acc.city || (acc.lat != null && acc.tz)) return;
+            const memoKey = `handoff_geo_${acc.city.toLowerCase()}`;
+            let g = lsGetJSON(memoKey);
+            if (!g) {
+                try { const r = await geocodeSearch(acc.city, 1); if (r[0]) { g = r[0]; lsSet(memoKey, JSON.stringify(g)); } } catch (e) {}
+            }
+            if (!g) return;
+            acc.lat = g.lat; acc.lon = g.lon; acc.tz = g.tz;
+            if (persist && supabaseClient) {
+                await supabaseClient.from('accounts').update({ lat: g.lat, lon: g.lon, tz: g.tz }).eq('id', acc.id);
+            }
+        }
+
+        // City name in the UI language, fetched once per (city, language) and cached forever.
+        function placeLabel(acc) {
+            if (!acc || !acc.city) return '--';
+            const key = `handoff_label_${acc.city.toLowerCase()}_${getApiLangCode()}`;
+            const cached = lsGet(key);
+            if (cached) return cached;
+            if (!labelInflight[key]) {
+                labelInflight[key] = true;
+                geocodeSearch(acc.city, 1).then(r => {
+                    lsSet(key, r[0] ? r[0].name : acc.city);
+                    renderEnvironment();
+                }).catch(() => {});
+            }
+            return acc.city;
+        }
+
+        function weatherKeyFor(acc) { return acc && acc.lat != null ? `${(+acc.lat).toFixed(2)},${(+acc.lon).toFixed(2)}` : null; }
+        function weatherFor(acc) { const k = weatherKeyFor(acc); return k ? weatherCache[k] || null : null; }
+
+        async function ensureWeather(acc, force) {
+            const k = weatherKeyFor(acc);
+            if (!k) return null;
+            const cached = weatherCache[k];
+            if (cached && !force && Date.now() - cached.at < WEATHER_TTL) return cached;
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${acc.lat}&longitude=${acc.lon}&current=temperature_2m,weather_code,is_day&timezone=auto`;
+                const res = await fetch(url);
+                const json = await res.json();
+                const c = json.current || {};
+                weatherCache[k] = {
+                    temp: c.temperature_2m !== undefined ? Math.round(c.temperature_2m) : '--',
+                    key: decodeWeatherKey(c.weather_code ?? 0),
+                    isDay: c.is_day !== undefined ? c.is_day : null,
+                    at: Date.now()
+                };
+            } catch (e) { return cached || null; }
+            return weatherCache[k];
+        }
+
+        async function refreshWeather(force) {
+            await Promise.all([ensureWeather(currentUser, force), ensureWeather(partnerUser, force)]);
+            renderEnvironment();
+        }
+
+        function decodeWeatherKey(code) {
+            if (code === 0) return 'weatherClear';
+            if (code <= 3) return 'weatherCloudy';
+            if (code <= 48) return 'weatherMist';
+            if (code <= 67) return 'weatherRain';
+            if (code <= 77) return 'weatherSnow';
+            if (code <= 82) return 'weatherRain';
+            if (code <= 86) return 'weatherSnow';
+            return 'weatherStorm';
+        }
+
+        // City autocomplete: debounced search, pick from a list with region/country.
+        function createCityPicker(inputId, listId) {
+            const input = $(inputId), list = $(listId);
+            const picker = { selection: null };
+            let timer = null, seq = 0;
+            const close = () => { list.classList.add('hidden'); input.setAttribute('aria-expanded', 'false'); };
+            const row = (text, cls = '') => { const d = document.createElement('div'); d.className = `px-4 py-2.5 opacity-60 ${cls}`; d.textContent = text; return d; };
+
+            input.addEventListener('input', () => {
+                picker.selection = null;
+                clearTimeout(timer);
+                const q = input.value.trim();
+                if (q.length < 2) { close(); return; }
+                timer = setTimeout(async () => {
+                    const my = ++seq;
+                    list.replaceChildren(row(t('citySearching')));
+                    list.classList.remove('hidden');
+                    input.setAttribute('aria-expanded', 'true');
+                    let results = [];
+                    try { results = await geocodeSearch(q, 5); } catch (e) {}
+                    if (my !== seq) return;
+                    if (!results.length) { list.replaceChildren(row(t('cityNoResults'))); return; }
+                    list.replaceChildren(...results.map(r => {
+                        const b = document.createElement('button');
+                        b.type = 'button';
+                        b.setAttribute('role', 'option');
+                        b.className = 'w-full text-left px-4 py-2.5 hover:bg-white/10 focus:bg-white/10 focus:outline-none flex items-baseline gap-2';
+                        const n = document.createElement('span'); n.textContent = r.name;
+                        const s = document.createElement('span'); s.className = 'text-xs opacity-50 truncate'; s.textContent = r.region;
+                        b.append(n, s);
+                        // pointerdown + preventDefault keeps focus so blur doesn't close the list first
+                        b.addEventListener('pointerdown', e => e.preventDefault());
+                        b.addEventListener('click', () => { picker.selection = r; input.value = r.name; close(); });
+                        return b;
+                    }));
+                }, 300);
+            });
+            input.addEventListener('blur', () => setTimeout(close, 150));
+            input.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+            picker.reset = (value = '') => { picker.selection = null; input.value = value; close(); };
+            return picker;
+        }
+
+        async function resolveCity(picker, typed) {
+            if (picker.selection) return picker.selection;
+            if (!typed) return null;
+            try { const r = await geocodeSearch(typed, 1); return r[0] || null; } catch (e) { return null; }
+        }
+
+        // ============================================================================
+        // 6. AUTH & ACCOUNT
+        // ============================================================================
+        let currentUser = null;
+        let partnerUser = null;
+        let signupCityPicker = null;
+        let modalCityPicker = null;
+
+        async function handleAuthSubmit() {
+            hideMsg('login-error');
+            if (!supabaseClient) { showMsg('login-error', t('errNoSupabase')); return; }
+
+            const rawIdentifier = $('login-identifier').value.trim();
+            const password = $('login-pass').value; // never trimmed: spaces are valid password characters
+            const email = normalizeIdentifierToEmail(rawIdentifier);
+            if (rawIdentifier && !email) { showMsg('login-error', t('errNeedEmail')); return; }
+            if (!email || password.length < 6) { showMsg('login-error', t('errInvalidCreds')); return; }
+
+            const btn = $('login-submit-btn');
+            btn.disabled = true;
+            try {
+                if (authMode === 'signup') await doSignUp(email, password, rawIdentifier);
+                else await doSignIn(email, password, rawIdentifier);
+            } catch (e) {
+                showMsg('login-error', t('errGeneric'));
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function doSignUp(email, password, rawIdentifier) {
+            const displayName = $('signup-name').value.trim() || rawIdentifier.split('@')[0];
+            const place = await resolveCity(signupCityPicker, $('signup-city').value.trim());
+            if (!place) { showMsg('login-error', t('errCityRequired')); return; }
+
+            // The profile row is created by a database trigger from this metadata,
+            // so sign-up works even when email confirmation is switched on.
+            const { data, error } = await supabaseClient.auth.signUp({
+                email, password,
+                options: {
+                    data: { name: displayName, city: place.name, lat: String(place.lat), lon: String(place.lon), tz: place.tz },
+                    emailRedirectTo: location.origin + location.pathname
+                }
+            });
+            if (error || !data.user) { showMsg('login-error', error ? error.message : t('errInvalidCreds')); return; }
+
+            if (!data.session) {
+                // Email confirmation is on: they confirm, then sign in.
+                switchAuthTab('signin');
+                showMsg('login-error', t('checkEmail'));
+                return;
+            }
+            currentUser = await loadOwnProfile(data.user);
+            if (currentUser) await enterApp();
+        }
+
+        async function doSignIn(email, password) {
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error || !data.user) { showMsg('login-error', error ? error.message : t('errInvalidCreds')); return; }
+            currentUser = await loadOwnProfile(data.user);
+            if (currentUser) await enterApp();
+            else showMsg('login-error', t('errGeneric'));
+        }
+
+        // Profile normally exists (trigger). Older accounts created before the trigger get one here.
+        async function loadOwnProfile(authUser) {
+            let { data: profile } = await supabaseClient.from('accounts').select('*').eq('id', authUser.id).maybeSingle();
+            if (profile) return profile;
+            const m = authUser.user_metadata || {};
+            const fallback = {
+                id: authUser.id,
+                email: authUser.email,
+                name: m.name || (authUser.email || '').split('@')[0],
+                city: m.city || '',
+                lat: m.lat ? parseFloat(m.lat) : null,
+                lon: m.lon ? parseFloat(m.lon) : null,
+                tz: m.tz || null
+            };
+            const { error } = await supabaseClient.from('accounts').insert([fallback]);
+            if (error && error.code !== '23505') return null;
+            ({ data: profile } = await supabaseClient.from('accounts').select('*').eq('id', authUser.id).maybeSingle());
+            return profile || null;
+        }
+
+        async function restoreSupabaseSession() {
+            if (!supabaseClient) return;
+            supabaseClient.auth.onAuthStateChange((event) => {
+                if (event === 'SIGNED_OUT' && currentUser) resetToLogin();
+            });
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session || !session.user) return;
+            const profile = await loadOwnProfile(session.user);
+            if (profile) { currentUser = profile; await enterApp(); }
+        }
+
+        function fillHourSelect(id, value) {
+            const sel = $(id);
+            if (!sel.options.length) {
+                for (let h = 0; h < 24; h++) { const o = document.createElement('option'); o.value = h; o.textContent = `${pad(h)}:00`; sel.appendChild(o); }
+            }
+            sel.value = String(value);
+        }
+
+        let lastFocused = null;
+        function openEditModal() {
+            if (!currentUser) return;
+            lastFocused = document.activeElement;
+            $('modal-new-name').value = currentUser.name || '';
+            modalCityPicker.reset(currentUser.city || '');
+            fillHourSelect('modal-sleep-start', sleepStart(currentUser));
+            fillHourSelect('modal-sleep-end', sleepEnd(currentUser));
+            $('modal-curr-pass').value = '';
+            $('modal-new-pass').value = '';
+            setText('partner-status', partnerUser ? `${partnerUser.name} · ${placeLabel(partnerUser)}` : t('notPaired'));
+            show('unpair-btn', !!partnerUser);
+            hideMsg('modal-msg');
+            show('edit-modal', true);
+            refreshPushStatus();
+            setTimeout(() => $('modal-new-name').focus(), 50);
+        }
+        function closeEditModal() { show('edit-modal', false); if (lastFocused) lastFocused.focus(); }
+
+        async function saveAccountFromModal() {
+            hideMsg('modal-msg');
+            const btn = $('modal-save-btn');
+            const patch = {
+                name: $('modal-new-name').value.trim() || currentUser.name,
+                sleep_start: parseInt($('modal-sleep-start').value, 10),
+                sleep_end: parseInt($('modal-sleep-end').value, 10),
+                updated_at: new Date().toISOString()
+            };
+
+            const typedCity = $('modal-new-city').value.trim();
+            if (modalCityPicker.selection || (typedCity && typedCity !== currentUser.city)) {
+                const place = await resolveCity(modalCityPicker, typedCity);
+                if (!place) { showMsg('modal-msg', t('errCityRequired')); return; }
+                Object.assign(patch, { city: place.name, lat: place.lat, lon: place.lon, tz: place.tz });
+            }
+
+            // Current password is only needed when changing the password.
+            const newPass = $('modal-new-pass').value;
+            const currPass = $('modal-curr-pass').value;
+            if (newPass) {
+                if (newPass.length < 6) { showMsg('modal-msg', t('errPassShort')); return; }
+                if (!currPass) { showMsg('modal-msg', t('errNeedCurrentPass')); return; }
+            }
+
+            btn.disabled = true;
+            try {
+                if (newPass) {
+                    const { error: verifyErr } = await supabaseClient.auth.signInWithPassword({ email: currentUser.email, password: currPass });
+                    if (verifyErr) { showMsg('modal-msg', t('errInvalidCreds')); return; }
+                    const { error: passErr } = await supabaseClient.auth.updateUser({ password: newPass });
+                    if (passErr) { showMsg('modal-msg', passErr.message); return; }
+                }
+                const { data: updated, error } = await supabaseClient.from('accounts').update(patch).eq('id', currentUser.id).select().single();
+                if (error || !updated) { showMsg('modal-msg', error ? error.message : t('errGeneric')); return; }
+                currentUser = updated;
+                closeEditModal();
+                renderEnvironment();
+                await refreshWeather(false);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function logout() {
+            if (supabaseClient) await supabaseClient.auth.signOut();
+            resetToLogin();
+        }
+
+        function resetToLogin() {
+            if (realtimeChannel && supabaseClient) { try { supabaseClient.removeChannel(realtimeChannel); } catch (e) {} }
+            realtimeChannel = null;
+            currentUser = null; partnerUser = null;
+            incomingList = []; outgoingList = []; lastLockedId = null;
+            show('app-screen', false);
+            show('nav-user-controls', false);
+            show('login-screen', true);
+            $('app-body').style.background = '';
+            $('meta-theme-color').setAttribute('content', '#090d16');
+            setText('sky-desc', '');
+        }
+
+        // Your partner is whoever you paired with (accounts.partner_id), nobody else.
+        async function syncPartner() {
+            if (!currentUser || !supabaseClient) return;
+            if (!currentUser.partner_id) { partnerUser = null; return; }
+            const { data } = await supabaseClient.from('accounts').select('*').eq('id', currentUser.partner_id).maybeSingle();
+            partnerUser = data || null;
+            if (partnerUser) await ensureCoords(partnerUser, false);
+        }
+
+        // ---- Pairing (invite codes) ----
+        function renderInvite() {
+            const code = currentUser && currentUser.invite_code;
+            const valid = !!code && !!currentUser.invite_expires_at && Date.parse(currentUser.invite_expires_at) > Date.now();
+            show('invite-box', valid);
+            show('invite-create-btn', !valid);
+            if (valid) setText('invite-code', code);
+        }
+
+        function rpcError(error) {
+            const m = (error && error.message) || '';
+            if (m.includes('invalid_code')) return t('errCodeInvalid');
+            if (m.includes('own_code')) return t('errCodeOwn');
+            if (m.includes('already_paired')) return t('errAlreadyPaired');
+            if (m.includes('no_partner')) return t('noPartner');
+            return t('errGeneric');
+        }
+
+        async function createInvite() {
+            hideMsg('pair-msg');
+            const { data, error } = await supabaseClient.rpc('create_invite');
+            if (error) { showMsg('pair-msg', rpcError(error)); return; }
+            currentUser.invite_code = data.code;
+            currentUser.invite_expires_at = data.expires_at;
+            renderInvite();
+        }
+
+        async function shareInvite() {
+            const code = currentUser && currentUser.invite_code;
+            if (!code) return;
+            const text = t('pairShareText', { code });
+            const url = location.origin + location.pathname;
+            if (navigator.share) {
+                try { await navigator.share({ title: t('appTitle'), text, url }); return; }
+                catch (e) { if (e && e.name === 'AbortError') return; }
+            }
+            try { await navigator.clipboard.writeText(`${text}\n${url}`); toast(t('pairCopied')); }
+            catch (e) { toast(code); }
+        }
+
+        async function joinWithCode() {
+            hideMsg('pair-msg');
+            const code = $('join-code').value.replace(/\s+/g, '').toUpperCase();
+            if (code.length !== 6) { showMsg('pair-msg', t('errCodeInvalid')); return; }
+            const { data, error } = await supabaseClient.rpc('accept_invite', { p_code: code });
+            if (error) { showMsg('pair-msg', rpcError(error)); return; }
+            $('join-code').value = '';
+            $('join-code').blur();
+            currentUser.partner_id = data;
+            currentUser.invite_code = null;
+            await onPartnerChanged();
+        }
+
+        async function unpairPartner() {
+            if (!partnerUser) return;
+            if (!confirm(t('unpairConfirm', { name: partnerUser.name }))) return;
+            const { error } = await supabaseClient.rpc('unpair');
+            if (error) { showMsg('modal-msg', t('errGeneric')); return; }
+            currentUser.partner_id = null;
+            closeEditModal();
+            await onPartnerChanged();
+        }
+
+        async function onPartnerChanged() {
+            await syncPartner();
+            subscribeToRealtimeSync();
+            renderEnvironment();
+            await Promise.all([refreshWeather(false), loadCapsules()]);
+        }
+
+        // ============================================================================
+        // 7. RENDERING: horizons, sky, overlap, vibe
+        // ============================================================================
+        const VIBE_PALETTE = {
+            radiant:     { color: '#b45309', dot: 'bg-amber-300',   i18n: 'vibeRadiant' },
+            warm:        { color: '#7c2d12', dot: 'bg-orange-400',  i18n: 'vibeWarm' },
+            playful:     { color: '#831843', dot: 'bg-pink-400',    i18n: 'vibePlayful' },
+            calm:        { color: '#0f172a', dot: 'bg-sky-400',     i18n: 'vibeCalm' },
+            focus:       { color: '#111827', dot: 'bg-emerald-400', i18n: 'vibeFocus' },
+            drifting:    { color: '#1e1b4b', dot: 'bg-indigo-300',  i18n: 'vibeDrifting' },
+            drained:     { color: '#27272a', dot: 'bg-stone-400',   i18n: 'vibeDrained' },
+            overwhelmed: { color: '#172554', dot: 'bg-blue-500',    i18n: 'vibeOverwhelmed' },
+            missing:     { color: '#3b0764', dot: 'bg-purple-400',  i18n: 'vibeMissing' }
+        };
+
+        function renderEnvironment() {
+            if (!currentUser) return;
+            const myW = weatherFor(currentUser);
+            setText('name-you', currentUser.name || '--');
+            setText('label-you', placeLabel(currentUser));
+            setText('time-you', timeStr(tzOf(currentUser)));
+            setText('weather-you', myW ? `${t(myW.key)} · ${myW.temp}°C` : '--');
+
+            const hasPartner = !!partnerUser;
+            show('overlap-card', hasPartner);
+            show('composer-body', hasPartner);
+            show('pair-panel', !hasPartner);
+            if (!hasPartner) renderInvite();
+            show('partner-sleep-badge', hasPartner);
+
+            if (hasPartner) {
+                const pW = weatherFor(partnerUser);
+                const moodKey = VIBE_PALETTE[partnerUser.mood] ? partnerUser.mood : 'calm';
+                const mood = VIBE_PALETTE[moodKey];
+                const pTz = tzOf(partnerUser);
+                const pLabel = placeLabel(partnerUser);
+
+                setText('name-partner', partnerUser.name || '--');
+                setText('label-partner', pLabel);
+                setText('time-partner', timeStr(pTz));
+                setText('weather-partner', [pW ? `${t(pW.key)} · ${pW.temp}°C` : null, t(mood.i18n)].filter(Boolean).join(' · '));
+                $('partner-mood-dot').className = `w-2 h-2 rounded-full ${mood.dot}`;
+                setText('sky-desc', `${t('skySynced')} ${partnerUser.name} (${pLabel})`);
+
+                const pH = hourFloat(pTz);
+                const asleep = accountAsleep(partnerUser);
+                const isDawnDusk = (pH >= 7 && pH < 10) || (pH >= 18 && pH < 23);
+                const daylight = pW && pW.isDay !== null ? pW.isDay === 1 : (pH >= 7 && pH < 19);
+
+                let topSky = '#090d16';
+                if (daylight && !asleep) {
+                    topSky = (pW && (pW.key === 'weatherRain' || pW.key === 'weatherMist' || pW.key === 'weatherStorm')) ? '#334155' : '#0369a1';
+                } else if (isDawnDusk) {
+                    topSky = '#431407';
+                }
+                $('app-body').style.background = `linear-gradient(165deg, ${topSky} 0%, ${mood.color} 100%)`;
+                $('meta-theme-color').setAttribute('content', topSky);
+
+                const diff = formatTzDiff(tzOffsetMin(pTz) - tzOffsetMin(tzOf(currentUser)));
+                setText('tz-diff', diff);
+                $('tz-diff').setAttribute('aria-label', `${partnerUser.name} ${diff}`);
+                $('tz-diff').title = `${partnerUser.name} ${diff}`;
+                setText('partner-sleep-badge', asleep ? t('sleeping') : t('awake'));
+                setText('composer-prompt', `${asleep ? t('promptSleep') : t('promptAwake')} ${partnerUser.name}`);
+
+                // Scheduled delivery option while they sleep
+                const wake = asleep ? nextWakeUp(pTz, sleepEnd(partnerUser)) : null;
+                show('schedule-row', !!wake);
+                if (wake) {
+                    const full = t('scheduleToggle', { time: timeStr(pTz, wake) });
+                    setText('schedule-label', `☀️ ${timeStr(pTz, wake)}`);
+                    $('schedule-row').title = full;
+                    $('schedule-toggle').setAttribute('aria-label', full);
+                }
+
+                renderOverlap();
+            } else {
+                setText('name-partner', t('notPaired'));
+                ['label-partner', 'weather-partner', 'tz-diff'].forEach(id => setText(id, ''));
+                $('partner-mood-dot').className = 'hidden';
+                setText('time-partner', '--:--');
+                setText('composer-prompt', '');
+                setText('sky-desc', '');
+            }
+
+            const myMoodKey = VIBE_PALETTE[currentUser.mood] ? currentUser.mood : 'warm';
+            setText('current-vibe-label', t(VIBE_PALETTE[myMoodKey].i18n));
+            document.querySelectorAll('#mood-buttons button').forEach(btn => {
+                const on = btn.dataset.mood === myMoodKey;
+                btn.classList.toggle('opacity-65', !on);
+                ['opacity-100', 'ring-1', 'ring-amber-300/80', 'bg-white/15'].forEach(c => btn.classList.toggle(c, on));
+                btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+            });
+        }
+
+        function renderOverlap() {
+            if (!currentUser || !partnerUser) return;
+            const ov = computeOverlap(currentUser, partnerUser);
+            const bar = $('overlap-bar');
+            if (bar.children.length !== 48) {
+                bar.replaceChildren(...Array.from({ length: 48 }, () => { const d = document.createElement('div'); d.className = 'flex-1'; return d; }));
+            }
+            ov.slots.forEach((s, i) => {
+                const cls = s.me && s.pa ? 'flex-1 bg-amber-300' : s.pa ? 'flex-1 bg-sky-300/50' : s.me ? 'flex-1 bg-white/30' : 'flex-1';
+                if (bar.children[i].className !== cls) bar.children[i].className = cls;
+            });
+            $('overlap-marker').style.left = `calc(${(ov.nowFrac * 100).toFixed(2)}% - 1px)`;
+            setText('legend-partner', t('legendPartner', { name: partnerUser.name }));
+
+            const inSeg = ov.segs.find(s => ov.nowIdx >= s.from && ov.nowIdx <= s.to);
+            let text;
+            if (inSeg) text = t('overlapNow', { time: ov.slotLabel(inSeg.to + 1) });
+            else if (ov.segs.length) text = t('overlapRange', { range: ov.segs.map(s => `${ov.slotLabel(s.from)}–${ov.slotLabel(s.to + 1)}`).join(', ') });
+            else text = t('overlapNone');
+            setText('overlap-text', text);
+        }
+
+        async function setMyMood(moodKey) {
+            if (!currentUser || !supabaseClient) return;
+            const prev = currentUser.mood;
+            currentUser.mood = moodKey;
+            renderEnvironment();
+            const { error } = await supabaseClient.from('accounts')
+                .update({ mood: moodKey, updated_at: new Date().toISOString() })
+                .eq('id', currentUser.id);
+            if (error) { currentUser.mood = prev; renderEnvironment(); }
+        }
+
+        // ============================================================================
+        // 8. AUDIO RECORDER (Safari, Chrome, Firefox)
+        // ============================================================================
+        let mediaRecorder = null, activeStream = null, audioChunks = [];
+        let recordedBlob = null, recordedMimeType = '', recordedExt = 'm4a';
+        let isRecording = false, recordTimeout = null, countdownInterval = null;
+        let previewUrl = null, stopResolver = null;
+
+        function getSupportedAudioFormat() {
+            if (typeof MediaRecorder === 'undefined') return { mimeType: '', ext: 'wav' };
+            const candidates = [
+                { mimeType: 'audio/mp4', ext: 'm4a' },
+                { mimeType: 'audio/mp4;codecs=mp4a.40.2', ext: 'm4a' },
+                { mimeType: 'audio/aac', ext: 'aac' },
+                { mimeType: 'audio/webm;codecs=opus', ext: 'webm' },
+                { mimeType: 'audio/webm', ext: 'webm' },
+                { mimeType: 'audio/ogg;codecs=opus', ext: 'ogg' },
+                { mimeType: 'audio/ogg', ext: 'ogg' }
+            ];
+            for (const c of candidates) {
+                try { if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(c.mimeType)) return c; } catch (e) {}
+            }
+            return { mimeType: '', ext: 'webm' };
+        }
+        function extForMime(mime) {
+            if (/mp4|m4a/.test(mime)) return 'm4a';
+            if (/aac/.test(mime)) return 'aac';
+            if (/ogg/.test(mime)) return 'ogg';
+            return 'webm';
+        }
+
+        function updateMicLabel() {
+            setText('mic-label', isRecording ? t('recordingNow') : recordedBlob ? t('soundAttached') : t('recordAudio'));
+        }
+
+        async function toggleRecording() {
+            hideMsg('mic-error-msg');
+            if (isRecording) { await stopRecording(); return; }
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
+                showMsg('mic-error-msg', t('errMicPerm')); return;
+            }
+            try {
+                activeStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const format = getSupportedAudioFormat();
+                recordedMimeType = format.mimeType;
+                audioChunks = [];
+                mediaRecorder = recordedMimeType ? new MediaRecorder(activeStream, { mimeType: recordedMimeType }) : new MediaRecorder(activeStream);
+
+                mediaRecorder.ondataavailable = e => { if (e.data && e.data.size > 0) audioChunks.push(e.data); };
+                mediaRecorder.onstop = () => {
+                    const finalType = mediaRecorder.mimeType || recordedMimeType || 'audio/mp4';
+                    const blob = new Blob(audioChunks, { type: finalType });
+                    if (activeStream) { activeStream.getTracks().forEach(tr => tr.stop()); activeStream = null; }
+                    if (blob.size > 0) {
+                        recordedBlob = blob;
+                        recordedMimeType = finalType;
+                        recordedExt = extForMime(finalType);
+                        if (previewUrl) URL.revokeObjectURL(previewUrl);
+                        previewUrl = URL.createObjectURL(blob);
+                        const previewEl = $('recorded-preview');
+                        previewEl.src = previewUrl;
+                        previewEl.load();
+                        show('recorded-preview-wrap', true);
+                    }
+                    updateMicLabel();
+                    if (stopResolver) { stopResolver(); stopResolver = null; }
+                };
+
+                mediaRecorder.start(200);
+                isRecording = true;
+                $('mic-dot').classList.add('animate-ping');
+                show('mic-timer', true);
+                updateMicLabel();
+
+                const startedAt = Date.now();
+                const tickTimer = () => setText('mic-timer', `${Math.max(0, 6 - (Date.now() - startedAt) / 1000).toFixed(1)}s`);
+                tickTimer();
+                countdownInterval = setInterval(tickTimer, 100);
+                recordTimeout = setTimeout(() => { if (isRecording) stopRecording(); }, 6000);
+            } catch (err) {
+                if (activeStream) { activeStream.getTracks().forEach(tr => tr.stop()); activeStream = null; }
+                showMsg('mic-error-msg', t('errMicPerm'));
+            }
+        }
+
+        function stopRecording() {
+            return new Promise(resolve => {
+                clearTimeout(recordTimeout);
+                clearInterval(countdownInterval);
+                isRecording = false;
+                $('mic-dot').classList.remove('animate-ping');
+                show('mic-timer', false);
+                updateMicLabel();
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    stopResolver = resolve;
+                    try { mediaRecorder.stop(); } catch (e) { stopResolver = null; resolve(); }
+                } else resolve();
+            });
+        }
+
+        function clearRecording() {
+            recordedBlob = null;
+            audioChunks = [];
+            const previewEl = $('recorded-preview');
+            previewEl.pause();
+            previewEl.removeAttribute('src');
+            previewEl.load();
+            if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
+            show('recorded-preview-wrap', false);
+            updateMicLabel();
+        }
+
+        // ============================================================================
+        // 9. CAPSULES: send, queue, scheduled delivery, unlock with scored guess
+        // ============================================================================
+        let incomingList = [];
+        let outgoingList = [];
+        let activeIncoming = null;
+        let lastLockedId = null;
+        let sending = false;
+
+        function setSendLabel(key) { setText('send-label', t(key)); }
+
+        async function sendHandoff() {
+            if (!currentUser || !supabaseClient || !partnerUser || sending) return;
+            if (isRecording) await stopRecording();
+
+            const input = $('composer-input');
+            const text = input.value.trim();
+            if (!text && !recordedBlob) return;
+
+            sending = true;
+            hideMsg('send-error');
+            $('send-btn').disabled = true;
+            setSendLabel('sending');
+
+            let audioPath = null;
+            try {
+                if (recordedBlob) {
+                    // Private bucket, inside your own folder: <your id>/<random>.<ext>
+                    const rand = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+                    audioPath = `${currentUser.id}/${rand}.${recordedExt || 'm4a'}`;
+                    const { error: upErr } = await supabaseClient.storage.from('soundbites')
+                        .upload(audioPath, recordedBlob, { contentType: (recordedMimeType || 'audio/mp4').split(';')[0], upsert: false });
+                    if (upErr) { audioPath = null; throw upErr; }
+                }
+
+                const parts = text ? computeTeaser(text) : null;
+                let deliverAt = null;
+                if (accountAsleep(partnerUser) && $('schedule-toggle').checked) {
+                    const wake = nextWakeUp(tzOf(partnerUser), sleepEnd(partnerUser));
+                    if (wake) deliverAt = wake.toISOString();
+                }
+
+                // The server picks the receiver (your partner) and stores the full text where only
+                // you can read it until your partner unlocks it.
+                const { error } = await supabaseClient.rpc('send_capsule', {
+                    p_full_text: text,
+                    p_teaser: text ? parts.reveal : SOUND_ONLY,
+                    p_hidden: text ? parts.hidden : null,
+                    p_sound_only: !text,
+                    p_audio_path: audioPath,
+                    p_deliver_at: deliverAt
+                });
+                if (error) throw error;
+
+                input.value = '';
+                autoGrow();
+                clearRecording();
+                setSendLabel('sent');
+                setTimeout(() => { if (!sending) setSendLabel('sendBtn'); }, 1500);
+                await loadCapsules();
+            } catch (e) {
+                if (audioPath) supabaseClient.storage.from('soundbites').remove([audioPath]).catch(() => {});
+                showMsg('send-error', (e && e.message && e.message.includes('no_partner')) ? t('noPartner') : t('errSendFailed'));
+                setSendLabel('sendBtn');
+            } finally {
+                sending = false;
+                $('send-btn').disabled = false;
+            }
+        }
+
+        // Voice clips are private: short-lived signed links, refreshed before they expire.
+        const audioUrlCache = {};
+        async function signAudio(list) {
+            const now = Date.now();
+            const need = [...new Set(list.filter(c => c.audio_path).map(c => c.audio_path))]
+                .filter(p => !audioUrlCache[p] || audioUrlCache[p].exp < now + 5 * 60e3);
+            if (need.length) {
+                const { data, error } = await supabaseClient.storage.from('soundbites').createSignedUrls(need, 3600);
+                if (!error && data) data.forEach(d => { if (d && d.signedUrl && d.path) audioUrlCache[d.path] = { url: d.signedUrl, exp: now + 3600e3 }; });
+            }
+            list.forEach(c => { c.audio_url = (c.audio_path && audioUrlCache[c.audio_path]) ? audioUrlCache[c.audio_path].url : null; });
+        }
+
+        let capsLoadSeq = 0;
+        async function loadCapsules() {
+            if (!supabaseClient || !currentUser) return;
+            const my = ++capsLoadSeq;
+            const { data, error } = await supabaseClient.rpc('get_capsules', { p_limit: 60 });
+            if (error || my !== capsLoadSeq) return;
+            const all = Array.isArray(data) ? data : [];
+            await signAudio(all);
+            if (my !== capsLoadSeq) return;
+            incomingList = all.filter(c => c.receiver_id === currentUser.id && c.sender_id !== currentUser.id);
+            outgoingList = all.filter(c => c.sender_id === currentUser.id);
+            renderCapsules();
+        }
+
+        const isDelivered = (c, now) => !c.deliver_at || Date.parse(c.deliver_at) <= now;
+        const refetchedFor = new Set();
+
+        function renderCapsules() {
+            if (!currentUser) return;
+            const now = Date.now();
+            const myTz = tzOf(currentUser);
+            const delivered = incomingList.filter(c => isDelivered(c, now));
+            const lockedQueue = delivered.filter(c => !c.unlocked).sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at));
+            const pending = incomingList.filter(c => !c.unlocked && !isDelivered(c, now)).sort((a, b) => Date.parse(a.deliver_at) - Date.parse(b.deliver_at));
+            const latestUnlocked = delivered.find(c => c.unlocked);
+
+            // A scheduled capsule just became due: its teaser was withheld, so fetch it now.
+            const justArrived = delivered.find(c => !c.unlocked && c.deliver_at && !c.teaser && !c.sound_only && !refetchedFor.has(c.id));
+            if (justArrived) { refetchedFor.add(justArrived.id); loadCapsules(); }
+
+            ['state-empty', 'state-scheduled', 'state-locked', 'state-unlocked', 'incoming-queue'].forEach(id => show(id, false));
+            activeIncoming = lockedQueue[0] || null;
+            const fromLine = c => `${t('fromCity')} ${c.sender_name} · ${c.sender_city}`;
+
+            if (activeIncoming) {
+                const c = activeIncoming;
+                show('state-locked', true);
+                setText('incoming-status', t('statusLocked'));
+                setText('incoming-from', fromLine(c));
+                if (lockedQueue.length > 1) { setText('incoming-queue', `+${lockedQueue.length - 1} ${t('queueMore')}`); show('incoming-queue', true); }
+
+                const soundOnly = isSoundOnly(c);
+                show('locked-text', !soundOnly);
+                show('sound-only-text', soundOnly);
+                show('guess-row', !soundOnly);
+                show('reveal-link', !soundOnly);
+                show('listen-btn', soundOnly);
+                if (!soundOnly) {
+                    const reveal = c.teaser || '';
+                    setText('masked-dots', maskFor(reveal) + (reveal ? ' ' : ' …'));
+                    setText('teaser-words', reveal);
+                }
+                if (lastLockedId !== c.id) { $('guess-input').value = ''; hideMsg('guess-hint'); lastLockedId = c.id; }
+            } else if (pending.length) {
+                const p = pending[0];
+                show('state-scheduled', true);
+                setText('incoming-status', t('statusScheduled'));
+                setText('incoming-from', fromLine(p));
+                setText('scheduled-text', t('arriving', { name: p.sender_name, time: timeStr(myTz, new Date(p.deliver_at)) }));
+            } else if (latestUnlocked) {
+                const c = latestUnlocked;
+                show('state-unlocked', true);
+                setText('incoming-status', t('statusUnlocked'));
+                setText('incoming-from', fromLine(c));
+                setText('full-sentence', isSoundOnly(c) ? SOUND_ONLY : `"${c.full_text}"`);
+                setText('guess-result', isSoundOnly(c) ? t('soundOnly') : guessSummary(c, 'yourGuess'));
+                const audioEl = $('capsule-audio');
+                show('audio-player-wrap', !!c.audio_url);
+                if (c.audio_url && audioEl.dataset.path !== c.audio_path) { audioEl.dataset.path = c.audio_path; audioEl.src = c.audio_url; audioEl.load(); }
+            } else {
+                show('state-empty', true);
+                setText('incoming-status', t('statusQuiet'));
+                setText('incoming-from', partnerUser ? `${partnerUser.name} · ${placeLabel(partnerUser)}` : '--');
+            }
+
+            // Outgoing receipt
+            const o = outgoingList[0];
+            show('outgoing-receipt', !!o);
+            if (o) {
+                const pname = partnerUser ? partnerUser.name : '';
+                if (!o.unlocked && !isDelivered(o, now)) {
+                    setText('outgoing-receipt-text', t('outgoingScheduled', { time: timeStr(tzOf(partnerUser), new Date(o.deliver_at)) }));
+                    setText('outgoing-receipt-badge', t('statusScheduled'));
+                } else if (!o.unlocked) {
+                    setText('outgoing-receipt-text', t('outgoingWaiting', { name: pname }));
+                    setText('outgoing-receipt-badge', t('statusLocked'));
+                } else {
+                    const tail = isSoundOnly(o) ? '' : ' ' + guessSummary(o, 'theirGuess');
+                    setText('outgoing-receipt-text', t('outgoingUnlocked', { name: pname }) + tail);
+                    setText('outgoing-receipt-badge', t('statusUnlocked'));
+                }
+            }
+
+            if (!$('timeline-modal').classList.contains('hidden')) renderTimeline();
+        }
+
+        async function unlockCapsule(skipGuess) {
+            const c = activeIncoming;
+            if (!c || !supabaseClient) return;
+            const guess = skipGuess ? '' : $('guess-input').value.trim();
+            if (!skipGuess && !guess) { showMsg('guess-hint', t('guessFirst')); return; }
+
+            // The server checks it's yours and delivered, scores the guess against the hidden
+            // text, and only then returns the full message.
+            const { data, error } = await supabaseClient.rpc('unlock_capsule', { p_id: String(c.id), p_guess: guess });
+            if (error || !data) { showMsg('guess-hint', t('errGeneric')); return; }
+            Object.assign(c, data);
+            await signAudio([c]);
+            $('guess-input').value = '';
+            $('guess-input').blur();
+            hideMsg('guess-hint');
+            renderCapsules();
+        }
+
+        // ============================================================================
+        // 10. TIMELINE (history of unlocked incoming + everything you sent)
+        // ============================================================================
+        function openTimeline() { lastFocused = document.activeElement; renderTimeline(); show('timeline-modal', true); }
+        function closeTimeline() { show('timeline-modal', false); if (lastFocused) lastFocused.focus(); }
+
+        function renderTimeline() {
+            const list = $('timeline-list');
+            const now = Date.now();
+            const items = [
+                ...incomingList.filter(c => c.unlocked).map(c => ({ c, dir: 'in' })),
+                ...outgoingList.map(c => ({ c, dir: 'out' }))
+            ].sort((a, b) => Date.parse(b.c.created_at) - Date.parse(a.c.created_at));
+
+            if (!items.length) {
+                const p = document.createElement('p');
+                p.className = 'text-xs opacity-50 text-center py-6';
+                p.textContent = t('timelineEmpty');
+                list.replaceChildren(p);
+                return;
+            }
+
+            let dateFmt;
+            try { dateFmt = new Intl.DateTimeFormat(currentLang, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+            catch (e) { dateFmt = new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+
+            list.replaceChildren(...items.map(({ c, dir }) => {
+                const card = document.createElement('div');
+                card.className = `rounded-2xl p-3.5 space-y-1.5 ${dir === 'out' ? 'glass-subtle ml-6' : 'bg-white/[0.07] border border-white/10 mr-6'}`;
+
+                const head = document.createElement('div');
+                head.className = 'flex justify-between text-[10px] opacity-55 gap-2';
+                const who = document.createElement('span');
+                who.textContent = dir === 'out' ? t('timelineYou') : t('timelineFrom', { name: c.sender_name });
+                const when = document.createElement('span');
+                when.textContent = c.created_at ? dateFmt.format(new Date(c.created_at)) : '';
+                head.append(who, when);
+
+                const body = document.createElement('p');
+                body.className = 'text-sm font-light leading-relaxed break-words';
+                body.textContent = isSoundOnly(c) ? t('soundOnly') : c.full_text;
+
+                const meta = document.createElement('p');
+                meta.className = 'text-[11px] opacity-60 italic';
+                if (!c.unlocked) meta.textContent = isDelivered(c, now) ? t('statusLocked') : t('outgoingScheduled', { time: timeStr(tzOf(partnerUser), new Date(c.deliver_at)) });
+                else if (!isSoundOnly(c)) meta.textContent = guessSummary(c, dir === 'in' ? 'yourGuess' : 'theirGuess');
+
+                card.append(head, body);
+                if (meta.textContent) card.append(meta);
+                if (c.audio_url) {
+                    const a = document.createElement('audio');
+                    a.controls = true; a.preload = 'none'; a.setAttribute('playsinline', ''); a.src = c.audio_url;
+                    a.className = 'w-full h-8 mt-1';
+                    card.append(a);
+                }
+                return card;
+            }));
+        }
+
+        // ============================================================================
+        // 11. PUSH NOTIFICATIONS (service worker + Web Push; server side in supabase/functions/notify)
+        // ============================================================================
+        let swReg = null;
+
+        async function registerServiceWorker() {
+            if (!('serviceWorker' in navigator)) return;
+            try { swReg = await navigator.serviceWorker.register('./sw.js'); } catch (e) { swReg = null; }
+        }
+        function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
+        function isStandalone() { return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; }
+        function urlB64ToUint8Array(base64) {
+            const padding = '='.repeat((4 - base64.length % 4) % 4);
+            const raw = atob((base64 + padding).replace(/-/g, '+').replace(/_/g, '/'));
+            return Uint8Array.from(raw, ch => ch.charCodeAt(0));
+        }
+        async function getPushSub() {
+            try { return swReg && 'PushManager' in window ? await swReg.pushManager.getSubscription() : null; } catch (e) { return null; }
+        }
+        async function savePushSub(sub) {
+            if (!currentUser || !supabaseClient || !sub) return;
+            const j = sub.toJSON();
+            await supabaseClient.from('push_subscriptions').upsert({
+                user_id: currentUser.id, endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth, lang: currentLang
+            }, { onConflict: 'endpoint' });
+        }
+
+        async function refreshPushStatus() {
+            const btn = $('notif-btn');
+            show(btn, false);
+            if (!vapidPublicKey) { setText('notif-status', t('notifNotConfigured')); return; }
+            if (!swReg || !('PushManager' in window) || typeof Notification === 'undefined') {
+                setText('notif-status', isIOS() && !isStandalone() ? t('notifIosHint') : t('notifUnsupported'));
+                return;
+            }
+            if (Notification.permission === 'denied') { setText('notif-status', t('notifBlocked')); return; }
+            const sub = await getPushSub();
+            setText('notif-status', sub ? t('notifOn') : t('notifOff'));
+            btn.textContent = sub ? t('notifDisable') : t('notifEnable');
+            show(btn, true);
+        }
+
+        async function togglePush() {
+            const btn = $('notif-btn');
+            btn.disabled = true;
+            try {
+                const existing = await getPushSub();
+                if (existing) {
+                    await supabaseClient.from('push_subscriptions').delete().eq('endpoint', existing.endpoint);
+                    await existing.unsubscribe();
+                } else {
+                    const perm = await Notification.requestPermission();
+                    if (perm === 'granted') {
+                        const sub = await swReg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlB64ToUint8Array(vapidPublicKey) });
+                        await savePushSub(sub);
+                    }
+                }
+            } catch (e) {
+                showMsg('modal-msg', t('errGeneric'));
+            } finally {
+                btn.disabled = false;
+                refreshPushStatus();
+            }
+        }
+
+        // ============================================================================
+        // 12. REALTIME, LIFECYCLE, BOOT
+        // ============================================================================
+        // Only rows that involve you: your profile, your partner's profile, capsules to/from you.
+        // (Filters run on the server; Row Level Security is applied on top.)
+        function subscribeToRealtimeSync() {
+            if (!supabaseClient || !currentUser) return;
+            if (realtimeChannel) { try { supabaseClient.removeChannel(realtimeChannel); } catch (e) {} realtimeChannel = null; }
+            const me = currentUser.id;
+            let ch = supabaseClient.channel(`handoff_${me}`)
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'accounts', filter: `id=eq.${me}` }, onAccountChange)
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'capsules', filter: `receiver_id=eq.${me}` }, () => loadCapsules())
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'capsules', filter: `sender_id=eq.${me}` }, () => loadCapsules());
+            if (partnerUser) {
+                ch = ch.on('postgres_changes', { event: '*', schema: 'public', table: 'accounts', filter: `id=eq.${partnerUser.id}` }, onAccountChange);
+            }
+            realtimeChannel = ch.subscribe();
+        }
+
+        // Patch state from the realtime payload instead of refetching everything + re-geocoding.
+        async function onAccountChange(payload) {
+            const row = payload.new;
+            if (!row || !row.id || !currentUser) return;
+            let target = null;
+            if (row.id === currentUser.id) {
+                // Your partner accepted your code, or unpaired: rebuild everything around the new partner.
+                if ((row.partner_id || null) !== (currentUser.partner_id || null)) {
+                    Object.assign(currentUser, row);
+                    await onPartnerChanged();
+                    return;
+                }
+                target = currentUser;
+            } else if (partnerUser && row.id === partnerUser.id) {
+                target = partnerUser;
+            } else return;
+
+            const moved = row.city !== target.city || row.lat !== target.lat || row.lon !== target.lon;
+            Object.assign(target, row);
+            if (moved) { await ensureCoords(target, false); await ensureWeather(target, true); }
+            renderEnvironment();
+            renderCapsules();
+        }
+
+        async function enterApp() {
+            show('login-screen', false);
+            show('app-screen', true);
+            show('nav-user-controls', true);
+            await ensureCoords(currentUser, true);
+            await syncPartner();
+            renderEnvironment();
+            await Promise.all([refreshWeather(false), loadCapsules()]);
+            subscribeToRealtimeSync();
+            const sub = await getPushSub();
+            if (sub) savePushSub(sub);
+        }
+
+        // Clocks every second (text only); full re-render once a minute (sky, mode, overlap, due capsules).
+        let lastMinute = -1;
+        function tick() {
+            if (!currentUser) return;
+            setText('time-you', timeStr(tzOf(currentUser)));
+            if (partnerUser) setText('time-partner', timeStr(tzOf(partnerUser)));
+            const minute = Math.floor(Date.now() / 60000);
+            if (minute !== lastMinute) { lastMinute = minute; renderEnvironment(); renderCapsules(); }
+        }
+        setInterval(tick, 1000);
+        setInterval(() => { if (currentUser) refreshWeather(false); }, 5 * 60 * 1000);
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && currentUser) { refreshWeather(false); loadCapsules(); tick(); }
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key !== 'Escape') return;
+            if (!$('lang-menu').classList.contains('hidden')) closeLangMenu();
+            else if (!$('edit-modal').classList.contains('hidden')) closeEditModal();
+            else if (!$('timeline-modal').classList.contains('hidden')) closeTimeline();
+        });
+
+        // ============================================================================
+        // 13. APP SHELL: visible-viewport sizing, keyboard mode, install, toast
+        // ============================================================================
+        const isCoarse = window.matchMedia('(pointer: coarse)').matches;
+        const WIDE_MQ = window.matchMedia('(min-width: 720px) and (min-height: 560px), (orientation: landscape) and (max-height: 540px) and (min-width: 560px)');
+
+        // Keep the shell exactly the size of what's visible (handles iOS/Android keyboards and collapsing browser bars).
+        let vpRaf = 0;
+        function syncViewport() {
+            cancelAnimationFrame(vpRaf);
+            vpRaf = requestAnimationFrame(() => {
+                const vv = window.visualViewport;
+                const h = vv ? vv.height : window.innerHeight;
+                document.documentElement.style.setProperty('--app-h', `${Math.round(h)}px`);
+                const top = vv ? Math.max(0, vv.offsetTop) : 0;
+                $('shell').style.transform = top ? `translateY(${top}px)` : '';
+            });
+        }
+
+        // While typing on a phone, hide everything except the card you're typing into.
+        let kbTimer = null;
+        function zoneFor(el) {
+            if (!el || !el.closest) return null;
+            if (el.closest('#incoming-card')) return 'incoming';
+            if (el.closest('#composer-card')) return 'composer';
+            return null;
+        }
+        document.addEventListener('focusin', e => {
+            if (!isCoarse || !e.target.matches || !e.target.matches('input:not([type=checkbox]), textarea')) return;
+            const zone = zoneFor(e.target);
+            if (zone) {
+                clearTimeout(kbTimer);
+                document.documentElement.classList.add('kb-open');
+                document.documentElement.dataset.focus = zone;
+            } else if (e.target.closest('#login-screen, .sheet')) {
+                setTimeout(() => e.target.scrollIntoView({ block: 'center', behavior: 'smooth' }), 300);
+            }
+        });
+        document.addEventListener('focusout', () => {
+            if (!isCoarse) return;
+            clearTimeout(kbTimer);
+            kbTimer = setTimeout(() => {
+                if (zoneFor(document.activeElement) && document.activeElement.matches('input, textarea')) return;
+                document.documentElement.classList.remove('kb-open');
+                delete document.documentElement.dataset.focus;
+                window.scrollTo(0, 0);
+                syncViewport();
+            }, 150);
+        });
+
+        // Composer grows with its text on phones (capped by CSS); fills the column on wide layouts.
+        function autoGrow() {
+            const el = $('composer-input');
+            if (WIDE_MQ.matches) { el.style.height = ''; return; }
+            el.style.height = 'auto';
+            el.style.height = `${el.scrollHeight + 2}px`;
+        }
+
+        let toastTimer = null;
+        function toast(msg, ms = 3500) {
+            const el = $('toast');
+            el.textContent = msg;
+            show(el, true);
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => show(el, false), ms);
+        }
+
+        // Install: native prompt on Chromium, a how-to hint on iOS. Hidden once installed.
+        let deferredInstall = null;
+        function updateInstallBtn() { show('install-btn', !isStandalone() && (!!deferredInstall || isIOS())); }
+        async function installApp() {
+            if (deferredInstall) {
+                deferredInstall.prompt();
+                try { await deferredInstall.userChoice; } catch (e) {}
+                deferredInstall = null;
+                updateInstallBtn();
+            } else if (isIOS()) {
+                toast(t('iosInstallHint'), 6000);
+            }
+        }
+        window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; updateInstallBtn(); });
+        window.addEventListener('appinstalled', () => { deferredInstall = null; updateInstallBtn(); });
+
+        function initShell() {
+            syncViewport();
+            if (window.visualViewport) {
+                window.visualViewport.addEventListener('resize', syncViewport);
+                window.visualViewport.addEventListener('scroll', syncViewport);
+            }
+            window.addEventListener('resize', () => { syncViewport(); autoGrow(); });
+            window.addEventListener('orientationchange', () => setTimeout(syncViewport, 250));
+            $('composer-input').addEventListener('input', autoGrow);
+            if (WIDE_MQ.addEventListener) WIDE_MQ.addEventListener('change', autoGrow);
+            updateInstallBtn();
+        }
+
+        navigator.serviceWorker && navigator.serviceWorker.addEventListener('message', e => {
+            if (e.data && e.data.type === 'refresh' && currentUser) loadCapsules();
+        });
+
+        (async function boot() {
+            initShell();
+            signupCityPicker = createCityPicker('signup-city', 'signup-city-list');
+            modalCityPicker = createCityPicker('modal-new-city', 'modal-city-list');
+            switchAuthTab('signin');
+            setLang(currentLang);
+            registerServiceWorker();
+            const ready = await loadSupabaseConfig();
+            if (ready) await restoreSupabaseSession();
+        })();
+    </script>
+</body>
+</html>
