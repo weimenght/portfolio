@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Pinch-zoom allowed (accessibility). Inputs stay at 16px so iOS doesn't auto-zoom. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <!-- Pinch-zoom stays allowed (accessibility). interactive-widget lets Android shrink the layout when the keyboard opens. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+    <meta name="color-scheme" content="dark">
+    <meta name="format-detection" content="telephone=no">
     <title>Handoff</title>
 
     <!-- PWA -->
@@ -19,19 +21,235 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* ------------------------------------------------------------------
+           APP SHELL: one screen, sized to the *visible* viewport (--app-h is
+           kept in sync with visualViewport by JS, so the on-screen keyboard
+           and mobile browser bars never push content off screen).
+           Spacing and type scale with available height.
+           Note: Tailwind's CDN styles load after this block, so rules here that
+           set display use :not(.hidden) and never fight Tailwind's .hidden.
+           ------------------------------------------------------------------ */
         :root {
             --safe-top: env(safe-area-inset-top, 0px);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-left: env(safe-area-inset-left, 0px);
+            --safe-right: env(safe-area-inset-right, 0px);
+            --app-h: 100vh;
+            --gap: clamp(0.45rem, calc(var(--app-h) * 0.016), 0.875rem);
+            --inner-gap: clamp(0.4rem, calc(var(--app-h) * 0.013), 0.8rem);
+            --pad: clamp(0.75rem, calc(var(--app-h) * 0.021), 1.25rem);
+            --pad-tight: clamp(0.55rem, calc(var(--app-h) * 0.014), 0.85rem);
+            color-scheme: dark;
+        }
+        @supports (height: 100dvh) { :root { --app-h: 100dvh; } }
+
+        html {
+            height: 100%;
+            overflow: hidden;
+            overscroll-behavior: none;            /* no pull-to-refresh / rubber band */
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            touch-action: manipulation;           /* no double-tap zoom delay */
+            background: #090d16;
         }
         body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+            overscroll-behavior: none;
             -webkit-tap-highlight-color: transparent;
-            transition: background 1.4s cubic-bezier(0.22, 1, 0.36, 1), color 0.6s ease;
-            padding-top: var(--safe-top);
-            padding-bottom: var(--safe-bottom);
-            min-height: 100dvh;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            transition: background 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+            font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+                "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC",
+                sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
         }
-        input, textarea, select { font-size: 16px !important; }
-        .tabular-clock { font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+        html:lang(zh-TW) body {
+            font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+                "PingFang TC", "Hiragino Sans CNS", "Microsoft JhengHei", "Noto Sans TC", "Noto Sans CJK TC",
+                sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
+        }
+        input, textarea, .selectable { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
+        input, textarea, select { font-size: 16px !important; } /* < 16px makes iOS zoom on focus */
+        button { -webkit-touch-callout: none; touch-action: manipulation; }
+        :focus-visible { outline: 2px solid #fcd34d; outline-offset: 2px; }
+        :focus:not(:focus-visible) { outline: none; }
+
+        .app-shell {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--app-h);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
+            will-change: transform;
+        }
+        .wrap { width: 100%; max-width: 28rem; margin: 0 auto; padding-left: 1rem; padding-right: 1rem; }
+        @media (min-width: 380px) { .wrap { padding-left: 1.25rem; padding-right: 1.25rem; } }
+
+        .topbar {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            height: clamp(2.9rem, calc(var(--app-h) * 0.068), 3.4rem);
+            position: relative;
+            z-index: 30;
+        }
+        .icon-btn {
+            width: 2.5rem; height: 2.5rem;
+            border-radius: 9999px;
+            display: inline-flex; align-items: center; justify-content: center;
+            flex: 0 0 auto;
+            transition: opacity .15s, transform .15s;
+        }
+        .icon-btn:active { transform: scale(0.94); }
+        .icon-btn svg { width: 1.1rem; height: 1.1rem; }
+
+        .screen:not(.hidden) { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+        #login-screen { overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+        .login-inner { min-height: 100%; display: flex; flex-direction: column; justify-content: center; padding-top: 0.5rem; padding-bottom: 1rem; }
+        .login-card { padding: clamp(1.1rem, calc(var(--app-h) * 0.03), 1.75rem); }
+        .login-card > * + * { margin-top: clamp(0.85rem, calc(var(--app-h) * 0.022), 1.25rem); }
+
+        .app-header {
+            flex: 0 0 auto;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: var(--gap);
+        }
+        .clock {
+            font-size: clamp(1.5rem, calc(var(--app-h) * 0.043), 2.25rem);
+            line-height: 1.1;
+            font-weight: 300;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.03em;
+            white-space: nowrap;
+        }
+        @media (max-width: 340px) { .clock { font-size: 1.45rem; } }
+
+        #app-main {
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap);
+            overflow-y: auto;                  /* last resort only; normally everything fits */
+            overscroll-behavior: contain;
+        }
+        #app-screen { padding-bottom: var(--gap); }
+        .card { border-radius: clamp(1.1rem, calc(var(--app-h) * 0.03), 1.65rem); padding: var(--pad); flex: 0 0 auto; min-width: 0; }
+        .card:not(.hidden) { display: flex; flex-direction: column; gap: var(--inner-gap); }
+        .card-tight { padding: var(--pad-tight) var(--pad); }
+
+        #incoming-card { flex: 1 1 auto; }
+        .incoming-body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+        .state:not(.hidden) { display: flex; flex-direction: column; min-height: 0; gap: var(--inner-gap); }
+        .scroll-text { overflow-y: auto; min-height: 1.6em; flex: 0 1 auto; overscroll-behavior: contain; }
+        .msg-text {
+            font-size: clamp(1rem, calc(var(--app-h) * 0.024), 1.2rem);
+            line-height: 1.55;
+            font-weight: 300;
+            overflow-wrap: anywhere;
+        }
+        .composer-body:not(.hidden) { display: flex; flex-direction: column; gap: var(--inner-gap); min-height: 0; }
+        #composer-input {
+            min-height: 2.9em;
+            max-height: calc(var(--app-h) * 0.2);
+            overflow-y: auto;
+            font-size: clamp(1rem, calc(var(--app-h) * 0.024), 1.15rem) !important;
+        }
+
+        .vibe-strip {
+            -webkit-mask-image: linear-gradient(to right, transparent 0, #000 10px, #000 calc(100% - 24px), transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0, #000 10px, #000 calc(100% - 24px), transparent 100%);
+            padding-left: 4px; padding-right: 16px;
+            scroll-snap-type: x proximity;
+        }
+        .vibe-strip > button { scroll-snap-align: start; }
+
+        .footer:not(.hidden) { flex: 0 0 auto; display: flex; }
+
+        /* Short screens: drop the decoration first, never the content */
+        @media (max-height: 740px) { .footer { display: none !important; } }
+        @media (max-height: 700px) {
+            :root { --gap: 0.5rem; }
+            .tag-row, .vibe-label { display: none !important; }
+            #composer-input { min-height: 1.7em; }
+            .icon-btn { width: 2.25rem; height: 2.25rem; }
+        }
+        @media (max-height: 660px) { .overlap-legend { display: none !important; } }
+        @media (max-height: 620px) {
+            .field-label { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+            .login-sub { display: none; }
+        }
+        @media (max-height: 620px) {
+            /* Together window collapses to one row: label + bar side by side */
+            #overlap-card:not(.hidden) { flex-direction: row; align-items: center; gap: 0.75rem; }
+            #overlap-card > :first-child { flex: 0 1 auto; max-width: 58%; }
+            #overlap-card > :first-child #overlap-text { text-align: left; }
+            #overlap-card > .relative { flex: 1 1 auto; min-width: 4rem; }
+            #overlap-card .hide-narrow { display: none !important; }
+            .topbar { height: 2.65rem; }
+        }
+        @media (max-height: 600px) { #outgoing-receipt { display: none !important; } }
+        @media (max-width: 399px) { .hide-narrow { display: none !important; } }
+
+        /* Wide screens (tablet/desktop) and landscape phones: two columns */
+        @media (min-width: 720px) and (min-height: 560px), (orientation: landscape) and (max-height: 540px) and (min-width: 560px) {
+            .wrap { max-width: 60rem; }
+            .app-header { max-width: 42rem; width: 100%; margin: 0 auto; }
+            .login-card { width: 100%; max-width: 26rem; margin-left: auto; margin-right: auto; }
+            #app-main {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+                grid-template-rows: auto auto minmax(0, 1fr);
+                grid-template-areas: "overlap incoming" "vibe incoming" "composer incoming";
+            }
+            #overlap-card { grid-area: overlap; }
+            #vibe-card { grid-area: vibe; }
+            #composer-card { grid-area: composer; min-height: 0; }
+            #incoming-card { grid-area: incoming; min-height: 0; }
+            #composer-card .composer-body { flex: 1 1 auto; }
+            #composer-input { flex: 1 1 auto; max-height: none; }
+            .footer { display: none !important; }
+        }
+
+        @media (orientation: landscape) and (max-height: 540px) and (min-width: 560px) {
+            #composer-input { flex: 0 1 auto; min-height: 1.7em; max-height: 3.3em; }
+            #composer-input::placeholder { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        }
+
+        /* Landscape phones: sign-in card splits into two columns */
+        @media (orientation: landscape) and (max-height: 540px) and (min-width: 560px) {
+            .login-card {
+                max-width: 46rem;
+                display: grid;
+                grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+                column-gap: 1.5rem;
+                row-gap: 0.75rem;
+                align-content: center;
+            }
+            .login-card > * + * { margin-top: 0; }
+            .login-card > :not(form) { grid-column: 1; }
+            .login-card > form { grid-column: 2; grid-row: 1 / span 4; align-self: center; }
+        }
+
+        /* Keyboard open on touch devices: keep only what you're typing into */
+        .kb-open #overlap-card, .kb-open #vibe-card, .kb-open .footer, .kb-open .weather-line { display: none !important; }
+        .kb-open .clock { font-size: 1.2rem; }
+        .kb-open .app-header { padding-bottom: 0.4rem; }
+        .kb-open[data-focus="incoming"] #composer-card { display: none !important; }
+        .kb-open[data-focus="composer"] #incoming-card { display: none !important; }
+        @media (max-height: 480px) { .kb-open .topbar { display: none !important; } }
+        @media (max-height: 300px) { .kb-open .app-header { display: none !important; } }
+
         .glass {
             background: rgba(255, 255, 255, 0.065);
             border: 1px solid rgba(255, 255, 255, 0.12);
@@ -40,268 +258,331 @@
             -webkit-backdrop-filter: blur(20px);
         }
         .glass-subtle {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.09);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
-        .solid-panel { background: rgba(15, 20, 32, 0.96); border: 1px solid rgba(255,255,255,0.12); }
+        @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+            .glass { background: rgba(22, 28, 44, 0.86); }
+            .glass-subtle { background: rgba(255, 255, 255, 0.09); }
+        }
+        .solid-panel { background: rgba(15, 20, 32, 0.97); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 16px 40px rgba(0,0,0,.45); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        :focus-visible { outline: 2px solid #fcd34d; outline-offset: 2px; }
         select option { color: #000; }
+
+        /* Bottom sheets (centered dialogs on large screens) */
+        .sheet-backdrop {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 50;
+            align-items: flex-end;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            padding: 0.75rem calc(0.75rem + var(--safe-right)) calc(0.75rem + var(--safe-bottom)) calc(0.75rem + var(--safe-left));
+        }
+        .sheet-backdrop:not(.hidden) { display: flex; }
+        .sheet {
+            width: 100%;
+            max-width: 28rem;
+            max-height: calc(var(--app-h) - var(--safe-top) - var(--safe-bottom) - 1.5rem);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            animation: sheet-up .28s cubic-bezier(.22, 1, .36, 1);
+        }
+        @media (min-width: 640px) and (min-height: 600px) { .sheet-backdrop { align-items: center; } }
+        @keyframes sheet-up { from { transform: translateY(28px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+        .toast {
+            position: absolute;
+            left: 50%;
+            bottom: calc(var(--safe-bottom) + 1rem);
+            transform: translateX(-50%);
+            z-index: 60;
+            width: max-content;
+            max-width: calc(100% - 2rem);
+            animation: sheet-up .25s ease-out;
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { transition: none !important; animation: none !important; }
         }
     </style>
 </head>
-<body id="app-body" class="bg-[#090d16] text-white font-sans antialiased flex flex-col justify-between selection:bg-amber-300 selection:text-black">
+<body id="app-body" class="bg-[#090d16] text-white antialiased selection:bg-amber-300 selection:text-black">
+<div id="shell" class="app-shell">
 
-    <!-- TOP NAVIGATION -->
-    <nav class="w-full max-w-md mx-auto px-5 pt-4 pb-2 flex items-center justify-between text-xs z-30">
-        <div class="inline-flex items-center p-0.5 rounded-full glass-subtle space-x-0.5" role="group" aria-label="Language">
-            <button onclick="setLang('en')" id="lang-en" class="px-2.5 py-1 rounded-full text-[11px] transition" lang="en">EN</button>
-            <button onclick="setLang('zh-CN')" id="lang-zh-CN" class="px-2.5 py-1 rounded-full text-[11px] transition" lang="zh-CN">简</button>
-            <button onclick="setLang('zh-TW')" id="lang-zh-TW" class="px-2.5 py-1 rounded-full text-[11px] transition" lang="zh-TW">繁</button>
-            <button onclick="setLang('es')" id="lang-es" class="px-2.5 py-1 rounded-full text-[11px] transition" lang="es">ES</button>
-            <button onclick="setLang('ca')" id="lang-ca" class="px-2.5 py-1 rounded-full text-[11px] transition" lang="ca">CA</button>
+    <!-- TOP BAR -->
+    <nav class="topbar wrap">
+        <div class="relative">
+            <button id="lang-btn" type="button" onclick="toggleLangMenu(event)" aria-haspopup="menu" aria-expanded="false" aria-controls="lang-menu"
+                    class="h-10 pl-3 pr-2.5 rounded-full glass-subtle text-[12px] font-medium flex items-center gap-1.5 active:scale-95 transition">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 opacity-70" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+                <span id="lang-current">EN</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-3 h-3 opacity-50" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div id="lang-menu" role="menu" class="hidden absolute left-0 top-full mt-2 min-w-[10.5rem] rounded-2xl solid-panel py-1.5 z-50">
+                <button role="menuitemradio" data-lang="en" lang="en" onclick="pickLang('en')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-white/10 flex items-center justify-between gap-3">English<span class="check opacity-0">✓</span></button>
+                <button role="menuitemradio" data-lang="zh-CN" lang="zh-CN" onclick="pickLang('zh-CN')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-white/10 flex items-center justify-between gap-3">简体中文<span class="check opacity-0">✓</span></button>
+                <button role="menuitemradio" data-lang="zh-TW" lang="zh-TW" onclick="pickLang('zh-TW')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-white/10 flex items-center justify-between gap-3">繁體中文<span class="check opacity-0">✓</span></button>
+                <button role="menuitemradio" data-lang="es" lang="es" onclick="pickLang('es')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-white/10 flex items-center justify-between gap-3">Español<span class="check opacity-0">✓</span></button>
+                <button role="menuitemradio" data-lang="ca" lang="ca" onclick="pickLang('ca')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-white/10 flex items-center justify-between gap-3">Català<span class="check opacity-0">✓</span></button>
+            </div>
         </div>
 
-        <div id="nav-user-controls" class="hidden flex items-center space-x-1.5">
-            <button onclick="openTimeline()" class="glass-subtle px-3 py-1 rounded-full text-[11px] opacity-80 hover:opacity-100 active:scale-95 transition" data-i18n="timeline">Timeline</button>
-            <button onclick="openEditModal()" class="glass-subtle px-3 py-1 rounded-full text-[11px] opacity-80 hover:opacity-100 active:scale-95 transition" data-i18n="editAccount">Account</button>
-            <button onclick="logout()" class="glass-subtle px-3 py-1 rounded-full text-[11px] opacity-60 hover:opacity-100 active:scale-95 transition" data-i18n="logout">Exit</button>
+        <div class="flex items-center gap-1.5">
+            <button id="install-btn" type="button" onclick="installApp()" class="hidden icon-btn glass-subtle opacity-80 hover:opacity-100" data-i18n-aria="install" data-i18n-title="install">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14"/></svg>
+            </button>
+            <div id="nav-user-controls" class="hidden flex items-center gap-1.5">
+                <button type="button" onclick="openTimeline()" class="icon-btn glass-subtle opacity-80 hover:opacity-100" data-i18n-aria="timeline" data-i18n-title="timeline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+                </button>
+                <button type="button" onclick="openEditModal()" class="icon-btn glass-subtle opacity-80 hover:opacity-100" data-i18n-aria="editAccount" data-i18n-title="editAccount">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5c1.2-3.3 3.9-5 7-5s5.8 1.7 7 5"/></svg>
+                </button>
+            </div>
         </div>
     </nav>
 
     <!-- ================================================================= -->
     <!-- SCREEN 1: AUTHENTICATION                                          -->
     <!-- ================================================================= -->
-    <section id="login-screen" class="w-full max-w-md mx-auto px-5 py-6 flex-1 flex flex-col justify-center">
-        <div class="glass rounded-[28px] p-6 sm:p-7 space-y-5">
-            <div class="space-y-1 text-center sm:text-left">
-                <h1 class="text-2xl font-light tracking-tight" data-i18n="appTitle">Twilight Handoff</h1>
-                <p class="text-xs opacity-55" data-i18n="loginSub">Asynchronous presence across timezones</p>
-            </div>
-
-            <!-- Fallback config banner, only if supabase.txt is missing or empty -->
-            <div id="supabase-config-banner" class="hidden p-4 rounded-2xl bg-amber-500/10 border border-amber-400/25 space-y-2.5 text-xs">
-                <div class="font-medium text-amber-300" data-i18n="dbConfigTitle">supabase.txt not found — enter keys:</div>
-                <input id="cfg-url" type="text" placeholder="Project ID or https://xyz.supabase.co" aria-label="Supabase URL" class="w-full glass-subtle rounded-xl px-3 py-2 text-xs focus:outline-none">
-                <input id="cfg-key" type="password" placeholder="Supabase Anon Public Key" aria-label="Supabase anon key" class="w-full glass-subtle rounded-xl px-3 py-2 text-xs focus:outline-none">
-                <button onclick="saveSupabaseConfig()" class="w-full py-2 rounded-xl bg-amber-400 text-black font-semibold text-xs active:scale-[0.98] transition" data-i18n="connectDbBtn">Connect</button>
-            </div>
-
-            <div class="grid grid-cols-2 rounded-full glass-subtle p-1 text-xs" role="tablist">
-                <button id="tab-signin" role="tab" onclick="switchAuthTab('signin')" class="py-1.5 rounded-full bg-white text-black font-medium transition" data-i18n="tabSignIn">Sign In</button>
-                <button id="tab-signup" role="tab" onclick="switchAuthTab('signup')" class="py-1.5 rounded-full opacity-60 hover:opacity-100 transition" data-i18n="tabSignUp">First-Time Setup</button>
-            </div>
-
-            <form class="space-y-3.5" onsubmit="event.preventDefault(); handleAuthSubmit();">
-                <div>
-                    <label for="login-identifier" class="text-[11px] uppercase tracking-wider opacity-55 block mb-1.5 pl-1" data-i18n="loginIdLabel">Username or Email</label>
-                    <input id="login-identifier" type="text" autocomplete="username" autocapitalize="none" data-i18n-placeholder="loginIdPlaceholder" class="w-full glass-subtle rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-white/40 transition">
-                </div>
-                <div>
-                    <label for="login-pass" class="text-[11px] uppercase tracking-wider opacity-55 block mb-1.5 pl-1" data-i18n="passLabel">Password</label>
-                    <input id="login-pass" type="password" autocomplete="current-password" placeholder="••••••" class="w-full glass-subtle rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-white/40 transition">
+    <section id="login-screen" class="screen">
+        <div class="login-inner wrap">
+            <div class="login-card glass rounded-[28px]">
+                <div class="space-y-1 text-center">
+                    <h1 class="text-2xl font-light tracking-tight" data-i18n="appTitle">Twilight Handoff</h1>
+                    <p class="login-sub text-xs opacity-55" data-i18n="loginSub">Asynchronous presence across timezones</p>
                 </div>
 
-                <div id="signup-extra-fields" class="hidden space-y-3.5 pt-2 border-t border-white/10">
+                <!-- Fallback config banner, only if supabase.txt is missing or empty -->
+                <div id="supabase-config-banner" class="hidden p-4 rounded-2xl bg-amber-500/10 border border-amber-400/25 space-y-2.5 text-xs">
+                    <div class="font-medium text-amber-300" data-i18n="dbConfigTitle">supabase.txt not found — enter keys:</div>
+                    <input id="cfg-url" type="text" autocapitalize="none" autocorrect="off" placeholder="Project ID or https://xyz.supabase.co" aria-label="Supabase URL" class="w-full glass-subtle rounded-xl px-3 py-2 focus:outline-none">
+                    <input id="cfg-key" type="password" placeholder="Supabase Anon Public Key" aria-label="Supabase anon key" class="w-full glass-subtle rounded-xl px-3 py-2 focus:outline-none">
+                    <button onclick="saveSupabaseConfig()" class="w-full py-2.5 rounded-xl bg-amber-400 text-black font-semibold text-xs active:scale-[0.98] transition" data-i18n="connectDbBtn">Connect</button>
+                </div>
+
+                <div class="grid grid-cols-2 rounded-full glass-subtle p-1 text-xs" role="tablist">
+                    <button id="tab-signin" role="tab" onclick="switchAuthTab('signin')" class="py-2 px-2 rounded-full bg-white text-black font-medium transition truncate" data-i18n="tabSignIn">Sign In</button>
+                    <button id="tab-signup" role="tab" onclick="switchAuthTab('signup')" class="py-2 px-2 rounded-full opacity-60 hover:opacity-100 transition truncate" data-i18n="tabSignUp">First-Time Setup</button>
+                </div>
+
+                <form class="space-y-3" onsubmit="event.preventDefault(); handleAuthSubmit();">
                     <div>
-                        <label for="signup-name" class="text-[11px] uppercase tracking-wider opacity-55 block mb-1.5 pl-1" data-i18n="displayNameLabel">Your Name</label>
-                        <input id="signup-name" type="text" autocomplete="nickname" placeholder="Jane / Wei" class="w-full glass-subtle rounded-2xl px-4 py-2.5 text-sm focus:outline-none">
+                        <label for="login-identifier" class="field-label text-[11px] uppercase tracking-wider opacity-55 block mb-1.5 pl-1" data-i18n="loginIdLabel">Username or Email</label>
+                        <input id="login-identifier" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next" data-i18n-placeholder="loginIdPlaceholder" class="w-full glass-subtle rounded-2xl px-4 py-3 focus:outline-none focus:border-white/40 transition">
                     </div>
-                    <div class="relative">
-                        <label for="signup-city" class="text-[11px] uppercase tracking-wider opacity-55 block mb-1.5 pl-1" data-i18n="cityLabel">Your City</label>
-                        <input id="signup-city" type="text" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="signup-city-list" data-i18n-placeholder="cityInputPlaceholder" class="w-full glass-subtle rounded-2xl px-4 py-2.5 text-sm focus:outline-none">
-                        <div id="signup-city-list" role="listbox" class="hidden absolute left-0 right-0 mt-1 z-40 rounded-2xl solid-panel overflow-hidden text-sm"></div>
+                    <div>
+                        <label for="login-pass" class="field-label text-[11px] uppercase tracking-wider opacity-55 block mb-1.5 pl-1" data-i18n="passLabel">Password</label>
+                        <input id="login-pass" type="password" autocomplete="current-password" enterkeyhint="go" data-i18n-placeholder="passLabel" class="w-full glass-subtle rounded-2xl px-4 py-3 focus:outline-none focus:border-white/40 transition">
                     </div>
-                </div>
 
-                <p id="login-error" role="alert" class="text-xs text-rose-300 hidden px-1"></p>
+                    <div id="signup-extra-fields" class="hidden relative grid grid-cols-1 min-[340px]:grid-cols-2 gap-3 pt-3 border-t border-white/10">
+                        <div class="min-w-0">
+                            <label for="signup-name" class="field-label text-[11px] uppercase tracking-wider opacity-55 block mb-1.5 pl-1" data-i18n="displayNameLabel">Your Name</label>
+                            <input id="signup-name" type="text" autocomplete="nickname" enterkeyhint="next" data-i18n-placeholder="displayNameLabel" class="w-full glass-subtle rounded-2xl px-4 py-2.5 focus:outline-none">
+                        </div>
+                        <div class="min-w-0">
+                            <label for="signup-city" class="field-label text-[11px] uppercase tracking-wider opacity-55 block mb-1.5 pl-1" data-i18n="cityLabel">Your City</label>
+                            <input id="signup-city" type="text" autocomplete="off" autocorrect="off" enterkeyhint="done" role="combobox" aria-autocomplete="list" aria-controls="signup-city-list" data-i18n-placeholder="cityInputPlaceholder" class="w-full glass-subtle rounded-2xl px-4 py-2.5 focus:outline-none">
+                        </div>
+                        <div id="signup-city-list" role="listbox" class="hidden absolute left-0 right-0 bottom-full mb-1 z-40 rounded-2xl solid-panel overflow-hidden text-sm"></div>
+                    </div>
 
-                <button id="login-submit-btn" type="submit" class="w-full py-3.5 rounded-full bg-white text-black text-xs font-semibold tracking-wide hover:opacity-95 active:scale-[0.98] transition disabled:opacity-50">Enter</button>
-            </form>
+                    <p id="login-error" role="alert" class="text-xs text-rose-300 hidden px-1"></p>
+
+                    <button id="login-submit-btn" type="submit" class="w-full py-3.5 rounded-full bg-white text-black text-sm font-semibold tracking-wide hover:opacity-95 active:scale-[0.98] transition disabled:opacity-50">Enter</button>
+                </form>
+            </div>
         </div>
     </section>
 
     <!-- ================================================================= -->
     <!-- SCREEN 2: MAIN APPLICATION                                        -->
     <!-- ================================================================= -->
-    <div id="app-screen" class="hidden flex-1 flex flex-col justify-between">
+    <div id="app-screen" class="screen hidden">
 
-        <header class="w-full max-w-md mx-auto px-5 pt-3 pb-2 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+        <header class="app-header wrap">
             <div class="flex flex-col min-w-0">
-                <span class="text-[10px] uppercase tracking-widest opacity-45" data-i18n="youTag">You</span>
-                <div class="flex items-baseline space-x-1 mt-0.5 truncate">
-                    <span id="name-you" class="text-xs font-semibold text-white truncate">--</span>
-                    <span class="opacity-35 text-[10px]" aria-hidden="true">·</span>
-                    <span id="label-you" class="text-[11px] font-medium text-amber-300 truncate">--</span>
+                <span class="tag-row text-[10px] uppercase tracking-widest opacity-45 truncate" data-i18n="youTag">You</span>
+                <div class="flex items-center gap-1 mt-0.5 min-w-0">
+                    <span id="name-you" class="text-xs font-semibold text-white truncate shrink">--</span>
+                    <span class="opacity-35 text-[10px] shrink-0" aria-hidden="true">·</span>
+                    <span id="label-you" class="text-[11px] font-medium text-amber-300 truncate shrink">--</span>
                 </div>
-                <div id="time-you" class="text-3xl font-light tabular-clock mt-0.5">--:--</div>
-                <div id="weather-you" class="text-[11px] opacity-60 truncate mt-0.5">--</div>
+                <div id="time-you" class="clock mt-0.5">--:--</div>
+                <div id="weather-you" class="weather-line text-[11px] opacity-60 truncate mt-0.5">--</div>
             </div>
 
-            <div class="flex flex-col items-center justify-center px-2">
-                <div class="px-3 py-1 rounded-full glass-subtle flex items-center space-x-1.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-amber-300 animate-pulse" aria-hidden="true"></span>
-                    <span id="mode-pill" class="text-[10px] font-mono uppercase tracking-widest whitespace-nowrap">--</span>
-                </div>
+            <div class="flex flex-col items-center justify-center" aria-hidden="false">
+                <span class="w-px h-3 bg-white/20" aria-hidden="true"></span>
+                <span id="tz-diff" class="my-1 px-2 py-0.5 rounded-full glass-subtle text-[10px] font-mono tabular-nums whitespace-nowrap">--</span>
+                <span class="w-px h-3 bg-white/20" aria-hidden="true"></span>
             </div>
 
             <div class="flex flex-col text-right items-end min-w-0">
-                <div class="flex items-center space-x-1.5">
-                    <span id="partner-mood-dot" class="w-2 h-2 rounded-full bg-amber-400" aria-hidden="true"></span>
-                    <span class="text-[10px] uppercase tracking-widest opacity-45" data-i18n="partnerTag">Partner</span>
+                <span class="tag-row text-[10px] uppercase tracking-widest opacity-45 truncate" data-i18n="partnerTag">Partner</span>
+                <div class="flex items-center justify-end gap-1 mt-0.5 w-full min-w-0">
+                    <span id="partner-mood-dot" class="w-2 h-2 rounded-full bg-amber-400 shrink-0 self-center" aria-hidden="true"></span>
+                    <span id="name-partner" class="text-xs font-semibold text-white truncate shrink">--</span>
+                    <span class="opacity-35 text-[10px] shrink-0" aria-hidden="true">·</span>
+                    <span id="label-partner" class="text-[11px] font-medium text-amber-300 truncate shrink">--</span>
                 </div>
-                <div class="flex items-baseline justify-end space-x-1 mt-0.5 w-full truncate">
-                    <span id="name-partner" class="text-xs font-semibold text-white truncate">--</span>
-                    <span class="opacity-35 text-[10px]" aria-hidden="true">·</span>
-                    <span id="label-partner" class="text-[11px] font-medium text-amber-300 truncate">--</span>
-                </div>
-                <div id="time-partner" class="text-3xl font-light tabular-clock mt-0.5">--:--</div>
-                <div id="weather-partner" class="text-[11px] opacity-60 truncate mt-0.5 w-full">--</div>
+                <div id="time-partner" class="clock mt-0.5">--:--</div>
+                <div id="weather-partner" class="weather-line text-[11px] opacity-60 truncate mt-0.5 w-full">--</div>
             </div>
         </header>
 
-        <main class="w-full max-w-md mx-auto px-5 py-2 flex-1 flex flex-col justify-center space-y-3.5">
+        <main id="app-main" class="wrap no-scrollbar">
 
-            <!-- TOGETHER WINDOW (overlap of awake hours, in your local day) -->
-            <div id="overlap-card" class="hidden glass rounded-[24px] px-4 py-3 space-y-2">
-                <div class="flex items-center justify-between text-[11px] gap-2">
-                    <span class="opacity-55 shrink-0" data-i18n="overlapTitle">Together window</span>
-                    <span id="overlap-text" class="font-medium text-amber-200 truncate text-right">--</span>
+            <!-- TOGETHER WINDOW -->
+            <div id="overlap-card" class="hidden glass card card-tight" role="group" data-i18n-aria="overlapTitle">
+                <div class="flex items-center justify-between text-[11px] gap-2 min-w-0">
+                    <span class="opacity-55 shrink-0 hide-narrow" data-i18n="overlapTitle">Together window</span>
+                    <span id="overlap-text" class="font-medium text-amber-200 truncate text-right flex-1 min-w-0">--</span>
                 </div>
                 <div class="relative">
                     <div id="overlap-bar" class="h-2.5 rounded-full overflow-hidden flex bg-white/5" aria-hidden="true"></div>
                     <div id="overlap-marker" class="absolute -top-1 -bottom-1 w-0.5 rounded bg-white shadow" aria-hidden="true"></div>
                 </div>
-                <div class="flex items-center justify-between text-[10px] opacity-55">
-                    <span>00:00</span>
-                    <span class="flex items-center gap-2.5">
-                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-white/30"></span><span data-i18n="legendYou">You awake</span></span>
-                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-sky-300/50"></span><span id="legend-partner">--</span></span>
-                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-amber-300"></span><span data-i18n="legendBoth">Both</span></span>
+                <div class="overlap-legend flex items-center justify-between text-[10px] opacity-55 gap-2 min-w-0">
+                    <span class="shrink-0">00:00</span>
+                    <span class="flex items-center gap-2.5 min-w-0">
+                        <span class="flex items-center gap-1 min-w-0"><span class="w-2 h-2 rounded-sm bg-white/30 shrink-0"></span><span class="truncate" data-i18n="legendYou">You</span></span>
+                        <span class="flex items-center gap-1 min-w-0"><span class="w-2 h-2 rounded-sm bg-sky-300/50 shrink-0"></span><span id="legend-partner" class="truncate max-w-[5.5rem]">--</span></span>
+                        <span class="flex items-center gap-1 min-w-0"><span class="w-2 h-2 rounded-sm bg-amber-300 shrink-0"></span><span class="truncate" data-i18n="legendBoth">Both</span></span>
                     </span>
-                    <span>24:00</span>
+                    <span class="shrink-0">24:00</span>
                 </div>
             </div>
 
-            <!-- VIBE BAR -->
-            <div class="glass rounded-[24px] p-3.5 space-y-2">
-                <div class="flex items-center justify-between text-[11px] px-1">
-                    <span class="opacity-55" data-i18n="yourVibe">Your vibe (colors partner's sky)</span>
-                    <span id="current-vibe-label" class="font-medium text-amber-200"></span>
+            <!-- VIBE -->
+            <div id="vibe-card" class="glass card card-tight">
+                <div class="vibe-label flex items-center justify-between text-[11px] px-1 gap-2 min-w-0">
+                    <span class="opacity-55 truncate" data-i18n="yourVibe">Your vibe (colors partner's sky)</span>
+                    <span id="current-vibe-label" class="font-medium text-amber-200 shrink-0"></span>
                 </div>
-                <div class="flex space-x-1.5 overflow-x-auto no-scrollbar py-0.5" id="mood-buttons">
-                    <button onclick="setMyMood('radiant')" data-mood="radiant" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition" data-i18n="vibeRadiant">☀️ Radiant</button>
-                    <button onclick="setMyMood('warm')" data-mood="warm" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition" data-i18n="vibeWarm">✨ Warm</button>
-                    <button onclick="setMyMood('playful')" data-mood="playful" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition" data-i18n="vibePlayful">🎈 Playful</button>
-                    <button onclick="setMyMood('calm')" data-mood="calm" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition" data-i18n="vibeCalm">🌊 Calm</button>
-                    <button onclick="setMyMood('focus')" data-mood="focus" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition" data-i18n="vibeFocus">⚡ Focus</button>
-                    <button onclick="setMyMood('drifting')" data-mood="drifting" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition" data-i18n="vibeDrifting">☁️ Drifting</button>
-                    <button onclick="setMyMood('drained')" data-mood="drained" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition" data-i18n="vibeDrained">🥀 Drained</button>
-                    <button onclick="setMyMood('overwhelmed')" data-mood="overwhelmed" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition" data-i18n="vibeOverwhelmed">🌧️ Overwhelmed</button>
-                    <button onclick="setMyMood('missing')" data-mood="missing" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition" data-i18n="vibeMissing">🌙 Missing You</button>
+                <div class="vibe-strip flex gap-1.5 overflow-x-auto no-scrollbar py-0.5 -mx-1" id="mood-buttons">
+                    <button onclick="setMyMood('radiant')" data-mood="radiant" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeRadiant">☀️ Radiant</button>
+                    <button onclick="setMyMood('warm')" data-mood="warm" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeWarm">✨ Warm</button>
+                    <button onclick="setMyMood('playful')" data-mood="playful" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibePlayful">🎈 Playful</button>
+                    <button onclick="setMyMood('calm')" data-mood="calm" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeCalm">🌊 Calm</button>
+                    <button onclick="setMyMood('focus')" data-mood="focus" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeFocus">⚡ Focus</button>
+                    <button onclick="setMyMood('drifting')" data-mood="drifting" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeDrifting">☁️ Drifting</button>
+                    <button onclick="setMyMood('drained')" data-mood="drained" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeDrained">🥀 Drained</button>
+                    <button onclick="setMyMood('overwhelmed')" data-mood="overwhelmed" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeOverwhelmed">🌧️ Overwhelmed</button>
+                    <button onclick="setMyMood('missing')" data-mood="missing" class="shrink-0 px-3 py-1.5 rounded-full glass-subtle text-xs opacity-65 hover:opacity-100 active:scale-95 transition whitespace-nowrap" data-i18n="vibeMissing">🌙 Missing You</button>
                 </div>
             </div>
 
-            <!-- 1. INCOMING CAPSULE CARD -->
-            <div id="incoming-card" class="glass rounded-[26px] p-5 transition-all duration-500" aria-live="polite">
-                <div class="flex items-center justify-between text-[11px] opacity-65 mb-2.5 gap-2">
-                    <span id="incoming-from" class="font-medium truncate">--</span>
+            <!-- INCOMING CAPSULE -->
+            <div id="incoming-card" class="glass card" aria-live="polite">
+                <div class="flex items-center justify-between text-[11px] opacity-65 gap-2 shrink-0 min-w-0">
+                    <span id="incoming-from" class="font-medium truncate min-w-0">--</span>
                     <span class="flex items-center gap-2 shrink-0">
-                        <span id="incoming-queue" class="hidden text-[10px] px-2 py-0.5 rounded-full bg-amber-300/20 text-amber-200"></span>
-                        <span id="incoming-status" class="font-mono uppercase tracking-wider text-amber-300">--</span>
+                        <span id="incoming-queue" class="hidden text-[10px] px-2 py-0.5 rounded-full bg-amber-300/20 text-amber-200 whitespace-nowrap"></span>
+                        <span id="incoming-status" class="font-mono uppercase tracking-wider text-amber-300 whitespace-nowrap">--</span>
                     </span>
                 </div>
 
-                <div id="state-empty" class="py-3 text-center text-xs opacity-40 font-light" data-i18n="emptyCapsule">No locked thoughts from your partner right now.</div>
+                <div class="incoming-body">
+                    <div id="state-empty" class="state text-center text-xs opacity-40 font-light py-1" data-i18n="emptyCapsule">No locked thoughts from your partner right now.</div>
 
-                <div id="state-scheduled" class="hidden py-3 text-center text-xs opacity-70 font-light">
-                    <span aria-hidden="true">✉️ </span><span id="scheduled-text"></span>
-                </div>
-
-                <div id="state-locked" class="hidden space-y-3">
-                    <p id="locked-text" class="text-base sm:text-lg font-light leading-relaxed break-words">
-                        <span id="masked-dots" class="opacity-30 select-none tracking-widest" aria-hidden="true"></span>
-                        <span id="teaser-words" class="font-normal underline decoration-amber-300/60 underline-offset-4 text-amber-200"></span>
-                    </p>
-                    <p id="sound-only-text" class="hidden text-base font-light" data-i18n="soundOnly">🎙️ A sound is waiting for you</p>
-
-                    <form id="guess-row" class="flex items-center space-x-2 pt-1" onsubmit="event.preventDefault(); unlockCapsule(false);">
-                        <input id="guess-input" type="text" autocomplete="off" data-i18n-placeholder="guessPlaceholder" data-i18n-aria="guessPlaceholder" class="w-full bg-transparent border-b border-white/20 py-1.5 text-sm focus:outline-none focus:border-amber-300 transition placeholder:opacity-40">
-                        <button type="submit" class="px-4 py-2 rounded-full bg-white text-black text-xs font-semibold tracking-wide shrink-0 hover:opacity-90 active:scale-95 transition" data-i18n="unlockBtn">Unlock</button>
-                    </form>
-                    <p id="guess-hint" class="hidden text-[11px] text-amber-200/90"></p>
-                    <div class="flex justify-end">
-                        <button id="reveal-link" type="button" onclick="unlockCapsule(true)" class="text-[11px] underline decoration-white/30 underline-offset-4 opacity-55 hover:opacity-100 transition" data-i18n="revealNoGuess">Reveal without guessing</button>
-                        <button id="listen-btn" type="button" onclick="unlockCapsule(true)" class="hidden px-4 py-2 rounded-full bg-white text-black text-xs font-semibold active:scale-95 transition" data-i18n="listenBtn">Listen</button>
+                    <div id="state-scheduled" class="state hidden text-center text-xs opacity-70 font-light">
+                        <p><span aria-hidden="true">✉️ </span><span id="scheduled-text"></span></p>
                     </div>
-                </div>
 
-                <div id="state-unlocked" class="hidden space-y-3">
-                    <p id="full-sentence" class="text-base sm:text-lg font-light leading-relaxed break-words"></p>
-                    <p id="guess-result" class="text-xs opacity-65 italic border-l-2 border-amber-300/50 pl-3 py-0.5"></p>
-                    <div id="audio-player-wrap" class="hidden pt-1">
-                        <audio id="capsule-audio" controls playsinline preload="metadata" class="w-full h-9 rounded-lg"></audio>
+                    <div id="state-locked" class="state hidden">
+                        <p id="locked-text" class="msg-text scroll-text no-scrollbar">
+                            <span id="masked-dots" class="opacity-30 tracking-widest" aria-hidden="true"></span>
+                            <span id="teaser-words" class="font-normal underline decoration-amber-300/60 underline-offset-4 text-amber-200"></span>
+                        </p>
+                        <p id="sound-only-text" class="hidden msg-text" data-i18n="soundOnly">🎙️ A sound is waiting for you</p>
+
+                        <form id="guess-row" class="flex items-center gap-2 shrink-0" onsubmit="event.preventDefault(); unlockCapsule(false);">
+                            <input id="guess-input" type="text" autocomplete="off" enterkeyhint="send" data-i18n-placeholder="guessPlaceholder" data-i18n-aria="guessPlaceholder" class="w-full min-w-0 bg-transparent border-b border-white/20 py-1.5 focus:outline-none focus:border-amber-300 transition placeholder:opacity-40">
+                            <button type="submit" class="px-4 py-2 rounded-full bg-white text-black text-xs font-semibold tracking-wide shrink-0 hover:opacity-90 active:scale-95 transition whitespace-nowrap" data-i18n="unlockBtn">Unlock</button>
+                        </form>
+                        <p id="guess-hint" class="hidden text-[11px] text-amber-200/90 shrink-0"></p>
+                        <div class="flex justify-end shrink-0">
+                            <button id="reveal-link" type="button" onclick="unlockCapsule(true)" class="text-[11px] underline decoration-white/30 underline-offset-4 opacity-55 hover:opacity-100 transition py-1" data-i18n="revealNoGuess">Reveal without guessing</button>
+                            <button id="listen-btn" type="button" onclick="unlockCapsule(true)" class="hidden px-4 py-2 rounded-full bg-white text-black text-xs font-semibold active:scale-95 transition" data-i18n="listenBtn">Listen</button>
+                        </div>
+                    </div>
+
+                    <div id="state-unlocked" class="state hidden">
+                        <p id="full-sentence" class="msg-text scroll-text no-scrollbar selectable"></p>
+                        <p id="guess-result" class="text-xs opacity-65 italic border-l-2 border-amber-300/50 pl-3 py-0.5 shrink-0"></p>
+                        <div id="audio-player-wrap" class="hidden shrink-0">
+                            <audio id="capsule-audio" controls playsinline preload="metadata" class="w-full h-9 rounded-lg"></audio>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. COMPOSER CARD -->
-            <div id="composer-card" class="glass rounded-[26px] p-5 space-y-3.5 transition-all duration-500">
-                <div class="flex justify-between items-center gap-2">
-                    <span id="composer-prompt" class="text-[11px] opacity-65 truncate">--</span>
-                    <span id="partner-sleep-badge" class="text-[10px] font-mono uppercase px-2.5 py-0.5 rounded-full glass-subtle shrink-0">--</span>
+            <!-- COMPOSER -->
+            <div id="composer-card" class="glass card">
+                <div class="flex justify-between items-center gap-2 shrink-0 min-w-0">
+                    <span id="composer-prompt" class="text-[11px] opacity-65 truncate min-w-0">--</span>
+                    <span id="partner-sleep-badge" class="text-[10px] font-mono uppercase px-2.5 py-0.5 rounded-full glass-subtle shrink-0 truncate max-w-[55%]">--</span>
                 </div>
 
-                <p id="no-partner-msg" class="hidden text-xs opacity-60 font-light py-2" data-i18n="noPartner">Waiting for your partner to join.</p>
+                <p id="no-partner-msg" class="hidden text-xs opacity-60 font-light py-1" data-i18n="noPartner">Waiting for your partner to join.</p>
 
-                <div id="composer-body" class="space-y-3.5">
-                    <textarea id="composer-input" rows="2" maxlength="500" data-i18n-placeholder="composerPlaceholder" data-i18n-aria="composerPlaceholder" class="w-full bg-transparent text-base sm:text-lg font-light placeholder:opacity-30 focus:outline-none resize-none leading-relaxed"></textarea>
+                <div id="composer-body" class="composer-body">
+                    <textarea id="composer-input" rows="1" maxlength="500" enterkeyhint="enter" data-i18n-placeholder="composerPlaceholder" data-i18n-aria="composerPlaceholder" class="w-full bg-transparent font-light placeholder:opacity-30 focus:outline-none resize-none leading-relaxed no-scrollbar"></textarea>
 
-                    <div id="recorded-preview-wrap" class="hidden flex items-center justify-between text-xs py-1.5 px-3 rounded-2xl glass-subtle">
-                        <audio id="recorded-preview" controls playsinline class="h-8 w-48 sm:w-56"></audio>
-                        <button type="button" onclick="clearRecording()" class="text-[11px] opacity-60 hover:opacity-100 px-2 py-1" data-i18n="clearAudio">✕ Clear</button>
+                    <div id="recorded-preview-wrap" class="hidden flex items-center justify-between gap-2 text-xs py-1.5 px-3 rounded-2xl glass-subtle shrink-0">
+                        <audio id="recorded-preview" controls playsinline class="h-8 flex-1 min-w-0"></audio>
+                        <button type="button" onclick="clearRecording()" class="text-[11px] opacity-60 hover:opacity-100 px-2 py-1 shrink-0" data-i18n="clearAudio">✕ Clear</button>
                     </div>
 
-                    <label id="schedule-row" class="hidden flex items-center gap-2.5 text-[11px] opacity-80 cursor-pointer select-none">
-                        <input id="schedule-toggle" type="checkbox" checked class="w-4 h-4 accent-amber-300">
-                        <span id="schedule-label">--</span>
-                    </label>
+                    <p id="mic-error-msg" role="alert" class="text-[11px] text-rose-300 hidden shrink-0"></p>
+                    <p id="send-error" role="alert" class="text-[11px] text-rose-300 hidden shrink-0"></p>
 
-                    <p id="mic-error-msg" role="alert" class="text-[11px] text-rose-300 hidden"></p>
-                    <p id="send-error" role="alert" class="text-[11px] text-rose-300 hidden"></p>
-
-                    <div class="flex items-center justify-between pt-2 border-t border-white/10">
-                        <button type="button" id="mic-btn" onclick="toggleRecording()" class="flex items-center space-x-2 text-xs opacity-90 hover:opacity-100 transition py-2 px-3.5 rounded-full glass-subtle active:scale-95">
-                            <span id="mic-dot" class="w-2 h-2 rounded-full bg-red-500" aria-hidden="true"></span>
-                            <span id="mic-label">Record 6s sound</span>
-                            <span id="mic-timer" class="font-mono tabular-clock text-[11px] text-amber-300 hidden">6.0s</span>
+                    <div class="flex items-center justify-between gap-2 pt-2 border-t border-white/10 shrink-0">
+                        <button type="button" id="mic-btn" onclick="toggleRecording()" class="flex items-center gap-2 text-xs opacity-90 hover:opacity-100 transition py-2 px-3.5 rounded-full glass-subtle active:scale-95 min-w-0">
+                            <span id="mic-dot" class="w-2 h-2 rounded-full bg-red-500 shrink-0" aria-hidden="true"></span>
+                            <span id="mic-label" class="truncate">Record 6s sound</span>
+                            <span id="mic-timer" class="font-mono tabular-nums text-[11px] text-amber-300 hidden shrink-0">6.0s</span>
                         </button>
 
-                        <button type="button" onclick="sendHandoff()" id="send-btn" class="px-6 py-2 rounded-full bg-white text-black text-xs font-semibold tracking-wide hover:opacity-90 active:scale-95 transition disabled:opacity-50">
+                        <label id="schedule-row" class="hidden shrink-0 cursor-pointer ml-auto">
+                            <input id="schedule-toggle" type="checkbox" checked class="peer sr-only">
+                            <span id="schedule-label" class="flex items-center gap-1 px-2.5 py-2 rounded-full border border-white/10 text-[11px] whitespace-nowrap opacity-55 transition peer-checked:opacity-100 peer-checked:bg-amber-300/20 peer-checked:text-amber-200 peer-checked:border-amber-300/40 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-300">--</span>
+                        </label>
+
+                        <button type="button" onclick="sendHandoff()" id="send-btn" class="px-6 py-2.5 rounded-full bg-white text-black text-xs font-semibold tracking-wide hover:opacity-90 active:scale-95 transition disabled:opacity-50 shrink-0 whitespace-nowrap">
                             <span id="send-label">Send</span>
                         </button>
                     </div>
                 </div>
 
-                <div id="outgoing-receipt" class="hidden pt-2 border-t border-white/10 text-[11px] opacity-60 flex items-center justify-between gap-2">
-                    <span id="outgoing-receipt-text" class="truncate">--</span>
-                    <span id="outgoing-receipt-badge" class="font-mono text-[9px] uppercase px-2 py-0.5 rounded-full glass-subtle shrink-0">--</span>
+                <div id="outgoing-receipt" class="hidden pt-2 border-t border-white/10 text-[11px] opacity-60 flex items-center justify-between gap-2 shrink-0 min-w-0">
+                    <span id="outgoing-receipt-text" class="truncate min-w-0">--</span>
+                    <span id="outgoing-receipt-badge" class="font-mono text-[9px] uppercase px-2 py-0.5 rounded-full glass-subtle shrink-0 whitespace-nowrap">--</span>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- MODAL: ACCOUNT -->
-    <div id="edit-modal" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 hidden flex items-center justify-center p-5" onclick="if(event.target===this) closeEditModal()">
-        <div class="glass rounded-[28px] p-6 w-full max-w-sm space-y-4 max-h-[90dvh] overflow-y-auto no-scrollbar" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
+    <footer class="footer wrap items-center justify-between text-[10px] opacity-40 py-1.5 gap-2">
+        <span id="sync-indicator" class="shrink-0">--</span>
+        <span id="sky-desc" class="truncate min-w-0"></span>
+    </footer>
+
+    <!-- SHEET: ACCOUNT -->
+    <div id="edit-modal" class="sheet-backdrop hidden" onclick="if(event.target===this) closeEditModal()">
+        <div class="sheet glass rounded-[28px] p-6 space-y-4 no-scrollbar" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
             <div class="flex justify-between items-center">
                 <h3 id="edit-modal-title" class="text-xs font-semibold uppercase tracking-wider opacity-80" data-i18n="editAccount">Account</h3>
-                <button onclick="closeEditModal()" class="text-xs opacity-60 hover:opacity-100 p-1" data-i18n-aria="close" aria-label="Close">✕</button>
+                <button onclick="closeEditModal()" class="icon-btn -mr-2 opacity-60 hover:opacity-100" data-i18n-aria="close" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                </button>
             </div>
             <div class="space-y-3 text-xs">
                 <div>
@@ -310,15 +591,15 @@
                 </div>
                 <div class="relative">
                     <label for="modal-new-city" class="opacity-60 block mb-1" data-i18n="cityLabel">Your City</label>
-                    <input id="modal-new-city" type="text" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="modal-city-list" data-i18n-placeholder="cityInputPlaceholder" class="w-full glass-subtle rounded-xl px-3.5 py-2.5 focus:outline-none">
+                    <input id="modal-new-city" type="text" autocomplete="off" autocorrect="off" role="combobox" aria-autocomplete="list" aria-controls="modal-city-list" data-i18n-placeholder="cityInputPlaceholder" class="w-full glass-subtle rounded-xl px-3.5 py-2.5 focus:outline-none">
                     <div id="modal-city-list" role="listbox" class="hidden absolute left-0 right-0 mt-1 z-50 rounded-2xl solid-panel overflow-hidden text-sm"></div>
                 </div>
                 <div>
                     <span class="opacity-60 block mb-1" data-i18n="sleepHoursLabel">Sleep hours</span>
                     <div class="flex items-center gap-2">
-                        <select id="modal-sleep-start" aria-label="Sleep start" class="flex-1 glass-subtle rounded-xl px-3 py-2 focus:outline-none bg-transparent"></select>
-                        <span class="opacity-60" data-i18n="sleepTo">to</span>
-                        <select id="modal-sleep-end" aria-label="Wake up" class="flex-1 glass-subtle rounded-xl px-3 py-2 focus:outline-none bg-transparent"></select>
+                        <select id="modal-sleep-start" aria-label="Sleep start" class="flex-1 min-w-0 glass-subtle rounded-xl px-3 py-2 focus:outline-none bg-transparent"></select>
+                        <span class="opacity-60 shrink-0" data-i18n="sleepTo">to</span>
+                        <select id="modal-sleep-end" aria-label="Wake up" class="flex-1 min-w-0 glass-subtle rounded-xl px-3 py-2 focus:outline-none bg-transparent"></select>
                     </div>
                 </div>
                 <div class="flex items-center justify-between gap-2 pt-1">
@@ -341,25 +622,26 @@
                 </div>
                 <p id="modal-msg" role="alert" class="text-amber-300 hidden"></p>
             </div>
-            <button id="modal-save-btn" onclick="saveAccountFromModal()" class="w-full py-3 rounded-full bg-white text-black text-xs font-semibold active:scale-[0.98] transition disabled:opacity-50" data-i18n="saveChanges">Save Changes</button>
+            <button id="modal-save-btn" onclick="saveAccountFromModal()" class="w-full py-3 rounded-full bg-white text-black text-sm font-semibold active:scale-[0.98] transition disabled:opacity-50" data-i18n="saveChanges">Save Changes</button>
+            <button onclick="closeEditModal(); logout();" class="w-full py-2.5 rounded-full text-xs text-rose-300/90 hover:bg-white/5 transition" data-i18n="logout">Exit</button>
         </div>
     </div>
 
-    <!-- MODAL: TIMELINE -->
-    <div id="timeline-modal" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 hidden flex items-end sm:items-center justify-center p-3 sm:p-5" onclick="if(event.target===this) closeTimeline()">
-        <div class="glass rounded-[28px] p-5 w-full max-w-md max-h-[85dvh] flex flex-col" role="dialog" aria-modal="true" aria-labelledby="timeline-title">
-            <div class="flex justify-between items-center pb-3">
+    <!-- SHEET: TIMELINE -->
+    <div id="timeline-modal" class="sheet-backdrop hidden" onclick="if(event.target===this) closeTimeline()">
+        <div class="sheet glass rounded-[28px] p-5 flex flex-col no-scrollbar" role="dialog" aria-modal="true" aria-labelledby="timeline-title">
+            <div class="flex justify-between items-center pb-2 shrink-0">
                 <h3 id="timeline-title" class="text-xs font-semibold uppercase tracking-wider opacity-80" data-i18n="timelineTitle">Your capsules</h3>
-                <button onclick="closeTimeline()" class="text-xs opacity-60 hover:opacity-100 p-1" data-i18n-aria="close" aria-label="Close">✕</button>
+                <button onclick="closeTimeline()" class="icon-btn -mr-2 opacity-60 hover:opacity-100" data-i18n-aria="close" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                </button>
             </div>
-            <div id="timeline-list" class="space-y-2.5 overflow-y-auto no-scrollbar"></div>
+            <div id="timeline-list" class="space-y-2.5"></div>
         </div>
     </div>
 
-    <footer class="w-full max-w-md mx-auto px-6 py-3 flex items-center justify-between text-[10px] opacity-40">
-        <span id="sync-indicator">--</span>
-        <span id="sky-desc" class="truncate pl-2"></span>
-    </footer>
+    <div id="toast" role="status" aria-live="polite" class="toast hidden solid-panel rounded-full px-4 py-2.5 text-xs text-center"></div>
+</div>
 
     <script>
         // ============================================================================
@@ -546,7 +828,7 @@
                 currentPassVerify: 'Current password',
                 newPassLabel: 'New password',
                 saveChanges: 'Save Changes',
-                close: 'Close',
+                close: 'Close', install: 'Install app', iosInstallHint: 'Tap the Share button, then “Add to Home Screen”.', language: 'Language',
                 errInvalidCreds: 'Invalid credentials (password min 6 chars).',
                 errNoSupabase: 'Configure supabase.txt or enter keys above.',
                 errMicPerm: 'Microphone unavailable. Ensure HTTPS permission.',
@@ -644,7 +926,7 @@
                 currentPassVerify: '当前密码',
                 newPassLabel: '新密码',
                 saveChanges: '保存修改',
-                close: '关闭',
+                close: '关闭', install: '安装应用', iosInstallHint: '点击“分享”按钮，然后选择“添加到主屏幕”。', language: '语言',
                 errInvalidCreds: '账号或密码错误（密码至少 6 位）。',
                 errNoSupabase: '请配置 supabase.txt 或在上方输入密钥。',
                 errMicPerm: '无法访问麦克风，请确认 HTTPS 权限。',
@@ -742,7 +1024,7 @@
                 currentPassVerify: '目前密碼',
                 newPassLabel: '新密碼',
                 saveChanges: '儲存修改',
-                close: '關閉',
+                close: '關閉', install: '安裝 App', iosInstallHint: '點擊「分享」按鈕，然後選擇「加入主畫面」。', language: '語言',
                 errInvalidCreds: '帳號或密碼錯誤（密碼至少 6 位）。',
                 errNoSupabase: '請設定 supabase.txt 或在上方輸入金鑰。',
                 errMicPerm: '無法存取麥克風，請確認 HTTPS 權限。',
@@ -840,7 +1122,7 @@
                 currentPassVerify: 'Contraseña actual',
                 newPassLabel: 'Nueva contraseña',
                 saveChanges: 'Guardar Cambios',
-                close: 'Cerrar',
+                close: 'Cerrar', install: 'Instalar app', iosInstallHint: 'Toca Compartir y luego «Añadir a pantalla de inicio».', language: 'Idioma',
                 errInvalidCreds: 'Error de acceso. Revisa usuario y contraseña.',
                 errNoSupabase: 'Configura supabase.txt primero.',
                 errMicPerm: 'Micrófono no disponible. Requiere HTTPS.',
@@ -938,7 +1220,7 @@
                 currentPassVerify: 'Contrasenya actual',
                 newPassLabel: 'Nova contrasenya',
                 saveChanges: 'Desar Canvis',
-                close: 'Tancar',
+                close: 'Tancar', install: 'Instal·lar app', iosInstallHint: 'Toca Compartir i després «Afegeix a la pantalla d’inici».', language: 'Idioma',
                 errInvalidCreds: 'Error d’autenticació. Revisa usuari i contrasenya.',
                 errNoSupabase: 'Configura el fitxer supabase.txt primer.',
                 errMicPerm: 'Micròfon no disponible. Cal connexió HTTPS.',
@@ -980,16 +1262,19 @@
             lsSet('handoff_lang', lang);
             document.documentElement.lang = lang;
 
-            ['en', 'zh-CN', 'zh-TW', 'es', 'ca'].forEach(l => {
-                $(`lang-${l}`).className = l === lang
-                    ? 'px-2.5 py-1 rounded-full text-[11px] bg-white text-black font-semibold transition shadow-sm'
-                    : 'px-2.5 py-1 rounded-full text-[11px] opacity-60 hover:opacity-100 transition';
-                $(`lang-${l}`).setAttribute('aria-pressed', l === lang ? 'true' : 'false');
+            setText('lang-current', LANG_SHORT[lang] || 'EN');
+            document.querySelectorAll('#lang-menu [data-lang]').forEach(b => {
+                const on = b.dataset.lang === lang;
+                b.setAttribute('aria-checked', on ? 'true' : 'false');
+                b.classList.toggle('text-amber-300', on);
+                b.querySelector('.check').classList.toggle('opacity-0', !on);
             });
+            document.title = t('appTitle');
 
             document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); });
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
             document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria'))); });
+            document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.getAttribute('data-i18n-title')); });
 
             // Elements whose text depends on state (no data-i18n, so the line above can't clobber them)
             $('login-submit-btn').textContent = authMode === 'signup' ? t('signupBtn') : t('loginBtn');
@@ -1004,6 +1289,18 @@
                 getPushSub().then(sub => { if (sub) savePushSub(sub); });
             }
         }
+
+        const LANG_SHORT = { 'en': 'EN', 'zh-CN': '简', 'zh-TW': '繁', 'es': 'ES', 'ca': 'CA' };
+        function toggleLangMenu(e) {
+            if (e) e.stopPropagation();
+            const open = $('lang-menu').classList.contains('hidden');
+            show('lang-menu', open);
+            $('lang-btn').setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (open) { const cur = document.querySelector(`#lang-menu [data-lang="${currentLang}"]`); if (cur) cur.focus(); }
+        }
+        function closeLangMenu() { show('lang-menu', false); $('lang-btn').setAttribute('aria-expanded', 'false'); }
+        function pickLang(lang) { closeLangMenu(); setLang(lang); $('lang-btn').focus(); }
+        document.addEventListener('click', e => { if (!e.target.closest('#lang-menu') && !e.target.closest('#lang-btn')) closeLangMenu(); });
 
         function switchAuthTab(mode) {
             authMode = mode;
@@ -1037,6 +1334,29 @@
         }
         function hourFloat(tz, date) { const { h, m } = partsIn(tz, date); return h + m / 60; }
         function timeStr(tz, date) { const { h, m } = partsIn(tz, date); return `${pad(h)}:${pad(m)}`; }
+        const fullFmtCache = {};
+        function localAsUTC(tz, date) {
+            let f = fullFmtCache[tz];
+            if (!f) {
+                const opts = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' };
+                try { f = new Intl.DateTimeFormat('en-US', { ...opts, timeZone: tz }); }
+                catch (e) { f = new Intl.DateTimeFormat('en-US', { ...opts, timeZone: 'UTC' }); }
+                fullFmtCache[tz] = f;
+            }
+            const p = {};
+            f.formatToParts(date).forEach(x => { p[x.type] = x.value; });
+            return Date.UTC(+p.year, +p.month - 1, +p.day, (+p.hour) % 24, +p.minute);
+        }
+        // UTC offset of `tz` in minutes at `date` (DST-aware, works in every browser with Intl).
+        function tzOffsetMin(tz, date = new Date()) {
+            const d = new Date(Math.floor(date.getTime() / 60000) * 60000);
+            return Math.round((localAsUTC(tz, d) - d.getTime()) / 60000);
+        }
+        function formatTzDiff(mins) {
+            if (mins === 0) return '±0h';
+            const a = Math.abs(mins), h = Math.floor(a / 60), m = a % 60;
+            return `${mins > 0 ? '+' : '−'}${h}h${m ? pad(m) : ''}`;
+        }
         function tzOf(acc) { return (acc && acc.tz) || 'UTC'; }
         function sleepStart(acc) { return (acc && Number.isInteger(acc.sleep_start)) ? acc.sleep_start : 23; }
         function sleepEnd(acc) { return (acc && Number.isInteger(acc.sleep_end)) ? acc.sleep_end : 7; }
@@ -1526,18 +1846,26 @@
                 $('app-body').style.background = `linear-gradient(165deg, ${topSky} 0%, ${mood.color} 100%)`;
                 $('meta-theme-color').setAttribute('content', topSky);
 
-                setText('mode-pill', asleep ? t('modeDispatch') : t('modeRelay'));
-                setText('partner-sleep-badge', `${partnerUser.name} · ${asleep ? t('sleeping') : t('awake')}`);
+                const diff = formatTzDiff(tzOffsetMin(pTz) - tzOffsetMin(tzOf(currentUser)));
+                setText('tz-diff', diff);
+                $('tz-diff').setAttribute('aria-label', `${partnerUser.name} ${diff}`);
+                $('tz-diff').title = `${partnerUser.name} ${diff}`;
+                setText('partner-sleep-badge', asleep ? t('sleeping') : t('awake'));
                 setText('composer-prompt', `${asleep ? t('promptSleep') : t('promptAwake')} ${partnerUser.name}`);
 
                 // Scheduled delivery option while they sleep
                 const wake = asleep ? nextWakeUp(pTz, sleepEnd(partnerUser)) : null;
                 show('schedule-row', !!wake);
-                if (wake) setText('schedule-label', t('scheduleToggle', { time: timeStr(pTz, wake) }));
+                if (wake) {
+                    const full = t('scheduleToggle', { time: timeStr(pTz, wake) });
+                    setText('schedule-label', `☀️ ${timeStr(pTz, wake)}`);
+                    $('schedule-row').title = full;
+                    $('schedule-toggle').setAttribute('aria-label', full);
+                }
 
                 renderOverlap();
             } else {
-                ['name-partner', 'label-partner', 'weather-partner', 'mode-pill'].forEach(id => setText(id, '--'));
+                ['name-partner', 'label-partner', 'weather-partner', 'tz-diff'].forEach(id => setText(id, '--'));
                 setText('time-partner', '--:--');
                 setText('composer-prompt', '');
                 setText('sky-desc', '');
@@ -1756,6 +2084,7 @@
                 if (error) throw error;
 
                 input.value = '';
+                autoGrow();
                 clearRecording();
                 setSendLabel('sent');
                 setTimeout(() => { if (!sending) setSendLabel('sendBtn'); }, 1500);
@@ -2062,15 +2391,113 @@
 
         document.addEventListener('keydown', e => {
             if (e.key !== 'Escape') return;
-            if (!$('edit-modal').classList.contains('hidden')) closeEditModal();
+            if (!$('lang-menu').classList.contains('hidden')) closeLangMenu();
+            else if (!$('edit-modal').classList.contains('hidden')) closeEditModal();
             else if (!$('timeline-modal').classList.contains('hidden')) closeTimeline();
         });
+
+        // ============================================================================
+        // 13. APP SHELL: visible-viewport sizing, keyboard mode, install, toast
+        // ============================================================================
+        const isCoarse = window.matchMedia('(pointer: coarse)').matches;
+        const WIDE_MQ = window.matchMedia('(min-width: 720px) and (min-height: 560px), (orientation: landscape) and (max-height: 540px) and (min-width: 560px)');
+
+        // Keep the shell exactly the size of what's visible (handles iOS/Android keyboards and collapsing browser bars).
+        let vpRaf = 0;
+        function syncViewport() {
+            cancelAnimationFrame(vpRaf);
+            vpRaf = requestAnimationFrame(() => {
+                const vv = window.visualViewport;
+                const h = vv ? vv.height : window.innerHeight;
+                document.documentElement.style.setProperty('--app-h', `${Math.round(h)}px`);
+                const top = vv ? Math.max(0, vv.offsetTop) : 0;
+                $('shell').style.transform = top ? `translateY(${top}px)` : '';
+            });
+        }
+
+        // While typing on a phone, hide everything except the card you're typing into.
+        let kbTimer = null;
+        function zoneFor(el) {
+            if (!el || !el.closest) return null;
+            if (el.closest('#incoming-card')) return 'incoming';
+            if (el.closest('#composer-card')) return 'composer';
+            return null;
+        }
+        document.addEventListener('focusin', e => {
+            if (!isCoarse || !e.target.matches || !e.target.matches('input:not([type=checkbox]), textarea')) return;
+            const zone = zoneFor(e.target);
+            if (zone) {
+                clearTimeout(kbTimer);
+                document.documentElement.classList.add('kb-open');
+                document.documentElement.dataset.focus = zone;
+            } else if (e.target.closest('#login-screen, .sheet')) {
+                setTimeout(() => e.target.scrollIntoView({ block: 'center', behavior: 'smooth' }), 300);
+            }
+        });
+        document.addEventListener('focusout', () => {
+            if (!isCoarse) return;
+            clearTimeout(kbTimer);
+            kbTimer = setTimeout(() => {
+                if (zoneFor(document.activeElement) && document.activeElement.matches('input, textarea')) return;
+                document.documentElement.classList.remove('kb-open');
+                delete document.documentElement.dataset.focus;
+                window.scrollTo(0, 0);
+                syncViewport();
+            }, 150);
+        });
+
+        // Composer grows with its text on phones (capped by CSS); fills the column on wide layouts.
+        function autoGrow() {
+            const el = $('composer-input');
+            if (WIDE_MQ.matches) { el.style.height = ''; return; }
+            el.style.height = 'auto';
+            el.style.height = `${el.scrollHeight + 2}px`;
+        }
+
+        let toastTimer = null;
+        function toast(msg, ms = 3500) {
+            const el = $('toast');
+            el.textContent = msg;
+            show(el, true);
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => show(el, false), ms);
+        }
+
+        // Install: native prompt on Chromium, a how-to hint on iOS. Hidden once installed.
+        let deferredInstall = null;
+        function updateInstallBtn() { show('install-btn', !isStandalone() && (!!deferredInstall || isIOS())); }
+        async function installApp() {
+            if (deferredInstall) {
+                deferredInstall.prompt();
+                try { await deferredInstall.userChoice; } catch (e) {}
+                deferredInstall = null;
+                updateInstallBtn();
+            } else if (isIOS()) {
+                toast(t('iosInstallHint'), 6000);
+            }
+        }
+        window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; updateInstallBtn(); });
+        window.addEventListener('appinstalled', () => { deferredInstall = null; updateInstallBtn(); });
+
+        function initShell() {
+            syncViewport();
+            if (window.visualViewport) {
+                window.visualViewport.addEventListener('resize', syncViewport);
+                window.visualViewport.addEventListener('scroll', syncViewport);
+            }
+            window.addEventListener('resize', () => { syncViewport(); autoGrow(); });
+            window.addEventListener('orientationchange', () => setTimeout(syncViewport, 250));
+            $('composer-input').addEventListener('input', autoGrow);
+            if (WIDE_MQ.addEventListener) WIDE_MQ.addEventListener('change', autoGrow);
+            updateInstallBtn();
+        }
 
         navigator.serviceWorker && navigator.serviceWorker.addEventListener('message', e => {
             if (e.data && e.data.type === 'refresh' && currentUser) loadCapsules();
         });
 
         (async function boot() {
+            initShell();
             signupCityPicker = createCityPicker('signup-city', 'signup-city-list');
             modalCityPicker = createCityPicker('modal-new-city', 'modal-city-list');
             switchAuthTab('signin');
