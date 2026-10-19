@@ -122,6 +122,37 @@
       75% { transform: rotate(10deg); }
     }
 
+
+    /* After-hours console */
+    .term { position:relative; background:#17171A; color:#F7F6F2; border-radius:24px; overflow:hidden; box-shadow:0 24px 50px -32px rgba(23,23,26,.55); }
+    .term::after { content:""; position:absolute; inset:0; pointer-events:none;
+      background:repeating-linear-gradient(to bottom, rgba(255,255,255,.025) 0 1px, transparent 1px 3px); }
+    .term-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 20px; border-bottom:1px solid rgba(255,255,255,.08);
+      font-family:'Space Mono', monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:rgba(247,246,242,.45); }
+    .term-bar b { color:rgba(247,246,242,.85); font-weight:700; }
+    .term-led { display:inline-block; width:7px; height:7px; border-radius:50%; background:#E2553F; box-shadow:0 0 10px rgba(226,85,63,.8); animation:led 2.4s ease-in-out infinite; }
+    @keyframes led { 50% { opacity:.35; } }
+    .term-body { padding:18px 20px 8px; font-family:'Space Mono', monospace; font-size:13px; line-height:1.7; min-height:250px; }
+    .term-line { white-space:pre-wrap; word-break:break-word; color:rgba(247,246,242,.82); }
+    .term-line.dim { color:rgba(247,246,242,.4); }
+    .term-line.hi { color:#fff; }
+    .term-line .c { color:#E2553F; }
+    html.js .term-line.pending { display:none; }
+    .prog { display:grid; grid-template-columns:7.5rem 1fr auto; gap:6px 16px; align-items:baseline; width:100%; text-align:left;
+      padding:10px 12px; margin:2px -12px; border-radius:12px; color:inherit; text-decoration:none; transition:background .2s, color .2s; }
+    .prog:hover, .prog:focus-visible { background:#F7F6F2; color:#17171A; outline:none; }
+    .prog .code { font-weight:700; color:#E2553F; white-space:nowrap; }
+    .prog .ttl { font-weight:700; }
+    .prog .ttl small { display:block; font-weight:400; font-size:12px; opacity:.6; margin-top:2px; font-family:'Plus Jakarta Sans', system-ui, sans-serif; letter-spacing:0; }
+    .prog .go { font-size:12px; opacity:.5; white-space:nowrap; }
+    .prog:hover .go { opacity:1; }
+    @media (max-width:560px) { .prog { grid-template-columns:1fr auto; } .prog .code { grid-column:1 / -1; } }
+    .term-prompt { display:flex; align-items:center; gap:8px; padding:12px 20px 18px; font-family:'Space Mono', monospace; font-size:13px; border-top:1px dashed rgba(255,255,255,.1); }
+    .term-prompt a { color:rgba(247,246,242,.85); text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
+    .term-prompt a:hover { color:#fff; }
+    .term-cursor { width:.6em; height:1.1em; background:#E2553F; display:inline-block; animation:blink 1s steps(2, start) infinite; }
+    @keyframes blink { to { visibility:hidden; } }
+
     :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 10px; }
 
     @media (prefers-reduced-motion: reduce) {
@@ -160,6 +191,7 @@
           <a href="#identity" class="hover:text-ink transition-colors hidden md:inline" data-i18n="navWho">Who I Am</a>
           <a href="#methodology" class="hover:text-ink transition-colors hidden md:inline" data-i18n="navWhat">What I Do</a>
           <a href="#work" class="hover:text-ink transition-colors hidden sm:inline" data-i18n="navWork">Portfolio</a>
+          <a href="#arcade" class="hover:text-ink transition-colors hidden md:inline" data-i18n="navArcade">After hours</a>
         </nav>
 
         <button type="button" id="lang-toggle-btn" onclick="cycleLanguage()"
@@ -340,10 +372,42 @@
       </a>
     </section>
 
-    <!-- 04 CONTACT -->
+
+    <!-- 04 AFTER HOURS: the game console -->
+    <section id="arcade" class="reveal scroll-mt-24 space-y-5">
+      <div class="flex items-center justify-between border-b border-line pb-3">
+        <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="arcadeLabel">04 / After hours</span>
+        <span class="text-[11px] font-mono text-muted hidden sm:inline" data-i18n="arcadeKey">press ` anywhere</span>
+      </div>
+
+      <div class="term" id="term">
+        <div class="term-bar">
+          <span class="inline-flex items-center gap-2"><span class="term-led"></span><b>MEMEX-68</b></span>
+          <span data-i18n="termBar">Game repertory</span>
+        </div>
+        <div class="term-body" id="term-body" aria-live="polite">
+          <div class="term-line dim pending" data-i18n="termBoot1">Booting MEMEX-68… core OK.</div>
+          <div class="term-line dim pending" id="term-count">Mounting tape: 3 programs found.</div>
+          <div class="term-line pending">&nbsp;</div>
+          <div id="term-progs"></div>
+        </div>
+        <div class="term-prompt">
+          <span class="c" style="color:#E2553F">EXEC&gt;</span>
+          <a href="https://wei-meng.org/game" target="_blank" rel="noopener noreferrer" id="term-open">
+            <span data-i18n="termOpen">open the full console</span><span class="term-cursor" aria-hidden="true"></span>
+          </a>
+        </div>
+      </div>
+
+      <p class="font-serif italic text-lg sm:text-xl text-ink/70 leading-snug max-w-2xl" data-i18n="arcadeNote">
+        Everything else on this site teaches through play. These are just the play.
+      </p>
+    </section>
+
+    <!-- 05 CONTACT -->
     <section id="contact" class="reveal scroll-mt-24">
       <div class="text-center py-6 sm:py-10 space-y-6">
-        <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="contactLabel">04 / Say Hello</span>
+        <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="contactLabel">05 / Say Hello</span>
         <h2 class="font-syne text-3xl sm:text-5xl font-bold tracking-tight leading-[1.1] max-w-2xl mx-auto" data-i18n-html="contactTitle">
           Let's build learning people <span class="accent-word">choose</span> to finish.
         </h2>
@@ -442,7 +506,16 @@
         workTitle: "Case studies & interactive simulations",
         workDesc: "Wander through live sandboxes, episodic scripts, and behavior-change systems in the project lab.",
         workBtn: "Enter the lab",
-        contactLabel: "04 / Say Hello",
+        contactLabel: "05 / Say Hello",
+        navArcade: "After hours", arcadeLabel: "04 / After hours", arcadeKey: "press ` anywhere",
+        termBar: "Game repertory", termBoot1: "Booting MEMEX-68… core OK.", termCount: "Mounting tape: {n} programs found.",
+        termRun: "run", termLoading: "Seeking tape {c}…", termOpen: "open the full console",
+        arcadeNote: "Everything else on this site teaches through play. These are just the play.",
+        games: {
+          CLIMB: ["Climb Master", "Free-solo strategy from 5.6 to 5.15d. Manage the pump, chalk up, read the crux."],
+          DJ: ["Retro DJ", "Spin 8-bit vinyl, beatmatch, and drop synth loops on the radio."],
+          BAR: ["Bar & Coffee", "Pull up a stool. Taste the cocktails, chat with the bartender."]
+        },
         contactTitle: 'Let\'s build learning people <span class="accent-word">choose</span> to finish.',
         contactCopy: "Copy email", copiedText: "✓ Copied",
         drinkTooltip: "psst — need a drink?",
@@ -484,7 +557,16 @@
         workTitle: "案例与交互仿真",
         workDesc: "逛逛在线沙盒、剧集脚本和行为改变系统原型。",
         workBtn: "进入实验室",
-        contactLabel: "04 / 打个招呼",
+        contactLabel: "05 / 打个招呼",
+        navArcade: "下班后", arcadeLabel: "04 / 下班后", arcadeKey: "任意处按 `",
+        termBar: "游戏仓库", termBoot1: "MEMEX-68 启动中……核心正常。", termCount: "磁带装载：发现 {n} 个程序。",
+        termRun: "运行", termLoading: "正在寻找磁带 {c}……", termOpen: "打开完整控制台",
+        arcadeNote: "这个网站的其他东西都在用游戏来教学。这里的，就只是游戏。",
+        games: {
+          CLIMB: ["攀岩大师", "从 5.6 到 5.15d 的徒手攀策略。控制泵感、上镁粉、读懂难点。"],
+          DJ: ["复古 DJ", "转动 8-bit 黑胶，对拍，在电台里丢下合成器循环。"],
+          BAR: ["酒吧与咖啡", "坐下来，尝尝鸡尾酒，和调酒师聊聊天。"]
+        },
         contactTitle: '一起做让人<span class="accent-word">主动</span>学完的学习体验。',
         contactCopy: "复制邮箱", copiedText: "✓ 已复制",
         drinkTooltip: "嘘——来一杯？",
@@ -526,7 +608,16 @@
         workTitle: "Casos y simulaciones interactivas",
         workDesc: "Recorre simuladores en vivo, guiones por episodios y sistemas de cambio de conducta en el laboratorio.",
         workBtn: "Entrar al laboratorio",
-        contactLabel: "04 / Saludemos",
+        contactLabel: "05 / Saludemos",
+        navArcade: "Fuera de horario", arcadeLabel: "04 / Fuera de horario", arcadeKey: "pulsa ` donde sea",
+        termBar: "Repertorio de juegos", termBoot1: "Arrancando MEMEX-68… núcleo OK.", termCount: "Montando cinta: {n} programas encontrados.",
+        termRun: "ejecutar", termLoading: "Buscando cinta {c}…", termOpen: "abrir la consola completa",
+        arcadeNote: "Todo lo demás en este sitio enseña jugando. Esto es solo el juego.",
+        games: {
+          CLIMB: ["Climb Master", "Estrategia de escalada en solo, de 5.6 a 5.15d. Controla el bombeo, pon magnesio, lee el paso clave."],
+          DJ: ["Retro DJ", "Gira vinilos de 8 bits, sincroniza el tempo y lanza loops de sintetizador."],
+          BAR: ["Bar y café", "Siéntate en la barra. Prueba los cócteles, charla con el bartender."]
+        },
         contactTitle: 'Creemos aprendizajes que la gente <span class="accent-word">elija</span> terminar.',
         contactCopy: "Copiar email", copiedText: "✓ Copiado",
         drinkTooltip: "psst… ¿un trago?",
@@ -625,6 +716,7 @@
       document.getElementById('drink-link').setAttribute('aria-label', t().drinkTooltip);
 
       renderSlide(false);
+      if (typeof renderGames === 'function') renderGames();
       try {
         localStorage.setItem('wm_preferred_lang', lang);
         localStorage.setItem('wm_cases_lang', lang);
@@ -657,6 +749,107 @@
         entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
       }, { threshold: 0.12 });
       els.forEach((e, i) => { e.style.transitionDelay = (e.closest('#hero') ? i * 90 : 0) + 'ms'; io.observe(e); });
+    })();
+
+
+    /* ---------- 04 After hours: game console teaser ---------- */
+    const CONSOLE_BASE = 'https://wei-meng.org/game/';
+    let GAMES = [
+      { code: 'CLIMB', url: 'climb' },
+      { code: 'DJ', url: 'dj' },
+      { code: 'BAR', url: 'bar' }
+    ];
+    let termTyped = false;
+
+    function safeGameUrl(u) {
+      const raw = String(u || '').trim();
+      if (!raw || /^(javascript|data|vbscript):/i.test(raw.replace(/[\s\u0000-\u001f]/g, ''))) return null;
+      try { return new URL(raw, CONSOLE_BASE).href; } catch (e) { return null; }
+    }
+
+    // Same formats the console accepts: JSON, or CODE:/TITLE:/DESC:/URL: blocks
+    function parseGames(text) {
+      const clean = (text || '').trim();
+      if (!clean) return [];
+      if (/^[\[{]/.test(clean)) {
+        try { const j = JSON.parse(clean); return (Array.isArray(j) ? j : [j]).map(g => ({ code: String(g.code || g.id || '').toUpperCase(), title: g.title || g.name, desc: g.desc || g.intro, url: g.url || g.link })); } catch (e) {}
+      }
+      const out = []; let cur = null;
+      clean.split(/\r?\n/).forEach(line => {
+        const t = line.trim(); if (!t || t.startsWith('#') || t.startsWith('//')) return;
+        const i = t.indexOf(':'); if (i < 0) return;
+        const k = t.slice(0, i).trim().toUpperCase(), v = t.slice(i + 1).trim();
+        if (['CODE', 'GAME', 'PROGRAM'].includes(k)) { if (cur) out.push(cur); cur = { code: v.toUpperCase().replace(/\s+/g, '') }; }
+        else if (cur) {
+          if (k === 'TITLE' || k === 'NAME') cur.title = v;
+          else if (k === 'DESC' || k === 'INTRO' || k === 'SUMMARY') cur.desc = v;
+          else if (['URL', 'LINK', 'FILE', 'PATH'].includes(k)) cur.url = v;
+        }
+      });
+      if (cur) out.push(cur);
+      return out.filter(g => g.code);
+    }
+
+    function renderGames() {
+      const box = document.getElementById('term-progs');
+      if (!box) return;
+      box.innerHTML = '';
+      GAMES.forEach(g => {
+        const href = safeGameUrl(g.url);
+        if (!href) return;
+        const known = (t().games || {})[g.code];
+        const title = known ? known[0] : (g.title || g.code);
+        const desc = known ? known[1] : (g.desc || '');
+        const a = document.createElement('a');
+        a.className = 'prog'; a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer';
+        const code = document.createElement('span'); code.className = 'code'; code.textContent = `${t().termRun.toUpperCase()} ${g.code}`;
+        const ttl = document.createElement('span'); ttl.className = 'ttl'; ttl.textContent = title;
+        if (desc) { const sm = document.createElement('small'); sm.textContent = desc; ttl.appendChild(sm); }
+        const go = document.createElement('span'); go.className = 'go'; go.textContent = '↗';
+        a.append(code, ttl, go);
+        a.addEventListener('click', () => {
+          const line = document.createElement('div');
+          line.className = 'term-line dim'; line.textContent = '> ' + t().termLoading.replace('{c}', g.code);
+          box.after(line); setTimeout(() => line.remove(), 2400);
+        });
+        if (!termTyped) a.classList.add('term-line', 'pending');
+        box.appendChild(a);
+      });
+      const count = document.getElementById('term-count');
+      if (count) count.textContent = t().termCount.replace('{n}', box.children.length);
+    }
+
+    function typeTerminal() {
+      if (termTyped) return;
+      termTyped = true;
+      const lines = [...document.querySelectorAll('#term .pending')];
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      lines.forEach((el, i) => setTimeout(() => el.classList.remove('pending'), reduce ? 0 : 220 + i * 260));
+    }
+
+    (function initConsole() {
+      renderGames();
+      const term = document.getElementById('term');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { typeTerminal(); io.disconnect(); } }, { threshold: 0.35 });
+        io.observe(term);
+      } else typeTerminal();
+
+      // Pull the live directory the console reads, if this page is served next to it
+      fetch('/game/game.txt?t=' + Date.now(), { cache: 'no-store' })
+        .then(r => (r.ok ? r.text() : ''))
+        .then(txt => { const list = parseGames(txt); if (list.length) { GAMES = list; renderGames(); } })
+        .catch(() => {});
+
+      // Backtick (the old-school console key) jumps to the terminal
+      document.addEventListener('keydown', e => {
+        if (e.key !== '`' || e.ctrlKey || e.metaKey || e.altKey) return;
+        if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+        e.preventDefault();
+        term.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        typeTerminal();
+        setTimeout(() => { const first = term.querySelector('.prog'); if (first) first.focus({ preventScroll: true }); }, 500);
+      });
     })();
 
     /* ---------- Init ---------- */
