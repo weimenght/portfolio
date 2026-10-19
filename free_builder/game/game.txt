@@ -28,7 +28,7 @@
       {
         code: 'Couple',
         altCode: 'TB-04',
-        title: 'TWIGHT HANDOFF',
+        title: 'TWILIGHT HANDOFF',
         genre: 'RELATIONSHIP +',
         author: 'FREE//BUILDER',
         desc: 'Interact with your partner, feel their emotion and guess what they want to say to you.',
