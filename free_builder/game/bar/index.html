@@ -167,6 +167,103 @@
     canvas {
       image-rendering: pixelated;
     }
+
+    /* ===== WEI INTERACTION LAYER ===== */
+    #wei-bubble-wrap {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 4px;
+      z-index: 30;
+      pointer-events: none;
+    }
+    #wei-bubble {
+      position: relative;
+      width: max-content;
+      max-width: 150px;
+      background: #fef3c7;
+      color: #1c1917;
+      border: 2px solid #000;
+      padding: 3px 6px;
+      font-size: 10px;
+      line-height: 1.25;
+      text-align: center;
+      box-shadow: 2px 2px 0 #000;
+    }
+    #wei-bubble::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -6px;
+      width: 6px;
+      height: 6px;
+      margin-left: -3px;
+      background: #fef3c7;
+      border-right: 2px solid #000;
+      border-bottom: 2px solid #000;
+      transform: rotate(45deg);
+    }
+    @keyframes bubblePop {
+      0% { transform: translateY(4px) scale(0.8); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .bubble-pop { animation: bubblePop 0.18s ease-out; }
+
+    @keyframes heartUp {
+      0% { opacity: 0; transform: translateY(0) scale(0.8); }
+      20% { opacity: 1; transform: translateY(-6px) scale(1.1); }
+      100% { opacity: 0; transform: translateY(-30px) scale(1); }
+    }
+    .heart-up { animation: heartUp 1.3s ease-out forwards; }
+
+    @keyframes weiWiggle {
+      0%, 100% { transform: rotate(0); }
+      25% { transform: rotate(-7deg); }
+      75% { transform: rotate(7deg); }
+    }
+    .wei-wiggle { animation: weiWiggle 0.3s ease-in-out; transform-origin: 50% 90%; }
+
+    @keyframes weiShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-3px); }
+      40%, 80% { transform: translateX(3px); }
+    }
+    .wei-shake { animation: weiShake 0.35s linear 2; }
+
+    @keyframes weiHop {
+      0%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-7px); }
+    }
+    .wei-hop { animation: weiHop 0.35s ease-out 2; }
+
+    @keyframes toastIn {
+      0% { opacity: 0; transform: translate(-50%, -10px); }
+      12% { opacity: 1; transform: translate(-50%, 0); }
+      88% { opacity: 1; transform: translate(-50%, 0); }
+      100% { opacity: 0; transform: translate(-50%, -10px); }
+    }
+    .toast-show { animation: toastIn 2.8s ease-in-out forwards; }
+
+    .typing-cursor::after {
+      content: "▌";
+      color: #f59e0b;
+      animation: blink 0.6s steps(1) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .chip-btn {
+      font-family: "VT323", monospace;
+      font-size: 12px;
+      line-height: 1;
+      padding: 3px 6px;
+      background: #0c0a09;
+      border: 1px solid #44403c;
+      color: #fcd34d;
+      white-space: nowrap;
+    }
+    .chip-btn:hover { border-color: #f59e0b; }
+    .chip-btn.active { background: #451a03; border-color: #d97706; }
   </style>
 </head>
 
@@ -177,6 +274,9 @@
 
   <!-- Ambient Chromatic Aura -->
   <div id="ambient-aura" class="absolute inset-0 pointer-events-none z-0 opacity-40 transition-all duration-1000"></div>
+
+  <!-- Bond Level-Up Toast -->
+  <div id="bond-toast" class="hidden fixed top-12 left-1/2 z-[60] px-3 py-1.5 bg-amber-500 text-black text-[11px] font-bold border-2 border-black pixel-frame text-center max-w-[92vw]"></div>
 
   <!-- NAVBAR -->
   <header class="relative z-40 w-full px-2 sm:px-4 py-1.5 border-b border-stone-800/90 bg-stone-950/90 backdrop-blur-md flex items-center justify-between">
@@ -292,6 +392,7 @@
         <div id="clock-status-tag" class="mt-1.5 inline-block px-2 py-0.5 bg-stone-900 border border-amber-700/60 font-retro text-xs text-amber-400">
           22:30 SPEAKEASY
         </div>
+        <div id="door-bond-line" class="mt-1 font-retro text-[11px] text-stone-400"></div>
       </div>
 
       <!-- 24-Hour Retro Clock with Hour & Minute Needles -->
@@ -382,6 +483,17 @@
           <span id="shelf-icon-right">🥃🍹🍵☕</span>
         </div>
 
+        <!-- Bond Meter (tap for progress) -->
+        <div id="bond-badge" onclick="tapBondBadge()" class="absolute left-2 top-5 z-20 cursor-pointer font-retro text-[11px] leading-none bg-stone-950/80 border border-stone-800 hover:border-amber-600 px-1.5 py-1" title="Your bond with Wei">
+          <div class="flex items-center gap-1">
+            <span id="bond-hearts" class="text-rose-400 tracking-tight">♥♡♡♡♡</span>
+            <span id="bond-level-name" class="text-amber-300">Stranger</span>
+          </div>
+          <div class="mt-0.5 w-full h-1 bg-stone-800">
+            <div id="bond-bar" class="h-1 bg-rose-500 transition-all duration-500" style="width:0%"></div>
+          </div>
+        </div>
+
         <!-- The Characters: Miso, Wei (Awake or Sleep State), Yuzu -->
         <div class="relative z-10 flex items-end justify-around w-full mt-auto mb-0 shrink-0">
           
@@ -395,7 +507,15 @@
           </div>
 
           <!-- HOST AVATAR CONTAINER: Wei (Bartender / Barista with Round Glasses & Sleep States) -->
-          <div class="flex flex-col items-center text-center cursor-pointer group shrink-0" onclick="tapBartender()">
+          <div class="relative flex flex-col items-center text-center cursor-pointer group shrink-0" onclick="tapBartender()">
+
+            <!-- Speech Bubble -->
+            <div id="wei-bubble-wrap" class="hidden">
+              <div id="wei-bubble"></div>
+            </div>
+            <!-- Floating Heart Gain -->
+            <div id="heart-float" class="hidden absolute -top-2 -right-4 z-30 pointer-events-none text-rose-400 font-retro text-sm font-bold"></div>
+
             <div id="sprite-wei-container" class="relative group-hover:scale-105 transition-transform flex flex-col items-center sway-idle shrink-0">
               
               <svg id="svg-wei-avatar" width="56" height="63" viewBox="0 0 32 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="shape-rendering: crispEdges;">
@@ -411,6 +531,12 @@
                 <rect x="8" y="10" width="1" height="4" fill="#fcd34d"/>
                 <rect x="23" y="10" width="1" height="4" fill="#fcd34d"/>
 
+                <!-- Blush (shown when happy / high bond) -->
+                <g id="avatar-blush" class="hidden">
+                  <rect x="9" y="15" width="2" height="1" fill="#fb7185" fill-opacity="0.7"/>
+                  <rect x="21" y="15" width="2" height="1" fill="#fb7185" fill-opacity="0.7"/>
+                </g>
+
                 <!-- AWAKE STATE GROUP -->
                 <g id="avatar-layer-awake">
                   <!-- Round-Frame Glasses (Gold Wireframe) -->
@@ -420,7 +546,7 @@
                   <rect x="9" y="10" width="1" height="4" fill="#f59e0b"/>
                   <rect x="14" y="10" width="1" height="4" fill="#f59e0b"/>
                   <rect x="11" y="10" width="1" height="1" fill="#fff" fill-opacity="0.8"/>
-                  <rect x="12" y="12" width="1" height="2" fill="#0f172a"/>
+                  <rect class="wei-pupil" x="12" y="12" width="1" height="2" fill="#0f172a"/>
 
                   <!-- Nose Bridge -->
                   <rect x="15" y="11" width="2" height="1" fill="#f59e0b"/>
@@ -432,14 +558,24 @@
                   <rect x="17" y="10" width="1" height="4" fill="#f59e0b"/>
                   <rect x="22" y="10" width="1" height="4" fill="#f59e0b"/>
                   <rect x="19" y="10" width="1" height="1" fill="#fff" fill-opacity="0.8"/>
-                  <rect x="20" y="12" width="1" height="2" fill="#0f172a"/>
+                  <rect class="wei-pupil" x="20" y="12" width="1" height="2" fill="#0f172a"/>
 
                   <!-- Temples -->
                   <rect x="7" y="10" width="2" height="1" fill="#d97706"/>
                   <rect x="23" y="10" width="2" height="1" fill="#d97706"/>
 
-                  <!-- Awake Smile -->
-                  <rect x="14" y="16" width="4" height="1" fill="#b45309"/>
+                  <!-- Mouths (swapped by expression) -->
+                  <rect id="mouth-smile" x="14" y="16" width="4" height="1" fill="#b45309"/>
+                  <g id="mouth-grin" class="hidden">
+                    <rect x="13" y="16" width="6" height="1" fill="#b45309"/>
+                    <rect x="14" y="17" width="4" height="1" fill="#b45309"/>
+                  </g>
+                  <g id="mouth-flat" class="hidden">
+                    <rect x="14" y="16" width="4" height="1" fill="#78350f"/>
+                    <rect x="12" y="8" width="3" height="1" fill="#1c1917"/>
+                    <rect x="17" y="8" width="3" height="1" fill="#1c1917"/>
+                  </g>
+                  <rect id="mouth-o" class="hidden" x="15" y="16" width="2" height="2" fill="#9a3412"/>
                 </g>
 
                 <!-- SLEEPING STATE GROUP -->
@@ -503,6 +639,7 @@
             
             <div class="text-[11px] font-bold text-amber-200 mt-0.5 flex items-center gap-1">
               <span id="sprite-wei-name">Wei</span>
+              <span id="poke-hint" class="text-[9px] font-retro text-stone-500">(tap)</span>
             </div>
           </div>
 
@@ -534,14 +671,18 @@
           <div>
             <div class="flex items-center justify-between text-[10px] font-retro text-stone-400 mb-0.5">
               <span id="dialogue-speaker-tag" class="text-amber-400 uppercase">WEI • NIGHT OWL</span>
+              <span id="dialogue-skip-hint" class="text-stone-600">▸ tap to skip</span>
             </div>
-            <p id="dialogue-speech-text" class="text-stone-100 text-[11px] sm:text-xs font-pixel leading-snug">
+            <p id="dialogue-speech-text" onclick="Typer.skip()" class="text-stone-100 text-[11px] sm:text-xs font-pixel leading-snug min-h-[2.6em] cursor-pointer">
               "The autumn breeze outside is sweeping yellow gingko leaves past the grey brick hutong walls. What brings you through Wei's door tonight?"
             </p>
           </div>
 
           <div id="rpg-options-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-1.5 mt-1.5">
           </div>
+
+          <!-- Interaction chips: chat, riddle, gift, the usual -->
+          <div id="rpg-action-row" class="flex items-center gap-1 mt-1.5 pt-1.5 border-t border-stone-800 overflow-x-auto"></div>
         </div>
 
         <!-- Screen B: Sleeping Bartender (12am-6am) / Barista (12pm-2pm) Screen -->
@@ -554,6 +695,7 @@
             <p id="sleep-story-text" class="text-[11px] sm:text-xs text-stone-200 mt-0.5">
               *HONK-SHOO...* Wei fell fast asleep right over the counter! His round wire glasses slipped down to the bridge of his nose.
             </p>
+            <p id="sleep-poke-tip" class="text-[10px] font-retro text-stone-500 mt-0.5">Tip: poke Wei three times to wake him the hard way.</p>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5 mt-2">
             <button onclick="wakeUpBartender()" class="pixel-btn p-1.5 bg-stone-950 border border-stone-700 hover:border-amber-400 text-left text-[11px] text-amber-300">
@@ -606,16 +748,26 @@
                 <span id="res-subtitle" class="text-[9px] font-retro text-stone-400">Botanical: 90% • Autumn Jasmine • Beijing Ice Block</span>
               </div>
             </div>
-            <button onclick="resetRpgConversation()" class="pixel-btn text-[9px] font-retro px-1.5 py-0.5 border border-stone-700 text-stone-300 hover:text-amber-400">
+            <button onclick="resetRpgConversation()" class="pixel-btn text-[9px] font-retro px-1.5 py-0.5 border border-stone-700 text-stone-300 hover:text-amber-400 shrink-0">
               <span id="res-btn-reorder">New Order ↺</span>
             </button>
           </div>
           <p id="res-description" class="text-[10px] sm:text-[11px] text-stone-300 font-pixel italic my-1">
             "Served in a chilled fluted tumbler. Fragrant blossoms float atop crystal slow-melting ice."
           </p>
+
+          <!-- Tell Wei how it tastes -->
+          <div id="res-react-row" class="hidden flex items-center gap-1 mb-1 flex-wrap">
+            <span id="res-react-label" class="text-[10px] font-retro text-stone-500 mr-0.5">TELL WEI:</span>
+            <button onclick="reactToDrink('love')" class="chip-btn" id="react-love">😍 Perfect</button>
+            <button onclick="reactToDrink('meh')" class="chip-btn" id="react-meh">🤔 Interesting…</button>
+            <button onclick="reactToDrink('strong')" class="chip-btn" id="react-strong">🥵 Too strong!</button>
+          </div>
+          <p id="res-wei-reply" class="hidden text-[10px] sm:text-[11px] text-amber-200 font-pixel mb-1"></p>
+
           <div class="flex items-center justify-between pt-1 border-t border-stone-800 text-[9px] font-retro">
             <span id="res-formula" class="text-stone-400 truncate max-w-[200px] sm:max-w-none">45ml Jasmine Gin • 120ml Osmanthus Tonic • Dried Hawthorn</span>
-            <button onclick="playClinkSound()" class="pixel-btn px-2 py-0.5 bg-amber-600 text-black font-bold uppercase" id="res-btn-cheers">
+            <button onclick="playClinkSound()" class="pixel-btn px-2 py-0.5 bg-amber-600 text-black font-bold uppercase shrink-0" id="res-btn-cheers">
               🥂 Cheers!
             </button>
           </div>
@@ -643,6 +795,12 @@
           "Why did the espresso file a police report? ...Because it got mugged in the hutong!"
         </p>
         <div id="joke-reaction" class="text-lg mt-2 animate-bounce">☕</div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-1.5">
+        <button onclick="rateJoke('laugh')" class="chip-btn text-center" id="joke-btn-laugh">😂 Ha!</button>
+        <button onclick="rateJoke('groan')" class="chip-btn text-center" id="joke-btn-groan">🙄 Groan</button>
+        <button onclick="nextJoke()" class="chip-btn text-center" id="joke-next-btn">Another One ↺</button>
       </div>
     </div>
   </div>
@@ -1245,6 +1403,42 @@
         osc.stop(this.ctx.currentTime + 0.04);
       },
 
+      // Soft RPG "voice" blip used while Wei's lines type out
+      playBlip(pitch = 1.0) {
+        if (!this.ctx || this.ctx.state !== 'running') return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime((180 + Math.random() * 40) * pitch, now);
+        gain.gain.setValueAtTime(0.012, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.04);
+      },
+
+      // Little rising arpeggio for bond gains / level ups
+      playSparkle(levelUp = false) {
+        this.init();
+        if (!this.ctx) return;
+        const notes = levelUp ? [523.25, 659.25, 783.99, 1046.5] : [659.25, 987.77];
+        notes.forEach((f, i) => {
+          const t = this.ctx.currentTime + i * 0.07;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(f, t);
+          gain.gain.setValueAtTime(0.04, t);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.3);
+        });
+      },
+
       playClink() {
         this.init();
         if (!this.ctx) return;
@@ -1391,9 +1585,7 @@
       usedTopicIds: new Set(),
       currentTopic: null,
 
-      currentJokeIndex: 0,
       activeGame: 'snake',
-
       currentJokeIndex: -1,
     };
 
@@ -1611,7 +1803,7 @@
           },
           {
             label: { en: "Your round glasses look extra studious tonight, Wei.", zh: "Wei，你这副复古圆框眼镜今晚看起来格外睿智。", es: "Tus gafas redondas se ven muy sabias esta noche, Wei." },
-            deltaEnergy: 0, drink: "paperplane", nextMood: "nightOwl"
+            deltaEnergy: 0, drink: "paperplane", nextMood: "nightOwl", bond: 1
           },
           {
             label: { en: "I missed the subway on purpose. Hit me with high proof.", zh: "我是故意错过末班车的，给我来点够劲的。", es: "Perdí el metro a propósito. Sorpréndeme con alta graduación." },
@@ -1653,7 +1845,7 @@
         options: [
           {
             label: { en: "That is surprisingly deep, Wei. Test it with your best cocktail.", zh: "这哲理挺有深度啊 Wei。用你最好的招牌酒来检验这块冰吧。", es: "Profundo, Wei. Pon a prueba ese hielo con tu mejor trago." },
-            deltaEnergy: -1, drink: "kyoto", nextMood: "poetic"
+            deltaEnergy: -1, drink: "kyoto", nextMood: "poetic", bond: 1
           },
           {
             label: { en: "Did you just compare ice cubes to my dating life?", zh: "你刚刚是在拿冰块融化来隐喻我的恋爱经历吗？", es: "¿Acabas de comparar un cubo de hielo con mi vida amorosa?" },
@@ -1680,7 +1872,7 @@
           },
           {
             label: { en: "Let Yuzu review my résumé next time.", zh: "下回我也带份简历，让柚子猫总监亲自爪批一下。", es: "La próxima vez traeré mi currículum para que Yuzu lo revise." },
-            deltaEnergy: 0, drink: "catalan", nextMood: "sarcastic"
+            deltaEnergy: 0, drink: "catalan", nextMood: "sarcastic", bond: 1
           },
           {
             label: { en: "Just a classic Negroni. Equal parts bitter and real.", zh: "来杯经典内格罗尼吧。等比例的苦涩与真实。", es: "Solo un Negroni clásico: partes iguales de amargura y realidad." },
@@ -1707,7 +1899,7 @@
           },
           {
             label: { en: "Turn the volume up a hair, Wei. It's safe here.", zh: "Wei，把音量拧大半格吧。在这间小酒馆里很安全。", es: "Sube un punto el volumen, Wei. Aquí estamos a salvo del mundo." },
-            deltaEnergy: 0, drink: "oldfashioned", nextMood: "empath"
+            deltaEnergy: 0, drink: "oldfashioned", nextMood: "empath", bond: 1
           }
         ]
       },
@@ -1726,7 +1918,7 @@
           },
           {
             label: { en: "Nothing heavy. Just glad this warm light exists.", zh: "倒也没什么沉重的，只是庆幸胡同尽头还有这样一盏灯。", es: "Nada grave. Solo me alegra que este rincón cálido exista." },
-            deltaEnergy: 0, drink: "jasmine_gulou", nextMood: "poetic"
+            deltaEnergy: 0, drink: "jasmine_gulou", nextMood: "poetic", bond: 2
           },
           {
             label: { en: "I came to pet Miso and drink vermut, not introspect!", zh: "我是来摸小黑猫味噌和喝苦艾酒的，可不是来做心理剖析的！", es: "¡Vine a acariciar a Miso y beber vermut, no a psicoanalizarme!" },
@@ -1751,7 +1943,7 @@
         options: [
           {
             label: { en: "Yes please! Light extraction, bring out the flowers.", zh: "太好了！轻度萃取，多保留些花香与果酸。", es: "¡Sí, por favor! Extracción ligera para resaltar las flores." },
-            deltaEnergy: 1, drink: "gesha_pourover", nextMood: "baristaJoy"
+            deltaEnergy: 1, drink: "gesha_pourover", nextMood: "baristaJoy", bond: 1
           },
           {
             label: { en: "I need dense caffeine: make it an Oat Milk Dirty.", zh: "我需要重度清醒：来一杯浓厚冰博克燕麦Dirty。", es: "Necesito cafeína pura: prepárame un Dirty con avena." },
@@ -1782,7 +1974,7 @@
           },
           {
             label: { en: "Wei, did Miso and Yuzu steal coffee beans again?", zh: "Wei，味噌和柚子刚才是不是又想扒拉咖啡生豆麻袋？", es: "Wei, ¿Miso y Yuzu volvieron a jugar con los sacos de café?" },
-            deltaEnergy: 0, drink: "einspanner", nextMood: "baristaJoy"
+            deltaEnergy: 0, drink: "einspanner", nextMood: "baristaJoy", bond: 1
           }
         ]
       },
@@ -1797,11 +1989,11 @@
         options: [
           {
             label: { en: "You are absolutely right. Give me a Baoshan honey pour-over.", zh: "你绝对是对的！给我来杯高萃取率的云南保山日晒手冲。", es: "Tienes toda la razón. Sírveme un café de filtro de Baoshan." },
-            deltaEnergy: 1, drink: "yunnan_honey_pour", nextMood: "baristaJoy"
+            deltaEnergy: 1, drink: "yunnan_honey_pour", nextMood: "baristaJoy", bond: 1
           },
           {
             label: { en: "Both things can be true, Wei. Drink some water.", zh: "这两件事并不冲突，Wei。你也该喝口温水了。", es: "Ambas cosas pueden ser ciertas, Wei. Bebe un vaso de agua." },
-            deltaEnergy: 0, drink: "croissant_combo", nextMood: "empath"
+            deltaEnergy: 0, drink: "croissant_combo", nextMood: "empath", bond: 1
           },
           {
             label: { en: "Does all that math make the crema taste like caramel?", zh: "那么复杂的微米物理学，能让咖啡油脂尝起来像焦糖吗？", es: "¿Tanta física hace que la crema sepa a caramelo?" },
@@ -1824,7 +2016,7 @@
           },
           {
             label: { en: "Show off some latte art! A tulip or a cat paw?", zh: "秀一手拉花吧！是九层郁金香还是小猫肉垫？", es: "¡Luce tu latte art! ¿Un tulipán o una patita de gato?" },
-            deltaEnergy: 1, drink: "croissant_combo", nextMood: "empath"
+            deltaEnergy: 1, drink: "croissant_combo", nextMood: "empath", bond: 1
           },
           {
             label: { en: "Crown an iced Einspänner with hand-whipped cream instead.", zh: "不如在冰美式上打一朵香草维也纳厚奶油雪顶。", es: "Prefiero una nube de nata montada sobre un Einspänner." },
@@ -1851,7 +2043,7 @@
           },
           {
             label: { en: "Let Yuzu nap on the sunniest courtyard stone.", zh: "让大橘猫柚子独占院子里那块晒得最暖和的石阶吧。", es: "Deja que Yuzu duerma en la piedra más soleada del patio." },
-            deltaEnergy: 0, drink: "croissant_combo", nextMood: "empath"
+            deltaEnergy: 0, drink: "croissant_combo", nextMood: "empath", bond: 1
           }
         ]
       },
@@ -1870,7 +2062,7 @@
           },
           {
             label: { en: "Feed Miso and Yuzu some treats for their hard work.", zh: "替这两位辛勤巡检的猫咪员工加一勺冻干小零食。", es: "Premia a Miso y Yuzu por su duro trabajo de inspección." },
-            deltaEnergy: 0, drink: "coldbrew_tonic", nextMood: "empath"
+            deltaEnergy: 0, drink: "coldbrew_tonic", nextMood: "empath", bond: 1
           },
           {
             label: { en: "I'll take a Vienna Einspänner while the cats sleep.", zh: "趁小猫在生豆上打呼噜，给我上一杯焦糖维也纳咖啡吧。", es: "Tomaré un Einspänner mientras los gatos descansan." },
@@ -1889,7 +2081,7 @@
         options: [
           {
             label: { en: "Thank you, Wei. An Oat Dirty to anchor my morning.", zh: "谢谢你 Wei。来一杯浓醇燕麦Dirty稳住心神。", es: "Gracias, Wei. Un Dirty de avena para anclar mi mañana." },
-            deltaEnergy: 0, drink: "dirty_espresso", nextMood: "empath"
+            deltaEnergy: 0, drink: "dirty_espresso", nextMood: "empath", bond: 1
           },
           {
             label: { en: "A warm butter croissant and ceremonial matcha.", zh: "一只温热蜂巢可颂，配上一碗现点宇治云朵抹茶。", es: "Un croissant tibio de mantequilla y matcha ceremonial." },
@@ -1912,7 +2104,7 @@
         options: [
           {
             label: { en: "Yes! Grind and brew it in the ceramic V60.", zh: "太香了！用有田烧陶瓷滤杯冲出它的层次感吧。", es: "¡Sí! Muélelo y extráelo en el V60 cerámico." },
-            deltaEnergy: 1, drink: "yunnan_honey_pour", nextMood: "baristaJoy"
+            deltaEnergy: 1, drink: "yunnan_honey_pour", nextMood: "baristaJoy", bond: 1
           },
           {
             label: { en: "Can we make a sparkling citrus cold brew with it?", zh: "能用它调制一杯带气泡的清爽柑橘冰汤力吗？", es: "¿Podemos hacer un cold brew tónica cítrico con ese café?" },
@@ -2227,6 +2419,16 @@
         desc: { en: "\"First harvest ceremonial green tea hand-whisked into emerald foam, floated over chilled velvety oat milk.\"", zh: "\"选用宇治一番摘顶级石磨抹茶，以百本立竹茶筅现点打出细腻翡翠泡沫，轻柔悬浮于冰燕麦乳之上。\"", es: "\"Matcha ceremonial de Uji batido a mano en espuma esmeralda sobre leche fría de avena.\"" },
         formula: "4g Ceremonial Matcha • 40ml 80°C Water • 140ml Chilled Oat Milk",
         icon: "🍵"
+      },
+
+      // Off-menu: unlocked at bond level "Friend". Never listed in the codex.
+      wei_notebook: {
+        type: 'secret',
+        name: { en: "Wei's Notebook (Off-Menu)", zh: "Wei 的笔记本（隐藏款）", es: "El Cuaderno de Wei (Fuera de Carta)" },
+        sub: { en: "Jasmine Tea • Osmanthus Honey • Orange Peel • A Folded Note", zh: "茉莉花茶 • 桂花蜜 • 橙皮 • 一张折好的纸条", es: "Té de Jazmín • Miel de Osmanto • Piel de Naranja • Una Nota Doblada" },
+        desc: { en: "\"Made only for friends. Under the coaster, a folded note in Wei's handwriting: 'Always a seat for you here.'\"", zh: "\"只做给朋友的一杯。杯垫下压着一张 Wei 手写的小纸条：‘这里永远给你留个座。’\"", es: "\"Solo para amigos. Bajo el posavasos, una nota con la letra de Wei: 'Aquí siempre hay un sitio para ti.'\"" },
+        formula: "Jasmine Tea • Osmanthus Honey • Expressed Orange Peel • (Gin after 18:00)",
+        icon: "📓"
       }
     };
 
@@ -2319,6 +2521,197 @@
     ];
   </script>
 
+  <script>
+    /* ===== WEI'S PERSONALITY: LINES, BOND LEVELS, GIFTS ===== */
+    const WeiText = {
+      ui: {
+        chat:      { en: "💬 Chat", zh: "💬 闲聊", es: "💬 Charlar" },
+        riddle:    { en: "🎲 Guess my drink", zh: "🎲 猜猜这杯", es: "🎲 Adivina el trago" },
+        gift:      { en: "🎁 Gift", zh: "🎁 送礼", es: "🎁 Regalo" },
+        usual:     { en: "⭐ The usual", zh: "⭐ 老样子", es: "⭐ Lo de siempre" },
+        order:     { en: "🍸 Order", zh: "🍸 点单", es: "🍸 Pedir" },
+        back:      { en: "← Back", zh: "← 返回", es: "← Volver" },
+        another:   { en: "🎲 Another riddle", zh: "🎲 再来一题", es: "🎲 Otra adivinanza" },
+        serveAnyway: { en: "Pour it anyway", zh: "那就来一杯吧", es: "Sírvelo igual" },
+        tellWei:   { en: "TELL WEI:", zh: "告诉 Wei：", es: "DILE A WEI:" },
+        love:      { en: "😍 Perfect", zh: "😍 完美", es: "😍 Perfecto" },
+        meh:       { en: "🤔 Interesting…", zh: "🤔 挺特别…", es: "🤔 Interesante…" },
+        strong:    { en: "🥵 Too strong!", zh: "🥵 太烈了！", es: "🥵 ¡Muy fuerte!" },
+        tapSkip:   { en: "▸ tap to skip", zh: "▸ 点击跳过", es: "▸ toca para saltar" },
+        tapHint:   { en: "(tap)", zh: "(戳我)", es: "(toca)" },
+        pokeTip:   { en: "Tip: poke Wei three times to wake him the hard way.", zh: "小提示：连戳 Wei 三下，也能把他硬叫醒。", es: "Truco: toca a Wei tres veces para despertarlo a lo bruto." },
+        locked:    { en: "🔒", zh: "🔒", es: "🔒" },
+        bondUp:    { en: "Bond up!", zh: "关系升级！", es: "¡Vínculo mejorado!" },
+        unlock:    { en: "Unlocked", zh: "解锁", es: "Desbloqueado" },
+        laugh:     { en: "😂 Ha!", zh: "😂 哈！", es: "😂 ¡Ja!" },
+        groan:     { en: "🙄 Groan", zh: "🙄 好冷", es: "🙄 Buf" },
+        visits:    { en: "visits", zh: "次光顾", es: "visitas" },
+        progress:  { en: "to", zh: "距离", es: "para" },
+        maxBond:   { en: "Max bond. You're family now.", zh: "满级羁绊，你已经是家人了。", es: "Vínculo máximo. Ya eres de la familia." }
+      },
+
+      // 0 Stranger, 1 Guest, 2 Regular, 3 Friend, 4 Confidant
+      levels: [
+        { min: 0,  name: { en: "Stranger", zh: "陌生人", es: "Desconocido" }, unlock: null },
+        { min: 5,  name: { en: "Guest", zh: "客人", es: "Cliente" }, unlock: { en: "Wei remembers your order: ⭐ The usual", zh: "Wei 记住了你的口味：⭐ 老样子", es: "Wei recuerda tu pedido: ⭐ Lo de siempre" } },
+        { min: 12, name: { en: "Regular", zh: "熟客", es: "Habitual" }, unlock: { en: "New chat topic: Wei's secrets", zh: "新闲聊话题：Wei 的小秘密", es: "Nuevo tema: los secretos de Wei" } },
+        { min: 22, name: { en: "Friend", zh: "朋友", es: "Amigo" }, unlock: { en: "Off-menu drink: Wei's Notebook", zh: "隐藏款：Wei 的笔记本", es: "Fuera de carta: El Cuaderno de Wei" } },
+        { min: 35, name: { en: "Confidant", zh: "知己", es: "Confidente" }, unlock: { en: "Ask what Wei wrote about you", zh: "可以问 Wei 在本子上写了你什么", es: "Pregunta qué escribió Wei sobre ti" } }
+      ],
+
+      moods: {
+        nightOwl:   { en: "Night Owl", zh: "夜猫子", es: "Noctámbulo" },
+        sarcastic:  { en: "Dry Wit", zh: "毒舌", es: "Sarcástico" },
+        empath:     { en: "Warm", zh: "暖心", es: "Empático" },
+        poetic:     { en: "Poetic", zh: "文艺", es: "Poético" },
+        baristaJoy: { en: "Cheerful", zh: "元气", es: "Alegre" }
+      },
+
+      greet: {
+        first: [
+          { en: "First time? Sit anywhere. Except there — that's Yuzu's stool.", zh: "第一次来？随便坐。除了那张——那是柚子的专座。", es: "¿Primera vez? Siéntate donde quieras. Menos ahí: es el taburete de Yuzu." }
+        ],
+        back: [
+          { en: "Back again! Miso saved your stool.", zh: "又来啦！味噌帮你占着座呢。", es: "¡Otra vez por aquí! Miso te guardó el taburete." },
+          { en: "Oh, it's you. Good. The music's better when you're here.", zh: "哦，是你。挺好，你在的时候音乐都好听些。", es: "Ah, eres tú. Bien. La música suena mejor contigo aquí." },
+          { en: "Welcome back. Wipe your feet, Yuzu just cleaned.", zh: "欢迎回来。擦擦鞋，柚子刚打扫过。", es: "Bienvenido. Límpiate los pies, Yuzu acaba de limpiar." }
+        ],
+        friend: [
+          { en: "There you are. I was starting to worry.", zh: "你可算来了。我都开始担心了。", es: "Ahí estás. Empezaba a preocuparme." },
+          { en: "My favorite regular! Don't tell the others.", zh: "我最喜欢的熟客！别告诉别人。", es: "¡Mi habitual favorito! No se lo digas a los demás." }
+        ]
+      },
+
+      chatIntro: [
+        { en: "\"Ask away. I've got a towel, a glass to polish and all the time in the world.\"", zh: "\"问吧。我手里有块抹布、一只要擦的杯子，还有大把时间。\"", es: "\"Pregunta. Tengo un trapo, un vaso que pulir y todo el tiempo del mundo.\"" },
+        { en: "\"Conversation is the best garnish. What do you want to know?\"", zh: "\"聊天才是最好的装饰物。想知道什么？\"", es: "\"La conversación es la mejor guarnición. ¿Qué quieres saber?\"" }
+      ],
+
+      chatTopics: [
+        { id: "me", minLevel: 0, label: { en: "About you", zh: "聊聊你", es: "Sobre ti" }, lines: [
+          { en: "\"Me? I studied fluid dynamics for three years. Now I apply it exclusively to milk foam and ice dilution. My professor would weep.\"", zh: "\"我？读了三年流体力学，现在只用它来研究奶泡和冰块稀释率。我导师知道了大概会哭。\"", es: "\"¿Yo? Estudié dinámica de fluidos tres años. Ahora solo la aplico a la espuma de leche y al hielo. Mi profesor lloraría.\"" },
+          { en: "\"I work two shifts: coffee by day, cocktails by night. Sleep happens in the gaps, usually on this counter.\"", zh: "\"我上两个班：白天咖啡，晚上调酒。睡觉就塞在缝隙里，通常就在这张吧台上。\"", es: "\"Hago dos turnos: café de día, cócteles de noche. Duermo en los huecos, normalmente sobre esta barra.\"" },
+          { en: "\"Favorite drink? Honestly, plain jasmine tea at 5 AM after closing. Don't tell the regulars.\"", zh: "\"最爱喝什么？说实话，是打烊后凌晨五点的一杯茉莉花茶。别告诉熟客们。\"", es: "\"¿Mi bebida favorita? Un té de jazmín simple a las 5 AM tras cerrar. No se lo digas a los habituales.\"" }
+        ]},
+        { id: "cats", minLevel: 0, label: { en: "The cats", zh: "两只猫", es: "Los gatos" }, lines: [
+          { en: "\"Miso showed up during a thunderstorm and simply never left. Yuzu arrived two weeks later, as if Miso had written to her.\"", zh: "\"味噌是在一场雷雨夜自己走进来的，然后就再也没走。两周后柚子也来了，好像味噌给她写了信。\"", es: "\"Miso apareció en una tormenta y nunca se fue. Yuzu llegó dos semanas después, como si Miso le hubiera escrito.\"" },
+          { en: "\"Yuzu is head of security. Her methods include sitting on the menu and judging you.\"", zh: "\"柚子是安保主管。她的工作方式包括坐在菜单上，然后用眼神审判你。\"", es: "\"Yuzu es la jefa de seguridad. Sus métodos: sentarse sobre la carta y juzgarte.\"" },
+          { en: "\"Miso has knocked exactly one bottle off the shelf. The cheapest one. I suspect she has taste.\"", zh: "\"味噌这辈子只从架子上推下来过一瓶酒，偏偏是最便宜的那瓶。我怀疑她很有品味。\"", es: "\"Miso ha tirado exactamente una botella del estante. La más barata. Sospecho que tiene buen gusto.\"" }
+        ]},
+        { id: "glasses", minLevel: 0, label: { en: "Your glasses", zh: "你的眼镜", es: "Tus gafas" }, lines: [
+          { en: "\"Flea market at Panjiayuan. Twenty yuan. They've survived steam wands, shakers and one very enthusiastic cat.\"", zh: "\"潘家园旧货市场淘的，二十块。扛过了蒸汽棒、雪克壶，还有一只热情过头的猫。\"", es: "\"Mercadillo de Panjiayuan. Veinte yuanes. Han sobrevivido al vapor, la coctelera y un gato muy entusiasta.\"" },
+          { en: "\"Yes, they fog up every time I steam milk. No, I won't switch to contacts. The fog is part of the craft.\"", zh: "\"对，每次打奶泡镜片都会起雾。不，我不会换隐形眼镜。起雾也是手艺的一部分。\"", es: "\"Sí, se empañan cada vez que caliento leche. No, no usaré lentillas. El vaho es parte del oficio.\"" },
+          { en: "\"Round lenses make anyone look trustworthy. Oldest bartender trick in the book.\"", zh: "\"圆框眼镜让人看起来特别可靠。这是调酒界最古老的小把戏。\"", es: "\"Las lentes redondas hacen que cualquiera parezca de fiar. El truco más viejo del oficio.\"" }
+        ]},
+        { id: "city", minLevel: 0, label: { en: "Beijing", zh: "北京", es: "Pekín" }, lines: [
+          { en: "\"Beijing in October is the best version of itself. Blue sky, gingko gold, and the jianbing guy down the alley is in a great mood.\"", zh: "\"十月的北京是它最好的样子。蓝天、银杏黄，巷口摊煎饼的大爷心情也特别好。\"", es: "\"Pekín en octubre es su mejor versión. Cielo azul, ginkgos dorados y el del jianbing de la esquina de buen humor.\"" },
+          { en: "\"I lived in Barcelona for two years. I still put orange peel in everything. It's a condition.\"", zh: "\"我在巴塞罗那住过两年。现在什么都想放点橙皮。这算是后遗症。\"", es: "\"Viví dos años en Barcelona. Todavía le pongo piel de naranja a todo. Es una condición.\"" },
+          { en: "\"Walk north at dawn and you'll hear the old men with their caged birds by the Drum Tower. Best free concert in town.\"", zh: "\"清晨往北走，鼓楼边上能听到遛鸟大爷们的鸟叫。城里最好的免费音乐会。\"", es: "\"Camina al norte al amanecer y oirás a los abuelos con sus pájaros junto a la Torre del Tambor. El mejor concierto gratis.\"" }
+        ]},
+        { id: "joke", minLevel: 0, label: { en: "Tell me a joke", zh: "讲个笑话", es: "Cuéntame un chiste" }, lines: [] },
+        { id: "secret", minLevel: 2, label: { en: "Your secrets", zh: "你的小秘密", es: "Tus secretos" }, lines: [
+          { en: "\"Since you're a regular: the 'hand-carved' ice? Miso supervises. She has rejected four blocks this month.\"", zh: "\"既然你是熟客：那些'手凿冰'？味噌负责监工。这个月她已经否决了四块。\"", es: "\"Como eres habitual: ¿el hielo tallado a mano? Miso supervisa. Ha rechazado cuatro bloques este mes.\"" },
+          { en: "\"I almost didn't open this place. The night before signing the lease, Miso walked in through that door. I took it as a sign.\"", zh: "\"我差点就没开这家店。签租约的前一晚，味噌从那扇门走了进来。我把它当成了一个信号。\"", es: "\"Casi no abro este local. La noche antes de firmar, Miso entró por esa puerta. Lo tomé como una señal.\"" },
+          { en: "\"I write one line in a notebook for every regular. Yours says... no. Not yet.\"", zh: "\"每个熟客我都会在本子上写一句话。你的那句是……不行，还不能说。\"", es: "\"Escribo una línea en un cuaderno por cada habitual. La tuya dice... no. Todavía no.\"" }
+        ]},
+        { id: "offmenu", minLevel: 3, label: { en: "Something off-menu", zh: "来杯菜单上没有的", es: "Algo fuera de carta" }, lines: [] },
+        { id: "notebook", minLevel: 4, label: { en: "What did you write about me?", zh: "你在本子上写了我什么？", es: "¿Qué escribiste sobre mí?" }, lines: [
+          { en: "\"*opens the worn notebook* 'Came in from the cold. Stayed for the conversation. Tips the cats. Good human.' ...Don't make it weird.\"", zh: "\"*翻开那本旧笔记本* '从寒风里进来，为了聊天留下。会给猫加餐。是个好人。'……别搞得这么肉麻。\"", es: "\"*abre el cuaderno gastado* 'Entró huyendo del frío. Se quedó por la charla. Mima a los gatos. Buena persona.' ...No lo hagas raro.\"" }
+        ]}
+      ],
+
+      pokes: [
+        { en: "Yes? I'm listening. Always listening.", zh: "嗯？我在听呢，一直都在听。", es: "¿Sí? Te escucho. Siempre escucho." },
+        { en: "*pushes glasses up* Mm?", zh: "*推了推眼镜* 嗯？", es: "*se sube las gafas* ¿Mm?" },
+        { en: "Careful, I'm holding a very expensive bottle. ...It's a dish towel. Still.", zh: "小心，我手里拿着很贵的酒……好吧是块抹布，但还是小心点。", es: "Cuidado, sostengo una botella carísima. ...Es un trapo. Aun así." },
+        { en: "You poked a bartender. Bold. I respect it.", zh: "你戳了调酒师。胆子不小，我欣赏。", es: "Has tocado a un bartender. Atrevido. Lo respeto." },
+        { en: "If you're checking whether I'm real: mostly.", zh: "如果你想确认我是不是真的：大部分是。", es: "Si compruebas si soy real: casi del todo." },
+        { en: "*whistles along to the radio, slightly off-key*", zh: "*跟着收音机吹口哨，微微跑调*", es: "*silba con la radio, un poco desafinado*" }
+      ],
+      annoyed: { en: "💢 I am NOT a vending machine! ...Fine. Here's a joke.", zh: "💢 我可不是自动贩卖机！……好吧，给你讲个笑话。", es: "💢 ¡NO soy una máquina expendedora! ...Vale. Ahí va un chiste." },
+
+      sleepPokes: [
+        { en: "*snore* ...five more minutes, Miso...", zh: "*呼噜* ……再睡五分钟，味噌……", es: "*ronquido* ...cinco minutos más, Miso..." },
+        { en: "*mumbles* ...the ice is... sixty millimetres...", zh: "*嘟囔* ……冰块要……六十毫米……", es: "*murmura* ...el hielo... sesenta milímetros..." }
+      ],
+      grumpyWake: { en: "Gah! I'm up! I was just... resting my eyes. Professionally.", zh: "啊！醒了醒了！我只是……专业地闭目养神。", es: "¡Ah! ¡Despierto! Solo estaba... descansando la vista. Profesionalmente." },
+      diyCaught: { en: "*mumbles in sleep* ...is that my Monkey 47...?", zh: "*梦话* ……那是我的 Monkey 47 吗……？", es: "*habla en sueños* ...¿es mi Monkey 47...?" },
+
+      idle: [
+        { en: "*polishes a glass*", zh: "*擦着杯子*", es: "*pule un vaso*" },
+        { en: "*hums along to the radio*", zh: "*跟着收音机哼歌*", es: "*tararea con la radio*" },
+        { en: "*Yuzu steals a cherry. Wei pretends not to see.*", zh: "*柚子偷了颗樱桃，Wei 假装没看见*", es: "*Yuzu roba una cereza. Wei finge no verlo.*" },
+        { en: "*scribbles in a small notebook*", zh: "*在小本子上写着什么*", es: "*garabatea en una libretita*" },
+        { en: "Still with me? Take your time.", zh: "还在吗？慢慢来。", es: "¿Sigues ahí? Tómate tu tiempo." },
+        { en: "*fogs his glasses with a sigh, wipes them*", zh: "*叹了口气，镜片起雾，擦一擦*", es: "*empaña las gafas con un suspiro y las limpia*" }
+      ],
+
+      reactions: {
+        love: [
+          { en: "*small proud smile* That's the face I work for.", zh: "*骄傲地微微一笑* 我就是为了这个表情在干活。", es: "*sonrisa orgullosa* Esa cara es por la que trabajo." },
+          { en: "Perfect, huh? Don't tell the cats. They'll want a raise.", zh: "完美？别告诉猫，她们会要求加薪的。", es: "¿Perfecto? No se lo digas a los gatos. Pedirán aumento." },
+          { en: "Writing it down: 'has excellent taste.'", zh: "记下来了：'品味极佳'。", es: "Lo apunto: 'tiene un gusto excelente.'" }
+        ],
+        meh: [
+          { en: "'Interesting.' The most dangerous word in hospitality. I'll tweak the ratio next time.", zh: "'挺特别'——服务业最危险的词。下次我调一下比例。", es: "'Interesante.' La palabra más peligrosa de la hostelería. Ajustaré la proporción." },
+          { en: "Hm. Honest feedback. Science is iterative.", zh: "嗯，诚实的反馈。科学就是不断迭代。", es: "Hm. Opinión sincera. La ciencia es iterativa." }
+        ],
+        strong: [
+          { en: "Too strong? *slides over water* Hydration is the true garnish.", zh: "太烈了？*推过来一杯水* 补水才是真正的装饰。", es: "¿Muy fuerte? *te acerca agua* La hidratación es la verdadera guarnición." },
+          { en: "My hand slipped. Or my heart did. Here, have a cracker.", zh: "手滑了。也可能是心软了。来，吃块饼干。", es: "Se me fue la mano. O el corazón. Toma, una galleta." }
+        ]
+      },
+
+      jokeRate: {
+        laugh: { en: "Finally, an audience that appreciates me.", zh: "终于有懂我的观众了。", es: "Por fin, un público que me aprecia." },
+        groan: { en: "The groan means it worked.", zh: "叹气说明这个笑话成功了。", es: "El quejido significa que funcionó." }
+      },
+
+      riddleIntro: [
+        { en: "\"Riddle time. I'll name what's in it, you name the drink. Get it right and it's on the house:\"", zh: "\"猜谜时间。我说配料，你说酒名。猜对了这杯我请：\"", es: "\"Hora de adivinanzas. Yo digo lo que lleva, tú dices el trago. Si aciertas, invita la casa:\"" },
+        { en: "\"Let's test your palate. What am I making with this?\"", zh: "\"考考你的味觉。我用这些在做什么？\"", es: "\"Probemos tu paladar. ¿Qué preparo con esto?\"" }
+      ],
+      riddleRight: [
+        { en: "\"Correct! Somebody's been reading my menu. This one's on the house.\"", zh: "\"答对了！有人偷偷背过我的菜单。这杯我请。\"", es: "\"¡Correcto! Alguien ha leído mi carta. Esta invita la casa.\"" },
+        { en: "\"Ha! Exactly right. Yuzu, ring the little bell.\"", zh: "\"哈！完全正确。柚子，摇一下小铃铛。\"", es: "\"¡Ja! Exacto. Yuzu, toca la campanita.\"" }
+      ],
+      riddleWrong: { en: "\"Close, but no. It was the {name}. Want one anyway?\"", zh: "\"差一点，不对。答案是{name}。要不要来一杯？\"", es: "\"Casi, pero no. Era el {name}. ¿Lo quieres igual?\"" },
+
+      gifts: [
+        { id: "vinyl",    icon: "💿", label: { en: "Vinyl", zh: "黑胶", es: "Vinilo" }, bond: 4, line: { en: "A first pressing?! Okay, this goes on right now. *swaps the record*", zh: "初版黑胶？！好，现在就放。*换上唱片*", es: "¿¡Una primera edición!? Esto suena ya mismo. *cambia el disco*" }, emote: "😍" },
+        { id: "osmanthus",icon: "🌼", label: { en: "Osmanthus", zh: "桂花枝", es: "Osmanto" }, bond: 3, line: { en: "Osmanthus! It's going into tonight's syrup. Smell that.", zh: "桂花！今晚就熬进糖浆里。你闻闻。", es: "¡Osmanto! Va directo al almíbar de hoy. Huele eso." }, emote: "🥰" },
+        { id: "beans",    icon: "🫘", label: { en: "Coffee beans", zh: "咖啡豆", es: "Café en grano" }, bond: 2, energy: 2, line: { en: "*sniffs deeply* ...I feel alive again. Energy restored.", zh: "*深吸一口* ……我又活过来了。精力恢复。", es: "*inspira hondo* ...Vuelvo a sentirme vivo. Energía recuperada." }, emote: "⚡" },
+        { id: "treats",   icon: "🐟", label: { en: "Cat treats", zh: "猫零食", es: "Premios gatunos" }, bond: 2, cats: true, line: { en: "For the bosses? Miso and Yuzu thank you. I'm just staff here.", zh: "给老板们的？味噌和柚子谢谢你。我只是个打工的。", es: "¿Para las jefas? Miso y Yuzu te lo agradecen. Yo solo soy personal." }, emote: "😹" },
+        { id: "mandarin", icon: "🍊", label: { en: "Mandarin", zh: "砂糖橘", es: "Mandarina" }, bond: 2, line: { en: "Watch: I'll peel it in one perfect spiral. ...Nailed it.", zh: "看好了：我一圈剥到底。……完美。", es: "Mira: la pelo en una espiral perfecta. ...Hecho." }, emote: "😎" },
+        { id: "mooncake", icon: "🥮", label: { en: "Mooncake", zh: "月饼", es: "Pastel de luna" }, bond: 1, line: { en: "Ah... a mooncake. Mid-Autumn was weeks ago. I have eleven. ...Thank you. Sincerely.", zh: "啊……月饼。中秋都过去好几周了，我这儿还有十一个。……谢谢，真心的。", es: "Ah... un pastel de luna. El Medio Otoño fue hace semanas. Tengo once. ...Gracias. De verdad." }, emote: "😅" }
+      ],
+      giftIntro: { en: "\"A gift? For me? You didn't have to. ...What is it?\"", zh: "\"送我礼物？不用这么客气的……是什么呀？\"", es: "\"¿Un regalo? ¿Para mí? No hacía falta. ...¿Qué es?\"" },
+      giftLimit: { en: "\"You've spoiled me enough tonight. Save some generosity for next time.\"", zh: "\"今天你已经够宠我了。留点心意下次吧。\"", es: "\"Ya me has mimado bastante hoy. Guarda algo de generosidad para la próxima.\"" },
+
+      usual: { en: "The usual? Coming right up.", zh: "老样子？马上来。", es: "¿Lo de siempre? Marchando." },
+      offmenu: { en: "\"*lowers voice* Okay. Just for you. Don't tell Yuzu.\"", zh: "\"*压低声音* 好吧。只给你做。别告诉柚子。\"", es: "\"*baja la voz* Vale. Solo para ti. No se lo digas a Yuzu.\"" },
+
+      weather: {
+        rain:  { en: "Rain again. Good for business, bad for my hair.", zh: "又下雨了。生意好，发型差。", es: "Otra vez lluvia. Bueno para el negocio, malo para mi pelo." },
+        clear: { en: "Stars are out. Even the cats are stargazing.", zh: "星星出来了，连猫都在看。", es: "Salieron las estrellas. Hasta los gatos miran el cielo." },
+        snow:  { en: "Snow! Everything I pour is now 10% more poetic.", zh: "下雪了！现在每杯都文艺了百分之十。", es: "¡Nieve! Todo lo que sirvo es un 10% más poético." },
+        fog:   { en: "Can't see the Drum Tower. Can barely see my own glasses.", zh: "看不见鼓楼了。连自己的眼镜都快看不清。", es: "No veo la Torre del Tambor. Apenas veo mis gafas." },
+        storm: { en: "Thunder! Miso's under the counter. Don't tell her I saw.", zh: "打雷了！味噌躲到吧台底下了，别说我看见了。", es: "¡Truenos! Miso está bajo la barra. No le digas que la vi." }
+      }
+    };
+
+    function L(obj) {
+      if (!obj) return '';
+      return obj[AppState.lang] || obj.en || '';
+    }
+    function pick(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+    function setText(id, txt) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = txt;
+    }
+  </script>
 
   <script>
     /* WEATHER PARTICLES */
@@ -2403,11 +2796,18 @@
       document.getElementById('weather-display-icon').textContent = icons[w] || '🌧';
       WeatherSystem.createParticles();
       applyTimeWeatherPalette();
-      if (userClick) toggleAtmosphereDrawer(false);
+      if (userClick) {
+        toggleAtmosphereDrawer(false);
+        // Wei comments on the weather you picked
+        if (AppState.inSanctuary && AppState.weiState === 'awake' && WeiText.weather[w]) {
+          showBubble(L(WeiText.weather[w]), 3200);
+          if (w === 'storm') setExpression('o', 1200);
+        }
+      }
     }
 
-    function toggleAtmosphereDrawer(force) {
-      SoundEngine.playClick();
+    function toggleAtmosphereDrawer(force, silent = false) {
+      if (!silent) SoundEngine.playClick();
       const d = document.getElementById('drawer-atmosphere');
       if (typeof force === 'boolean') {
         d.classList.toggle('hidden', !force);
@@ -2467,23 +2867,14 @@
       }
 
       const t = i18n[AppState.lang];
-      const navPill = document.getElementById('nav-mode-pill');
       const btnEnter = document.getElementById('btn-enter-text');
       const navBrand = document.getElementById('nav-brand-title');
 
       if (AppState.isBarOpen) {
         if (navBrand) navBrand.textContent = AppState.lang === 'zh' ? "WEI'S 酒馆" : "WEI'S BAR";
-        if (navPill) {
-          navPill.textContent = t.venueBar;
-          navPill.className = 'text-[9px] px-1 py-0.5 bg-amber-950 text-amber-400 border border-amber-700/60 font-mono tracking-tight';
-        }
         if (btnEnter) btnEnter.textContent = t.btnEnterBar;
       } else {
         if (navBrand) navBrand.textContent = AppState.lang === 'zh' ? "WEI'S 咖啡" : "WEI'S COFFEE";
-        if (navPill) {
-          navPill.textContent = t.venueCoffee;
-          navPill.className = 'text-[9px] px-1 py-0.5 bg-yellow-950 text-amber-300 border border-amber-600/70 font-mono tracking-tight';
-        }
         if (btnEnter) btnEnter.textContent = t.btnEnterCoffee;
       }
 
@@ -2530,10 +2921,14 @@
     function setTimePreset(hour) {
       SoundEngine.playClick();
       updateClockHands(hour);
-      toggleAtmosphereDrawer(false);
+      toggleAtmosphereDrawer(false, true);
+      if (AppState.inSanctuary) {
+        AppState.currentTopic = null;
+        renderCurrentDialogue();
+      }
     }
 
-    async function syncBeijingWeatherAndClock() {
+    async function syncBeijingWeatherAndClock(silent = false) {
       try {
         const beijingTimeStr = new Date().toLocaleString("en-US", { timeZone: "Asia/Shanghai" });
         const bjDate = new Date(beijingTimeStr);
@@ -2562,7 +2957,7 @@
         setWeather('rain', false);
       }
 
-      toggleAtmosphereDrawer(false);
+      toggleAtmosphereDrawer(false, silent);
     }
   </script>
 
@@ -2625,7 +3020,7 @@
 
         if (moodPill) {
           const isSiesta = (h >= 12.0 && h < 14.0);
-          moodPill.textContent = isSiesta ? 'Wei: Afternoon Siesta 💤' : 'Wei: Deep Night Sleep 💤';
+          moodPill.textContent = isSiesta ? 'Wei: Siesta 💤' : 'Wei: Asleep 💤';
         }
       } else {
         AppState.weiState = 'awake';
@@ -2639,11 +3034,15 @@
         }
 
         if (moodPill) {
-          moodPill.textContent = `Wei: ${AppState.weiMood}`;
+          moodPill.textContent = `Wei: ${moodLabel()}`;
         }
       }
 
       updateEnergyPips();
+    }
+
+    function moodLabel() {
+      return L(WeiText.moods[AppState.weiMood]) || AppState.weiMood;
     }
 
     function updateEnergyPips() {
@@ -2660,7 +3059,213 @@
   </script>
 
   <script>
-    /* DIALOGUE & RPG ENGINE */
+    /* ===== BOND SYSTEM (persists between visits) ===== */
+    const BOND_KEY = 'weis-bar-bond-v1';
+    const Bond = {
+      pts: 0,
+      visits: 0,
+      lastOrder: { bar: null, cafe: null },
+      giftsTonight: 0,
+      seenTonight: new Set(),
+      lineIdx: {},
+      pokeTimes: [],
+      sleepPokes: 0,
+
+      load() {
+        try {
+          const raw = localStorage.getItem(BOND_KEY);
+          if (raw) {
+            const s = JSON.parse(raw);
+            this.pts = s.pts || 0;
+            this.visits = s.visits || 0;
+            this.lastOrder = Object.assign({ bar: null, cafe: null }, s.lastOrder || {});
+          }
+        } catch (e) {}
+      },
+      save() {
+        try {
+          localStorage.setItem(BOND_KEY, JSON.stringify({ pts: this.pts, visits: this.visits, lastOrder: this.lastOrder }));
+        } catch (e) {}
+      },
+      level() {
+        let lv = 0;
+        WeiText.levels.forEach((l, i) => { if (this.pts >= l.min) lv = i; });
+        return lv;
+      },
+      gain(n) {
+        if (!n) return;
+        const before = this.level();
+        this.pts = Math.max(0, this.pts + n);
+        this.save();
+        updateBondBadge();
+        if (n > 0) floatHeart(n);
+        const after = this.level();
+        if (after > before) onBondLevelUp(after);
+      },
+      // Award points only the first time something happens per visit
+      once(key, n) {
+        if (this.seenTonight.has(key)) return false;
+        this.seenTonight.add(key);
+        this.gain(n);
+        return true;
+      }
+    };
+
+    function updateBondBadge() {
+      const lv = Bond.level();
+      const levels = WeiText.levels;
+      setText('bond-hearts', '♥'.repeat(lv + 1) + '♡'.repeat(levels.length - 1 - lv));
+      setText('bond-level-name', L(levels[lv].name));
+      const bar = document.getElementById('bond-bar');
+      if (bar) {
+        if (lv >= levels.length - 1) {
+          bar.style.width = '100%';
+        } else {
+          const lo = levels[lv].min, hi = levels[lv + 1].min;
+          bar.style.width = Math.round(((Bond.pts - lo) / (hi - lo)) * 100) + '%';
+        }
+      }
+      setText('door-bond-line', Bond.visits > 0 ? `♥ ${L(levels[lv].name)} • ${Bond.visits} ${L(WeiText.ui.visits)}` : '');
+    }
+
+    function tapBondBadge() {
+      SoundEngine.playClick();
+      const lv = Bond.level();
+      const levels = WeiText.levels;
+      if (lv >= levels.length - 1) {
+        showToast(L(WeiText.ui.maxBond));
+      } else {
+        const next = levels[lv + 1];
+        showToast(`♥ ${Bond.pts}/${next.min} ${L(WeiText.ui.progress)} ${L(next.name)} — ${L(next.unlock)}`);
+      }
+    }
+
+    function onBondLevelUp(lv) {
+      SoundEngine.playSparkle(true);
+      const lvl = WeiText.levels[lv];
+      showToast(`${L(WeiText.ui.bondUp)} ♥ ${L(lvl.name)}` + (lvl.unlock ? ` — ${L(WeiText.ui.unlock)}: ${L(lvl.unlock)}` : ''));
+      animateWei('wei-hop');
+      setExpression('grin', 2500);
+      if (AppState.uiMode && !document.getElementById('rpg-dialogue-screen').classList.contains('hidden')) {
+        renderActionRow();
+      }
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const el = document.getElementById('bond-toast');
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('hidden', 'toast-show');
+      void el.offsetWidth;
+      el.classList.add('toast-show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.add('hidden'), 2800);
+    }
+
+    function floatHeart(n) {
+      const el = document.getElementById('heart-float');
+      if (!el) return;
+      el.textContent = `+${n}♥`;
+      el.classList.remove('hidden', 'heart-up');
+      void el.offsetWidth;
+      el.classList.add('heart-up');
+      SoundEngine.playSparkle(false);
+      setTimeout(() => el.classList.add('hidden'), 1300);
+    }
+
+    /* ===== WEI'S FACE, BUBBLE & BODY LANGUAGE ===== */
+    let bubbleTimer = null;
+    function showBubble(text, ms = 2600) {
+      const wrap = document.getElementById('wei-bubble-wrap');
+      const bubble = document.getElementById('wei-bubble');
+      if (!wrap || !bubble) return;
+      bubble.textContent = text;
+      wrap.classList.remove('hidden');
+      bubble.classList.remove('bubble-pop');
+      void bubble.offsetWidth;
+      bubble.classList.add('bubble-pop');
+      clearTimeout(bubbleTimer);
+      bubbleTimer = setTimeout(() => wrap.classList.add('hidden'), ms);
+    }
+
+    let exprTimer = null;
+    function setExpression(kind = 'smile', ms = 1600) {
+      const ids = { smile: 'mouth-smile', grin: 'mouth-grin', flat: 'mouth-flat', o: 'mouth-o' };
+      Object.entries(ids).forEach(([k, id]) => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('hidden', k !== kind);
+      });
+      const blush = document.getElementById('avatar-blush');
+      if (blush) blush.classList.toggle('hidden', !(kind === 'grin' || Bond.level() >= 4));
+      clearTimeout(exprTimer);
+      if (kind !== 'smile') exprTimer = setTimeout(() => setExpression('smile'), ms);
+    }
+
+    function animateWei(cls) {
+      const svg = document.getElementById('svg-wei-avatar');
+      if (!svg) return;
+      svg.classList.remove('wei-wiggle', 'wei-shake', 'wei-hop');
+      svg.getBoundingClientRect();
+      svg.classList.add(cls);
+    }
+
+    /* Typewriter with RPG voice blips */
+    const Typer = {
+      timer: null, el: null, full: '',
+      run(el, text) {
+        this.stop();
+        this.el = el;
+        this.full = text;
+        el.textContent = '';
+        el.classList.add('typing-cursor');
+        const pitch = AppState.isBarOpen ? 0.85 : 1.15;
+        let i = 0, ticks = 0;
+        this.timer = setInterval(() => {
+          i += 2;
+          ticks++;
+          el.textContent = text.slice(0, i);
+          if (ticks % 3 === 0) SoundEngine.playBlip(pitch);
+          if (i >= text.length) this.finish();
+        }, 22);
+      },
+      finish() {
+        if (this.timer) { clearInterval(this.timer); this.timer = null; }
+        if (this.el) {
+          this.el.textContent = this.full;
+          this.el.classList.remove('typing-cursor');
+        }
+      },
+      stop() {
+        if (this.timer) { clearInterval(this.timer); this.timer = null; }
+      },
+      skip() {
+        if (this.timer) this.finish();
+      }
+    };
+
+    /* ===== DIALOGUE & RPG ENGINE ===== */
+    const DEFAULT_GRID = "grid grid-cols-1 sm:grid-cols-3 gap-1.5 mt-1.5";
+    const COMPACT_GRID = "grid grid-cols-2 sm:grid-cols-3 gap-1 mt-1.5";
+    const GIFT_GRID = "grid grid-cols-3 gap-1 mt-1.5";
+
+    function showScreen(id) {
+      ['rpg-dialogue-screen', 'sleep-mode-screen', 'sneak-mixer-screen', 'served-result-screen'].forEach(s => {
+        document.getElementById(s).classList.toggle('hidden', s !== id);
+      });
+    }
+
+    function speakerTag() {
+      const isBar = AppState.isBarOpen;
+      const m = moodLabel();
+      const tags = {
+        en: isBar ? `WEI • ${m.toUpperCase()}` : `WEI • ARTISAN BARISTA • ${m.toUpperCase()}`,
+        zh: isBar ? `WEI • 夜间调酒师 · ${m}` : `WEI • 晨间咖啡师 · ${m}`,
+        es: isBar ? `WEI • BARTENDER • ${m.toUpperCase()}` : `WEI • BARISTA • ${m.toUpperCase()}`
+      };
+      return tags[AppState.lang] || tags.en;
+    }
+
     function getNextUniqueTopic() {
       const pool = AppState.isBarOpen ? BarTopicPool : CafeTopicPool;
       let candidates = pool.filter(t => !AppState.usedTopicIds.has(t.id));
@@ -2674,82 +3279,153 @@
       return chosen;
     }
 
+    // Generic "Wei says X, here are your replies" renderer used by every mode
+    function renderWei(text, buttons, gridClass = DEFAULT_GRID, mode = 'topic') {
+      showScreen('rpg-dialogue-screen');
+      AppState.uiMode = mode;
+      setText('dialogue-speaker-tag', speakerTag());
+      setText('dialogue-skip-hint', L(WeiText.ui.tapSkip));
+      Typer.run(document.getElementById('dialogue-speech-text'), text);
+
+      const grid = document.getElementById('rpg-options-grid');
+      grid.className = gridClass;
+      grid.innerHTML = '';
+      const compact = gridClass !== DEFAULT_GRID;
+
+      buttons.forEach(b => {
+        const btn = document.createElement('button');
+        btn.className = compact
+          ? "pixel-btn p-1 sm:p-1.5 bg-stone-950 border border-stone-700 hover:border-amber-400 text-left text-[10px] sm:text-[11px] text-stone-200 hover:text-amber-200 transition-colors"
+          : "pixel-btn p-1.5 sm:p-2 bg-stone-950 border border-stone-700 hover:border-amber-400 text-left text-[11px] text-stone-200 hover:text-amber-200 transition-colors flex items-center justify-between";
+        const label = document.createElement('span');
+        label.textContent = b.locked ? `🔒 ${b.label}` : b.label;
+        btn.appendChild(label);
+
+        if (b.locked) {
+          btn.disabled = true;
+          btn.classList.add('opacity-40', 'cursor-not-allowed');
+        } else {
+          if (!compact) {
+            const arrow = document.createElement('span');
+            arrow.className = "text-[9px] font-retro text-amber-500 ml-1";
+            arrow.textContent = '→';
+            btn.appendChild(arrow);
+          }
+          btn.onclick = () => {
+            resetIdle();
+            SoundEngine.playClick();
+            b.onClick();
+          };
+        }
+        grid.appendChild(btn);
+      });
+
+      renderActionRow();
+    }
+
+    function renderActionRow() {
+      const row = document.getElementById('rpg-action-row');
+      if (!row) return;
+      row.innerHTML = '';
+      const mode = AppState.isBarOpen ? 'bar' : 'cafe';
+      const chips = [
+        { id: 'topic', label: WeiText.ui.order, fn: () => { AppState.currentTopic = null; renderCurrentDialogue(); } },
+        { id: 'chat', label: WeiText.ui.chat, fn: openChat },
+        { id: 'riddle', label: WeiText.ui.riddle, fn: startRiddle },
+        { id: 'gift', label: WeiText.ui.gift, fn: openGifts }
+      ];
+      const usualKey = Bond.lastOrder[mode];
+      if (Bond.level() >= 1 && usualKey && DrinkManifest[usualKey]) {
+        chips.push({ id: 'usual', label: WeiText.ui.usual, fn: orderUsual });
+      }
+      chips.forEach(c => {
+        const b = document.createElement('button');
+        b.className = 'chip-btn pixel-btn' + (AppState.uiMode === c.id ? ' active' : '');
+        b.textContent = L(c.label);
+        b.onclick = () => { resetIdle(); SoundEngine.playClick(); c.fn(); };
+        row.appendChild(b);
+      });
+    }
+
     function renderCurrentDialogue() {
-      const screenDialogue = document.getElementById('rpg-dialogue-screen');
-      const screenSleep = document.getElementById('sleep-mode-screen');
-      const screenSneak = document.getElementById('sneak-mixer-screen');
-      const screenServed = document.getElementById('served-result-screen');
-
-      screenDialogue.classList.add('hidden');
-      screenSleep.classList.add('hidden');
-      screenSneak.classList.add('hidden');
-      screenServed.classList.add('hidden');
-
       const t = i18n[AppState.lang];
 
       if (AppState.weiState === 'asleep') {
-        screenSleep.classList.remove('hidden');
+        Typer.stop();
+        showScreen('sleep-mode-screen');
 
-        // Dynamically adjust text for Bar Night Sleep (12am-6am) vs Cafe Afternoon Siesta (12pm-2pm)
-        const isBarNight = (AppState.hour >= 0.0 && AppState.hour < 6.0);
-        document.getElementById('sleep-header-title').textContent = isBarNight ? t.sleepHeaderBar : t.sleepHeaderCafe;
-        document.getElementById('sleep-story-text').textContent = isBarNight ? t.sleepStoryBar : t.sleepStoryCafe;
-        document.getElementById('sleep-btn-wake').textContent = isBarNight ? t.sleepBtnWakeBar : t.sleepBtnWakeCafe;
-        document.getElementById('sleep-btn-cats').textContent = t.sleepBtnCats;
-        document.getElementById('sleep-btn-diy').textContent = t.sleepBtnDiy;
-        document.getElementById('sleep-header-badge').textContent = t.sleepBadge;
+        // Bar hours (18-06) get the bar text, cafe hours the siesta text
+        const isBarNight = AppState.isBarOpen;
+        setText('sleep-header-title', isBarNight ? t.sleepHeaderBar : t.sleepHeaderCafe);
+        setText('sleep-story-text', isBarNight ? t.sleepStoryBar : t.sleepStoryCafe);
+        setText('sleep-btn-wake', isBarNight ? t.sleepBtnWakeBar : t.sleepBtnWakeCafe);
+        setText('sleep-btn-cats', t.sleepBtnCats);
+        setText('sleep-btn-diy', t.sleepBtnDiy);
+        setText('sleep-header-badge', t.sleepBadge);
+        setText('sleep-poke-tip', L(WeiText.ui.pokeTip));
 
         SoundEngine.playSnore();
         return;
       }
 
-      screenDialogue.classList.remove('hidden');
-
       const topic = AppState.currentTopic || getNextUniqueTopic();
-      const lang = AppState.lang;
-
-      const speakerTitles = {
-        en: AppState.isBarOpen ? `WEI • ${AppState.weiMood.toUpperCase()}` : `WEI • ARTISAN BARISTA`,
-        zh: AppState.isBarOpen ? `WEI • 夜间调酒师` : `WEI • 晨间咖啡师`,
-        es: AppState.isBarOpen ? `WEI • BARTENDER NOCTURNO` : `WEI • BARISTA ARTESANAL`
-      };
-
-      document.getElementById('dialogue-speaker-tag').textContent = speakerTitles[lang] || speakerTitles.en;
-      document.getElementById('dialogue-speech-text').textContent = topic.text[lang] || topic.text.en;
-
-      const grid = document.getElementById('rpg-options-grid');
-      grid.innerHTML = '';
-
-      topic.options.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = "pixel-btn p-1.5 sm:p-2 bg-stone-950 border border-stone-700 hover:border-amber-400 text-left text-[11px] text-stone-200 hover:text-amber-200 transition-colors flex items-center justify-between";
-        const labelText = opt.label[lang] || opt.label.en;
-        btn.innerHTML = `<span>${labelText}</span><span class="text-[9px] font-retro text-amber-500 ml-1">→</span>`;
-        btn.onclick = () => {
-          SoundEngine.playClick();
-          if (typeof opt.deltaEnergy === 'number') {
-            AppState.weiEnergy = Math.max(0, AppState.weiEnergy + opt.deltaEnergy);
-          }
-          if (opt.nextMood) {
-            AppState.weiMood = opt.nextMood;
-          }
-
-          evaluateWeiState();
-
-          if (AppState.weiState === 'asleep') {
-            renderCurrentDialogue();
-          } else if (opt.drink) {
-            serveItemByKey(opt.drink);
-          } else {
-            AppState.currentTopic = null;
-            renderCurrentDialogue();
-          }
-        };
-        grid.appendChild(btn);
-      });
+      renderWei(
+        L(topic.text),
+        topic.options.map(opt => ({ label: L(opt.label), onClick: () => chooseTopicOption(opt) })),
+        DEFAULT_GRID,
+        'topic'
+      );
     }
 
-    function serveItemByKey(key) {
+    function chooseTopicOption(opt) {
+      if (typeof opt.deltaEnergy === 'number') {
+        AppState.weiEnergy = Math.max(0, Math.min(4, AppState.weiEnergy + opt.deltaEnergy));
+      }
+      if (opt.nextMood) AppState.weiMood = opt.nextMood;
+      if (opt.bond) Bond.once('topic-' + AppState.currentTopic.id, opt.bond);
+
+      evaluateWeiState();
+
+      if (AppState.weiState === 'asleep') {
+        renderCurrentDialogue();
+      } else if (opt.drink) {
+        serveItemByKey(opt.drink);
+      } else {
+        AppState.currentTopic = null;
+        renderCurrentDialogue();
+      }
+    }
+
+    function backToOrder() {
+      AppState.currentTopic = null;
+      renderCurrentDialogue();
+    }
+
+    /* ----- Served card + drink reactions ----- */
+    function showServed(o) {
+      Typer.stop();
+      showScreen('served-result-screen');
+      AppState.uiMode = 'served';
+      setText('res-icon', o.icon);
+      setText('res-name', o.name);
+      setText('res-subtitle', o.sub);
+      setText('res-description', o.desc);
+      setText('res-formula', o.formula);
+
+      const plate = document.getElementById('served-item-plate');
+      plate.textContent = o.icon;
+      plate.classList.remove('hidden');
+
+      setText('res-react-label', L(WeiText.ui.tellWei));
+      setText('react-love', L(WeiText.ui.love));
+      setText('react-meh', L(WeiText.ui.meh));
+      setText('react-strong', L(WeiText.ui.strong));
+      document.getElementById('res-react-row').classList.toggle('hidden', !o.reactable);
+      document.getElementById('res-wei-reply').classList.add('hidden');
+      AppState.reacted = false;
+    }
+
+    function serveItemByKey(key, opts = {}) {
       if (AppState.isBarOpen) {
         SoundEngine.playShaker();
         setTimeout(() => SoundEngine.playClink(), 500);
@@ -2759,21 +3435,55 @@
       }
 
       const d = DrinkManifest[key] || DrinkManifest.jasmine_gulou;
-      const lang = AppState.lang;
+      const mode = AppState.isBarOpen ? 'bar' : 'cafe';
+      if (d.type === mode) {
+        Bond.lastOrder[mode] = key;
+        Bond.save();
+      }
+      const awake = AppState.weiState === 'awake';
 
-      document.getElementById('rpg-dialogue-screen').classList.add('hidden');
-      const servedScreen = document.getElementById('served-result-screen');
-      servedScreen.classList.remove('hidden');
+      showServed({
+        icon: d.icon,
+        name: L(d.name) + (opts.free ? ' 🎁' : ''),
+        sub: L(d.sub),
+        desc: L(d.desc),
+        formula: d.formula,
+        reactable: awake
+      });
 
-      document.getElementById('res-icon').textContent = d.icon;
-      document.getElementById('res-name').textContent = d.name[lang] || d.name.en;
-      document.getElementById('res-subtitle').textContent = d.sub[lang] || d.sub.en;
-      document.getElementById('res-description').textContent = d.desc[lang] || d.desc.en;
-      document.getElementById('res-formula').textContent = d.formula;
+      if (awake) {
+        animateWei('wei-wiggle');
+        if (opts.line) showBubble(opts.line, 2800);
+      }
+    }
 
-      const plate = document.getElementById('served-item-plate');
-      plate.textContent = d.icon;
-      plate.classList.remove('hidden');
+    function reactToDrink(kind) {
+      if (AppState.reacted) return;
+      AppState.reacted = true;
+      resetIdle();
+      SoundEngine.playClick();
+
+      const line = L(pick(WeiText.reactions[kind]));
+      document.getElementById('res-react-row').classList.add('hidden');
+      const reply = document.getElementById('res-wei-reply');
+      reply.textContent = `Wei: "${line}"`;
+      reply.classList.remove('hidden');
+
+      if (kind === 'love') {
+        setExpression('grin', 2500);
+        animateWei('wei-hop');
+        showBubble('😊', 1500);
+        Bond.gain(2);
+      } else if (kind === 'meh') {
+        setExpression('flat', 2000);
+        showBubble('🤔', 1500);
+        Bond.gain(1);
+      } else {
+        setExpression('o', 1800);
+        animateWei('wei-shake');
+        showBubble('💧', 1500);
+        Bond.gain(1);
+      }
     }
 
     function resetRpgConversation() {
@@ -2783,23 +3493,184 @@
       renderCurrentDialogue();
     }
 
-    function tapBartender() {
-      if (AppState.weiState === 'asleep') {
-        SoundEngine.playSnore();
+    /* ----- Small talk ----- */
+    function chatButtons() {
+      const lv = Bond.level();
+      const levels = WeiText.levels;
+      return WeiText.chatTopics.map(tp => ({
+        label: lv < tp.minLevel ? `${L(tp.label)} · ${L(levels[tp.minLevel].name)}` : L(tp.label),
+        locked: lv < tp.minLevel,
+        onClick: () => chatAbout(tp)
+      })).concat([{ label: L(WeiText.ui.back), onClick: backToOrder }]);
+    }
+
+    function openChat() {
+      renderWei(L(pick(WeiText.chatIntro)), chatButtons(), COMPACT_GRID, 'chat');
+    }
+
+    function chatAbout(tp) {
+      if (tp.id === 'joke') {
+        promptJoke();
+        return;
+      }
+      if (tp.id === 'offmenu') {
+        Bond.once('chat-offmenu', 1);
+        serveItemByKey('wei_notebook', { line: L(WeiText.offmenu) });
+        return;
+      }
+      const idx = Bond.lineIdx[tp.id] || 0;
+      const line = tp.lines[idx % tp.lines.length];
+      Bond.lineIdx[tp.id] = idx + 1;
+      Bond.once('chat-' + tp.id, tp.id === 'notebook' ? 3 : 1);
+
+      if (tp.id === 'notebook' || tp.id === 'secret') {
+        setExpression('grin', 3000);
       } else {
-        SoundEngine.playClick();
-        if (Math.random() > 0.6) {
-          promptJoke();
-        } else {
-          resetRpgConversation();
-        }
+        setExpression(pick(['smile', 'grin']), 1500);
+      }
+      animateWei('wei-wiggle');
+      renderWei(L(line), chatButtons(), COMPACT_GRID, 'chat');
+    }
+
+    /* ----- Guess-the-drink riddle ----- */
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function startRiddle() {
+      const mode = AppState.isBarOpen ? 'bar' : 'cafe';
+      const keys = Object.keys(DrinkManifest).filter(k => DrinkManifest[k].type === mode);
+      const answer = pick(keys);
+      const choices = shuffle([answer, ...shuffle(keys.filter(k => k !== answer)).slice(0, 2)]);
+      const d = DrinkManifest[answer];
+      const text = `${L(pick(WeiText.riddleIntro))} “${L(d.sub)}”`;
+      renderWei(
+        text,
+        choices.map(k => ({ label: L(DrinkManifest[k].name), onClick: () => answerRiddle(k, answer) }))
+          .concat([{ label: L(WeiText.ui.back), onClick: backToOrder }]),
+        COMPACT_GRID,
+        'riddle'
+      );
+    }
+
+    function answerRiddle(choice, answer) {
+      if (choice === answer) {
+        SoundEngine.playSparkle(true);
+        setExpression('grin', 2500);
+        animateWei('wei-hop');
+        Bond.gain(2);
+        renderWei(L(pick(WeiText.riddleRight)), [
+          { label: `🎁 ${L(DrinkManifest[answer].name)}`, onClick: () => serveItemByKey(answer, { free: true }) },
+          { label: L(WeiText.ui.another), onClick: startRiddle }
+        ], COMPACT_GRID, 'riddle');
+      } else {
+        SoundEngine.playChiptune(220, 'triangle', 0.15);
+        setExpression('flat', 2000);
+        const text = L(WeiText.riddleWrong).replace('{name}', L(DrinkManifest[answer].name));
+        renderWei(text, [
+          { label: L(WeiText.ui.serveAnyway), onClick: () => serveItemByKey(answer) },
+          { label: L(WeiText.ui.another), onClick: startRiddle },
+          { label: L(WeiText.ui.back), onClick: backToOrder }
+        ], COMPACT_GRID, 'riddle');
       }
     }
 
-    function wakeUpBartender() {
+    /* ----- Gifts ----- */
+    function giftButtons() {
+      return WeiText.gifts.map(g => ({ label: `${g.icon} ${L(g.label)}`, onClick: () => giveGift(g) }))
+        .concat([{ label: L(WeiText.ui.back), onClick: backToOrder }]);
+    }
+
+    function openGifts() {
+      if (Bond.giftsTonight >= 3) {
+        setExpression('grin', 1500);
+        renderWei(L(WeiText.giftLimit), [{ label: L(WeiText.ui.back), onClick: backToOrder }], COMPACT_GRID, 'gift');
+        return;
+      }
+      renderWei(L(WeiText.giftIntro), giftButtons(), GIFT_GRID, 'gift');
+    }
+
+    function giveGift(g) {
+      Bond.giftsTonight++;
+      showBubble(g.emote, 1600);
+      animateWei('wei-hop');
+      setExpression(g.bond >= 2 ? 'grin' : 'flat', 2200);
+
+      if (g.energy) {
+        AppState.weiEnergy = Math.min(4, AppState.weiEnergy + g.energy);
+        evaluateWeiState();
+      }
+      if (g.cats) {
+        SoundEngine.playMeow(0.85);
+        setTimeout(() => SoundEngine.playMeow(1.3), 220);
+        setText('cat-pair-status', AppState.lang === 'zh' ? '😻 味噌和柚子吃得津津有味' : (AppState.lang === 'es' ? '😻 Miso y Yuzu disfrutan su premio' : '😻 Miso & Yuzu are munching happily'));
+      }
+      if (g.id === 'vinyl' && SoundEngine.bgmPlaying) SoundEngine.nextTrack();
+
+      Bond.gain(g.bond);
+
+      const buttons = Bond.giftsTonight < 3
+        ? [{ label: L(WeiText.ui.gift), onClick: openGifts }, { label: L(WeiText.ui.back), onClick: backToOrder }]
+        : [{ label: L(WeiText.ui.back), onClick: backToOrder }];
+      renderWei(`"${L(g.line)}"`, buttons, COMPACT_GRID, 'gift');
+    }
+
+    function orderUsual() {
+      const mode = AppState.isBarOpen ? 'bar' : 'cafe';
+      const key = Bond.lastOrder[mode];
+      if (!key) return;
+      Bond.once('usual', 1);
+      serveItemByKey(key, { line: L(WeiText.usual) });
+    }
+
+    /* ----- Poking Wei ----- */
+    function tapBartender() {
+      resetIdle();
+
+      if (AppState.weiState === 'asleep') {
+        Bond.sleepPokes++;
+        SoundEngine.playSnore();
+        if (Bond.sleepPokes >= 3) {
+          Bond.sleepPokes = 0;
+          wakeUpBartender(true);
+        } else {
+          showBubble(L(WeiText.sleepPokes[Bond.sleepPokes - 1]), 2400);
+        }
+        return;
+      }
+
+      const now = Date.now();
+      Bond.pokeTimes = Bond.pokeTimes.filter(t => now - t < 2500);
+      Bond.pokeTimes.push(now);
+
+      if (Bond.pokeTimes.length >= 5) {
+        Bond.pokeTimes = [];
+        SoundEngine.playChiptune(180, 'sawtooth', 0.12);
+        setExpression('flat', 2500);
+        animateWei('wei-shake');
+        showBubble(L(WeiText.annoyed), 2600);
+        setTimeout(promptJoke, 1100);
+        return;
+      }
+
+      SoundEngine.playBlip(1.3);
+      setTimeout(() => SoundEngine.playBlip(1.6), 70);
+      animateWei('wei-wiggle');
+      setExpression(pick(['smile', 'grin', 'o']), 1200);
+      showBubble(L(pick(WeiText.pokes)), 2400);
+      Bond.once('poke', 1);
+    }
+
+    function wakeUpBartender(grumpy = false) {
       SoundEngine.playClink();
+      Bond.sleepPokes = 0;
       AppState.weiState = 'awake';
-      AppState.weiEnergy = 4;
+      AppState.weiEnergy = grumpy ? 2 : 4;
       // Waking up shifts time to an awake period within the current venue mode:
       // Bar active: 21:00; Cafe active: 14:30
       AppState.hour = AppState.isBarOpen ? 21.0 : 14.5;
@@ -2807,6 +3678,14 @@
       evaluateWeiState();
       AppState.currentTopic = null;
       renderCurrentDialogue();
+      if (grumpy) {
+        showBubble(L(WeiText.grumpyWake), 3200);
+        setExpression('flat', 2800);
+        animateWei('wei-shake');
+      } else {
+        showBubble('…☕?', 1600);
+        setExpression('o', 1200);
+      }
     }
 
     function askCatToBartend() {
@@ -2814,26 +3693,21 @@
       setTimeout(() => SoundEngine.playMeow(0.8), 200);
       setTimeout(() => SoundEngine.playClink(), 500);
 
-      document.getElementById('sleep-mode-screen').classList.add('hidden');
-      const served = document.getElementById('served-result-screen');
-      served.classList.remove('hidden');
-
       const isZh = AppState.lang === 'zh';
       const isEs = AppState.lang === 'es';
 
-      document.getElementById('res-icon').textContent = "🐟";
-      document.getElementById('res-name').textContent = isZh ? "味噌和柚子的特调小沙丁" : (isEs ? "Especial de Sardinas de Miso y Yuzu" : "Miso & Yuzu's Beijing Sardine Special");
-      document.getElementById('res-subtitle').textContent = isZh ? "小鱼干度: 100% • 经肉垫认证" : (isEs ? "Pescado: 100% • Aprobado por Gatos" : "Fishiness: 100% • Cat Paw Approved");
-      document.getElementById('res-description').textContent = isZh 
-        ? "\"味噌用肉垫将杯子稳稳推过木吧台，柚子把一片香脆小鱼干轻靠在杯沿。格外温润醇香。\"" 
-        : (isEs 
-          ? "\"Miso empujó la copa con su patita y Yuzu colocó una sardina crujiente en el borde. Sorprendentemente sedoso.\"" 
-          : "\"Miso slid the glass across the wood while Yuzu perched a dried sardine flake over the rim. Surprisingly velvety.\"");
-      document.getElementById('res-formula').textContent = "45ml Cold Brew / Gin • 15ml Sardine Brine • Fresh Catnip";
-
-      const plate = document.getElementById('served-item-plate');
-      plate.textContent = "🐟";
-      plate.classList.remove('hidden');
+      showServed({
+        icon: "🐟",
+        name: isZh ? "味噌和柚子的特调小沙丁" : (isEs ? "Especial de Sardinas de Miso y Yuzu" : "Miso & Yuzu's Beijing Sardine Special"),
+        sub: isZh ? "小鱼干度: 100% • 经肉垫认证" : (isEs ? "Pescado: 100% • Aprobado por Gatos" : "Fishiness: 100% • Cat Paw Approved"),
+        desc: isZh
+          ? "\"味噌用肉垫将杯子稳稳推过木吧台，柚子把一片香脆小鱼干轻靠在杯沿。格外温润醇香。\""
+          : (isEs
+            ? "\"Miso empujó la copa con su patita y Yuzu colocó una sardina crujiente en el borde. Sorprendentemente sedoso.\""
+            : "\"Miso slid the glass across the wood while Yuzu perched a dried sardine flake over the rim. Surprisingly velvety.\""),
+        formula: "45ml Cold Brew / Gin • 15ml Sardine Brine • Fresh Catnip",
+        reactable: false
+      });
     }
 
     function openSneakMixer() {
@@ -2877,14 +3751,12 @@
         `;
       }
 
-      document.getElementById('sleep-mode-screen').classList.add('hidden');
-      document.getElementById('sneak-mixer-screen').classList.remove('hidden');
+      showScreen('sneak-mixer-screen');
     }
 
     function closeSneakMixer() {
       SoundEngine.playClick();
-      document.getElementById('sneak-mixer-screen').classList.add('hidden');
-      document.getElementById('sleep-mode-screen').classList.remove('hidden');
+      showScreen('sleep-mode-screen');
     }
 
     function craftCustomCocktail() {
@@ -2895,26 +3767,25 @@
       const mod = document.getElementById('mix-mod').value;
       const secret = document.getElementById('mix-secret').value;
 
-      document.getElementById('sneak-mixer-screen').classList.add('hidden');
-      const served = document.getElementById('served-result-screen');
-      served.classList.remove('hidden');
-
       const isZh = AppState.lang === 'zh';
-      document.getElementById('res-icon').textContent = "🧪";
-      document.getElementById('res-name').textContent = isZh 
-        ? `客串私调: ${base.split(' ')[0]} 配 ${mod.split(' ')[0]}` 
-        : `Secret Counter: ${base.split(' ')[0]} & ${mod.split(' ')[0]}`;
-      document.getElementById('res-subtitle').textContent = isZh ? "客串吧台 • 秘密风味点缀" : "Unauthorized DIY • Secret Garnish";
-      document.getElementById('res-description').textContent = isZh 
-        ? `\"你溜进吧台，将 ${base} 与 ${mod} 调和，最后饰以 ${secret}。带着打破规则的醇香与刺激。\"` 
-        : `\"You tiptoed behind Wei's counter and infused ${base} with ${mod}, crowned with ${secret}. A delightful renegade mix.\"`;
-      document.getElementById('res-formula').textContent = `45ml ${base} • 120ml ${mod} • ${secret}`;
+      showServed({
+        icon: "🧪",
+        name: isZh ? `客串私调: ${base.split(' ')[0]} 配 ${mod.split(' ')[0]}` : `Secret Counter: ${base.split(' ')[0]} & ${mod.split(' ')[0]}`,
+        sub: isZh ? "客串吧台 • 秘密风味点缀" : "Unauthorized DIY • Secret Garnish",
+        desc: isZh
+          ? `\"你溜进吧台，将 ${base} 与 ${mod} 调和，最后饰以 ${secret}。带着打破规则的醇香与刺激。\"`
+          : `\"You tiptoed behind Wei's counter and infused ${base} with ${mod}, crowned with ${secret}. A delightful renegade mix.\"`,
+        formula: `45ml ${base} • 120ml ${mod} • ${secret}`,
+        reactable: false
+      });
 
-      const plate = document.getElementById('served-item-plate');
-      plate.textContent = "🧪";
-      plate.classList.remove('hidden');
+      // Sometimes Wei half-notices in his sleep
+      if (Math.random() < 0.4) {
+        setTimeout(() => showBubble(L(WeiText.diyCaught), 2800), 700);
+      }
     }
 
+    /* ----- Jokes ----- */
     function promptJoke() {
       SoundEngine.playClick();
       nextJoke();
@@ -2947,6 +3818,61 @@
       document.getElementById('joke-body-text').textContent = j[lang] || j.en;
       document.getElementById('joke-reaction').textContent = j.react || "☕";
       SoundEngine.playChiptune(580, 'sine', 0.08);
+    }
+
+    function rateJoke(kind) {
+      closeJokeModal();
+      if (AppState.weiState !== 'awake') return;
+      showBubble(L(WeiText.jokeRate[kind]), 2600);
+      setExpression('grin', 2200);
+      animateWei(kind === 'laugh' ? 'wei-hop' : 'wei-wiggle');
+      Bond.once('joke-' + AppState.currentJokeIndex, 1);
+    }
+
+    /* ----- Idle chatter, blinking & eyes that follow you ----- */
+    const Idle = { last: Date.now() };
+    function resetIdle() { Idle.last = Date.now(); }
+
+    function startIdleLoop() {
+      document.addEventListener('pointerdown', resetIdle, true);
+
+      setInterval(() => {
+        if (!AppState.inSanctuary || AppState.weiState !== 'awake' || document.hidden) return;
+        if (Date.now() - Idle.last < 24000) return;
+        Idle.last = Date.now();
+        showBubble(L(pick(WeiText.idle)), 3000);
+      }, 4000);
+
+      // Blink every few seconds
+      setInterval(() => {
+        if (AppState.weiState !== 'awake' || Math.random() < 0.35) return;
+        const pupils = document.querySelectorAll('.wei-pupil');
+        pupils.forEach(p => p.setAttribute('height', '0'));
+        setTimeout(() => pupils.forEach(p => p.setAttribute('height', '2')), 130);
+      }, 3200);
+    }
+
+    function initEyeTracking() {
+      let pending = false, lastX = 0, lastY = 0;
+      window.addEventListener('pointermove', (e) => {
+        lastX = e.clientX; lastY = e.clientY;
+        if (pending) return;
+        pending = true;
+        requestAnimationFrame(() => {
+          pending = false;
+          const svg = document.getElementById('svg-wei-avatar');
+          if (!svg || !AppState.inSanctuary) return;
+          const r = svg.getBoundingClientRect();
+          if (!r.width) return;
+          const dx = lastX - (r.left + r.width / 2);
+          const dy = lastY - (r.top + r.height * 0.35);
+          const ox = Math.abs(dx) < 30 ? 0 : (dx > 0 ? 1 : -1);
+          const oy = dy < -30 ? -1 : 0;
+          const pupils = document.querySelectorAll('.wei-pupil');
+          if (pupils[0]) { pupils[0].setAttribute('x', 12 + ox); pupils[0].setAttribute('y', 12 + oy); }
+          if (pupils[1]) { pupils[1].setAttribute('x', 20 + ox); pupils[1].setAttribute('y', 12 + oy); }
+        });
+      }, { passive: true });
     }
   </script>
 
@@ -3638,7 +4564,7 @@
           <div class="p-2 bg-stone-900 border border-stone-800">
             <span class="font-bold text-amber-300 text-[11px]">Basque Burnt Cheesecake</span>
             <p class="text-[10px] text-stone-300 mt-0.5">Rich caramelized molten cream cheese infused with vanilla beans.</p>
-          <div>
+          </div>
         `;
       }
     }
@@ -3692,19 +4618,19 @@
       const mod = document.getElementById('atelier-mod').value;
       const garnish = document.getElementById('atelier-garnish').value;
 
-      document.getElementById('rpg-dialogue-screen').classList.add('hidden');
-      const served = document.getElementById('served-result-screen');
-      served.classList.remove('hidden');
-
-      document.getElementById('res-icon').textContent = AppState.isBarOpen ? "🍸" : "☕";
-      document.getElementById('res-name').textContent = `Atelier: ${base.split(' ')[0]}`;
-      document.getElementById('res-subtitle').textContent = "Hand-Crafted Custom Selection";
-      document.getElementById('res-description').textContent = `\"Wei crafted your bespoke beverage: ${base} paired with ${mod} and crowned with ${garnish}.\"`;
-      document.getElementById('res-formula').textContent = `${base} • ${mod} • ${garnish}`;
-
-      const plate = document.getElementById('served-item-plate');
-      plate.textContent = AppState.isBarOpen ? "🍸" : "☕";
-      plate.classList.remove('hidden');
+      const awake = AppState.weiState === 'awake';
+      showServed({
+        icon: AppState.isBarOpen ? "🍸" : "☕",
+        name: `Atelier: ${base.split(' ')[0]}`,
+        sub: "Hand-Crafted Custom Selection",
+        desc: `\"Wei crafted your bespoke beverage: ${base} paired with ${mod} and crowned with ${garnish}.\"`,
+        formula: `${base} • ${mod} • ${garnish}`,
+        reactable: awake
+      });
+      if (awake) {
+        animateWei('wei-wiggle');
+        Bond.once('atelier', 1);
+      }
     }
   </script>
 
@@ -3763,17 +4689,37 @@
       AppState.weiMood = currentMoodPool[Math.floor(Math.random() * currentMoodPool.length)];
       AppState.weiEnergy = Math.floor(Math.random() * 2) + 3;
 
+      // New visit: reset per-visit counters, remember the visit
+      Bond.visits++;
+      Bond.giftsTonight = 0;
+      Bond.seenTonight = new Set();
+      Bond.save();
+      updateBondBadge();
+
       document.getElementById('view-door').classList.add('hidden');
       document.getElementById('view-sanctuary').classList.remove('hidden');
 
       evaluateWeiState();
+      setExpression('smile');
       AppState.currentTopic = null;
       renderCurrentDialogue();
+      resetIdle();
+
+      if (AppState.weiState === 'awake') {
+        const lv = Bond.level();
+        const pool = Bond.visits <= 1 ? WeiText.greet.first : (lv >= 3 ? WeiText.greet.friend : WeiText.greet.back);
+        setTimeout(() => {
+          showBubble(L(pick(pool)), 3200);
+          setExpression('grin', 1800);
+          animateWei('wei-hop');
+        }, 500);
+      }
     }
 
     function returnToDoor() {
       SoundEngine.playClick();
       AppState.inSanctuary = false;
+      Typer.stop();
       document.getElementById('view-sanctuary').classList.add('hidden');
       document.getElementById('view-door').classList.remove('hidden');
     }
@@ -3807,42 +4753,57 @@
       const langs = ['en', 'zh', 'es'];
       const nextIdx = (langs.indexOf(AppState.lang) + 1) % langs.length;
       AppState.lang = langs[nextIdx];
-      document.getElementById('lang-indicator').textContent = AppState.lang.toUpperCase();
+      setText('lang-indicator', AppState.lang.toUpperCase());
 
       const t = i18n[AppState.lang];
 
-      document.getElementById('nav-album-label').textContent = t.navAlbum;
-      document.getElementById('nav-arcade-label').textContent = t.navArcade;
-      document.getElementById('label-return-door').textContent = t.returnDoor;
-      document.getElementById('door-hero-text').textContent = t.doorHero;
-      document.getElementById('door-hero-sub').textContent = t.doorSub;
-      document.getElementById('cat-pair-status').textContent = t.catNap;
+      setText('nav-album-label', t.navAlbum);
+      setText('nav-arcade-label', t.navArcade);
+      setText('label-return-door', t.returnDoor);
+      setText('door-hero-text', t.doorHero);
+      setText('cat-pair-status', t.catNap);
 
-      document.getElementById('drawer-title').textContent = t.drawerTitle;
-      document.getElementById('drawer-weather-header').textContent = t.drawerWeatherHeader;
-      document.getElementById('drawer-presets-header').textContent = t.drawerPresetsHeader;
+      setText('drawer-title', t.drawerTitle);
+      setText('drawer-weather-header', t.drawerWeatherHeader);
+      setText('drawer-presets-header', t.drawerPresetsHeader);
 
-      document.getElementById('tab-label-flight').textContent = t.tabFlight;
-      document.getElementById('tab-label-atelier').textContent = t.tabAtelier;
-      document.getElementById('tab-label-classic').textContent = t.tabClassic;
+      setText('tab-label-flight', t.tabFlight);
+      setText('tab-label-atelier', t.tabAtelier);
+      setText('tab-label-classic', t.tabClassic);
 
-      document.getElementById('joke-modal-title').textContent = t.jokeTitle;
-      document.getElementById('joke-next-btn').textContent = t.jokeNext;
-      document.getElementById('game-modal-title').textContent = t.gameTitle;
+      setText('joke-modal-title', t.jokeTitle);
+      setText('joke-next-btn', t.jokeNext);
+      setText('joke-btn-laugh', L(WeiText.ui.laugh));
+      setText('joke-btn-groan', L(WeiText.ui.groan));
+      setText('game-modal-title', t.gameTitle);
+
+      setText('sneak-header-title', t.sneakHeaderTitle);
+      setText('sneak-label-base', t.sneakLabelBase);
+      setText('sneak-label-mod', t.sneakLabelMod);
+      setText('sneak-label-garnish', t.sneakLabelGarnish);
+      setText('sneak-btn-pour', t.sneakBtnPour);
+      setText('res-btn-reorder', t.resBtnReorder);
+      setText('res-btn-cheers', t.resBtnCheers);
+      setText('poke-hint', L(WeiText.ui.tapHint));
 
       applyCafeOrBarEnvironment();
       updateClockHands(AppState.hour);
+      updateBondBadge();
       if (AppState.inSanctuary) renderCurrentDialogue();
       ArcadeGame.updateScoreUI();
     }
 
     /* INITIALIZATION */
     window.addEventListener('DOMContentLoaded', () => {
+      Bond.load();
+      updateBondBadge();
       WeatherSystem.init();
       ArcadeGame.init();
       initClockDragging();
+      startIdleLoop();
+      initEyeTracking();
       SoundEngine.randomizeTrack();
-      syncBeijingWeatherAndClock();
+      syncBeijingWeatherAndClock(true);
     });
   </script>
 </body>
