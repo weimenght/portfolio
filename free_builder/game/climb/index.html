@@ -149,8 +149,9 @@
             </div>
             
             <!-- Grip / Stamina Progress Bar -->
-            <div class="w-28 sm:w-32 h-2.5 bg-gray-950 border border-gray-700 rounded-sm overflow-hidden p-0.5">
+            <div class="w-28 sm:w-32 h-2.5 bg-gray-950 border border-gray-700 rounded-sm overflow-hidden p-0.5 relative">
               <div id="hudGripBar" class="h-full bg-emerald-400 w-full transition-all duration-75"></div>
+              <div id="hudGripCeiling" class="absolute top-0 right-0 h-full bg-red-900/90 border-l border-red-500" style="width:0%" title="Lost recovery capacity"></div>
             </div>
 
             <!-- Real-World Lactic Acid & Hold Status -->
@@ -158,10 +159,15 @@
               <span id="hudHoldStatus" class="text-emerald-300 font-bold truncate max-w-[85px]">🟢 JUG REST</span>
               <span id="hudGradeTag" class="text-amber-300 font-bold ml-1">5.6</span>
             </div>
+            <div class="flex justify-between items-center text-[5px] gap-1">
+              <span id="hudWallAngle" class="text-sky-300">WALL 90°</span>
+              <span id="hudFeet" class="text-orange-300">FEET 2</span>
+              <span id="hudFriction" class="text-gray-300">FRIC 100%</span>
+            </div>
 
             <!-- Rotational Barn-Door Warning Badge -->
             <div id="hudBarnDoorWarning" class="text-[5px] text-red-400 font-bold uppercase hidden animate-pulse">
-              ⚠️ BARN-DOOR TORQUE (2.5x DRAIN)
+              ⚠️ BARN-DOOR! CROSS-OVER W/O FEET (1.8x)
             </div>
           </div>
 
@@ -170,6 +176,11 @@
             <div id="flowBox" class="bg-black/90 px-2 py-0.5 rounded border border-gray-700 pointer-events-auto flex items-center gap-1 shadow">
               <span class="text-[6px] text-gray-400">FLOW:</span>
               <span id="hudFlowMultiplier" class="text-[7px] text-gray-500 font-bold">1.0x</span>
+            </div>
+
+            <div class="bg-black/90 px-2 py-0.5 rounded border border-gray-700 text-right pointer-events-auto shadow">
+              <div class="text-[5px] text-gray-400">ROPE • <span id="hudStyle" class="text-emerald-300">ONSIGHT</span></div>
+              <div id="hudRunout" class="text-[6px] text-emerald-300 font-bold">CLIPPED</div>
             </div>
 
             <div class="bg-black/90 px-2 py-1 rounded border border-cyan-500/50 text-right pointer-events-auto shadow-lg">
@@ -189,31 +200,47 @@
         </div>
       </div>
 
-      <!-- Beta Inspection Overlay Banner -->
-      <div id="betaInspectionBanner" class="absolute inset-x-2 top-2 p-2 bg-[#082f49]/95 border-2 border-cyan-400 rounded-lg shadow-2xl z-30 hidden flex flex-col items-center text-center">
-        <div class="text-cyan-300 font-bold text-[8px] flex items-center gap-1 mb-0.5">
-          <span>👁️ ROUTE READING & BETA INSPECTION</span>
-        </div>
-        <p class="text-[6px] text-gray-200 mb-1 leading-normal">
-          Drag / Pan vertically to memorize rest jugs vs crux crimps. Commit to route when ready!
+      <!-- Route Reading / Beta Planning Banner -->
+      <div id="betaInspectionBanner" class="absolute inset-x-2 bottom-2 p-2 bg-[#082f49]/95 border-2 border-cyan-400 rounded-lg shadow-2xl z-30 hidden flex flex-col items-center text-center">
+        <div class="text-cyan-300 font-bold text-[7.5px] mb-0.5">👁️ READ THE ROUTE • PLAN YOUR BETA</div>
+        <p class="text-[5.5px] text-gray-200 mb-1 leading-relaxed">
+          Drag to scan the wall. <span class="text-yellow-300">Tap holds in order</span> to plan your sequence &mdash; tap a planned hold to swap hands.
+          Line: <span class="text-emerald-300">green</span> static, <span class="text-amber-300">amber</span> dyno, <span class="text-red-400">red</span> out of reach, ✕ cross-over.
+          Find the rest jugs and the bolts.
         </p>
-        <div class="flex gap-1.5 w-full">
-          <button id="panUpBetaBtn" class="flex-1 py-1 bg-cyan-900 active:bg-cyan-800 text-cyan-200 text-[6.5px] rounded border border-cyan-600">
-            ⬆️ PAN UP (LOOK AHEAD)
-          </button>
-          <button id="commitAscentBtn" class="flex-1 py-1 bg-emerald-500 active:bg-emerald-400 text-black font-bold text-[6.5px] rounded border border-white">
-            🧗 COMMIT & ASCEND
-          </button>
+        <div class="flex justify-between w-full text-[5.5px] mb-1">
+          <span>PLAN: <span id="planCountText" class="text-yellow-300 font-bold">0 moves</span></span>
+          <span id="planWarnText" class="text-gray-400">Tap a hold to begin</span>
         </div>
+        <div class="grid grid-cols-4 gap-1 w-full">
+          <button id="panDownBetaBtn" class="py-1 bg-cyan-900 active:bg-cyan-800 text-cyan-200 text-[6px] rounded border border-cyan-600">⬇️ DOWN</button>
+          <button id="panUpBetaBtn" class="py-1 bg-cyan-900 active:bg-cyan-800 text-cyan-200 text-[6px] rounded border border-cyan-600">⬆️ UP</button>
+          <button id="undoPlanBtn" class="py-1 bg-gray-800 active:bg-gray-700 text-amber-300 text-[6px] rounded border border-amber-600">↩ UNDO</button>
+          <button id="clearPlanBtn" class="py-1 bg-gray-800 active:bg-gray-700 text-red-300 text-[6px] rounded border border-red-700">✕ CLEAR</button>
+        </div>
+        <button id="commitAscentBtn" class="w-full mt-1 py-1.5 bg-emerald-500 active:bg-emerald-400 text-black font-bold text-[7px] rounded border border-white">
+          🧗 COMMIT & ASCEND
+        </button>
       </div>
 
-      <!-- Emergency Slip Rescue Banner -->
+      <!-- Pumped / Slipping Banner -->
       <div id="slipRescueBanner" class="absolute inset-x-3 top-1/4 p-2.5 bg-red-950/95 border-2 border-red-500 rounded-lg shadow-2xl z-40 hidden flex flex-col items-center text-center animate-slip-pulse">
-        <div class="text-red-400 text-[8.5px] font-bold neon-rose mb-1">⚠️ LOSING GRIP! SLIPPING!</div>
-        <p class="text-[6.5px] text-white mb-2">Tap any nearby hold or emergency re-latch:</p>
-        <button id="emergencyCatchBtn" class="w-full py-2 bg-yellow-400 hover:bg-yellow-300 active:scale-95 text-black font-bold text-[7.5px] rounded border-2 border-white shadow-lg">
-          ✋ RE-LATCH HOLD (<span id="slipCountDownText">2.0s</span>)
+        <div class="text-red-400 text-[8.5px] font-bold neon-rose mb-1">⚠️ PUMPED! LOSING GRIP!</div>
+        <p class="text-[6px] text-white mb-2 leading-relaxed">Deadpoint to a reachable jug or pocket &mdash; tap it, or:</p>
+        <button id="emergencyCatchBtn" class="w-full py-2 bg-yellow-400 hover:bg-yellow-300 active:scale-95 text-black font-bold text-[7px] rounded border-2 border-white shadow-lg">
+          ✋ GRAB NEAREST REST HOLD (<span id="slipCountDownText">1.0s</span>)
         </button>
+      </div>
+
+      <!-- Rope Catch Panel -->
+      <div id="catchPanel" class="absolute inset-x-3 top-[22%] p-2.5 bg-[#0c1a2e]/95 border-2 border-sky-400 rounded-lg shadow-2xl z-40 hidden flex flex-col items-center text-center">
+        <div id="catchTitle" class="text-sky-300 text-[8px] font-bold neon-cyan mb-1">🪢 TAKE! CAUGHT BY THE ROPE</div>
+        <p id="catchDetail" class="text-[6px] text-gray-200 mb-1 leading-relaxed"></p>
+        <p id="catchLesson" class="text-[5.5px] text-amber-200 italic mb-2 leading-relaxed"></p>
+        <div class="flex gap-1.5 w-full">
+          <button id="pullBackOnBtn" class="flex-1 py-1.5 bg-sky-500 active:bg-sky-400 text-black font-bold text-[6.5px] rounded border border-white">🧗 PULL BACK ON</button>
+          <button id="lowerOffBtn" class="flex-1 py-1.5 bg-gray-700 active:bg-gray-600 text-gray-100 font-bold text-[6.5px] rounded border border-gray-400">⬇️ LOWER OFF</button>
+        </div>
       </div>
 
       <!-- Elevation Pitch Milestone Banner -->
@@ -227,7 +254,7 @@
       </div>
 
       <!-- Title & Setup Screen (Strictly fitted, never overflows horizontally) -->
-      <div id="titleScreen" class="absolute inset-0 bg-[#050811]/98 flex flex-col p-2.5 z-30 overflow-y-auto w-full">
+      <div id="titleScreen" class="absolute inset-0 bg-[#050811]/95 flex flex-col p-2.5 z-30 overflow-y-auto w-full">
         
         <!-- Header Title Banner -->
         <div class="text-center pt-1 pb-1 shrink-0">
@@ -342,24 +369,35 @@
             </div>
           </div>
 
-          <!-- Strategy & Route Reading Training Note -->
+          <!-- Real-World Tactics -->
           <div class="p-1.5 bg-[#09111c] border border-cyan-800/40 rounded text-[5.5px] text-gray-300 space-y-0.5 shrink-0 w-full min-w-0">
             <div class="text-cyan-300 font-bold flex justify-between">
-              <span>PRO STRATEGY TIPS:</span>
-              <span class="text-amber-400">1-ARM HANG = 2.5x DRAIN</span>
+              <span>REAL-WORLD TACTICS:</span>
+              <span class="text-amber-400">FALL ≈ 2× RUNOUT</span>
             </div>
             <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[5px]">
-              <div>• 🟢 Jug: Recovers pump</div>
-              <div>• 🟡 Crimp: Heavy pump</div>
-              <div>• 🔴 Choss: Crumbles in 4s</div>
-              <div>• 🫲 Shakeout: Flush acid</div>
+              <div>• 👟 Feet on = less pump</div>
+              <div>• 🫲 Shake out on jugs</div>
+              <div>• 🔩 Clip every bolt</div>
+              <div>• 🗺️ Plan to avoid cross-overs</div>
+              <div>• ⏳ Don't hang on crimps</div>
+              <div>• 🧤 Chalk at rests</div>
             </div>
+          </div>
+
+          <!-- Hold View (training difficulty) -->
+          <div class="p-1.5 bg-[#0b101b] border border-gray-800 rounded flex items-center justify-between gap-1 shrink-0 w-full min-w-0">
+            <div class="min-w-0">
+              <span class="text-[6px] text-gray-300 font-bold block">HOLD VIEW</span>
+              <span id="holdViewDesc" class="block text-[5px] text-gray-500 truncate">Color-coded by type (learning)</span>
+            </div>
+            <button id="holdViewBtn" class="px-1.5 py-1 bg-gray-800 active:bg-gray-700 text-amber-300 border border-amber-500 rounded text-[6px] shrink-0">🎨 COLOR-CODED</button>
           </div>
 
           <!-- Launch & Beta Route Inspection Buttons -->
           <div class="flex flex-col gap-1 pt-1 mt-auto shrink-0 w-full">
             <button id="startWithBetaBtn" class="w-full py-2 bg-cyan-700 hover:bg-cyan-600 active:scale-95 text-cyan-100 font-bold text-[7.5px] rounded border border-cyan-400 flex items-center justify-center gap-1">
-              👁️ INSPECT ROUTE & READ BETA FIRST
+              👁️ READ ROUTE & PLAN BETA (RECOMMENDED)
             </button>
             <button id="startClimbBtn" class="w-full py-2 bg-[#67e8f9] hover:bg-cyan-400 active:scale-95 text-black font-bold text-[8.5px] rounded border border-white pixel-btn tracking-wider flex items-center justify-center gap-1 shadow-lg">
               🧗 COMMENCE ASCENT (INSTANT)
@@ -390,7 +428,8 @@
       <!-- Game Over & Climbing Tactics Screen -->
       <div id="gameOverScreen" class="absolute inset-0 bg-black/95 flex flex-col items-center justify-center p-3 z-30 hidden overflow-y-auto">
         <div class="w-full bg-[#0d131f] border-2 border-red-500 rounded-lg p-2.5 text-center shadow-2xl relative my-auto">
-          <h2 class="text-red-500 text-xs sm:text-sm font-bold neon-rose mb-0.5">LOST YOUR GRIP!</h2>
+          <h2 id="gameOverTitle" class="text-red-500 text-xs sm:text-sm font-bold neon-rose mb-0.5">LOST YOUR GRIP!</h2>
+          <div id="gameOverSub" class="text-[5.5px] text-gray-400 mb-1"></div>
           
           <!-- Authentic Climber Quote or Tactical Advice Box -->
           <div class="bg-black/80 border border-cyan-500/50 rounded p-2 my-1.5 text-left">
@@ -413,13 +452,19 @@
               <span id="finalGradeText" class="text-emerald-400 font-bold text-[8.5px]">5.6</span>
             </div>
             <div class="p-1 bg-black border border-gray-800 rounded">
-              <span class="text-gray-400 block text-[5px]">MAX FLOW COMBO</span>
+              <span class="text-gray-400 block text-[5px]">ASCENT STYLE</span>
               <span id="finalComboText" class="text-pink-400 font-bold text-[8.5px]">x1.0</span>
             </div>
             <div class="p-1 bg-black border border-gray-800 rounded">
               <span class="text-gray-400 block text-[5px]">TOTAL ASCENT SCORE</span>
               <span id="finalScoreText" class="text-cyan-300 font-bold text-[8.5px]">0</span>
             </div>
+          </div>
+
+          <div class="bg-black/70 border border-gray-800 rounded p-1.5 mb-1.5 text-left">
+            <div class="text-[6px] text-cyan-300 font-bold mb-1">📋 SESSION DEBRIEF</div>
+            <div id="debriefGrid" class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[5.5px]"></div>
+            <div id="debriefTips" class="mt-1.5 space-y-1"></div>
           </div>
 
           <div class="text-[5.5px] text-gray-400 mb-2 flex items-center justify-center gap-1">
@@ -429,8 +474,12 @@
 
           <div class="flex flex-col gap-1">
             <button id="retryClimbBtn" class="w-full py-2 bg-[#67e8f9] hover:bg-cyan-400 active:scale-95 text-black font-bold text-[8px] rounded border border-white pixel-btn">
-              🔄 CLIMB AGAIN
+              🔁 SAME ROUTE (REDPOINT IT)
             </button>
+            <div class="grid grid-cols-2 gap-1">
+              <button id="newRouteBtn" class="w-full py-1 bg-cyan-800 hover:bg-cyan-700 text-cyan-100 font-bold text-[6.5px] rounded border border-cyan-400">🎲 NEW ROUTE</button>
+              <button id="menuBtn" class="w-full py-1 bg-gray-800 hover:bg-gray-700 text-gray-200 font-bold text-[6.5px] rounded border border-gray-500">🏠 MENU</button>
+            </div>
             <button id="gameOverLbBtn" class="w-full py-1 bg-yellow-600 hover:bg-yellow-500 text-black font-bold text-[7px] rounded border border-yellow-300">
               🏆 VIEW LEADERBOARD
             </button>
@@ -443,34 +492,41 @@
     <!-- In-Game Footer Action Bar -->
     <footer id="inGameFooterBar" class="w-full px-1.5 py-1 bg-[#090e1a] border-t border-[#1e293b] flex items-center justify-between text-[6.5px] shrink-0 z-20 gap-1">
       <!-- Beta View Look-Up Button -->
-      <button id="toggleBetaViewBtn" class="px-2 py-1 bg-[#132235] active:scale-95 text-cyan-300 border border-cyan-500 rounded text-[6px] flex items-center gap-0.5">
+      <button id="toggleBetaViewBtn" class="px-1.5 py-1 bg-[#132235] active:scale-95 text-cyan-300 border border-cyan-500 rounded text-[6px] flex items-center gap-0.5">
         <span>👁️</span>
         <span id="betaViewBtnText">BETA</span>
       </button>
 
+      <!-- Clip the next bolt -->
+      <button id="clipBtn" class="px-1.5 py-1 bg-gray-800 text-gray-500 border border-gray-600 rounded text-[6px] flex items-center gap-0.5">
+        <span>🔩</span>
+        <span id="clipBtnText">CLIP</span>
+      </button>
+
       <!-- Dedicated Real-World Shakeout Button -->
-      <button id="shakeoutBtn" class="px-2 py-1 bg-[#064e3b] active:scale-95 text-emerald-300 border border-emerald-500 rounded text-[6px] flex items-center gap-0.5">
+      <button id="shakeoutBtn" class="px-1.5 py-1 bg-[#064e3b] active:scale-95 text-emerald-300 border border-emerald-500 rounded text-[6px] flex items-center gap-0.5">
         <span>🫲</span>
         <span>SHAKE</span>
       </button>
 
       <!-- Quick Chalk Button -->
-      <button id="chalkQuickBtn" class="px-2 py-1 bg-amber-600 active:scale-95 text-black font-bold border border-yellow-300 rounded text-[6px] flex items-center gap-0.5">
+      <button id="chalkQuickBtn" class="px-1.5 py-1 bg-amber-600 active:scale-95 text-black font-bold border border-yellow-300 rounded text-[6px] flex items-center gap-0.5">
         <span>🧤</span>
         <span>CHALK</span>
         <span id="chalkCdText" class="text-[5px] text-yellow-950 bg-yellow-300 px-0.5 rounded">RDY</span>
       </button>
 
       <!-- Adam Ondra Power Scream Easter Egg Button -->
-      <button id="ondraScreamBtn" class="px-2 py-1 bg-red-800 active:scale-95 text-red-200 border border-red-400 rounded text-[6px] flex items-center gap-0.5">
+      <button id="ondraScreamBtn" class="px-1.5 py-1 bg-red-800 active:scale-95 text-red-200 border border-red-400 rounded text-[6px] flex items-center gap-0.5">
         <span>🗣️</span>
-        <span id="screamText">SCREAM</span>
+        <span id="screamText">TRY</span>
       </button>
 
       <!-- Active Hand Target Indicator -->
-      <div class="flex items-center gap-0.5 px-1 py-0.5 bg-black/70 rounded border border-gray-800 text-[5.5px] shrink-0">
-        <span id="nextHandIndicator" class="text-cyan-300 font-bold">L ◀</span>
-      </div>
+      <button id="handSelectBtn" class="flex items-center gap-0.5 px-1 py-1 bg-black/70 rounded border border-gray-700 text-[5.5px] shrink-0" title="Tap to choose which hand moves next">
+        <span class="text-gray-500">HAND</span>
+        <span id="nextHandIndicator" class="text-cyan-300 font-bold">L</span>
+      </button>
     </footer>
 
   </div>
@@ -1173,187 +1229,47 @@
       }
     ];
 
+    /* ---------- WORLD SCALE ----------
+       40 world units = 1 metre. A typical move is ~1 m, bolts are ~2.5 m apart. */
+    const METER = 40;
+
+    /* Hold physiology. pumpRate = % grip drained per frame (60fps) on two hands,
+       vertical wall, average friction. Negative = recovery.
+       catchQ = how catchable the hold is when moving dynamically. */
     const HOLD_TYPES = {
-      JUG: {
-        id: 'jug',
-        name: 'Bucket Jug (Rest)',
-        tag: 'REST JUG',
-        pumpRate: -0.045, // Active lactic acid flush!
-        score: 30,
-        colorHex: '#10b981',
-        draw: (ctx, x, y, active) => {
-          ctx.fillStyle = '#064e3b';
-          ctx.fillRect(x - 9, y + 3, 18, 5);
-          ctx.fillStyle = '#10b981';
-          ctx.fillRect(x - 8, y - 3, 16, 6);
-          ctx.fillStyle = '#ecfdf5';
-          ctx.fillRect(x - 7, y - 4, 14, 2);
-          if (active) {
-            ctx.strokeStyle = '#34d399';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(x - 10, y - 6, 20, 14);
-          }
-        }
-      },
-      POCKET: {
-        id: 'pocket',
-        name: 'Limestone Pocket',
-        tag: 'POCKET (NEUTRAL)',
-        pumpRate: 0.02,
-        score: 45,
-        colorHex: '#06b6d4',
-        draw: (ctx, x, y, active) => {
-          ctx.fillStyle = '#083344';
-          ctx.beginPath();
-          ctx.ellipse(x, y + 1, 8, 5.5, 0, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = '#06b6d4';
-          ctx.beginPath();
-          ctx.ellipse(x, y - 1, 7, 4, 0, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = '#e0f2fe';
-          ctx.fillRect(x - 3, y - 3, 6, 1.5);
-          if (active) {
-            ctx.strokeStyle = '#22d3ee';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(x - 9, y - 6, 18, 13);
-          }
-        }
-      },
-      CRIMP: {
-        id: 'crimp',
-        name: 'Technical Crimp',
-        tag: 'CRIMP (STEADY PUMP)',
-        pumpRate: 0.10,
-        score: 65,
-        colorHex: '#f59e0b',
-        draw: (ctx, x, y, active) => {
-          ctx.fillStyle = '#451a03';
-          ctx.fillRect(x - 7, y + 2, 14, 3.5);
-          ctx.fillStyle = '#f59e0b';
-          ctx.fillRect(x - 6, y - 2, 12, 4);
-          ctx.fillStyle = '#fef3c7';
-          ctx.fillRect(x - 5, y - 3, 10, 1.5);
-          if (active) {
-            ctx.strokeStyle = '#fbbf24';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(x - 8, y - 5, 16, 10);
-          }
-        }
-      },
-      MICRO_CRIMP: {
-        id: 'micro_crimp',
-        name: 'Razor Micro-Crimp',
-        tag: 'MICRO-CRIMP (VIOLENT DRAIN)',
-        pumpRate: 0.22, // Severe tendon strain!
-        score: 100,
-        colorHex: '#f43f5e',
-        draw: (ctx, x, y, active) => {
-          ctx.fillStyle = '#881337';
-          ctx.fillRect(x - 5, y + 1, 10, 3);
-          ctx.fillStyle = '#f43f5e';
-          ctx.fillRect(x - 4, y - 2, 8, 3);
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(x - 3, y - 3, 6, 1);
-          if (active) {
-            ctx.strokeStyle = '#fb7185';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(x - 6, y - 5, 12, 9);
-          }
-        }
-      },
-      SLOPER: {
-        id: 'sloper',
-        name: 'Greasy Sloper',
-        tag: 'SLOPER (FRICTION DEPENDENT)',
-        pumpRate: 0.14,
-        score: 70,
-        colorHex: '#ea580c',
-        draw: (ctx, x, y, active) => {
-          ctx.fillStyle = '#7c2d12';
-          ctx.beginPath();
-          ctx.arc(x, y + 2, 9, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = '#ea580c';
-          ctx.beginPath();
-          ctx.arc(x, y - 1, 8, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-          ctx.fillRect(x - 4, y - 4, 8, 2);
-          if (active) {
-            ctx.strokeStyle = '#fb923c';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(x - 10, y - 8, 20, 16);
-          }
-        }
-      },
-      CHOSS: {
-        id: 'choss',
-        name: 'Brittle Choss Flake',
-        tag: 'CHOSS (CRUMBLES IN 4.0s!)',
-        pumpRate: 0.16,
-        score: 95,
-        crumble: true,
-        colorHex: '#dc2626',
-        draw: (ctx, x, y, active, timer) => {
-          ctx.fillStyle = '#450a0a';
-          ctx.fillRect(x - 8, y + 2, 16, 4.5);
-          ctx.fillStyle = '#dc2626';
-          ctx.fillRect(x - 7, y - 3, 14, 5.5);
-          ctx.strokeStyle = timer > 0 ? '#fef08a' : '#7f1d1d';
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.moveTo(x - 5, y - 1);
-          ctx.lineTo(x, y + 1);
-          ctx.lineTo(x + 5, y - 2);
-          ctx.stroke();
-          if (active) {
-            ctx.strokeStyle = '#f87171';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(x - 9, y - 5, 18, 12);
-          }
-        }
-      },
-      PINK_ONE: {
-        id: 'pink_one',
-        name: 'The Pink One in the Corner',
-        tag: 'MYTHIC GYM HOLD (5X SCORE)',
-        pumpRate: -0.16,
-        score: 350,
-        easterEgg: true,
-        colorHex: '#ec4899',
-        draw: (ctx, x, y, active) => {
-          ctx.fillStyle = '#831843';
-          ctx.fillRect(x - 10, y + 2, 20, 6);
-          ctx.fillStyle = '#ec4899';
-          ctx.fillRect(x - 9, y - 4, 18, 6);
-          ctx.fillStyle = '#fdf2f8';
-          ctx.fillRect(x - 8, y - 5, 16, 2);
-          if (active) {
-            ctx.strokeStyle = '#f472b6';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(x - 11, y - 7, 22, 16);
-          }
-        }
-      }
+      JUG:         { id: 'jug',         tag: 'JUG (REST)',      status: '🟢 JUG',         pumpRate: -0.022, catchQ: 0.95, score: 30,  colorHex: '#10b981', rest: true },
+      POCKET:      { id: 'pocket',      tag: 'POCKET',          status: '🔵 POCKET',      pumpRate: 0.030,  catchQ: 0.78, score: 45,  colorHex: '#06b6d4', semiRest: true },
+      CRIMP:       { id: 'crimp',       tag: 'CRIMP',           status: '🟡 CRIMP',       pumpRate: 0.085,  catchQ: 0.55, score: 65,  colorHex: '#f59e0b' },
+      MICRO_CRIMP: { id: 'micro_crimp', tag: 'MICRO-CRIMP',     status: '🔴 MICRO-CRIMP', pumpRate: 0.170,  catchQ: 0.30, score: 100, colorHex: '#f43f5e' },
+      SLOPER:      { id: 'sloper',      tag: 'SLOPER',          status: '🟠 SLOPER',      pumpRate: 0.110,  catchQ: 0.42, score: 70,  colorHex: '#ea580c', frictionSensitive: true },
+      CHOSS:       { id: 'choss',       tag: 'LOOSE FLAKE',     status: '🔴 LOOSE FLAKE', pumpRate: 0.120,  catchQ: 0.50, score: 95,  colorHex: '#dc2626', crumble: true },
+      PINK_ONE:    { id: 'pink_one',    tag: 'THE PINK ONE',    status: '🌈 PINK ONE',    pumpRate: -0.120, catchQ: 0.98, score: 350, colorHex: '#ec4899', rest: true, easterEgg: true }
     };
 
+    /* Each grade band is a pitch. minAlt in metres; angle = wall angle in degrees
+       relative to vertical (negative = slab, positive = overhang). */
     const GRADE_TABLE = [
-      { minAlt: 0, grade: '5.6', pitchName: 'Approach Jug Ladder', spacing: 32, jug: 0.55, pocket: 0.30, crimp: 0.12, micro: 0.0, sloper: 0.03, choss: 0.0, mult: 1.0 },
-      { minAlt: 35, grade: '5.7', pitchName: 'Comfortable Face', spacing: 36, jug: 0.44, pocket: 0.32, crimp: 0.18, micro: 0.0, sloper: 0.06, choss: 0.0, mult: 1.15 },
-      { minAlt: 75, grade: '5.8', pitchName: 'Moderate Pitch', spacing: 40, jug: 0.34, pocket: 0.30, crimp: 0.24, micro: 0.0, sloper: 0.10, choss: 0.02, mult: 1.3 },
-      { minAlt: 125, grade: '5.9', pitchName: 'Vertical Face', spacing: 44, jug: 0.26, pocket: 0.28, crimp: 0.28, micro: 0.03, sloper: 0.12, choss: 0.03, mult: 1.5 },
-      { minAlt: 180, grade: '5.10a', pitchName: 'Technical Footwork', spacing: 48, jug: 0.20, pocket: 0.25, crimp: 0.34, micro: 0.05, sloper: 0.12, choss: 0.04, mult: 1.75 },
-      { minAlt: 245, grade: '5.10c', pitchName: 'Sustained Sequencing', spacing: 52, jug: 0.16, pocket: 0.22, crimp: 0.36, micro: 0.08, sloper: 0.13, choss: 0.05, mult: 2.0 },
-      { minAlt: 320, grade: '5.11a', pitchName: 'Overhang Entry', spacing: 56, jug: 0.12, pocket: 0.20, crimp: 0.38, micro: 0.12, sloper: 0.12, choss: 0.06, mult: 2.3 },
-      { minAlt: 400, grade: '5.11d', pitchName: 'Crux Endurance', spacing: 60, jug: 0.10, pocket: 0.18, crimp: 0.38, micro: 0.16, sloper: 0.11, choss: 0.07, mult: 2.65 },
-      { minAlt: 490, grade: '5.12b', pitchName: 'The Technical Wall', spacing: 64, jug: 0.08, pocket: 0.16, crimp: 0.36, micro: 0.20, sloper: 0.12, choss: 0.08, mult: 3.1 },
-      { minAlt: 590, grade: '5.13a', pitchName: 'Razor Pockets', spacing: 68, jug: 0.06, pocket: 0.14, crimp: 0.34, micro: 0.24, sloper: 0.13, choss: 0.09, mult: 3.7 },
-      { minAlt: 700, grade: '5.13d', pitchName: 'Dynamic Crux Wall', spacing: 72, jug: 0.05, pocket: 0.12, crimp: 0.32, micro: 0.28, sloper: 0.13, choss: 0.10, mult: 4.4 },
-      { minAlt: 820, grade: '5.14b', pitchName: 'Severe Roof Section', spacing: 76, jug: 0.04, pocket: 0.10, crimp: 0.30, micro: 0.32, sloper: 0.13, choss: 0.11, mult: 5.2 },
-      { minAlt: 950, grade: '5.15a', pitchName: 'World-Class Boulders', spacing: 80, jug: 0.03, pocket: 0.08, crimp: 0.28, micro: 0.36, sloper: 0.14, choss: 0.11, mult: 6.2 },
-      { minAlt: 1100, grade: '5.15d', pitchName: 'Silence / B.I.G. Roof', spacing: 84, jug: 0.02, pocket: 0.06, crimp: 0.26, micro: 0.40, sloper: 0.14, choss: 0.12, mult: 7.5 }
+      { minAlt: 0,   grade: '5.6',   pitchName: 'Approach Slab',          angle: -12, spacing: 32, jug: 0.55, pocket: 0.30, crimp: 0.12, micro: 0.0,  sloper: 0.03, choss: 0.0,  mult: 1.0 },
+      { minAlt: 7,   grade: '5.7',   pitchName: 'Comfortable Face',       angle: -6,  spacing: 36, jug: 0.44, pocket: 0.32, crimp: 0.18, micro: 0.0,  sloper: 0.06, choss: 0.0,  mult: 1.15 },
+      { minAlt: 15,  grade: '5.8',   pitchName: 'Moderate Pitch',         angle: 0,   spacing: 40, jug: 0.34, pocket: 0.30, crimp: 0.24, micro: 0.0,  sloper: 0.10, choss: 0.02, mult: 1.3 },
+      { minAlt: 25,  grade: '5.9',   pitchName: 'Vertical Face',          angle: 0,   spacing: 44, jug: 0.26, pocket: 0.28, crimp: 0.28, micro: 0.03, sloper: 0.12, choss: 0.03, mult: 1.5 },
+      { minAlt: 36,  grade: '5.10a', pitchName: 'Technical Footwork',     angle: 5,   spacing: 48, jug: 0.20, pocket: 0.25, crimp: 0.34, micro: 0.05, sloper: 0.12, choss: 0.04, mult: 1.75 },
+      { minAlt: 49,  grade: '5.10c', pitchName: 'Sustained Sequencing',   angle: 10,  spacing: 52, jug: 0.16, pocket: 0.22, crimp: 0.36, micro: 0.08, sloper: 0.13, choss: 0.05, mult: 2.0 },
+      { minAlt: 64,  grade: '5.11a', pitchName: 'Overhang Entry',         angle: 15,  spacing: 56, jug: 0.12, pocket: 0.20, crimp: 0.38, micro: 0.12, sloper: 0.12, choss: 0.06, mult: 2.3 },
+      { minAlt: 80,  grade: '5.11d', pitchName: 'Crux Endurance',         angle: 20,  spacing: 60, jug: 0.10, pocket: 0.18, crimp: 0.38, micro: 0.16, sloper: 0.11, choss: 0.07, mult: 2.65 },
+      { minAlt: 98,  grade: '5.12b', pitchName: 'The Technical Wall',     angle: 25,  spacing: 64, jug: 0.08, pocket: 0.16, crimp: 0.36, micro: 0.20, sloper: 0.12, choss: 0.08, mult: 3.1 },
+      { minAlt: 118, grade: '5.13a', pitchName: 'Razor Pockets',          angle: 30,  spacing: 68, jug: 0.06, pocket: 0.14, crimp: 0.34, micro: 0.24, sloper: 0.13, choss: 0.09, mult: 3.7 },
+      { minAlt: 140, grade: '5.13d', pitchName: 'Dynamic Crux Wall',      angle: 35,  spacing: 72, jug: 0.05, pocket: 0.12, crimp: 0.32, micro: 0.28, sloper: 0.13, choss: 0.10, mult: 4.4 },
+      { minAlt: 164, grade: '5.14b', pitchName: 'Severe Roof Section',    angle: 45,  spacing: 76, jug: 0.04, pocket: 0.10, crimp: 0.30, micro: 0.32, sloper: 0.13, choss: 0.11, mult: 5.2 },
+      { minAlt: 190, grade: '5.15a', pitchName: 'World-Class Boulders',   angle: 50,  spacing: 80, jug: 0.03, pocket: 0.08, crimp: 0.28, micro: 0.36, sloper: 0.14, choss: 0.11, mult: 6.2 },
+      { minAlt: 220, grade: '5.15d', pitchName: 'Silence / B.I.G. Roof',  angle: 60,  spacing: 84, jug: 0.02, pocket: 0.06, crimp: 0.26, micro: 0.40, sloper: 0.14, choss: 0.12, mult: 7.5 }
     ];
+
+    /* Crag character: caves and roof crags are steeper, granite slabs less so. */
+    const CRAG_STEEPNESS = {
+      montserrat: 0, yangshuo: 5, baihe: -5, siurana: 5, verdon: -5, elcap: -5,
+      flatanger: 20, ceuse: 0, kalymnos: 10, redriver: 15, fontainebleau: 0, fitzroy: 0
+    };
 
     function getPitchDifficulty(altMeters) {
       for (let i = GRADE_TABLE.length - 1; i >= 0; i--) {
@@ -1477,12 +1393,17 @@
     const STATES = { TITLE: 0, BETA_INSPECT: 1, PLAYING: 2, GAMEOVER: 3 };
     let gameState = STATES.TITLE;
 
+    function lsGet(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }
+    function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
     let charIndex = 0;
     let currentChar = CHARACTERS[charIndex];
     let currentCrag = CRAGS[0];
     let currentTime = TIMES[0];
     let currentWeather = WEATHERS[0];
-    let callsign = localStorage.getItem('crag_callsign') || '';
+    let callsign = lsGet('crag_callsign', '');
+    let realRockMode = lsGet('crag_real_rock', '0') === '1';
 
     let cameraY = 0;
     let targetCameraY = 0;
@@ -1490,50 +1411,66 @@
     let betaPanOffset = 0;
     let currentPitchIndex = 0;
 
+    /* Seeded RNG so a route can be repeated exactly (redpoint training). */
+    let routeSeed = 1;
+    let routeAttempts = 0;
+    let rngState = 1;
+    function rng() {
+      rngState |= 0; rngState = (rngState + 0x6D2B79F5) | 0;
+      let t = Math.imul(rngState ^ (rngState >>> 15), 1 | rngState);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    }
+
     const climber = {
-      x: 180,
-      y: 80,
-      targetX: 180,
-      targetY: 80,
-      
-      leftHand: { x: 165, y: 110, targetX: 165, targetY: 110, hold: null, lerp: 1 },
-      rightHand: { x: 195, y: 110, targetX: 195, targetY: 110, hold: null, lerp: 1 },
-      
-      leftFoot: { x: 165, y: 45 },
-      rightFoot: { x: 195, y: 45 },
-
-      grip: 100, // 100 = fresh, 0 = pumped out/slip
-      sweatFriction: 1.0,
-      chalkCooldown: 0,
-      screamCooldown: 0,
-      screamDuration: 0,
-      isShaking: false,
-      shakeTimer: 0,
-      isBarnDoor: false,
-      focusBuffTimer: 0,
-      holdsLatched: 0,
-      altitude: 0,
-      score: 0,
-      
-      flowMultiplier: 1.0,
-      lastMoveTime: 0,
-
-      isSlipping: false,
-      slipTimer: 0,
-      falling: false,
-      fallVelocity: 0,
-      
-      animTick: 0,
-      activeHandToggle: 0
+      x: 180, y: 80, targetX: 180, targetY: 80,
+      leftHand:  { side: 'L', x: 165, y: 110, startX: 165, startY: 110, targetX: 165, targetY: 110, hold: null },
+      rightHand: { side: 'R', x: 195, y: 110, startX: 195, startY: 110, targetX: 195, targetY: 110, hold: null },
+      leftFoot:  { x: 165, y: 45, tx: 165, ty: 45, on: null },
+      rightFoot: { x: 195, y: 45, tx: 195, ty: 45, on: null },
+      grip: 100, maxGrip: 100, sweatFriction: 1.0,
+      moveTimer: 0, moveTotal: 1, movingHand: null,
+      chalkTimer: 0, chalkCooldown: 0, clipTimer: 0, clipBolt: null, clipHigh: false,
+      isShaking: false, screamDuration: 0, screamCooldown: 0, tryHardMove: false,
+      isBarnDoor: false, focusBuffTimer: 0, stillFrames: 0, overGripping: false,
+      gustTimer: 0, gustCooldown: 400,
+      holdsLatched: 0, altitude: 0, score: 0,
+      flowMultiplier: 1.0, lastMoveTime: 0,
+      isSlipping: false, slipTimer: 0, slipReason: 'PUMPED',
+      falling: false, fallVelocity: 0, fallCatchY: 0, fallLen: 0, fallRunout: 0, fallReason: '', groundFall: false,
+      hanging: false, bounce: 0,
+      animTick: 0, handOverride: null,
+      style: 'ONSIGHT', styleMult: 1.2, shookHere: false, holdStatusText: ''
     };
 
+    let stats = {};
+    function resetStats() {
+      stats = {
+        moves: 0, dynosTried: 0, dynosLanded: 0, crossovers: 0, barnDoors: 0, feetCutMoves: 0,
+        shakes: 0, restsSkipped: 0, chalks: 0, cruxChalks: 0, clips: 0, boltsSkipped: 0,
+        maxRunout: 0, falls: 0, maxFall: 0, planLen: 0, planMatched: 0, offPlan: 0,
+        hesitations: 0, pitches: 0, frames: 0, fallReasons: []
+      };
+    }
+    resetStats();
+
     let rockHolds = [];
+    let holdMap = new Map();
     let rockCracks = [];
     let rockParticles = [];
     let collectibles = [];
     let ambientCreatures = [];
+    let footChips = [];
+    let bolts = [];
     let highestHoldY = 60;
     let holdCounter = 1;
+    let nextBoltY = 0;
+    let lastClipY = 0;
+    let pitchBaseY = 0;
+    let routeLineX = 180;
+
+    let betaPlan = [];      // [{ holdId, hand: 'L'|'R' }]
+    let planNextIdx = 0;
 
     function resizeViewport() {
       const wrapper = document.getElementById('canvasWrapper');
@@ -1542,10 +1479,14 @@
     }
     window.addEventListener('resize', resizeViewport);
 
+    /* ---------------- ATMOSPHERE ---------------- */
+    function newRouteSeed() { routeSeed = (Math.random() * 1e9) | 0; routeAttempts = 0; betaPlan = []; }
+
     function randomizeCragAndAtmosphere() {
       currentCrag = CRAGS[Math.floor(Math.random() * CRAGS.length)];
       currentTime = TIMES[Math.floor(Math.random() * TIMES.length)];
       currentWeather = WEATHERS[Math.floor(Math.random() * WEATHERS.length)];
+      newRouteSeed();
       updateAtmosphereUI();
     }
 
@@ -1553,16 +1494,20 @@
       const crag = CRAGS.find(c => c.id === id);
       if (crag) {
         currentCrag = crag;
+        newRouteSeed();
         updateAtmosphereUI();
         document.getElementById('cragDrawerModal').classList.add('hidden');
         sound.playGrabStone();
       }
     }
 
+    function totalFriction() {
+      return currentWeather.friction * currentTime.frictionMod * climber.sweatFriction;
+    }
+
     function updateAtmosphereUI() {
       document.getElementById('topCragBadge').innerText = currentCrag.name.split(' (')[0];
       document.getElementById('topWeatherBadge').innerText = currentWeather.name.split(' ')[0] + ' ' + currentTime.name.split(' ')[0];
-      
       document.getElementById('locIcon').innerText = currentCrag.icon;
       document.getElementById('locName').innerText = currentCrag.name;
       document.getElementById('cragDescText').innerText = currentCrag.desc;
@@ -1570,438 +1515,657 @@
       document.getElementById('weatherName').innerText = `${currentWeather.name} (${Math.round(currentWeather.friction * currentTime.frictionMod * 100)}%)`;
     }
 
-    function generateInitialCrag() {
-      rockHolds = [];
-      rockCracks = [];
-      rockParticles = [];
-      collectibles = [];
-      ambientCreatures = [];
-      highestHoldY = 60;
-      holdCounter = 1;
-      cameraY = 0;
-      targetCameraY = 0;
-      betaPanOffset = 0;
-      isBetaView = false;
-      currentPitchIndex = 0;
+    function wallAngleAt(pitch) {
+      return clamp(pitch.angle + (CRAG_STEEPNESS[currentCrag.id] || 0), -20, 70);
+    }
+    function angleLabel(a) {
+      if (a <= -3) return `SLAB ${90 + a}°`;
+      if (a < 3) return 'VERTICAL';
+      if (a >= 45) return `ROOF +${a}°`;
+      return `OVERHANG +${a}°`;
+    }
 
-      // Crag geological fissures
+    /* ---------------- ROUTE GENERATION (seeded) ---------------- */
+    function addHold(h) { rockHolds.push(h); holdMap.set(h.id, h); return h; }
+
+    function generateInitialCrag() {
+      rngState = routeSeed;
+      rockHolds = []; holdMap = new Map();
+      rockCracks = []; rockParticles = []; collectibles = []; ambientCreatures = [];
+      footChips = []; bolts = [];
+      highestHoldY = 60; holdCounter = 1;
+      cameraY = 0; targetCameraY = 0; betaPanOffset = 0; isBetaView = false;
+      currentPitchIndex = 0; planNextIdx = 0; pitchBaseY = 0;
+
       for (let i = 0; i < 55; i++) {
         rockCracks.push({
-          x: Math.random() * canvas.width,
-          y: i * 36 + Math.random() * 20,
-          length: 28 + Math.random() * 55,
-          angle: (Math.random() - 0.5) * 0.45,
-          color: Math.random() > 0.4 ? currentCrag.crackColor : currentCrag.seamColor,
-          width: Math.random() > 0.5 ? 2 : 1,
-          isPebble: currentCrag.type === 'CONGLOMERATE' && Math.random() < 0.65
+          x: rng() * canvas.width,
+          y: i * 36 + rng() * 20,
+          length: 28 + rng() * 55,
+          angle: (rng() - 0.5) * 0.45,
+          color: rng() > 0.4 ? currentCrag.crackColor : currentCrag.seamColor,
+          width: rng() > 0.5 ? 2 : 1,
+          isPebble: currentCrag.type === 'CONGLOMERATE' && rng() < 0.65
         });
       }
 
-      // Starting Base Jug Holds
-      const baseHoldL = {
-        id: holdCounter++,
-        x: canvas.width * 0.42,
-        y: 85,
-        type: HOLD_TYPES.JUG,
-        crumbTimer: 0,
-        crumbled: false
-      };
-      const baseHoldR = {
-        id: holdCounter++,
-        x: canvas.width * 0.58,
-        y: 90,
-        type: HOLD_TYPES.JUG,
-        crumbTimer: 0,
-        crumbled: false
-      };
+      const baseHoldL = addHold({ id: holdCounter++, x: canvas.width * 0.42, y: 85, type: HOLD_TYPES.JUG, crumbTimer: 0, crumbled: false });
+      const baseHoldR = addHold({ id: holdCounter++, x: canvas.width * 0.58, y: 90, type: HOLD_TYPES.JUG, crumbTimer: 0, crumbled: false });
 
-      rockHolds.push(baseHoldL, baseHoldR);
-
-      climber.leftHand.hold = baseHoldL;
-      climber.leftHand.x = baseHoldL.x;
-      climber.leftHand.y = baseHoldL.y;
-      climber.leftHand.targetX = baseHoldL.x;
-      climber.leftHand.targetY = baseHoldL.y;
-
-      climber.rightHand.hold = baseHoldR;
-      climber.rightHand.x = baseHoldR.x;
-      climber.rightHand.y = baseHoldR.y;
-      climber.rightHand.targetX = baseHoldR.x;
-      climber.rightHand.targetY = baseHoldR.y;
-
+      setHandOnHold(climber.leftHand, baseHoldL);
+      setHandOnHold(climber.rightHand, baseHoldR);
       climber.x = (baseHoldL.x + baseHoldR.x) / 2;
       climber.y = (baseHoldL.y + baseHoldR.y) / 2 - 25;
-      climber.targetX = climber.x;
-      climber.targetY = climber.y;
+      climber.targetX = climber.x; climber.targetY = climber.y;
 
-      highestHoldY = 120;
-
-      for (let r = 0; r < 20; r++) {
-        spawnProgressiveHoldBand();
+      // Starter footholds just above the ground
+      for (let i = 0; i < 5; i++) {
+        footChips.push({ x: 30 + rng() * (canvas.width - 60), y: 25 + rng() * 80 });
       }
+
+      // First bolt is stick-clipped from the ground (standard practice)
+      bolts.push({ x: canvas.width * 0.5, y: 3 * METER, clipped: true, skipped: false });
+      lastClipY = 3 * METER;
+      nextBoltY = 3 * METER + METER * 2.4;
+
+      routeLineX = canvas.width * 0.5;
+      highestHoldY = 92; // first band lands within static reach of the start jugs
+      for (let r = 0; r < 20; r++) spawnProgressiveHoldBand();
     }
 
     function spawnProgressiveHoldBand() {
-      const currentAlt = highestHoldY / 8.0;
-      const pitch = getPitchDifficulty(currentAlt);
-
-      highestHoldY += pitch.spacing + (Math.random() * 12 - 6);
-      const count = Math.random() < 0.45 ? 2 : 3;
-      const colWidth = (canvas.width - 60) / count;
+      const pitch = getPitchDifficulty(highestHoldY / METER);
+      const prevY = highestHoldY;
+      highestHoldY += pitch.spacing + (rng() * 12 - 6);
+      // Real routes follow a line: holds cluster around a slowly drifting route line
+      routeLineX = clamp(routeLineX + (rng() - 0.5) * 50, 90, canvas.width - 90);
+      const count = pitch.index < 3 ? (rng() < 0.5 ? 3 : 4) : (rng() < 0.45 ? 2 : 3);
+      const gap = 52 + rng() * 16;
 
       for (let c = 0; c < count; c++) {
-        const xPos = 30 + c * colWidth + (Math.random() * 18 - 9);
-        const roll = Math.random();
-
-        // Rare 1.5% chance to spawn "The Pink One in the Corner" easter egg
-        if (Math.random() < 0.015 && highestHoldY > 120) {
-          rockHolds.push({
-            id: holdCounter++,
-            x: Math.max(28, Math.min(canvas.width - 28, xPos)),
-            y: highestHoldY,
-            type: HOLD_TYPES.PINK_ONE,
-            crumbTimer: 0,
-            crumbled: false
-          });
+        const xPos = clamp(routeLineX + (c - (count - 1) / 2) * gap + (rng() * 16 - 8), 28, canvas.width - 28);
+        const roll = rng();
+        if (rng() < 0.015 && highestHoldY > 120) {
+          addHold({ id: holdCounter++, x: xPos, y: highestHoldY, type: HOLD_TYPES.PINK_ONE, crumbTimer: 0, crumbled: false });
           continue;
         }
-
-        let holdType = HOLD_TYPES.JUG;
-        if (roll < pitch.jug) {
-          holdType = HOLD_TYPES.JUG;
-        } else if (roll < pitch.jug + pitch.pocket) {
-          holdType = HOLD_TYPES.POCKET;
-        } else if (roll < pitch.jug + pitch.pocket + pitch.crimp) {
-          holdType = HOLD_TYPES.CRIMP;
-        } else if (roll < pitch.jug + pitch.pocket + pitch.crimp + pitch.micro) {
-          holdType = HOLD_TYPES.MICRO_CRIMP;
-        } else if (roll < pitch.jug + pitch.pocket + pitch.crimp + pitch.micro + pitch.sloper) {
-          holdType = HOLD_TYPES.SLOPER;
-        } else {
-          holdType = HOLD_TYPES.CHOSS;
-        }
-
-        rockHolds.push({
-          id: holdCounter++,
-          x: Math.max(28, Math.min(canvas.width - 28, xPos)),
-          y: highestHoldY,
-          type: holdType,
-          crumbTimer: 0,
-          crumbled: false
-        });
+        let t = HOLD_TYPES.CHOSS;
+        let acc = pitch.jug;
+        if (roll < acc) t = HOLD_TYPES.JUG;
+        else if (roll < (acc += pitch.pocket)) t = HOLD_TYPES.POCKET;
+        else if (roll < (acc += pitch.crimp)) t = HOLD_TYPES.CRIMP;
+        else if (roll < (acc += pitch.micro)) t = HOLD_TYPES.MICRO_CRIMP;
+        else if (roll < (acc += pitch.sloper)) t = HOLD_TYPES.SLOPER;
+        addHold({ id: holdCounter++, x: xPos, y: highestHoldY, type: t, crumbTimer: 0, crumbled: false });
       }
 
-      // Collectibles: #0.75 Cams, Summit Gummy Bears, Edelweiss, Golden Carabiners
-      if (Math.random() < 0.22 && highestHoldY > 100) {
-        const rollItem = Math.random();
-        let itemType = 'CARABINER';
-        if (rollItem < 0.3) itemType = 'CAM';
-        else if (rollItem < 0.55) itemType = 'GUMMY';
-        else if (rollItem < 0.8) itemType = 'FLOWER';
-
-        collectibles.push({
-          id: 'item_' + holdCounter,
-          x: 25 + Math.random() * (canvas.width - 50),
-          y: highestHoldY + 12,
-          type: itemType,
-          collected: false
-        });
+      // Small foot chips: plentiful on easy ground, sparse on hard pitches
+      const chips = Math.max(1, Math.round(3.2 - pitch.index * 0.17 + rng()));
+      for (let i = 0; i < chips; i++) {
+        footChips.push({ x: 24 + rng() * (canvas.width - 48), y: prevY + (highestHoldY - prevY) * rng() });
       }
 
-      // Ambient Crag Creatures
-      if (Math.random() < 0.1 && highestHoldY > 140) {
-        ambientCreatures.push({
-          x: Math.random() < 0.5 ? 20 : canvas.width - 20,
-          y: highestHoldY,
-          type: currentCrag.surprise,
-          triggered: false
-        });
+      // Bolts every ~2.3-3.1 m
+      while (nextBoltY < highestHoldY) {
+        bolts.push({ x: canvas.width * 0.5 + (rng() * 30 - 15), y: nextBoltY, clipped: false, skipped: false });
+        nextBoltY += METER * (2.3 + rng() * 0.8);
+      }
+
+      if (rng() < 0.22 && highestHoldY > 100) {
+        const r = rng();
+        const itemType = r < 0.3 ? 'CAM' : r < 0.55 ? 'GUMMY' : r < 0.8 ? 'FLOWER' : 'CARABINER';
+        collectibles.push({ id: 'item_' + holdCounter, x: 25 + rng() * (canvas.width - 50), y: highestHoldY + 12, type: itemType, collected: false });
+      }
+
+      if (rng() < 0.1 && highestHoldY > 140) {
+        ambientCreatures.push({ x: rng() < 0.5 ? 20 : canvas.width - 20, y: highestHoldY, type: currentCrag.surprise });
       }
     }
 
-    function getReachInfo(hold) {
-      const dist = Math.hypot(hold.x - climber.x, hold.y - climber.y);
-      const normalReach = 85 + currentChar.reachBonus;
-      const dynoReach = 145 + currentChar.reachBonus;
+    function setHandOnHold(hand, hold) {
+      hand.hold = hold;
+      hand.x = hand.startX = hand.targetX = hold.x;
+      hand.y = hand.startY = hand.targetY = hold.y;
+    }
 
-      if (dist <= normalReach && hold.y > climber.y - 14) {
-        return { reachable: true, isDyno: false, dist };
-      } else if (dist <= dynoReach && hold.y > climber.y - 14) {
-        return { reachable: true, isDyno: true, dist };
-      }
+    /* ---------------- REACH / FEET / DYNO MATH ---------------- */
+    function reachLimits() {
+      return { normal: 98 + currentChar.reachBonus, dyno: 150 + currentChar.reachBonus };
+    }
+
+    function getReachInfo(hold, fx = climber.x, fy = climber.y) {
+      const dist = Math.hypot(hold.x - fx, hold.y - fy);
+      const lim = reachLimits();
+      const above = hold.y > fy - 14;
+      if (dist <= lim.normal && above) return { reachable: true, isDyno: false, dist };
+      if (dist <= lim.dyno && above) return { reachable: true, isDyno: true, dist };
       return { reachable: false, isDyno: false, dist };
     }
 
-    function checkRotationalBarnDoor(targetX) {
-      // Reaching across opposite side without footing creates rotational barn-door
-      const isReachingCross = (climber.activeHandToggle === 0 && targetX > climber.rightHand.x + 22) ||
-                              (climber.activeHandToggle === 1 && targetX < climber.leftHand.x - 22);
-      return isReachingCross;
+    function feetCount() {
+      return (climber.leftFoot.on ? 1 : 0) + (climber.rightFoot.on ? 1 : 0);
     }
 
-    function attemptGrabHold(hold) {
-      if (gameState !== STATES.PLAYING || climber.falling || hold.crumbled) return;
-      sound.init();
+    function dynoChance(hold, dist, gripVal, feet) {
+      const lim = reachLimits();
+      let p = hold.type.catchQ * (0.55 + 0.45 * gripVal / 100);
+      p *= 1 - clamp((dist - lim.normal) / (lim.dyno - lim.normal), 0, 1) * 0.3;
+      p *= feet >= 2 ? 1.05 : feet === 0 ? 0.85 : 1;
+      if (hold.type.frictionSensitive) p *= totalFriction();
+      if (currentChar.id === 'wukong') p += 0.15;
+      if (climber.tryHardMove) p += 0.15;
+      return clamp(p, 0.05, 0.97);
+    }
 
-      const reach = getReachInfo(hold);
-      if (!reach.reachable) {
-        showHoldFeedbackToast('⚠️ Hold out of reach! Step closer.');
+    function updateFootPlacement() {
+      const L = climber.leftFoot, R = climber.rightFoot;
+      // Standing on the ground at the start
+      if (climber.y - 40 < 12 && pitchBaseY === 0) {
+        L.on = 'ground'; R.on = 'ground';
+        L.tx = climber.x - 10; L.ty = 2; R.tx = climber.x + 10; R.ty = 2;
         return;
       }
+      const angle = wallAngleAt(getPitchDifficulty(climber.altitude));
+      const steepPenalty = angle >= 40 ? 0.7 : 1; // feet are harder to keep on roofs
+      const lo = climber.y - 78, hi = climber.y - 12;
+      const handIds = [climber.leftHand.hold?.id, climber.rightHand.hold?.id];
+      const cands = [];
+      for (const c of footChips) if (c.y > lo && c.y < hi) cands.push(c);
+      for (const h of rockHolds) if (!h.crumbled && h.y > lo && h.y < hi && !handIds.includes(h.id)) cands.push(h);
+
+      const pick = (side, exclude) => {
+        const idealX = climber.x + side * 14, idealY = climber.y - 42;
+        let best = null, bd = 48 * steepPenalty;
+        for (const c of cands) {
+          if (c === exclude) continue;
+          if (side < 0 && c.x > climber.x + 8) continue;
+          if (side > 0 && c.x < climber.x - 8) continue;
+          const d = Math.hypot(c.x - idealX, (c.y - idealY) * 0.8);
+          if (d < bd) { bd = d; best = c; }
+        }
+        return best;
+      };
+      const lf = pick(-1, null);
+      const rf = pick(1, lf);
+      L.on = lf; R.on = rf;
+      if (lf) { L.tx = lf.x; L.ty = lf.y + 3; } else { L.tx = climber.x - 7; L.ty = climber.y - 36; }
+      if (rf) { R.tx = rf.x; R.ty = rf.y + 3; } else { R.tx = climber.x + 7; R.ty = climber.y - 36; }
+    }
+
+    /* Which hand moves? Planned beta > manual override > trailing (lower) hand. */
+    function chooseHand(hold, sim) {
+      const L = sim ? sim.L : climber.leftHand, R = sim ? sim.R : climber.rightHand;
+      if (L.hold && L.hold.id === hold.id) return { hand: 'R', match: true };
+      if (R.hold && R.hold.id === hold.id) return { hand: 'L', match: true };
+      if (!L.hold) return { hand: 'L' };
+      if (!R.hold) return { hand: 'R' };
+      if (!sim) {
+        const planned = betaPlan.findIndex((p, i) => i >= planNextIdx && p.holdId === hold.id);
+        if (planned >= 0) return { hand: betaPlan[planned].hand, planned: true };
+        if (climber.handOverride) return { hand: climber.handOverride, override: true };
+      }
+      if (Math.abs(L.targetY - R.targetY) < 6) return { hand: hold.x < (L.targetX + R.targetX) / 2 ? 'L' : 'R' };
+      return { hand: L.targetY < R.targetY ? 'L' : 'R' };
+    }
+
+    function isCrossover(handSide, x, otherX) {
+      return (handSide === 'L' && x > otherX + 18) || (handSide === 'R' && x < otherX - 18);
+    }
+
+    /* ---------------- CLIMBING ACTIONS ---------------- */
+    function attemptGrabHold(hold) {
+      if (gameState !== STATES.PLAYING || climber.falling || climber.hanging || hold.crumbled) return;
+      sound.init();
+      if (climber.moveTimer > 0) return;
+
+      const reach = getReachInfo(hold);
+      if (!reach.reachable) { showHoldFeedbackToast('⚠️ Out of reach — find an intermediate hold.'); return; }
 
       if (climber.isSlipping) {
+        if (reach.isDyno) { showHoldFeedbackToast('💥 Too pumped to dyno!'); startFall('PUMPED'); return; }
         recoverFromSlip(hold);
         return;
       }
+      if (climber.clipTimer > 0 || climber.chalkTimer > 0) { showHoldFeedbackToast('✋ Hand busy — finish clipping / chalking first.'); return; }
 
-      // Rotational Barn-door detection
-      climber.isBarnDoor = checkRotationalBarnDoor(hold.x);
-      const barnDoorWarningEl = document.getElementById('hudBarnDoorWarning');
-      if (climber.isBarnDoor) {
-        barnDoorWarningEl.classList.remove('hidden');
-        sound.playSlipAlert();
-      } else {
-        barnDoorWarningEl.classList.add('hidden');
+      const L = climber.leftHand, R = climber.rightHand;
+      if (L.hold?.id === hold.id && R.hold?.id === hold.id) return;
+
+      climber.isShaking = false;
+      const choice = chooseHand(hold);
+      const hand = choice.hand === 'L' ? L : R;
+      const other = hand === L ? R : L;
+      if (hand.hold && hand.hold.id === hold.id) return;
+      if (choice.override) climber.handOverride = null;
+
+      // Leaving a rest hold while pumped without shaking out = missed rest
+      const fromHold = hand.hold;
+      if (fromHold && fromHold.type.rest && !(other.hold && other.hold.type.rest) &&
+          !climber.shookHere && climber.grip < climber.maxGrip - 20) {
+        stats.restsSkipped++;
       }
 
-      // Flow State combo streak
+      const feet = feetCount();
+      const crossover = !choice.match && other.hold && isCrossover(hand.side, hold.x, other.targetX);
+      stats.moves++;
+      if (feet === 0) stats.feetCutMoves++;
+      if (crossover) stats.crossovers++;
+
+      climber.isBarnDoor = crossover && feet < 2;
+      const barnEl = document.getElementById('hudBarnDoorWarning');
+      if (climber.isBarnDoor) { stats.barnDoors++; barnEl.classList.remove('hidden'); sound.playSlipAlert(); }
+      else barnEl.classList.add('hidden');
+
+      // Beta plan tracking
+      let onBeta = false;
+      if (betaPlan.length) {
+        const idx = betaPlan.findIndex((p, i) => i >= planNextIdx && p.holdId === hold.id);
+        if (idx >= 0) { onBeta = true; stats.planMatched++; planNextIdx = idx + 1; }
+        else if (planNextIdx < betaPlan.length) stats.offPlan++;
+      }
+
+      // Flow: moving decisively keeps the combo (score only)
       const now = Date.now();
       if (climber.lastMoveTime > 0 && (now - climber.lastMoveTime) < 3800) {
-        climber.flowMultiplier = Math.min(5.0, parseFloat((climber.flowMultiplier + (currentChar.id === 'wukong' ? 0.6 : 0.3)).toFixed(1)));
-        climber.grip = Math.min(100, climber.grip + 3.0);
+        climber.flowMultiplier = Math.min(5.0, +(climber.flowMultiplier + (currentChar.id === 'wukong' ? 0.6 : 0.3)).toFixed(1));
       } else {
         climber.flowMultiplier = 1.0;
       }
       climber.lastMoveTime = now;
+      if (climber.overGripping) climber.overGripping = false;
+      climber.stillFrames = 0;
 
-      // Select reaching hand
-      let reachHand = climber.leftHand;
-      if (climber.leftHand.hold?.id === hold.id) {
-        reachHand = climber.rightHand;
-      } else if (climber.rightHand.hold?.id === hold.id) {
-        reachHand = climber.leftHand;
-      } else {
-        if (climber.activeHandToggle === 0) {
-          reachHand = climber.leftHand;
-          climber.activeHandToggle = 1;
-        } else {
-          reachHand = climber.rightHand;
-          climber.activeHandToggle = 0;
-        }
-      }
+      const pitch = getPitchDifficulty(hold.y / METER);
 
-      updateHandIndicatorUI();
-
-      reachHand.hold = hold;
-      reachHand.targetX = hold.x;
-      reachHand.targetY = hold.y;
-      reachHand.lerp = 0;
-
-      const alt = hold.y / 8.0;
-      const pitch = getPitchDifficulty(alt);
-
-      // Pitch milestone verification
-      if (pitch.index > currentPitchIndex) {
-        currentPitchIndex = pitch.index;
-        triggerMilestone(pitch.grade, pitch.pitchName);
-      }
-
-      // Dyno Lunge check
+      // Dynamic move: probabilistic catch
       if (reach.isDyno) {
-        const dynoCost = currentChar.id === 'wukong' ? 0 : Math.max(10, (16 / currentChar.staminaRate));
-        climber.grip = Math.max(6, climber.grip - dynoCost);
-        climber.score += Math.floor(hold.type.score * 2.5 * pitch.mult * climber.flowMultiplier);
+        const p = dynoChance(hold, reach.dist, climber.grip, feet);
+        stats.dynosTried++;
+        climber.tryHardMove = false;
+        const cost = currentChar.id === 'wukong' ? 0 : 8 / currentChar.staminaRate;
+        climber.grip = Math.max(0, climber.grip - cost);
         sound.playDynoLunge();
-        spawnChalkDust(hold.x, hold.y, 16, '#fef08a');
-        showHoldFeedbackToast(`🚀 DYNO LATCH! +${Math.floor(hold.type.score * 2.5 * pitch.mult * climber.flowMultiplier)} pts`);
-        
-        if (climber.grip < 20 && Math.random() < 0.45) {
-          enterSlipState();
+        if (Math.random() > p) {
+          hand.hold = null;
+          hand.startX = hand.x; hand.startY = hand.y;
+          hand.targetX = hold.x; hand.targetY = hold.y - 10;
+          showHoldFeedbackToast(`💥 MISSED THE DYNO (${Math.round(p * 100)}% catch)`);
+          startFall('DYNO');
+          return;
         }
+        stats.dynosLanded++;
+      }
+
+      // Commit the move
+      hand.startX = hand.x; hand.startY = hand.y;
+      hand.targetX = hold.x; hand.targetY = hold.y;
+      hand.hold = hold;
+      const dist = Math.hypot(hold.x - hand.startX, hold.y - hand.startY);
+      climber.moveTotal = reach.isDyno ? 12 : Math.round(10 + dist / 7);
+      climber.moveTimer = climber.moveTotal;
+      climber.movingHand = hand;
+      climber.shookHere = false;
+
+      if (climber.isBarnDoor && other.hold && !other.hold.type.rest && Math.random() < 0.3) {
+        setTimeout(() => { if (!climber.falling && !climber.hanging) enterSlipState('BARN'); }, 120);
+      }
+
+      let mult = pitch.mult * climber.flowMultiplier * climber.styleMult * (onBeta ? 1.25 : 1);
+      if (reach.isDyno) mult *= 2.5 * (currentChar.id === 'tommy' ? 1.5 : 1);
+      const pts = Math.floor(hold.type.score * mult);
+      climber.score += pts;
+      if (reach.isDyno) {
+        spawnChalkDust(hold.x, hold.y, 16, '#fef08a');
+        showHoldFeedbackToast(`🚀 DYNO STUCK! +${pts}`);
       } else {
-        climber.score += Math.floor(hold.type.score * pitch.mult * climber.flowMultiplier);
         sound.playGrabStone();
         spawnChalkDust(hold.x, hold.y, 5, '#ffffff');
-        showHoldFeedbackToast(`✓ LATCHED ${hold.type.tag}`);
+        showHoldFeedbackToast(onBeta ? `🎯 ON BETA • ${hold.type.tag} +${pts}` :
+          (crossover ? `✕ CROSS-OVER • ${hold.type.tag}` : `✓ ${hold.type.tag}`));
       }
 
-      // Easter Egg: The Pink One in the Corner
       if (hold.type.easterEgg) {
-        climber.grip = 100;
+        climber.maxGrip = Math.min(100, climber.maxGrip + 20);
+        climber.grip = climber.maxGrip;
         climber.score += 1500;
         sound.playMilestoneFanfare();
         spawnChalkDust(hold.x, hold.y, 25, '#ec4899');
-        showHoldFeedbackToast('🌈 PINK ONE IN THE CORNER! +1500 PTS FULL RECOVERY!');
+        showHoldFeedbackToast('🌈 THE PINK ONE IN THE CORNER! +1500 & FULL RECOVERY');
       }
 
       climber.holdsLatched++;
+      setBodyTargetFromHands();
+      climber.altitude = Math.max(climber.altitude, hold.y / METER);
 
-      // Pull torso upward smoothly
-      const otherHand = (reachHand === climber.leftHand) ? climber.rightHand : climber.leftHand;
-      const avgX = (reachHand.targetX + otherHand.targetX) / 2;
-      const avgY = (reachHand.targetY + otherHand.targetY) / 2;
+      if (pitch.index > currentPitchIndex) reachAnchor(pitch, hold);
 
-      climber.targetX = avgX;
-      climber.targetY = avgY - 25;
-
-      climber.altitude = Math.max(climber.altitude, alt);
-
-      // Collectibles check within grab radius
       collectibles.forEach(item => {
         if (!item.collected && Math.hypot(item.x - climber.x, item.y - climber.y) < 56) {
           item.collected = true;
           sound.playItemCollect();
-          if (item.type === 'FLOWER') {
-            climber.grip = Math.min(100, climber.grip + 14);
-            showHoldFeedbackToast('🌸 EDELWEISS: +14% GRIP RECOVERED!');
-          } else if (item.type === 'GUMMY') {
-            climber.grip = Math.min(100, climber.grip + 25);
-            showHoldFeedbackToast('🐻 HARIBO GUMMY BEARS: +25% STAMINA BURST!');
-          } else if (item.type === 'CAM') {
-            climber.score += 350;
-            showHoldFeedbackToast('🔩 #0.75 CAMALOT BOOTY: +350 PTS!');
-          } else {
-            climber.score += 250;
-            showHoldFeedbackToast('🟡 GOLDEN CARABINER: +250 PTS!');
-          }
+          if (item.type === 'FLOWER') { climber.grip = Math.min(climber.maxGrip, climber.grip + 8); showHoldFeedbackToast('🌸 EDELWEISS: +8% GRIP'); }
+          else if (item.type === 'GUMMY') { climber.grip = Math.min(climber.maxGrip, climber.grip + 12); showHoldFeedbackToast('🐻 GUMMY BEARS: +12% (sugar rush)'); }
+          else if (item.type === 'CAM') { climber.score += 350; showHoldFeedbackToast('🔩 BOOTY CAM: +350'); }
+          else { climber.score += 250; showHoldFeedbackToast('🟡 GOLDEN CARABINER: +250'); }
         }
       });
 
-      // Occasional Boulder Bro Beta Spray popup
-      if (Math.random() < 0.12 && climber.holdsLatched > 3) {
-        triggerBetaSprayToast();
+      if (Math.random() < 0.1 && climber.holdsLatched > 3) triggerBetaSprayToast();
+      updateHandIndicatorUI();
+    }
+
+    function setBodyTargetFromHands() {
+      const L = climber.leftHand, R = climber.rightHand;
+      if (L.hold && R.hold) {
+        climber.targetX = (L.targetX + R.targetX) / 2;
+        climber.targetY = (L.targetY + R.targetY) / 2 - 25;
+      } else {
+        const h = L.hold || R.hold;
+        if (h) { climber.targetX = h.x; climber.targetY = h.y - 32; }
       }
+    }
+
+    function reachAnchor(pitch, hold) {
+      currentPitchIndex = pitch.index;
+      stats.pitches++;
+      lastClipY = Math.max(lastClipY, hold.y - 20);
+      pitchBaseY = hold.y - 20;
+      climber.maxGrip = Math.min(100, climber.maxGrip + 15);
+      climber.grip = climber.maxGrip;
+      climber.sweatFriction = 1.0;
+      triggerMilestone(pitch.grade, pitch.pitchName);
+      showHoldFeedbackToast(`⚓ BELAY STANCE: rested & re-chalked. Next: ${angleLabel(wallAngleAt(pitch))}`);
+    }
+
+    function worseHand() {
+      const L = climber.leftHand, R = climber.rightHand;
+      if (!L.hold) return L;
+      if (!R.hold) return R;
+      return L.hold.type.pumpRate >= R.hold.type.pumpRate ? L : R;
     }
 
     function useShakeoutAction() {
-      if (gameState !== STATES.PLAYING || climber.falling) return;
+      if (gameState !== STATES.PLAYING || climber.falling || climber.hanging || climber.isSlipping) return;
+      if (climber.moveTimer > 0 || climber.clipTimer > 0 || climber.chalkTimer > 0) return;
       sound.init();
-
-      const holds = [climber.leftHand.hold, climber.rightHand.hold].filter(Boolean);
-      const onGoodHold = holds.some(h => h.type.id === 'jug' || h.type.id === 'pocket');
-
-      if (!onGoodHold && climber.grip < 25) {
-        showHoldFeedbackToast('⚠️ CANNOT SHAKE OUT ON CRIMP! FIND A REST JUG!');
-        return;
-      }
-
-      sound.playShakeoutBreath();
+      if (climber.isShaking) { climber.isShaking = false; showHoldFeedbackToast('Back on both hands.'); return; }
+      const free = worseHand();
+      const support = (free === climber.leftHand ? climber.rightHand : climber.leftHand).hold;
+      if (!support) return;
       climber.isShaking = true;
-      climber.shakeTimer = 80; // 1.3s shakeout
-      climber.grip = Math.min(100, climber.grip + 10);
-      spawnChalkDust(climber.x - 8, climber.y - 10, 6, '#e2e8f0');
-      showHoldFeedbackToast('🫲 SHAKING OUT FOREARM: +10% LACTIC FLUSH');
+      climber.shookHere = true;
+      stats.shakes++;
+      sound.playShakeoutBreath();
+      if (support.type.rest) showHoldFeedbackToast('🫲 SHAKING OUT on the jug — breathe. Tap a hold to move on.');
+      else if (support.type.semiRest) showHoldFeedbackToast('🫲 Shaking on a pocket: slow recovery. A jug is better.');
+      else showHoldFeedbackToast('⚠️ Shaking on a crimp = one-arm hang! You will pump faster.');
     }
 
     function useChalkPowder() {
-      if (climber.chalkCooldown <= 0 && !climber.falling && gameState === STATES.PLAYING) {
-        sound.init();
-        climber.grip = Math.min(100, climber.grip + 10);
-        climber.sweatFriction = 1.0;
-        climber.chalkCooldown = 960; // 16s cooldown
-        sound.playChalkPuff();
-        spawnChalkDust(climber.x, climber.y - 12, 18, '#ffffff');
-
-        if (climber.isSlipping) {
-          recoverFromSlip(null);
-        } else {
-          showHoldFeedbackToast('🧤 CHALK APPLIED: SWEAT WIPED & FRICTION 100%');
-        }
+      if (gameState !== STATES.PLAYING || climber.falling || climber.hanging || climber.isSlipping) return;
+      if (climber.chalkCooldown > 0 || climber.moveTimer > 0 || climber.clipTimer > 0) return;
+      sound.init();
+      climber.isShaking = false;
+      climber.chalkTimer = 36;
+      climber.chalkCooldown = 150;
+      stats.chalks++;
+      const support = (worseHand() === climber.leftHand ? climber.rightHand : climber.leftHand).hold;
+      sound.playChalkPuff();
+      spawnChalkDust(climber.x, climber.y - 12, 14, '#ffffff');
+      if (support && !support.type.rest && !support.type.semiRest) {
+        stats.cruxChalks++;
+        showHoldFeedbackToast('🧤 Chalking mid-crux: one-arm hang costs pump! Chalk at rests.');
+      } else {
+        showHoldFeedbackToast('🧤 Chalking up — sweat wiped, friction restored.');
       }
     }
 
-    function useOndraPowerScream() {
-      if (gameState !== STATES.PLAYING || climber.falling) return;
-      if (climber.screamCooldown > 0) {
-        showHoldFeedbackToast('⏳ VOCAL CHORDS RESTING...');
-        return;
-      }
-
+    function useTryHard() {
+      if (gameState !== STATES.PLAYING || climber.falling || climber.hanging) return;
+      if (climber.screamCooldown > 0) { showHoldFeedbackToast('⏳ Catch your breath first...'); return; }
       sound.init();
       sound.playOndraPowerScream();
-      climber.screamDuration = 180; // 3 seconds freeze pump!
-      climber.screamCooldown = 18000; // 300s cooldown
-      climber.flowMultiplier = Math.min(5.0, climber.flowMultiplier + 1.0);
+      const isAdam = currentChar.id === 'adam';
+      climber.screamDuration = isAdam ? 180 : 90;
+      climber.screamCooldown = isAdam ? 2700 : 5400;
+      climber.tryHardMove = true;
       spawnChalkDust(climber.x, climber.y - 18, 22, '#ef4444');
-      showHoldFeedbackToast('🗣️ "AAAAATTTTTTT!" PUMP DRAIN FROZEN FOR 3s!');
+      showHoldFeedbackToast(isAdam ? '🗣️ "AAAAATTTT!" Pump frozen 3s, next dyno +15%' : '🗣️ TRY HARD! Pump frozen 1.5s, next dyno +15%');
     }
 
-    function enterSlipState() {
-      if (climber.isSlipping || climber.falling) return;
+    function getClippableBolt() {
+      return bolts.find(b => !b.clipped && !b.skipped && b.y >= climber.y - 45 && b.y <= climber.y + 70) || null;
+    }
 
+    function clipBolt() {
+      if (gameState !== STATES.PLAYING || climber.falling || climber.hanging || climber.isSlipping) return;
+      if (climber.clipTimer > 0 || climber.moveTimer > 0 || climber.chalkTimer > 0) return;
+      sound.init();
+      const b = getClippableBolt();
+      if (!b) { showHoldFeedbackToast('🔩 No bolt in reach — climb to the next one.'); return; }
+      climber.isShaking = false;
+      climber.clipHigh = b.y > climber.y + 35;
+      climber.clipTimer = climber.clipHigh ? 55 : 38;
+      climber.clipBolt = b;
+      sound.playGrabStone();
+      showHoldFeedbackToast(climber.clipHigh ? '🔩 Clipping above your head — extra slack out!' : '🔩 Pulling rope... clipping.');
+    }
+
+    function finishClip() {
+      const b = climber.clipBolt;
+      if (!b) return;
+      b.clipped = true;
+      lastClipY = Math.max(lastClipY, b.y);
+      stats.clips++;
+      const pitch = getPitchDifficulty(climber.altitude);
+      climber.score += Math.floor(40 * pitch.mult);
+      sound.playItemCollect();
+      showHoldFeedbackToast('🔩 CLIPPED! Fall potential reset.');
+      climber.clipBolt = null;
+      climber.clipHigh = false;
+    }
+
+    /* ---------------- SLIP / FALL / ROPE ---------------- */
+    function enterSlipState(reason) {
+      if (climber.isSlipping || climber.falling || climber.hanging) return;
       climber.isSlipping = true;
-      climber.slipTimer = 120; // 2.0 seconds
+      climber.slipReason = reason || 'PUMPED';
+      climber.slipTimer = 60;
       climber.flowMultiplier = 1.0;
+      climber.isShaking = false;
       sound.playSlipAlert();
-
       document.getElementById('slipRescueBanner').classList.remove('hidden');
       updateSlipCountdownDisplay();
     }
 
-    function recoverFromSlip(savedHold) {
+    function recoverFromSlip(hold) {
+      const L = climber.leftHand, R = climber.rightHand;
+      let hand;
+      if (!L.hold || L.hold.crumbled) hand = L;
+      else if (!R.hold || R.hold.crumbled) hand = R;
+      else hand = L.targetY < R.targetY ? L : R;
+      if (hand.hold && hand.hold.id === hold.id) hand = hand === L ? R : L;
+      hand.startX = hand.x; hand.startY = hand.y;
+      hand.targetX = hold.x; hand.targetY = hold.y; hand.hold = hold;
+      climber.moveTotal = 8; climber.moveTimer = 8; climber.movingHand = hand;
       climber.isSlipping = false;
       climber.slipTimer = 0;
-      climber.grip = 55;
+      climber.grip = Math.max(climber.grip, hold.type.rest ? 22 : hold.type.semiRest ? 15 : 8);
+      climber.stillFrames = 0;
+      setBodyTargetFromHands();
       sound.playCatchSave();
       document.getElementById('slipRescueBanner').classList.add('hidden');
-      showHoldFeedbackToast('✋ RE-LATCHED! GRIP RECOVERED!');
-
-      if (savedHold) {
-        climber.leftHand.hold = savedHold;
-        climber.leftHand.targetX = savedHold.x;
-        climber.leftHand.targetY = savedHold.y;
-        climber.targetX = savedHold.x;
-        climber.targetY = savedHold.y - 25;
-      }
+      showHoldFeedbackToast(hold.type.rest ? '✋ SAVED onto a jug — now SHAKE OUT!' : '✋ Caught it... but it is not a rest. Move!');
     }
 
     function updateSlipCountdownDisplay() {
-      const sec = (climber.slipTimer / 60).toFixed(1);
-      document.getElementById('slipCountDownText').innerText = `${sec}s`;
+      document.getElementById('slipCountDownText').innerText = `${(climber.slipTimer / 60).toFixed(1)}s`;
     }
 
-    function triggerFinalFall() {
-      if (climber.falling) return;
+    function startFall(reason) {
+      if (climber.falling || climber.hanging) return;
       climber.isSlipping = false;
       document.getElementById('slipRescueBanner').classList.add('hidden');
-      climber.falling = true;
-      climber.fallVelocity = 2.4;
-      sound.playFreeFall();
+      document.getElementById('hudBarnDoorWarning').classList.add('hidden');
 
-      setTimeout(() => {
-        concludeClimb();
-      }, 1100);
+      const runout = climber.y - lastClipY;
+      const ropeOut = Math.max(0, climber.y - pitchBaseY);
+      let len = (runout > 0 ? 2 * runout : 0) + METER * 1.0 + 0.08 * ropeOut;
+      if (climber.clipTimer > 0 && climber.clipHigh) len += METER * 1.2; // fell with slack pulled
+      let catchY = climber.y - len;
+      let ground = false;
+      if (pitchBaseY === 0 && catchY < 20) {
+        ground = climber.y > METER * 2.5;
+        catchY = 20;
+      }
+      climber.falling = true;
+      climber.fallVelocity = 1.5;
+      climber.fallCatchY = catchY;
+      climber.fallLen = (climber.y - catchY) / METER;
+      climber.fallRunout = Math.max(0, runout) / METER;
+      climber.fallReason = reason;
+      climber.groundFall = ground;
+      climber.clipTimer = 0; climber.chalkTimer = 0; climber.moveTimer = 0;
+      climber.isShaking = false; climber.isBarnDoor = false;
+      climber.leftHand.hold = null; climber.rightHand.hold = null;
+      climber.flowMultiplier = 1.0;
+      stats.falls++;
+      stats.fallReasons.push(reason);
+      stats.maxFall = Math.max(stats.maxFall, climber.fallLen);
+      sound.playFreeFall();
     }
 
-    function concludeClimb() {
+    const FALL_LESSONS = {
+      PUMPED: 'You pumped off. Shake out on jugs BEFORE the crux, keep feet on, and do not linger on crimps.',
+      DYNO: 'Missed dyno. Crimps and slopers are low-percentage catches — set up a static move with good feet, or dyno while fresh.',
+      CHOSS: 'Loose rock broke. Spot suspect flakes when reading the route and move through them fast.',
+      BARN: 'You barn-doored off. A cross-over without two feet swings you off the wall — plan hands so you do not cross.'
+    };
+
+    function onCaught() {
+      climber.falling = false;
+      climber.hanging = true;
+      climber.bounce = 14;
+      sound.playCatchSave();
+      const panel = document.getElementById('catchPanel');
+      const maxed = stats.falls >= 3;
+      document.getElementById('catchTitle').innerText = maxed ? '🪢 3 FALLS — TIME TO PROJECT IT' : '🪢 TAKE! CAUGHT BY THE ROPE';
+      document.getElementById('catchDetail').innerText =
+        `Whipper: ${climber.fallLen.toFixed(1)}m. You were ${climber.fallRunout.toFixed(1)}m above your last clip ` +
+        `(fall ≈ 2× runout + slack + rope stretch). Falls: ${stats.falls}/3.`;
+      let lesson = FALL_LESSONS[climber.fallReason] || FALL_LESSONS.PUMPED;
+      if (climber.fallRunout > 3) lesson += ' Clip earlier — that runout doubled your fall.';
+      document.getElementById('catchLesson').innerText = lesson;
+      document.getElementById('pullBackOnBtn').classList.toggle('hidden', maxed);
+      panel.classList.remove('hidden');
+    }
+
+    function pullBackOn() {
+      if (!climber.hanging) return;
+      const cands = rockHolds.filter(h => !h.crumbled && h.y > climber.y + 5 && h.y < climber.y + 110);
+      if (cands.length === 0) { concludeClimb('LOWER'); return; }
+      const cx = canvas.width / 2, cy = climber.y + 45;
+      cands.sort((a, b) => Math.hypot(a.x - cx, a.y - cy) - Math.hypot(b.x - cx, b.y - cy));
+      const A = cands[0];
+      const B = cands.slice(1).find(h => Math.abs(h.x - A.x) < 90 && Math.abs(h.y - A.y) < 60) || A;
+      const [lh, rh] = A.x <= B.x ? [A, B] : [B, A];
+      setHandOnHold(climber.leftHand, lh);
+      setHandOnHold(climber.rightHand, rh);
+      setBodyTargetFromHands();
+      climber.x = climber.targetX; climber.y = climber.targetY;
+      climber.hanging = false;
+      climber.stillFrames = 0;
+      climber.lastMoveTime = 0;
+      climber.style = 'HANGDOG';
+      climber.styleMult = 0.5;
+      const top = Math.max(lh.y, rh.y);
+      planNextIdx = betaPlan.findIndex(p => { const h = holdMap.get(p.holdId); return h && h.y > top; });
+      if (planNextIdx < 0) planNextIdx = betaPlan.length;
+      document.getElementById('catchPanel').classList.add('hidden');
+      updateFootPlacement();
+      showHoldFeedbackToast('🧗 Back on — working the moves (hangdog).');
+    }
+
+    /* ---------------- END OF SESSION / DEBRIEF ---------------- */
+    function concludeClimb(reason) {
+      if (gameState === STATES.GAMEOVER) return;
       gameState = STATES.GAMEOVER;
       sound.stopChiptuneLoop();
+      climber.hanging = false;
+      document.getElementById('catchPanel').classList.add('hidden');
+      document.getElementById('slipRescueBanner').classList.add('hidden');
 
       const pitch = getPitchDifficulty(climber.altitude);
+      const title = document.getElementById('gameOverTitle');
+      const sub = document.getElementById('gameOverSub');
+      if (reason === 'GROUND') {
+        title.innerText = 'DECKED! GROUND FALL';
+        title.className = 'text-red-500 text-xs sm:text-sm font-bold neon-rose mb-0.5';
+        sub.innerText = `Fell ${climber.fallLen.toFixed(1)}m before the rope could catch you. Clip early near the ground!`;
+      } else {
+        title.innerText = stats.falls >= 3 ? 'PROJECT IT!' : 'LOWERED OFF';
+        title.className = 'text-amber-400 text-xs sm:text-sm font-bold neon-gold mb-0.5';
+        sub.innerText = stats.falls === 0 ? 'Clean so far — lowered off by choice.' : `Session over after ${stats.falls} fall${stats.falls > 1 ? 's' : ''}.`;
+      }
 
       document.getElementById('finalAltText').innerText = `${climber.altitude.toFixed(1)}m`;
       document.getElementById('finalGradeText').innerText = pitch.grade;
-      document.getElementById('finalComboText').innerText = `x${climber.flowMultiplier.toFixed(1)}`;
+      document.getElementById('finalComboText').innerText = climber.style;
       document.getElementById('finalScoreText').innerText = climber.score;
 
-      // Select from authentic climber quotes & coaching tactics
-      const item = FAILURE_DECKS[Math.floor(Math.random() * FAILURE_DECKS.length)];
-      document.getElementById('fallCardTypeBadge').innerText = item.type;
+      const quotes = FAILURE_DECKS.filter(d => d.type === 'QUOTE');
+      const item = quotes[Math.floor(Math.random() * quotes.length)];
+      document.getElementById('fallCardTypeBadge').innerText = '💬 QUOTE';
       document.getElementById('fallAuthorBadge').innerText = item.author;
       document.getElementById('fallQuoteText').innerText = item.text;
 
+      renderDebrief();
       saveAscentRecord();
 
       document.getElementById('inGameHud').classList.add('hidden');
       document.getElementById('gameOverScreen').classList.remove('hidden');
     }
 
+    function renderDebrief() {
+      const pct = (a, b) => b ? Math.round(100 * a / b) + '%' : '—';
+      const rows = [
+        ['MOVES', stats.moves],
+        ['BETA FOLLOWED', stats.planLen ? `${stats.planMatched}/${stats.planLen}` : 'NO PLAN'],
+        ['SHAKE-OUTS', stats.shakes],
+        ['RESTS SKIPPED', stats.restsSkipped],
+        ['FEET-CUT MOVES', pct(stats.feetCutMoves, stats.moves)],
+        ['CROSS-OVERS', `${stats.crossovers} (${stats.barnDoors} barn)`],
+        ['DYNOS STUCK', `${stats.dynosLanded}/${stats.dynosTried}`],
+        ['CLIPS / SKIPPED', `${stats.clips} / ${stats.boltsSkipped}`],
+        ['MAX RUNOUT', `${stats.maxRunout.toFixed(1)}m`],
+        ['BIGGEST FALL', `${stats.maxFall.toFixed(1)}m`],
+        ['OVER-GRIPPING', stats.hesitations],
+        ['CHALK MID-CRUX', stats.cruxChalks]
+      ];
+      document.getElementById('debriefGrid').innerHTML = rows.map(([k, v]) =>
+        `<div class="flex justify-between gap-1"><span class="text-gray-400">${k}</span><span class="text-yellow-300 font-bold">${v}</span></div>`).join('');
+
+      const tips = [];
+      const add = (w, title, text) => tips.push({ w, title, text });
+      if (stats.planLen === 0) add(3, 'READ BEFORE YOU CLIMB', 'You started without a plan. Use READ ROUTE: map hands, spot jugs to rest on and bolts to clip from. Planned moves score +25% and cut hesitation.');
+      else if (stats.planMatched / Math.max(1, stats.planLen) < 0.5 && stats.moves > 4) add(2.5, 'TRUST YOUR BETA', `You followed ${stats.planMatched} of ${stats.planLen} planned moves. Either plan more realistically (watch red/amber lines) or commit to the plan.`);
+      if (stats.restsSkipped >= 1) add(2 + stats.restsSkipped * 0.5, 'USE THE REST', `You left ${stats.restsSkipped} jug${stats.restsSkipped > 1 ? 's' : ''} while pumped without shaking out. Stop on jugs, SHAKE each arm, breathe, then go.`);
+      if (stats.hesitations >= 2) add(2 + stats.hesitations * 0.3, 'DON\'T READ ON CRIMPS', `You over-gripped ${stats.hesitations} times — hanging on small holds while deciding. Read from rests and climb crux sections decisively.`);
+      if (stats.moves > 5 && stats.feetCutMoves / stats.moves > 0.3) add(2.4, 'FEET FIRST', 'Many moves were made with no feet on. Footholds carry up to half your weight — pick hand holds that keep your feet on chips.');
+      if (stats.crossovers >= 3 || stats.barnDoors >= 2) add(2.2, 'SEQUENCE YOUR HANDS', `${stats.crossovers} cross-overs, ${stats.barnDoors} barn-doors. Plan which hand takes each hold so hands do not cross, or keep both feet on when they must.`);
+      if (stats.boltsSkipped > 0 || stats.maxRunout > 4) add(2.6, 'CLIP DISCIPLINE', `Max runout ${stats.maxRunout.toFixed(1)}m${stats.boltsSkipped ? `, ${stats.boltsSkipped} bolt(s) skipped` : ''}. Your fall is about twice the runout — clip from good holds as soon as the bolt is at chest height.`);
+      if (stats.dynosTried >= 2 && stats.dynosLanded / stats.dynosTried < 0.5) add(2.3, 'STATIC OVER DYNAMIC', `Only ${stats.dynosLanded}/${stats.dynosTried} dynos stuck. Look for an intermediate to make the move static, especially to crimps or slopers.`);
+      if (stats.cruxChalks >= 2) add(1.8, 'CHALK AT RESTS', 'You chalked on poor holds — that is a one-arm hang. Chalk on jugs before the hard section.');
+      if (tips.length === 0) add(1, 'SOLID EFFORT', 'Clean technique. Try REAL ROCK hold view to read holds by shape alone, or redpoint the same route for a higher score.');
+      tips.sort((a, b) => b.w - a.w);
+      document.getElementById('debriefTips').innerHTML = tips.slice(0, 2).map(t =>
+        `<div class="p-1 bg-cyan-950/50 border border-cyan-800 rounded"><div class="text-[5.5px] text-cyan-300 font-bold">🎯 ${t.title}</div><div class="text-[5.5px] text-gray-200 leading-relaxed">${t.text}</div></div>`).join('');
+    }
+
     async function saveAscentRecord() {
       const status = document.getElementById('d1SyncStatus');
       status.innerText = 'Logging ascent to crag records...';
-
       const pitch = getPitchDifficulty(climber.altitude);
-
       const entry = {
         id: 'climb_' + Date.now(),
         name: callsign || 'Anonymous',
@@ -2013,30 +2177,21 @@
         height: parseFloat(climber.altitude.toFixed(1)),
         created_at: new Date().toISOString().substring(0, 10)
       };
-
       await storage.saveScore(entry);
       status.innerText = '✓ Ascent recorded in crag annals!';
     }
 
+    /* ---------------- FX / UI HELPERS ---------------- */
     function spawnChalkDust(x, y, count, color = '#ffffff') {
       for (let i = 0; i < count; i++) {
-        rockParticles.push({
-          x: x,
-          y: y,
-          vx: (Math.random() - 0.5) * 2.8,
-          vy: (Math.random() - 0.5) * 2.8,
-          size: Math.random() * 3 + 1,
-          color: color,
-          life: 1.0,
-          decay: 0.04
-        });
+        rockParticles.push({ x, y, vx: (Math.random() - 0.5) * 2.8, vy: (Math.random() - 0.5) * 2.8, size: Math.random() * 3 + 1, color, life: 1.0, decay: 0.04 });
       }
     }
 
     function triggerMilestone(grade, name) {
       sound.playMilestoneFanfare();
       const banner = document.getElementById('milestoneBanner');
-      banner.innerText = `🧗 PITCH CRUX: ${grade} (${name})!`;
+      banner.innerText = `⚓ NEW PITCH: ${grade} (${name})`;
       banner.classList.remove('opacity-0', '-translate-y-4');
       banner.classList.add('opacity-100', 'translate-y-0');
       setTimeout(() => {
@@ -2047,9 +2202,7 @@
 
     function showHoldFeedbackToast(msg) {
       const pill = document.getElementById('holdBetaPill');
-      pill.innerHTML = `<span>${msg}</span>`;
-      pill.classList.remove('opacity-0');
-      pill.classList.add('opacity-100');
+      pill.textContent = msg;
     }
 
     function triggerBetaSprayToast() {
@@ -2065,207 +2218,324 @@
       toast.innerText = tips[Math.floor(Math.random() * tips.length)];
       toast.classList.remove('opacity-0');
       toast.classList.add('opacity-100');
-      setTimeout(() => {
-        toast.classList.remove('opacity-100');
-        toast.classList.add('opacity-0');
-      }, 2800);
+      setTimeout(() => { toast.classList.remove('opacity-100'); toast.classList.add('opacity-0'); }, 2800);
     }
 
     function updateHandIndicatorUI() {
       const ind = document.getElementById('nextHandIndicator');
-      if (climber.activeHandToggle === 0) {
-        ind.className = 'text-cyan-300 font-bold';
-        ind.innerText = 'L ◀';
-      } else {
-        ind.className = 'text-amber-300 font-bold';
-        ind.innerText = 'R ▶';
+      if (climber.handOverride === 'L') { ind.className = 'text-cyan-300 font-bold'; ind.innerText = 'L'; }
+      else if (climber.handOverride === 'R') { ind.className = 'text-amber-300 font-bold'; ind.innerText = 'R'; }
+      else { ind.className = 'text-gray-300 font-bold'; ind.innerText = 'AUTO'; }
+    }
+
+    /* ---------------- BETA PLANNING ---------------- */
+    /* Simulates the plan from a starting hand position, returning a segment per move. */
+    function simulatePlan(startIdx) {
+      const L = climber.leftHand, R = climber.rightHand;
+      const sim = {
+        L: { hold: L.hold, targetX: L.hold ? L.hold.x : L.targetX, targetY: L.hold ? L.hold.y : L.targetY },
+        R: { hold: R.hold, targetX: R.hold ? R.hold.x : R.targetX, targetY: R.hold ? R.hold.y : R.targetY }
+      };
+      const segs = [];
+      for (let i = startIdx; i < betaPlan.length; i++) {
+        const p = betaPlan[i];
+        const hold = holdMap.get(p.holdId);
+        if (!hold || hold.crumbled) continue;
+        const bx = (sim.L.targetX + sim.R.targetX) / 2, by = (sim.L.targetY + sim.R.targetY) / 2 - 25;
+        const h = p.hand === 'L' ? sim.L : sim.R;
+        const o = p.hand === 'L' ? sim.R : sim.L;
+        const r = getReachInfo(hold, bx, by);
+        const match = o.hold && o.hold.id === hold.id;
+        const cross = !match && isCrossover(p.hand, hold.x, o.targetX);
+        segs.push({
+          idx: i, hold, hand: p.hand, fromX: h.targetX, fromY: h.targetY,
+          kind: !r.reachable ? 'invalid' : r.isDyno ? 'dyno' : 'static',
+          pct: r.isDyno ? dynoChance(hold, r.dist, 100, 2) : 1, cross
+        });
+        h.hold = hold; h.targetX = hold.x; h.targetY = hold.y;
       }
+      return { segs, sim };
+    }
+
+    function addHoldToPlan(hold) {
+      if (hold.id === climber.leftHand.hold?.id || hold.id === climber.rightHand.hold?.id) {
+        if (!betaPlan.length) { showPlanWarn('That is a start hold — tap the next hold you will move to.'); return; }
+      }
+      const existing = betaPlan.find(p => p.holdId === hold.id);
+      if (existing) {
+        existing.hand = existing.hand === 'L' ? 'R' : 'L';
+        sound.playChalkPuff();
+      } else {
+        const { sim } = simulatePlan(0);
+        const auto = chooseHand(hold, sim);
+        betaPlan.push({ holdId: hold.id, hand: auto.hand });
+        sound.playGrabStone();
+      }
+      updatePlanUI();
+    }
+
+    function showPlanWarn(t) { document.getElementById('planWarnText').innerText = t; }
+
+    function updatePlanUI() {
+      const { segs } = simulatePlan(0);
+      const dynos = segs.filter(s => s.kind === 'dyno').length;
+      const bad = segs.filter(s => s.kind === 'invalid').length;
+      const cross = segs.filter(s => s.cross).length;
+      document.getElementById('planCountText').innerText = `${betaPlan.length} move${betaPlan.length === 1 ? '' : 's'}`;
+      const warn = document.getElementById('planWarnText');
+      if (!betaPlan.length) { warn.className = 'text-gray-400'; warn.innerText = 'Tap a hold to begin'; return; }
+      const parts = [];
+      if (bad) parts.push(`${bad} out of reach`);
+      if (dynos) parts.push(`${dynos} dyno`);
+      if (cross) parts.push(`${cross} cross-over`);
+      warn.className = bad ? 'text-red-400 font-bold' : (dynos || cross ? 'text-amber-300' : 'text-emerald-300');
+      warn.innerText = parts.length ? '⚠️ ' + parts.join(' • ') : '✓ All static, no crosses';
+    }
+
+    /* ---------------- PHYSICS ---------------- */
+    function computeDrain(angle, feet) {
+      const L = climber.leftHand, R = climber.rightHand;
+      if (climber.hanging) return { rate: -0.12, text: '🪢 RESTING ON THE ROPE' };
+
+      let freeHand = null;
+      if (climber.moveTimer > 0) freeHand = climber.movingHand;
+      else if (climber.chalkTimer > 0 || climber.clipTimer > 0 || climber.isShaking) freeHand = worseHand();
+      const supports = [L, R].filter(h => h !== freeHand && h.hold && !h.hold.crumbled).map(h => h.hold);
+      if (!supports.length) return { rate: 0.4, text: '⚠️ NO HOLD!' };
+      const oneArm = freeHand !== null || !(L.hold && R.hold);
+
+      const fric = totalFriction();
+      const holdRate = h => {
+        let r = h.type.pumpRate;
+        if (r > 0) r = h.type.frictionSensitive ? r / fric : r / Math.sqrt(climber.sweatFriction);
+        return r;
+      };
+      const best = supports.reduce((a, b) => holdRate(a) <= holdRate(b) ? a : b);
+      let rate = supports.reduce((s, h) => s + holdRate(h), 0) / supports.length;
+      let text = best.type.status;
+      const onRest = supports.some(h => h.type.rest);
+
+      const recMult = clamp(1 - Math.max(0, angle) / 90, 0.35, 1.1) * (feet === 0 ? 0.4 : feet === 1 ? 0.75 : 1);
+
+      if (climber.isShaking && freeHand) {
+        if (best.type.rest) { rate = -(best.type.id === 'pink_one' ? 0.2 : 0.10) * recMult * (currentChar.id === 'tommy' ? 1.3 : 1); text = '🫲 SHAKING OUT'; }
+        else if (best.type.semiRest) { rate = -0.015 * recMult; text = '🫲 SHAKE (POCKET)'; }
+        else { rate = Math.max(0.05, holdRate(best)) * 2.2; text = '⚠️ SHAKE ON CRIMP'; }
+      } else if (rate < 0) {
+        rate = oneArm ? 0.02 : rate * recMult * (currentChar.id === 'tommy' && best.type.id === 'jug' ? 1.3 : 1);
+        if (!oneArm) text += ' • RECOVERING';
+      }
+
+      if (rate > 0) {
+        const angleMult = best.type.rest ? 1 : clamp(1 + angle / 50, 0.7, 2.4);
+        let feetFactor = feet >= 2 ? clamp(0.5 + 0.007 * angle, 0.35, 0.95) : feet === 1 ? clamp(0.78 + 0.004 * angle, 0.7, 1.05) : 1.6;
+        rate *= currentChar.staminaRate * angleMult * feetFactor;
+        if (oneArm && !climber.isShaking) { rate *= 2.2; text += ' • 1-ARM'; }
+        if (climber.isBarnDoor) rate *= 1.8;
+        if (climber.focusBuffTimer > 0) rate *= 0.8;
+        if (currentChar.id === 'alex' && Math.abs(angle) <= 10) rate *= 0.7;
+        if (climber.gustTimer > 0 && feet < 2) rate *= 1.3;
+        // Over-gripping: hanging on poor holds while deciding
+        if (!onRest && climber.stillFrames > 150) {
+          rate *= 1 + Math.min(1, (climber.stillFrames - 150) / 480);
+          text = '⏳ OVER-GRIPPING!';
+          if (!climber.overGripping) { climber.overGripping = true; stats.hesitations++; }
+        }
+        if (feet === 0) text += ' • NO FEET';
+      }
+
+      if (climber.screamDuration > 0) { rate = Math.min(0, rate); text = '🗣️ TRY-HARD: PUMP FROZEN'; }
+      return { rate, text };
     }
 
     function updatePhysics() {
       if (gameState !== STATES.PLAYING && gameState !== STATES.BETA_INSPECT) return;
-
       climber.animTick++;
+      const pitchNow = getPitchDifficulty(climber.altitude);
+      const angle = wallAngleAt(pitchNow);
 
-      if (gameState === STATES.PLAYING && !climber.falling) {
-        climber.x += (climber.targetX - climber.x) * 0.16;
-        climber.y += (climber.targetY - climber.y) * 0.16;
+      if (gameState === STATES.PLAYING && !climber.falling && !climber.hanging) {
+        stats.frames++;
+        climber.x += (climber.targetX - climber.x) * 0.12;
+        climber.y += (climber.targetY - climber.y) * 0.12;
 
-        if (climber.leftHand.lerp < 1) {
-          climber.leftHand.lerp = Math.min(1, climber.leftHand.lerp + 0.25);
-          climber.leftHand.x += (climber.leftHand.targetX - climber.leftHand.x) * 0.3;
-          climber.leftHand.y += (climber.leftHand.targetY - climber.leftHand.y) * 0.3;
-        }
-        if (climber.rightHand.lerp < 1) {
-          climber.rightHand.lerp = Math.min(1, climber.rightHand.lerp + 0.25);
-          climber.rightHand.x += (climber.rightHand.targetX - climber.rightHand.x) * 0.3;
-          climber.rightHand.y += (climber.rightHand.targetY - climber.rightHand.y) * 0.3;
-        }
-
-        climber.leftFoot.x = climber.x - 10 + Math.sin(climber.animTick * 0.1) * 2;
-        climber.leftFoot.y = climber.y - 24;
-        climber.rightFoot.x = climber.x + 10 + Math.cos(climber.animTick * 0.1) * 2;
-        climber.rightFoot.y = climber.y - 24;
-
-        if (climber.screamDuration > 0) {
-          climber.screamDuration--;
+        // Move timer & hand interpolation
+        if (climber.moveTimer > 0) {
+          climber.moveTimer--;
+          const h = climber.movingHand;
+          const t = 1 - climber.moveTimer / climber.moveTotal;
+          const e = t * t * (3 - 2 * t);
+          h.x = h.startX + (h.targetX - h.startX) * e;
+          h.y = h.startY + (h.targetY - h.startY) * e + Math.sin(t * Math.PI) * 6;
+          if (climber.moveTimer === 0) { h.x = h.targetX; h.y = h.targetY; }
         }
 
-        if (climber.focusBuffTimer > 0) {
-          climber.focusBuffTimer--;
-        }
+        // Free-hand animation (shake / chalk / clip) & settle others onto holds
+        const freeHand = (climber.chalkTimer > 0 || climber.clipTimer > 0 || climber.isShaking) && climber.moveTimer === 0 ? worseHand() : null;
+        [climber.leftHand, climber.rightHand].forEach(h => {
+          if (h === climber.movingHand && climber.moveTimer > 0) return;
+          let tx, ty;
+          if (h === freeHand) {
+            const s = h.side === 'L' ? -1 : 1;
+            if (climber.isShaking) { tx = climber.x + s * 12 + Math.sin(climber.animTick * 0.9) * 3; ty = climber.y - 14; }
+            else if (climber.chalkTimer > 0) { tx = climber.x; ty = climber.y - 6; }
+            else { tx = climber.clipBolt ? climber.clipBolt.x : climber.x; ty = climber.clipBolt ? climber.clipBolt.y : climber.y; }
+          } else if (h.hold) { tx = h.hold.x; ty = h.hold.y; }
+          else return;
+          h.x += (tx - h.x) * 0.3; h.y += (ty - h.y) * 0.3;
+        });
 
-        // Slight sweat buildup over time reducing stone friction
-        climber.sweatFriction = Math.max(0.75, climber.sweatFriction - 0.0001);
+        if (climber.animTick % 4 === 0) updateFootPlacement();
+        [climber.leftFoot, climber.rightFoot].forEach(f => { f.x += (f.tx - f.x) * 0.25; f.y += (f.ty - f.y) * 0.25; });
 
-        if (!isBetaView) {
-          let netGripRate = 0;
-          let currentHoldStatusText = "🟢 RESTING ON HOLD";
+        if (climber.screamDuration > 0) climber.screamDuration--;
+        if (climber.focusBuffTimer > 0) climber.focusBuffTimer--;
+        if (climber.chalkCooldown > 0) climber.chalkCooldown--;
+        if (climber.screamCooldown > 0) climber.screamCooldown--;
+        if (climber.chalkTimer > 0 && --climber.chalkTimer === 0) climber.sweatFriction = 1.0;
+        if (climber.clipTimer > 0 && --climber.clipTimer === 0) finishClip();
+        climber.stillFrames++;
 
-          const holds = [climber.leftHand.hold, climber.rightHand.hold].filter(Boolean);
-          const isHangingOneHand = climber.leftHand.lerp < 1 || climber.rightHand.lerp < 1 || climber.isShaking;
-
-          if (holds.length > 0) {
-            let baseRate = 0;
-            const hasPink = holds.some(h => h.type.id === 'pink_one');
-            const hasJug = holds.some(h => h.type.id === 'jug');
-            const hasPocket = holds.some(h => h.type.id === 'pocket');
-            const hasCrimp = holds.some(h => h.type.id === 'crimp');
-            const hasMicro = holds.some(h => h.type.id === 'micro_crimp');
-            const hasSloper = holds.some(h => h.type.id === 'sloper');
-            const hasChoss = holds.some(h => h.type.id === 'choss');
-
-            if (hasPink) {
-              baseRate = HOLD_TYPES.PINK_ONE.pumpRate;
-              currentHoldStatusText = "🌈 PINK ONE: RECOVERING";
-            } else if (hasJug) {
-              baseRate = HOLD_TYPES.JUG.pumpRate * currentChar.staminaRate;
-              currentHoldStatusText = "🟢 JUG: RECOVERING GRIP";
-            } else if (hasPocket) {
-              baseRate = HOLD_TYPES.POCKET.pumpRate * currentChar.staminaRate;
-              currentHoldStatusText = "🔵 POCKET: SLIGHT DRAIN";
-            } else if (hasCrimp) {
-              baseRate = HOLD_TYPES.CRIMP.pumpRate * currentChar.staminaRate;
-              currentHoldStatusText = "🟡 CRIMP: STEADY PUMP";
-            } else if (hasMicro) {
-              baseRate = HOLD_TYPES.MICRO_CRIMP.pumpRate * currentChar.staminaRate;
-              currentHoldStatusText = "🔴 MICRO-CRIMP: HEAVY PUMP";
-            } else if (hasSloper) {
-              const sloperMod = currentChar.id === 'billy' ? 0.5 : 1.0;
-              const totalFriction = currentWeather.friction * currentTime.frictionMod * climber.sweatFriction;
-              baseRate = (HOLD_TYPES.SLOPER.pumpRate / totalFriction) * currentChar.staminaRate * sloperMod;
-              currentHoldStatusText = "🟠 SLOPER: FRICTION PUMP";
-            } else if (hasChoss) {
-              baseRate = HOLD_TYPES.CHOSS.pumpRate * currentChar.staminaRate;
-              currentHoldStatusText = "🔴 CHOSS: CRACKING!";
-            }
-
-            // Real-World One-Hand Hanging Penalty: 2.5x drain multiplier when reaching!
-            if (isHangingOneHand && baseRate > 0) {
-              baseRate *= 2.5;
-              currentHoldStatusText += " (1-ARM 2.5x PUMP)";
-            }
-
-            // Barn-door rotational penalty: adds an extra 1.8x drain
-            if (climber.isBarnDoor && baseRate > 0) {
-              baseRate *= 1.8;
-            }
-
-            // Focus on-sight buff from reading route beforehand
-            if (climber.focusBuffTimer > 0 && baseRate > 0) {
-              baseRate *= 0.75;
-            }
-
-            netGripRate = baseRate;
-          }
-
-          // If Adam Ondra power scream is active, freeze pump drain!
-          if (climber.screamDuration > 0) {
-            netGripRate = Math.min(0, netGripRate);
-            currentHoldStatusText = "🗣️ SCREAM: PUMP FROZEN!";
-          }
-
-          climber.grip = Math.max(0, Math.min(100, climber.grip - netGripRate));
-          document.getElementById('hudHoldStatus').innerText = currentHoldStatusText;
-
-          // Heartbeat audio warning when pumped (>70% pump / <30% grip)
-          if (climber.grip < 30 && climber.animTick % 40 === 0) {
-            sound.playHeartbeatThump();
-          }
-
-          // Choss crumble timer
-          holds.forEach(h => {
-            if (h && h.type.crumble) {
-              h.crumbTimer++;
-              if (h.crumbTimer > 240) { // 4.0 seconds
-                h.crumbled = true;
-                sound.playRockBreak();
-                spawnChalkDust(h.x, h.y, 20, '#dc2626');
-                enterSlipState();
-              }
-            }
-          });
-
-          if (climber.grip <= 0 && !climber.isSlipping) {
-            enterSlipState();
-          }
-
-          if (climber.chalkCooldown > 0) climber.chalkCooldown--;
-          if (climber.screamCooldown > 0) climber.screamCooldown--;
-          if (climber.shakeTimer > 0) {
-            climber.shakeTimer--;
-            if (climber.shakeTimer <= 0) climber.isShaking = false;
+        // Wind gusts
+        if (currentWeather.wind) {
+          if (climber.gustTimer > 0) climber.gustTimer--;
+          else if (--climber.gustCooldown <= 0) {
+            climber.gustTimer = 90; climber.gustCooldown = 300 + Math.random() * 300;
+            showHoldFeedbackToast(feetCount() < 2 ? '💨 GUST! Get your feet on!' : '💨 Gust — feet holding you in.');
           }
         }
+
+        // Sweat: faster at noon and when pumped; rain keeps hands wet anyway
+        const sweatRate = 0.00022 * (currentTime.id === 'noon' ? 1.8 : 1) * (climber.grip < 50 ? 1.5 : 1) * (currentWeather.rain ? 0.3 : 1);
+        climber.sweatFriction = Math.max(0.7, climber.sweatFriction - sweatRate);
+
+        const feet = feetCount();
+        const d = computeDrain(angle, feet);
+        climber.holdStatusText = d.text;
+        let g = climber.grip - d.rate;
+        if (d.rate < 0) g = Math.min(g, Math.max(climber.grip, climber.maxGrip));
+        climber.grip = clamp(g, 0, 100);
+        if (climber.grip < 35) climber.maxGrip = Math.max(55, climber.maxGrip - 0.01);
+
+        if (climber.grip < 30 && climber.animTick % 40 === 0) sound.playHeartbeatThump();
+        if (climber.isShaking && climber.animTick % 70 === 0) sound.playShakeoutBreath();
+
+        // Loose rock
+        [climber.leftHand, climber.rightHand].forEach(hand => {
+          const h = hand.hold;
+          if (h && h.type.crumble && !h.crumbled) {
+            h.crumbTimer++;
+            if (h.crumbTimer > 240) {
+              h.crumbled = true;
+              sound.playRockBreak();
+              spawnChalkDust(h.x, h.y, 20, '#dc2626');
+              if (climber.leftHand.hold === h) climber.leftHand.hold = null;
+              if (climber.rightHand.hold === h) climber.rightHand.hold = null;
+              climber.isShaking = false;
+              enterSlipState('CHOSS');
+            }
+          }
+        });
+        if (!climber.leftHand.hold && !climber.rightHand.hold && !climber.isSlipping && climber.moveTimer === 0) enterSlipState('CHOSS');
+
+        if (climber.grip <= 0 && !climber.isSlipping) enterSlipState('PUMPED');
+
+        // Bolt bookkeeping
+        for (const b of bolts) {
+          if (!b.clipped && !b.skipped && b.y < climber.y - 60) {
+            b.skipped = true;
+            if (b.y > pitchBaseY) { stats.boltsSkipped++; showHoldFeedbackToast('⚠️ SKIPPED A BOLT — LONG RUNOUT!'); }
+          }
+        }
+        stats.maxRunout = Math.max(stats.maxRunout, (climber.y - lastClipY) / METER);
 
         if (climber.isSlipping) {
           climber.slipTimer--;
           updateSlipCountdownDisplay();
-          if (climber.slipTimer <= 0) {
-            triggerFinalFall();
-          }
+          if (climber.slipTimer <= 0) startFall(climber.slipReason);
         }
       } else if (climber.falling) {
         climber.fallVelocity += 0.55;
         climber.y -= climber.fallVelocity;
+        [climber.leftHand, climber.rightHand].forEach((h, i) => { h.x = climber.x + (i ? 9 : -9); h.y = climber.y + 20; });
+        [climber.leftFoot, climber.rightFoot].forEach((f, i) => { f.x = climber.x + (i ? 6 : -6); f.y = climber.y - 30; });
+        if (climber.y <= climber.fallCatchY) {
+          climber.y = climber.fallCatchY;
+          climber.targetY = climber.y;
+          if (climber.groundFall) {
+            climber.falling = false;
+            sound.playRockBreak();
+            spawnChalkDust(climber.x, climber.y - 20, 30, '#a8a29e');
+            setTimeout(() => concludeClimb('GROUND'), 700);
+            climber.hanging = true;
+          } else onCaught();
+        }
+      } else if (climber.hanging) {
+        const d = computeDrain(angle, 0);
+        climber.grip = clamp(Math.min(climber.grip - d.rate, Math.max(climber.grip, climber.maxGrip)), 0, 100);
+        climber.holdStatusText = d.text;
+        if (climber.bounce > 0) climber.bounce--;
+        [climber.leftHand, climber.rightHand].forEach((h, i) => { h.x = climber.x + (i ? 8 : -8); h.y = climber.y + 14 + Math.sin(climber.animTick * 0.05) * 2; });
+        [climber.leftFoot, climber.rightFoot].forEach((f, i) => { f.x = climber.x + (i ? 6 : -6); f.y = climber.y - 32; });
       }
 
-      // Camera Tracking & Smooth Pan
+      // Camera
       targetCameraY = Math.max(0, climber.y - canvas.height * 0.40);
       const desiredBetaOffset = isBetaView ? 240 : (gameState === STATES.BETA_INSPECT ? betaPanOffset : 0);
       betaPanOffset += (desiredBetaOffset - betaPanOffset) * 0.12;
       cameraY += ((targetCameraY + betaPanOffset) - cameraY) * 0.14;
+      if (climber.bounce > 0) cameraY += Math.sin(climber.bounce) * 2;
 
-      while (highestHoldY - (cameraY + betaPanOffset) < canvas.height + 160) {
-        spawnProgressiveHoldBand();
-      }
+      while (highestHoldY - cameraY < canvas.height + 200) spawnProgressiveHoldBand();
 
       for (let i = rockParticles.length - 1; i >= 0; i--) {
         const p = rockParticles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= p.decay;
+        p.x += p.vx; p.y += p.vy; p.life -= p.decay;
         if (p.life <= 0) rockParticles.splice(i, 1);
       }
 
-      // Update HUD elements
+      updateHud(angle);
+    }
+
+    function updateHud(angle) {
       const gripPct = Math.max(0, Math.floor(climber.grip));
       document.getElementById('hudGripPct').innerText = `${gripPct}%`;
       const fillBar = document.getElementById('hudGripBar');
       fillBar.style.width = `${gripPct}%`;
-
-      if (gripPct < 25) {
-        fillBar.className = 'h-full bg-red-600 w-full animate-pulse';
-      } else if (gripPct < 55) {
-        fillBar.className = 'h-full bg-yellow-400 w-full';
-      } else {
-        fillBar.className = 'h-full bg-emerald-400 w-full';
-      }
+      fillBar.className = gripPct < 25 ? 'h-full bg-red-600 animate-pulse' : gripPct < 55 ? 'h-full bg-yellow-400' : 'h-full bg-emerald-400';
+      document.getElementById('hudGripCeiling').style.width = `${(100 - climber.maxGrip).toFixed(1)}%`;
+      document.getElementById('hudHoldStatus').innerText = climber.holdStatusText || '🟢 READY';
 
       const pitch = getPitchDifficulty(climber.altitude);
       document.getElementById('hudGradeTag').innerText = pitch.grade;
       document.getElementById('hudAltitude').innerText = `${climber.altitude.toFixed(1)}m`;
       document.getElementById('hudScore').innerText = climber.score.toString().padStart(4, '0');
+      document.getElementById('hudWallAngle').innerText = angleLabel(angle);
+
+      const feet = feetCount();
+      const feetEl = document.getElementById('hudFeet');
+      feetEl.innerText = feet === 2 ? 'FEET ✓✓' : feet === 1 ? 'FEET ✓·' : 'FEET CUT';
+      feetEl.className = feet === 2 ? 'text-emerald-300' : feet === 1 ? 'text-amber-300' : 'text-red-400 font-bold';
+      const fric = Math.round(totalFriction() * 100);
+      const fricEl = document.getElementById('hudFriction');
+      fricEl.innerText = `FRIC ${fric}%`;
+      fricEl.className = fric < 80 ? 'text-red-400' : fric < 92 ? 'text-amber-300' : 'text-gray-300';
+
+      // Rope / runout
+      const runout = (climber.y - lastClipY) / METER;
+      const ropeOut = Math.max(0, climber.y - pitchBaseY);
+      const fall = (runout > 0 ? 2 * runout : 0) + 1 + 0.08 * ropeOut / METER;
+      const groundRisk = pitchBaseY === 0 && climber.y > METER * 2.5 && climber.y - fall * METER < 20;
+      const runEl = document.getElementById('hudRunout');
+      if (groundRisk) { runEl.innerText = '⚠️ GROUND-FALL ZONE'; runEl.className = 'text-[6px] text-red-400 font-bold animate-pulse'; }
+      else if (runout <= 0.3) { runEl.innerText = 'CLIPPED ✓'; runEl.className = 'text-[6px] text-emerald-300 font-bold'; }
+      else {
+        runEl.innerText = `↑${runout.toFixed(1)}m • FALL ${fall.toFixed(1)}m`;
+        runEl.className = 'text-[6px] font-bold ' + (runout < 2 ? 'text-emerald-300' : runout < 4 ? 'text-amber-300' : 'text-red-400 animate-pulse');
+      }
+      const styleEl = document.getElementById('hudStyle');
+      styleEl.innerText = climber.style;
+      styleEl.className = climber.style === 'HANGDOG' ? 'text-red-300' : climber.style === 'REDPOINT' ? 'text-amber-300' : 'text-emerald-300';
 
       const flowText = document.getElementById('hudFlowMultiplier');
       const flowBox = document.getElementById('flowBox');
@@ -2279,232 +2549,312 @@
         flowBox.classList.remove('flow-active');
       }
 
-      const cdText = document.getElementById('chalkCdText');
-      if (climber.chalkCooldown > 0) {
-        cdText.innerText = `${(climber.chalkCooldown / 60).toFixed(1)}s`;
-      } else {
-        cdText.innerText = 'RDY';
-      }
+      document.getElementById('chalkCdText').innerText = climber.chalkTimer > 0 ? '...' : climber.chalkCooldown > 0 ? `${(climber.chalkCooldown / 60).toFixed(1)}s` : 'RDY';
+      document.getElementById('screamText').innerText = climber.screamCooldown > 0 ? `${Math.ceil(climber.screamCooldown / 60)}s` : 'TRY';
 
-      const screamBtnText = document.getElementById('screamText');
-      if (climber.screamCooldown > 0) {
-        screamBtnText.innerText = `${Math.ceil(climber.screamCooldown / 60)}s`;
-      } else {
-        screamBtnText.innerText = 'SCREAM';
+      const clipBtn = document.getElementById('clipBtn');
+      const clipTxt = document.getElementById('clipBtnText');
+      const canClip = gameState === STATES.PLAYING && !climber.falling && !climber.hanging && getClippableBolt();
+      if (climber.clipTimer > 0) { clipTxt.innerText = 'CLIPPING'; clipBtn.className = 'px-1.5 py-1 bg-yellow-700 text-yellow-100 border border-yellow-400 rounded text-[6px] flex items-center gap-0.5'; }
+      else if (canClip) { clipTxt.innerText = 'CLIP!'; clipBtn.className = 'px-1.5 py-1 bg-yellow-400 text-black font-bold border border-white rounded text-[6px] flex items-center gap-0.5 animate-pulse'; }
+      else { clipTxt.innerText = 'CLIP'; clipBtn.className = 'px-1.5 py-1 bg-gray-800 text-gray-500 border border-gray-600 rounded text-[6px] flex items-center gap-0.5'; }
+
+      const shakeBtn = document.getElementById('shakeoutBtn');
+      shakeBtn.classList.toggle('animate-pulse', climber.isShaking);
+    }
+
+    /* ---------------- RENDERING ---------------- */
+    const HOLD_COLORS = {
+      jug: ['#064e3b', '#10b981', '#ecfdf5'],
+      pocket: ['#083344', '#06b6d4', '#e0f2fe'],
+      crimp: ['#451a03', '#f59e0b', '#fef3c7'],
+      micro_crimp: ['#881337', '#f43f5e', '#ffffff'],
+      sloper: ['#7c2d12', '#ea580c', 'rgba(255,255,255,0.4)'],
+      choss: ['#450a0a', '#dc2626', '#fef08a'],
+      pink_one: ['#831843', '#ec4899', '#fdf2f8']
+    };
+
+    function holdPalette(type) {
+      if (!realRockMode || type.id === 'pink_one') return HOLD_COLORS[type.id];
+      return [currentCrag.crackColor, currentCrag.accentRock, 'rgba(255,255,255,0.55)'];
+    }
+
+    function drawHold(h, x, y, active) {
+      const [d, m, hi] = holdPalette(h.type);
+      const ring = realRockMode ? 'rgba(255,255,255,0.85)' : h.type.colorHex;
+      ctx.lineWidth = 2;
+      switch (h.type.id) {
+        case 'jug':
+          ctx.fillStyle = d; ctx.fillRect(x - 9, y + 3, 18, 5);
+          ctx.fillStyle = m; ctx.fillRect(x - 8, y - 3, 16, 6);
+          ctx.fillStyle = hi; ctx.fillRect(x - 7, y - 4, 14, 2);
+          if (active) { ctx.strokeStyle = ring; ctx.strokeRect(x - 10, y - 6, 20, 14); }
+          break;
+        case 'pocket':
+          ctx.fillStyle = m; ctx.beginPath(); ctx.ellipse(x, y, 8, 5.5, 0, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = d; ctx.beginPath(); ctx.ellipse(x, y + 1, 5.5, 3.2, 0, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = hi; ctx.fillRect(x - 3, y - 4.5, 6, 1.2);
+          if (active) { ctx.strokeStyle = ring; ctx.strokeRect(x - 9, y - 6, 18, 13); }
+          break;
+        case 'crimp':
+          ctx.fillStyle = d; ctx.fillRect(x - 7, y + 2, 14, 3.5);
+          ctx.fillStyle = m; ctx.fillRect(x - 6, y - 2, 12, 4);
+          ctx.fillStyle = hi; ctx.fillRect(x - 5, y - 3, 10, 1.5);
+          if (active) { ctx.strokeStyle = ring; ctx.strokeRect(x - 8, y - 5, 16, 10); }
+          break;
+        case 'micro_crimp':
+          ctx.fillStyle = d; ctx.fillRect(x - 5, y + 1, 10, 2.5);
+          ctx.fillStyle = m; ctx.fillRect(x - 4, y - 1.5, 8, 2.5);
+          ctx.fillStyle = hi; ctx.fillRect(x - 3, y - 2.5, 6, 1);
+          if (active) { ctx.strokeStyle = ring; ctx.strokeRect(x - 6, y - 5, 12, 9); }
+          break;
+        case 'sloper':
+          ctx.fillStyle = d; ctx.beginPath(); ctx.arc(x, y + 2, 9, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = m; ctx.beginPath(); ctx.arc(x, y - 1, 8, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = hi; ctx.fillRect(x - 4, y - 5, 8, 2);
+          if (active) { ctx.strokeStyle = ring; ctx.strokeRect(x - 10, y - 9, 20, 18); }
+          break;
+        case 'choss':
+          ctx.fillStyle = d; ctx.fillRect(x - 8, y + 2, 16, 4.5);
+          ctx.fillStyle = m; ctx.fillRect(x - 7, y - 3, 14, 5.5);
+          ctx.strokeStyle = h.crumbTimer > 0 ? '#fef08a' : (realRockMode ? currentCrag.darkRock : '#7f1d1d');
+          ctx.lineWidth = 1.2;
+          ctx.beginPath(); ctx.moveTo(x - 5, y - 1); ctx.lineTo(x, y + 1); ctx.lineTo(x + 5, y - 2); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x - 8, y - 3); ctx.lineTo(x - 6, y + 2); ctx.stroke();
+          ctx.lineWidth = 2;
+          if (active) { ctx.strokeStyle = ring; ctx.strokeRect(x - 9, y - 5, 18, 12); }
+          break;
+        case 'pink_one':
+          ctx.fillStyle = d; ctx.fillRect(x - 10, y + 2, 20, 6);
+          ctx.fillStyle = m; ctx.fillRect(x - 9, y - 4, 18, 6);
+          ctx.fillStyle = hi; ctx.fillRect(x - 8, y - 5, 16, 2);
+          if (active) { ctx.strokeStyle = '#f472b6'; ctx.strokeRect(x - 11, y - 7, 22, 16); }
+          break;
       }
     }
 
+    const toScreenY = wy => canvas.height - (wy - cameraY);
+
     function renderRockFace() {
+      const pitch = getPitchDifficulty(Math.max(climber.altitude, (cameraY + canvas.height * 0.5) / METER));
+      const angle = wallAngleAt(pitch);
       ctx.fillStyle = currentCrag.baseRock;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+      if (angle > 0) { ctx.fillStyle = `rgba(0,0,0,${Math.min(0.4, angle / 150)})`; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+      else if (angle < 0) { ctx.fillStyle = `rgba(255,255,255,${Math.min(0.12, -angle / 120)})`; ctx.fillRect(0, 0, canvas.width, canvas.height); }
 
-      // Render crag geological fissures & rock layers
+      // Cracks tile vertically so the wall never runs out of texture
+      const P = 55 * 36;
       rockCracks.forEach(cr => {
-        const sy = canvas.height - (cr.y - cameraY);
-        if (sy < -40 || sy > canvas.height + 40) return;
-
+        const rel = ((cr.y - cameraY) % P + P) % P;
+        const sy = canvas.height - rel;
+        if (sy < -60 || sy > canvas.height + 40) return;
         if (cr.isPebble) {
           ctx.fillStyle = currentCrag.pebbleColor;
-          ctx.beginPath();
-          ctx.ellipse(cr.x, sy, 7, 5, 0.4, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.beginPath(); ctx.ellipse(cr.x, sy, 7, 5, 0.4, 0, Math.PI * 2); ctx.fill();
         } else {
-          ctx.strokeStyle = cr.color;
-          ctx.lineWidth = cr.width;
-          ctx.beginPath();
-          ctx.moveTo(cr.x, sy);
-          ctx.lineTo(cr.x + cr.length * cr.angle, sy + cr.length);
-          ctx.stroke();
+          ctx.strokeStyle = cr.color; ctx.lineWidth = cr.width;
+          ctx.beginPath(); ctx.moveTo(cr.x, sy); ctx.lineTo(cr.x + cr.length * cr.angle, sy - cr.length); ctx.stroke();
         }
       });
 
-      // Side pillars
       ctx.fillStyle = currentCrag.darkRock;
       ctx.fillRect(0, 0, 14, canvas.height);
       ctx.fillRect(canvas.width - 14, 0, 14, canvas.height);
 
-      // Collectibles
-      collectibles.forEach(item => {
-        if (item.collected) return;
-        const sy = canvas.height - (item.y - cameraY);
-        if (sy < -20 || sy > canvas.height + 20) return;
+      // Ground & belayer
+      const gy = toScreenY(0);
+      if (gy < canvas.height + 10) {
+        ctx.fillStyle = '#292524'; ctx.fillRect(0, gy, canvas.width, canvas.height - gy);
+        ctx.fillStyle = '#3f6212'; ctx.fillRect(0, gy, canvas.width, 3);
+        const bx = canvas.width * 0.5 - 34;
+        drawHumanSprite(ctx, bx, gy - 14, '#38bdf8', '#334155', '#fed7aa', '#1c1917');
+      }
 
-        ctx.font = '12px sans-serif';
-        ctx.textAlign = 'center';
-        if (item.type === 'FLOWER') {
-          ctx.fillText('🌸', item.x, sy);
-        } else if (item.type === 'GUMMY') {
-          ctx.fillText('🐻', item.x, sy);
-        } else if (item.type === 'CAM') {
-          ctx.fillText('🔩', item.x, sy);
-        } else {
-          ctx.fillStyle = '#facc15';
-          ctx.fillRect(item.x - 3, sy - 5, 6, 9);
-          ctx.fillStyle = '#0f172a';
-          ctx.fillRect(item.x - 1.5, sy - 3.5, 3, 6);
+      // Pitch boundaries / anchors
+      for (let i = 1; i < GRADE_TABLE.length; i++) {
+        const sy = toScreenY(GRADE_TABLE[i].minAlt * METER);
+        if (sy < -20 || sy > canvas.height + 20) continue;
+        ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 1; ctx.setLineDash([3, 5]);
+        ctx.beginPath(); ctx.moveTo(14, sy); ctx.lineTo(canvas.width - 14, sy); ctx.stroke(); ctx.setLineDash([]);
+        ctx.font = '6px monospace'; ctx.textAlign = 'left'; ctx.fillStyle = 'rgba(255,255,255,0.75)';
+        ctx.fillText(`P${i + 1} ${GRADE_TABLE[i].grade} • ${angleLabel(wallAngleAt(GRADE_TABLE[i]))}`, 18, sy - 3);
+      }
+
+      // Foot chips
+      footChips.forEach(c => {
+        const sy = toScreenY(c.y);
+        if (sy < -10 || sy > canvas.height + 10) return;
+        ctx.fillStyle = currentCrag.crackColor; ctx.fillRect(c.x - 3, sy + 1, 6, 2);
+        ctx.fillStyle = currentCrag.accentRock; ctx.fillRect(c.x - 2.5, sy - 1, 5, 2);
+      });
+
+      // Bolts
+      const nextClip = gameState === STATES.PLAYING ? getClippableBolt() : null;
+      bolts.forEach(b => {
+        const sy = toScreenY(b.y);
+        if (sy < -20 || sy > canvas.height + 20) return;
+        ctx.strokeStyle = '#d1d5db'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(b.x, sy, 3, 0, Math.PI * 2); ctx.stroke();
+        if (b.clipped) {
+          ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(b.x, sy + 3); ctx.lineTo(b.x, sy + 11); ctx.stroke();
+          ctx.strokeStyle = '#e5e7eb'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.ellipse(b.x, sy + 13, 2, 3, 0, 0, Math.PI * 2); ctx.stroke();
+        } else if (b === nextClip) {
+          ctx.strokeStyle = `rgba(250,204,21,${0.5 + 0.5 * Math.sin(climber.animTick * 0.2)})`; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(b.x, sy, 9, 0, Math.PI * 2); ctx.stroke();
+        } else if (gameState === STATES.BETA_INSPECT || isBetaView) {
+          ctx.font = '5px monospace'; ctx.fillStyle = '#e5e7eb'; ctx.textAlign = 'center';
+          ctx.fillText('BOLT', b.x, sy + 10);
         }
       });
 
-      // Render Geological Holds
+      // Collectibles
+      collectibles.forEach(item => {
+        if (item.collected) return;
+        const sy = toScreenY(item.y);
+        if (sy < -20 || sy > canvas.height + 20) return;
+        ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+        if (item.type === 'FLOWER') ctx.fillText('🌸', item.x, sy);
+        else if (item.type === 'GUMMY') ctx.fillText('🐻', item.x, sy);
+        else if (item.type === 'CAM') ctx.fillText('🔩', item.x, sy);
+        else {
+          ctx.fillStyle = '#facc15'; ctx.fillRect(item.x - 3, sy - 5, 6, 9);
+          ctx.fillStyle = '#0f172a'; ctx.fillRect(item.x - 1.5, sy - 3.5, 3, 6);
+        }
+      });
+
+      // Holds
+      const reading = isBetaView || gameState === STATES.BETA_INSPECT;
       rockHolds.forEach(h => {
         if (h.crumbled) return;
-        const sy = canvas.height - (h.y - cameraY);
+        const sy = toScreenY(h.y);
         if (sy < -30 || sy > canvas.height + 30) return;
+        const reach = gameState === STATES.PLAYING ? getReachInfo(h) : { reachable: false };
+        drawHold(h, h.x, sy, reach.reachable);
 
-        const reach = getReachInfo(h);
-        h.type.draw(ctx, h.x, sy, reach.reachable, h.crumbTimer);
-
-        if (reach.reachable && !reach.isDyno && gameState === STATES.PLAYING) {
-          ctx.strokeStyle = h.type.colorHex;
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.arc(h.x, sy, 16, 0, Math.PI * 2);
-          ctx.stroke();
-
-          ctx.fillStyle = climber.activeHandToggle === 0 ? '#22d3ee' : '#f59e0b';
-          ctx.beginPath();
-          ctx.arc(h.x, sy - 14, 3, 0, Math.PI * 2);
-          ctx.fill();
-        } else if (reach.reachable && reach.isDyno && gameState === STATES.PLAYING) {
-          ctx.strokeStyle = 'rgba(245, 158, 11, 0.85)';
-          ctx.lineWidth = 1.5;
-          ctx.setLineDash([4, 4]);
-          ctx.beginPath();
-          ctx.arc(h.x, sy, 19, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.setLineDash([]);
-
-          ctx.font = '6px monospace';
-          ctx.fillStyle = '#f59e0b';
-          ctx.textAlign = 'center';
-          ctx.fillText('DYNO', h.x, sy - 13);
+        if (gameState === STATES.PLAYING && reach.reachable && !climber.falling && !climber.hanging) {
+          const ringCol = realRockMode ? 'rgba(255,255,255,0.7)' : h.type.colorHex;
+          if (!reach.isDyno) {
+            ctx.strokeStyle = ringCol; ctx.lineWidth = 1.2;
+            ctx.beginPath(); ctx.arc(h.x, sy, 16, 0, Math.PI * 2); ctx.stroke();
+          } else {
+            const p = dynoChance(h, reach.dist, climber.grip, feetCount());
+            ctx.strokeStyle = 'rgba(245, 158, 11, 0.85)'; ctx.lineWidth = 1.2; ctx.setLineDash([4, 4]);
+            ctx.beginPath(); ctx.arc(h.x, sy, 19, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+            ctx.font = '6px monospace'; ctx.fillStyle = p < 0.5 ? '#f87171' : '#fbbf24'; ctx.textAlign = 'center';
+            ctx.fillText(`DYNO ${Math.round(p * 100)}%`, h.x, sy - 13);
+          }
         }
-
-        // Annotations during Beta Reading or Inspection
-        if ((isBetaView || gameState === STATES.BETA_INSPECT) && sy > 30 && sy < canvas.height - 30) {
-          ctx.font = '5.5px monospace';
-          ctx.fillStyle = h.type.colorHex;
-          ctx.textAlign = 'center';
+        if (reading && !realRockMode && sy > 30 && sy < canvas.height - 30) {
+          ctx.font = '5.5px monospace'; ctx.fillStyle = h.type.colorHex; ctx.textAlign = 'center';
           ctx.fillText(h.type.tag.split(' ')[0], h.x, sy + 13);
         }
       });
 
-      // Ambient Crag Surprises
+      renderPlanOverlay();
+
       ambientCreatures.forEach(c => {
-        const sy = canvas.height - (c.y - cameraY);
+        const sy = toScreenY(c.y);
         if (sy < -30 || sy > canvas.height + 30) return;
-        ctx.font = '14px sans-serif';
-        ctx.textAlign = 'center';
-        if (c.type === 'EAGLE') ctx.fillText('🦅', c.x, sy);
-        else if (c.type === 'SWALLOW') ctx.fillText('🕊️', c.x, sy);
-        else if (c.type === 'GOAT') ctx.fillText('🐐', c.x, sy);
-        else if (c.type === 'BELL') ctx.fillText('🔔', c.x, sy);
-        else if (c.type === 'CAMPERVAN') ctx.fillText('🚐', c.x, sy);
-        else if (c.type === 'AURORA') ctx.fillText('🌌', c.x, sy);
-        else if (c.type === 'CONDOR') ctx.fillText('🦅', c.x, sy);
+        const icons = { EAGLE: '🦅', SWALLOW: '🕊️', GOAT: '🐐', BELL: '🔔', CAMPERVAN: '🚐', AURORA: '🌌', CONDOR: '🦅', RACOON: '🦝', SQUIRREL: '🐿️' };
+        ctx.font = '14px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(icons[c.type] || '🦅', c.x, sy);
       });
+    }
+
+    function renderPlanOverlay() {
+      if (!betaPlan.length || gameState === STATES.TITLE) return;
+      const inPlay = gameState === STATES.PLAYING;
+      const { segs } = simulatePlan(inPlay ? planNextIdx : 0);
+      segs.forEach((s, n) => {
+        const fy = toScreenY(s.fromY), ty = toScreenY(s.hold.y);
+        if ((fy < -40 && ty < -40) || (fy > canvas.height + 40 && ty > canvas.height + 40)) return;
+        const col = s.kind === 'invalid' ? '#ef4444' : s.kind === 'dyno' ? '#f59e0b' : '#34d399';
+        ctx.globalAlpha = inPlay && n > 2 ? 0.45 : 0.9;
+        ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+        if (s.kind !== 'static') ctx.setLineDash([4, 3]);
+        ctx.beginPath(); ctx.moveTo(s.fromX, fy); ctx.lineTo(s.hold.x, ty); ctx.stroke();
+        ctx.setLineDash([]);
+        if (s.cross) {
+          const mx = (s.fromX + s.hold.x) / 2, my = (fy + ty) / 2;
+          ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(mx - 4, my - 4); ctx.lineTo(mx + 4, my + 4); ctx.moveTo(mx + 4, my - 4); ctx.lineTo(mx - 4, my + 4); ctx.stroke();
+        }
+        // Badge: move number + hand
+        const bx = s.hold.x + 13, by = ty - 10;
+        ctx.fillStyle = s.hand === 'L' ? '#0891b2' : '#d97706';
+        ctx.fillRect(bx - 7, by - 5, 15, 9);
+        ctx.fillStyle = '#000'; ctx.font = 'bold 6px monospace'; ctx.textAlign = 'center';
+        ctx.fillText(`${s.idx + 1}${s.hand}`, bx + 0.5, by + 2);
+        if (s.kind === 'dyno') { ctx.fillStyle = '#fbbf24'; ctx.font = '5px monospace'; ctx.fillText(`${Math.round(s.pct * 100)}%`, bx, by + 10); }
+        if (inPlay && n === 0) {
+          ctx.strokeStyle = `rgba(255,255,255,${0.5 + 0.5 * Math.sin(climber.animTick * 0.18)})`; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(s.hold.x, ty, 21, 0, Math.PI * 2); ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+      });
+    }
+
+    function renderRope() {
+      if (gameState === STATES.TITLE) return;
+      const pts = [];
+      if (pitchBaseY === 0) pts.push({ x: canvas.width * 0.5 - 30, y: 12 });
+      else pts.push({ x: canvas.width * 0.5, y: pitchBaseY });
+      bolts.filter(b => b.clipped && b.y > pitchBaseY && b.y <= Math.max(climber.y, lastClipY) + 1)
+        .sort((a, b) => a.y - b.y).forEach(b => pts.push({ x: b.x, y: b.y - 13 / 1 }));
+      pts.push({ x: climber.x, y: climber.y - 8 });
+      ctx.strokeStyle = '#e11d48'; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      pts.forEach((p, i) => { const sy = toScreenY(p.y); if (i === 0) ctx.moveTo(p.x, sy); else ctx.lineTo(p.x, sy); });
+      ctx.stroke();
     }
 
     function renderClimberKinematics() {
       if (gameState === STATES.TITLE) return;
-
-      const bodyScreenX = climber.x;
-      const bodyScreenY = canvas.height - (climber.y - cameraY);
-
-      const lhX = climber.leftHand.x;
-      const lhY = canvas.height - (climber.leftHand.y - cameraY);
-      const rhX = climber.rightHand.x;
-      const rhY = canvas.height - (climber.rightHand.y - cameraY);
-
-      const lfX = climber.leftFoot.x;
-      const lfY = canvas.height - (climber.leftFoot.y - cameraY);
-      const rfX = climber.rightFoot.x;
-      const rfY = canvas.height - (climber.rightFoot.y - cameraY);
+      const bx = climber.x, by = toScreenY(climber.y);
+      const lhX = climber.leftHand.x, lhY = toScreenY(climber.leftHand.y);
+      const rhX = climber.rightHand.x, rhY = toScreenY(climber.rightHand.y);
+      const lfX = climber.leftFoot.x, lfY = toScreenY(climber.leftFoot.y);
+      const rfX = climber.rightFoot.x, rfY = toScreenY(climber.rightFoot.y);
 
       ctx.lineWidth = 3;
-
-      // Left Arm
       ctx.strokeStyle = currentChar.skinColor;
-      ctx.beginPath();
-      ctx.moveTo(bodyScreenX - 5, bodyScreenY - 6);
-      ctx.lineTo((bodyScreenX - 5 + lhX) / 2 - 3, (bodyScreenY - 6 + lhY) / 2);
-      ctx.lineTo(lhX, lhY);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(bx - 5, by - 6); ctx.lineTo((bx - 5 + lhX) / 2 - 3, (by - 6 + lhY) / 2); ctx.lineTo(lhX, lhY); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(bx + 5, by - 6); ctx.lineTo((bx + 5 + rhX) / 2 + 3, (by - 6 + rhY) / 2); ctx.lineTo(rhX, rhY); ctx.stroke();
 
-      // Right Arm
-      ctx.beginPath();
-      ctx.moveTo(bodyScreenX + 5, bodyScreenY - 6);
-      ctx.lineTo((bodyScreenX + 5 + rhX) / 2 + 3, (bodyScreenY - 6 + rhY) / 2);
-      ctx.lineTo(rhX, rhY);
-      ctx.stroke();
-
-      // Left Leg
       ctx.strokeStyle = currentChar.pantsColor;
-      ctx.beginPath();
-      ctx.moveTo(bodyScreenX - 4, bodyScreenY + 10);
-      ctx.lineTo((bodyScreenX - 4 + lfX) / 2 - 4, (bodyScreenY + 10 + lfY) / 2);
-      ctx.lineTo(lfX, lfY);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(bx - 4, by + 10); ctx.lineTo((bx - 4 + lfX) / 2 - 4, (by + 10 + lfY) / 2); ctx.lineTo(lfX, lfY); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(bx + 4, by + 10); ctx.lineTo((bx + 4 + rfX) / 2 + 4, (by + 10 + rfY) / 2); ctx.lineTo(rfX, rfY); ctx.stroke();
 
-      // Right Leg
-      ctx.beginPath();
-      ctx.moveTo(bodyScreenX + 4, bodyScreenY + 10);
-      ctx.lineTo((bodyScreenX + 4 + rfX) / 2 + 4, (bodyScreenY + 10 + rfY) / 2);
-      ctx.lineTo(rfX, rfY);
-      ctx.stroke();
+      ctx.fillStyle = currentChar.shirtColor; ctx.fillRect(bx - 6, by - 8, 12, 16);
+      ctx.fillStyle = currentChar.pantsColor; ctx.fillRect(bx - 6, by + 6, 12, 6);
+      ctx.fillStyle = currentChar.skinColor; ctx.fillRect(bx - 4, by - 17, 8, 8);
+      ctx.fillStyle = '#451a03'; ctx.fillRect(bx - 4, by - 19, 8, 3);
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(bx - 2.5, by + 5, 5, 4);
 
-      // Torso & Pants
-      ctx.fillStyle = currentChar.shirtColor;
-      ctx.fillRect(bodyScreenX - 6, bodyScreenY - 8, 12, 16);
+      // Shoes: bright when standing on something, dim when cut loose
+      ctx.fillStyle = climber.leftFoot.on ? '#f97316' : '#7c2d12'; ctx.fillRect(lfX - 3, lfY - 2, 6, 4);
+      ctx.fillStyle = climber.rightFoot.on ? '#f97316' : '#7c2d12'; ctx.fillRect(rfX - 3, rfY - 2, 6, 4);
 
-      ctx.fillStyle = currentChar.pantsColor;
-      ctx.fillRect(bodyScreenX - 6, bodyScreenY + 6, 12, 6);
+      ctx.fillStyle = '#22d3ee'; ctx.fillRect(lhX - 2.5, lhY - 2.5, 5, 5);
+      ctx.fillStyle = '#f59e0b'; ctx.fillRect(rhX - 2.5, rhY - 2.5, 5, 5);
 
-      // Head & Hair
-      ctx.fillStyle = currentChar.skinColor;
-      ctx.fillRect(bodyScreenX - 4, bodyScreenY - 17, 8, 8);
-
-      ctx.fillStyle = '#451a03';
-      ctx.fillRect(bodyScreenX - 4, bodyScreenY - 19, 8, 3);
-
-      // Chalk bag
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(bodyScreenX - 2.5, bodyScreenY + 5, 5, 4);
-
-      // Shoes
-      ctx.fillStyle = '#f97316';
-      ctx.fillRect(lfX - 3, lfY - 2, 6, 4);
-      ctx.fillRect(rfX - 3, rfY - 2, 6, 4);
-
-      // Hands
-      ctx.fillStyle = '#22d3ee';
-      ctx.fillRect(lhX - 2.5, lhY - 2.5, 5, 5);
-      ctx.fillStyle = '#f59e0b';
-      ctx.fillRect(rhX - 2.5, rhY - 2.5, 5, 5);
-
-      // Master Wukong visual aura
       if (currentChar.id === 'wukong') {
         ctx.fillStyle = 'rgba(254, 240, 138, 0.45)';
-        ctx.beginPath();
-        ctx.arc(bodyScreenX, bodyScreenY + 14, 12, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(bx, by + 14, 12, 0, Math.PI * 2); ctx.fill();
       }
-
-      // Adam Ondra scream blast ring
       if (climber.screamDuration > 0) {
-        ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(bodyScreenX, bodyScreenY - 12, (180 - climber.screamDuration) % 25 + 10, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(bx, by - 12, (180 - climber.screamDuration) % 25 + 10, 0, Math.PI * 2); ctx.stroke();
       }
     }
 
     function renderParticles() {
       rockParticles.forEach(p => {
-        const sy = canvas.height - (p.y - cameraY);
         ctx.fillStyle = p.color;
-        ctx.fillRect(p.x, sy, p.size, p.size);
+        ctx.fillRect(p.x, toScreenY(p.y), p.size, p.size);
       });
     }
 
@@ -2512,106 +2862,136 @@
       updatePhysics();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       renderRockFace();
+      renderRope();
       renderClimberKinematics();
       renderParticles();
       requestAnimationFrame(gameLoop);
     }
 
-    canvas.addEventListener('pointerdown', (e) => {
-      if (gameState !== STATES.PLAYING) return;
+    /* ---------------- INPUT ---------------- */
+    function closestHold(clientX, clientY, maxDist) {
       const rect = canvas.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const clickY = e.clientY - rect.top;
-
-      const worldY = (canvas.height - clickY) + cameraY;
-      const worldX = clickX;
-
-      let closest = null;
-      let minDist = 58;
-
+      const wx = clientX - rect.left;
+      const wy = (canvas.height - (clientY - rect.top)) + cameraY;
+      let closest = null, minDist = maxDist;
       rockHolds.forEach(h => {
-        const d = Math.hypot(h.x - worldX, h.y - worldY);
-        if (d < minDist) {
-          minDist = d;
-          closest = h;
-        }
+        if (h.crumbled) return;
+        const d = Math.hypot(h.x - wx, h.y - wy);
+        if (d < minDist) { minDist = d; closest = h; }
       });
+      return closest;
+    }
 
-      if (closest) {
-        attemptGrabHold(closest);
-      } else {
-        sound.init();
+    let drag = null;
+    canvas.addEventListener('pointerdown', (e) => {
+      if (gameState === STATES.PLAYING) {
+        const h = closestHold(e.clientX, e.clientY, 58);
+        if (h) attemptGrabHold(h); else sound.init();
+      } else if (gameState === STATES.BETA_INSPECT) {
+        drag = { y0: e.clientY, off0: betaPanOffset, moved: false };
+        try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
       }
     });
+    canvas.addEventListener('pointermove', (e) => {
+      if (!drag || gameState !== STATES.BETA_INSPECT) return;
+      const dy = e.clientY - drag.y0;
+      if (Math.abs(dy) > 8) drag.moved = true;
+      if (drag.moved) betaPanOffset = clamp(drag.off0 + dy, 0, 1000);
+    });
+    canvas.addEventListener('pointerup', (e) => {
+      if (drag && !drag.moved && gameState === STATES.BETA_INSPECT) {
+        sound.init();
+        const h = closestHold(e.clientX, e.clientY, 34);
+        if (h) addHoldToPlan(h);
+      }
+      drag = null;
+    });
+    canvas.addEventListener('pointercancel', () => { drag = null; });
 
     const betaBtn = document.getElementById('toggleBetaViewBtn');
     betaBtn.addEventListener('click', () => {
+      if (gameState !== STATES.PLAYING) return;
       isBetaView = !isBetaView;
       const btnText = document.getElementById('betaViewBtnText');
       if (isBetaView) {
-        betaBtn.className = 'px-2 py-1 bg-cyan-600 text-black font-bold border border-white rounded text-[6px] flex items-center gap-0.5';
+        betaBtn.className = 'px-1.5 py-1 bg-cyan-600 text-black font-bold border border-white rounded text-[6px] flex items-center gap-0.5';
         btnText.innerText = 'EXIT';
-        showHoldFeedbackToast('👁️ BETA INSPECTION: PANNED 15m AHEAD');
+        showHoldFeedbackToast('👁️ Looking up 6m — you are still hanging on, pump keeps ticking!');
       } else {
-        betaBtn.className = 'px-2 py-1 bg-[#132235] active:scale-95 text-cyan-300 border border-cyan-500 rounded text-[6px] flex items-center gap-0.5';
+        betaBtn.className = 'px-1.5 py-1 bg-[#132235] active:scale-95 text-cyan-300 border border-cyan-500 rounded text-[6px] flex items-center gap-0.5';
         btnText.innerText = 'BETA';
       }
       sound.playGrabStone();
     });
 
     document.getElementById('emergencyCatchBtn').addEventListener('click', () => {
-      let bestHold = null;
-      let minDist = 180;
+      if (!climber.isSlipping) return;
+      const held = [climber.leftHand.hold?.id, climber.rightHand.hold?.id];
+      let best = null, bd = Infinity;
       rockHolds.forEach(h => {
-        if (!h.crumbled) {
-          const d = Math.hypot(h.x - climber.x, h.y - climber.y);
-          if (d < minDist) {
-            minDist = d;
-            bestHold = h;
-          }
-        }
+        if (h.crumbled || held.includes(h.id) || !(h.type.rest || h.type.semiRest)) return;
+        const r = getReachInfo(h);
+        if (r.reachable && !r.isDyno && r.dist < bd) { bd = r.dist; best = h; }
       });
-      recoverFromSlip(bestHold);
+      if (best) recoverFromSlip(best);
+      else showHoldFeedbackToast('❌ No jug or pocket within static reach!');
     });
+
+    document.getElementById('clipBtn').addEventListener('click', clipBolt);
+    document.getElementById('shakeoutBtn').addEventListener('click', useShakeoutAction);
+    document.getElementById('chalkQuickBtn').addEventListener('click', useChalkPowder);
+    document.getElementById('ondraScreamBtn').addEventListener('click', useTryHard);
+    document.getElementById('handSelectBtn').addEventListener('click', () => {
+      climber.handOverride = climber.handOverride === null ? 'L' : climber.handOverride === 'L' ? 'R' : null;
+      updateHandIndicatorUI();
+      sound.playGrabStone();
+    });
+    document.getElementById('pullBackOnBtn').addEventListener('click', pullBackOn);
+    document.getElementById('lowerOffBtn').addEventListener('click', () => concludeClimb('LOWER'));
 
     function updateCharacterPreview() {
       previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
       const c = CHARACTERS[charIndex];
       currentChar = c;
-
       document.getElementById('charNameText').innerText = c.name;
       document.getElementById('charPerkText').innerText = c.perk;
       document.getElementById('charBioText').innerText = c.bio;
       document.getElementById('rosterTag').innerText = c.category;
-
       document.getElementById('statStamina').innerText = c.stats.sta;
       document.getElementById('statReach').innerText = c.stats.rch;
-
       c.drawIcon(previewCtx, 20, 20);
     }
 
     document.getElementById('prevCharBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       charIndex = (charIndex - 1 + CHARACTERS.length) % CHARACTERS.length;
-      updateCharacterPreview();
-      sound.playGrabStone();
+      updateCharacterPreview(); sound.playGrabStone();
     });
-
     document.getElementById('nextCharBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       charIndex = (charIndex + 1) % CHARACTERS.length;
-      updateCharacterPreview();
-      sound.playGrabStone();
+      updateCharacterPreview(); sound.playGrabStone();
     });
+    document.getElementById('rerollCragBtn').addEventListener('click', () => { randomizeCragAndAtmosphere(); sound.playGrabStone(); });
 
-    document.getElementById('rerollCragBtn').addEventListener('click', () => {
-      randomizeCragAndAtmosphere();
-      sound.playGrabStone();
+    function updateHoldViewUI() {
+      const btn = document.getElementById('holdViewBtn');
+      const desc = document.getElementById('holdViewDesc');
+      if (realRockMode) {
+        btn.innerText = '🪨 REAL ROCK';
+        btn.className = 'px-1.5 py-1 bg-stone-700 active:bg-stone-600 text-stone-100 border border-stone-400 rounded text-[6px] shrink-0';
+        desc.innerText = 'Read holds by shape only (training)';
+      } else {
+        btn.innerText = '🎨 COLOR-CODED';
+        btn.className = 'px-1.5 py-1 bg-gray-800 active:bg-gray-700 text-amber-300 border border-amber-500 rounded text-[6px] shrink-0';
+        desc.innerText = 'Color-coded by type (learning)';
+      }
+    }
+    document.getElementById('holdViewBtn').addEventListener('click', () => {
+      realRockMode = !realRockMode;
+      lsSet('crag_real_rock', realRockMode ? '1' : '0');
+      updateHoldViewUI(); sound.playGrabStone();
     });
-
-    document.getElementById('shakeoutBtn').addEventListener('click', useShakeoutAction);
-    document.getElementById('chalkQuickBtn').addEventListener('click', useChalkPowder);
-    document.getElementById('ondraScreamBtn').addEventListener('click', useOndraPowerScream);
 
     function populateCragDrawerList() {
       const container = document.getElementById('cragsListGrid');
@@ -2619,16 +2999,17 @@
       CRAGS.forEach(crag => {
         const item = document.createElement('div');
         item.className = 'p-1.5 bg-[#0f172a] hover:bg-cyan-950 border border-cyan-800/60 rounded flex items-center justify-between cursor-pointer transition-all';
+        const steep = CRAG_STEEPNESS[crag.id] || 0;
         item.innerHTML = `
           <div class="flex items-center gap-1.5 truncate max-w-[80%]">
             <span class="text-base">${crag.icon}</span>
             <div class="truncate">
               <span class="text-[7px] text-white font-bold block truncate">${crag.name}</span>
               <span class="text-[5.5px] text-gray-400 block truncate">${crag.desc}</span>
+              <span class="text-[5px] text-sky-300 block">${steep > 0 ? `Steeper +${steep}°` : steep < 0 ? `Less steep ${steep}°` : 'Standard angle'}</span>
             </div>
           </div>
-          <button class="px-1.5 py-0.5 bg-cyan-700 text-black font-bold text-[6px] rounded shrink-0">SELECT</button>
-        `;
+          <button class="px-1.5 py-0.5 bg-cyan-700 text-black font-bold text-[6px] rounded shrink-0">SELECT</button>`;
         item.addEventListener('click', () => selectCragById(crag.id));
         container.appendChild(item);
       });
@@ -2639,7 +3020,6 @@
       document.getElementById('cragDrawerModal').classList.remove('hidden');
       sound.playGrabStone();
     });
-
     document.getElementById('closeCragDrawerBtn').addEventListener('click', () => {
       document.getElementById('cragDrawerModal').classList.add('hidden');
     });
@@ -2647,10 +3027,8 @@
     async function showLeaderboard(filter = 'ALL') {
       const tbody = document.getElementById('leaderboardRows');
       tbody.innerHTML = '<tr><td colspan="5" class="p-2 text-center text-gray-500">Loading ascents...</td></tr>';
-      
       const scores = await storage.getScores();
       let filtered = scores;
-
       if (filter === 'TODAY') {
         const today = new Date().toISOString().substring(0, 10);
         filtered = scores.filter(s => (s.created_at || '').includes(today));
@@ -2658,28 +3036,21 @@
         const myName = (document.getElementById('callsignInput').value || '').trim().toLowerCase();
         filtered = scores.filter(s => myName && (s.name || '').toLowerCase() === myName);
       }
-
       if (filtered.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="p-3 text-center text-gray-500 text-[5.5px]">No ascents logged yet.<br>Claim the First Ascent (FA)!</td></tr>';
         return;
       }
-
       tbody.innerHTML = '';
       filtered.slice(0, 30).forEach((entry, idx) => {
         const tr = document.createElement('tr');
         tr.className = 'border-b border-gray-900 hover:bg-gray-900/50';
-        let medal = `${idx + 1}`;
-        if (idx === 0) medal = '🥇';
-        else if (idx === 1) medal = '🥈';
-        else if (idx === 2) medal = '🥉';
-
+        const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}`;
         tr.innerHTML = `
           <td class="p-1 font-bold text-yellow-400">${medal}</td>
           <td class="p-1 font-bold text-cyan-300 truncate max-w-[85px]">${escapeHtml(entry.name || 'Anonymous')}</td>
           <td class="p-1 text-gray-400 truncate max-w-[70px]">${escapeHtml(entry.location || 'Crag')}</td>
-          <td class="p-1 text-emerald-400">${(entry.height || 0).toFixed(1)}m</td>
-          <td class="p-1 text-right font-bold text-amber-300">${entry.score || 0}</td>
-        `;
+          <td class="p-1 text-emerald-400">${(Number(entry.height) || 0).toFixed(1)}m</td>
+          <td class="p-1 text-right font-bold text-amber-300">${Number(entry.score) || 0}</td>`;
         tbody.appendChild(tr);
       });
     }
@@ -2689,30 +3060,13 @@
     }
 
     const lbModal = document.getElementById('leaderboardModal');
-
-    document.getElementById('showLeaderboardBtn').addEventListener('click', () => {
-      lbModal.classList.remove('hidden');
-      showLeaderboard('ALL');
-      sound.playGrabStone();
-    });
-
-    document.getElementById('gameOverLbBtn').addEventListener('click', () => {
-      lbModal.classList.remove('hidden');
-      showLeaderboard('ALL');
-      sound.playGrabStone();
-    });
-
+    document.getElementById('showLeaderboardBtn').addEventListener('click', () => { lbModal.classList.remove('hidden'); showLeaderboard('ALL'); sound.playGrabStone(); });
+    document.getElementById('gameOverLbBtn').addEventListener('click', () => { lbModal.classList.remove('hidden'); showLeaderboard('ALL'); sound.playGrabStone(); });
     document.getElementById('closeLbBtn').addEventListener('click', () => lbModal.classList.add('hidden'));
-    document.getElementById('refreshLbDataBtn').addEventListener('click', () => {
-      showLeaderboard('ALL');
-      sound.playGrabStone();
-    });
-
+    document.getElementById('refreshLbDataBtn').addEventListener('click', () => { showLeaderboard('ALL'); sound.playGrabStone(); });
     document.querySelectorAll('.lb-filter-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.lb-filter-btn').forEach(b => {
-          b.className = 'lb-filter-btn px-2 py-0.5 bg-gray-800 text-gray-300 hover:bg-gray-700 rounded';
-        });
+        document.querySelectorAll('.lb-filter-btn').forEach(b => { b.className = 'lb-filter-btn px-2 py-0.5 bg-gray-800 text-gray-300 hover:bg-gray-700 rounded'; });
         e.target.className = 'lb-filter-btn px-2 py-0.5 bg-yellow-500 text-black font-bold rounded';
         showLeaderboard(e.target.dataset.filter);
         sound.playGrabStone();
@@ -2720,8 +3074,7 @@
     });
 
     document.getElementById('toggleCrtBtn').addEventListener('click', (e) => {
-      const crt = document.getElementById('crtOverlay');
-      crt.classList.toggle('hidden');
+      document.getElementById('crtOverlay').classList.toggle('hidden');
       e.target.classList.toggle('text-cyan-400');
     });
 
@@ -2735,100 +3088,108 @@
     function validateCallsign() {
       const inputEl = document.getElementById('callsignInput');
       const val = inputEl.value.trim();
-
       if (!val) {
         document.getElementById('nameRequiredWarn').classList.remove('hidden');
         inputEl.focus();
         return false;
       }
-
       document.getElementById('nameRequiredWarn').classList.add('hidden');
       callsign = val;
-      localStorage.setItem('crag_callsign', callsign);
+      lsSet('crag_callsign', callsign);
       return true;
     }
 
+    /* ---------------- SESSION FLOW ---------------- */
     function initClimberState() {
-      climber.grip = 100;
-      climber.sweatFriction = 1.0;
-      climber.chalkCooldown = 0;
-      climber.screamCooldown = 0;
-      climber.screamDuration = 0;
-      climber.isShaking = false;
-      climber.isBarnDoor = false;
-      climber.score = 0;
-      climber.altitude = 0;
-      climber.holdsLatched = 0;
-      climber.flowMultiplier = 1.0;
-      climber.lastMoveTime = 0;
-      climber.falling = false;
-      climber.isSlipping = false;
-      climber.activeHandToggle = 0;
-      currentPitchIndex = 0;
-
+      Object.assign(climber, {
+        grip: 100, maxGrip: 100, sweatFriction: 1.0,
+        moveTimer: 0, movingHand: null, chalkTimer: 0, chalkCooldown: 0, clipTimer: 0, clipBolt: null, clipHigh: false,
+        isShaking: false, screamDuration: 0, screamCooldown: 0, tryHardMove: false,
+        isBarnDoor: false, focusBuffTimer: 0, stillFrames: 0, overGripping: false,
+        gustTimer: 0, gustCooldown: 400,
+        score: 0, altitude: 0, holdsLatched: 0, flowMultiplier: 1.0, lastMoveTime: 0,
+        falling: false, isSlipping: false, hanging: false, bounce: 0, groundFall: false,
+        handOverride: null, shookHere: false, holdStatusText: ''
+      });
+      routeAttempts++;
+      climber.style = routeAttempts > 1 ? 'REDPOINT' : 'ONSIGHT';
+      climber.styleMult = routeAttempts > 1 ? 1.0 : 1.2;
+      resetStats();
       generateInitialCrag();
+      updateFootPlacement();
+      climber.leftFoot.x = climber.leftFoot.tx; climber.leftFoot.y = climber.leftFoot.ty;
+      climber.rightFoot.x = climber.rightFoot.tx; climber.rightFoot.y = climber.rightFoot.ty;
+      ['slipRescueBanner', 'catchPanel', 'gameOverScreen', 'hudBarnDoorWarning'].forEach(id => document.getElementById(id).classList.add('hidden'));
       updateHandIndicatorUI();
     }
 
-    document.getElementById('startWithBetaBtn').addEventListener('click', () => {
+    function enterInspection() {
       if (!validateCallsign()) return;
       sound.init();
       initClimberState();
-
       gameState = STATES.BETA_INSPECT;
-      betaPanOffset = 220; // Pan 25m up the cliff to preview holds!
-
+      betaPanOffset = 60;
       document.getElementById('titleScreen').classList.add('hidden');
       document.getElementById('betaInspectionBanner').classList.remove('hidden');
       document.getElementById('inGameHud').classList.remove('hidden');
+      updatePlanUI();
+      showHoldFeedbackToast(betaPlan.length ? '🗺️ Your previous beta is loaded — refine it!' : '🗺️ Plan from the ground: tap holds in order.');
       sound.playMilestoneFanfare();
-    });
+    }
 
-    document.getElementById('panUpBetaBtn').addEventListener('click', () => {
-      betaPanOffset = Math.min(600, betaPanOffset + 140);
-      sound.playGrabStone();
-    });
+    document.getElementById('startWithBetaBtn').addEventListener('click', enterInspection);
+    document.getElementById('panUpBetaBtn').addEventListener('click', () => { betaPanOffset = Math.min(1000, betaPanOffset + 140); sound.playGrabStone(); });
+    document.getElementById('panDownBetaBtn').addEventListener('click', () => { betaPanOffset = Math.max(0, betaPanOffset - 140); sound.playGrabStone(); });
+    document.getElementById('undoPlanBtn').addEventListener('click', () => { betaPlan.pop(); updatePlanUI(); sound.playChalkPuff(); });
+    document.getElementById('clearPlanBtn').addEventListener('click', () => { betaPlan = []; updatePlanUI(); sound.playChalkPuff(); });
 
     document.getElementById('commitAscentBtn').addEventListener('click', () => {
       betaPanOffset = 0;
       gameState = STATES.PLAYING;
-      climber.focusBuffTimer = 480; // 8 seconds of On-Sight pump resistance buff!
-
+      planNextIdx = 0;
+      stats.planLen = betaPlan.length;
+      climber.focusBuffTimer = betaPlan.length >= 3 ? 480 : 0;
       document.getElementById('betaInspectionBanner').classList.add('hidden');
       sound.playGrabStone();
       sound.startChiptuneLoop();
-      showHoldFeedbackToast('🎯 ON-SIGHT FOCUS: +25% PUMP RESISTANCE FOR 8s!');
+      showHoldFeedbackToast(betaPlan.length >= 3 ? '🎯 Sequence memorized: -20% pump for 8s. Follow the white ring!' : '🧗 Climbing! Clip bolts as you pass them.');
     });
 
     function startDirectClimb() {
       if (!validateCallsign()) return;
       sound.init();
+      betaPlan = [];
       initClimberState();
-
       document.getElementById('titleScreen').classList.add('hidden');
-      document.getElementById('gameOverScreen').classList.add('hidden');
-      document.getElementById('slipRescueBanner').classList.add('hidden');
       document.getElementById('betaInspectionBanner').classList.add('hidden');
       document.getElementById('inGameHud').classList.remove('hidden');
-
       gameState = STATES.PLAYING;
+      showHoldFeedbackToast('🧗 No plan — read as you go. Clip bolts as you pass them!');
       sound.playMilestoneFanfare();
       sound.startChiptuneLoop();
     }
 
     document.getElementById('startClimbBtn').addEventListener('click', startDirectClimb);
     document.getElementById('retryClimbBtn').addEventListener('click', () => {
+      // Same seed + same crag = identical route; keep the plan so it can be refined
+      enterInspection();
+    });
+    document.getElementById('newRouteBtn').addEventListener('click', () => {
       randomizeCragAndAtmosphere();
-      startDirectClimb();
+      enterInspection();
+    });
+    document.getElementById('menuBtn').addEventListener('click', () => {
+      gameState = STATES.TITLE;
+      document.getElementById('gameOverScreen').classList.add('hidden');
+      document.getElementById('titleScreen').classList.remove('hidden');
     });
 
     window.onload = function() {
       resizeViewport();
       randomizeCragAndAtmosphere();
-      if (callsign) {
-        document.getElementById('callsignInput').value = callsign;
-      }
+      if (callsign) document.getElementById('callsignInput').value = callsign;
       updateCharacterPreview();
+      updateHoldViewUI();
       gameLoop();
     };
   </script>
