@@ -8,16 +8,14 @@
   <meta name="theme-color" content="#F7F6F2">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Crect x='7' y='7' width='8' height='8' rx='2' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='7' y='17' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='17' y='17' width='8' height='8' rx='2' fill='%23E2553F'/%3E%3C/svg%3E">
   <!-- Brand fonts load without blocking the page: where Google Fonts is slow or blocked, system fonts show instantly. -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="stylesheet" href="/fonts/fonts.css">
 
   <style>
     /* =================================================================
        FB KIT · tokens + shell (shared by every FREE//BUILDER demo)
        ================================================================= */
     :root {
-      --paper:#F7F6F2; --ink:#17171A; --muted:#6B6A70; --line:#E5E2DA; --accent:#E2553F; --white:#fff; --good:#2F8A5C;
+      --paper:#F7F6F2; --ink:#17171A; --muted:#6B6A70; --line:#E5E2DA; --accent:#E2553F; --accent-ink:#C2412D; --white:#fff; --good:#2F8A5C;
       --st:#E2553F;
       --ease:cubic-bezier(.23,1,.32,1);
       --sans:"Plus Jakarta Sans",system-ui,-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
@@ -67,6 +65,7 @@
     main { flex:1; width:100%; max-width:600px; margin:0 auto; padding:24px max(16px, env(safe-area-inset-right)) 32px max(16px, env(safe-area-inset-left)); display:flex; flex-direction:column; }
 
     /* progress dots */
+    .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
     .steps { display:flex; gap:6px; align-items:center; margin-bottom:18px; min-height:8px; }
     .steps span { height:6px; flex:1; border-radius:3px; background:var(--line); transition:background .4s; }
     .steps span.done { background:var(--ink); }
@@ -139,7 +138,7 @@
     @keyframes pulse { 50% { transform:scale(1.04); } }
 
     .tip { display:flex; gap:10px; align-items:flex-start; padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(23,23,26,.2); font-size:14px; line-height:1.5; }
-    .tip b { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:400; display:block; margin-bottom:2px; }
+    .tip b { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); font-weight:400; display:block; margin-bottom:2px; }
     .tip i { font-style:normal; font-size:18px; line-height:1.2; }
     .stems { display:grid; gap:8px; }
     .stems div { padding:12px 14px; border-radius:14px; background:var(--white); border:1px solid var(--line); font-family:var(--serif); font-style:italic; font-size:19px; }
@@ -164,13 +163,13 @@
     .sum b { display:block; font-family:var(--syne); font-size:18px; word-break:break-word; }
     .sum span { display:block; font-size:13px; color:var(--muted); margin-top:4px; }
     .monday { padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(23,23,26,.2); font-size:14px; line-height:1.55; }
-    .monday b { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:400; margin-bottom:3px; }
+    .monday b { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); font-weight:400; margin-bottom:3px; }
     .chain { list-style:none; padding:0; margin:0; display:grid; gap:8px; }
     .chain li { background:var(--white); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-size:14px; line-height:1.5; }
     .chain li small { display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-top:4px; }
     .steps3 { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
     .steps3 div { background:var(--white); border:1px solid var(--line); border-radius:16px; padding:14px 12px; text-align:center; }
-    .steps3 b { display:block; font-family:var(--mono); font-size:11px; color:var(--accent); }
+    .steps3 b { display:block; font-family:var(--mono); font-size:11px; color:var(--accent-ink); }
     .steps3 span { display:block; font-family:var(--syne); font-weight:700; font-size:15px; margin-top:4px; }
 
     /* drawer (facilitator guide) */
@@ -196,7 +195,10 @@
 
     @media (min-width:700px) { main { padding-top:40px; } }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.001ms !important; transition-duration:.001ms !important; } }
-  </style>
+  
+    /* Chinese: keep CJK upright (no faux italic); Latin italics stay real */
+    html:lang(zh) { font-synthesis: weight; }
+</style>
 </head>
 <body>
   <div class="dots" aria-hidden="true"></div>
@@ -227,6 +229,7 @@
   </header>
 
   <main>
+    <h1 class="sr" data-t="product">Discovery Duet</h1>
     <div class="steps" id="steps" aria-hidden="true"></div>
     <div id="stage" aria-live="polite"></div>
   </main>
@@ -649,7 +652,7 @@ function render() {
   case "reveal": {
     const c = card(), f = S.found[S.round];
     h = `<section class="screen">
-      <span class="kicker" style="color:var(--accent)">${esc(t.revealKicker)}</span>
+      <span class="kicker" style="color:var(--accent-ink)">${esc(t.revealKicker)}</span>
       <div class="sum" style="grid-template-columns:1fr">
         <div><span class="kicker">${esc(asker())}</span><p class="serif" style="margin:6px 0 0;font-size:18px">“${esc(S.guess.trim())}”</p></div>
         <div style="background:var(--ink);color:#fff;border-color:var(--ink)"><span class="kicker" style="color:rgba(255,255,255,.55)">${esc(c.who)}</span><p style="margin:6px 0 0;font-size:16px;line-height:1.5">${esc(c.need)}</p></div>
@@ -691,7 +694,7 @@ function render() {
 function teachHTML(demo) {
   const t = T(), chain = store.get("fb_teachback", []).filter(c => c.demo === demo);
   return `<section class="screen">
-    <span class="kicker" style="color:var(--accent)">${esc(t.teachKicker)}</span>
+    <span class="kicker" style="color:var(--accent-ink)">${esc(t.teachKicker)}</span>
     <h2>${esc(t.teachTitle)}</h2>
     <p class="lead">${esc(t.teachLead)}</p>
     <div class="steps3">${t.t3.map((s, i) => `<div><b>0${i + 1}</b><span>${esc(s)}</span><small style="display:block;font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.4">${esc(t.t3sub[i])}</small></div>`).join("")}</div>
@@ -798,6 +801,7 @@ function applyLang(l) {
   document.documentElement.lang = lang === "zh" ? "zh-CN" : lang;
   document.title = T().title;
   $("lang-lbl").textContent = LANG_LBL[lang];
+  $("btn-guide").setAttribute("aria-label", T().guide); drawer.setAttribute("aria-label", T().guide);
   document.querySelectorAll("[data-t]").forEach(el => { const v = T()[el.dataset.t]; if (typeof v === "string") el.textContent = v; });
   paintSound();
   render();               // the clock object survives a re-render
@@ -814,6 +818,7 @@ try { saved = localStorage.getItem("wm_preferred_lang") || localStorage.getItem(
 const nav = (navigator.language || "").toLowerCase();
 applyLang(LANGS.includes(saved) ? saved : nav.startsWith("zh") ? "zh" : nav.startsWith("es") ? "es" : "en");
 document.addEventListener("visibilitychange", () => { if (!document.hidden && timer.running) keepAwake(true); });
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) navigator.serviceWorker.register("/free_builder/sw.js", { scope: "/free_builder/" }).catch(() => {}); // offline cache
 })();
 </script>
 </body>
