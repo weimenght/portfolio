@@ -1,15 +1,17 @@
 /* FREE//BUILDER — offline cache for the demos (upload to /free_builder/sw.js)
  * Pages: network first, so updates show up straight away; the cached copy is used when offline.
- * Fonts: cache first. Nothing about the people using the demos is stored here. */
-const VERSION = "fb-2026-10-20";
-const PAGES = ["listen", "questions", "thanks", "swap", "repair", "teachback", "discovery", "room", "design", "guide"].map(n => `/free_builder/${n}/`);
+ * Fonts and vendor scripts: cache first. Nothing about the people using the demos is stored here. */
+const VERSION = "fb-2026-10-21";
+// Launchpad (1.3 MB) is cached when first opened, not up front.
+const PAGES = ["listen", "questions", "thanks", "swap", "repair", "teachback", "discovery", "room", "design", "guide", "coach", "cq"].map(n => `/free_builder/${n}/`);
 const FONTS = [
   "/fonts/fonts.css",
   "/fonts/syne-latin-600-normal.woff2", "/fonts/syne-latin-700-normal.woff2", "/fonts/syne-latin-800-normal.woff2",
   "/fonts/plus-jakarta-sans-latin-300-normal.woff2", "/fonts/plus-jakarta-sans-latin-400-normal.woff2", "/fonts/plus-jakarta-sans-latin-500-normal.woff2",
   "/fonts/plus-jakarta-sans-latin-600-normal.woff2", "/fonts/plus-jakarta-sans-latin-700-normal.woff2",
   "/fonts/space-mono-latin-400-normal.woff2", "/fonts/space-mono-latin-700-normal.woff2",
-  "/fonts/instrument-serif-latin-400-normal.woff2", "/fonts/instrument-serif-latin-400-italic.woff2"
+  "/fonts/instrument-serif-latin-400-normal.woff2", "/fonts/instrument-serif-latin-400-italic.woff2",
+  "/fonts/special-elite-latin-400-normal.woff2", "/fonts/press-start-2p-latin-400-normal.woff2"
 ];
 
 self.addEventListener("install", e => {
@@ -24,7 +26,7 @@ const withSlash = u => (u.pathname.endsWith("/") || /\.[a-z0-9]+$/i.test(u.pathn
 self.addEventListener("fetch", e => {
   const req = e.request, url = new URL(req.url);
   if (req.method !== "GET" || url.origin !== location.origin) return;
-  if (url.pathname.startsWith("/fonts/")) {
+  if (url.pathname.startsWith("/fonts/") || url.pathname.startsWith("/free_builder/vendor/")) {
     e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(res => { const copy = res.clone(); caches.open(VERSION).then(c => c.put(req, copy)); return res; })));
     return;
   }
