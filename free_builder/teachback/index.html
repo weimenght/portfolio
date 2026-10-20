@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title id="page-title">Listening Duet — FREE//BUILDER</title>
+  <meta name="description" content="Teach one thing to one person; they say it back in their own words. Every teach-back becomes a link in your chain.">
+  <meta name="theme-color" content="#F7F6F2">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Crect x='7' y='7' width='8' height='8' rx='2' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='7' y='17' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='17' y='17' width='8' height='8' rx='2' fill='%23E2553F'/%3E%3C/svg%3E">
+  <!-- Brand fonts load without blocking the page: where Google Fonts is slow or blocked, system fonts show instantly. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+
+  <style>
+    /* =================================================================
+       FB KIT · tokens + shell (shared by every FREE//BUILDER demo)
+       ================================================================= */
+    :root {
+      --paper:#F7F6F2; --ink:#17171A; --muted:#6B6A70; --line:#E5E2DA; --accent:#E2553F; --white:#fff; --good:#2F8A5C;
+      --st:#E2553F;
+      --ease:cubic-bezier(.23,1,.32,1);
+      --sans:"Plus Jakarta Sans",system-ui,-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+      --mono:"Space Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+      --syne:Syne,"Plus Jakarta Sans",system-ui,"PingFang SC","Noto Sans SC",sans-serif;
+      --serif:"Instrument Serif",Georgia,"Songti SC","STSong",serif;
+    }
+    * { box-sizing:border-box; }
+    html, body { margin:0; overflow-x:hidden; }
+    body {
+      background:var(--paper); color:var(--ink); font-family:var(--sans);
+      -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;
+      min-height:100vh; min-height:100svh; display:flex; flex-direction:column;
+    }
+    button { font:inherit; color:inherit; cursor:pointer; background:none; border:0; padding:0; touch-action:manipulation; }
+    a { color:inherit; }
+    :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:10px; }
+    .kicker { font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
+    .dots { position:fixed; inset:0; z-index:-1; pointer-events:none;
+      background-image:radial-gradient(rgba(23,23,26,.09) 1px,transparent 1px); background-size:22px 22px;
+      -webkit-mask-image:linear-gradient(to bottom,#000,transparent 60%); mask-image:linear-gradient(to bottom,#000,transparent 60%); }
+
+    header.top { position:sticky; top:0; z-index:40; background:rgba(247,246,242,.92);
+      -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); border-bottom:1px solid rgba(229,226,218,.8);
+      padding:10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); }
+    .top-in { max-width:960px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .brand { display:flex; align-items:center; gap:10px; text-decoration:none; min-width:0; }
+    .mark { width:34px; height:34px; border-radius:10px; background:var(--ink); display:grid; place-items:center; flex-shrink:0; transition:transform .5s var(--ease); }
+    .mark rect { transform-box:fill-box; transform-origin:center; transition:transform .6s var(--ease); }
+    .mark .last { transform:translate(2.5px,-2.5px) rotate(12deg); }
+    .brand:hover .mark { transform:rotate(-4deg); }
+    .brand:hover .mark .last { transform:none; }
+    .brand-txt { line-height:1; min-width:0; }
+    .brand-txt b { font-family:var(--syne); font-weight:700; font-size:13px; display:block; }
+    .brand-txt b i { color:var(--accent); font-style:normal; }
+    .brand-txt span { display:block; font-size:11px; color:var(--muted); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .top-actions { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+    .chip { height:32px; padding:0 10px; border:1px solid var(--line); border-radius:9px; background:rgba(255,255,255,.6);
+      display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; transition:border-color .2s, transform .1s; }
+    .chip:hover { border-color:rgba(23,23,26,.3); }
+    .chip:active { transform:scale(.96); }
+    .chip svg { width:14px; height:14px; }
+    .chip[hidden] { display:none; }
+    @media (max-width:420px) { .chip .lbl { display:none; } }
+    @media (max-width:340px) { .brand-txt { display:none; } }
+
+    main { flex:1; width:100%; max-width:600px; margin:0 auto; padding:24px max(16px, env(safe-area-inset-right)) 32px max(16px, env(safe-area-inset-left)); display:flex; flex-direction:column; }
+
+    /* progress dots */
+    .steps { display:flex; gap:6px; align-items:center; margin-bottom:18px; min-height:8px; }
+    .steps span { height:6px; flex:1; border-radius:3px; background:var(--line); transition:background .4s; }
+    .steps span.done { background:var(--ink); }
+    .steps span.now { background:var(--accent); }
+
+    /* screens */
+    .screen { flex:1; display:flex; flex-direction:column; gap:18px; animation:in .5s var(--ease) both; }
+    @keyframes in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+    h1, h2 { font-family:var(--syne); font-weight:700; letter-spacing:-.02em; margin:0; line-height:1.1; }
+    h1 { font-size:clamp(34px, 9vw, 52px); }
+    h2 { font-size:clamp(26px, 6.5vw, 34px); }
+    .lead { font-size:16px; line-height:1.6; color:rgba(23,23,26,.75); margin:0; }
+    .serif { font-family:var(--serif); font-style:italic; font-size:22px; line-height:1.3; color:rgba(23,23,26,.85); margin:0; }
+    .accent-word { font-family:var(--serif); font-style:italic; font-weight:400; color:var(--muted); white-space:nowrap; padding-bottom:.12em;
+      background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7 Q 12 1 22 7 T 42 7 T 62 7 T 82 7 T 102 7 T 118 6' fill='none' stroke='%23E2553F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left bottom / 100% .32em; }
+    .pills { display:flex; flex-wrap:wrap; gap:6px; }
+    .pill { font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:99px; border:1px solid var(--line); color:var(--muted); background:rgba(255,255,255,.6); }
+    .spacer { flex:1; }
+
+    .btns { display:flex; gap:8px; flex-wrap:wrap; }
+    .btn { flex:1; min-height:52px; padding:0 20px; border-radius:99px; font-family:var(--mono); font-size:13px; font-weight:700;
+      display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1px solid var(--line); background:var(--white);
+      transition:background .2s, border-color .2s, transform .1s; }
+    .btn:hover { border-color:rgba(23,23,26,.35); }
+    .btn:active { transform:scale(.98); }
+    .btn.pri { background:var(--ink); border-color:var(--ink); color:#fff; flex:2; }
+    .btn.pri:hover { background:var(--accent); border-color:var(--accent); }
+    .btn[disabled] { opacity:.45; pointer-events:none; }
+    .link { font-family:var(--mono); font-size:12px; color:var(--muted); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:4px; align-self:center; padding:8px; }
+    .link:hover { color:var(--ink); }
+
+    .card { background:var(--white); border:1px solid var(--line); border-radius:24px; padding:22px; }
+    .field { display:block; }
+    .field span { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+    .field input, .field textarea { width:100%; font:inherit; font-size:16px; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--white); color:var(--ink); }
+    .field textarea { resize:vertical; min-height:96px; line-height:1.5; }
+    .field input:focus, .field textarea:focus { outline:none; border-color:var(--ink); }
+    .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .seg { display:flex; flex-wrap:wrap; gap:6px; }
+    .seg button { padding:9px 14px; border-radius:99px; border:1px solid var(--line); background:var(--white); font-size:13px; transition:all .2s; }
+    .seg button[aria-pressed="true"] { background:var(--ink); color:#fff; border-color:var(--ink); }
+
+    /* who's who */
+    .roles { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .role { border-radius:18px; padding:14px; border:1px solid var(--line); background:var(--white); }
+    .role .k { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+    .role .n { font-family:var(--syne); font-weight:700; font-size:18px; margin-top:4px; word-break:break-word; }
+    .role.speak { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .role.speak .k { color:rgba(255,255,255,.55); }
+
+    /* prompt card */
+    .prompt { position:relative; background:var(--ink); color:#fff; border-radius:26px; padding:28px 24px 24px; min-height:200px;
+      display:flex; flex-direction:column; justify-content:space-between; gap:18px; overflow:hidden; }
+    .prompt::after { content:""; position:absolute; right:-50px; top:-50px; width:170px; height:170px; border-radius:50%; border:1px solid rgba(255,255,255,.1); }
+    .prompt .q { font-family:var(--serif); font-style:italic; font-size:clamp(24px, 6.4vw, 30px); line-height:1.25; position:relative; }
+    .prompt .meta { display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; color:rgba(255,255,255,.5); position:relative; }
+    .prompt.flip { animation:flip .55s var(--ease); }
+    @keyframes flip { 0% { transform:rotateX(0); } 50% { transform:rotateX(80deg); opacity:.4; } 100% { transform:none; } }
+
+    /* timer ring */
+    .timer { display:grid; place-items:center; margin:4px auto; position:relative; width:min(68vw, 260px); aspect-ratio:1; }
+    .timer svg { width:100%; height:100%; transform:rotate(-90deg); }
+    .timer .bg { stroke:var(--line); }
+    .timer .fg { stroke:var(--st); transition:stroke .3s; }
+    .timer .num { position:absolute; inset:0; display:grid; place-items:center; text-align:center; }
+    .timer .num b { font-family:var(--mono); font-size:clamp(40px, 13vw, 56px); font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:-.02em; display:block; }
+    .timer .num small { font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.12em; text-transform:uppercase; }
+    .timer.done .fg { stroke:var(--good); }
+    .timer.pulse { animation:pulse 1.2s ease-in-out 2; }
+    @keyframes pulse { 50% { transform:scale(1.04); } }
+
+    .tip { display:flex; gap:10px; align-items:flex-start; padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(23,23,26,.2); font-size:14px; line-height:1.5; }
+    .tip b { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:400; display:block; margin-bottom:2px; }
+    .tip i { font-style:normal; font-size:18px; line-height:1.2; }
+    .stems { display:grid; gap:8px; }
+    .stems div { padding:12px 14px; border-radius:14px; background:var(--white); border:1px solid var(--line); font-family:var(--serif); font-style:italic; font-size:19px; }
+
+    /* felt heard */
+    .heard { display:grid; gap:8px; }
+    .heard button { display:flex; align-items:center; gap:14px; text-align:left; padding:16px 18px; border-radius:18px; border:1px solid var(--line); background:var(--white); transition:all .2s; }
+    .heard button:hover { border-color:rgba(23,23,26,.35); }
+    .heard button .e { width:40px; height:40px; border-radius:50%; display:grid; place-items:center; font-size:20px; flex-shrink:0; background:var(--paper); }
+    .heard button b { display:block; font-size:16px; }
+    .heard button small { display:block; font-size:13px; color:var(--muted); margin-top:2px; }
+
+    /* curtain (pass the phone) */
+    .curtain { background:var(--ink); color:#fff; border-radius:28px; padding:32px 24px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px; }
+    .curtain .hand { width:84px; height:84px; }
+    .curtain h2 { color:#fff; }
+    .curtain p { margin:0; color:rgba(255,255,255,.7); line-height:1.55; }
+
+    /* summary */
+    .sum { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .sum div { background:var(--white); border:1px solid var(--line); border-radius:18px; padding:16px; }
+    .sum b { display:block; font-family:var(--syne); font-size:18px; word-break:break-word; }
+    .sum span { display:block; font-size:13px; color:var(--muted); margin-top:4px; }
+    .monday { padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(23,23,26,.2); font-size:14px; line-height:1.55; }
+    .monday b { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:400; margin-bottom:3px; }
+    .chain { list-style:none; padding:0; margin:0; display:grid; gap:8px; }
+    .chain li { background:var(--white); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-size:14px; line-height:1.5; }
+    .chain li small { display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-top:4px; }
+    .steps3 { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .steps3 div { background:var(--white); border:1px solid var(--line); border-radius:16px; padding:14px 12px; text-align:center; }
+    .steps3 b { display:block; font-family:var(--mono); font-size:11px; color:var(--accent); }
+    .steps3 span { display:block; font-family:var(--syne); font-weight:700; font-size:15px; margin-top:4px; }
+
+    /* drawer (facilitator guide) */
+    .drawer { position:fixed; inset:0; z-index:60; display:flex; justify-content:flex-end; background:rgba(23,23,26,.45); opacity:0; pointer-events:none; transition:opacity .25s; }
+    .drawer.show { opacity:1; pointer-events:auto; }
+    .panel { width:100%; max-width:460px; height:100%; background:var(--paper); overflow-y:auto; padding:22px 22px calc(28px + env(safe-area-inset-bottom)); transform:translateX(30px); transition:transform .45s var(--ease); overscroll-behavior:contain; }
+    .drawer.show .panel { transform:none; }
+    @media (max-width:560px) { .drawer { align-items:flex-end; } .panel { max-width:none; height:88vh; height:88svh; border-radius:24px 24px 0 0; transform:translateY(40px); } }
+    .panel h3 { font-family:var(--syne); font-size:22px; margin:4px 0 12px; }
+    .panel h4 { font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:400; margin:22px 0 8px; }
+    .panel ol, .panel ul { margin:0; padding-left:20px; display:grid; gap:8px; font-size:14px; line-height:1.55; }
+    .panel p { font-size:14px; line-height:1.6; color:rgba(23,23,26,.78); margin:0; }
+    .x { width:34px; height:34px; border-radius:50%; display:grid; place-items:center; border:1px solid var(--line); background:var(--white); font-family:var(--mono); flex-shrink:0; }
+
+    .toast { position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom)); transform:translate(-50%,10px); opacity:0; pointer-events:none; z-index:70;
+      background:var(--ink); color:#fff; border-radius:99px; padding:9px 16px; font-family:var(--mono); font-size:11px; transition:opacity .25s, transform .35s var(--ease);
+      max-width:calc(100% - 32px); }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+
+    footer { border-top:1px solid var(--line); padding:18px max(16px, env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+    .foot-in { max-width:960px; margin:0 auto; display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--muted); }
+    .foot-in a { text-decoration:none; } .foot-in a:hover { color:var(--ink); }
+
+    @media (min-width:700px) { main { padding-top:40px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.001ms !important; transition-duration:.001ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="dots" aria-hidden="true"></div>
+
+  <header class="top">
+    <div class="top-in">
+      <a class="brand" href="/free_builder/" aria-label="FREE//BUILDER">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="19" height="19" style="overflow:visible">
+            <rect x="3" y="3" width="8" height="8" rx="2" fill="#fff"/><rect x="13" y="3" width="8" height="8" rx="2" fill="#fff" opacity=".55"/>
+            <rect x="3" y="13" width="8" height="8" rx="2" fill="#fff" opacity=".55"/><rect class="last" x="13" y="13" width="8" height="8" rx="2" fill="#E2553F"/>
+          </svg>
+        </span>
+        <span class="brand-txt"><b>FREE<i>//</i>BUILDER</b><span data-t="product">Teach-Back Chain</span></span>
+      </a>
+      <div class="top-actions">
+        <button class="chip" id="btn-lang" type="button" aria-label="Language" title="EN / 中文 / ES">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
+          <b id="lang-lbl">EN</b>
+        </button>
+        <button class="chip" id="btn-sound" type="button"></button>
+        <button class="chip" id="btn-guide" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2zM22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg>
+          <span class="lbl" data-t="guide">Facilitators</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="steps" id="steps" aria-hidden="true"></div>
+    <div id="stage" aria-live="polite"></div>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span data-t="privacy">Your chain lives only on this phone.</span>
+      <a href="/free_builder/" data-t="back">FREE//BUILDER ↗</a>
+    </div>
+  </footer>
+
+  <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="g-title">
+    <div class="panel" id="panel"></div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+"use strict";
+/* =====================================================================
+   COPY — EN / 中文 / ES
+   ===================================================================== */
+const I18N = {
+en: {
+  title: "Teach-Back Chain — FREE//BUILDER", product: "Teach-Back Chain", guide: "Facilitators",
+  privacy: "Your chain lives only on this phone.", back: "FREE//BUILDER ↗",
+  soundOn: "Sound on", soundOff: "Sound off", left: "left", paused: "paused", close: "Close", resume: "Resume", pause: "Pause",
+  introKicker: "Learning by teaching",
+  introTitle: 'Teach-Back <span class="accent-word">Chain</span>',
+  introLead: "The surest way to learn something is to teach it. Each time you pass a skill on — and your colleague says it back in their own words — it becomes a link in your chain.",
+  links: "{n} links", link1: "1 link", people: "{n} people", person1: "1 person",
+  empty: "No links yet. Teach one thing to one person and your chain begins.",
+  teachNow: "Teach something now", copyChain: "Copy my chain", copied: "Copied.", clear: "Clear this phone", clearSure: "Tap again to clear every link on this phone.", cleared: "Cleared.",
+  whatTitle: "What will you teach?", whatLead: "Pick something you practised — or anything else you learned recently.",
+  other: "Something else", otherPh: "e.g. How I plan my week",
+  prepTitle: "Three things to get across", prepLead: "Short is better. Use an example from your own work.",
+  pointPh: ["The core idea", "How to do it", "When to use it"],
+  teacherLbl: "Your name", teacherPh: "e.g. Wei", learnerLbl: "Who are you teaching?", learnerPh: "e.g. Mei",
+  next: "Next", backBtn: "Back",
+  teachTitle: "Teach it, {n}.", teachLead: "Two minutes. Show more than you tell — try it together if you can.",
+  teachTips: ["Start with why it matters.", "Give one real example.", "Let them try it, then stop talking.", "Ask: “What would you do differently?”"],
+  done: "Done teaching",
+  passTitle: "Hand the phone to {l}", passLead: "Now it's their turn to say it back.", passGo: "I'm {l}",
+  backTitle: "{l}, say it back.", backLead: "In your own words — not theirs. What's the one idea, and where will you use it?",
+  backPh: "The one idea is… I'll use it when…",
+  addTitle: "Now hand it back.", addLead: "{t}, read it. What did {l} add that you didn't say? Tell them.",
+  save: "Add the link",
+  linkKicker: "New link", linkTitle: "{l} is now part of your chain.",
+  linkLead: "And the chain doesn't stop with you: ask {l} to teach it to one more person this week.",
+  monday: "Try this on Monday", mondayTxt: "After your next training, teach one idea to a colleague within 48 hours.",
+  again: "Teach something else", seeChain: "See my chain",
+  demos: { listen: "Listening Duet", questions: "Question Deck", thanks: "Specific Thanks", swap: "Perspective Swap", repair: "Repair Kit", discovery: "Discovery Duet", design: "Design Thinking", other: "Other" },
+  gKicker: "Facilitator guide", gTitle: "Running a teach-back round",
+  gWhy: "Why it works",
+  gWhyTxt: "Explaining something forces you to organise it; hearing it back in someone else's words shows what actually landed. It turns a training day into a ripple through the team.",
+  gSteps: "Running it (≈ 10 minutes)",
+  gStepList: ["At the end of a session, pair people with someone who wasn't in it — or across pairs.", "Each person teaches one idea in two minutes.", "The learner says it back in their own words on the teacher's phone.", "The teacher names one thing the learner added.", "Within a week, each learner teaches it on once more."],
+  gDebrief: "Debrief questions",
+  gDebriefList: ["What did you understand better by teaching it?", "What did your learner add that surprised you?", "Who else in your team should hear this — and who will tell them?"],
+  gNotes: "Notes",
+  gNotesList: ["The chain counts people helped, never compares people.", "Everything stays on this phone; nothing is uploaded.", "Every FREE//BUILDER demo on this phone adds to the same chain."]
+},
+zh: {
+  title: "教回去链条 — FREE//BUILDER", product: "教回去链条", guide: "引导师",
+  privacy: "你的链条只保存在这部手机上。", back: "FREE//BUILDER ↗",
+  soundOn: "声音开", soundOff: "声音关", left: "剩余", paused: "已暂停", close: "关闭", resume: "继续", pause: "暂停",
+  introKicker: "以教促学",
+  introTitle: '教回去<span class="accent-word">链条</span>',
+  introLead: "学会一件事最可靠的方法，就是把它教给别人。每当你把一项能力传下去——同事再用自己的话说回来——它就成为你链条上的一环。",
+  links: "{n} 环", link1: "1 环", people: "{n} 人", person1: "1 人",
+  empty: "还没有任何一环。教一个人一件事，你的链条就开始了。",
+  teachNow: "现在就教点什么", copyChain: "复制我的链条", copied: "已复制。", clear: "清空这部手机", clearSure: "再点一次，清空这部手机上的所有链环。", cleared: "已清空。",
+  whatTitle: "你要教什么？", whatLead: "选一样你练习过的——或者最近学到的任何东西。",
+  other: "其他", otherPh: "例如：我怎么规划一周",
+  prepTitle: "要讲清楚的三件事", prepLead: "越短越好。用你自己工作里的例子。",
+  pointPh: ["核心想法", "怎么做", "什么时候用"],
+  teacherLbl: "你的名字", teacherPh: "例如：小魏", learnerLbl: "你要教给谁？", learnerPh: "例如：小美",
+  next: "下一步", backBtn: "返回",
+  teachTitle: "开始教吧，{n}。", teachLead: "两分钟。多示范，少讲——能一起试试就更好。",
+  teachTips: ["先说为什么重要。", "举一个真实的例子。", "让 TA 试一下，然后你停下来。", "问：“你会怎么用？”"],
+  done: "教完了",
+  passTitle: "把手机交给{l}", passLead: "现在轮到 TA 说回来。", passGo: "我是{l}",
+  backTitle: "{l}，请说回来。", backLead: "用你自己的话——不是对方的话。核心想法是什么？你会在哪里用？",
+  backPh: "核心想法是……我会在……的时候用",
+  addTitle: "现在把手机还回去。", addLead: "{t}，读一读。{l}补充了哪些你没说的？告诉 TA。",
+  save: "加上这一环",
+  linkKicker: "新的一环", linkTitle: "{l} 现在是你链条的一部分了。",
+  linkLead: "链条不止于你：请 {l} 这周再教给一个人。",
+  monday: "周一试试这个", mondayTxt: "下次培训后 48 小时内，把一个想法教给一位同事。",
+  again: "再教点别的", seeChain: "看我的链条",
+  demos: { listen: "倾听二重奏", questions: "问题卡组", thanks: "具体的感谢", swap: "视角互换", repair: "修复工具包", discovery: "探询二重奏", design: "设计思维", other: "其他" },
+  gKicker: "引导师指南", gTitle: "如何带一轮“教回去”",
+  gWhy: "为什么有效",
+  gWhyTxt: "讲解会逼你把知识理清楚；听别人用自己的话说回来，才知道什么真正被接住了。它让一天的培训，在团队里一圈圈传开。",
+  gSteps: "怎么带（约 10 分钟）",
+  gStepList: ["课程结束时，让每人找一位没参加的同事——或在组与组之间配对。", "每人用两分钟教一个想法。", "学的人在教的人手机上，用自己的话说回来。", "教的人说出一件对方补充的内容。", "一周内，每位学的人再往下教一次。"],
+  gDebrief: "复盘问题",
+  gDebriefList: ["教的时候，你对哪部分理解得更深了？", "对方补充了什么让你意外的内容？", "团队里还有谁该听到——谁去告诉 TA？"],
+  gNotes: "备注",
+  gNotesList: ["链条记录帮助过的人，从不比较人。", "一切只在这部手机上，不会上传。", "这部手机上的每个 FREE//BUILDER 练习，都汇入同一条链条。"]
+},
+es: {
+  title: "Cadena de Enseñar de Vuelta — FREE//BUILDER", product: "Cadena de Enseñar de Vuelta", guide: "Facilitadores",
+  privacy: "Tu cadena vive solo en este móvil.", back: "FREE//BUILDER ↗",
+  soundOn: "Sonido sí", soundOff: "Sonido no", left: "quedan", paused: "en pausa", close: "Cerrar", resume: "Seguir", pause: "Pausa",
+  introKicker: "Aprender enseñando",
+  introTitle: 'Cadena de <span class="accent-word">Enseñar</span>',
+  introLead: "La forma más segura de aprender algo es enseñarlo. Cada vez que transmites una habilidad —y tu colega te la devuelve con sus palabras— se convierte en un eslabón de tu cadena.",
+  links: "{n} eslabones", link1: "1 eslabón", people: "{n} personas", person1: "1 persona",
+  empty: "Todavía no hay eslabones. Enseña una cosa a una persona y tu cadena empieza.",
+  teachNow: "Enseñar algo ahora", copyChain: "Copiar mi cadena", copied: "Copiado.", clear: "Borrar este móvil", clearSure: "Pulsa otra vez para borrar todos los eslabones de este móvil.", cleared: "Borrado.",
+  whatTitle: "¿Qué vas a enseñar?", whatLead: "Elige algo que practicaste, o cualquier otra cosa que aprendiste hace poco.",
+  other: "Otra cosa", otherPh: "p. ej. Cómo planifico mi semana",
+  prepTitle: "Tres cosas que transmitir", prepLead: "Mejor corto. Usa un ejemplo de tu propio trabajo.",
+  pointPh: ["La idea central", "Cómo se hace", "Cuándo usarlo"],
+  teacherLbl: "Tu nombre", teacherPh: "p. ej. Wei", learnerLbl: "¿A quién se lo enseñas?", learnerPh: "p. ej. Mei",
+  next: "Siguiente", backBtn: "Atrás",
+  teachTitle: "Enséñalo, {n}.", teachLead: "Dos minutos. Muestra más de lo que cuentas; si podéis, probadlo juntos.",
+  teachTips: ["Empieza por por qué importa.", "Da un ejemplo real.", "Deja que lo pruebe y deja de hablar.", "Pregunta: “¿Cómo lo usarías tú?”"],
+  done: "He terminado",
+  passTitle: "Pasa el móvil a {l}", passLead: "Ahora le toca devolverlo.", passGo: "Soy {l}",
+  backTitle: "{l}, devuélvelo.", backLead: "Con tus palabras, no con las suyas. ¿Cuál es la idea y dónde la usarás?",
+  backPh: "La idea es… La usaré cuando…",
+  addTitle: "Ahora devuelve el móvil.", addLead: "{t}, léelo. ¿Qué añadió {l} que tú no dijiste? Díselo.",
+  save: "Añadir el eslabón",
+  linkKicker: "Nuevo eslabón", linkTitle: "{l} ya forma parte de tu cadena.",
+  linkLead: "Y la cadena no termina en ti: pide a {l} que se lo enseñe a una persona más esta semana.",
+  monday: "Pruébalo el lunes", mondayTxt: "Después de tu próxima formación, enseña una idea a un colega en menos de 48 horas.",
+  again: "Enseñar otra cosa", seeChain: "Ver mi cadena",
+  demos: { listen: "Dúo de escucha", questions: "Mazo de Preguntas", thanks: "Gracias Concretas", swap: "Cambio de Perspectiva", repair: "Kit de Reparación", discovery: "Dúo de Descubrimiento", design: "Design Thinking", other: "Otra cosa" },
+  gKicker: "Guía para facilitadores", gTitle: "Cómo hacer una ronda de enseñar de vuelta",
+  gWhy: "Por qué funciona",
+  gWhyTxt: "Explicar algo te obliga a ordenarlo; oírlo de vuelta con las palabras de otra persona muestra qué llegó de verdad. Convierte un día de formación en una onda que recorre el equipo.",
+  gSteps: "Cómo hacerlo (≈ 10 minutos)",
+  gStepList: ["Al final de una sesión, emparejad a cada persona con alguien que no estuvo, o entre parejas.", "Cada uno enseña una idea en dos minutos.", "Quien aprende la devuelve con sus palabras en el móvil de quien enseña.", "Quien enseña nombra algo que la otra persona añadió.", "En una semana, cada aprendiz la transmite una vez más."],
+  gDebrief: "Preguntas de cierre",
+  gDebriefList: ["¿Qué entendiste mejor al enseñarlo?", "¿Qué añadió tu aprendiz que te sorprendió?", "¿Quién más del equipo debería oírlo, y quién se lo contará?"],
+  gNotes: "Notas",
+  gNotesList: ["La cadena cuenta personas ayudadas, nunca compara personas.", "Todo se queda en este móvil; no se sube nada.", "Todas las demos de FREE//BUILDER en este móvil suman a la misma cadena."]
+}
+};
+
+const DEMO_KEYS = ["listen", "questions", "thanks", "swap", "repair", "discovery", "design", "other"];
+const DEMO_COLOR = { listen: "#E2553F", questions: "#7C6FD6", thanks: "#D9921F", swap: "#2E9AB0", repair: "#3B9A6B", discovery: "#C2477A", design: "#17171A", other: "#6B6A70" };
+const DEMO_HINTS = {
+  en: { listen: ["Listen to understand, not to reply", "Play back what you heard", "Ask: did you feel heard?"], questions: ["One real question", "Go around, anyone can pass", "Listen, don't fix"], thanks: ["Name what they did", "Say what it meant", "Say it in person"], swap: ["Ask before you explain", "Say why it matters to you", "Check what you heard"], repair: ["Own it — no “but”", "Name the impact", "Say what will change"], discovery: ["Ask why now", "Stay in questions", "Summarise the need"], design: ["Empathise first", "Many ideas, then one", "Test with real people"], other: ["", "", ""] },
+  zh: { listen: ["为理解而听，不为回应", "复述你听到的", "问：你感到被听见了吗？"], questions: ["一个真实的问题", "轮流说，可以跳过", "倾听，不急着解决"], thanks: ["说出 TA 做了什么", "说出意味着什么", "当面说"], swap: ["先问再解释", "说出为什么重要", "确认你听到的"], repair: ["承认——不说“但是”", "说出影响", "说出会改变什么"], discovery: ["问为什么是现在", "停留在提问", "总结需求"], design: ["先共情", "先发散，再收敛", "和真实的人测试"], other: ["", "", ""] },
+  es: { listen: ["Escucha para entender, no para responder", "Devuelve lo que oíste", "Pregunta: ¿te sentiste escuchado?"], questions: ["Una pregunta real", "Ronda, se puede pasar", "Escucha, no arregles"], thanks: ["Nombra lo que hizo", "Di lo que significó", "Dilo en persona"], swap: ["Pregunta antes de explicarte", "Di por qué te importa", "Comprueba lo que oíste"], repair: ["Asúmelo, sin “pero”", "Nombra el impacto", "Di qué cambiará"], discovery: ["Pregunta por qué ahora", "Quédate en las preguntas", "Resume la necesidad"], design: ["Primero empatiza", "Muchas ideas, luego una", "Prueba con personas reales"], other: ["", "", ""] }
+};
+const DEMO_HREF = { listen: "/free_builder/listen", questions: "/free_builder/questions", thanks: "/free_builder/thanks", swap: "/free_builder/swap", repair: "/free_builder/repair", discovery: "/free_builder/discovery", design: "/free_builder/design/" };
+
+/* =====================================================================
+   FB KIT · helpers (copy into every demo)
+   ===================================================================== */
+const LANGS = ["en", "zh", "es"], LANG_LBL = { en: "EN", zh: "中文", es: "ES" };
+let lang = "en";
+const T = () => I18N[lang];
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = (s, v = {}) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in v ? esc(v[k]) : m));
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+/* Seeded random + pairing codes: the same code on two phones gives the same scenario, no server needed. */
+function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const CODE_CHARS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+function newCode(n = 6) { let s = ""; for (let i = 0; i < n; i++) s += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]; return s; }
+function seedFrom(code) { let h = 2166136261; for (const c of String(code).toUpperCase()) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+
+/* Sound: soft, short, optional */
+const sound = {
+  ctx: null, muted: store.get("fb_muted", false),
+  init() { if (!this.ctx) { const A = window.AudioContext || window.webkitAudioContext; if (A) this.ctx = new A(); } if (this.ctx && this.ctx.state === "suspended") this.ctx.resume(); },
+  tone(f, d = .3, g = .06, type = "sine", at = 0) {
+    if (this.muted || !this.ctx) return;
+    try { const t = this.ctx.currentTime + at, o = this.ctx.createOscillator(), a = this.ctx.createGain();
+      o.type = type; o.frequency.setValueAtTime(f, t); a.gain.setValueAtTime(.0001, t); a.gain.linearRampToValueAtTime(g, t + .02); a.gain.exponentialRampToValueAtTime(.0001, t + d);
+      o.connect(a); a.connect(this.ctx.destination); o.start(t); o.stop(t + d + .05); } catch (e) {}
+  },
+  tap() { this.tone(520, .12, .04, "triangle"); },
+  chime() { [659.25, 880, 1318.5].forEach((f, i) => this.tone(f, 1.2, .05, "sine", i * .12)); },
+  warm() { [392, 493.88, 587.33].forEach((f, i) => this.tone(f, .9, .05, "sine", i * .1)); }
+};
+const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
+
+/* Keep the screen awake while a timer runs (where supported) */
+let wakeLock = null;
+async function keepAwake(on) {
+  try {
+    if (on && "wakeLock" in navigator && !wakeLock) wakeLock = await navigator.wakeLock.request("screen");
+    if (!on && wakeLock) { await wakeLock.release(); wakeLock = null; }
+  } catch (e) { wakeLock = null; }
+}
+
+/* Timer ring */
+function ringSVG() {
+  return `<svg viewBox="0 0 120 120" aria-hidden="true"><circle class="bg" cx="60" cy="60" r="54" fill="none" stroke-width="6"/><circle class="fg" id="ring" cx="60" cy="60" r="54" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="339.29" stroke-dashoffset="0"/></svg>`;
+}
+const timer = {
+  total: 90, left: 90, running: false, raf: 0, last: 0, onEnd: null, ended: false,
+  start(total, onEnd) { this.stop(); this.total = this.left = total; this.onEnd = onEnd; this.ended = false; this.resume(); },
+  resume() { if (this.running || this.ended) return; this.running = true; this.last = performance.now(); keepAwake(true); this.tick(); },
+  pause() { this.running = false; cancelAnimationFrame(this.raf); keepAwake(false); this.paint(); },
+  stop() { this.running = false; cancelAnimationFrame(this.raf); keepAwake(false); },
+  tick() {
+    if (!this.running) return;
+    const now = performance.now(); this.left = Math.max(0, this.left - (now - this.last) / 1000); this.last = now;
+    this.paint();
+    if (this.left <= 0) { this.running = false; this.ended = true; keepAwake(false); sound.chime(); buzz([60, 80, 60]); this.onEnd && this.onEnd(); return; }
+    this.raf = requestAnimationFrame(() => this.tick());
+  },
+  paint() {
+    const ring = $("ring"), num = $("tnum"), lbl = $("tlbl"), wrap = $("timer");
+    if (!ring) return;
+    ring.setAttribute("stroke-dashoffset", String(339.29 * (1 - this.left / this.total)));
+    const s = Math.ceil(this.left);
+    num.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+    lbl.textContent = this.ended ? "" : (this.running ? T().left : T().paused);
+    wrap.classList.toggle("done", this.ended);
+  }
+};
+
+/* Toast */
+let toastT;
+function toast(msg) { const el = $("toast"); el.textContent = msg; el.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("show"), 2600); }
+
+/* Pass-the-phone curtain */
+function curtainHTML(title, lead, btnLabel, act) {
+  return `<div class="curtain">
+    <svg class="hand" viewBox="0 0 84 84" aria-hidden="true"><rect x="27" y="10" width="30" height="52" rx="7" fill="none" stroke="#fff" stroke-width="2.5"/><circle cx="42" cy="54" r="2.5" fill="#E2553F"/><path d="M14 54c6 0 10 4 13 9M70 54c-6 0-10 4-13 9" stroke="rgba(255,255,255,.5)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M34 72h16" stroke="#E2553F" stroke-width="2.5" stroke-linecap="round"/></svg>
+    <h2>${title}</h2><p>${lead}</p>
+    <button class="btn pri" data-act="${act}" style="width:100%;margin-top:6px">${btnLabel} →</button></div>`;
+}
+
+
+
+/* =====================================================================
+   TEACH-BACK CHAIN
+   ===================================================================== */
+const S = { screen: "chain", demo: null, other: "", points: ["", "", ""], teacher: store.get("fb_tb_teacher", ""), learner: "", back: "", clearArmed: false, fresh: null, tipIdx: 0 };
+const FLOW = ["what", "prep", "teach", "back", "add"];
+const chain = () => store.get("fb_teachback", []).filter(c => c && c.text);
+const demoName = k => T().demos[k] || T().demos.other;
+
+function go(screen) {
+  if (screen !== "teach") timer.stop();
+  S.screen = screen; S.clearArmed = false; render(); window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+  if (screen === "teach") startTeach();
+}
+function paintStepsBar() {
+  const at = FLOW.indexOf(S.screen === "pass" ? "back" : S.screen);
+  $("steps").innerHTML = at < 0 ? "" : FLOW.map((_, i) => `<span class="${i < at ? "done" : i === at ? "now" : ""}"></span>`).join("");
+}
+
+/* the chain itself: one ring per link, coloured by what was taught */
+function chainSVG(items) {
+  const per = 11, n = Math.max(items.length, 1), rows = Math.ceil(n / per), rh = 40, w = 320, h = rows * rh + 6;
+  let g = "";
+  items.forEach((c, i) => {
+    const r = Math.floor(i / per), k = i % per, col = r % 2 ? per - 1 - k : k;
+    const x = 24 + col * 27, y = 23 + r * rh, odd = i % 2 === 1, isNew = S.fresh && c.at === S.fresh;
+    const stroke = DEMO_COLOR[c.demo] || DEMO_COLOR.other;
+    // even links lie flat, odd links stand narrow, so neighbours read as interlocked
+    g += `<ellipse cx="${x}" cy="${y}" rx="${odd ? 15 : 17}" ry="${odd ? 7 : 12}" fill="none" stroke="${stroke}" stroke-width="${isNew ? 5 : 4}">${isNew && !reduceMotion ? `<animate attributeName="stroke-width" values="9;5" dur=".7s"/>` : ""}</ellipse>`;
+  });
+  if (!items.length) g = `<ellipse cx="160" cy="23" rx="17" ry="12" fill="none" stroke="#E5E2DA" stroke-width="4" stroke-dasharray="5 5"/>`;
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;display:block" role="img" aria-label="${esc(items.length === 1 ? T().link1 : fmt(T().links, { n: items.length }))}">${g}</svg>`;
+}
+
+function render() {
+  const t = T(), stage = $("stage");
+  paintStepsBar();
+  let h = "";
+  switch (S.screen) {
+  case "chain": {
+    const items = chain(), people = new Set(items.map(c => (c.name || "").trim().toLowerCase()).filter(Boolean)).size;
+    const by = {}; items.forEach(c => { by[c.demo] = (by[c.demo] || 0) + 1; });
+    h = `<section class="screen">
+      <span class="kicker">${t.introKicker}</span><h1>${t.introTitle}</h1>
+      <p class="lead">${esc(t.introLead)}</p>
+      <div class="card" style="display:grid;gap:14px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill" style="color:var(--ink)">${esc(items.length === 1 ? t.link1 : fmt(t.links, { n: items.length }))}</span>${people ? `<span class="pill">${esc(people === 1 ? t.person1 : fmt(t.people, { n: people }))}</span>` : ""}
+          ${Object.keys(by).map(k => `<span class="pill" style="display:inline-flex;gap:6px;align-items:center"><i style="width:8px;height:8px;border-radius:50%;background:${DEMO_COLOR[k] || DEMO_COLOR.other}"></i>${esc(demoName(k))} · ${by[k]}</span>`).join("")}</div>
+        ${chainSVG(items)}
+        ${items.length ? "" : `<p style="margin:0;font-size:14px;color:var(--muted)">${esc(t.empty)}</p>`}
+      </div>
+      ${items.length ? `<ul class="chain">${items.slice().reverse().slice(0, 30).map(c => `<li style="border-left:3px solid ${DEMO_COLOR[c.demo] || DEMO_COLOR.other}">${esc(c.text)}<small>${c.name ? esc(c.name) + " · " : ""}${esc(demoName(c.demo))} · ${esc(new Date(c.at).toLocaleDateString(lang === "zh" ? "zh-CN" : lang))}</small></li>`).join("")}</ul>` : ""}
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="toWhat" data-focus>${esc(t.teachNow)} →</button></div>
+      ${items.length ? `<div class="btns"><button class="btn" data-act="copy">⧉ ${esc(t.copyChain)}</button><button class="btn" data-act="clear" style="color:var(--muted)">${esc(t.clear)}</button></div>` : ""}
+    </section>`; break; }
+
+  case "what":
+    h = `<section class="screen">
+      <h2>${esc(t.whatTitle)}</h2><p class="lead">${esc(t.whatLead)}</p>
+      <div class="seg" role="group">${DEMO_KEYS.map(k => `<button type="button" data-demo="${k}" aria-pressed="${S.demo === k}" style="display:inline-flex;gap:7px;align-items:center"><i style="width:8px;height:8px;border-radius:50%;background:${DEMO_COLOR[k]}"></i>${esc(k === "other" ? t.other : demoName(k))}</button>`).join("")}</div>
+      ${S.demo === "other" ? `<label class="field"><span>${esc(t.other)}</span><input id="otherIn" maxlength="60" autocomplete="off" placeholder="${esc(t.otherPh)}" value="${esc(S.other)}"></label>` : ""}
+      <div class="row2">
+        <label class="field"><span>${esc(t.teacherLbl)}</span><input id="teacherIn" maxlength="24" autocomplete="off" placeholder="${esc(t.teacherPh)}" value="${esc(S.teacher)}"></label>
+        <label class="field"><span>${esc(t.learnerLbl)}</span><input id="learnerIn" maxlength="24" autocomplete="off" placeholder="${esc(t.learnerPh)}" value="${esc(S.learner)}"></label>
+      </div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="toChain">← ${esc(t.backBtn)}</button><button class="btn pri" data-act="toPrep" id="nextBtn" ${canPrep() ? "" : "disabled"}>${esc(t.next)} →</button></div>
+    </section>`; break;
+
+  case "prep": {
+    const hints = DEMO_HINTS[lang][S.demo] || DEMO_HINTS[lang].other;
+    h = `<section class="screen">
+      <span class="kicker">${esc(S.demo === "other" ? S.other : demoName(S.demo))}</span>
+      <h2>${esc(t.prepTitle)}</h2><p class="lead">${esc(t.prepLead)}</p>
+      ${[0, 1, 2].map(i => `<label class="field"><span>0${i + 1}</span><input data-pt="${i}" maxlength="80" autocomplete="off" placeholder="${esc(hints[i] || t.pointPh[i])}" value="${esc(S.points[i])}"></label>`).join("")}
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="toWhat">← ${esc(t.backBtn)}</button><button class="btn pri" data-act="toTeach" data-focus>${esc(t.next)} →</button></div>
+    </section>`; break; }
+
+  case "teach": {
+    const hints = DEMO_HINTS[lang][S.demo] || DEMO_HINTS[lang].other;
+    const pts = S.points.map((p, i) => p.trim() || hints[i]).filter(Boolean);
+    h = `<section class="screen">
+      <h2>${fmt(t.teachTitle, { n: S.teacher.trim() })}</h2>
+      <p class="lead">${esc(t.teachLead)}</p>
+      ${pts.length ? `<div class="stems">${pts.map((p, i) => `<div><b style="font-family:var(--mono);color:var(--accent);font-weight:400;margin-right:8px">0${i + 1}</b>${esc(p)}</div>`).join("")}</div>` : ""}
+      <div class="timer" id="timer" style="width:min(48vw,180px)">${ringSVG()}<div class="num"><div><b id="tnum">2:00</b><small id="tlbl"></small></div></div></div>
+      <div class="tip" id="ltip"><i>✦</i><span>${esc(t.teachTips[S.tipIdx % t.teachTips.length])}</span></div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="pause" id="pauseBtn">${esc(timer.running || timer.ended ? t.pause : t.resume)}</button><button class="btn pri" data-act="toPass" data-focus>${esc(t.done)} →</button></div>
+    </section>`; break; }
+
+  case "pass":
+    h = `<section class="screen">${curtainHTML(fmt(t.passTitle, { l: S.learner.trim() }), esc(t.passLead), fmt(t.passGo, { l: S.learner.trim() }), "toBack")}</section>`; break;
+
+  case "back":
+    h = `<section class="screen">
+      <h2>${fmt(t.backTitle, { l: S.learner.trim() })}</h2>
+      <p class="lead">${esc(t.backLead)}</p>
+      <label class="field"><textarea id="backIn" maxlength="280" placeholder="${esc(t.backPh)}" style="min-height:140px">${esc(S.back)}</textarea></label>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="toAdd" id="nextBtn" ${S.back.trim().length > 3 ? "" : "disabled"}>${esc(t.next)} →</button></div>
+    </section>`; break;
+
+  case "add":
+    h = `<section class="screen">
+      <h2>${esc(t.addTitle)}</h2>
+      <p class="lead">${fmt(t.addLead, { t: S.teacher.trim(), l: S.learner.trim() })}</p>
+      <div class="prompt" style="min-height:0"><div class="q" style="font-size:21px">“${esc(S.back.trim())}”</div><div class="meta"><span>${esc(S.learner.trim())}</span><span>${esc(S.demo === "other" ? S.other : demoName(S.demo))}</span></div></div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="save" data-focus>⊂⊃ ${esc(t.save)}</button></div>
+    </section>`; break;
+
+  case "link":
+    h = `<section class="screen">
+      <span class="kicker" style="color:var(--good)">✓ ${esc(t.linkKicker)}</span>
+      <h2>${fmt(t.linkTitle, { l: S.learner.trim() })}</h2>
+      <div class="card">${chainSVG(chain())}</div>
+      <p class="serif">${fmt(t.linkLead, { l: S.learner.trim() })}</p>
+      <div class="monday"><b>${esc(t.monday)}</b>${esc(t.mondayTxt)}</div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="toWhatAgain">↻ ${esc(t.again)}</button><button class="btn pri" data-act="toChain" data-focus>${esc(t.seeChain)} →</button></div>
+    </section>`; break;
+  }
+  const hadFocus = stage.contains(document.activeElement);
+  stage.innerHTML = h;
+  const f = stage.querySelector("[data-focus]");
+  if (f && hadFocus) f.focus({ preventScroll: true });
+}
+
+function canPrep() { return S.demo && S.learner.trim() && S.teacher.trim() && (S.demo !== "other" || S.other.trim()); }
+
+function startTeach() {
+  timer.start(120, () => toast(T().teachTips[0]));
+  const pb = $("pauseBtn"); if (pb) pb.textContent = T().pause;
+  const iv = setInterval(() => {
+    if (S.screen !== "teach") { clearInterval(iv); return; }
+    S.tipIdx++; const el = $("ltip"); if (el) el.querySelector("span").textContent = T().teachTips[S.tipIdx % T().teachTips.length];
+  }, 25000);
+}
+
+function chainText() {
+  const t = T(), items = chain();
+  return [`FREE//BUILDER — ${t.product}`, items.length === 1 ? t.link1 : fmt(t.links, { n: items.length }), "",
+    ...items.map(c => `⊂⊃ ${demoName(c.demo)}${c.name ? " · " + c.name : ""}: ${c.text}`), "", "wei-meng.org/free_builder/teachback"].join("\n");
+}
+
+$("stage").addEventListener("input", e => {
+  const el = e.target, nb = $("nextBtn");
+  if (el.id === "otherIn") { S.other = el.value; if (nb) nb.disabled = !canPrep(); }
+  if (el.id === "teacherIn") { S.teacher = el.value; store.set("fb_tb_teacher", el.value); if (nb) nb.disabled = !canPrep(); }
+  if (el.id === "learnerIn") { S.learner = el.value; if (nb) nb.disabled = !canPrep(); }
+  if (el.dataset.pt) S.points[+el.dataset.pt] = el.value;
+  if (el.id === "backIn") { S.back = el.value; if (nb) nb.disabled = !(el.value.trim().length > 3); }
+});
+$("stage").addEventListener("click", e => {
+  sound.init();
+  const d = e.target.closest("[data-demo]"), a = e.target.closest("[data-act]");
+  if (d) { sound.tap(); S.demo = d.dataset.demo; render(); if (S.demo === "other") { const o = $("otherIn"); if (o && !matchMedia("(pointer: coarse)").matches) o.focus(); } return; }
+  if (!a) return;
+  const k = a.dataset.act; sound.tap();
+  switch (k) {
+    case "toChain": S.fresh = null; go("chain"); break;
+    case "toWhat": go("what"); break;
+    case "toWhatAgain": Object.assign(S, { demo: null, other: "", points: ["", "", ""], learner: "", back: "", fresh: null }); go("what"); break;
+    case "toPrep": if (canPrep()) go("prep"); break;
+    case "toTeach": go("teach"); break;
+    case "pause":
+      if (timer.ended) return;
+      if (timer.running) { timer.pause(); a.textContent = T().resume; } else { timer.resume(); a.textContent = T().pause; }
+      break;
+    case "toPass": go("pass"); break;
+    case "toBack": go("back"); break;
+    case "toAdd": go("add"); break;
+    case "save": {
+      const at = Date.now(), list = store.get("fb_teachback", []);
+      list.push({ demo: S.demo, text: S.back.trim() + (S.demo === "other" && S.other.trim() ? ` (${S.other.trim()})` : ""), name: S.learner.trim(), at });
+      store.set("fb_teachback", list.slice(-50)); S.fresh = at; sound.warm(); buzz(30); go("link"); break; }
+    case "copy": {
+      const text = chainText(), ok = () => toast(T().copied);
+      if (navigator.clipboard) navigator.clipboard.writeText(text).then(ok).catch(fb); else fb();
+      function fb() { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove(); ok(); }
+      break; }
+    case "clear":
+      if (!S.clearArmed) { S.clearArmed = true; toast(T().clearSure); a.style.color = "var(--accent)"; a.style.borderColor = "var(--accent)"; return; }
+      store.set("fb_teachback", []); toast(T().cleared); S.clearArmed = false; render(); break;
+  }
+});
+
+window.__app = { S, go, render, timer, chain };
+
+/* ---------- facilitator guide ---------- */
+const drawer = $("drawer");
+function openGuide() {
+  const t = T();
+  $("panel").innerHTML = `
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+      <div><span class="kicker">${esc(t.gKicker)}</span><h3 id="g-title">${esc(t.gTitle)}</h3></div>
+      <button class="x" data-close aria-label="${esc(t.close)}">✕</button>
+    </div>
+    <h4>${esc(t.gWhy)}</h4><p>${esc(t.gWhyTxt)}</p>
+    <h4>${esc(t.gSteps)}</h4><ol>${t.gStepList.map(s => `<li>${esc(s)}</li>`).join("")}</ol>
+    <h4>${esc(t.gDebrief)}</h4><ul>${t.gDebriefList.map(s => `<li>${esc(s)}</li>`).join("")}</ul>
+    <h4>${esc(t.gNotes)}</h4><ul>${t.gNotesList.map(s => `<li>${esc(s)}</li>`).join("")}</ul>`;
+  drawer.classList.add("show");
+  setTimeout(() => drawer.querySelector("[data-close]").focus({ preventScroll: true }), 60);
+}
+function closeGuide() { drawer.classList.remove("show"); $("btn-guide").focus({ preventScroll: true }); }
+drawer.addEventListener("click", e => { if (e.target === drawer || e.target.closest("[data-close]")) closeGuide(); });
+$("btn-guide").addEventListener("click", openGuide);
+window.addEventListener("keydown", e => { if (e.key === "Escape" && drawer.classList.contains("show")) closeGuide(); });
+
+/* ---------- language + sound ---------- */
+function paintSound() {
+  const b = $("btn-sound"), t = T();
+  b.innerHTML = sound.muted
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>';
+  b.setAttribute("aria-label", sound.muted ? t.soundOff : t.soundOn); b.title = b.getAttribute("aria-label");
+}
+$("btn-sound").addEventListener("click", () => { sound.muted = !sound.muted; store.set("fb_muted", sound.muted); sound.init(); paintSound(); if (!sound.muted) sound.tap(); });
+
+function applyLang(l) {
+  lang = LANGS.includes(l) ? l : "en";
+  document.documentElement.lang = lang === "zh" ? "zh-CN" : lang;
+  document.title = T().title;
+  $("lang-lbl").textContent = LANG_LBL[lang];
+  document.querySelectorAll("[data-t]").forEach(el => { const v = T()[el.dataset.t]; if (typeof v === "string") el.textContent = v; });
+  paintSound();
+  render();               // the clock object survives a re-render
+  timer.paint();
+  const pb = $("pauseBtn"); if (pb && !timer.running && !timer.ended) pb.textContent = T().resume;
+  if (drawer.classList.contains("show")) openGuide();
+  try { localStorage.setItem("wm_preferred_lang", lang); localStorage.setItem("wm_cases_lang", lang); } catch (e) {}
+}
+$("btn-lang").addEventListener("click", () => applyLang(LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length]));
+
+/* ---------- boot ---------- */
+let saved = null;
+try { saved = localStorage.getItem("wm_preferred_lang") || localStorage.getItem("wm_cases_lang"); } catch (e) {}
+const nav = (navigator.language || "").toLowerCase();
+applyLang(LANGS.includes(saved) ? saved : nav.startsWith("zh") ? "zh" : nav.startsWith("es") ? "es" : "en");
+document.addEventListener("visibilitychange", () => { if (!document.hidden && timer.running) keepAwake(true); });
+})();
+</script>
+</body>
+</html>
