@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title id="page-title">Listening Duet — FREE//BUILDER</title>
+  <meta name="description" content="One plays a client with a hidden need; the other asks — no pitching — until they find it. Then swap.">
+  <meta name="theme-color" content="#F7F6F2">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Crect x='7' y='7' width='8' height='8' rx='2' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='7' y='17' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='17' y='17' width='8' height='8' rx='2' fill='%23E2553F'/%3E%3C/svg%3E">
+  <!-- Brand fonts load without blocking the page: where Google Fonts is slow or blocked, system fonts show instantly. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+
+  <style>
+    /* =================================================================
+       FB KIT · tokens + shell (shared by every FREE//BUILDER demo)
+       ================================================================= */
+    :root {
+      --paper:#F7F6F2; --ink:#17171A; --muted:#6B6A70; --line:#E5E2DA; --accent:#E2553F; --white:#fff; --good:#2F8A5C;
+      --st:#E2553F;
+      --ease:cubic-bezier(.23,1,.32,1);
+      --sans:"Plus Jakarta Sans",system-ui,-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+      --mono:"Space Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+      --syne:Syne,"Plus Jakarta Sans",system-ui,"PingFang SC","Noto Sans SC",sans-serif;
+      --serif:"Instrument Serif",Georgia,"Songti SC","STSong",serif;
+    }
+    * { box-sizing:border-box; }
+    html, body { margin:0; overflow-x:hidden; }
+    body {
+      background:var(--paper); color:var(--ink); font-family:var(--sans);
+      -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;
+      min-height:100vh; min-height:100svh; display:flex; flex-direction:column;
+    }
+    button { font:inherit; color:inherit; cursor:pointer; background:none; border:0; padding:0; touch-action:manipulation; }
+    a { color:inherit; }
+    :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:10px; }
+    .kicker { font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
+    .dots { position:fixed; inset:0; z-index:-1; pointer-events:none;
+      background-image:radial-gradient(rgba(23,23,26,.09) 1px,transparent 1px); background-size:22px 22px;
+      -webkit-mask-image:linear-gradient(to bottom,#000,transparent 60%); mask-image:linear-gradient(to bottom,#000,transparent 60%); }
+
+    header.top { position:sticky; top:0; z-index:40; background:rgba(247,246,242,.92);
+      -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); border-bottom:1px solid rgba(229,226,218,.8);
+      padding:10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); }
+    .top-in { max-width:960px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .brand { display:flex; align-items:center; gap:10px; text-decoration:none; min-width:0; }
+    .mark { width:34px; height:34px; border-radius:10px; background:var(--ink); display:grid; place-items:center; flex-shrink:0; transition:transform .5s var(--ease); }
+    .mark rect { transform-box:fill-box; transform-origin:center; transition:transform .6s var(--ease); }
+    .mark .last { transform:translate(2.5px,-2.5px) rotate(12deg); }
+    .brand:hover .mark { transform:rotate(-4deg); }
+    .brand:hover .mark .last { transform:none; }
+    .brand-txt { line-height:1; min-width:0; }
+    .brand-txt b { font-family:var(--syne); font-weight:700; font-size:13px; display:block; }
+    .brand-txt b i { color:var(--accent); font-style:normal; }
+    .brand-txt span { display:block; font-size:11px; color:var(--muted); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .top-actions { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+    .chip { height:32px; padding:0 10px; border:1px solid var(--line); border-radius:9px; background:rgba(255,255,255,.6);
+      display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; transition:border-color .2s, transform .1s; }
+    .chip:hover { border-color:rgba(23,23,26,.3); }
+    .chip:active { transform:scale(.96); }
+    .chip svg { width:14px; height:14px; }
+    .chip[hidden] { display:none; }
+    @media (max-width:420px) { .chip .lbl { display:none; } }
+    @media (max-width:340px) { .brand-txt { display:none; } }
+
+    main { flex:1; width:100%; max-width:600px; margin:0 auto; padding:24px max(16px, env(safe-area-inset-right)) 32px max(16px, env(safe-area-inset-left)); display:flex; flex-direction:column; }
+
+    /* progress dots */
+    .steps { display:flex; gap:6px; align-items:center; margin-bottom:18px; min-height:8px; }
+    .steps span { height:6px; flex:1; border-radius:3px; background:var(--line); transition:background .4s; }
+    .steps span.done { background:var(--ink); }
+    .steps span.now { background:var(--accent); }
+
+    /* screens */
+    .screen { flex:1; display:flex; flex-direction:column; gap:18px; animation:in .5s var(--ease) both; }
+    @keyframes in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+    h1, h2 { font-family:var(--syne); font-weight:700; letter-spacing:-.02em; margin:0; line-height:1.1; }
+    h1 { font-size:clamp(34px, 9vw, 52px); }
+    h2 { font-size:clamp(26px, 6.5vw, 34px); }
+    .lead { font-size:16px; line-height:1.6; color:rgba(23,23,26,.75); margin:0; }
+    .serif { font-family:var(--serif); font-style:italic; font-size:22px; line-height:1.3; color:rgba(23,23,26,.85); margin:0; }
+    .accent-word { font-family:var(--serif); font-style:italic; font-weight:400; color:var(--muted); white-space:nowrap; padding-bottom:.12em;
+      background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7 Q 12 1 22 7 T 42 7 T 62 7 T 82 7 T 102 7 T 118 6' fill='none' stroke='%23E2553F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left bottom / 100% .32em; }
+    .pills { display:flex; flex-wrap:wrap; gap:6px; }
+    .pill { font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:99px; border:1px solid var(--line); color:var(--muted); background:rgba(255,255,255,.6); }
+    .spacer { flex:1; }
+
+    .btns { display:flex; gap:8px; flex-wrap:wrap; }
+    .btn { flex:1; min-height:52px; padding:0 20px; border-radius:99px; font-family:var(--mono); font-size:13px; font-weight:700;
+      display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1px solid var(--line); background:var(--white);
+      transition:background .2s, border-color .2s, transform .1s; }
+    .btn:hover { border-color:rgba(23,23,26,.35); }
+    .btn:active { transform:scale(.98); }
+    .btn.pri { background:var(--ink); border-color:var(--ink); color:#fff; flex:2; }
+    .btn.pri:hover { background:var(--accent); border-color:var(--accent); }
+    .btn[disabled] { opacity:.45; pointer-events:none; }
+    .link { font-family:var(--mono); font-size:12px; color:var(--muted); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:4px; align-self:center; padding:8px; }
+    .link:hover { color:var(--ink); }
+
+    .card { background:var(--white); border:1px solid var(--line); border-radius:24px; padding:22px; }
+    .field { display:block; }
+    .field span { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+    .field input, .field textarea { width:100%; font:inherit; font-size:16px; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--white); color:var(--ink); }
+    .field textarea { resize:vertical; min-height:96px; line-height:1.5; }
+    .field input:focus, .field textarea:focus { outline:none; border-color:var(--ink); }
+    .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .seg { display:flex; flex-wrap:wrap; gap:6px; }
+    .seg button { padding:9px 14px; border-radius:99px; border:1px solid var(--line); background:var(--white); font-size:13px; transition:all .2s; }
+    .seg button[aria-pressed="true"] { background:var(--ink); color:#fff; border-color:var(--ink); }
+
+    /* who's who */
+    .roles { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .role { border-radius:18px; padding:14px; border:1px solid var(--line); background:var(--white); }
+    .role .k { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+    .role .n { font-family:var(--syne); font-weight:700; font-size:18px; margin-top:4px; word-break:break-word; }
+    .role.speak { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .role.speak .k { color:rgba(255,255,255,.55); }
+
+    /* prompt card */
+    .prompt { position:relative; background:var(--ink); color:#fff; border-radius:26px; padding:28px 24px 24px; min-height:200px;
+      display:flex; flex-direction:column; justify-content:space-between; gap:18px; overflow:hidden; }
+    .prompt::after { content:""; position:absolute; right:-50px; top:-50px; width:170px; height:170px; border-radius:50%; border:1px solid rgba(255,255,255,.1); }
+    .prompt .q { font-family:var(--serif); font-style:italic; font-size:clamp(24px, 6.4vw, 30px); line-height:1.25; position:relative; }
+    .prompt .meta { display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; color:rgba(255,255,255,.5); position:relative; }
+    .prompt.flip { animation:flip .55s var(--ease); }
+    @keyframes flip { 0% { transform:rotateX(0); } 50% { transform:rotateX(80deg); opacity:.4; } 100% { transform:none; } }
+
+    /* timer ring */
+    .timer { display:grid; place-items:center; margin:4px auto; position:relative; width:min(68vw, 260px); aspect-ratio:1; }
+    .timer svg { width:100%; height:100%; transform:rotate(-90deg); }
+    .timer .bg { stroke:var(--line); }
+    .timer .fg { stroke:var(--st); transition:stroke .3s; }
+    .timer .num { position:absolute; inset:0; display:grid; place-items:center; text-align:center; }
+    .timer .num b { font-family:var(--mono); font-size:clamp(40px, 13vw, 56px); font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:-.02em; display:block; }
+    .timer .num small { font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.12em; text-transform:uppercase; }
+    .timer.done .fg { stroke:var(--good); }
+    .timer.pulse { animation:pulse 1.2s ease-in-out 2; }
+    @keyframes pulse { 50% { transform:scale(1.04); } }
+
+    .tip { display:flex; gap:10px; align-items:flex-start; padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(23,23,26,.2); font-size:14px; line-height:1.5; }
+    .tip b { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:400; display:block; margin-bottom:2px; }
+    .tip i { font-style:normal; font-size:18px; line-height:1.2; }
+    .stems { display:grid; gap:8px; }
+    .stems div { padding:12px 14px; border-radius:14px; background:var(--white); border:1px solid var(--line); font-family:var(--serif); font-style:italic; font-size:19px; }
+
+    /* felt heard */
+    .heard { display:grid; gap:8px; }
+    .heard button { display:flex; align-items:center; gap:14px; text-align:left; padding:16px 18px; border-radius:18px; border:1px solid var(--line); background:var(--white); transition:all .2s; }
+    .heard button:hover { border-color:rgba(23,23,26,.35); }
+    .heard button .e { width:40px; height:40px; border-radius:50%; display:grid; place-items:center; font-size:20px; flex-shrink:0; background:var(--paper); }
+    .heard button b { display:block; font-size:16px; }
+    .heard button small { display:block; font-size:13px; color:var(--muted); margin-top:2px; }
+
+    /* curtain (pass the phone) */
+    .curtain { background:var(--ink); color:#fff; border-radius:28px; padding:32px 24px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px; }
+    .curtain .hand { width:84px; height:84px; }
+    .curtain h2 { color:#fff; }
+    .curtain p { margin:0; color:rgba(255,255,255,.7); line-height:1.55; }
+
+    /* summary */
+    .sum { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .sum div { background:var(--white); border:1px solid var(--line); border-radius:18px; padding:16px; }
+    .sum b { display:block; font-family:var(--syne); font-size:18px; word-break:break-word; }
+    .sum span { display:block; font-size:13px; color:var(--muted); margin-top:4px; }
+    .monday { padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(23,23,26,.2); font-size:14px; line-height:1.55; }
+    .monday b { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:400; margin-bottom:3px; }
+    .chain { list-style:none; padding:0; margin:0; display:grid; gap:8px; }
+    .chain li { background:var(--white); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-size:14px; line-height:1.5; }
+    .chain li small { display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-top:4px; }
+    .steps3 { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .steps3 div { background:var(--white); border:1px solid var(--line); border-radius:16px; padding:14px 12px; text-align:center; }
+    .steps3 b { display:block; font-family:var(--mono); font-size:11px; color:var(--accent); }
+    .steps3 span { display:block; font-family:var(--syne); font-weight:700; font-size:15px; margin-top:4px; }
+
+    /* drawer (facilitator guide) */
+    .drawer { position:fixed; inset:0; z-index:60; display:flex; justify-content:flex-end; background:rgba(23,23,26,.45); opacity:0; pointer-events:none; transition:opacity .25s; }
+    .drawer.show { opacity:1; pointer-events:auto; }
+    .panel { width:100%; max-width:460px; height:100%; background:var(--paper); overflow-y:auto; padding:22px 22px calc(28px + env(safe-area-inset-bottom)); transform:translateX(30px); transition:transform .45s var(--ease); overscroll-behavior:contain; }
+    .drawer.show .panel { transform:none; }
+    @media (max-width:560px) { .drawer { align-items:flex-end; } .panel { max-width:none; height:88vh; height:88svh; border-radius:24px 24px 0 0; transform:translateY(40px); } }
+    .panel h3 { font-family:var(--syne); font-size:22px; margin:4px 0 12px; }
+    .panel h4 { font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:400; margin:22px 0 8px; }
+    .panel ol, .panel ul { margin:0; padding-left:20px; display:grid; gap:8px; font-size:14px; line-height:1.55; }
+    .panel p { font-size:14px; line-height:1.6; color:rgba(23,23,26,.78); margin:0; }
+    .x { width:34px; height:34px; border-radius:50%; display:grid; place-items:center; border:1px solid var(--line); background:var(--white); font-family:var(--mono); flex-shrink:0; }
+
+    .toast { position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom)); transform:translate(-50%,10px); opacity:0; pointer-events:none; z-index:70;
+      background:var(--ink); color:#fff; border-radius:99px; padding:9px 16px; font-family:var(--mono); font-size:11px; transition:opacity .25s, transform .35s var(--ease);
+      max-width:calc(100% - 32px); }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+
+    footer { border-top:1px solid var(--line); padding:18px max(16px, env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+    .foot-in { max-width:960px; margin:0 auto; display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--muted); }
+    .foot-in a { text-decoration:none; } .foot-in a:hover { color:var(--ink); }
+
+    @media (min-width:700px) { main { padding-top:40px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.001ms !important; transition-duration:.001ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="dots" aria-hidden="true"></div>
+
+  <header class="top">
+    <div class="top-in">
+      <a class="brand" href="/free_builder/" aria-label="FREE//BUILDER">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="19" height="19" style="overflow:visible">
+            <rect x="3" y="3" width="8" height="8" rx="2" fill="#fff"/><rect x="13" y="3" width="8" height="8" rx="2" fill="#fff" opacity=".55"/>
+            <rect x="3" y="13" width="8" height="8" rx="2" fill="#fff" opacity=".55"/><rect class="last" x="13" y="13" width="8" height="8" rx="2" fill="#E2553F"/>
+          </svg>
+        </span>
+        <span class="brand-txt"><b>FREE<i>//</i>BUILDER</b><span data-t="product">Discovery Duet</span></span>
+      </a>
+      <div class="top-actions">
+        <button class="chip" id="btn-lang" type="button" aria-label="Language" title="EN / 中文 / ES">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
+          <b id="lang-lbl">EN</b>
+        </button>
+        <button class="chip" id="btn-sound" type="button"></button>
+        <button class="chip" id="btn-guide" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2zM22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg>
+          <span class="lbl" data-t="guide">Facilitators</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="steps" id="steps" aria-hidden="true"></div>
+    <div id="stage" aria-live="polite"></div>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span data-t="privacy">Nothing is recorded. Nothing leaves this phone.</span>
+      <a href="/free_builder/" data-t="back">FREE//BUILDER ↗</a>
+    </div>
+  </footer>
+
+  <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="g-title">
+    <div class="panel" id="panel"></div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+"use strict";
+/* =====================================================================
+   COPY — EN / 中文 / ES
+   ===================================================================== */
+const I18N = {
+en: {
+  title: "Discovery Duet — FREE//BUILDER", product: "Discovery Duet", guide: "Facilitators",
+  privacy: "Nothing is recorded. Nothing leaves this phone.", back: "FREE//BUILDER ↗",
+  soundOn: "Sound on", soundOff: "Sound off", left: "left", paused: "paused", close: "Close", resume: "Resume", pause: "Pause",
+  introKicker: "Client conversations · Pairs",
+  introTitle: 'Discovery <span class="accent-word">Duet</span>',
+  introLead: "Every client asks for something. Few ask for what they really need. One of you plays a client with a hidden need; the other asks — no pitching — until they find it. Then swap.",
+  introMeta: ["2 people", "1 phone", "≈ 15 minutes"],
+  start: "Start",
+  setupTitle: "Who's playing?", nameA: "Person A", nameB: "Person B", phA: "e.g. Ana", phB: "e.g. Leo",
+  setupNote: "A asks first; B plays the client. Then you swap.",
+  next: "Next", backBtn: "Back",
+  roleAsk: "Asks", roleClient: "Client",
+  passTitle: "Hand the phone to {c}", passLead: "{c} plays the client. {a}, look away for a moment.", passGo: "I'm {c}",
+  briefKicker: "Private · for the client", briefTitle: "Your role",
+  sayFirst: "Open with this request", hidden: "What you really need — don't say it unless they find it",
+  clues: "Share these only if asked a good open question",
+  briefNote: "Be a real person: answer honestly, but don't hand it over. Tap the bell whenever they start pitching.",
+  hide: "Got it — hide it",
+  talkTitle: "{a}, discover.", talkLead: "The client opens with:", talkGoal: "Find the need beneath the request. Questions only — no solutions yet.",
+  starters: ["“What's prompting this now?”", "“What would make this a success for you?”", "“What happens if nothing changes?”", "“Tell me more about…”", "“Who else cares about this, and why?”"],
+  bell: "Pitch!", bellHint: "{c}: tap when {a} pitches instead of asks", bellCount: "{n}×",
+  bellToast: "Ding — that was a pitch. Back to a question?",
+  doneTalk: "I think I've found it",
+  guessTitle: "{a}, say it out loud.", guessLead: "Summarise what you think {c} really needs. Then type it.", guessPh: "What you really need is…",
+  revealBtn: "Reveal",
+  revealKicker: "The hidden need", foundQ: "{c}, did {a} find it?",
+  yes: "Found it", yesSub: "That's exactly it.", partly: "Close", partlySub: "Part of it — not the core.", no: "Not yet", noSub: "Still at the surface.",
+  reflectLbl: "Talk about it (2 minutes)",
+  reflect: ["Which question opened things up?", "When did you feel the urge to pitch — and what did you do?", "{c}: when did you feel understood?"],
+  bellNote: "Pitches caught: {n}. Not a score — just a mirror.",
+  swapBtn: "Swap roles", finish: "Finish",
+  swapTitle: "Swap roles", swapLead: "Now {a} asks and {c} plays a new client.", swapGo: "Swap",
+  endKicker: "Discovery practised", endTitle: "Curiosity sells better than pitching.",
+  endLead: "Clients trust people who understand them before they propose. You just practised staying curious a little longer — with a real person.",
+  monday: "Try this on Monday", mondayTxt: "In your next client or stakeholder call, ask two more questions before you suggest anything.",
+  again: "Play again", passOn: "Pass it on",
+  teachKicker: "Pass it on", teachTitle: "Teach someone discovery.",
+  teachLead: "Show a colleague the three habits, then let them write, in their own words, what they'll try.",
+  t3: ["Ask why now", "Stay in questions", "Summarise the need"], t3sub: ["what changed?", "no pitch yet", "then check"],
+  learnerName: "Their name (optional)", learnerPh: "e.g. Mei", learned: "What they'll try, in their own words", learnedPh: "Hand them the phone…",
+  save: "Save to this phone", chainTitle: "People you've passed it on to", chainEmpty: "No one yet. Your first teach-back will appear here.",
+  saved: "Saved on this phone only.", restart: "Back to the start", timeUp: "Time's up — summarise what you've heard.",
+  gKicker: "Facilitator guide", gTitle: "Running Discovery Duet",
+  gWhy: "Why it works",
+  gWhyTxt: "The stated request is rarely the real need. Hiding the need on a card makes curiosity the only way forward, and the pitch bell turns a bad habit into a shared joke instead of a judgment.",
+  gSteps: "Running it (≈ 20 minutes)",
+  gStepList: ["Pair people up. One phone per pair.", "The client reads their card in private (1 minute).", "The asker has 4 minutes: questions only. The client taps the bell on any pitch.", "The asker summarises the need aloud, then reveals the card.", "Discuss the three questions, then swap."],
+  gDebrief: "Debrief questions",
+  gDebriefList: ["Which kinds of questions surfaced the hidden need?", "What made it hard not to pitch?", "Which real client are we probably pitching to too early?"],
+  gNotes: "Notes",
+  gNotesList: ["Works for internal stakeholders too — HR, IT, finance.", "The bell count is never compared between people.", "The goal is understanding the client, not winning them over."]
+},
+zh: {
+  title: "探询二重奏 — FREE//BUILDER", product: "探询二重奏", guide: "引导师",
+  privacy: "不录音，不上传，一切只在这部手机上。", back: "FREE//BUILDER ↗",
+  soundOn: "声音开", soundOff: "声音关", left: "剩余", paused: "已暂停", close: "关闭", resume: "继续", pause: "暂停",
+  introKicker: "客户对话 · 两人一组",
+  introTitle: '探询<span class="accent-word">二重奏</span>',
+  introLead: "每个客户都会提要求，但很少有人直接说出真正的需求。一人扮演带着隐藏需求的客户，另一人只提问、不推销，直到找到它。然后交换。",
+  introMeta: ["2 个人", "1 部手机", "约 15 分钟"],
+  start: "开始",
+  setupTitle: "谁来玩？", nameA: "A", nameB: "B", phA: "例如：小安", phB: "例如：阿乐",
+  setupNote: "A 先提问，B 扮演客户。然后交换。",
+  next: "下一步", backBtn: "返回",
+  roleAsk: "提问", roleClient: "客户",
+  passTitle: "把手机交给{c}", passLead: "{c}扮演客户。{a}，请先移开视线。", passGo: "我是{c}",
+  briefKicker: "私密 · 仅限客户", briefTitle: "你的角色",
+  sayFirst: "用这个要求开场", hidden: "你真正需要的——除非对方问出来，否则不要说",
+  clues: "只有被问到好的开放式问题时，才透露这些",
+  briefNote: "做一个真实的人：诚实回答，但别主动交底。每当对方开始推销，就按铃。",
+  hide: "看好了，隐藏",
+  talkTitle: "{a}，开始探询。", talkLead: "客户的开场是：", talkGoal: "找到要求背后的需求。只提问——先不给方案。",
+  starters: ["“为什么是现在？”", "“对你来说，怎样才算成功？”", "“如果什么都不变，会怎样？”", "“能多说说……吗？”", "“还有谁关心这件事？为什么？”"],
+  bell: "推销了！", bellHint: "{c}：当 {a} 在推销而不是提问时，按一下", bellCount: "{n} 次",
+  bellToast: "叮——这是推销。回到一个问题？",
+  doneTalk: "我想我找到了",
+  guessTitle: "{a}，说出来。", guessLead: "总结你认为 {c} 真正需要的是什么，然后写下来。", guessPh: "你真正需要的是……",
+  revealBtn: "揭晓",
+  revealKicker: "隐藏的需求", foundQ: "{c}，{a} 找到了吗？",
+  yes: "找到了", yesSub: "正是这个。", partly: "接近了", partlySub: "说中一部分，但不是核心。", no: "还没有", noSub: "还停留在表面。",
+  reflectLbl: "聊一聊（2 分钟）",
+  reflect: ["哪个问题打开了局面？", "你什么时候想推销？你是怎么做的？", "{c}：你什么时候觉得被理解了？"],
+  bellNote: "被抓到的推销：{n} 次。这不是分数，只是一面镜子。",
+  swapBtn: "交换角色", finish: "结束",
+  swapTitle: "交换角色", swapLead: "现在由 {a} 提问，{c} 扮演一位新客户。", swapGo: "交换",
+  endKicker: "探询练习完成", endTitle: "好奇心比推销更能赢得客户。",
+  endLead: "客户信任那些先理解、再提方案的人。你刚刚练习了多保持一会儿好奇——和一个真实的人。",
+  monday: "周一试试这个", mondayTxt: "在下一次客户或相关方沟通中，提任何建议之前，多问两个问题。",
+  again: "再玩一次", passOn: "传下去",
+  teachKicker: "传下去", teachTitle: "把探询教给别人。",
+  teachLead: "给同事讲讲这三个习惯，然后让 TA 用自己的话写下想尝试的做法。",
+  t3: ["问为什么是现在", "停留在提问", "总结需求"], t3sub: ["发生了什么变化？", "先不推销", "然后确认"],
+  learnerName: "TA 的名字（可选）", learnerPh: "例如：小美", learned: "TA 想尝试的做法（用自己的话）", learnedPh: "把手机递给 TA……",
+  save: "保存在这部手机上", chainTitle: "你传给过的人", chainEmpty: "还没有。你的第一次“教回去”会出现在这里。",
+  saved: "只保存在这部手机上。", restart: "回到开头", timeUp: "时间到——总结一下你听到的。",
+  gKicker: "引导师指南", gTitle: "如何带“探询二重奏”",
+  gWhy: "为什么有效",
+  gWhyTxt: "表面的要求很少是真正的需求。把需求藏在卡片上，好奇心就成了唯一的出路；而“推销铃”把一个坏习惯变成大家一起笑的梗，而不是评判。",
+  gSteps: "怎么带（约 20 分钟）",
+  gStepList: ["两两配对，每组一部手机。", "客户私下阅读卡片（1 分钟）。", "提问者有 4 分钟：只能提问。客户一听到推销就按铃。", "提问者大声总结需求，然后揭晓卡片。", "讨论三个问题，然后交换。"],
+  gDebrief: "复盘问题",
+  gDebriefList: ["哪类问题让隐藏需求浮出水面？", "是什么让你忍不住想推销？", "我们可能正在对哪位真实客户推销得太早？"],
+  gNotes: "备注",
+  gNotesList: ["同样适用于内部相关方——HR、IT、财务。", "铃声次数从不在人与人之间比较。", "目标是理解客户，而不是拿下客户。"]
+},
+es: {
+  title: "Dúo de Descubrimiento — FREE//BUILDER", product: "Dúo de Descubrimiento", guide: "Facilitadores",
+  privacy: "No se graba nada. Nada sale de este móvil.", back: "FREE//BUILDER ↗",
+  soundOn: "Sonido sí", soundOff: "Sonido no", left: "quedan", paused: "en pausa", close: "Cerrar", resume: "Seguir", pause: "Pausa",
+  introKicker: "Conversaciones con clientes · Parejas",
+  introTitle: 'Dúo de <span class="accent-word">Descubrimiento</span>',
+  introLead: "Todo cliente pide algo. Pocos piden lo que de verdad necesitan. Uno hace de cliente con una necesidad oculta; el otro pregunta —sin vender— hasta encontrarla. Luego cambiáis.",
+  introMeta: ["2 personas", "1 móvil", "≈ 15 minutos"],
+  start: "Empezar",
+  setupTitle: "¿Quién juega?", nameA: "Persona A", nameB: "Persona B", phA: "p. ej. Ana", phB: "p. ej. Leo",
+  setupNote: "A pregunta primero; B hace de cliente. Luego cambiáis.",
+  next: "Siguiente", backBtn: "Atrás",
+  roleAsk: "Pregunta", roleClient: "Cliente",
+  passTitle: "Pasa el móvil a {c}", passLead: "{c} hace de cliente. {a}, aparta la vista un momento.", passGo: "Soy {c}",
+  briefKicker: "Privado · para el cliente", briefTitle: "Tu papel",
+  sayFirst: "Empieza con esta petición", hidden: "Lo que de verdad necesitas: no lo digas salvo que lo descubran",
+  clues: "Compártelo solo si te hacen una buena pregunta abierta",
+  briefNote: "Sé una persona real: responde con honestidad, pero no lo regales. Toca la campana cada vez que empiecen a vender.",
+  hide: "Entendido, ocultar",
+  talkTitle: "{a}, descubre.", talkLead: "El cliente empieza con:", talkGoal: "Encuentra la necesidad bajo la petición. Solo preguntas, todavía sin soluciones.",
+  starters: ["“¿Qué hace que esto surja ahora?”", "“¿Qué haría que esto fuera un éxito para ti?”", "“¿Qué pasa si nada cambia?”", "“Cuéntame más sobre…”", "“¿A quién más le importa esto, y por qué?”"],
+  bell: "¡Venta!", bellHint: "{c}: toca cuando {a} venda en vez de preguntar", bellCount: "{n}×",
+  bellToast: "Din: eso fue vender. ¿Volvemos a una pregunta?",
+  doneTalk: "Creo que lo he encontrado",
+  guessTitle: "{a}, dilo en voz alta.", guessLead: "Resume lo que crees que {c} necesita de verdad. Luego escríbelo.", guessPh: "Lo que de verdad necesitas es…",
+  revealBtn: "Revelar",
+  revealKicker: "La necesidad oculta", foundQ: "{c}, ¿lo encontró {a}?",
+  yes: "Lo encontró", yesSub: "Es exactamente eso.", partly: "Cerca", partlySub: "Una parte, no el núcleo.", no: "Todavía no", noSub: "Sigue en la superficie.",
+  reflectLbl: "Hablad de ello (2 minutos)",
+  reflect: ["¿Qué pregunta abrió la conversación?", "¿Cuándo sentiste ganas de vender, y qué hiciste?", "{c}: ¿cuándo te sentiste entendido?"],
+  bellNote: "Ventas detectadas: {n}. No es una puntuación, solo un espejo.",
+  swapBtn: "Cambiar papeles", finish: "Terminar",
+  swapTitle: "Cambiad de papel", swapLead: "Ahora {a} pregunta y {c} hace de un cliente nuevo.", swapGo: "Cambiar",
+  endKicker: "Descubrimiento practicado", endTitle: "La curiosidad vende mejor que el discurso.",
+  endLead: "Los clientes confían en quien los entiende antes de proponer. Acabas de practicar mantener la curiosidad un poco más, con una persona real.",
+  monday: "Pruébalo el lunes", mondayTxt: "En tu próxima llamada con un cliente o una parte interesada, haz dos preguntas más antes de sugerir nada.",
+  again: "Jugar otra vez", passOn: "Transmitirlo",
+  teachKicker: "Transmitirlo", teachTitle: "Enseña el descubrimiento a alguien.",
+  teachLead: "Muéstrale a un colega los tres hábitos y deja que escriba, con sus palabras, qué va a probar.",
+  t3: ["Pregunta por qué ahora", "Quédate en las preguntas", "Resume la necesidad"], t3sub: ["¿qué cambió?", "sin vender todavía", "y compruébalo"],
+  learnerName: "Su nombre (opcional)", learnerPh: "p. ej. Mei", learned: "Qué va a probar, con sus palabras", learnedPh: "Pásale el móvil…",
+  save: "Guardar en este móvil", chainTitle: "Personas a las que se lo transmitiste", chainEmpty: "Nadie todavía. Tu primera transmisión aparecerá aquí.",
+  saved: "Guardado solo en este móvil.", restart: "Volver al inicio", timeUp: "Se acabó el tiempo: resume lo que has oído.",
+  gKicker: "Guía para facilitadores", gTitle: "Cómo dinamizar el Dúo de Descubrimiento",
+  gWhy: "Por qué funciona",
+  gWhyTxt: "La petición declarada rara vez es la necesidad real. Ocultarla en una tarjeta hace que la curiosidad sea el único camino, y la campana convierte un mal hábito en una broma compartida, no en un juicio.",
+  gSteps: "Cómo hacerlo (≈ 20 minutos)",
+  gStepList: ["Formad parejas. Un móvil por pareja.", "El cliente lee su tarjeta en privado (1 minuto).", "Quien pregunta tiene 4 minutos: solo preguntas. El cliente toca la campana ante cualquier venta.", "Quien pregunta resume la necesidad en voz alta y luego se revela la tarjeta.", "Comentad las tres preguntas y cambiad."],
+  gDebrief: "Preguntas de cierre",
+  gDebriefList: ["¿Qué tipo de preguntas sacaron la necesidad oculta?", "¿Qué hizo difícil no vender?", "¿A qué cliente real le estamos vendiendo demasiado pronto?"],
+  gNotes: "Notas",
+  gNotesList: ["Funciona también con clientes internos: RR. HH., IT, finanzas.", "El número de campanas nunca se compara entre personas.", "El objetivo es entender al cliente, no ganárselo."]
+}
+};
+
+/* client cards: request (say first), need (hidden), clues (only for good questions) */
+const CLIENTS = {
+en: [
+ { who: "Head of Sales, mid-size distributor", req: "“We need a new CRM. Ours is outdated.”", need: "Reps don't trust the data because managers use it to blame them in reviews. A new tool won't fix that.", clues: ["Honestly, the last tool wasn't the problem.", "People only update records the night before a pipeline review."] },
+ { who: "HR business partner", req: "“We want a two-day leadership training for our managers.”", need: "Two senior managers are in open conflict and the team is splitting into camps. You want a neutral reason to get them in one room.", clues: ["Two of the managers barely speak to each other.", "Attrition doubled in one team this quarter."] },
+ { who: "Operations director", req: "“Can you make our onboarding faster?”", need: "New hires quit around month three because they feel isolated — not because onboarding is slow.", clues: ["Most leavers say the work itself was fine.", "New people sit with whoever has a free desk."] },
+ { who: "Procurement manager", req: "“We need a cheaper supplier.”", need: "Your budget was cut 20%, but your bonus depends on quality not dropping. What you really need is flexible payment terms.", clues: ["Our CFO just changed the budget rules.", "Last time we switched to a cheaper supplier, returns tripled."] },
+ { who: "Team lead, analytics", req: "“We need a dashboard for the board.”", need: "A new CEO is planning a restructure. You need to show what your team is worth before decisions are made.", clues: ["We have a new CEO since last month.", "The board has never asked about our team before."] },
+ { who: "Customer service manager", req: "“We want an AI chatbot for our support line.”", need: "Your team is burning out answering the same five questions. You also fear they'll think the bot is there to replace them.", clues: ["Sick days in the team are up this year.", "Most calls are about the same few things."] }
+],
+zh: [
+ { who: "一家中型分销商的销售负责人", req: "“我们需要一套新的 CRM，现在这个太旧了。”", need: "销售不信任系统里的数据，因为经理在评审时拿它来追责。换工具解决不了这个问题。", clues: ["说实话，上一个工具本身不是问题。", "大家只在管道评审的前一晚才更新记录。"] },
+ { who: "HR 业务伙伴", req: "“我们想给经理们做一个两天的领导力培训。”", need: "两位高级经理公开不和，团队正在分裂成两派。你想找一个中立的理由把他们拉进同一个房间。", clues: ["有两位经理几乎不跟对方说话。", "这个季度有一个团队的离职率翻倍了。"] },
+ { who: "运营总监", req: "“能让我们的入职流程快一点吗？”", need: "新员工在第三个月左右离职，是因为感到孤立——而不是入职太慢。", clues: ["大多数离职的人说工作本身还不错。", "新人哪里有空位就坐哪里。"] },
+ { who: "采购经理", req: "“我们需要一个更便宜的供应商。”", need: "你的预算被砍了 20%，但你的奖金取决于质量不下降。你真正需要的是更灵活的付款条件。", clues: ["我们的 CFO 刚改了预算规则。", "上次换了便宜的供应商，退货翻了三倍。"] },
+ { who: "数据分析团队负责人", req: "“我们需要一个给董事会看的仪表盘。”", need: "新 CEO 正在计划重组。你需要在决定做出之前，证明你团队的价值。", clues: ["上个月我们来了一位新 CEO。", "董事会以前从没问过我们团队。"] },
+ { who: "客服经理", req: "“我们想给客服热线上一个 AI 聊天机器人。”", need: "你的团队被同样的五个问题耗得精疲力尽。你也担心他们会以为机器人是来取代他们的。", clues: ["团队今年的病假变多了。", "大部分来电都是那几件事。"] }
+],
+es: [
+ { who: "Directora comercial de una distribuidora mediana", req: "“Necesitamos un CRM nuevo. El nuestro está anticuado.”", need: "Los comerciales no confían en los datos porque los jefes los usan para culparlos en las revisiones. Una herramienta nueva no lo arreglará.", clues: ["Sinceramente, la herramienta anterior no era el problema.", "La gente solo actualiza los registros la noche antes de la revisión."] },
+ { who: "HR business partner", req: "“Queremos una formación de liderazgo de dos días para los mandos.”", need: "Dos mandos sénior están en conflicto abierto y el equipo se está dividiendo. Buscas una excusa neutral para reunirlos en una sala.", clues: ["Dos de los mandos casi no se hablan.", "La rotación se duplicó en un equipo este trimestre."] },
+ { who: "Director de operaciones", req: "“¿Podéis hacer nuestro onboarding más rápido?”", need: "Las nuevas incorporaciones se van hacia el tercer mes porque se sienten aisladas, no porque el onboarding sea lento.", clues: ["Casi todos los que se van dicen que el trabajo estaba bien.", "Las personas nuevas se sientan donde haya una mesa libre."] },
+ { who: "Responsable de compras", req: "“Necesitamos un proveedor más barato.”", need: "Te recortaron el presupuesto un 20 %, pero tu bonus depende de que la calidad no baje. Lo que de verdad necesitas son condiciones de pago flexibles.", clues: ["Nuestro director financiero acaba de cambiar las reglas del presupuesto.", "La última vez que cambiamos a uno más barato, las devoluciones se triplicaron."] },
+ { who: "Líder del equipo de analítica", req: "“Necesitamos un cuadro de mando para el consejo.”", need: "Un nuevo CEO prepara una reestructuración. Necesitas demostrar lo que vale tu equipo antes de que se decida nada.", clues: ["Tenemos un CEO nuevo desde el mes pasado.", "El consejo nunca había preguntado por nuestro equipo."] },
+ { who: "Responsable de atención al cliente", req: "“Queremos un chatbot de IA para nuestra línea de soporte.”", need: "Tu equipo está agotado de responder las mismas cinco preguntas. También temes que piensen que el bot viene a sustituirlos.", clues: ["Este año han aumentado las bajas en el equipo.", "Casi todas las llamadas son por las mismas pocas cosas."] }
+]
+};
+
+/* =====================================================================
+   FB KIT · helpers (copy into every demo)
+   ===================================================================== */
+const LANGS = ["en", "zh", "es"], LANG_LBL = { en: "EN", zh: "中文", es: "ES" };
+let lang = "en";
+const T = () => I18N[lang];
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = (s, v = {}) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in v ? esc(v[k]) : m));
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+/* Seeded random + pairing codes: the same code on two phones gives the same scenario, no server needed. */
+function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const CODE_CHARS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+function newCode(n = 6) { let s = ""; for (let i = 0; i < n; i++) s += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]; return s; }
+function seedFrom(code) { let h = 2166136261; for (const c of String(code).toUpperCase()) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+
+/* Sound: soft, short, optional */
+const sound = {
+  ctx: null, muted: store.get("fb_muted", false),
+  init() { if (!this.ctx) { const A = window.AudioContext || window.webkitAudioContext; if (A) this.ctx = new A(); } if (this.ctx && this.ctx.state === "suspended") this.ctx.resume(); },
+  tone(f, d = .3, g = .06, type = "sine", at = 0) {
+    if (this.muted || !this.ctx) return;
+    try { const t = this.ctx.currentTime + at, o = this.ctx.createOscillator(), a = this.ctx.createGain();
+      o.type = type; o.frequency.setValueAtTime(f, t); a.gain.setValueAtTime(.0001, t); a.gain.linearRampToValueAtTime(g, t + .02); a.gain.exponentialRampToValueAtTime(.0001, t + d);
+      o.connect(a); a.connect(this.ctx.destination); o.start(t); o.stop(t + d + .05); } catch (e) {}
+  },
+  tap() { this.tone(520, .12, .04, "triangle"); },
+  chime() { [659.25, 880, 1318.5].forEach((f, i) => this.tone(f, 1.2, .05, "sine", i * .12)); },
+  warm() { [392, 493.88, 587.33].forEach((f, i) => this.tone(f, .9, .05, "sine", i * .1)); }
+};
+const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
+
+/* Keep the screen awake while a timer runs (where supported) */
+let wakeLock = null;
+async function keepAwake(on) {
+  try {
+    if (on && "wakeLock" in navigator && !wakeLock) wakeLock = await navigator.wakeLock.request("screen");
+    if (!on && wakeLock) { await wakeLock.release(); wakeLock = null; }
+  } catch (e) { wakeLock = null; }
+}
+
+/* Timer ring */
+function ringSVG() {
+  return `<svg viewBox="0 0 120 120" aria-hidden="true"><circle class="bg" cx="60" cy="60" r="54" fill="none" stroke-width="6"/><circle class="fg" id="ring" cx="60" cy="60" r="54" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="339.29" stroke-dashoffset="0"/></svg>`;
+}
+const timer = {
+  total: 90, left: 90, running: false, raf: 0, last: 0, onEnd: null, ended: false,
+  start(total, onEnd) { this.stop(); this.total = this.left = total; this.onEnd = onEnd; this.ended = false; this.resume(); },
+  resume() { if (this.running || this.ended) return; this.running = true; this.last = performance.now(); keepAwake(true); this.tick(); },
+  pause() { this.running = false; cancelAnimationFrame(this.raf); keepAwake(false); this.paint(); },
+  stop() { this.running = false; cancelAnimationFrame(this.raf); keepAwake(false); },
+  tick() {
+    if (!this.running) return;
+    const now = performance.now(); this.left = Math.max(0, this.left - (now - this.last) / 1000); this.last = now;
+    this.paint();
+    if (this.left <= 0) { this.running = false; this.ended = true; keepAwake(false); sound.chime(); buzz([60, 80, 60]); this.onEnd && this.onEnd(); return; }
+    this.raf = requestAnimationFrame(() => this.tick());
+  },
+  paint() {
+    const ring = $("ring"), num = $("tnum"), lbl = $("tlbl"), wrap = $("timer");
+    if (!ring) return;
+    ring.setAttribute("stroke-dashoffset", String(339.29 * (1 - this.left / this.total)));
+    const s = Math.ceil(this.left);
+    num.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+    lbl.textContent = this.ended ? "" : (this.running ? T().left : T().paused);
+    wrap.classList.toggle("done", this.ended);
+  }
+};
+
+/* Toast */
+let toastT;
+function toast(msg) { const el = $("toast"); el.textContent = msg; el.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("show"), 2600); }
+
+/* Pass-the-phone curtain */
+function curtainHTML(title, lead, btnLabel, act) {
+  return `<div class="curtain">
+    <svg class="hand" viewBox="0 0 84 84" aria-hidden="true"><rect x="27" y="10" width="30" height="52" rx="7" fill="none" stroke="#fff" stroke-width="2.5"/><circle cx="42" cy="54" r="2.5" fill="#E2553F"/><path d="M14 54c6 0 10 4 13 9M70 54c-6 0-10 4-13 9" stroke="rgba(255,255,255,.5)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M34 72h16" stroke="#E2553F" stroke-width="2.5" stroke-linecap="round"/></svg>
+    <h2>${title}</h2><p>${lead}</p>
+    <button class="btn pri" data-act="${act}" style="width:100%;margin-top:6px">${btnLabel} →</button></div>`;
+}
+
+
+
+/* =====================================================================
+   DISCOVERY DUET
+   ===================================================================== */
+const S = { screen: "intro", names: ["", ""], round: 0, card: [0, 0], guess: "", found: [null, null], bells: [0, 0], tipIdx: 0 };
+const FLOW = ["brief", "talk", "guess", "reveal"];
+const nameOf = i => S.names[i].trim() || I18N[lang][i ? "nameB" : "nameA"];
+const asker = () => nameOf(S.round), client = () => nameOf(1 - S.round);
+const card = () => CLIENTS[lang][S.card[S.round]];
+
+function deal() {
+  const n = CLIENTS.en.length, prev = S.round ? S.card[0] : -1;
+  let i, g = 0; do { i = Math.floor(Math.random() * n); g++; } while (i === prev && g < 40);
+  S.card[S.round] = i;
+}
+function go(screen) {
+  if (screen !== "talk") timer.stop();
+  S.screen = screen; render(); window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+  if (screen === "talk") startTalk();
+}
+function paintStepsBar() {
+  const at = FLOW.indexOf(S.screen === "pass" ? "brief" : S.screen);
+  $("steps").innerHTML = at < 0 ? "" : FLOW.map((_, i) => `<span class="${i < at ? "done" : i === at ? "now" : ""}"></span>`).join("");
+}
+function rolesHTML() {
+  const t = T();
+  return `<div class="roles">
+    <div class="role speak"><div class="k">${esc(t.roleAsk)}</div><div class="n">${esc(asker())}</div></div>
+    <div class="role"><div class="k">${esc(t.roleClient)}</div><div class="n">${esc(client())}</div></div>
+  </div>`;
+}
+function duetArt() {
+  return `<svg viewBox="0 0 320 150" style="width:100%;max-width:420px;height:auto;margin:4px 0" aria-hidden="true">
+    <rect x="30" y="30" width="170" height="90" rx="18" fill="#fff" stroke="#E5E2DA"/>
+    <text x="50" y="70" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="21" fill="#17171A">“We need…”</text>
+    <rect x="50" y="84" width="84" height="6" rx="3" fill="#E5E2DA"/>
+    <g transform="translate(186 50)"><rect width="104" height="70" rx="16" fill="#17171A"/>
+      <circle cx="40" cy="34" r="16" fill="none" stroke="#E2553F" stroke-width="4"/><path d="M52 46l14 14" stroke="#E2553F" stroke-width="5" stroke-linecap="round"/>
+      <text x="40" y="40" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="18" fill="#fff">?</text></g>
+  </svg>`;
+}
+const BELL = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>';
+const FOUND_ICONS = [
+  '<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="9" fill="var(--good)"/></svg>',
+  '<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="8.25" fill="none" stroke="var(--ink)" stroke-width="1.5"/><path d="M11 2.75a8.25 8.25 0 0 1 0 16.5z" fill="var(--ink)"/></svg>',
+  '<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="8.25" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 3"/></svg>'
+];
+
+function render() {
+  const t = T(), stage = $("stage");
+  paintStepsBar();
+  let h = "";
+  switch (S.screen) {
+  case "intro":
+    h = `<section class="screen">
+      <span class="kicker">${t.introKicker}</span><h1>${t.introTitle}</h1>
+      <p class="lead">${esc(t.introLead)}</p>
+      <div class="pills">${t.introMeta.map(m => `<span class="pill">${esc(m)}</span>`).join("")}</div>
+      ${duetArt()}
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="toSetup" data-focus>${esc(t.start)} →</button></div>
+    </section>`; break;
+
+  case "setup":
+    h = `<section class="screen">
+      <h2>${esc(t.setupTitle)}</h2>
+      <div class="row2">
+        <label class="field"><span>${esc(t.nameA)}</span><input id="nA" maxlength="20" autocomplete="off" placeholder="${esc(t.phA)}" value="${esc(S.names[0])}"></label>
+        <label class="field"><span>${esc(t.nameB)}</span><input id="nB" maxlength="20" autocomplete="off" placeholder="${esc(t.phB)}" value="${esc(S.names[1])}"></label>
+      </div>
+      <p style="margin:0;font-size:13.5px;color:var(--muted)">${esc(t.setupNote)}</p>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="toPass" data-focus>${esc(t.next)} →</button></div>
+    </section>`; break;
+
+  case "pass":
+    h = `<section class="screen">${curtainHTML(fmt(t.passTitle, { c: client() }), fmt(t.passLead, { c: client(), a: asker() }), fmt(t.passGo, { c: client() }), "toBrief")}</section>`; break;
+
+  case "brief": {
+    const c = card();
+    h = `<section class="screen">
+      <div class="card" style="display:grid;gap:14px;background:var(--ink);color:#fff;border-color:var(--ink)">
+        <span class="kicker" style="color:rgba(255,255,255,.55)">${esc(t.briefKicker)}</span>
+        <div><span class="kicker" style="color:rgba(255,255,255,.45)">${esc(t.briefTitle)}</span><div style="font-family:var(--syne);font-weight:700;font-size:19px;margin-top:4px">${esc(c.who)}</div></div>
+        <div><span class="kicker" style="color:rgba(255,255,255,.45)">${esc(t.sayFirst)}</span><div style="font-family:var(--serif);font-style:italic;font-size:21px;margin-top:4px">${esc(c.req)}</div></div>
+        <div style="padding:14px;border-radius:14px;background:rgba(226,85,63,.16);border:1px solid rgba(226,85,63,.5)"><span class="kicker" style="color:#F2A091">${esc(t.hidden)}</span><div style="margin-top:6px;font-size:15.5px;line-height:1.5">${esc(c.need)}</div></div>
+        <div><span class="kicker" style="color:rgba(255,255,255,.45)">${esc(t.clues)}</span><ul style="margin:6px 0 0;padding-left:18px;display:grid;gap:6px;font-size:14.5px;line-height:1.5">${c.clues.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
+      </div>
+      <p style="margin:0;font-size:13.5px;color:var(--muted)">${esc(t.briefNote)}</p>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="toTalk" data-focus>${esc(t.hide)} →</button></div>
+    </section>`; break; }
+
+  case "talk":
+    h = `<section class="screen">
+      ${rolesHTML()}
+      <h2>${fmt(t.talkTitle, { a: asker() })}</h2>
+      <div class="prompt" style="min-height:0"><div class="q" style="font-size:clamp(19px,5vw,23px)">${esc(card().req)}</div><div class="meta"><span>${esc(t.talkLead)}</span><span>${esc(client())}</span></div></div>
+      <p style="margin:0;font-size:14px">${esc(t.talkGoal)}</p>
+      <div style="display:flex;align-items:center;gap:14px">
+        <div class="timer" id="timer" style="width:min(36vw,140px);margin:0">${ringSVG()}<div class="num"><div><b id="tnum" style="font-size:clamp(26px,8vw,34px)">4:00</b><small id="tlbl"></small></div></div></div>
+        <div style="flex:1;display:grid;gap:6px;justify-items:start">
+          <button class="btn" data-act="bell" id="bellBtn" style="flex:none;background:var(--accent);color:#fff;border-color:var(--accent);gap:8px">${BELL} ${esc(t.bell)} <span id="bellN" style="opacity:.8">${S.bells[S.round] ? fmt(t.bellCount, { n: S.bells[S.round] }) : ""}</span></button>
+          <small style="font-size:12px;color:var(--muted);line-height:1.4">${fmt(t.bellHint, { c: client(), a: asker() })}</small>
+        </div>
+      </div>
+      <div class="tip" id="ltip"><i>?</i><span>${esc(t.starters[S.tipIdx % t.starters.length])}</span></div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="pause" id="pauseBtn">${esc(timer.running || timer.ended ? t.pause : t.resume)}</button><button class="btn pri" data-act="toGuess" data-focus>${esc(t.doneTalk)} →</button></div>
+    </section>`; break;
+
+  case "guess":
+    h = `<section class="screen">
+      <h2>${fmt(t.guessTitle, { a: asker() })}</h2>
+      <p class="lead">${fmt(t.guessLead, { c: client() })}</p>
+      <label class="field"><textarea id="guessIn" maxlength="240" placeholder="${esc(t.guessPh)}" style="min-height:120px">${esc(S.guess)}</textarea></label>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="toReveal" id="nextBtn" ${S.guess.trim().length > 3 ? "" : "disabled"}>${esc(t.revealBtn)} →</button></div>
+    </section>`; break;
+
+  case "reveal": {
+    const c = card(), f = S.found[S.round];
+    h = `<section class="screen">
+      <span class="kicker" style="color:var(--accent)">${esc(t.revealKicker)}</span>
+      <div class="sum" style="grid-template-columns:1fr">
+        <div><span class="kicker">${esc(asker())}</span><p class="serif" style="margin:6px 0 0;font-size:18px">“${esc(S.guess.trim())}”</p></div>
+        <div style="background:var(--ink);color:#fff;border-color:var(--ink)"><span class="kicker" style="color:rgba(255,255,255,.55)">${esc(c.who)}</span><p style="margin:6px 0 0;font-size:16px;line-height:1.5">${esc(c.need)}</p></div>
+      </div>
+      ${f == null ? `<h3 style="margin:0;font-family:var(--syne);font-size:20px">${fmt(t.foundQ, { c: client(), a: asker() })}</h3>
+      <div class="heard">
+        <button data-found="0" data-focus><span class="e">${FOUND_ICONS[0]}</span><span><b>${esc(t.yes)}</b><small>${esc(t.yesSub)}</small></span></button>
+        <button data-found="1"><span class="e">${FOUND_ICONS[1]}</span><span><b>${esc(t.partly)}</b><small>${esc(t.partlySub)}</small></span></button>
+        <button data-found="2"><span class="e">${FOUND_ICONS[2]}</span><span><b>${esc(t.no)}</b><small>${esc(t.noSub)}</small></span></button>
+      </div>` : `
+      <div><span class="kicker">${esc(t.reflectLbl)}</span>
+        <ol style="margin:10px 0 0;padding-left:20px;display:grid;gap:8px;font-size:15px;line-height:1.5">${t.reflect.map(q => `<li>${fmt(q, { c: client() })}</li>`).join("")}</ol></div>
+      <p style="margin:0;font-size:12.5px;color:var(--muted)">${fmt(t.bellNote, { n: S.bells[S.round] })}</p>
+      <div class="spacer"></div>
+      <div class="btns">${S.round === 0 ? `<button class="btn pri" data-act="toSwap" data-focus>⇄ ${esc(t.swapBtn)}</button>` : `<button class="btn pri" data-act="toEnd" data-focus>${esc(t.finish)} →</button>`}</div>`}
+    </section>`; break; }
+
+  case "swap":
+    h = `<section class="screen">${curtainHTML(esc(t.swapTitle), fmt(t.swapLead, { a: nameOf(1), c: nameOf(0) }), esc(t.swapGo), "afterSwap")}</section>`; break;
+
+  case "end":
+    h = `<section class="screen">
+      <span class="kicker" style="color:var(--good)">✓ ${esc(t.endKicker)}</span>
+      <h2>${esc(t.endTitle)}</h2>
+      <p class="serif">${esc(t.endLead)}</p>
+      <div class="monday"><b>${esc(t.monday)}</b>${esc(t.mondayTxt)}</div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="again">↻ ${esc(t.again)}</button><button class="btn pri" data-act="teach" data-focus>${esc(t.passOn)} →</button></div>
+    </section>`; break;
+
+  case "teach": h = teachHTML("discovery"); break;
+  }
+  const hadFocus = stage.contains(document.activeElement);
+  stage.innerHTML = h;
+  const f = stage.querySelector("[data-focus]");
+  if (f && hadFocus) f.focus({ preventScroll: true });
+}
+
+function teachHTML(demo) {
+  const t = T(), chain = store.get("fb_teachback", []).filter(c => c.demo === demo);
+  return `<section class="screen">
+    <span class="kicker" style="color:var(--accent)">${esc(t.teachKicker)}</span>
+    <h2>${esc(t.teachTitle)}</h2>
+    <p class="lead">${esc(t.teachLead)}</p>
+    <div class="steps3">${t.t3.map((s, i) => `<div><b>0${i + 1}</b><span>${esc(s)}</span><small style="display:block;font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.4">${esc(t.t3sub[i])}</small></div>`).join("")}</div>
+    <div class="card" style="display:grid;gap:12px">
+      <label class="field"><span>${esc(t.learnerName)}</span><input id="lName" maxlength="30" autocomplete="off" placeholder="${esc(t.learnerPh)}"></label>
+      <label class="field"><span>${esc(t.learned)}</span><textarea id="lText" maxlength="280" placeholder="${esc(t.learnedPh)}"></textarea></label>
+      <button class="btn pri" data-act="saveTeach" style="flex:none">${esc(t.save)}</button>
+    </div>
+    <div><span class="kicker">${esc(t.chainTitle)}</span>
+      <ul class="chain" style="margin-top:10px">${chain.length ? chain.slice().reverse().map(c => `<li>${esc(c.text)}<small>${c.name ? esc(c.name) + " · " : ""}${esc(new Date(c.at).toLocaleDateString(lang === "zh" ? "zh-CN" : lang))}</small></li>`).join("") : `<li style="color:var(--muted)">${esc(t.chainEmpty)}</li>`}</ul></div>
+    <a class="link" href="/free_builder/teachback">⊂⊃ ${esc(lang === "zh" ? "教回去链条 ↗" : lang === "es" ? "Cadena de Enseñar de Vuelta ↗" : "Teach-Back Chain ↗")}</a>
+    <button class="link" data-act="restart">${esc(t.restart)}</button>
+  </section>`;
+}
+
+function startTalk() {
+  timer.start(240, () => toast(T().timeUp));
+  const pb = $("pauseBtn"); if (pb) pb.textContent = T().pause;
+  const iv = setInterval(() => {
+    if (S.screen !== "talk") { clearInterval(iv); return; }
+    S.tipIdx++; const el = $("ltip"); if (el) el.querySelector("span").textContent = T().starters[S.tipIdx % T().starters.length];
+  }, 20000);
+}
+
+$("stage").addEventListener("input", e => {
+  const id = e.target.id, v = e.target.value;
+  if (id === "nA") S.names[0] = v;
+  if (id === "nB") S.names[1] = v;
+  if (id === "guessIn") { S.guess = v; const nb = $("nextBtn"); if (nb) nb.disabled = !(v.trim().length > 3); }
+});
+$("stage").addEventListener("click", e => {
+  sound.init();
+  const fd = e.target.closest("[data-found]"), a = e.target.closest("[data-act]");
+  if (fd) { S.found[S.round] = +fd.dataset.found; if (S.found[S.round] === 0) sound.warm(); else sound.tap(); render(); return; }
+  if (!a) return;
+  const k = a.dataset.act;
+  if (k === "bell") {
+    S.bells[S.round]++; sound.tone(1568, .5, .06, "sine"); sound.tone(2093, .7, .03, "sine", .02); buzz(40);
+    const n = $("bellN"); if (n) n.textContent = fmt(T().bellCount, { n: S.bells[S.round] });
+    a.animate && !reduceMotion && a.animate([{ transform: "rotate(0)" }, { transform: "rotate(-6deg)" }, { transform: "rotate(6deg)" }, { transform: "rotate(0)" }], { duration: 300 });
+    toast(T().bellToast); return;
+  }
+  sound.tap();
+  switch (k) {
+    case "toSetup": go("setup"); break;
+    case "toPass": deal(); go("pass"); break;
+    case "toBrief": go("brief"); break;
+    case "toTalk": go("talk"); break;
+    case "pause":
+      if (timer.ended) return;
+      if (timer.running) { timer.pause(); a.textContent = T().resume; } else { timer.resume(); a.textContent = T().pause; }
+      break;
+    case "toGuess": go("guess"); break;
+    case "toReveal": go("reveal"); break;
+    case "toSwap": go("swap"); break;
+    case "afterSwap": S.round = 1; S.guess = ""; deal(); go("pass"); break;
+    case "toEnd": sound.warm(); go("end"); break;
+    case "again": Object.assign(S, { round: 0, guess: "", found: [null, null], bells: [0, 0] }); S.names = [S.names[1], S.names[0]]; deal(); go("pass"); break;
+    case "teach": go("teach"); break;
+    case "saveTeach": {
+      const text = ($("lText").value || "").trim(), name = ($("lName").value || "").trim();
+      if (!text) { $("lText").focus(); return; }
+      const chain = store.get("fb_teachback", []); chain.push({ demo: "discovery", text, name, at: Date.now() }); store.set("fb_teachback", chain.slice(-50));
+      sound.warm(); toast(T().saved); render(); break; }
+    case "restart": Object.assign(S, { round: 0, guess: "", found: [null, null], bells: [0, 0] }); go("intro"); break;
+  }
+});
+
+window.__app = { S, go, render, timer };
+
+/* ---------- facilitator guide ---------- */
+const drawer = $("drawer");
+function openGuide() {
+  const t = T();
+  $("panel").innerHTML = `
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+      <div><span class="kicker">${esc(t.gKicker)}</span><h3 id="g-title">${esc(t.gTitle)}</h3></div>
+      <button class="x" data-close aria-label="${esc(t.close)}">✕</button>
+    </div>
+    <h4>${esc(t.gWhy)}</h4><p>${esc(t.gWhyTxt)}</p>
+    <h4>${esc(t.gSteps)}</h4><ol>${t.gStepList.map(s => `<li>${esc(s)}</li>`).join("")}</ol>
+    <h4>${esc(t.gDebrief)}</h4><ul>${t.gDebriefList.map(s => `<li>${esc(s)}</li>`).join("")}</ul>
+    <h4>${esc(t.gNotes)}</h4><ul>${t.gNotesList.map(s => `<li>${esc(s)}</li>`).join("")}</ul>`;
+  drawer.classList.add("show");
+  setTimeout(() => drawer.querySelector("[data-close]").focus({ preventScroll: true }), 60);
+}
+function closeGuide() { drawer.classList.remove("show"); $("btn-guide").focus({ preventScroll: true }); }
+drawer.addEventListener("click", e => { if (e.target === drawer || e.target.closest("[data-close]")) closeGuide(); });
+$("btn-guide").addEventListener("click", openGuide);
+window.addEventListener("keydown", e => { if (e.key === "Escape" && drawer.classList.contains("show")) closeGuide(); });
+
+/* ---------- language + sound ---------- */
+function paintSound() {
+  const b = $("btn-sound"), t = T();
+  b.innerHTML = sound.muted
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>';
+  b.setAttribute("aria-label", sound.muted ? t.soundOff : t.soundOn); b.title = b.getAttribute("aria-label");
+}
+$("btn-sound").addEventListener("click", () => { sound.muted = !sound.muted; store.set("fb_muted", sound.muted); sound.init(); paintSound(); if (!sound.muted) sound.tap(); });
+
+function applyLang(l) {
+  lang = LANGS.includes(l) ? l : "en";
+  document.documentElement.lang = lang === "zh" ? "zh-CN" : lang;
+  document.title = T().title;
+  $("lang-lbl").textContent = LANG_LBL[lang];
+  document.querySelectorAll("[data-t]").forEach(el => { const v = T()[el.dataset.t]; if (typeof v === "string") el.textContent = v; });
+  paintSound();
+  render();               // the clock object survives a re-render
+  timer.paint();
+  const pb = $("pauseBtn"); if (pb && !timer.running && !timer.ended) pb.textContent = T().resume;
+  if (drawer.classList.contains("show")) openGuide();
+  try { localStorage.setItem("wm_preferred_lang", lang); localStorage.setItem("wm_cases_lang", lang); } catch (e) {}
+}
+$("btn-lang").addEventListener("click", () => applyLang(LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length]));
+
+/* ---------- boot ---------- */
+let saved = null;
+try { saved = localStorage.getItem("wm_preferred_lang") || localStorage.getItem("wm_cases_lang"); } catch (e) {}
+const nav = (navigator.language || "").toLowerCase();
+applyLang(LANGS.includes(saved) ? saved : nav.startsWith("zh") ? "zh" : nav.startsWith("es") ? "es" : "en");
+document.addEventListener("visibilitychange", () => { if (!document.hidden && timer.running) keepAwake(true); });
+})();
+</script>
+</body>
+</html>
