@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title id="page-title">Listening Duet — FREE//BUILDER</title>
+  <meta name="description" content="Write a thank-you that names what someone did and what it meant — then say it yourself.">
+  <meta name="theme-color" content="#F7F6F2">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Crect x='7' y='7' width='8' height='8' rx='2' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='7' y='17' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='17' y='17' width='8' height='8' rx='2' fill='%23E2553F'/%3E%3C/svg%3E">
+  <!-- Brand fonts load without blocking the page: where Google Fonts is slow or blocked, system fonts show instantly. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+
+  <style>
+    /* =================================================================
+       FB KIT · tokens + shell (shared by every FREE//BUILDER demo)
+       ================================================================= */
+    :root {
+      --paper:#F7F6F2; --ink:#17171A; --muted:#6B6A70; --line:#E5E2DA; --accent:#E2553F; --white:#fff; --good:#2F8A5C;
+      --st:#E2553F;
+      --ease:cubic-bezier(.23,1,.32,1);
+      --sans:"Plus Jakarta Sans",system-ui,-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+      --mono:"Space Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+      --syne:Syne,"Plus Jakarta Sans",system-ui,"PingFang SC","Noto Sans SC",sans-serif;
+      --serif:"Instrument Serif",Georgia,"Songti SC","STSong",serif;
+    }
+    * { box-sizing:border-box; }
+    html, body { margin:0; overflow-x:hidden; }
+    body {
+      background:var(--paper); color:var(--ink); font-family:var(--sans);
+      -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;
+      min-height:100vh; min-height:100svh; display:flex; flex-direction:column;
+    }
+    button { font:inherit; color:inherit; cursor:pointer; background:none; border:0; padding:0; touch-action:manipulation; }
+    a { color:inherit; }
+    :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:10px; }
+    .kicker { font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
+    .dots { position:fixed; inset:0; z-index:-1; pointer-events:none;
+      background-image:radial-gradient(rgba(23,23,26,.09) 1px,transparent 1px); background-size:22px 22px;
+      -webkit-mask-image:linear-gradient(to bottom,#000,transparent 60%); mask-image:linear-gradient(to bottom,#000,transparent 60%); }
+
+    header.top { position:sticky; top:0; z-index:40; background:rgba(247,246,242,.92);
+      -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); border-bottom:1px solid rgba(229,226,218,.8);
+      padding:10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); }
+    .top-in { max-width:960px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .brand { display:flex; align-items:center; gap:10px; text-decoration:none; min-width:0; }
+    .mark { width:34px; height:34px; border-radius:10px; background:var(--ink); display:grid; place-items:center; flex-shrink:0; transition:transform .5s var(--ease); }
+    .mark rect { transform-box:fill-box; transform-origin:center; transition:transform .6s var(--ease); }
+    .mark .last { transform:translate(2.5px,-2.5px) rotate(12deg); }
+    .brand:hover .mark { transform:rotate(-4deg); }
+    .brand:hover .mark .last { transform:none; }
+    .brand-txt { line-height:1; min-width:0; }
+    .brand-txt b { font-family:var(--syne); font-weight:700; font-size:13px; display:block; }
+    .brand-txt b i { color:var(--accent); font-style:normal; }
+    .brand-txt span { display:block; font-size:11px; color:var(--muted); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .top-actions { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+    .chip { height:32px; padding:0 10px; border:1px solid var(--line); border-radius:9px; background:rgba(255,255,255,.6);
+      display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; transition:border-color .2s, transform .1s; }
+    .chip:hover { border-color:rgba(23,23,26,.3); }
+    .chip:active { transform:scale(.96); }
+    .chip svg { width:14px; height:14px; }
+    .chip[hidden] { display:none; }
+    @media (max-width:420px) { .chip .lbl { display:none; } }
+    @media (max-width:340px) { .brand-txt { display:none; } }
+
+    main { flex:1; width:100%; max-width:600px; margin:0 auto; padding:24px max(16px, env(safe-area-inset-right)) 32px max(16px, env(safe-area-inset-left)); display:flex; flex-direction:column; }
+
+    /* progress dots */
+    .steps { display:flex; gap:6px; align-items:center; margin-bottom:18px; min-height:8px; }
+    .steps span { height:6px; flex:1; border-radius:3px; background:var(--line); transition:background .4s; }
+    .steps span.done { background:var(--ink); }
+    .steps span.now { background:var(--accent); }
+
+    /* screens */
+    .screen { flex:1; display:flex; flex-direction:column; gap:18px; animation:in .5s var(--ease) both; }
+    @keyframes in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+    h1, h2 { font-family:var(--syne); font-weight:700; letter-spacing:-.02em; margin:0; line-height:1.1; }
+    h1 { font-size:clamp(34px, 9vw, 52px); }
+    h2 { font-size:clamp(26px, 6.5vw, 34px); }
+    .lead { font-size:16px; line-height:1.6; color:rgba(23,23,26,.75); margin:0; }
+    .serif { font-family:var(--serif); font-style:italic; font-size:22px; line-height:1.3; color:rgba(23,23,26,.85); margin:0; }
+    .accent-word { font-family:var(--serif); font-style:italic; font-weight:400; color:var(--muted); white-space:nowrap; padding-bottom:.12em;
+      background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7 Q 12 1 22 7 T 42 7 T 62 7 T 82 7 T 102 7 T 118 6' fill='none' stroke='%23E2553F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left bottom / 100% .32em; }
+    .pills { display:flex; flex-wrap:wrap; gap:6px; }
+    .pill { font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:99px; border:1px solid var(--line); color:var(--muted); background:rgba(255,255,255,.6); }
+    .spacer { flex:1; }
+
+    .btns { display:flex; gap:8px; flex-wrap:wrap; }
+    .btn { flex:1; min-height:52px; padding:0 20px; border-radius:99px; font-family:var(--mono); font-size:13px; font-weight:700;
+      display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1px solid var(--line); background:var(--white);
+      transition:background .2s, border-color .2s, transform .1s; }
+    .btn:hover { border-color:rgba(23,23,26,.35); }
+    .btn:active { transform:scale(.98); }
+    .btn.pri { background:var(--ink); border-color:var(--ink); color:#fff; flex:2; }
+    .btn.pri:hover { background:var(--accent); border-color:var(--accent); }
+    .btn[disabled] { opacity:.45; pointer-events:none; }
+    .link { font-family:var(--mono); font-size:12px; color:var(--muted); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:4px; align-self:center; padding:8px; }
+    .link:hover { color:var(--ink); }
+
+    .card { background:var(--white); border:1px solid var(--line); border-radius:24px; padding:22px; }
+    .field { display:block; }
+    .field span { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+    .field input, .field textarea { width:100%; font:inherit; font-size:16px; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--white); color:var(--ink); }
+    .field textarea { resize:vertical; min-height:96px; line-height:1.5; }
+    .field input:focus, .field textarea:focus { outline:none; border-color:var(--ink); }
+    .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .seg { display:flex; flex-wrap:wrap; gap:6px; }
+    .seg button { padding:9px 14px; border-radius:99px; border:1px solid var(--line); background:var(--white); font-size:13px; transition:all .2s; }
+    .seg button[aria-pressed="true"] { background:var(--ink); color:#fff; border-color:var(--ink); }
+
+    /* who's who */
+    .roles { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .role { border-radius:18px; padding:14px; border:1px solid var(--line); background:var(--white); }
+    .role .k { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+    .role .n { font-family:var(--syne); font-weight:700; font-size:18px; margin-top:4px; word-break:break-word; }
+    .role.speak { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .role.speak .k { color:rgba(255,255,255,.55); }
+
+    /* prompt card */
+    .prompt { position:relative; background:var(--ink); color:#fff; border-radius:26px; padding:28px 24px 24px; min-height:200px;
+      display:flex; flex-direction:column; justify-content:space-between; gap:18px; overflow:hidden; }
+    .prompt::after { content:""; position:absolute; right:-50px; top:-50px; width:170px; height:170px; border-radius:50%; border:1px solid rgba(255,255,255,.1); }
+    .prompt .q { font-family:var(--serif); font-style:italic; font-size:clamp(24px, 6.4vw, 30px); line-height:1.25; position:relative; }
+    .prompt .meta { display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; color:rgba(255,255,255,.5); position:relative; }
+    .prompt.flip { animation:flip .55s var(--ease); }
+    @keyframes flip { 0% { transform:rotateX(0); } 50% { transform:rotateX(80deg); opacity:.4; } 100% { transform:none; } }
+
+    /* timer ring */
+    .timer { display:grid; place-items:center; margin:4px auto; position:relative; width:min(68vw, 260px); aspect-ratio:1; }
+    .timer svg { width:100%; height:100%; transform:rotate(-90deg); }
+    .timer .bg { stroke:var(--line); }
+    .timer .fg { stroke:var(--st); transition:stroke .3s; }
+    .timer .num { position:absolute; inset:0; display:grid; place-items:center; text-align:center; }
+    .timer .num b { font-family:var(--mono); font-size:clamp(40px, 13vw, 56px); font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:-.02em; display:block; }
+    .timer .num small { font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.12em; text-transform:uppercase; }
+    .timer.done .fg { stroke:var(--good); }
+    .timer.pulse { animation:pulse 1.2s ease-in-out 2; }
+    @keyframes pulse { 50% { transform:scale(1.04); } }
+
+    .tip { display:flex; gap:10px; align-items:flex-start; padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(23,23,26,.2); font-size:14px; line-height:1.5; }
+    .tip b { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:400; display:block; margin-bottom:2px; }
+    .tip i { font-style:normal; font-size:18px; line-height:1.2; }
+    .stems { display:grid; gap:8px; }
+    .stems div { padding:12px 14px; border-radius:14px; background:var(--white); border:1px solid var(--line); font-family:var(--serif); font-style:italic; font-size:19px; }
+
+    /* felt heard */
+    .heard { display:grid; gap:8px; }
+    .heard button { display:flex; align-items:center; gap:14px; text-align:left; padding:16px 18px; border-radius:18px; border:1px solid var(--line); background:var(--white); transition:all .2s; }
+    .heard button:hover { border-color:rgba(23,23,26,.35); }
+    .heard button .e { width:40px; height:40px; border-radius:50%; display:grid; place-items:center; font-size:20px; flex-shrink:0; background:var(--paper); }
+    .heard button b { display:block; font-size:16px; }
+    .heard button small { display:block; font-size:13px; color:var(--muted); margin-top:2px; }
+
+    /* curtain (pass the phone) */
+    .curtain { background:var(--ink); color:#fff; border-radius:28px; padding:32px 24px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px; }
+    .curtain .hand { width:84px; height:84px; }
+    .curtain h2 { color:#fff; }
+    .curtain p { margin:0; color:rgba(255,255,255,.7); line-height:1.55; }
+
+    /* summary */
+    .sum { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .sum div { background:var(--white); border:1px solid var(--line); border-radius:18px; padding:16px; }
+    .sum b { display:block; font-family:var(--syne); font-size:18px; word-break:break-word; }
+    .sum span { display:block; font-size:13px; color:var(--muted); margin-top:4px; }
+    .monday { padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(23,23,26,.2); font-size:14px; line-height:1.55; }
+    .monday b { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:400; margin-bottom:3px; }
+    .chain { list-style:none; padding:0; margin:0; display:grid; gap:8px; }
+    .chain li { background:var(--white); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-size:14px; line-height:1.5; }
+    .chain li small { display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-top:4px; }
+    .steps3 { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .steps3 div { background:var(--white); border:1px solid var(--line); border-radius:16px; padding:14px 12px; text-align:center; }
+    .steps3 b { display:block; font-family:var(--mono); font-size:11px; color:var(--accent); }
+    .steps3 span { display:block; font-family:var(--syne); font-weight:700; font-size:15px; margin-top:4px; }
+
+    /* drawer (facilitator guide) */
+    .drawer { position:fixed; inset:0; z-index:60; display:flex; justify-content:flex-end; background:rgba(23,23,26,.45); opacity:0; pointer-events:none; transition:opacity .25s; }
+    .drawer.show { opacity:1; pointer-events:auto; }
+    .panel { width:100%; max-width:460px; height:100%; background:var(--paper); overflow-y:auto; padding:22px 22px calc(28px + env(safe-area-inset-bottom)); transform:translateX(30px); transition:transform .45s var(--ease); overscroll-behavior:contain; }
+    .drawer.show .panel { transform:none; }
+    @media (max-width:560px) { .drawer { align-items:flex-end; } .panel { max-width:none; height:88vh; height:88svh; border-radius:24px 24px 0 0; transform:translateY(40px); } }
+    .panel h3 { font-family:var(--syne); font-size:22px; margin:4px 0 12px; }
+    .panel h4 { font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:400; margin:22px 0 8px; }
+    .panel ol, .panel ul { margin:0; padding-left:20px; display:grid; gap:8px; font-size:14px; line-height:1.55; }
+    .panel p { font-size:14px; line-height:1.6; color:rgba(23,23,26,.78); margin:0; }
+    .x { width:34px; height:34px; border-radius:50%; display:grid; place-items:center; border:1px solid var(--line); background:var(--white); font-family:var(--mono); flex-shrink:0; }
+
+    .toast { position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom)); transform:translate(-50%,10px); opacity:0; pointer-events:none; z-index:70;
+      background:var(--ink); color:#fff; border-radius:99px; padding:9px 16px; font-family:var(--mono); font-size:11px; transition:opacity .25s, transform .35s var(--ease);
+      max-width:calc(100% - 32px); }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+
+    footer { border-top:1px solid var(--line); padding:18px max(16px, env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+    .foot-in { max-width:960px; margin:0 auto; display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--muted); }
+    .foot-in a { text-decoration:none; } .foot-in a:hover { color:var(--ink); }
+
+    @media (min-width:700px) { main { padding-top:40px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.001ms !important; transition-duration:.001ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="dots" aria-hidden="true"></div>
+
+  <header class="top">
+    <div class="top-in">
+      <a class="brand" href="/free_builder/" aria-label="FREE//BUILDER">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="19" height="19" style="overflow:visible">
+            <rect x="3" y="3" width="8" height="8" rx="2" fill="#fff"/><rect x="13" y="3" width="8" height="8" rx="2" fill="#fff" opacity=".55"/>
+            <rect x="3" y="13" width="8" height="8" rx="2" fill="#fff" opacity=".55"/><rect class="last" x="13" y="13" width="8" height="8" rx="2" fill="#E2553F"/>
+          </svg>
+        </span>
+        <span class="brand-txt"><b>FREE<i>//</i>BUILDER</b><span data-t="product">Specific Thanks</span></span>
+      </a>
+      <div class="top-actions">
+        <button class="chip" id="btn-lang" type="button" aria-label="Language" title="EN / 中文 / ES">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
+          <b id="lang-lbl">EN</b>
+        </button>
+        <button class="chip" id="btn-sound" type="button"></button>
+        <button class="chip" id="btn-guide" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2zM22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg>
+          <span class="lbl" data-t="guide">Facilitators</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="steps" id="steps" aria-hidden="true"></div>
+    <div id="stage" aria-live="polite"></div>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span data-t="privacy">Nothing is sent. You deliver it yourself.</span>
+      <a href="/free_builder/" data-t="back">FREE//BUILDER ↗</a>
+    </div>
+  </footer>
+
+  <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="g-title">
+    <div class="panel" id="panel"></div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+"use strict";
+/* =====================================================================
+   COPY — EN / 中文 / ES
+   ===================================================================== */
+const I18N = {
+en: {
+  title: "Specific Thanks — FREE//BUILDER", product: "Specific Thanks", guide: "Facilitators",
+  privacy: "Nothing is sent. You deliver it yourself.", back: "FREE//BUILDER ↗",
+  soundOn: "Sound on", soundOff: "Sound off", left: "left", paused: "paused", close: "Close",
+  introKicker: "Free tool · Recognition",
+  introTitle: 'Specific <span class="accent-word">Thanks</span>',
+  introLead: "“Great job!” fades by lunch. A thank-you that names what someone did — and what it meant — stays with them for weeks. This helps you write one. Then you say it yourself.",
+  introMeta: ["1 person", "1 colleague", "≈ 2 minutes"],
+  start: "Thank someone",
+  who: "Who do you want to thank?", whoPh: "Their name",
+  whatTitle: "What did {n} do?", whatLead: "Describe something you could have seen or heard. One moment beats a whole year.",
+  whatPh: "e.g. stayed late to walk the new hire through Friday's release",
+  impactTitle: "What did it mean for you?", impactLead: "What changed because of it — for you, the team or a customer?",
+  impactPh: "e.g. I could focus on the client call instead of firefighting",
+  next: "Next", backBtn: "Back",
+  previewTitle: "Here's your thank-you.", previewLead: "Edit it until it sounds like you.",
+  tmpl: "{n}, when you {w}, it meant {i}. Thank you.",
+  checks: "Gentle checks",
+  cAction: "Names a specific action", cImpact: "Says what it meant", cMoment: "Points to a moment",
+  vagueTip: "Words like “{v}” are kind but vague. What exactly did they do?",
+  momentTip: "Optional: add when it happened (“on Tuesday”, “in yesterday's review”).",
+  deliverTitle: "Now say it yourself.", deliverLead: "Thanks lands best in person, or in your own handwriting. This app never sends anything.",
+  ways: [["In person", "Today, face to face or on a call."], ["A handwritten note", "Leave it on their desk or send a photo."], ["A message in your own words", "Copy the text and make it yours."]],
+  copy: "Copy the text", copied: "Copied — make it yours before you send it.",
+  saidIt: "I said it", later: "I'll do it later today",
+  reflectTitle: "How did {n} react?", reflectLead: "Notice it. That feeling is why this habit sticks.",
+  reactions: ["Surprised", "Smiled", "Told me more", "Thanked me back", "Hard to tell"],
+  doneKicker: "Thank-you delivered", doneTitle: "That mattered.",
+  doneLead: "Specific thanks is a small act with a long tail. Most people remember one for months.",
+  monday: "Try this on Monday", mondayTxt: "Start one meeting this week with one specific thank-you.",
+  again: "Thank someone else", passOn: "Pass it on",
+  laterTitle: "Before the day ends…", laterLead: "Your words are below. Find a moment today to say them to {n}.",
+  teachKicker: "Pass it on", teachTitle: "Teach someone the formula.",
+  teachLead: "Show a colleague the three parts, then let them write, in their own words, what they'll do differently.",
+  t3: ["What they did", "What it meant", "Say it yourself"], t3sub: ["one moment you saw", "for you or the team", "in person if you can"],
+  learnerName: "Their name (optional)", learnerPh: "e.g. Mei", learned: "What they'll do differently, in their own words", learnedPh: "Hand them the phone…",
+  save: "Save to this phone", chainTitle: "People you've passed it on to", chainEmpty: "No one yet. Your first teach-back will appear here.",
+  saved: "Saved on this phone only.", restart: "Back to the start",
+  gKicker: "Facilitator guide", gTitle: "Using Specific Thanks with a team",
+  gWhy: "Why it works",
+  gWhyTxt: "Generic praise is easy to give and easy to forget. Naming a concrete action and its effect shows someone they were truly seen — and tells them what to do again.",
+  gSteps: "Running it (≈ 10 minutes)",
+  gStepList: ["Ask everyone to think of one person who helped them recently.", "Give two minutes to write a thank-you with the tool.", "Share one or two examples aloud, with permission.", "Ask each person to deliver theirs today, in person if they can.", "Next meeting, ask: how did they react?"],
+  gDebrief: "Debrief questions",
+  gDebriefList: ["What was harder: naming the action, or naming what it meant?", "How did it feel to receive one?", "Where could this replace a “thanks, all!” email?"],
+  gNotes: "Notes",
+  gNotesList: ["Keep it voluntary. Forced gratitude backfires.", "Thank effort and care, not only outcomes.", "Nothing is stored or sent — people deliver their own words."],
+  vague: ["great job", "good job", "nice work", "great work", "awesome", "amazing", "thanks for everything", "always", "hard work", "so helpful", "you're the best", "legend"],
+  moments: ["today", "yesterday", "this morning", "last week", "on monday", "on tuesday", "on wednesday", "on thursday", "on friday", "during", "in the", "at the", "when"]
+},
+zh: {
+  title: "具体的感谢 — FREE//BUILDER", product: "具体的感谢", guide: "引导师",
+  privacy: "不会发送任何内容，由你亲自去说。", back: "FREE//BUILDER ↗",
+  soundOn: "声音开", soundOff: "声音关", left: "剩余", paused: "已暂停", close: "关闭",
+  introKicker: "免费工具 · 认可",
+  introTitle: '具体的<span class="accent-word">感谢</span>',
+  introLead: "“辛苦了！”到午饭时就忘了。一句说清对方做了什么、对你意味着什么的感谢，会被记住好几周。这个工具帮你写一句——然后由你亲自去说。",
+  introMeta: ["1 个人", "1 位同事", "约 2 分钟"],
+  start: "感谢一个人",
+  who: "你想感谢谁？", whoPh: "TA 的名字",
+  whatTitle: "{n} 做了什么？", whatLead: "描述一件你能看到或听到的事。一个具体的时刻，胜过一整年。",
+  whatPh: "例如：周五加班带新同事走完了发布流程",
+  impactTitle: "这对你意味着什么？", impactLead: "因为这件事，什么发生了变化——对你、团队或客户？",
+  impactPh: "例如：我能专心应对客户电话，而不是到处救火",
+  next: "下一步", backBtn: "返回",
+  previewTitle: "这是你的感谢。", previewLead: "改到听起来像你自己说的为止。",
+  tmpl: "{n}，你{w}，这让{i}。谢谢你。",
+  checks: "小提示",
+  cAction: "说出了具体的行动", cImpact: "说出了它的意义", cMoment: "指向一个具体时刻",
+  vagueTip: "像“{v}”这样的话很暖心，但有点笼统。TA 具体做了什么？",
+  momentTip: "可选：加上发生的时间（“周二”“昨天的评审会上”）。",
+  deliverTitle: "现在，亲自去说。", deliverLead: "感谢当面说、或亲手写，最能打动人。这个应用不会替你发送任何东西。",
+  ways: [["当面说", "今天，面对面或打个电话。"], ["手写便条", "放在 TA 桌上，或拍照发给 TA。"], ["用你自己的话发消息", "复制文字，改成你的语气。"]],
+  copy: "复制文字", copied: "已复制——发送前改成你自己的语气。",
+  saidIt: "我说了", later: "今天晚些时候说",
+  reflectTitle: "{n} 有什么反应？", reflectLead: "留意这一刻。正是这种感觉，让这个习惯坚持下去。",
+  reactions: ["很意外", "笑了", "又多聊了几句", "也谢了我", "看不太出来"],
+  doneKicker: "感谢已送达", doneTitle: "这很重要。",
+  doneLead: "具体的感谢是一件小事，但影响很长。大多数人会记住好几个月。",
+  monday: "周一试试这个", mondayTxt: "这周找一个会议，用一句具体的感谢开场。",
+  again: "再感谢一个人", passOn: "传下去",
+  laterTitle: "今天结束之前……", laterLead: "你的话在下面。今天找个时间，亲口对 {n} 说吧。",
+  teachKicker: "传下去", teachTitle: "把这个方法教给别人。",
+  teachLead: "给同事讲讲这三部分，然后让 TA 用自己的话写下：以后会怎么做。",
+  t3: ["TA 做了什么", "意味着什么", "亲自去说"], t3sub: ["一个你看到的时刻", "对你或团队", "能当面就当面"],
+  learnerName: "TA 的名字（可选）", learnerPh: "例如：小美", learned: "TA 用自己的话写下以后的做法", learnedPh: "把手机递给 TA……",
+  save: "保存在这部手机上", chainTitle: "你传给过的人", chainEmpty: "还没有。你的第一次“教回去”会出现在这里。",
+  saved: "只保存在这部手机上。", restart: "回到开头",
+  gKicker: "引导师指南", gTitle: "和团队一起用“具体的感谢”",
+  gWhy: "为什么有效",
+  gWhyTxt: "笼统的表扬容易说，也容易忘。说出具体的行动和它带来的影响，会让人感到自己真正被看见——也让 TA 知道下次该继续做什么。",
+  gSteps: "怎么带（约 10 分钟）",
+  gStepList: ["请每个人想一位最近帮过自己的人。", "给两分钟，用这个工具写一句感谢。", "征得同意后，请一两位读出来。", "请每个人今天亲自去说，能当面就当面。", "下次开会时问：对方有什么反应？"],
+  gDebrief: "复盘问题",
+  gDebriefList: ["哪一步更难：说出行动，还是说出意义？", "收到一句具体的感谢是什么感觉？", "哪些“谢谢大家！”的群发邮件可以被它替代？"],
+  gNotes: "备注",
+  gNotesList: ["保持自愿。被要求的感谢会适得其反。", "感谢用心和付出，而不只是结果。", "不存储、不发送——由每个人亲自说出自己的话。"],
+  vague: ["辛苦了", "很棒", "太棒了", "厉害", "谢谢你的一切", "总是", "一直", "帮了大忙", "你真好", "牛"],
+  moments: ["今天", "昨天", "上周", "这周", "周一", "周二", "周三", "周四", "周五", "早上", "会上", "的时候", "那天"]
+},
+es: {
+  title: "Gracias Concretas — FREE//BUILDER", product: "Gracias Concretas", guide: "Facilitadores",
+  privacy: "No se envía nada. Lo dices tú.", back: "FREE//BUILDER ↗",
+  soundOn: "Sonido sí", soundOff: "Sonido no", left: "quedan", paused: "en pausa", close: "Cerrar",
+  introKicker: "Herramienta gratis · Reconocimiento",
+  introTitle: 'Gracias <span class="accent-word">Concretas</span>',
+  introLead: "“¡Buen trabajo!” se olvida antes del almuerzo. Un agradecimiento que nombra lo que alguien hizo —y lo que significó— se recuerda durante semanas. Esto te ayuda a escribirlo. Luego lo dices tú.",
+  introMeta: ["1 persona", "1 colega", "≈ 2 minutos"],
+  start: "Dar las gracias",
+  who: "¿A quién quieres dar las gracias?", whoPh: "Su nombre",
+  whatTitle: "¿Qué hizo {n}?", whatLead: "Describe algo que se pudiera ver u oír. Un momento vale más que un año entero.",
+  whatPh: "p. ej. se quedó hasta tarde para guiar a la nueva incorporación en el lanzamiento del viernes",
+  impactTitle: "¿Qué significó para ti?", impactLead: "¿Qué cambió gracias a eso, para ti, el equipo o un cliente?",
+  impactPh: "p. ej. pude concentrarme en la llamada con el cliente en lugar de apagar fuegos",
+  next: "Siguiente", backBtn: "Atrás",
+  previewTitle: "Aquí está tu agradecimiento.", previewLead: "Edítalo hasta que suene a ti.",
+  tmpl: "{n}, cuando {w}, {i}. Gracias.",
+  checks: "Pequeñas comprobaciones",
+  cAction: "Nombra una acción concreta", cImpact: "Dice lo que significó", cMoment: "Señala un momento",
+  vagueTip: "Palabras como “{v}” son amables, pero vagas. ¿Qué hizo exactamente?",
+  momentTip: "Opcional: añade cuándo pasó (“el martes”, “en la revisión de ayer”).",
+  deliverTitle: "Ahora, dilo tú.", deliverLead: "Las gracias llegan mejor en persona o a mano. Esta app no envía nada.",
+  ways: [["En persona", "Hoy, cara a cara o en una llamada."], ["Una nota a mano", "Déjala en su mesa o envíale una foto."], ["Un mensaje con tus palabras", "Copia el texto y hazlo tuyo."]],
+  copy: "Copiar el texto", copied: "Copiado: hazlo tuyo antes de enviarlo.",
+  saidIt: "Ya lo dije", later: "Lo haré hoy más tarde",
+  reflectTitle: "¿Cómo reaccionó {n}?", reflectLead: "Fíjate. Esa sensación es lo que hace que el hábito se quede.",
+  reactions: ["Se sorprendió", "Sonrió", "Me contó más", "Me dio las gracias", "Difícil de saber"],
+  doneKicker: "Agradecimiento entregado", doneTitle: "Eso importa.",
+  doneLead: "Unas gracias concretas son un gesto pequeño con un efecto largo. La mayoría lo recuerda durante meses.",
+  monday: "Pruébalo el lunes", mondayTxt: "Empieza una reunión esta semana con un agradecimiento concreto.",
+  again: "Dar las gracias a otra persona", passOn: "Transmitirlo",
+  laterTitle: "Antes de que acabe el día…", laterLead: "Tus palabras están abajo. Busca un momento hoy para decírselas a {n}.",
+  teachKicker: "Transmitirlo", teachTitle: "Enseña la fórmula a alguien.",
+  teachLead: "Muéstrale a un colega las tres partes y deja que escriba, con sus palabras, qué hará distinto.",
+  t3: ["Qué hizo", "Qué significó", "Dilo tú"], t3sub: ["un momento que viste", "para ti o el equipo", "en persona si puedes"],
+  learnerName: "Su nombre (opcional)", learnerPh: "p. ej. Mei", learned: "Qué hará distinto, con sus palabras", learnedPh: "Pásale el móvil…",
+  save: "Guardar en este móvil", chainTitle: "Personas a las que se lo transmitiste", chainEmpty: "Nadie todavía. Tu primera transmisión aparecerá aquí.",
+  saved: "Guardado solo en este móvil.", restart: "Volver al inicio",
+  gKicker: "Guía para facilitadores", gTitle: "Usar Gracias Concretas con un equipo",
+  gWhy: "Por qué funciona",
+  gWhyTxt: "El elogio genérico es fácil de dar y fácil de olvidar. Nombrar una acción concreta y su efecto muestra a alguien que de verdad fue visto, y le dice qué repetir.",
+  gSteps: "Cómo hacerlo (≈ 10 minutos)",
+  gStepList: ["Pide a cada persona que piense en alguien que le ayudó hace poco.", "Dad dos minutos para escribir un agradecimiento con la herramienta.", "Compartid uno o dos ejemplos en voz alta, con permiso.", "Pide que cada uno lo entregue hoy, en persona si puede.", "En la siguiente reunión, preguntad: ¿cómo reaccionó?"],
+  gDebrief: "Preguntas de cierre",
+  gDebriefList: ["¿Qué costó más: nombrar la acción o lo que significó?", "¿Qué se siente al recibir uno?", "¿Dónde podría sustituir a un correo de “¡gracias a todos!”?"],
+  gNotes: "Notas",
+  gNotesList: ["Que sea voluntario. La gratitud forzada sale al revés.", "Agradece el esfuerzo y el cuidado, no solo los resultados.", "No se guarda ni se envía nada: cada persona entrega sus propias palabras."],
+  vague: ["buen trabajo", "gran trabajo", "genial", "increíble", "gracias por todo", "siempre", "muy útil", "eres el mejor", "eres la mejor", "crack"],
+  moments: ["hoy", "ayer", "esta mañana", "la semana pasada", "el lunes", "el martes", "el miércoles", "el jueves", "el viernes", "durante", "en la", "en el", "cuando"]
+}
+};
+
+/* =====================================================================
+   FB KIT · helpers (copy into every demo)
+   ===================================================================== */
+const LANGS = ["en", "zh", "es"], LANG_LBL = { en: "EN", zh: "中文", es: "ES" };
+let lang = "en";
+const T = () => I18N[lang];
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = (s, v = {}) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in v ? esc(v[k]) : m));
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+/* Seeded random + pairing codes: the same code on two phones gives the same scenario, no server needed. */
+function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const CODE_CHARS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+function newCode(n = 6) { let s = ""; for (let i = 0; i < n; i++) s += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]; return s; }
+function seedFrom(code) { let h = 2166136261; for (const c of String(code).toUpperCase()) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+
+/* Sound: soft, short, optional */
+const sound = {
+  ctx: null, muted: store.get("fb_muted", false),
+  init() { if (!this.ctx) { const A = window.AudioContext || window.webkitAudioContext; if (A) this.ctx = new A(); } if (this.ctx && this.ctx.state === "suspended") this.ctx.resume(); },
+  tone(f, d = .3, g = .06, type = "sine", at = 0) {
+    if (this.muted || !this.ctx) return;
+    try { const t = this.ctx.currentTime + at, o = this.ctx.createOscillator(), a = this.ctx.createGain();
+      o.type = type; o.frequency.setValueAtTime(f, t); a.gain.setValueAtTime(.0001, t); a.gain.linearRampToValueAtTime(g, t + .02); a.gain.exponentialRampToValueAtTime(.0001, t + d);
+      o.connect(a); a.connect(this.ctx.destination); o.start(t); o.stop(t + d + .05); } catch (e) {}
+  },
+  tap() { this.tone(520, .12, .04, "triangle"); },
+  chime() { [659.25, 880, 1318.5].forEach((f, i) => this.tone(f, 1.2, .05, "sine", i * .12)); },
+  warm() { [392, 493.88, 587.33].forEach((f, i) => this.tone(f, .9, .05, "sine", i * .1)); }
+};
+const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
+
+/* Keep the screen awake while a timer runs (where supported) */
+let wakeLock = null;
+async function keepAwake(on) {
+  try {
+    if (on && "wakeLock" in navigator && !wakeLock) wakeLock = await navigator.wakeLock.request("screen");
+    if (!on && wakeLock) { await wakeLock.release(); wakeLock = null; }
+  } catch (e) { wakeLock = null; }
+}
+
+/* Timer ring */
+function ringSVG() {
+  return `<svg viewBox="0 0 120 120" aria-hidden="true"><circle class="bg" cx="60" cy="60" r="54" fill="none" stroke-width="6"/><circle class="fg" id="ring" cx="60" cy="60" r="54" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="339.29" stroke-dashoffset="0"/></svg>`;
+}
+const timer = {
+  total: 90, left: 90, running: false, raf: 0, last: 0, onEnd: null, ended: false,
+  start(total, onEnd) { this.stop(); this.total = this.left = total; this.onEnd = onEnd; this.ended = false; this.resume(); },
+  resume() { if (this.running || this.ended) return; this.running = true; this.last = performance.now(); keepAwake(true); this.tick(); },
+  pause() { this.running = false; cancelAnimationFrame(this.raf); keepAwake(false); this.paint(); },
+  stop() { this.running = false; cancelAnimationFrame(this.raf); keepAwake(false); },
+  tick() {
+    if (!this.running) return;
+    const now = performance.now(); this.left = Math.max(0, this.left - (now - this.last) / 1000); this.last = now;
+    this.paint();
+    if (this.left <= 0) { this.running = false; this.ended = true; keepAwake(false); sound.chime(); buzz([60, 80, 60]); this.onEnd && this.onEnd(); return; }
+    this.raf = requestAnimationFrame(() => this.tick());
+  },
+  paint() {
+    const ring = $("ring"), num = $("tnum"), lbl = $("tlbl"), wrap = $("timer");
+    if (!ring) return;
+    ring.setAttribute("stroke-dashoffset", String(339.29 * (1 - this.left / this.total)));
+    const s = Math.ceil(this.left);
+    num.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+    lbl.textContent = this.ended ? "" : (this.running ? T().left : T().paused);
+    wrap.classList.toggle("done", this.ended);
+  }
+};
+
+/* Toast */
+let toastT;
+function toast(msg) { const el = $("toast"); el.textContent = msg; el.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("show"), 2600); }
+
+/* Pass-the-phone curtain */
+function curtainHTML(title, lead, btnLabel, act) {
+  return `<div class="curtain">
+    <svg class="hand" viewBox="0 0 84 84" aria-hidden="true"><rect x="27" y="10" width="30" height="52" rx="7" fill="none" stroke="#fff" stroke-width="2.5"/><circle cx="42" cy="54" r="2.5" fill="#E2553F"/><path d="M14 54c6 0 10 4 13 9M70 54c-6 0-10 4-13 9" stroke="rgba(255,255,255,.5)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M34 72h16" stroke="#E2553F" stroke-width="2.5" stroke-linecap="round"/></svg>
+    <h2>${title}</h2><p>${lead}</p>
+    <button class="btn pri" data-act="${act}" style="width:100%;margin-top:6px">${btnLabel} →</button></div>`;
+}
+
+
+
+/* =====================================================================
+   SPECIFIC THANKS
+   ===================================================================== */
+const S = { screen: "intro", name: "", what: "", impact: "", text: "", edited: false, way: 0, reaction: null };
+const FLOW = ["who", "what", "impact", "preview", "deliver"];
+const nm = () => S.name.trim() || "…";
+const ic = p => `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#17171A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const WAY_ICONS = [
+  ic('<circle cx="8" cy="9" r="3"/><circle cx="17" cy="9" r="3"/><path d="M3 20c0-3 2.2-5 5-5s5 2 5 5M12 20c0-3 2.2-5 5-5s4.5 2 4.5 5"/><path d="M12.5 4.5c.6-.7 1.6-.7 2 0" stroke="#E2553F"/>'),
+  ic('<path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 7l3 3"/><path d="M4 20h16" stroke="#E2553F"/>'),
+  ic('<path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8" stroke="#E2553F"/>')
+];
+
+function compose() {
+  const t = T();
+  const trimEnd = s => s.trim().replace(/[.。!！]+$/, "");
+  let w = trimEnd(S.what), i = trimEnd(S.impact);
+  if (lang !== "zh") { w = w.replace(/^(you\s+|tú\s+)/i, ""); if (!/^I\b/.test(i) && !/^.[A-Z]/.test(i)) i = i.charAt(0).toLowerCase() + i.slice(1); }
+  return fmt(t.tmpl, { n: S.name.trim(), w, i }).replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"');
+}
+
+/* gentle, multilingual specificity checks — nudges, never a score */
+function wordsLen(s) { return lang === "zh" ? s.replace(/\s/g, "").length : s.trim().split(/\s+/).filter(Boolean).length; }
+function analyse() {
+  const t = T(), w = S.what.toLowerCase(), all = (S.what + " " + S.impact).toLowerCase();
+  const vague = t.vague.find(v => w.includes(v));
+  const action = wordsLen(S.what) >= (lang === "zh" ? 8 : 5) && !vague;
+  const impact = wordsLen(S.impact) >= (lang === "zh" ? 6 : 4);
+  const moment = t.moments.some(m => all.includes(m));
+  return { action, impact, moment, vague };
+}
+
+function go(screen) { timer.stop(); S.screen = screen; render(); window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }); }
+
+function paintStepsBar() {
+  const el = $("steps"), at = FLOW.indexOf(S.screen);
+  el.innerHTML = at < 0 ? "" : FLOW.map((_, i) => `<span class="${i < at ? "done" : i === at ? "now" : ""}"></span>`).join("");
+}
+
+function thanksArt() {
+  return `<svg viewBox="0 0 320 150" style="width:100%;max-width:420px;height:auto;margin:4px 0" aria-hidden="true">
+    <g transform="rotate(-3 160 75)"><rect x="40" y="20" width="240" height="110" rx="16" fill="#fff" stroke="#E5E2DA"/>
+      <text x="64" y="58" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="20" fill="#17171A">When you…</text>
+      <rect x="64" y="70" width="150" height="5" rx="2.5" fill="#E5E2DA"/><rect x="64" y="82" width="110" height="5" rx="2.5" fill="#E5E2DA"/>
+      <text x="64" y="112" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="20" fill="#17171A">it meant…</text>
+      <path d="M244 96c0-8 12-8 12 0 0-8 12-8 12 0 0 9-12 16-12 16s-12-7-12-16z" fill="#E2553F"/></g>
+  </svg>`;
+}
+
+function render() {
+  const t = T(), stage = $("stage");
+  paintStepsBar();
+  let h = "";
+  switch (S.screen) {
+  case "intro":
+    h = `<section class="screen">
+      <span class="kicker">${t.introKicker}</span><h1>${t.introTitle}</h1>
+      <p class="lead">${esc(t.introLead)}</p>
+      <div class="pills">${t.introMeta.map(m => `<span class="pill">${esc(m)}</span>`).join("")}</div>
+      ${thanksArt()}
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="toWho" data-focus>${esc(t.start)} →</button></div>
+    </section>`; break;
+
+  case "who":
+    h = `<section class="screen">
+      <h2>${esc(t.who)}</h2>
+      <label class="field"><span class="sr" style="position:absolute;left:-9999px">${esc(t.who)}</span><input id="fName" maxlength="30" autocomplete="off" placeholder="${esc(t.whoPh)}" value="${esc(S.name)}" style="font-size:22px;padding:16px"></label>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="toWhat" id="nextBtn" ${S.name.trim() ? "" : "disabled"}>${esc(t.next)} →</button></div>
+    </section>`; break;
+
+  case "what":
+    h = `<section class="screen">
+      <h2>${fmt(t.whatTitle, { n: nm() })}</h2>
+      <p class="lead">${esc(t.whatLead)}</p>
+      <label class="field"><textarea id="fWhat" maxlength="240" placeholder="${esc(t.whatPh)}">${esc(S.what)}</textarea></label>
+      <div id="nudge"></div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="toWho">← ${esc(t.backBtn)}</button><button class="btn pri" data-act="toImpact" id="nextBtn" ${S.what.trim() ? "" : "disabled"}>${esc(t.next)} →</button></div>
+    </section>`; break;
+
+  case "impact":
+    h = `<section class="screen">
+      <h2>${esc(t.impactTitle)}</h2>
+      <p class="lead">${esc(t.impactLead)}</p>
+      <label class="field"><textarea id="fImpact" maxlength="240" placeholder="${esc(t.impactPh)}">${esc(S.impact)}</textarea></label>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="toWhat">← ${esc(t.backBtn)}</button><button class="btn pri" data-act="toPreview" id="nextBtn" ${S.impact.trim() ? "" : "disabled"}>${esc(t.next)} →</button></div>
+    </section>`; break;
+
+  case "preview": {
+    if (!S.edited) S.text = compose();
+    const a = analyse();
+    const row = (ok, label) => `<div style="display:flex;gap:10px;align-items:center;font-size:14px"><span style="width:20px;height:20px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;font-size:12px;${ok ? "background:var(--good);color:#fff" : "border:1.5px dashed var(--muted);color:var(--muted)"}">${ok ? "✓" : ""}</span>${esc(label)}</div>`;
+    h = `<section class="screen">
+      <h2>${esc(t.previewTitle)}</h2>
+      <p class="lead">${esc(t.previewLead)}</p>
+      <label class="field"><textarea id="fText" maxlength="480" style="font-family:var(--serif);font-style:italic;font-size:21px;line-height:1.4;min-height:150px">${esc(S.text)}</textarea></label>
+      <div class="card" style="display:grid;gap:10px;padding:18px">
+        <span class="kicker">${esc(t.checks)}</span>
+        ${row(a.action, t.cAction)}${row(a.impact, t.cImpact)}${row(a.moment, t.cMoment)}
+        ${a.vague ? `<p style="margin:4px 0 0;font-size:13.5px;color:var(--accent)">${fmt(t.vagueTip, { v: a.vague })}</p>` : ""}
+        ${!a.moment ? `<p style="margin:0;font-size:13px;color:var(--muted)">${esc(t.momentTip)}</p>` : ""}
+      </div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="toImpact">← ${esc(t.backBtn)}</button><button class="btn pri" data-act="toDeliver" data-focus>${esc(t.next)} →</button></div>
+    </section>`; break; }
+
+  case "deliver":
+    h = `<section class="screen">
+      <h2>${esc(t.deliverTitle)}</h2>
+      <p class="lead">${esc(t.deliverLead)}</p>
+      <div class="heard">${t.ways.map((w, i) => `<button data-way="${i}" aria-pressed="${i === S.way}" style="${i === S.way ? "border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)" : ""}"><span class="e">${WAY_ICONS[i]}</span><span><b>${esc(w[0])}</b><small>${esc(w[1])}</small></span></button>`).join("")}</div>
+      <div class="prompt" style="min-height:0"><div class="q" style="font-size:21px">${esc(S.text)}</div></div>
+      ${S.way === 2 ? `<button class="btn" data-act="copy" style="flex:none">⧉ ${esc(t.copy)}</button>` : ""}
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="later">${esc(t.later)}</button><button class="btn pri" data-act="said" data-focus>${esc(t.saidIt)} ✓</button></div>
+    </section>`; break;
+
+  case "later":
+    h = `<section class="screen">
+      <h2>${esc(t.laterTitle)}</h2>
+      <p class="lead">${fmt(t.laterLead, { n: nm() })}</p>
+      <div class="prompt" style="min-height:0"><div class="q" style="font-size:21px">${esc(S.text)}</div></div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="said" data-focus>${esc(t.saidIt)} ✓</button></div>
+    </section>`; break;
+
+  case "reflect":
+    h = `<section class="screen">
+      <h2>${fmt(t.reflectTitle, { n: nm() })}</h2>
+      <p class="lead">${esc(t.reflectLead)}</p>
+      <div class="seg" role="group">${t.reactions.map((r, i) => `<button type="button" data-react="${i}" aria-pressed="${S.reaction === i}">${esc(r)}</button>`).join("")}</div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="toDone" data-focus>${esc(t.next)} →</button></div>
+    </section>`; break;
+
+  case "done":
+    h = `<section class="screen">
+      <span class="kicker" style="color:var(--good)">✓ ${esc(t.doneKicker)}</span>
+      <h2>${esc(t.doneTitle)}</h2>
+      <p class="serif">${esc(t.doneLead)}</p>
+      <div class="monday"><b>${esc(t.monday)}</b>${esc(t.mondayTxt)}</div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="again">↻ ${esc(t.again)}</button><button class="btn pri" data-act="teach" data-focus>${esc(t.passOn)} →</button></div>
+    </section>`; break;
+
+  case "teach": h = teachHTML("thanks"); break;
+  }
+  const hadFocus = stage.contains(document.activeElement);
+  stage.innerHTML = h;
+  const f = stage.querySelector("[data-focus]");
+  if (f && hadFocus) f.focus({ preventScroll: true });
+  const inp = stage.querySelector("#fName, #fWhat, #fImpact");
+  if (inp && !matchMedia("(pointer: coarse)").matches) inp.focus({ preventScroll: true });
+  if (S.screen === "what") paintNudge();
+}
+
+function paintNudge() {
+  const el = $("nudge"); if (!el) return;
+  const v = T().vague.find(x => S.what.toLowerCase().includes(x));
+  el.innerHTML = v ? `<div class="tip"><i>✦</i><span>${fmt(T().vagueTip, { v })}</span></div>` : "";
+}
+
+function teachHTML(demo) {
+  const t = T(), chain = store.get("fb_teachback", []).filter(c => c.demo === demo);
+  return `<section class="screen">
+    <span class="kicker" style="color:var(--accent)">${esc(t.teachKicker)}</span>
+    <h2>${esc(t.teachTitle)}</h2>
+    <p class="lead">${esc(t.teachLead)}</p>
+    <div class="steps3">${t.t3.map((s, i) => `<div><b>0${i + 1}</b><span>${esc(s)}</span><small style="display:block;font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.4">${esc(t.t3sub[i])}</small></div>`).join("")}</div>
+    <div class="card" style="display:grid;gap:12px">
+      <label class="field"><span>${esc(t.learnerName)}</span><input id="lName" maxlength="30" autocomplete="off" placeholder="${esc(t.learnerPh)}"></label>
+      <label class="field"><span>${esc(t.learned)}</span><textarea id="lText" maxlength="280" placeholder="${esc(t.learnedPh)}"></textarea></label>
+      <button class="btn pri" data-act="saveTeach" style="flex:none">${esc(t.save)}</button>
+    </div>
+    <div><span class="kicker">${esc(t.chainTitle)}</span>
+      <ul class="chain" style="margin-top:10px">${chain.length ? chain.slice().reverse().map(c => `<li>${esc(c.text)}<small>${c.name ? esc(c.name) + " · " : ""}${esc(new Date(c.at).toLocaleDateString(lang === "zh" ? "zh-CN" : lang))}</small></li>`).join("") : `<li style="color:var(--muted)">${esc(t.chainEmpty)}</li>`}</ul></div>
+    <a class="link" href="/free_builder/teachback">⊂⊃ ${esc(lang === "zh" ? "教回去链条 ↗" : lang === "es" ? "Cadena de Enseñar de Vuelta ↗" : "Teach-Back Chain ↗")}</a>
+    <button class="link" data-act="restart">${esc(t.restart)}</button>
+  </section>`;
+}
+
+$("stage").addEventListener("input", e => {
+  const id = e.target.id, v = e.target.value, nb = $("nextBtn");
+  if (id === "fName") { S.name = v; if (nb) nb.disabled = !v.trim(); }
+  if (id === "fWhat") { S.what = v; S.edited = false; if (nb) nb.disabled = !v.trim(); paintNudge(); }
+  if (id === "fImpact") { S.impact = v; S.edited = false; if (nb) nb.disabled = !v.trim(); }
+  if (id === "fText") { S.text = v; S.edited = true; }
+});
+$("stage").addEventListener("keydown", e => {
+  if (e.key === "Enter" && e.target.id === "fName" && S.name.trim()) { e.preventDefault(); go("what"); }
+});
+$("stage").addEventListener("click", e => {
+  sound.init();
+  const w = e.target.closest("[data-way]"), r = e.target.closest("[data-react]"), a = e.target.closest("[data-act]");
+  if (w) { S.way = +w.dataset.way; sound.tap(); render(); return; }
+  if (r) { S.reaction = +r.dataset.react; sound.tap(); render(); return; }
+  if (!a) return;
+  const k = a.dataset.act; sound.tap();
+  const map = { toWho: "who", toWhat: "what", toImpact: "impact", toPreview: "preview", toDeliver: "deliver", later: "later", said: "reflect", toDone: "done", teach: "teach" };
+  if (k === "said") sound.warm();
+  if (map[k]) { if (k === "toDone") sound.warm(); go(map[k]); return; }
+  if (k === "copy") {
+    const text = S.text, ok = () => toast(T().copied);
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(ok).catch(fb); else fb();
+    function fb() { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove(); ok(); }
+  }
+  else if (k === "again") { Object.assign(S, { name: "", what: "", impact: "", text: "", edited: false, way: 0, reaction: null }); go("who"); }
+  else if (k === "saveTeach") {
+    const text = ($("lText").value || "").trim(), name = ($("lName").value || "").trim();
+    if (!text) { $("lText").focus(); return; }
+    const chain = store.get("fb_teachback", []); chain.push({ demo: "thanks", text, name, at: Date.now() }); store.set("fb_teachback", chain.slice(-50));
+    sound.warm(); toast(T().saved); render();
+  }
+  else if (k === "restart") { Object.assign(S, { name: "", what: "", impact: "", text: "", edited: false, way: 0, reaction: null }); go("intro"); }
+});
+
+window.__app = { S, go, render, analyse, compose };
+
+/* ---------- facilitator guide ---------- */
+const drawer = $("drawer");
+function openGuide() {
+  const t = T();
+  $("panel").innerHTML = `
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+      <div><span class="kicker">${esc(t.gKicker)}</span><h3 id="g-title">${esc(t.gTitle)}</h3></div>
+      <button class="x" data-close aria-label="${esc(t.close)}">✕</button>
+    </div>
+    <h4>${esc(t.gWhy)}</h4><p>${esc(t.gWhyTxt)}</p>
+    <h4>${esc(t.gSteps)}</h4><ol>${t.gStepList.map(s => `<li>${esc(s)}</li>`).join("")}</ol>
+    <h4>${esc(t.gDebrief)}</h4><ul>${t.gDebriefList.map(s => `<li>${esc(s)}</li>`).join("")}</ul>
+    <h4>${esc(t.gNotes)}</h4><ul>${t.gNotesList.map(s => `<li>${esc(s)}</li>`).join("")}</ul>`;
+  drawer.classList.add("show");
+  setTimeout(() => drawer.querySelector("[data-close]").focus({ preventScroll: true }), 60);
+}
+function closeGuide() { drawer.classList.remove("show"); $("btn-guide").focus({ preventScroll: true }); }
+drawer.addEventListener("click", e => { if (e.target === drawer || e.target.closest("[data-close]")) closeGuide(); });
+$("btn-guide").addEventListener("click", openGuide);
+window.addEventListener("keydown", e => { if (e.key === "Escape" && drawer.classList.contains("show")) closeGuide(); });
+
+/* ---------- language + sound ---------- */
+function paintSound() {
+  const b = $("btn-sound"), t = T();
+  b.innerHTML = sound.muted
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>';
+  b.setAttribute("aria-label", sound.muted ? t.soundOff : t.soundOn); b.title = b.getAttribute("aria-label");
+}
+$("btn-sound").addEventListener("click", () => { sound.muted = !sound.muted; store.set("fb_muted", sound.muted); sound.init(); paintSound(); if (!sound.muted) sound.tap(); });
+
+function applyLang(l) {
+  lang = LANGS.includes(l) ? l : "en";
+  document.documentElement.lang = lang === "zh" ? "zh-CN" : lang;
+  document.title = T().title;
+  $("lang-lbl").textContent = LANG_LBL[lang];
+  document.querySelectorAll("[data-t]").forEach(el => { const v = T()[el.dataset.t]; if (typeof v === "string") el.textContent = v; });
+  paintSound();
+  render();               // the clock object survives a re-render
+  timer.paint();
+  const pb = $("pauseBtn"); if (pb && !timer.running && !timer.ended) pb.textContent = T().resume;
+  if (drawer.classList.contains("show")) openGuide();
+  try { localStorage.setItem("wm_preferred_lang", lang); localStorage.setItem("wm_cases_lang", lang); } catch (e) {}
+}
+$("btn-lang").addEventListener("click", () => applyLang(LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length]));
+
+/* ---------- boot ---------- */
+let saved = null;
+try { saved = localStorage.getItem("wm_preferred_lang") || localStorage.getItem("wm_cases_lang"); } catch (e) {}
+const nav = (navigator.language || "").toLowerCase();
+applyLang(LANGS.includes(saved) ? saved : nav.startsWith("zh") ? "zh" : nav.startsWith("es") ? "es" : "en");
+document.addEventListener("visibilitychange", () => { if (!document.hidden && timer.running) keepAwake(true); });
+})();
+</script>
+</body>
+</html>
