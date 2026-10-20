@@ -7,9 +7,7 @@
   <meta name="description" content="A five-phase platformer that teaches design thinking by playing it: empathize, define, ideate, prototype, test.">
   <meta name="theme-color" content="#F7F6F2">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Crect x='7' y='7' width='8' height='8' rx='2' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='7' y='17' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='17' y='17' width='8' height='8' rx='2' fill='%23E2553F'/%3E%3C/svg%3E">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/fonts/fonts.css">
 
   <style>
     :root {
@@ -174,17 +172,20 @@
       font-family:var(--serif); font-style:italic; font-weight:400; color:var(--muted); white-space:nowrap; padding-bottom:.12em;
       background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7 Q 12 1 22 7 T 42 7 T 62 7 T 82 7 T 102 7 T 118 6' fill='none' stroke='%23E2553F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left bottom / 100% .32em;
     }
-    .phases { display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:22px; overflow:hidden; }
+    .phases { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:22px; overflow:hidden; }
     .ph { background:var(--white); padding:18px; text-align:left; display:flex; flex-direction:column; gap:8px; transition:background .2s; }
     .ph:hover { background:#fcfbf8; }
     .ph .n { display:flex; align-items:center; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--c); }
     .ph .n span:last-child { color:var(--muted); }
+    .ph .n span:first-child { color:var(--ink); display:inline-flex; align-items:center; gap:6px; }
+    .ph .n span:first-child::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--c); }
+    .ph.fieldph .n span:first-child { color:#7FD1A4; }
     .ph h3 { margin:0; font-family:var(--syne); font-size:16px; font-weight:700; }
     .ph .m { font-size:12.5px; color:rgba(23,23,26,.7); line-height:1.5; }
     .ph .w { font-size:12.5px; line-height:1.5; padding-top:8px; border-top:1px dashed var(--line); color:rgba(23,23,26,.85); }
     .ph .w b { font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:400; display:block; margin-bottom:2px; }
     .ph .go { margin-top:auto; font-family:var(--mono); font-size:11px; color:var(--ink); padding-top:6px; }
-    @media (max-width:900px) { .phases { grid-template-columns:1fr 1fr; } .ph:last-child { grid-column:1/-1; } }
+    @media (max-width:900px) { .phases { grid-template-columns:1fr 1fr; } }
     @media (max-width:520px) { .phases { grid-template-columns:1fr; } }
 
     footer { border-top:1px solid var(--line); margin-top:40px; padding:22px max(16px, env(safe-area-inset-right)) calc(22px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
@@ -291,11 +292,32 @@
     .field span { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
     .field input { width:100%; font:inherit; font-size:15px; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--white); }
     .field input:focus { outline:none; border-color:var(--ink); }
+    .field textarea { width:100%; font:inherit; font-size:15px; line-height:1.5; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--white); min-height:76px; resize:vertical; }
+    .field textarea:focus { outline:none; border-color:var(--ink); }
+    .ph.fieldph { background:var(--ink); color:#fff; }
+    .ph.fieldph:hover { background:#232328; }
+    .ph.fieldph .m, .ph.fieldph .w { color:rgba(255,255,255,.75); border-color:rgba(255,255,255,.15); }
+    .ph.fieldph .go { color:#fff; }
+    .pills { display:flex; flex-wrap:wrap; gap:6px; }
+    .emap { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+    .emap .field { margin:0; }
+    @media (max-width:420px) { .emap { grid-template-columns:1fr; } }
+    .qlist { list-style:none; margin:12px 0 0; padding:0; display:grid; gap:8px; counter-reset:q; }
+    .qlist li { counter-increment:q; display:flex; gap:10px; font-family:var(--serif); font-style:italic; font-size:18px; line-height:1.35; }
+    .qlist li::before { content:"0" counter(q); font-family:var(--mono); font-style:normal; font-size:11px; color:var(--accent); padding-top:5px; }
+    .ftimer { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px; padding:12px 14px; border-radius:14px; background:var(--paper); border:1px solid var(--line); }
+    .ftimer b { font-family:var(--mono); font-size:26px; font-variant-numeric:tabular-nums; }
+    .cosign { margin-top:16px; padding-top:14px; border-top:1px dashed rgba(255,255,255,.2); font-size:13px; color:rgba(255,255,255,.8); }
+    .cosign b { display:block; font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#7FD1A4; font-weight:400; margin-bottom:4px; }
+    .cosign i { font-family:var(--serif); font-size:16px; }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration:.001ms !important; animation-duration:.001ms !important; }
     }
-  </style>
+  
+    /* Chinese: keep CJK upright (no faux italic); Latin italics stay real */
+    html:lang(zh) { font-synthesis: weight; }
+</style>
 </head>
 <body>
   <div class="dots" aria-hidden="true"></div>
@@ -450,6 +472,7 @@ en: {
     t_wingsOn: "Idea Wings on — easy glide.", t_wingsOff: "Idea Wings off.", t_copied: "Copied to clipboard.",
     t_saved: "Welcome back — progress restored."
   },
+  field: {"phase": "Field", "name": "The Real Conversation", "tag": "06 · No game this time", "work": "Interview one real colleague about a frustration at work, and map it together.", "go": "Start with a colleague →", "done": "Co-signed ✓", "introTitle": "Now do it for real.", "introLead": "Five worlds taught you the habits. Phase 06 has no game: find one colleague, give them ten minutes, and understand something that frustrates them at work. They co-sign your credential at the end.", "introMeta": ["1 colleague", "≈ 10 minutes", "1 phone"], "start": "I've found someone", "later": "Later", "askTitle": "Ask, then listen.", "askLead": "Pick two or three. Let the silences sit. Your colleague talks most.", "qs": ["Tell me about the last time something at work frustrated you.", "What did you do about it — any workaround?", "Why does that matter to you? …And why does that matter?", "If you had a magic wand, what would be different?", "What haven't I asked that I should have?"], "tips": ["“Tell me about the last time…” beats “Do you usually…”", "Ask “why” more than you explain.", "Write after, not during."], "timer": "10-minute timer", "timerStart": "Start", "timerPause": "Pause", "toMap": "We're done talking →", "mapTitle": "Fill the empathy map — together.", "mapLead": "Hand the phone over. Ask: “Did I get this right?”", "says": "Says", "thinks": "Thinks", "does": "Does", "feels": "Feels", "saysPh": "Words they actually used", "thinksPh": "What they might not say aloud", "doesPh": "What they actually do", "feelsPh": "Emotions underneath", "insTitle": "What surprised you?", "insLbl": "One insight you didn't expect", "insPh": "e.g. The real problem isn't the tool — it's not knowing who decides.", "hmwLbl": "How might we…", "hmwPh": "…make it obvious who decides, without another meeting?", "signTitle": "Hand the phone to your colleague.", "signLead": "Their words finish your credential.", "signName": "Your name (colleague)", "signNamePh": "e.g. Mei", "signNote": "One line: how did it feel to be interviewed?", "signNotePh": "e.g. I felt listened to — and I see my problem more clearly.", "sign": "Co-sign", "back": "Back", "next": "Next", "signed": "Co-signed by {n}", "certField": "Then do 06 · Field with a real colleague — they co-sign the card.", "certStart": "Start 06 · Field", "certReview": "Your field notes", "thanks": "Thank you, {n}. That's design thinking, for real.", "copyLine": "06 Field — interviewed a colleague; co-signed by {n}"},
   stages: [
     { phase: "Empathize", name: "The Blind Spot",
       principle: "You can't design for what you refuse to see.",
@@ -467,7 +490,7 @@ en: {
       tip: "Climb and touch the signals. The root cause opens the bridge.",
       concept: "Surface complaints create chaos. User + need + insight cuts through the noise and gives the team one problem worth solving.",
       rules: ["Ban briefs like “We need a faster dashboard.”", "Write: [specific user] needs [outcome] because [surprising insight].", "Frame three “How might we…?” questions from that insight."],
-      monday: "Rewrite your current project brief as a single point-of-view sentence.",
+      monday: "Rewrite your project brief as one point-of-view sentence — then read it to a colleague and ask what's missing.",
       quiz: { q: "Which is a strong point-of-view statement?", o: ["“We need a faster dashboard.”", "“Users want better UX.”", "“Regional managers need numbers they can trust, because today they re-check every report by hand.”"], a: 2, why: "It names a specific user, a need and an insight — and it doesn't smuggle in a solution." } },
     { phase: "Ideate", name: "The Buoyant Cloudway",
       principle: "Quantity breeds quality. Float freely; pop the doubts.",
@@ -476,7 +499,7 @@ en: {
       tip: "Hold JUMP to float. Fly into the doubt walls to pop them.",
       concept: "Ideation should feel weightless. Judgment kills momentum; the net underneath — psychological safety — is what lets people leap.",
       rules: ["Crazy 8s: eight sketches in eight minutes.", "Silence every “Yeah, but…” until diverging is done.", "Vote silently with dots only after every idea is on the wall."],
-      monday: "Run an 8-minute Crazy 8s before your next problem-solving meeting.",
+      monday: "Run an 8-minute Crazy 8s with two colleagues — then each of you champions someone else's best sketch.",
       quiz: { q: "Mid-brainstorm, someone says “Yeah, but that's too expensive.” Best move?", o: ["Debate the budget right now.", "Park it — judging comes after generating.", "Drop the idea to keep the peace."], a: 1, why: "Mixing critique into divergence shuts down the wild ideas that lead to the good ones. Converge later." } },
     { phase: "Prototype", name: "Fail Forward",
       principle: "A prototype is a question, not a monument.",
@@ -485,7 +508,7 @@ en: {
       tip: "Press Q or BUILD to drop a wireframe. Every fall leaves a step.", tipT: "Tap BUILD to drop a wireframe. Every fall leaves a step.",
       concept: "No one crosses the abyss in one go. Each fast, cheap failure solidifies into the next step toward the summit.",
       rules: ["Sketch or click-through before you code.", "Cap prototype time at 4–48 hours.", "Test to learn what breaks, not to defend your idea."],
-      monday: "Turn your next idea into a paper sketch before it becomes a slide.",
+      monday: "Sketch your next idea on paper and show it to one colleague before it becomes a slide.",
       quiz: { q: "Your first prototype should be…", o: ["Polished, so users take it seriously.", "Built in production code to save time later.", "Cheap enough to throw away after one test."], a: 2, why: "Low-fidelity invites honest feedback and keeps you from falling in love with version one." } },
     { phase: "Test", name: "The Validation Summit",
       principle: "Feedback isn't an attack — it's a tailwind.",
@@ -572,6 +595,7 @@ zh: {
     t_wingsOn: "灵感之翼开启——轻松滑翔。", t_wingsOff: "灵感之翼关闭。", t_copied: "已复制。",
     t_saved: "欢迎回来——进度已恢复。"
   },
+  field: {"phase": "实地", "name": "真实的对话", "tag": "06 · 这一关没有游戏", "work": "就一个工作中的烦恼，采访一位真实的同事，并一起画出同理心地图。", "go": "找一位同事开始 →", "done": "已联署 ✓", "introTitle": "现在，来真的。", "introLead": "五个世界教会了你这些习惯。第 06 阶段没有游戏：找一位同事，给 TA 十分钟，去理解 TA 工作中的一个烦恼。最后由 TA 为你的证书联署。", "introMeta": ["1 位同事", "约 10 分钟", "1 部手机"], "start": "我找到人了", "later": "稍后", "askTitle": "先问，再听。", "askLead": "选两三个问题。让沉默停留一会儿。主要由同事来说。", "qs": ["说说最近一次工作中让你烦恼的事。", "你当时怎么处理的？有什么变通办法吗？", "这对你为什么重要？……那又为什么重要？", "如果你有一根魔法棒，什么会变得不一样？", "有什么我应该问、却没问的？"], "tips": ["“说说最近一次……”胜过“你通常……”", "多问“为什么”，少解释。", "聊完再记，不要边聊边记。"], "timer": "10 分钟计时", "timerStart": "开始", "timerPause": "暂停", "toMap": "我们聊完了 →", "mapTitle": "一起填同理心地图。", "mapLead": "把手机递过去，问：“我理解得对吗？”", "says": "说", "thinks": "想", "does": "做", "feels": "感受", "saysPh": "TA 真正用过的词", "thinksPh": "TA 可能不会说出口的想法", "doesPh": "TA 实际的做法", "feelsPh": "背后的情绪", "insTitle": "什么让你意外？", "insLbl": "一个你没预料到的洞察", "insPh": "例如：真正的问题不是工具，而是不知道谁来拍板。", "hmwLbl": "我们可以如何……", "hmwPh": "……不用再开会，也能让大家清楚谁来拍板？", "signTitle": "把手机交给你的同事。", "signLead": "TA 的话会完成你的证书。", "signName": "你的名字（同事）", "signNamePh": "例如：小美", "signNote": "一句话：被采访是什么感觉？", "signNotePh": "例如：我感到被倾听——也更看清了自己的问题。", "sign": "联署", "back": "返回", "next": "下一步", "signed": "联署人：{n}", "certField": "然后和一位真实的同事完成 06 · 实地——由 TA 为证书联署。", "certStart": "开始 06 · 实地", "certReview": "你的实地笔记", "thanks": "谢谢你，{n}。这才是真正的设计思维。", "copyLine": "06 实地——采访了一位同事；联署人：{n}"},
   stages: [
     { phase: "共情", name: "盲区",
       principle: "你拒绝看见的东西，你就没法为它设计。",
@@ -589,7 +613,7 @@ zh: {
       tip: "往上爬，触碰信号。根因会打开光桥。",
       concept: "表面的抱怨制造混乱。用户 + 需求 + 洞察，能穿透噪音，给团队一个值得解决的问题。",
       rules: ["禁止“我们需要一个更快的看板”这类需求。", "写成：[具体用户] 需要 [结果]，因为 [出人意料的洞察]。", "从这个洞察出发，提出三个“我们可以如何……？”"],
-      monday: "把手头项目的需求重写成一句观点陈述。",
+      monday: "把项目需求重写成一句观点陈述——读给一位同事听，问 TA 还缺什么。",
       quiz: { q: "哪一句是好的观点陈述？", o: ["“我们需要一个更快的看板。”", "“用户想要更好的体验。”", "“区域经理需要可信的数据，因为他们现在每份报表都要手工复核。”"], a: 2, why: "它点出了具体用户、需求和洞察——而且没有偷偷塞进解决方案。" } },
     { phase: "构想", name: "漂浮云道",
       principle: "数量孕育质量。自由漂浮，戳破质疑。",
@@ -598,7 +622,7 @@ zh: {
       tip: "按住“跳跃”漂浮。飞进质疑墙把它们戳破。",
       concept: "构想应该是轻盈的。评判会扼杀势头；下面那张网——心理安全感——让人敢于起跳。",
       rules: ["Crazy 8s：八分钟画八个草图。", "发散结束前，屏蔽所有“对，但是……”", "所有点子都贴上墙后，再用圆点贴纸默默投票。"],
-      monday: "下次解决问题的会议前，先来一轮 8 分钟的 Crazy 8s。",
+      monday: "和两位同事来一轮 8 分钟的 Crazy 8s——然后每人推荐别人最好的那张草图。",
       quiz: { q: "头脑风暴中，有人说“对，但是这太贵了。”最好的做法是？", o: ["现在就讨论预算。", "先放一边——先产出，后评判。", "为了和气，放弃这个点子。"], a: 1, why: "在发散阶段夹带批评，会扼杀那些通往好点子的疯狂想法。收敛留到后面。" } },
     { phase: "原型", name: "向前失败",
       principle: "原型是一个问题，而不是一座纪念碑。",
@@ -607,7 +631,7 @@ zh: {
       tip: "按 Q 或“搭建”放下线框。每次掉落都会留下台阶。", tipT: "点“搭建”放下线框。每次掉落都会留下台阶。",
       concept: "没人能一次跨过深渊。每一次快速、低成本的失败，都会凝固成通往山顶的下一级台阶。",
       rules: ["写代码之前，先画草图或做可点击原型。", "原型时间控制在 4–48 小时。", "测试是为了发现哪里会坏，而不是为了捍卫你的点子。"],
-      monday: "下一个点子，先画成纸上草图，再做成 PPT。",
+      monday: "把下一个点子画在纸上，先给一位同事看，再做成 PPT。",
       quiz: { q: "你的第一个原型应该……", o: ["足够精致，让用户认真对待。", "直接用生产代码写，省得以后返工。", "便宜到测一次就能扔掉。"], a: 2, why: "低保真能换来坦诚的反馈，也能防止你爱上第一版。" } },
     { phase: "测试", name: "验证之巅",
       principle: "反馈不是攻击，而是顺风。",
@@ -694,6 +718,7 @@ es: {
     t_wingsOn: "Alas de ideas activadas: planeo fácil.", t_wingsOff: "Alas de ideas desactivadas.", t_copied: "Copiado.",
     t_saved: "Bienvenido de nuevo: progreso recuperado."
   },
+  field: {"phase": "Campo", "name": "La conversación real", "tag": "06 · Esta vez sin juego", "work": "Entrevista a un colega real sobre una frustración en el trabajo y mapeadla juntos.", "go": "Empieza con un colega →", "done": "Firmado ✓", "introTitle": "Ahora, de verdad.", "introLead": "Cinco mundos te enseñaron los hábitos. La fase 06 no tiene juego: busca a un colega, dale diez minutos y entiende algo que le frustra en el trabajo. Al final, firma tu credencial.", "introMeta": ["1 colega", "≈ 10 minutos", "1 móvil"], "start": "Ya tengo a alguien", "later": "Más tarde", "askTitle": "Pregunta y escucha.", "askLead": "Elige dos o tres. Deja que los silencios respiren. Tu colega habla más.", "qs": ["Cuéntame la última vez que algo del trabajo te frustró.", "¿Qué hiciste al respecto? ¿Algún atajo?", "¿Por qué te importa? …¿Y por qué importa eso?", "Si tuvieras una varita mágica, ¿qué cambiaría?", "¿Qué no te he preguntado y debería?"], "tips": ["“Cuéntame la última vez…” es mejor que “¿Sueles…?”", "Pregunta “por qué” más de lo que explicas.", "Escribe después, no durante."], "timer": "Temporizador de 10 minutos", "timerStart": "Empezar", "timerPause": "Pausa", "toMap": "Hemos terminado de hablar →", "mapTitle": "Rellenad juntos el mapa de empatía.", "mapLead": "Pásale el móvil y pregunta: “¿Lo he entendido bien?”", "says": "Dice", "thinks": "Piensa", "does": "Hace", "feels": "Siente", "saysPh": "Palabras que usó de verdad", "thinksPh": "Lo que quizá no diga en voz alta", "doesPh": "Lo que hace en realidad", "feelsPh": "Las emociones de fondo", "insTitle": "¿Qué te sorprendió?", "insLbl": "Un aprendizaje que no esperabas", "insPh": "p. ej. El problema no es la herramienta: es no saber quién decide.", "hmwLbl": "¿Cómo podríamos…", "hmwPh": "…dejar claro quién decide, sin otra reunión?", "signTitle": "Pásale el móvil a tu colega.", "signLead": "Sus palabras completan tu credencial.", "signName": "Tu nombre (colega)", "signNamePh": "p. ej. Mei", "signNote": "Una frase: ¿cómo te sentiste en la entrevista?", "signNotePh": "p. ej. Me sentí escuchada y veo mi problema más claro.", "sign": "Firmar", "back": "Atrás", "next": "Siguiente", "signed": "Firmado por {n}", "certField": "Después, haz la fase 06 · Campo con un colega real: firma la credencial.", "certStart": "Empezar 06 · Campo", "certReview": "Tus notas de campo", "thanks": "Gracias, {n}. Eso es design thinking de verdad.", "copyLine": "06 Campo — entrevistó a un colega; firmado por {n}"},
   stages: [
     { phase: "Empatizar", name: "El punto ciego",
       principle: "No puedes diseñar para lo que te niegas a ver.",
@@ -711,7 +736,7 @@ es: {
       tip: "Sube y toca las señales. La causa raíz abre el puente.",
       concept: "Las quejas superficiales generan caos. Usuario + necesidad + insight atraviesa el ruido y da al equipo un problema que vale la pena resolver.",
       rules: ["Prohibidos los encargos tipo “Necesitamos un dashboard más rápido”.", "Escribe: [usuario concreto] necesita [resultado] porque [insight sorprendente].", "Formula tres preguntas “¿Cómo podríamos…?” a partir de ese insight."],
-      monday: "Reescribe el encargo de tu proyecto actual en una sola frase de punto de vista.",
+      monday: "Reescribe el encargo de tu proyecto en una frase de punto de vista y léesela a un colega: pregúntale qué falta.",
       quiz: { q: "¿Cuál es un buen punto de vista?", o: ["“Necesitamos un dashboard más rápido.”", "“Los usuarios quieren mejor UX.”", "“Los gerentes regionales necesitan cifras fiables, porque hoy revisan cada informe a mano.”"], a: 2, why: "Nombra un usuario concreto, una necesidad y un insight, sin colar una solución." } },
     { phase: "Idear", name: "La vía de nubes",
       principle: "La cantidad genera calidad. Flota libre y revienta las dudas.",
@@ -720,7 +745,7 @@ es: {
       tip: "Mantén SALTAR para flotar. Vuela contra los muros de duda para reventarlos.",
       concept: "Idear debería sentirse ligero. El juicio mata el impulso; la red de abajo —la seguridad psicológica— es lo que permite saltar.",
       rules: ["Crazy 8s: ocho bocetos en ocho minutos.", "Silencia cada “Sí, pero…” hasta terminar de divergir.", "Vota en silencio con puntos solo cuando todas las ideas estén en la pared."],
-      monday: "Haz un Crazy 8s de 8 minutos antes de tu próxima reunión para resolver un problema.",
+      monday: "Haz un Crazy 8s de 8 minutos con dos colegas; luego cada uno defiende el mejor boceto de otra persona.",
       quiz: { q: "En plena lluvia de ideas alguien dice “Sí, pero es muy caro”. ¿Mejor jugada?", o: ["Debatir el presupuesto ahora.", "Aparcarlo: primero generar, luego juzgar.", "Descartar la idea para evitar conflicto."], a: 1, why: "Criticar mientras se diverge apaga las ideas locas que llevan a las buenas. Converge después." } },
     { phase: "Prototipar", name: "Fallar hacia delante",
       principle: "Un prototipo es una pregunta, no un monumento.",
@@ -729,7 +754,7 @@ es: {
       tip: "Pulsa Q o CREAR para soltar un wireframe. Cada caída deja un escalón.", tipT: "Toca CREAR para soltar un wireframe. Cada caída deja un escalón.",
       concept: "Nadie cruza el abismo de una vez. Cada fallo rápido y barato se solidifica en el siguiente escalón hacia la cima.",
       rules: ["Boceta o haz un clicable antes de programar.", "Limita el prototipo a 4–48 horas.", "Prueba para descubrir qué se rompe, no para defender tu idea."],
-      monday: "Convierte tu próxima idea en un boceto en papel antes de hacer una diapositiva.",
+      monday: "Dibuja tu próxima idea en papel y enséñasela a un colega antes de hacer una diapositiva.",
       quiz: { q: "Tu primer prototipo debería ser…", o: ["Pulido, para que lo tomen en serio.", "En código de producción, para ahorrar tiempo después.", "Tan barato que puedas tirarlo tras una prueba."], a: 2, why: "La baja fidelidad invita a feedback honesto y evita que te enamores de la versión uno." } },
     { phase: "Testear", name: "La cumbre de validación",
       principle: "El feedback no es un ataque: es viento a favor.",
@@ -783,7 +808,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
    SAVE
    ===================================================================== */
 const STORE = "fb_dto_v2";
-const save = { cleared: [], eggs: {}, quiz: {}, name: "", muted: false, secs: 0, iters: 0, stage: 0 };
+const save = { cleared: [], eggs: {}, quiz: {}, name: "", muted: false, secs: 0, iters: 0, stage: 0, field: null };
 try { Object.assign(save, JSON.parse(localStorage.getItem(STORE) || "{}")); } catch (e) {}
 const persist = () => { try { localStorage.setItem(STORE, JSON.stringify(save)); } catch (e) {} };
 
@@ -1492,8 +1517,72 @@ card.addEventListener("click", e => {
   else if (a === "close") { closeModal(); }
   else if (a === "next") { closeModal(false); goStage(G.stage + 1); }
   else if (a === "replay") { closeModal(false); goStage(G.stage, false); }
-  else if (a === "claim") { closeModal(false); openDrawer(3); }
+  else if (a === "claim") { closeModal(false); if (save.field && save.field.by) openDrawer(3); else openField(0); }
+  else if (a === "fLater") { closeModal(false); openDrawer(3); }
+  else if (a === "fGo") { collectField(F.step); openField(+btn.dataset.step); }
+  else if (a === "fTimer") { toggleFieldTimer(); }
+  else if (a === "fSign") {
+    collectField(4);
+    if (!F.by.trim()) { const el = $("f-by"); if (el) el.focus(); return; }
+    save.field = { by: F.by.trim(), note: F.note.trim(), insight: F.insight.trim(), hmw: F.hmw.trim(), map: { ...F.map }, at: Date.now() };
+    persist(); stopFieldTimer(); audio.victory();
+    toast(fmt(T().field.thanks, { n: save.field.by }));
+    closeModal(false); renderPhases(); openDrawer(3);
+  }
 });
+
+/* ---------- Phase 06 · Field: a real interview, no game ---------- */
+const F = { step: 0, map: { says: "", thinks: "", does: "", feels: "" }, insight: "", hmw: "", by: "", note: "", left: 600, running: false, iv: null };
+function stopFieldTimer() { F.running = false; clearInterval(F.iv); }
+function toggleFieldTimer() {
+  if (F.running) stopFieldTimer();
+  else { if (F.left <= 0) F.left = 600; F.running = true; F.iv = setInterval(() => { F.left--; if (F.left <= 0) { stopFieldTimer(); F.left = 0; audio.collect(); } paintFieldTimer(); }, 1000); }
+  paintFieldTimer();
+}
+function paintFieldTimer() {
+  const el = $("f-clock"), b = $("f-tbtn"); if (!el) return;
+  el.textContent = `${Math.floor(F.left / 60)}:${String(F.left % 60).padStart(2, "0")}`;
+  if (b) b.textContent = F.running ? T().field.timerPause : T().field.timerStart;
+}
+function collectField(step) {
+  const v = id => { const el = $(id); return el ? el.value : null; };
+  if (step === 2) ["says", "thinks", "does", "feels"].forEach(k => { const x = v("f-" + k); if (x != null) F.map[k] = x; });
+  if (step === 3) { const a = v("f-ins"), b = v("f-hmw"); if (a != null) F.insight = a; if (b != null) F.hmw = b; }
+  if (step === 4) { const a = v("f-by"), b = v("f-note"); if (a != null) F.by = a; if (b != null) F.note = b; }
+  return true;
+}
+function openField(step) {
+  const f = T().field, u = U(); F.step = step;
+  const head = `<div class="head-row"><span class="kicker" style="color:#2F8A5C">${esc(f.tag)}</span><span class="pill">0${Math.min(step + 1, 5)}/05</span></div>`;
+  const nav = (back, next, nextLbl) => `<div class="btns">${back != null ? `<button class="btn" data-act="fGo" data-step="${back}">← ${esc(f.back)}</button>` : `<button class="btn" data-act="fLater">${esc(f.later)}</button>`}<button class="btn pri" data-act="fGo" data-step="${next}" data-focus>${esc(nextLbl || f.next)} →</button></div>`;
+  const ta = (id, lbl, ph, val) => `<label class="field"><span>${esc(lbl)}</span><textarea id="${id}" maxlength="240" placeholder="${esc(ph)}">${esc(val)}</textarea></label>`;
+  let h = "";
+  if (step === 0) h = `${head}<h2 id="m-title">${esc(f.introTitle)}</h2>
+      <p class="principle">${esc(f.introLead)}</p>
+      <div class="pills" style="margin-top:12px">${f.introMeta.map(m => `<span class="pill">${esc(m)}</span>`).join("")}</div>
+      ${nav(null, 1, f.start)}`;
+  else if (step === 1) h = `${head}<h2 id="m-title">${esc(f.askTitle)}</h2>
+      <p style="margin:8px 0 0">${esc(f.askLead)}</p>
+      <ol class="qlist">${f.qs.map(q => `<li>${esc(q)}</li>`).join("")}</ol>
+      <ul class="rules">${f.tips.map(r => `<li>${esc(r)}</li>`).join("")}</ul>
+      <div class="ftimer"><span><span class="kicker">${esc(f.timer)}</span><br><b id="f-clock">10:00</b></span><button class="btn" data-act="fTimer" id="f-tbtn" style="flex:none">${esc(f.timerStart)}</button></div>
+      ${nav(0, 2, f.toMap)}`;
+  else if (step === 2) h = `${head}<h2 id="m-title">${esc(f.mapTitle)}</h2>
+      <p style="margin:8px 0 0">${esc(f.mapLead)}</p>
+      <div class="emap">${["says", "thinks", "does", "feels"].map(k => ta("f-" + k, f[k], f[k + "Ph"], F.map[k])).join("")}</div>
+      ${nav(1, 3)}`;
+  else if (step === 3) h = `${head}<h2 id="m-title">${esc(f.insTitle)}</h2>
+      ${ta("f-ins", f.insLbl, f.insPh, F.insight)}${ta("f-hmw", f.hmwLbl, f.hmwPh, F.hmw)}
+      ${nav(2, 4)}`;
+  else h = `${head}<h2 id="m-title">${esc(f.signTitle)}</h2>
+      <p class="principle">${esc(f.signLead)}</p>
+      <label class="field"><span>${esc(f.signName)}</span><input id="f-by" maxlength="40" autocomplete="off" placeholder="${esc(f.signNamePh)}" value="${esc(F.by)}"></label>
+      ${ta("f-note", f.signNote, f.signNotePh, F.note)}
+      <div class="btns"><button class="btn" data-act="fGo" data-step="3">← ${esc(f.back)}</button><button class="btn pri" data-act="fSign" data-focus>✍ ${esc(f.sign)}</button></div>`;
+  if (step !== 1) stopFieldTimer();
+  openModal(h, () => {});
+  if (step === 1) paintFieldTimer();
+}
 scrim.addEventListener("click", e => {
   if (e.target !== scrim) return;
   // backdrop closes only non-blocking cards (secrets, briefs)
@@ -1552,9 +1641,17 @@ function renderPhases() {
       <span class="m">${esc(s.game)}</span>
       <span class="w"><b>${esc(u.atWork)}</b>${esc(s.work)}</span>
       <span class="go">${esc(u.playThis)}</span>
-    </button>`).join("");
+    </button>`).join("") + (() => { const f = T().field, d = save.field && save.field.by; return `
+    <button class="ph fieldph" style="--c:#7FD1A4" data-field>
+      <span class="n"><span>06 · ${esc(f.phase)}</span><span style="color:#7FD1A4">${d ? "✓" : ""}</span></span>
+      <h3>${esc(f.name)}</h3>
+      <span class="m">${esc(f.tag)}</span>
+      <span class="w"><b style="color:rgba(255,255,255,.5)">${esc(u.atWork)}</b>${esc(f.work)}</span>
+      <span class="go">${esc(d ? fmt(f.signed, { n: save.field.by }) : f.go)}</span>
+    </button>`; })();
 }
 $("phases").addEventListener("click", e => {
+  if (e.target.closest("[data-field]")) { audio.init(); openField(0); return; }
   const b = e.target.closest("[data-stage]"); if (!b) return;
   audio.init(); window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
   G.started = true; goStage(+b.dataset.stage);
@@ -1666,6 +1763,7 @@ $("g-body").addEventListener("click", e => {
     renderTimer(); return;
   }
   if (e.target.closest("[data-copy]")) copyCert();
+  if (e.target.closest("[data-field]")) { closeDrawer(); openField(0); }
 });
 
 /* Credential */
@@ -1679,14 +1777,16 @@ function renderCert() {
       <span class="kicker" style="color:rgba(255,255,255,.5)">${esc(u.certKicker)}</span>
       <div class="nm" id="cert-nm">${esc(save.name || u.certPh)}</div>
       <div class="sub">${esc(u.certSub)}</div>
-      <div class="phs">${COLORS.map((c, i) => `<span style="${save.cleared.includes(i) ? `background:${c}` : ""}"></span>`).join("")}</div>
+      <div class="phs">${COLORS.map((c, i) => `<span style="${save.cleared.includes(i) ? `background:${c}` : ""}"></span>`).join("")}<span style="${save.field && save.field.by ? "background:#7FD1A4" : "background:transparent;border:1px dashed rgba(255,255,255,.3)"}"></span></div>
       <dl>
         <div><dt>${esc(u.certTime)}</dt><dd>${m}:${String(s).padStart(2, "0")}</dd></div>
         <div><dt>${esc(u.certIter)}</dt><dd>${save.iters}</dd></div>
         <div><dt>${esc(u.certEggs)}</dt><dd>${Object.keys(save.eggs).length}/5</dd></div>
         <div><dt>${esc(u.certIns)}</dt><dd>${ins}/5</dd></div>
       </dl>
+      ${save.field && save.field.by ? `<div class="cosign"><b>✍ ${esc(fmt(T().field.signed, { n: save.field.by }))}</b>${save.field.note ? `<i>“${esc(save.field.note)}”</i>` : ""}</div>` : ""}
     </div>
+    ${!(save.field && save.field.by) ? `<p style="font-size:13px;color:var(--muted);margin:12px 2px 0">${esc(T().field.certField)}</p><div class="btns" style="margin-top:8px"><button class="btn" data-field>${esc(T().field.certStart)} →</button></div>` : (save.field.insight || save.field.hmw) ? `<div class="monday"><b>${esc(T().field.certReview)}</b>${save.field.insight ? esc(save.field.insight) : ""}${save.field.hmw ? `<br><i>${esc(T().field.hmwLbl)} ${esc(save.field.hmw.replace(/^…|^\.\.\./, ""))}</i>` : ""}</div>` : ""}
     ${n < 5 ? `<p style="font-size:13px;color:var(--muted);margin:12px 2px 0">${esc(fmt(u.certLocked, { n }))}</p>` : ""}
     <label class="field"><span>${esc(u.certName)}</span><input id="cert-in" maxlength="40" placeholder="${esc(u.certPh)}" value="${esc(save.name)}"></label>
     <div class="btns" style="margin-top:4px"><button class="btn pri" data-copy>${esc(u.certCopy)}</button></div>`;
@@ -1700,6 +1800,7 @@ function copyCert() {
     `${u.certSub}: ${save.name || "—"}`,
     `${u.certTime}: ${m}:${String(s).padStart(2, "0")} · ${u.certIter}: ${save.iters} · ${u.certEggs}: ${Object.keys(save.eggs).length}/5 · ${u.certIns}: ${ins}/5`,
     ...T().stages.map((st, i) => `${save.cleared.includes(i) ? "✓" : "·"} 0${i + 1} ${st.phase} — ${st.principle}`),
+    save.field && save.field.by ? `✓ ${fmt(T().field.copyLine, { n: save.field.by })}` : `· 06 ${T().field.phase}`,
     "wei-meng.org/free_builder"
   ].join("\n");
   const ok = () => { toast(u.t_copied); audio.collect(); };
@@ -1822,6 +1923,7 @@ requestAnimationFrame(t => { last = t; requestAnimationFrame(loop); });
 // test hook (harmless in production)
 window.__odyssey = { G, goStage, save, step, LEVELS };
 })();
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) navigator.serviceWorker.register("/free_builder/sw.js", { scope: "/free_builder/" }).catch(() => {}); // offline cache
 </script>
 </body>
 </html>
