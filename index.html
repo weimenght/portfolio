@@ -9,9 +9,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Cpolyline points='7.5,12 11.75,22 16,14.5 20.25,22 24.5,12' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='8' r='1.7' fill='%23E2553F'/%3E%3C/svg%3E">
 
   <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/fonts/fonts.css">
 
   <!-- Tailwind utilities, pre-compiled (no CDN at runtime; loads fast and works where the CDN is blocked).
        Rebuild with Tailwind 3.4 if you add new utility classes. -->
@@ -154,7 +152,14 @@
       .accent-word { background-size: 100% .32em; }
       html.js .reveal { opacity: 1; transform: none; }
     }
-  </style>
+  
+    /* small coral labels: a deeper tone keeps WCAG AA contrast */
+    .text-accent.text-\[11px\], .text-accent.text-\[10px\], .text-accent.text-xs { color:#C2412D; }
+    .bg-ink .text-accent, .text-accent[data-i18n="realityLabel"] { color:#E2553F; }
+
+    /* Chinese: keep CJK upright (no faux italic); Latin italics stay real */
+    html:lang(zh) { font-synthesis: weight; }
+</style>
   <script>document.documentElement.classList.add('js');</script>
 </head>
 
@@ -261,7 +266,7 @@
                 <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="formalLabel">The Formal Dossier</span>
                 <span class="text-[11px] font-mono text-muted/80"><span class="flip-hint-icon">↻</span> <span data-i18n="flipHint">tap to flip</span></span>
               </div>
-              <h3 class="font-syne text-2xl sm:text-3xl font-bold tracking-tight" data-i18n="formalTitle">Strategic Learning Experience Architect</h3>
+              <h2 class="font-syne text-2xl sm:text-3xl font-bold tracking-tight" data-i18n="formalTitle">Strategic Learning Experience Architect</h2>
               <p class="text-sm sm:text-base text-ink/70 leading-relaxed max-w-2xl" data-i18n="formalDesc">
                 8+ years designing capability frameworks and learning architectures for fast-moving tech teams — grounded in adult learning science and evidence-based evaluation, and focused on the human skills that matter more as AI takes on the routine.
               </p>
@@ -278,9 +283,9 @@
             <div class="space-y-3">
               <div class="flex items-center justify-between">
                 <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-accent" data-i18n="realityLabel">Unvarnished Reality</span>
-                <span class="text-[11px] font-mono text-white/40"><span class="flip-hint-icon">↻</span> <span data-i18n="flipBack">flip back</span></span>
+                <span class="text-[11px] font-mono text-white/60"><span class="flip-hint-icon">↻</span> <span data-i18n="flipBack">flip back</span></span>
               </div>
-              <h3 class="font-syne text-2xl sm:text-3xl font-bold tracking-tight" data-i18n="realityTitle">Professional Conversation Starter</h3>
+              <h2 class="font-syne text-2xl sm:text-3xl font-bold tracking-tight" data-i18n="realityTitle">Professional Conversation Starter</h2>
               <p class="text-sm sm:text-base text-white/70 leading-relaxed max-w-2xl" data-i18n="realityDesc">
                 I'm allergic to stock photos of models laughing in glass conference rooms. Adults never lose their appetite for learning — they lose patience with training that feels like paperwork. And the best teacher in the room is usually the colleague sitting next to you. My job is to give them a good excuse to talk.
               </p>
@@ -310,7 +315,7 @@
            tabindex="0" aria-roledescription="carousel">
         <div id="slide-content" class="space-y-3" aria-live="polite">
           <span id="slide-tag" class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted">01 · Diagnose</span>
-          <h3 id="slide-title" class="font-syne text-xl sm:text-2xl font-bold tracking-tight">Listening before building</h3>
+          <h2 id="slide-title" class="font-syne text-xl sm:text-2xl font-bold tracking-tight">Listening before building</h2>
           <p id="slide-desc" class="text-sm sm:text-base text-ink/70 leading-relaxed max-w-2xl"></p>
         </div>
 
@@ -350,10 +355,10 @@
 
         <div class="relative max-w-2xl space-y-4">
           <div class="text-[11px] font-mono uppercase tracking-[0.16em] text-white/45" data-i18n="workStudio">Interactive Lab</div>
-          <h3 class="font-syne text-2xl sm:text-4xl font-bold tracking-tight">
+          <h2 class="font-syne text-2xl sm:text-4xl font-bold tracking-tight">
             <span data-i18n="workTitle">Learning that ends in conversation</span>
             <span class="inline-block transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
-          </h3>
+          </h2>
           <p class="text-sm sm:text-base text-white/60 leading-relaxed" data-i18n="workDesc">
             Live demos and works in progress — human-first practice, games and stories, each designed to get people talking.
           </p>
