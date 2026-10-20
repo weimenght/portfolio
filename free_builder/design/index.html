@@ -87,9 +87,9 @@
     .hud b { color:var(--ink); font-weight:700; }
 
     .frame {
-      position:relative; width:100%; aspect-ratio:860/460; max-height:calc(100svh - 210px); min-height:240px;
+      position:relative; width:100%; aspect-ratio:860/460; max-height:calc(100vh - 210px); max-height:calc(100svh - 210px); min-height:240px;
       border-radius:22px; overflow:hidden; background:var(--white); border:1px solid var(--line);
-      box-shadow:0 18px 40px -30px rgba(23,23,26,.4); touch-action:none; user-select:none; -webkit-user-select:none;
+      box-shadow:0 18px 40px -30px rgba(23,23,26,.4); touch-action:none; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
     }
     .frame canvas { position:absolute; inset:0; width:100%; height:100%; display:block; }
     .toast {
@@ -107,7 +107,7 @@
     .tools { display:flex; gap:6px; flex-shrink:0; }
     .keys { font-family:var(--mono); font-size:10.5px; color:var(--muted); padding:8px 2px 0; }
     .keys kbd { font-family:var(--mono); font-size:10px; border:1px solid var(--line); border-bottom-width:2px; background:var(--white); border-radius:5px; padding:1px 5px; color:var(--ink); }
-    .chip.on { border-color:var(--st); color:var(--ink); background:color-mix(in srgb, var(--st) 12%, white); }
+    .chip.on { border-color:var(--st); color:var(--ink); background:#F3F1FB; background:color-mix(in srgb, var(--st) 12%, white); }
 
     /* ---------- Touch pad ---------- */
     .pad { display:none; justify-content:space-between; align-items:center; gap:10px; padding:12px 0 4px; }
@@ -117,13 +117,13 @@
     .pb {
       width:64px; height:64px; border-radius:20px; background:var(--white); border:1px solid var(--line);
       display:grid; place-items:center; font-family:var(--mono); font-size:11px; font-weight:700; color:var(--ink);
-      box-shadow:0 2px 0 var(--line); touch-action:none; user-select:none; -webkit-user-select:none; transition:transform .06s, background .1s;
+      box-shadow:0 2px 0 var(--line); touch-action:none; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; transition:transform .06s, background .1s;
     }
     .pb svg { width:22px; height:22px; }
     .pb.down { transform:translateY(2px) scale(.97); box-shadow:none; background:var(--paper); }
     .pb.jump { background:var(--ink); color:#fff; border-color:var(--ink); width:78px; box-shadow:0 2px 0 #000; }
     .pb.jump.down { background:#000; }
-    .pb.act { border-color:var(--st); color:var(--ink); background:color-mix(in srgb, var(--st) 10%, white); font-size:10px; }
+    .pb.act { border-color:var(--st); color:var(--ink); background:#F6F5FD; background:color-mix(in srgb, var(--st) 10%, white); font-size:10px; }
     .pb.act[hidden] { display:none; }
 
     /* Landscape phones: game fills the screen, pad floats over it */
@@ -132,7 +132,7 @@
       .brand-txt span, .hud .hopt { display:none; }
       main { padding-top:8px; }
       .toprow { margin-bottom:6px; }
-      .frame { aspect-ratio:auto; height:calc(100svh - 104px); max-height:none; border-radius:16px; }
+      .frame { aspect-ratio:auto; height:calc(100vh - 104px); height:calc(100svh - 104px); max-height:none; border-radius:16px; }
       .tipbar { display:none; }
       body.touch .frame { width:auto; margin:0 calc(132px + env(safe-area-inset-right)) 0 calc(132px + env(safe-area-inset-left)); }
       body.touch .pad { position:fixed; inset:auto 0 0 0; padding:0 max(12px, env(safe-area-inset-right)) 14px max(12px, env(safe-area-inset-left)); z-index:20; pointer-events:none; align-items:flex-end; }
@@ -144,7 +144,7 @@
     }
     /* Portrait phones: squarer view so the world stays legible */
     @media (max-width:700px) and (orientation:portrait) {
-      .frame { aspect-ratio:1/1; max-height:56svh; border-radius:18px; }
+      .frame { aspect-ratio:1/1; max-height:56vh; max-height:56svh; border-radius:18px; }
       .hud .hopt { display:none; }
       .brand-txt span { max-width:42vw; }
     }
@@ -153,6 +153,17 @@
       .pb.jump { width:70px; }
       .chip .lbl { display:none; }
     }
+    @media (max-width:360px) {
+      header.top, main { padding-left:12px; padding-right:12px; }
+      .brand-txt { display:none; }
+      .pad { gap:6px; }
+      .pad .grp { gap:6px; }
+      .pb { width:50px; height:50px; border-radius:15px; }
+      .pb.jump { width:62px; }
+      .pb svg { width:19px; height:19px; }
+      .card { padding-left:16px; padding-right:16px; }
+    }
+    html, body { overflow-x:hidden; }
 
     /* ---------- Learn section ---------- */
     .learn { padding:56px 0 24px; }
@@ -183,17 +194,17 @@
 
     /* ---------- Modal (briefs, debriefs, secrets) ---------- */
     .scrim { position:fixed; inset:0; z-index:50; background:rgba(23,23,26,.55); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);
-      display:flex; align-items:center; justify-content:center; padding:16px; opacity:0; pointer-events:none; transition:opacity .25s; }
+      display:flex; align-items:center; justify-content:center; padding:72px 16px 16px; opacity:0; pointer-events:none; transition:opacity .25s; }
     .scrim.show { opacity:1; pointer-events:auto; }
     .card {
-      width:100%; max-width:520px; max-height:calc(100svh - 32px); overflow-y:auto; overscroll-behavior:contain;
+      width:100%; max-width:520px; max-height:calc(100vh - 88px); max-height:calc(100svh - 88px); overflow-y:auto; overscroll-behavior:contain;
       background:var(--white); border-radius:24px; padding:26px; box-shadow:0 30px 80px -30px rgba(0,0,0,.5);
       transform:translateY(10px) scale(.98); transition:transform .4s var(--ease);
     }
     .scrim.show .card { transform:none; }
     @media (max-width:560px) {
       .scrim { align-items:flex-end; padding:0; }
-      .card { border-radius:24px 24px 0 0; max-height:88svh; padding:22px 20px calc(22px + env(safe-area-inset-bottom)); transform:translateY(40px); }
+      .card { border-radius:24px 24px 0 0; max-height:88vh; max-height:88svh; padding:22px 20px calc(22px + env(safe-area-inset-bottom)); transform:translateY(40px); }
     }
     .card h2 { font-family:var(--syne); font-weight:700; font-size:26px; letter-spacing:-.02em; margin:6px 0 0; line-height:1.15; }
     .card .principle { font-family:var(--serif); font-style:italic; font-size:21px; line-height:1.3; margin:12px 0 0; color:rgba(23,23,26,.85); }
@@ -242,7 +253,7 @@
     .drawer.show .panel { transform:none; }
     @media (max-width:560px) {
       .drawer { align-items:flex-end; }
-      .panel { max-width:none; height:90svh; border-radius:24px 24px 0 0; transform:translateY(40px); }
+      .panel { max-width:none; height:90vh; height:90svh; border-radius:24px 24px 0 0; transform:translateY(40px); }
     }
     .p-head { padding:20px 20px 0; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
     .p-head h2 { margin:4px 0 0; font-family:var(--syne); font-size:22px; letter-spacing:-.02em; }
@@ -444,7 +455,7 @@ en: {
       principle: "You can't design for what you refuse to see.",
       game: "The ground across the void is invisible. Switch on Persona Sonar and the bridges appear — you only see them through the user's eyes.",
       work: "Real needs surface when you watch people work in their own context, without steering them.",
-      tip: "Press E or SONAR to reveal hidden bridges.",
+      tip: "Press E or SONAR to reveal hidden bridges.", tipT: "Tap SONAR to reveal hidden bridges.",
       concept: "Users rarely say what they need — they show it in workarounds, hesitations and sticky notes. Observation beats opinion.",
       rules: ["Shadow someone for 30 minutes without helping.", "Swap “Would you use X?” for “Show me the last time you worked around this.”", "Capture what they say, think, do and feel — gaps between them are gold."],
       monday: "Shadow one colleague for 30 minutes. Write down every workaround.",
@@ -471,7 +482,7 @@ en: {
       principle: "A prototype is a question, not a monument.",
       game: "The gap is too wide for one leap. Every fall leaves a ghost step behind, and you can drop quick wireframes mid-air.",
       work: "Build the cheapest thing that answers your riskiest question — then let failures become your stepping stones.",
-      tip: "Press Q or BUILD to drop a wireframe. Every fall leaves a step.",
+      tip: "Press Q or BUILD to drop a wireframe. Every fall leaves a step.", tipT: "Tap BUILD to drop a wireframe. Every fall leaves a step.",
       concept: "No one crosses the abyss in one go. Each fast, cheap failure solidifies into the next step toward the summit.",
       rules: ["Sketch or click-through before you code.", "Cap prototype time at 4–48 hours.", "Test to learn what breaks, not to defend your idea."],
       monday: "Turn your next idea into a paper sketch before it becomes a slide.",
@@ -566,7 +577,7 @@ zh: {
       principle: "你拒绝看见的东西，你就没法为它设计。",
       game: "深渊上的路是隐形的。打开“用户声呐”，桥就出现了——只有用用户的眼睛才能看见。",
       work: "在用户自己的场景里观察他们工作、不去引导，真实需求才会浮现。",
-      tip: "按 E 或“声呐”显示隐藏的桥。",
+      tip: "按 E 或“声呐”显示隐藏的桥。", tipT: "点“声呐”显示隐藏的桥。",
       concept: "用户很少直接说出需求——需求藏在变通办法、犹豫和便利贴里。观察胜过意见。",
       rules: ["安静地跟岗 30 分钟，不帮忙。", "把“你会用 X 吗？”换成“给我看看你上次是怎么绕过这个问题的。”", "记录他们说的、想的、做的、感受到的——它们之间的落差就是金矿。"],
       monday: "跟岗一位同事 30 分钟，记下每一个变通办法。",
@@ -593,7 +604,7 @@ zh: {
       principle: "原型是一个问题，而不是一座纪念碑。",
       game: "这道鸿沟一跳过不去。每次掉下去都会留下一级幽灵台阶，你也可以在空中放下快速线框。",
       work: "做最便宜的东西，回答最大的风险问题——让失败成为你的垫脚石。",
-      tip: "按 Q 或“搭建”放下线框。每次掉落都会留下台阶。",
+      tip: "按 Q 或“搭建”放下线框。每次掉落都会留下台阶。", tipT: "点“搭建”放下线框。每次掉落都会留下台阶。",
       concept: "没人能一次跨过深渊。每一次快速、低成本的失败，都会凝固成通往山顶的下一级台阶。",
       rules: ["写代码之前，先画草图或做可点击原型。", "原型时间控制在 4–48 小时。", "测试是为了发现哪里会坏，而不是为了捍卫你的点子。"],
       monday: "下一个点子，先画成纸上草图，再做成 PPT。",
@@ -688,7 +699,7 @@ es: {
       principle: "No puedes diseñar para lo que te niegas a ver.",
       game: "El suelo sobre el vacío es invisible. Activa el Sonar de usuario y aparecen los puentes: solo se ven con los ojos del usuario.",
       work: "Las necesidades reales salen a la luz cuando observas a la gente en su contexto, sin guiarla.",
-      tip: "Pulsa E o SONAR para revelar los puentes ocultos.",
+      tip: "Pulsa E o SONAR para revelar los puentes ocultos.", tipT: "Toca SONAR para revelar los puentes ocultos.",
       concept: "Los usuarios rara vez dicen lo que necesitan: lo muestran en sus atajos, dudas y post-its. Observar vale más que opinar.",
       rules: ["Acompaña a alguien 30 minutos sin ayudarle.", "Cambia “¿Usarías X?” por “Enséñame la última vez que tuviste que rodear esto.”", "Anota lo que dice, piensa, hace y siente: los huecos entre ellos valen oro."],
       monday: "Acompaña a un colega 30 minutos. Apunta cada atajo que invente.",
@@ -715,7 +726,7 @@ es: {
       principle: "Un prototipo es una pregunta, no un monumento.",
       game: "El hueco es demasiado ancho para un salto. Cada caída deja un escalón fantasma, y puedes soltar wireframes rápidos en el aire.",
       work: "Construye lo más barato que responda a tu pregunta más arriesgada y deja que los fallos sean tus escalones.",
-      tip: "Pulsa Q o CREAR para soltar un wireframe. Cada caída deja un escalón.",
+      tip: "Pulsa Q o CREAR para soltar un wireframe. Cada caída deja un escalón.", tipT: "Toca CREAR para soltar un wireframe. Cada caída deja un escalón.",
       concept: "Nadie cruza el abismo de una vez. Cada fallo rápido y barato se solidifica en el siguiente escalón hacia la cima.",
       rules: ["Boceta o haz un clicable antes de programar.", "Limita el prototipo a 4–48 horas.", "Prueba para descubrir qué se rompe, no para defender tu idea."],
       monday: "Convierte tu próxima idea en un boceto en papel antes de hacer una diapositiva.",
@@ -1406,7 +1417,7 @@ function openIntro() {
 function openBrief(i) {
   const u = U(), s = T().stages[i];
   const ctl = i === 0 ? u.keySonar : i === 2 ? u.keyFloat : i === 3 ? u.keyBuild : "";
-  const ctlTxt = isTouch ? s.tip : fmt(u.keys, { act: ctl });
+  const ctlTxt = isTouch ? (s.tipT || s.tip) : fmt(u.keys, { act: ctl });
   openModal(`
     <div class="head-row"><span class="kicker">${esc(u.phase)} 0${i + 1} · ${esc(s.phase)}</span><span class="pill c">${i + 1}/5</span></div>
     <h2 id="m-title">${esc(s.name)}</h2>
@@ -1551,9 +1562,9 @@ $("phases").addEventListener("click", e => {
 
 function syncControls() {
   const u = U(), st = G.stage;
-  $("tip").textContent = T().stages[st].tip;
+  $("tip").textContent = (isTouch && T().stages[st].tipT) || T().stages[st].tip;
   const act = $("pb-act");
-  if (st === 0) { act.hidden = false; act.textContent = u.sonar; act.style.background = G.sonar ? "color-mix(in srgb, var(--st) 28%, white)" : ""; }
+  if (st === 0) { act.hidden = false; act.textContent = u.sonar; act.style.background = G.sonar ? (CSS.supports && CSS.supports("background", "color-mix(in srgb, red 10%, white)") ? "color-mix(in srgb, var(--st) 28%, white)" : "#DCD8F5") : ""; }
   else if (st === 3) { act.hidden = false; act.textContent = u.build; act.style.background = ""; }
   else act.hidden = true;
   $("pb-dash").textContent = u.dash;
@@ -1764,7 +1775,7 @@ document.addEventListener("visibilitychange", () => { if (document.hidden) { rel
    TOUCH PAD (multi-touch via pointer events)
    ===================================================================== */
 let isTouch = matchMedia("(pointer: coarse)").matches;
-function markTouch() { if (!isTouch) { isTouch = true; } document.body.classList.add("touch"); requestAnimationFrame(resize); }
+function markTouch() { isTouch = true; document.body.classList.add("touch"); requestAnimationFrame(resize); if (typeof syncControls === "function" && G.lvl) syncControls(); }
 if (isTouch) markTouch();
 window.addEventListener("touchstart", markTouch, { once: true, passive: true });
 
@@ -1800,7 +1811,8 @@ const nav = (navigator.language || "").toLowerCase();
 lang = saved && LANGS.includes(saved) ? saved : nav.startsWith("zh") ? "zh" : nav.startsWith("es") ? "es" : "en";
 document.documentElement.style.setProperty("--st", COLORS[G.stage]);
 resize();
-new ResizeObserver(resize).observe(frameEl);
+if ('ResizeObserver' in window) new ResizeObserver(resize).observe(frameEl);
+window.addEventListener("resize", resize);
 window.addEventListener("orientationchange", () => setTimeout(resize, 200));
 buildLevel(G.stage);
 applyLang(lang);
