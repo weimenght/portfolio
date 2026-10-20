@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">WEI MENG — Portfolio: Learning That Ends in Conversation</title>
+  <meta name="description" content="Playable learning by Wei Meng. Tools are scaffolding — the point is what people do with each other afterwards.">
+  <meta name="theme-color" content="#F7F6F2">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Cpolyline points='7.5,12 11.75,22 16,14.5 20.25,22 24.5,12' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='8' r='1.7' fill='%23E2553F'/%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="/fonts/fonts.css">
+
+  <!-- Tailwind utilities, pre-compiled (no CDN at runtime). Rebuild with Tailwind 3.4 if you add new utility classes. -->
+  <style id="tw">*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:Plus Jakarta Sans,system-ui,-apple-system,PingFang SC,Noto Sans SC,Microsoft YaHei,sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:Space Mono,ui-monospace,Menlo,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0}.bottom-3{bottom:.75rem}.bottom-6{bottom:1.5rem}.left-1\/2{left:50%}.left-3{left:.75rem}.right-3{right:.75rem}.top-0{top:0}.top-3{top:.75rem}.z-40{z-index:40}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-3{margin-bottom:.75rem}.ml-1{margin-left:.25rem}.mr-1{margin-right:.25rem}.mt-1{margin-top:.25rem}.mt-3{margin-top:.75rem}.mt-5{margin-top:1.25rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.aspect-video{aspect-ratio:16/9}.h-1\.5{height:.375rem}.h-14{height:3.5rem}.h-2{height:.5rem}.h-3\.5{height:.875rem}.h-4{height:1rem}.h-44{height:11rem}.h-8{height:2rem}.h-9{height:2.25rem}.h-\[22px\]{height:22px}.h-full{height:100%}.h-px{height:1px}.min-h-screen{min-height:100vh}.w-1\.5{width:.375rem}.w-14{width:3.5rem}.w-2{width:.5rem}.w-3\.5{width:.875rem}.w-4{width:1rem}.w-6{width:1.5rem}.w-8{width:2rem}.w-9{width:2.25rem}.w-\[22px\]{width:22px}.w-\[calc\(100\%-32px\)\]{width:calc(100% - 32px)}.w-full{width:100%}.max-w-2xl{max-width:42rem}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.max-w-lg{max-width:32rem}.flex-shrink-0{flex-shrink:0}.-translate-x-1\/2{--tw-translate-x:-50%}.-translate-x-1\/2,.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes ping{75%,to{transform:scale(2);opacity:0}}.animate-ping{animation:ping 1s cubic-bezier(0,0,.2,1) infinite}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}.cursor-not-allowed{cursor:not-allowed}.select-none{-webkit-user-select:none;-moz-user-select:none;user-select:none}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-end{align-items:flex-end}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:.25rem}.gap-1\.5{gap:.375rem}.gap-2{gap:.5rem}.gap-2\.5{gap:.625rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-px{gap:1px}.gap-x-3{-moz-column-gap:.75rem;column-gap:.75rem}.gap-y-2{row-gap:.5rem}.space-y-1\.5>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.375rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.375rem*var(--tw-space-y-reverse))}.space-y-14>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(3.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(3.5rem*var(--tw-space-y-reverse))}.space-y-2>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.5rem*var(--tw-space-y-reverse))}.space-y-2\.5>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.625rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.625rem*var(--tw-space-y-reverse))}.space-y-3>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.75rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.75rem*var(--tw-space-y-reverse))}.space-y-4>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem*var(--tw-space-y-reverse))}.space-y-5>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem*var(--tw-space-y-reverse))}.space-y-6>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem*var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-visible{overflow:visible}.scroll-smooth{scroll-behavior:smooth}.truncate{overflow:hidden;text-overflow:ellipsis}.truncate,.whitespace-nowrap{white-space:nowrap}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[11px\]{border-radius:11px}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-md{border-radius:.375rem}.rounded-xl{border-radius:.75rem}.border{border-width:1px}.border-y{border-top-width:1px}.border-b,.border-y{border-bottom-width:1px}.border-t{border-top-width:1px}.border-dashed{border-style:dashed}.border-\[\#DADADA\]{--tw-border-opacity:1;border-color:rgb(218 218 218/var(--tw-border-opacity,1))}.border-accent\/40{border-color:rgba(226,85,63,.4)}.border-ink{--tw-border-opacity:1;border-color:rgb(23 23 26/var(--tw-border-opacity,1))}.border-ink\/20{border-color:rgba(23,23,26,.2)}.border-ink\/25{border-color:rgba(23,23,26,.25)}.border-line{--tw-border-opacity:1;border-color:rgb(229 226 218/var(--tw-border-opacity,1))}.border-line\/80{border-color:hsla(44,17%,88%,.8)}.border-white\/10{border-color:hsla(0,0%,100%,.1)}.bg-\[\#F1EEE6\]{--tw-bg-opacity:1;background-color:rgb(241 238 230/var(--tw-bg-opacity,1))}.bg-\[\#F3F3F3\]{--tw-bg-opacity:1;background-color:rgb(243 243 243/var(--tw-bg-opacity,1))}.bg-accent{--tw-bg-opacity:1;background-color:rgb(226 85 63/var(--tw-bg-opacity,1))}.bg-accent\/5{background-color:rgba(226,85,63,.05)}.bg-amber-500{--tw-bg-opacity:1;background-color:rgb(245 158 11/var(--tw-bg-opacity,1))}.bg-black{--tw-bg-opacity:1;background-color:rgb(0 0 0/var(--tw-bg-opacity,1))}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129/var(--tw-bg-opacity,1))}.bg-ink{--tw-bg-opacity:1;background-color:rgb(23 23 26/var(--tw-bg-opacity,1))}.bg-ink\/40{background-color:rgba(23,23,26,.4)}.bg-ink\/80{background-color:rgba(23,23,26,.8)}.bg-ink\/85{background-color:rgba(23,23,26,.85)}.bg-line{--tw-bg-opacity:1;background-color:rgb(229 226 218/var(--tw-bg-opacity,1))}.bg-line\/60{background-color:hsla(44,17%,88%,.6)}.bg-paper{--tw-bg-opacity:1;background-color:rgb(247 246 242/var(--tw-bg-opacity,1))}.bg-paper\/85{background-color:hsla(48,24%,96%,.85)}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1))}.bg-white\/10{background-color:hsla(0,0%,100%,.1)}.bg-white\/60{background-color:hsla(0,0%,100%,.6)}.bg-white\/90{background-color:hsla(0,0%,100%,.9)}.bg-white\/95{background-color:hsla(0,0%,100%,.95)}.bg-gradient-to-t{background-image:linear-gradient(to top,var(--tw-gradient-stops))}.from-ink\/80{--tw-gradient-from:rgba(23,23,26,.8) var(--tw-gradient-from-position);--tw-gradient-to:rgba(23,23,26,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.via-transparent{--tw-gradient-to:transparent var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),transparent var(--tw-gradient-via-position),var(--tw-gradient-to)}.to-transparent{--tw-gradient-to:transparent var(--tw-gradient-to-position)}.object-contain{-o-object-fit:contain;object-fit:contain}.object-cover{-o-object-fit:cover;object-fit:cover}.p-2\.5{padding:.625rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-2\.5{padding-left:.625rem;padding-right:.625rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-3\.5{padding-left:.875rem;padding-right:.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-0\.5{padding-top:.125rem;padding-bottom:.125rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-2\.5{padding-top:.625rem;padding-bottom:.625rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-3\.5{padding-top:.875rem;padding-bottom:.875rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-10{padding-bottom:2.5rem}.pb-3{padding-bottom:.75rem}.pt-14{padding-top:3.5rem}.pt-2{padding-top:.5rem}.pt-4{padding-top:1rem}.text-left{text-align:left}.text-center{text-align:center}.font-mono{font-family:Space Mono,ui-monospace,Menlo,monospace}.font-sans{font-family:Plus Jakarta Sans,system-ui,-apple-system,PingFang SC,Noto Sans SC,Microsoft YaHei,sans-serif}.font-syne{font-family:Syne,Plus Jakarta Sans,PingFang SC,Noto Sans SC,sans-serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[12px\]{font-size:12px}.text-\[2\.35rem\]{font-size:2.35rem}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.italic{font-style:italic}.tabular-nums{--tw-numeric-spacing:tabular-nums;font-variant-numeric:var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction)}.leading-\[1\.08\]{line-height:1.08}.leading-\[1\.1\]{line-height:1.1}.leading-none{line-height:1}.leading-relaxed{line-height:1.625}.tracking-\[0\.12em\]{letter-spacing:.12em}.tracking-\[0\.14em\]{letter-spacing:.14em}.tracking-\[0\.16em\]{letter-spacing:.16em}.tracking-\[0\.18em\]{letter-spacing:.18em}.tracking-\[0\.1em\]{letter-spacing:.1em}.tracking-tight{letter-spacing:-.025em}.text-\[\#333\]{--tw-text-opacity:1;color:rgb(51 51 51/var(--tw-text-opacity,1))}.text-\[\#555\]{--tw-text-opacity:1;color:rgb(85 85 85/var(--tw-text-opacity,1))}.text-\[\#999\]{--tw-text-opacity:1;color:rgb(153 153 153/var(--tw-text-opacity,1))}.text-accent{--tw-text-opacity:1;color:rgb(226 85 63/var(--tw-text-opacity,1))}.text-amber-700{--tw-text-opacity:1;color:rgb(180 83 9/var(--tw-text-opacity,1))}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183/var(--tw-text-opacity,1))}.text-emerald-600{--tw-text-opacity:1;color:rgb(5 150 105/var(--tw-text-opacity,1))}.text-emerald-700{--tw-text-opacity:1;color:rgb(4 120 87/var(--tw-text-opacity,1))}.text-ink{--tw-text-opacity:1;color:rgb(23 23 26/var(--tw-text-opacity,1))}.text-ink\/60{color:rgba(23,23,26,.6)}.text-ink\/70{color:rgba(23,23,26,.7)}.text-ink\/75{color:rgba(23,23,26,.75)}.text-muted{--tw-text-opacity:1;color:rgb(107 106 112/var(--tw-text-opacity,1))}.text-muted\/70{color:hsla(250,3%,43%,.7)}.text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.text-white\/40{color:hsla(0,0%,100%,.4)}.text-white\/50{color:hsla(0,0%,100%,.5)}.text-white\/70{color:hsla(0,0%,100%,.7)}.text-white\/80{color:hsla(0,0%,100%,.8)}.underline{text-decoration-line:underline}.decoration-accent{text-decoration-color:#e2553f}.decoration-dotted{text-decoration-style:dotted}.decoration-2{text-decoration-thickness:2px}.underline-offset-4{text-underline-offset:4px}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.opacity-0{opacity:0}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgba(0,0,0,.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color)}.shadow-2xl,.shadow-xl{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color),0 8px 10px -6px var(--tw-shadow-color)}.outline{outline-style:solid}.grayscale{--tw-grayscale:grayscale(100%)}.filter,.grayscale{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.backdrop-blur{--tw-backdrop-blur:blur(8px)}.backdrop-blur,.backdrop-blur-md{-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.backdrop-blur-md{--tw-backdrop-blur:blur(12px)}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-300{transition-duration:.3s}.duration-500{transition-duration:.5s}.ease-in-out{transition-timing-function:cubic-bezier(.4,0,.2,1)}.selection\:bg-ink ::-moz-selection{--tw-bg-opacity:1;background-color:rgb(23 23 26/var(--tw-bg-opacity,1))}.selection\:bg-ink ::selection{--tw-bg-opacity:1;background-color:rgb(23 23 26/var(--tw-bg-opacity,1))}.selection\:text-white ::-moz-selection{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.selection\:text-white ::selection{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.selection\:bg-ink::-moz-selection{--tw-bg-opacity:1;background-color:rgb(23 23 26/var(--tw-bg-opacity,1))}.selection\:bg-ink::selection{--tw-bg-opacity:1;background-color:rgb(23 23 26/var(--tw-bg-opacity,1))}.selection\:text-white::-moz-selection{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.selection\:text-white::selection{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.hover\:border-accent:hover{--tw-border-opacity:1;border-color:rgb(226 85 63/var(--tw-border-opacity,1))}.hover\:border-ink\/30:hover{border-color:rgba(23,23,26,.3)}.hover\:border-ink\/40:hover{border-color:rgba(23,23,26,.4)}.hover\:border-ink\/50:hover{border-color:rgba(23,23,26,.5)}.hover\:bg-accent:hover{--tw-bg-opacity:1;background-color:rgb(226 85 63/var(--tw-bg-opacity,1))}.hover\:bg-black:hover{--tw-bg-opacity:1;background-color:rgb(0 0 0/var(--tw-bg-opacity,1))}.hover\:bg-ink:hover{--tw-bg-opacity:1;background-color:rgb(23 23 26/var(--tw-bg-opacity,1))}.hover\:bg-white\/20:hover{background-color:hsla(0,0%,100%,.2)}.hover\:text-accent:hover{--tw-text-opacity:1;color:rgb(226 85 63/var(--tw-text-opacity,1))}.hover\:text-ink:hover{--tw-text-opacity:1;color:rgb(23 23 26/var(--tw-text-opacity,1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95}.active\:scale-95:active,.active\:scale-\[0\.98\]:active{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.active\:scale-\[0\.98\]:active{--tw-scale-x:0.98;--tw-scale-y:0.98}.group:hover .group-hover\:rotate-12{--tw-rotate:12deg}.group:hover .group-hover\:rotate-12,.group:hover .group-hover\:scale-110{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.group:hover .group-hover\:scale-110{--tw-scale-x:1.1;--tw-scale-y:1.1}.group:hover .group-hover\:scale-125{--tw-scale-x:1.25;--tw-scale-y:1.25;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@media (min-width:640px){.sm\:mb-4{margin-bottom:1rem}.sm\:mt-4{margin-top:1rem}.sm\:block{display:block}.sm\:inline{display:inline}.sm\:h-48{height:12rem}.sm\:w-auto{width:auto}.sm\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.sm\:flex-row{flex-direction:row}.sm\:items-center{align-items:center}.sm\:gap-3{gap:.75rem}.sm\:gap-6{gap:1.5rem}.sm\:space-y-20>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(5rem*var(--tw-space-y-reverse))}.sm\:p-6{padding:1.5rem}.sm\:p-7{padding:1.75rem}.sm\:p-8{padding:2rem}.sm\:px-10{padding-left:2.5rem;padding-right:2.5rem}.sm\:px-8{padding-left:2rem;padding-right:2rem}.sm\:py-10{padding-top:2.5rem;padding-bottom:2.5rem}.sm\:pb-4{padding-bottom:1rem}.sm\:pt-20{padding-top:5rem}.sm\:text-3xl{font-size:1.875rem;line-height:2.25rem}.sm\:text-5xl{font-size:3rem;line-height:1}.sm\:text-6xl{font-size:3.75rem;line-height:1}.sm\:text-lg{font-size:1.125rem;line-height:1.75rem}}@media (min-width:768px){.md\:inline-flex{display:inline-flex}.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.lg\:grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}}@media (min-width:1280px){.xl\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}</style>
+
+  <style>
+    :root { --paper:#F7F6F2; --ink:#17171A; --accent:#E2553F; --ease:cubic-bezier(0.23,1,0.32,1); }
+    body { background-color: var(--paper); color: var(--ink); -webkit-tap-highlight-color: transparent; }
+
+    html.js .reveal { opacity: 0; transform: translateY(14px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+    html.js .reveal.in { opacity: 1; transform: none; }
+
+    .bg-dots {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background-image: radial-gradient(rgba(23,23,26,.09) 1px, transparent 1px);
+      background-size: 22px 22px;
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
+              mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
+    }
+
+    /* Logo — W flips into M */
+    .logo-mark { transition: transform .5s var(--ease), box-shadow .5s var(--ease); animation: logo-intro 1.4s .2s var(--ease) backwards; }
+    .logo-stroke, .logo-dot { transform-box: view-box; transform-origin: 12px 12px; transition: transform .7s var(--ease); }
+    .group:hover .logo-mark, .group:focus-visible .logo-mark { transform: rotate(-4deg); box-shadow: 0 6px 16px -6px rgba(23,23,26,.45); }
+    .group:hover .logo-stroke, .group:focus-visible .logo-stroke { transform: scaleY(-1); }
+    .group:hover .logo-dot, .group:focus-visible .logo-dot { transform: translateY(17.2px); }
+    @keyframes logo-intro { 0% { transform: scale(.6) rotate(-20deg); opacity: 0; } 100% { transform: none; opacity: 1; } }
+
+    .accent-word {
+      font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400;
+      color: #6B6A70; white-space: nowrap; padding-bottom: .12em;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7 Q 12 1 22 7 T 42 7 T 62 7 T 82 7 T 102 7 T 118 6' fill='none' stroke='%23E2553F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: left bottom; background-size: 0% .32em;
+      animation: draw 1.1s .5s var(--ease) forwards;
+    }
+    @keyframes draw { to { background-size: 100% .32em; } }
+
+    /* Cards */
+    .card { transition: transform .45s var(--ease), box-shadow .45s var(--ease), border-color .3s ease; }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -24px rgba(23,23,26,.35); border-color: rgba(23,23,26,.14); }
+    .card-img { filter: grayscale(.45) contrast(1.02); opacity: .88; transition: filter .6s var(--ease), transform .8s var(--ease), opacity .6s ease; }
+    .card:hover .card-img { filter: none; opacity: 1; transform: scale(1.05); }
+    .card-art { transition: transform .8s var(--ease); }
+    .card:hover .card-art { transform: scale(1.04); }
+    .bubble-a { animation: bob 5s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+    .bubble-b { animation: bob 5s ease-in-out -2.5s infinite; transform-origin: center; transform-box: fill-box; }
+    @keyframes bob { 50% { transform: translateY(-5px); } }
+    .wave { animation: wave 1.6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+    .wave:nth-child(2) { animation-delay: .2s; } .wave:nth-child(3) { animation-delay: .4s; }
+    @keyframes wave { 50% { transform: scaleY(.45); } }
+
+    @keyframes eggIn { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+    .egg-unlocked { animation: eggIn .5s var(--ease) both; }
+
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 10px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+      .accent-word { background-size: 100% .32em; }
+      html.js .reveal { opacity: 1; transform: none; }
+    }
+  
+    /* small coral labels: a deeper tone keeps WCAG AA contrast */
+    .text-accent.text-\[11px\], .text-accent.text-\[10px\], .text-accent.text-xs { color:#C2412D; }
+
+    /* Chinese: keep CJK upright (no faux italic); Latin italics stay real */
+    html:lang(zh) { font-synthesis: weight; }
+</style>
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+
+<body class="font-sans min-h-screen antialiased selection:bg-ink selection:text-white">
+  <div class="bg-dots" aria-hidden="true"></div>
+
+  <!-- UNLOCK TOAST -->
+  <div id="unlock-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none hidden opacity-0 transition-opacity duration-300 w-[calc(100%-32px)] sm:w-auto" role="status" aria-live="polite">
+    <div class="bg-ink text-white rounded-full px-5 py-2.5 flex items-center justify-center gap-2.5 font-mono text-[11px] shadow-2xl">
+      <span class="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0"></span>
+      <span data-i18n="unlockToast">Cognitive dignity restored — 5 tiny sandboxes just unlocked below.</span>
+    </div>
+  </div>
+
+  <!-- EASTER EGG: THE 60-SLIDE DECK -->
+  <div id="deck-modal" class="fixed inset-0 z-50 bg-ink/80 backdrop-blur-sm hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="handleBackdrop(event)" role="dialog" aria-modal="true" aria-labelledby="deck-title">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-5">
+      <div class="flex items-center justify-between border-b border-line pb-3 gap-3">
+        <div class="flex items-center gap-2">
+          <span class="relative flex w-2 h-2"><span class="absolute inset-0 rounded-full bg-amber-500 animate-ping"></span><span class="relative w-2 h-2 rounded-full bg-amber-500"></span></span>
+          <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-muted" data-i18n="deckTop">Mandatory Corporate Deck · Sim 2026</span>
+        </div>
+        <span id="deck-count" class="text-[11px] font-mono text-muted bg-paper px-2 py-0.5 rounded-md border border-line whitespace-nowrap">Slide 1 of 62</span>
+      </div>
+      <div class="space-y-3 bg-[#F3F3F3] p-5 rounded-xl border border-[#DADADA]" style="font-family: 'Times New Roman', Times, serif;">
+        <h4 id="deck-title" class="text-base sm:text-lg font-bold text-[#333]" data-i18n="deckSlideTitle">Module 1.1: Synergy Paradigms & Policy Compliance</h4>
+        <p class="text-sm text-[#555] leading-relaxed italic" data-i18n="deckSlideText">“All personnel must optimize interdepartmental synchronization through asynchronous documentation workflows. Please avoid interaction until this timer expires.”</p>
+        <div class="pt-2 flex items-center justify-between gap-3 text-[11px] font-mono text-[#999]">
+          <span data-i18n="deckSpeaker">Narrated by: Monotone AI Voice</span>
+          <span id="deck-timer" class="text-amber-700 font-bold whitespace-nowrap">Locked · 00:59</span>
+        </div>
+      </div>
+      <div class="space-y-2.5">
+        <button type="button" disabled class="w-full py-3 rounded-full bg-line/60 text-muted/70 text-xs font-mono cursor-not-allowed flex items-center justify-center gap-2">
+          <span data-i18n="deckNext">Next slide</span><span aria-hidden="true">🔒</span>
+        </button>
+        <button type="button" id="deck-eject" onclick="ejectToCognitiveDignity()" class="w-full py-3 rounded-full bg-ink hover:bg-accent text-white active:scale-[0.98] text-xs font-mono font-bold transition-all flex items-center justify-center gap-2">
+          <span data-i18n="deckEject">Eject to cognitive dignity</span><span aria-hidden="true">↗</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIDEO MODAL -->
+  <div id="video-modal" class="fixed inset-0 z-50 bg-ink/85 backdrop-blur-md hidden items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300" onclick="handleBackdrop(event)" role="dialog" aria-modal="true" aria-labelledby="video-title">
+    <div class="bg-ink border border-white/10 rounded-3xl max-w-4xl w-full p-4 sm:p-7 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 sm:pb-4 mb-3 sm:mb-4 border-b border-white/10">
+        <div class="flex items-center gap-2.5">
+          <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+          <h3 id="video-title" class="font-syne text-sm sm:text-lg font-bold text-white tracking-tight" data-i18n="modalTitle">Corporate Survival Drama · Trailer</h3>
+        </div>
+        <button type="button" onclick="closeVideoModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white flex items-center justify-center transition-colors font-mono text-sm" aria-label="Close">✕</button>
+      </div>
+      <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-black">
+        <video id="demo-video-player" class="w-full h-full object-contain" controls playsinline preload="metadata">
+          <source src="https://media.wei-meng.org/hovercraft.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="mt-3 sm:mt-4 flex items-center justify-between gap-3 text-[11px] font-mono text-white/40">
+        <span data-i18n="modalEp">Episode 01 · The Untold Revenue Leak</span>
+        <span class="hidden sm:inline" data-i18n="modalEscHint">Press ESC or click outside to close</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 bg-paper/85 backdrop-blur-md border-b border-line/80 px-4 sm:px-10 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <a href="https://wei-meng.org" class="flex items-center gap-3 group flex-shrink-0" aria-label="Wei Meng — home">
+        <span class="logo-mark w-9 h-9 rounded-[11px] bg-ink flex items-center justify-center" aria-hidden="true">
+          <svg viewBox="0 0 24 24" class="w-[22px] h-[22px] overflow-visible">
+            <polyline class="logo-stroke" points="3.5,7 7.75,17 12,9.5 16.25,17 20.5,7" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle class="logo-dot" cx="12" cy="3.4" r="1.45" fill="#E2553F"/>
+          </svg>
+        </span>
+        <div class="leading-none">
+          <div class="font-syne font-bold text-sm tracking-tight">WEI MENG</div>
+          <p class="text-[11px] text-muted mt-1 hidden sm:block" data-i18n="headerSubtitle">Portfolio</p>
+        </div>
+      </a>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button type="button" onclick="openDeckModal()"
+          class="hidden md:inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-dashed border-ink/25 hover:border-accent hover:text-accent text-[11px] font-mono text-muted transition-all group">
+          <span class="inline-block transition-transform group-hover:rotate-12" aria-hidden="true">⚠</span>
+          <span data-i18n="navEasterEgg">60-slide deck?</span>
+        </button>
+        <button type="button" onclick="cycleLanguage()"
+          class="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg border border-line hover:border-ink/30 bg-white/60 active:scale-95 text-[11px] font-mono text-ink transition-all select-none"
+          title="EN / 中文 / ES" aria-label="Switch language">
+          <svg class="w-3.5 h-3.5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
+          <span id="lang-btn-label" class="font-bold">EN</span>
+        </button>
+        <a href="https://wei-meng.org" class="h-8 inline-flex items-center gap-1 px-3.5 rounded-lg bg-ink text-white hover:bg-black text-xs font-semibold transition-colors whitespace-nowrap">
+          <span data-i18n="backHome">About me</span><span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-8 pt-14 pb-10 sm:pt-20 space-y-14 sm:space-y-20">
+
+    <!-- INTRO -->
+    <section class="max-w-3xl space-y-6">
+      <p class="reveal inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.18em] text-muted">
+        <span class="w-6 h-px bg-ink/40"></span><span data-i18n="heroKicker">03 / Portfolio</span>
+      </p>
+      <h1 class="reveal font-syne text-[2.35rem] sm:text-6xl font-bold tracking-tight leading-[1.08]" data-i18n-html="heroTitle">
+        Proof over <span class="accent-word">slides</span>.
+      </h1>
+      <p class="reveal text-base sm:text-lg text-ink/75 leading-relaxed max-w-2xl" data-i18n="heroDesc">
+        Playable work, built on one belief: tools are scaffolding. The point is what people do with each other afterwards.
+      </p>
+      <div class="reveal flex flex-wrap items-center gap-x-3 gap-y-2 text-[12px] font-mono text-muted">
+        <span data-i18n="heroHint">Psst — want to see the alternative first?</span>
+        <button type="button" onclick="openDeckModal()" class="inline-flex items-center gap-1.5 text-ink underline decoration-accent decoration-2 underline-offset-4 hover:text-accent transition-colors">
+          <span data-i18n="heroHintBtn">Sit through the 60-slide deck</span><span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- HOW I BUILD -->
+    <section class="reveal space-y-4" aria-labelledby="build-h">
+      <div class="flex items-center justify-between border-b border-line pb-3">
+        <span id="build-h" class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="buildLabel">How I build</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-line border border-line rounded-3xl overflow-hidden">
+        <div class="bg-white p-5 sm:p-6 space-y-2">
+          <div class="font-mono text-[11px] text-accent">01</div>
+          <h2 class="font-syne text-lg font-bold tracking-tight" data-i18n="p1t">Learn by doing</h2>
+          <p class="text-sm text-ink/70 leading-relaxed" data-i18n="p1d">If you can't try it, you haven't learned it. Play first, theory second.</p>
+        </div>
+        <div class="bg-white p-5 sm:p-6 space-y-2">
+          <div class="font-mono text-[11px] text-accent">02</div>
+          <h2 class="font-syne text-lg font-bold tracking-tight" data-i18n="p2t">Human skills first</h2>
+          <p class="text-sm text-ink/70 leading-relaxed" data-i18n="p2d">AI can draft the memo. Listening, empathy and trust are still ours to practise.</p>
+        </div>
+        <div class="bg-white p-5 sm:p-6 space-y-2">
+          <div class="font-mono text-[11px] text-accent">03</div>
+          <h2 class="font-syne text-lg font-bold tracking-tight" data-i18n="p3t">Better together</h2>
+          <p class="text-sm text-ink/70 leading-relaxed" data-i18n="p3d">Learning is social and mutual. Everyone teaches, everyone learns — sharing is caring.</p>
+        </div>
+        <div class="bg-white p-5 sm:p-6 space-y-2">
+          <div class="font-mono text-[11px] text-accent">04</div>
+          <h2 class="font-syne text-lg font-bold tracking-tight" data-i18n="p4t">People are the end</h2>
+          <p class="text-sm text-ink/70 leading-relaxed" data-i18n="p4d">Apps are tools. The goal is a sincere, meaningful conversation between real people.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- GROUP A: HUMAN FIRST -->
+    <section class="space-y-5" aria-labelledby="ga-h">
+      <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
+        <div>
+          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gaKicker">A / Human first</span>
+          <h2 id="ga-h" class="font-syne text-2xl sm:text-3xl font-bold tracking-tight mt-1" data-i18n="gaTitle">Short setups that end in a real conversation.</h2>
+        </div>
+        <span class="text-[11px] font-mono text-muted" data-i18n="gaNote">The screen goes down. The people keep going.</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+
+        <!-- 01 LISTENING DUET (new) -->
+        <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
+          <div class="space-y-4">
+            <a href="/free_builder/listen" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+              <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice">
+                <defs><pattern id="dots-l" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs>
+                <rect width="320" height="190" fill="url(#dots-l)"/>
+                <g class="bubble-a"><rect x="52" y="44" width="126" height="64" rx="22" fill="#17171A"/><path d="M78 106 l-6 18 22-16z" fill="#17171A"/>
+                  <g fill="#F7F6F2"><rect class="wave" x="84" y="66" width="5" height="20" rx="2.5"/><rect class="wave" x="96" y="60" width="5" height="32" rx="2.5"/><rect class="wave" x="108" y="68" width="5" height="16" rx="2.5"/></g>
+                  <rect x="124" y="70" width="36" height="5" rx="2.5" fill="rgba(247,246,242,.4)"/><rect x="124" y="80" width="24" height="5" rx="2.5" fill="rgba(247,246,242,.4)"/></g>
+                <g class="bubble-b"><rect x="150" y="96" width="122" height="56" rx="22" fill="#E2553F"/><path d="M246 150 l6 18 -22-16z" fill="#E2553F"/>
+                  <text x="211" y="130" text-anchor="middle" font-family="Space Mono, monospace" font-size="15" font-weight="700" fill="#fff">“so you…”</text></g>
+              </svg>
+              <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span data-i18n="c1Badge">Live · new</span>
+              </span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="c1Caption">2 people · 1 phone · 90 seconds each</span>
+            </a>
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">01</span> — <span data-i18n="c1Category">Active listening · Pairs</span></div>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/listen" class="hover:text-accent transition-colors" data-i18n="c1Title">Listening Duet</a></h3>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed" data-i18n="c1Desc">Two people, one phone. One talks for 90 seconds, the other plays back what they heard. The only score: did they feel heard? Then swap.</p>
+            <div class="card-easter-egg hidden p-3 rounded-2xl border border-dashed border-ink/20 bg-paper space-y-2">
+              <div class="flex items-center justify-between gap-2 text-[10px] font-mono uppercase tracking-[0.1em] text-muted">
+                <span data-i18n="eggLTag">Listening check · pick your reply</span>
+                <span id="eggL-status" class="font-bold whitespace-nowrap"></span>
+              </div>
+              <p class="text-xs font-mono leading-relaxed" id="eggL-said"></p>
+              <div class="grid grid-cols-1 gap-2 text-[11px] font-mono">
+                <button type="button" id="eggL-a" onclick="testListen('self')" class="p-2.5 rounded-xl bg-white border border-line hover:border-ink/40 active:scale-[0.98] text-left transition-all"></button>
+                <button type="button" id="eggL-b" onclick="testListen('heard')" class="p-2.5 rounded-xl bg-white border border-line hover:border-ink/40 active:scale-[0.98] text-left transition-all"></button>
+              </div>
+              <p id="eggL-feedback" class="hidden" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
+            <a href="/free_builder/listen" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+              <span data-i18n="c1Action">Start a duet</span><span aria-hidden="true">↗</span>
+            </a>
+            <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
+          </div>
+        </article>
+
+        <!-- 02 INTERCULTURAL ATLAS + PERSPECTIVE SWAP -->
+        <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
+          <div class="space-y-4">
+            <a href="https://wei-meng.org/free_builder/cq/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-ink block" tabindex="-1" aria-hidden="true">
+              <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="" loading="lazy" class="card-img w-full h-full object-cover">
+              <div class="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent"></div>
+              <span class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 text-ink flex items-center justify-center font-mono text-xs">↗</span>
+              <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span data-i18n="c2Badge">Live · two-player soon</span>
+              </span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-white/80 truncate" data-i18n="c2Caption">8 corridors · 2 perspectives · 1 agreement</span>
+            </a>
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">02</span> — <span data-i18n="c2Category">Cultural intelligence · Solo → pairs</span></div>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://wei-meng.org/free_builder/cq/" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors" data-i18n="c2Title">Intercultural Atlas × Perspective Swap</a></h3>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed" data-i18n="c2Desc">Explore eight cross-border friction points on your own. Then Perspective Swap pairs two colleagues, each holding only half the story, who can only reach agreement by talking.</p>
+            <div class="card-easter-egg hidden p-3 rounded-2xl border border-dashed border-ink/20 bg-paper space-y-2">
+              <div class="flex items-center justify-between gap-2 text-[10px] font-mono uppercase tracking-[0.1em] text-muted">
+                <span data-i18n="egg5Tag">Dual-lens mirror · tap to switch</span>
+                <span id="egg5-lens" class="font-bold text-ink whitespace-nowrap"></span>
+              </div>
+              <button type="button" id="egg5-btn" onclick="toggleCulturalLens()" class="w-full text-left font-mono text-xs p-2.5 rounded-xl border active:scale-[0.98] transition-all select-none"></button>
+            </div>
+          </div>
+          <div class="pt-4 mt-5 border-t border-line flex flex-wrap items-center justify-between gap-3">
+            <a href="https://wei-meng.org/free_builder/cq/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+              <span data-i18n="c2Action">Open the atlas</span><span aria-hidden="true">↗</span>
+            </a>
+            <a href="/free_builder/swap" class="text-[11px] font-mono text-ink hover:text-accent underline decoration-dotted underline-offset-4 transition-colors" data-i18n="c2Next">Play it in pairs: Perspective Swap →</a>
+          </div>
+        </article>
+
+        <!-- 03 COACHING CO-PILOT + REPAIR KIT -->
+        <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
+          <div class="space-y-4">
+            <a href="https://wei-meng.org/free_builder/coach/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-ink block" tabindex="-1" aria-hidden="true">
+              <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80" alt="" loading="lazy" class="card-img w-full h-full object-cover">
+              <div class="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent"></div>
+              <span class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 text-ink flex items-center justify-center font-mono text-xs">↗</span>
+              <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span data-i18n="c3Badge">Live · Repair Kit soon</span>
+              </span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-white/80 truncate" data-i18n="c3Caption">Rehearse alone → repair together</span>
+            </a>
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">03</span> — <span data-i18n="c3Category">Leadership · Rehearsal → real talk</span></div>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://wei-meng.org/free_builder/coach/" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors" data-i18n="c3Title">Coaching Co-Pilot × Repair Kit</a></h3>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed" data-i18n="c3Desc">Rehearse the hard conversation with AI direct reports — the AI is only the warm-up. Repair Kit then hands you an opening line and sends you to have it for real, with a person.</p>
+            <div class="card-easter-egg hidden p-3 rounded-2xl border border-dashed border-ink/20 bg-paper space-y-2">
+              <div class="flex items-center justify-between gap-2 text-[10px] font-mono uppercase tracking-[0.1em] text-muted">
+                <span data-i18n="egg4Tag">Safe-to-fail · your report is late again</span>
+                <span id="egg4-status" class="font-bold whitespace-nowrap"></span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2 text-[11px] font-mono">
+                <button type="button" id="egg4-a" onclick="testCoachResponse('micromanage')" class="p-2.5 rounded-xl bg-white border border-line hover:border-ink/40 active:scale-[0.98] text-left transition-all"></button>
+                <button type="button" id="egg4-b" onclick="testCoachResponse('coach')" class="p-2.5 rounded-xl bg-white border border-line hover:border-ink/40 active:scale-[0.98] text-left transition-all"></button>
+              </div>
+              <p id="egg4-feedback" class="hidden" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="pt-4 mt-5 border-t border-line flex flex-wrap items-center justify-between gap-3">
+            <a href="https://wei-meng.org/free_builder/coach/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+              <span data-i18n="c3Action">Open the co-pilot</span><span aria-hidden="true">↗</span>
+            </a>
+            <a href="/free_builder/repair" class="text-[11px] font-mono text-ink hover:text-accent underline decoration-dotted underline-offset-4 transition-colors" data-i18n="c3Next">Then repair together: Repair Kit →</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- GROUP B: PLAY & STORY -->
+    <section class="space-y-5" aria-labelledby="gb-h">
+      <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
+        <div>
+          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gbKicker">B / Play &amp; story</span>
+          <h2 id="gb-h" class="font-syne text-2xl sm:text-3xl font-bold tracking-tight mt-1" data-i18n="gbTitle">Games and stories that make a method stick.</h2>
+        </div>
+        <span class="text-[11px] font-mono text-muted" data-i18n="gbNote">Each one ends with something to try with a colleague.</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+
+        <!-- 04 DESIGN THINKING ODYSSEY -->
+        <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
+          <div class="space-y-4">
+            <a href="https://wei-meng.org/free_builder/design/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-ink block" tabindex="-1" aria-hidden="true">
+              <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80" alt="" loading="lazy" class="card-img w-full h-full object-cover">
+              <div class="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent"></div>
+              <span class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 text-ink flex items-center justify-center font-mono text-xs">↗</span>
+              <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-accent"></span><span data-i18n="c4Badge">5-phase platformer</span>
+              </span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-white/80 truncate" data-i18n="c4Caption">Empathize · Define · Ideate · Prototype · Test</span>
+            </a>
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">04</span> — <span data-i18n="c4Category">Innovation · Game-based</span></div>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://wei-meng.org/free_builder/design/" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors" data-i18n="c4Title">Design Thinking Odyssey</a></h3>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed" data-i18n="c4Desc">Every rule of the world is a design-thinking habit: bridges appear only through the user's eyes, every fall becomes a step. Each phase ends with something to try on Monday — with a real colleague.</p>
+            <div class="card-easter-egg hidden p-3 rounded-2xl border border-dashed border-ink/20 bg-paper space-y-2">
+              <div class="flex items-center justify-between gap-2 text-[10px] font-mono uppercase tracking-[0.1em] text-muted">
+                <span data-i18n="egg6Tag">Crazy 8s pulse</span>
+                <span id="egg6-status" class="font-bold whitespace-nowrap"></span>
+              </div>
+              <button type="button" onclick="triggerCrazySprint()" class="w-full py-2.5 px-3 rounded-xl bg-white border border-line hover:border-ink/40 active:scale-[0.98] font-mono text-xs flex items-center justify-between gap-3 transition-all">
+                <span id="egg6-label" class="text-left"></span>
+                <span id="egg6-count" class="font-bold text-accent tabular-nums">08s</span>
+              </button>
+            </div>
+          </div>
+          <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
+            <a href="https://wei-meng.org/free_builder/design/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+              <span data-i18n="c4Action">Play the odyssey</span><span aria-hidden="true">↗</span>
+            </a>
+            <span class="text-[11px] font-mono text-muted" data-i18n="c4Meta">EN · 中文 · ES</span>
+          </div>
+        </article>
+
+        <!-- 05 ONBOARDING -->
+        <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
+          <div class="space-y-4">
+            <a href="/free_builder/launchpad/" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-ink block" tabindex="-1" aria-hidden="true">
+              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80" alt="" loading="lazy" class="card-img w-full h-full object-cover">
+              <div class="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent"></div>
+              <span class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 text-ink flex items-center justify-center font-mono text-xs">↗</span>
+              <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span data-i18n="c5Badge">Live · new colleague trail</span>
+              </span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-white/80 truncate" data-i18n="c5Caption">One day · every phone · real people</span>
+            </a>
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">05</span> — <span data-i18n="c5Category">Onboarding · Simulation</span></div>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/launchpad/" class="hover:text-accent transition-colors" data-i18n="c5Title">Launchpad · Onboarding Day</a></h3>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed" data-i18n="c5Desc">A whole graduate onboarding day in one app: route cards, station tools and the KILL//SWITCH team investigation — plus a colleague trail that sends new joiners to real people, not handbooks.</p>
+            <div class="card-easter-egg hidden p-3 rounded-2xl border border-dashed border-ink/20 bg-paper space-y-2">
+              <div class="flex items-center justify-between gap-2 text-[10px] font-mono uppercase tracking-[0.1em] text-muted">
+                <span data-i18n="egg2Tag">Classified clue · tap to decrypt</span><span class="text-accent">●</span>
+              </div>
+              <button type="button" id="egg2-btn" onclick="toggleRedaction()" class="w-full text-left font-mono text-xs p-2.5 rounded-xl border active:scale-[0.98] transition-all select-none"></button>
+            </div>
+          </div>
+          <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
+            <a href="/free_builder/launchpad/" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+              <span data-i18n="c5Action">Open Launchpad</span><span aria-hidden="true">↗</span>
+            </a>
+            <span class="text-[11px] font-mono text-muted" data-i18n="c5Meta">EN · 中文 · ES</span>
+          </div>
+        </article>
+
+        <!-- 06 CORPORATE SURVIVAL DRAMA -->
+        <article class="card group reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
+          <div class="space-y-4">
+            <button type="button" onclick="openVideoModal()" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-ink block text-left" aria-label="Play trailer">
+              <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=800&q=80" alt="" loading="lazy" class="card-img w-full h-full object-cover">
+              <div class="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent"></div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="w-14 h-14 rounded-full bg-white/95 text-ink flex items-center justify-center shadow-xl transition-transform duration-500 group-hover:scale-110"><span class="ml-1">▶</span></span>
+              </div>
+              <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span><span data-i18n="c6Badge">Episodic series</span>
+              </span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-white/80 truncate" data-i18n="c6Caption">EP.01: “Just Checking In”</span>
+            </button>
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">06</span> — <span data-i18n="c6Category">Narrative drama · Watch together</span></div>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><button type="button" onclick="openVideoModal()" class="text-left hover:text-accent transition-colors" data-i18n="c6Title">Corporate Survival Drama</button></h3>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed" data-i18n="c6Desc">A vertical mini-series built on real workplace dilemmas, made to be watched together. Every episode ends on a choice — and a question for the team to argue over.</p>
+          </div>
+          <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
+            <button type="button" onclick="openVideoModal()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+              <span data-i18n="c6Action">Play trailer</span><span aria-hidden="true">▶</span>
+            </button>
+            <span class="text-[11px] font-mono text-muted" data-i18n="c6Meta">1-min trailer</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- MORE IN THE LAB -->
+    <section class="reveal flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-y border-line py-5">
+      <div class="flex flex-wrap items-center gap-2 text-[12px] font-mono">
+        <span class="text-muted mr-1" data-i18n="moreLabel">More in the lab:</span>
+        <a href="https://wei-meng.org/free_builder/sales/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-white hover:border-ink/40 transition-colors"><span data-i18n="moreSales">Sales Psychology Academy</span><span aria-hidden="true">↗</span></a>
+        <a href="/free_builder/discovery" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-white hover:border-ink/40 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span><span data-i18n="moreDiscovery">Discovery Duet</span><span aria-hidden="true">↗</span></a>
+        <a href="/free_builder/questions" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-white hover:border-ink/40 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span><span data-i18n="moreQuestions">Question Deck</span><span aria-hidden="true">↗</span></a>
+        <a href="/free_builder/thanks" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-white hover:border-ink/40 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span><span data-i18n="moreThanks">Specific Thanks</span><span aria-hidden="true">↗</span></a>
+        <a href="/free_builder/teachback" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-white hover:border-ink/40 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span><span data-i18n="moreTeach">Teach-Back Chain</span><span aria-hidden="true">↗</span></a>
+      </div>
+      <a href="https://wei-meng.org/free_builder" target="_blank" rel="noopener noreferrer" class="text-sm font-mono underline decoration-accent decoration-2 underline-offset-4 hover:text-accent transition-colors whitespace-nowrap" data-i18n="moreFB">Work with FREE//BUILDER →</a>
+    </section>
+
+    <!-- CLOSING -->
+    <section class="reveal text-center py-6 sm:py-10 space-y-6">
+      <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="contactLabel">04 / Say Hello</span>
+      <h2 class="font-syne text-3xl sm:text-5xl font-bold tracking-tight leading-[1.1] max-w-2xl mx-auto" data-i18n-html="contactTitle">
+        Let's build learning people <span class="accent-word">choose</span> to finish.
+      </h2>
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 pt-2">
+        <a href="mailto:weimeng@protonmail.com" class="inline-flex items-center justify-center px-5 py-3.5 rounded-full bg-ink text-white hover:bg-black text-xs font-bold font-mono transition-colors">weimeng@protonmail.com</a>
+        <button type="button" onclick="copyEmailAddress(this)" class="inline-flex items-center justify-center px-5 py-3.5 rounded-full border border-line bg-white hover:border-ink/40 active:scale-95 text-xs font-bold font-mono transition-all" data-i18n="contactCopy">Copy email</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-line px-4 sm:px-10 py-8">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-mono text-muted">
+      <span>© <span id="current-year"></span> FREE//BUILDER L&amp;D Solutions</span>
+      <a href="https://wei-meng.org/free_builder" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 hover:text-ink transition-colors">
+        <span data-i18n="footerMade">Made with AI &amp;</span>
+        <span class="text-accent inline-block transition-transform group-hover:scale-125">♥</span>
+        <svg viewBox="0 0 24 24" class="w-4 h-4 overflow-visible" aria-hidden="true">
+          <polyline class="logo-stroke" points="3.5,7 7.75,17 12,9.5 16.25,17 20.5,7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle class="logo-dot" cx="12" cy="3.4" r="1.6" fill="#E2553F"/>
+        </svg>
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    const translations = {
+      en: {
+        pageTitle: "WEI MENG — Portfolio: Learning That Ends in Conversation",
+        headerSubtitle: "Portfolio", backHome: "About me", navEasterEgg: "60-slide deck?",
+        heroKicker: "03 / Portfolio",
+        heroTitle: 'Proof over <span class="accent-word">slides</span>.',
+        heroDesc: "Playable work, built on one belief: tools are scaffolding. The point is what people do with each other afterwards.",
+        heroHint: "Psst — want to see the alternative first?", heroHintBtn: "Sit through the 60-slide deck",
+        unlockToast: "Cognitive dignity restored — 5 tiny sandboxes just unlocked below.",
+        buildLabel: "How I build",
+        p1t: "Learn by doing", p1d: "If you can't try it, you haven't learned it. Play first, theory second.",
+        p2t: "Human skills first", p2d: "AI can draft the memo. Listening, empathy and trust are still ours to practise.",
+        p3t: "Better together", p3d: "Learning is social and mutual. Everyone teaches, everyone learns — sharing is caring.",
+        p4t: "People are the end", p4d: "Apps are tools. The goal is a sincere, meaningful conversation between real people.",
+        gaKicker: "A / Human first", gaTitle: "Short setups that end in a real conversation.", gaNote: "The screen goes down. The people keep going.",
+        gbKicker: "B / Play & story", gbTitle: "Games and stories that make a method stick.", gbNote: "Each one ends with something to try with a colleague.",
+        c1Badge: "Live · new", c1Action: "Start a duet", freeMeta: "Free · no sign-up", soonBadge: "In the workshop", soonAction: "Preview the concept", soonMeta: "Coming soon", soonShort: "soon",
+
+        c1Caption: "2 people · 1 phone · 90 seconds each", c1Category: "Active listening · Pairs", c1Title: "Listening Duet",
+        c1Desc: "Two people, one phone. One talks for 90 seconds, the other plays back what they heard. The only score: did they feel heard? Then swap.",
+        c2Badge: "Live · now with pairs", c2Caption: "8 corridors · 2 perspectives · 1 agreement", c2Category: "Cultural intelligence · Solo → pairs",
+        c2Title: "Intercultural Atlas × Perspective Swap",
+        c2Desc: "Explore eight cross-border friction points on your own. Then Perspective Swap pairs two colleagues, each holding only half the story, who can only reach agreement by talking.",
+        c2Action: "Open the atlas", c2Next: "Play it in pairs: Perspective Swap →",
+        c3Badge: "Live · + Repair Kit", c3Caption: "Rehearse alone → repair together", c3Category: "Leadership · Rehearsal → real talk",
+        c3Title: "Coaching Co-Pilot × Repair Kit",
+        c3Desc: "Rehearse the hard conversation with AI direct reports — the AI is only the warm-up. Repair Kit then hands you an opening line and sends you to have it for real, with a person.",
+        c3Action: "Open the co-pilot", c3Next: "Then repair together: Repair Kit →",
+        c4Badge: "5-phase platformer", c4Caption: "Empathize · Define · Ideate · Prototype · Test", c4Category: "Innovation · Game-based",
+        c4Title: "Design Thinking Odyssey",
+        c4Desc: "Every rule of the world is a design-thinking habit: bridges appear only through the user's eyes, every fall becomes a step. Each phase ends with something to try on Monday — with a real colleague.",
+        c4Action: "Play the odyssey", c4Meta: "EN · 中文 · ES",
+        c5Badge: "Live · new colleague trail", c5Caption: "One day · every phone · real people", c5Category: "Onboarding · Simulation",
+        c5Title: "Launchpad · Onboarding Day",
+        c5Desc: "A whole graduate onboarding day in one app: route cards, station tools and the KILL//SWITCH team investigation — plus a colleague trail that sends new joiners to real people, not handbooks.",
+        c5Action: "Open Launchpad", c5Meta: "EN · 中文 · ES",
+        c6Badge: "Episodic series", c6Caption: "EP.01: “Just Checking In”", c6Category: "Narrative drama · Watch together",
+        c6Title: "Corporate Survival Drama",
+        c6Desc: "A vertical mini-series built on real workplace dilemmas, made to be watched together. Every episode ends on a choice — and a question for the team to argue over.",
+        c6Action: "Play trailer", c6Meta: "1-min trailer",
+        moreLabel: "More in the lab:", moreSales: "Sales Psychology Academy", moreQuestions: "Question Deck", moreDiscovery: "Discovery Duet", moreTeach: "Teach-Back Chain", moreThanks: "Specific Thanks", moreFB: "Work with FREE//BUILDER →",
+
+        eggLTag: "Listening check · pick your reply",
+        eggLSaid: "Colleague: “They moved my deadline again. Third time this month.”",
+        eggLA: "“Same here — my week's been a mess too.”",
+        eggLB: "“Third time? That sounds exhausting. What's it costing you?”",
+        eggLReady: "Ready", eggLSelf: "Conversation hijacked", eggLHeard: "They feel heard ✓",
+        eggLFbSelf: "You made it about you. They nod politely — and stop talking. Try [B].",
+        eggLFbHeard: "Play-back plus a curious question. They keep talking, and you learn what's really going on.",
+        egg2Tag: "Classified clue · tap to decrypt",
+        egg2Hidden: "████████ $22,000,000 WIRE TO APEX ████",
+        egg2Shown: "✓ Uncovered: $22,000,000 wire to Apex Logistics — unaudited",
+        egg4Tag: "Safe-to-fail · your report is late again",
+        egg4A: "“Why is this late again?”", egg4B: "“What's blocking the delivery?”",
+        egg4Ready: "Ready", egg4Threat: "Status threat ⚠", egg4Safe: "Autonomy restored ✓",
+        egg4FbThreat: "SCARF threat triggered: your report feels blamed and retreats into defensive compliance. It's a sandbox — try [B].",
+        egg4FbSafe: "Psychological safety opened: your report admits Engineering dependencies are blocked. Now go ask a real person.",
+        egg5Tag: "Dual-lens mirror · tap to switch",
+        egg5Low: "Low-context · direct", egg5High: "High-context · indirect",
+        egg5LowText: "“This plan won't work. We need to rewrite section 3 entirely.”",
+        egg5HighText: "“We see many positive aspects here — section 3 may merit some further study.”",
+        egg6Tag: "Crazy 8s pulse",
+        egg6Ready: "Ready", egg6Running: "Sketching", egg6Done: "Done ✓",
+        egg6Label: "Start an 8-second idea sprint", egg6RunLabel: "Draw! Don't think…", egg6DoneLabel: "✓ Idea logged. Show it to someone.",
+
+        modalTitle: "Corporate Survival Drama · Trailer", modalEp: "Episode 01 · The Untold Revenue Leak", modalEscHint: "Press ESC or click outside to close",
+        deckTop: "Mandatory Corporate Deck · Sim 2026", deckCount: "Slide {n} of 62",
+        deckSlideTitle: "Module 1.1: Synergy Paradigms & Policy Compliance",
+        deckSlideText: "“All personnel must optimize interdepartmental synchronization through asynchronous documentation workflows. Please avoid interaction until this timer expires.”",
+        deckSpeaker: "Narrated by: Monotone AI Voice", deckLocked: "Locked", deckNext: "Next slide", deckEject: "Eject to cognitive dignity",
+        contactLabel: "04 / Say Hello",
+        contactTitle: 'Let\'s build learning people <span class="accent-word">choose</span> to finish.',
+        contactCopy: "Copy email", copiedText: "✓ Copied", footerMade: "Made with AI &"
+      },
+      zh: {
+        pageTitle: "孟玮 — 作品集：以真实对话收尾的学习",
+        headerSubtitle: "作品集", backHome: "关于我", navEasterEgg: "来份 60 页 PPT？",
+        heroKicker: "03 / 作品集",
+        heroTitle: '用作品说话，<br class="hidden sm:inline">而不是<span class="accent-word">PPT</span>。',
+        heroDesc: "可以上手的作品，基于一个信念：工具只是脚手架。真正重要的，是人们之后彼此之间发生了什么。",
+        heroHint: "嘘——想先体验一下“反面教材”吗？", heroHintBtn: "硬着头皮看完 60 页 PPT",
+        unlockToast: "认知尊严已恢复——下方 5 个隐藏的迷你沙盒已解锁。",
+        buildLabel: "我的设计原则",
+        p1t: "在做中学", p1d: "没上手试过，就不算学会。先玩，后理论。",
+        p2t: "人的能力优先", p2d: "AI 可以起草备忘录，但倾听、共情和信任，仍要靠我们自己去练。",
+        p3t: "一起更好", p3d: "学习是社交的、相互的。人人都教，人人都学——分享即关怀。",
+        p4t: "人是目的", p4d: "应用只是工具。目标是真实的人之间一次真诚、有意义的对话。",
+        gaKicker: "A / 人的能力优先", gaTitle: "简短的引导，以一场真实对话收尾。", gaNote: "屏幕放下，人继续。",
+        gbKicker: "B / 游戏与故事", gbTitle: "让方法真正落地的游戏和故事。", gbNote: "每一个都以“找同事一起试试”收尾。",
+        c1Badge: "已上线 · 新", c1Action: "开始二重奏", freeMeta: "免费 · 无需注册", soonBadge: "工作室打磨中", soonAction: "预览概念", soonMeta: "即将上线", soonShort: "即将",
+
+        c1Caption: "2 个人 · 1 部手机 · 每人 90 秒", c1Category: "积极倾听 · 双人", c1Title: "倾听二重奏",
+        c1Desc: "两个人，一部手机。一人说 90 秒，另一人复述听到的内容。唯一的评分：对方觉得被听见了吗？然后交换。",
+        c2Badge: "已上线 · 可双人", c2Caption: "8 条航线 · 2 个视角 · 1 个共识", c2Category: "文化智商 · 单人 → 双人",
+        c2Title: "跨文化图鉴 × 视角互换",
+        c2Desc: "先独自探索八个跨国协作的摩擦点。然后“视角互换”把两位同事配成一组，每人只掌握一半的故事，只有通过交谈才能达成共识。",
+        c2Action: "打开图鉴", c2Next: "两人一起玩：视角互换 →",
+        c3Badge: "已上线 · + 修复工具包", c3Caption: "独自演练 → 一起修复", c3Category: "领导力 · 演练 → 真实对话",
+        c3Title: "管理者 AI 教练 × 修复工具包",
+        c3Desc: "先和 AI 下属演练那场难谈的对话——AI 只是热身。接着，修复工具包给你一句开场白，让你去和真人把这场对话谈完。",
+        c3Action: "打开教练", c3Next: "再一起修复：修复工具包 →",
+        c4Badge: "五阶段闯关游戏", c4Caption: "共情 · 定义 · 构想 · 原型 · 测试", c4Category: "创新 · 游戏化",
+        c4Title: "设计思维奥德赛",
+        c4Desc: "这个世界的每条规则都是一个设计思维习惯：桥只有用用户的眼睛才看得见，每次跌落都会变成台阶。每个阶段都以一件周一和同事一起做的小事收尾。",
+        c4Action: "开始闯关", c4Meta: "EN · 中文 · ES",
+        c5Badge: "已上线 · 新增同事寻访", c5Caption: "一天 · 每部手机 · 真实的人", c5Category: "入职培训 · 仿真",
+        c5Title: "启航台 · 新人入职日",
+        c5Desc: "一个应用承载一整天的新人入职：路线卡、站点工具和熔断行动团队调查——还有一条同事寻访之路，把新人引向真实的人，而不是手册。",
+        c5Action: "打开启航台", c5Meta: "EN · 中文 · ES",
+        c6Badge: "系列短剧", c6Caption: "EP.01：“就是来问问进度”", c6Category: "叙事短剧 · 一起看",
+        c6Title: "职场生存大戏",
+        c6Desc: "以真实职场困境为底的竖屏微短剧，为“一起看”而设计。每集都停在一个抉择上——留给团队一个值得争论的问题。",
+        c6Action: "播放预告", c6Meta: "1 分钟预告",
+        moreLabel: "实验室里还有：", moreSales: "销售心理学实战学院", moreQuestions: "问题卡组", moreDiscovery: "探询二重奏", moreTeach: "教回去链条", moreThanks: "具体的感谢", moreFB: "与 FREE//BUILDER 合作 →",
+
+        eggLTag: "倾听测试 · 选择你的回应",
+        eggLSaid: "同事：“他们又把我的截止日期改了。这个月第三次了。”",
+        eggLA: "“我也是——我这周也一团糟。”",
+        eggLB: "“第三次？听起来好累。这对你影响有多大？”",
+        eggLReady: "就绪", eggLSelf: "话题被抢走了", eggLHeard: "对方感到被听见 ✓",
+        eggLFbSelf: "你把话题转到了自己身上。对方礼貌地点点头——然后不再说了。试试 [B]。",
+        eggLFbHeard: "复述 + 一个好奇的问题。对方愿意继续说，你也听到了真正发生的事。",
+        egg2Tag: "机密线索 · 点击解密",
+        egg2Hidden: "████████ $22,000,000 电汇至 APEX ████",
+        egg2Shown: "✓ 已破解：$22,000,000 电汇至 Apex Logistics——未经审计",
+        egg4Tag: "安全试错 · 下属又延期了",
+        egg4A: "“怎么又晚了？”", egg4B: "“是什么卡住了交付？”",
+        egg4Ready: "就绪", egg4Threat: "地位威胁 ⚠", egg4Safe: "自主感恢复 ✓",
+        egg4FbThreat: "触发 SCARF 威胁：下属感到被指责，转入防御式服从。反正是沙盒——试试 [B]。",
+        egg4FbSafe: "心理安全感打开：下属坦言是工程团队的依赖卡住了。现在，去问问真实的同事吧。",
+        egg5Tag: "双重视角 · 点击切换",
+        egg5Low: "低语境 · 直接", egg5High: "高语境 · 委婉",
+        egg5LowText: "“这个方案行不通，第 3 部分得全部重写。”",
+        egg5HighText: "“这个方向有很多亮点，第 3 部分或许还有值得进一步探讨的空间。”",
+        egg6Tag: "Crazy 8s 脉冲",
+        egg6Ready: "就绪", egg6Running: "构思中", egg6Done: "完成 ✓",
+        egg6Label: "启动 8 秒灵感冲刺", egg6RunLabel: "画！别想，快画…", egg6DoneLabel: "✓ 灵感已记录，拿给身边的人看看。",
+
+        modalTitle: "职场生存大戏 · 预告", modalEp: "第 01 集：看不见的营收漏洞", modalEscHint: "按 ESC 或点击空白处关闭",
+        deckTop: "企业强制培训课件 · 仿真", deckCount: "第 {n} / 62 页",
+        deckSlideTitle: "1.1 节：协同范式与政策合规",
+        deckSlideText: "“全体员工须通过异步文档工作流，优化跨部门协同共振。倒计时结束前，请勿进行任何交互。”",
+        deckSpeaker: "讲解：单调 AI 配音", deckLocked: "锁定中", deckNext: "下一页", deckEject: "弹射回认知尊严",
+        contactLabel: "04 / 打个招呼",
+        contactTitle: '一起做让人<span class="accent-word">主动</span>学完的学习体验。',
+        contactCopy: "复制邮箱", copiedText: "✓ 已复制", footerMade: "由 AI 与"
+      },
+      es: {
+        pageTitle: "WEI MENG — Portafolio: aprendizaje que termina en conversación",
+        headerSubtitle: "Portafolio", backHome: "Sobre mí", navEasterEgg: "¿60 diapositivas?",
+        heroKicker: "03 / Portafolio",
+        heroTitle: 'Pruebas, no <span class="accent-word">diapositivas</span>.',
+        heroDesc: "Trabajo jugable, construido sobre una convicción: las herramientas son andamios. Lo importante es lo que las personas hacen entre sí después.",
+        heroHint: "Psst… ¿quieres ver primero la alternativa?", heroHintBtn: "Aguanta las 60 diapositivas",
+        unlockToast: "Dignidad cognitiva restaurada: 5 mini-sandboxes desbloqueados abajo.",
+        buildLabel: "Cómo diseño",
+        p1t: "Aprender haciendo", p1d: "Si no puedes probarlo, no lo has aprendido. Primero el juego, después la teoría.",
+        p2t: "Primero lo humano", p2d: "La IA puede redactar el memo. Escuchar, empatizar y confiar siguen siendo cosa nuestra.",
+        p3t: "Mejor juntos", p3d: "Aprender es social y mutuo. Todos enseñan, todos aprenden: compartir es cuidar.",
+        p4t: "Las personas son el fin", p4d: "Las apps son herramientas. La meta es una conversación sincera y con sentido entre personas reales.",
+        gaKicker: "A / Primero lo humano", gaTitle: "Dinámicas cortas que terminan en una conversación real.", gaNote: "La pantalla se apaga. Las personas siguen.",
+        gbKicker: "B / Juego e historia", gbTitle: "Juegos e historias que hacen que un método se quede.", gbNote: "Cada uno termina con algo para probar con un colega.",
+        c1Badge: "En línea · nuevo", c1Action: "Empezar un dúo", freeMeta: "Gratis · sin registro", soonBadge: "En el taller", soonAction: "Ver el concepto", soonMeta: "Muy pronto", soonShort: "pronto",
+
+        c1Caption: "2 personas · 1 móvil · 90 segundos cada una", c1Category: "Escucha activa · En pareja", c1Title: "Dúo de escucha",
+        c1Desc: "Dos personas, un móvil. Una habla 90 segundos; la otra devuelve lo que escuchó. La única puntuación: ¿se sintió escuchada? Luego, cambio.",
+        c2Badge: "En vivo · ahora en pareja", c2Caption: "8 corredores · 2 perspectivas · 1 acuerdo", c2Category: "Inteligencia cultural · Solo → pareja",
+        c2Title: "Atlas Intercultural × Cambio de Perspectiva",
+        c2Desc: "Explora a solas ocho puntos de fricción entre culturas. Después, Cambio de Perspectiva junta a dos colegas, cada uno con solo la mitad de la historia, que solo pueden llegar a un acuerdo hablando.",
+        c2Action: "Abrir el atlas", c2Next: "Jugad en pareja: Cambio de Perspectiva →",
+        c3Badge: "En vivo · + Kit de Reparación", c3Caption: "Ensaya a solas → repara en compañía", c3Category: "Liderazgo · Ensayo → conversación real",
+        c3Title: "Co-Piloto de Coaching × Kit de Reparación",
+        c3Desc: "Ensaya la conversación difícil con colaboradores de IA: la IA es solo el calentamiento. Luego el Kit de Reparación te da una frase de apertura y te manda a tenerla de verdad, con una persona.",
+        c3Action: "Abrir el co-piloto", c3Next: "Luego reparad juntos: Kit de Reparación →",
+        c4Badge: "Plataformas en 5 fases", c4Caption: "Empatizar · Definir · Idear · Prototipar · Testear", c4Category: "Innovación · Basado en juego",
+        c4Title: "Odisea de Design Thinking",
+        c4Desc: "Cada regla del mundo es un hábito de design thinking: los puentes solo aparecen con los ojos del usuario y cada caída se vuelve un escalón. Cada fase termina con algo para probar el lunes, con un colega real.",
+        c4Action: "Jugar la odisea", c4Meta: "EN · 中文 · ES",
+        c5Badge: "En vivo · nueva ruta de colegas", c5Caption: "Un día · cada móvil · personas reales", c5Category: "Onboarding · Simulación",
+        c5Title: "Launchpad · Día de bienvenida",
+        c5Desc: "Todo un día de bienvenida para recién graduados en una app: rutas, herramientas de estación y la investigación en equipo KILL//SWITCH, más una ruta de colegas que lleva a personas reales, no a manuales.",
+        c5Action: "Abrir Launchpad", c5Meta: "EN · 中文 · ES",
+        c6Badge: "Serie episódica", c6Caption: "EP.01: “Solo un check-in”", c6Category: "Drama narrativo · Para ver juntos",
+        c6Title: "Drama de Supervivencia Corporativa",
+        c6Desc: "Una miniserie vertical sobre dilemas laborales reales, pensada para verse en grupo. Cada episodio termina en una decisión y en una pregunta para que el equipo la debata.",
+        c6Action: "Ver tráiler", c6Meta: "Tráiler de 1 min",
+        moreLabel: "Más en el laboratorio:", moreSales: "Academia de Psicología de Ventas", moreQuestions: "Mazo de Preguntas", moreDiscovery: "Dúo de Descubrimiento", moreTeach: "Cadena de Enseñar de Vuelta", moreThanks: "Gracias Concretas", moreFB: "Trabaja con FREE//BUILDER →",
+
+        eggLTag: "Prueba de escucha · elige tu respuesta",
+        eggLSaid: "Colega: “Me han vuelto a mover la fecha de entrega. Tercera vez este mes.”",
+        eggLA: "“Igual que yo: mi semana también es un caos.”",
+        eggLB: "“¿Tercera vez? Suena agotador. ¿Qué te está costando?”",
+        eggLReady: "Listo", eggLSelf: "Conversación secuestrada", eggLHeard: "Se siente escuchado ✓",
+        eggLFbSelf: "Lo hiciste sobre ti. Asiente por cortesía… y deja de hablar. Prueba [B].",
+        eggLFbHeard: "Devolver lo escuchado más una pregunta curiosa. Sigue hablando y descubres lo que de verdad pasa.",
+        egg2Tag: "Pista clasificada · toca para descifrar",
+        egg2Hidden: "████████ $22,000,000 TRANSFERENCIA A APEX ████",
+        egg2Shown: "✓ Descubierto: transferencia de $22,000,000 a Apex Logistics — sin auditar",
+        egg4Tag: "Seguro para fallar · tu colaborador vuelve a llegar tarde",
+        egg4A: "“¿Por qué otra vez tarde?”", egg4B: "“¿Qué está bloqueando la entrega?”",
+        egg4Ready: "Listo", egg4Threat: "Amenaza de estatus ⚠", egg4Safe: "Autonomía restaurada ✓",
+        egg4FbThreat: "Amenaza SCARF activada: tu colaborador se siente culpado y se refugia en el cumplimiento defensivo. Es un sandbox: prueba [B].",
+        egg4FbSafe: "Seguridad psicológica abierta: tu colaborador cuenta que lo bloquean dependencias de Ingeniería. Ahora, pregúntale a una persona real.",
+        egg5Tag: "Espejo de doble lente · toca para cambiar",
+        egg5Low: "Bajo contexto · directo", egg5High: "Alto contexto · indirecto",
+        egg5LowText: "“Este plan no funcionará. Hay que reescribir toda la sección 3.”",
+        egg5HighText: "“Vemos muchos aspectos positivos; quizá la sección 3 merezca un estudio más profundo.”",
+        egg6Tag: "Pulso Crazy 8s",
+        egg6Ready: "Listo", egg6Running: "Bocetando", egg6Done: "Hecho ✓",
+        egg6Label: "Lanzar un sprint de ideas de 8 s", egg6RunLabel: "¡Dibuja! No pienses…", egg6DoneLabel: "✓ Idea registrada. Enséñasela a alguien.",
+
+        modalTitle: "Drama de Supervivencia Corporativa · Tráiler", modalEp: "Episodio 01 · La fuga de ingresos", modalEscHint: "Pulsa ESC o haz clic fuera para cerrar",
+        deckTop: "Capacitación obligatoria · Simulación 2026", deckCount: "Diapositiva {n} de 62",
+        deckSlideTitle: "Módulo 1.1: Paradigmas de sinergia y cumplimiento",
+        deckSlideText: "“Todo el personal debe optimizar la sincronización interdepartamental mediante flujos documentales asíncronos. Evite cualquier interacción hasta que termine el temporizador.”",
+        deckSpeaker: "Narración: voz monótona de IA", deckLocked: "Bloqueado", deckNext: "Siguiente", deckEject: "Escapar hacia la dignidad cognitiva",
+        contactLabel: "04 / Saludemos",
+        contactTitle: 'Creemos aprendizajes que la gente <span class="accent-word">elija</span> terminar.',
+        contactCopy: "Copiar email", copiedText: "✓ Copiado", footerMade: "Hecho con IA y"
+      }
+    };
+
+    const supportedLangs = ['en', 'zh', 'es'];
+    const langLabels = { en: 'EN', zh: '中文', es: 'ES' };
+    let currentLang = 'en';
+    const t = () => translations[currentLang];
+    const $ = id => document.getElementById(id);
+
+    /* ---------- Easter-egg sandboxes (re-rendered on language change) ---------- */
+    const state = { redacted: false, listen: null, coach: null, lens: 'low', sprint: 'ready', sprintLeft: 8 };
+    const EGG_BTN = 'w-full text-left font-mono text-xs p-2.5 rounded-xl border active:scale-[0.98] transition-all select-none ';
+    const IDLE = 'bg-white border-line hover:border-ink/40 text-ink';
+    const ACTIVE = 'bg-accent/5 border-accent/40 text-ink';
+    const FB_BAD = 'text-[11px] font-mono leading-relaxed text-accent';
+    const FB_GOOD = 'text-[11px] font-mono leading-relaxed text-emerald-700';
+
+    function setStatus(el, mode, ready, bad, good) {
+      if (mode === 'bad') { el.textContent = bad; el.className = 'font-bold whitespace-nowrap text-accent'; }
+      else if (mode === 'good') { el.textContent = good; el.className = 'font-bold whitespace-nowrap text-emerald-600'; }
+      else { el.textContent = ready; el.className = 'font-bold whitespace-nowrap text-muted'; }
+    }
+
+    function renderEggs() {
+      const L = t();
+      // Listening Duet
+      $('eggL-said').textContent = L.eggLSaid;
+      $('eggL-a').textContent = `[A] ${L.eggLA}`;
+      $('eggL-b').textContent = `[B] ${L.eggLB}`;
+      const lf = $('eggL-feedback');
+      setStatus($('eggL-status'), state.listen === 'self' ? 'bad' : state.listen === 'heard' ? 'good' : '', L.eggLReady, L.eggLSelf, L.eggLHeard);
+      if (state.listen) { lf.textContent = state.listen === 'self' ? L.eggLFbSelf : L.eggLFbHeard; lf.className = state.listen === 'self' ? FB_BAD : FB_GOOD; }
+      else lf.className = 'hidden';
+      // Onboarding redaction
+      const r = $('egg2-btn');
+      r.textContent = state.redacted ? L.egg2Shown : L.egg2Hidden;
+      r.className = EGG_BTN + (state.redacted ? 'bg-ink border-ink text-emerald-300' : 'bg-ink border-ink text-white/50 hover:text-white');
+      // Co-pilot
+      $('egg4-a').textContent = `[A] ${L.egg4A}`;
+      $('egg4-b').textContent = `[B] ${L.egg4B}`;
+      const fb = $('egg4-feedback');
+      setStatus($('egg4-status'), state.coach === 'micromanage' ? 'bad' : state.coach === 'coach' ? 'good' : '', L.egg4Ready, L.egg4Threat, L.egg4Safe);
+      if (state.coach) { fb.textContent = state.coach === 'micromanage' ? L.egg4FbThreat : L.egg4FbSafe; fb.className = state.coach === 'micromanage' ? FB_BAD : FB_GOOD; }
+      else fb.className = 'hidden';
+      // Atlas lens
+      const lb = $('egg5-btn');
+      $('egg5-lens').textContent = state.lens === 'low' ? L.egg5Low : L.egg5High;
+      lb.textContent = state.lens === 'low' ? L.egg5LowText : L.egg5HighText;
+      lb.className = EGG_BTN + (state.lens === 'high' ? ACTIVE : IDLE);
+      // Crazy 8s
+      const map = { ready: [L.egg6Ready, L.egg6Label, 'text-muted'], running: [L.egg6Running, L.egg6RunLabel, 'text-accent animate-pulse'], done: [L.egg6Done, L.egg6DoneLabel, 'text-emerald-600'] };
+      const [label, btnLabel, cls] = map[state.sprint];
+      $('egg6-status').textContent = label; $('egg6-status').className = 'font-bold whitespace-nowrap ' + cls;
+      $('egg6-label').textContent = btnLabel;
+      $('egg6-count').textContent = `0${state.sprintLeft}s`;
+    }
+
+    function testListen(choice) { state.listen = choice; renderEggs(); }
+    function toggleRedaction() { state.redacted = !state.redacted; renderEggs(); }
+    function testCoachResponse(choice) { state.coach = choice; renderEggs(); }
+    function toggleCulturalLens() { state.lens = state.lens === 'low' ? 'high' : 'low'; renderEggs(); }
+
+    let audioCtx = null;
+    function beep(freq) {
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        audioCtx = audioCtx || new AC();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.08);
+      } catch (e) {}
+    }
+
+    function triggerCrazySprint() {
+      if (state.sprint !== 'ready') return;
+      state.sprint = 'running'; state.sprintLeft = 8; renderEggs(); beep(440);
+      const iv = setInterval(() => {
+        state.sprintLeft--;
+        beep(state.sprintLeft === 0 ? 880 : 440);
+        if (state.sprintLeft <= 0) {
+          clearInterval(iv);
+          state.sprint = 'done'; state.sprintLeft = 8;
+          setTimeout(() => { state.sprint = 'ready'; renderEggs(); }, 3000);
+        }
+        renderEggs();
+      }, 1000);
+    }
+
+    /* ---------- Modals ---------- */
+    let lastFocus = null;
+    function openModal(el, focusEl) {
+      lastFocus = document.activeElement;
+      el.classList.remove('hidden'); el.classList.add('flex');
+      requestAnimationFrame(() => el.classList.remove('opacity-0'));
+      document.body.style.overflow = 'hidden';
+      if (focusEl) setTimeout(() => focusEl.focus(), 50);
+    }
+    function closeModal(el) {
+      if (el.classList.contains('hidden')) return;
+      el.classList.add('opacity-0');
+      document.body.style.overflow = '';
+      setTimeout(() => { el.classList.remove('flex'); el.classList.add('hidden'); }, 300);
+      if (lastFocus) lastFocus.focus();
+    }
+
+    const deckModal = $('deck-modal');
+    let deckSlide = 1, deckLeft = 59, deckIv = null;
+    function renderDeck() {
+      $('deck-count').textContent = t().deckCount.replace('{n}', deckSlide);
+      $('deck-timer').textContent = `${t().deckLocked} · 00:${String(deckLeft).padStart(2, '0')}`;
+    }
+    function openDeckModal() {
+      deckSlide = 1; deckLeft = 59; renderDeck();
+      clearInterval(deckIv);
+      deckIv = setInterval(() => {
+        deckLeft--;
+        if (deckLeft < 0) { deckSlide++; deckLeft = 59; }
+        renderDeck();
+      }, 1000);
+      openModal(deckModal, $('deck-eject'));
+    }
+    function closeDeckModal() { clearInterval(deckIv); closeModal(deckModal); }
+    function ejectToCognitiveDignity() { closeDeckModal(); revealCardEasterEggs(true); }
+
+    function revealCardEasterEggs(announce) {
+      document.querySelectorAll('.card-easter-egg').forEach((egg, i) => {
+        if (!egg.classList.contains('hidden')) return;
+        egg.classList.remove('hidden');
+        if (announce) { egg.style.animationDelay = (i * 90) + 'ms'; egg.classList.add('egg-unlocked'); }
+      });
+      if (announce) {
+        const toast = $('unlock-toast');
+        toast.classList.remove('hidden');
+        requestAnimationFrame(() => toast.classList.remove('opacity-0'));
+        setTimeout(() => { toast.classList.add('opacity-0'); setTimeout(() => toast.classList.add('hidden'), 300); }, 4000);
+        const first = document.querySelector('.card-easter-egg');
+        if (first) setTimeout(() => first.closest('article').scrollIntoView({ behavior: 'smooth', block: 'center' }), 350);
+      }
+      try { sessionStorage.setItem('wm_easter_eggs_unlocked', 'true'); } catch (e) {}
+    }
+
+    const videoModal = $('video-modal');
+    const demoPlayer = $('demo-video-player');
+    function openVideoModal() {
+      openModal(videoModal);
+      if (demoPlayer) { demoPlayer.currentTime = 0; demoPlayer.play().catch(() => {}); }
+    }
+    function closeVideoModal() { if (demoPlayer) demoPlayer.pause(); closeModal(videoModal); }
+    function handleBackdrop(e) {
+      if (e.target === videoModal) closeVideoModal();
+      if (e.target === deckModal) closeDeckModal();
+    }
+    window.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      if (!videoModal.classList.contains('hidden')) closeVideoModal();
+      if (!deckModal.classList.contains('hidden')) closeDeckModal();
+    });
+
+    /* ---------- i18n ---------- */
+    function cycleLanguage() { setLanguage(supportedLangs[(supportedLangs.indexOf(currentLang) + 1) % supportedLangs.length]); }
+    function setLanguage(lang) {
+      if (!translations[lang]) return;
+      currentLang = lang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+      $('page-title').textContent = t().pageTitle;
+      $('lang-btn-label').textContent = langLabels[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => { const v = t()[el.getAttribute('data-i18n')]; if (v) el.textContent = v; });
+      document.querySelectorAll('[data-i18n-html]').forEach(el => { const v = t()[el.getAttribute('data-i18n-html')]; if (v) el.innerHTML = v; });
+      renderEggs(); renderDeck();
+      try { localStorage.setItem('wm_cases_lang', lang); localStorage.setItem('wm_preferred_lang', lang); } catch (e) {}
+    }
+
+    /* ---------- Contact ---------- */
+    function copyEmailAddress(btn) {
+      const email = 'weimeng@protonmail.com';
+      const done = () => { btn.textContent = t().copiedText; setTimeout(() => { btn.textContent = t().contactCopy; }, 1800); };
+      const fallback = () => {
+        const i = document.createElement('input'); i.value = email; document.body.appendChild(i); i.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(i); done();
+      };
+      if (navigator.clipboard) navigator.clipboard.writeText(email).then(done).catch(fallback); else fallback();
+    }
+
+    /* ---------- Reveal on scroll ---------- */
+    (function reveal() {
+      const els = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) { els.forEach(e => e.classList.add('in')); return; }
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+      }, { threshold: 0.1 });
+      els.forEach((e, i) => { e.style.transitionDelay = (Math.min(i % 4, 3) * 70) + 'ms'; io.observe(e); });
+    })();
+
+    /* ---------- Init ---------- */
+    $('current-year').textContent = new Date().getFullYear();
+    try { if (sessionStorage.getItem('wm_easter_eggs_unlocked') === 'true') revealCardEasterEggs(false); } catch (e) {}
+    (function initLanguage() {
+      let saved = null;
+      try { saved = localStorage.getItem('wm_cases_lang') || localStorage.getItem('wm_preferred_lang'); } catch (e) {}
+      if (saved && supportedLangs.includes(saved)) return setLanguage(saved);
+      const b = (navigator.language || '').toLowerCase();
+      setLanguage(b.startsWith('zh') ? 'zh' : b.startsWith('es') ? 'es' : 'en');
+    })();
+  </script>
+</body>
+</html>
