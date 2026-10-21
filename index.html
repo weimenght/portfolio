@@ -394,7 +394,7 @@
             </div>
             <div class="term-prompt">
               <span style="color:#E2553F">EXEC&gt;</span>
-              <a href="https://wei-meng.org/game" target="_blank" rel="noopener noreferrer" id="term-open">
+              <a href="/free_builder/game/" target="_blank" rel="noopener noreferrer" id="term-open">
                 <span data-i18n="termOpen">open the full console</span><span class="term-cursor" aria-hidden="true"></span>
               </a>
             </div>
@@ -426,7 +426,7 @@
               data-i18n="contactCopy">Copy email</button>
 
             <div class="relative group flex-shrink-0">
-              <a href="https://wei-meng.org/free_builder/game/bar" id="drink-link"
+              <a href="/free_builder/game/bar" id="drink-link"
                  class="drink inline-flex items-center justify-center w-12 h-12 rounded-full border border-line bg-white hover:border-ink/40 active:scale-95 transition-all"
                  aria-label="psst — need a drink?">
                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" style="shape-rendering:crispEdges;" aria-hidden="true">
@@ -758,7 +758,7 @@
 
 
     /* ---------- 04 After hours: game console teaser ---------- */
-    const CONSOLE_BASE = 'https://wei-meng.org/free_builder/game/';
+    const CONSOLE_BASE = location.origin.startsWith('http') ? location.origin + '/free_builder/game/' : 'https://wei-meng.org/free_builder/game/';
     let GAMES = [
       { code: 'CLIMB', url: 'climb' },
       { code: 'DJ', url: 'dj' },
@@ -852,7 +852,7 @@
       toggle.addEventListener('click', () => setFold(!term.classList.contains('open')));
 
       // Pull the live directory the console reads, if this page is served next to it
-      fetch('/game/game.txt?t=' + Date.now(), { cache: 'no-store' })
+      fetch('/free_builder/game/game.txt?t=' + Date.now(), { cache: 'no-store' })
         .then(r => (r.ok ? r.text() : ''))
         .then(txt => { const list = parseGames(txt); if (list.length) { GAMES = list; renderGames(); } })
         .catch(() => {});
