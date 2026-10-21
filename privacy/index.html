@@ -1,0 +1,385 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><script data-fbl data-mode="full">/* FBL · FREE//BUILDER language kit (inlined into every page's <head>).
+   One preference for the whole suite: EN · 简体中文 · 繁體中文 · Español · Català.
+   - remembered on this device (localStorage), and carried between wei-meng.org and freebuilder.net
+     by adding ?fbl=<lang> to links between the two sites (browsers keep each site's storage separate)
+   - opens a language menu from the page's own language button
+   - games keep their own pickers; their choice is read back into the shared preference */
+(function () {
+  "use strict";
+  if (window.FBL) return;
+  var LANGS = ["en", "zh", "zh-Hant", "es", "ca"];
+  var NAMES = { "en": "English", "zh": "简体中文", "zh-Hant": "繁體中文", "es": "Español", "ca": "Català" };
+  var SHORT = { "en": "EN", "zh": "简中", "zh-Hant": "繁中", "es": "ES", "ca": "CA" };
+  var KEYS = ["wm_preferred_lang", "wm_cases_lang"];
+  var SITES = /(^|\.)(wei-meng\.org|freebuilder\.net)$/i;
+  var GAMES = {   /* game storage key -> [shared -> game code, game code -> shared] */
+    "weis-lang": [{ "en": "en", "zh": "zh", "zh-Hant": "tw", "es": "es", "ca": "ca" }, { "en": "en", "zh": "zh", "tw": "zh-Hant", "yue": "zh-Hant", "es": "es", "ca": "ca" }],
+    "handoff_lang": [{ "en": "en", "zh": "zh-CN", "zh-Hant": "zh-TW", "es": "es", "ca": "ca" }, { "en": "en", "zh-CN": "zh", "zh-TW": "zh-Hant", "es": "es", "ca": "ca" }]
+  };
+  var mode = (document.currentScript && document.currentScript.getAttribute("data-mode")) || "full";
+
+  function norm(x) {
+    x = String(x || "").toLowerCase();
+    if (!x) return null;
+    if (x === "zh-hant" || /^zh-(tw|hk|mo)/.test(x) || x === "tw" || x === "yue") return "zh-Hant";
+    if (x.indexOf("zh") === 0) return "zh";
+    if (x.indexOf("ca") === 0) return "ca";
+    if (x.indexOf("es") === 0) return "es";
+    if (x.indexOf("en") === 0) return "en";
+    return null;
+  }
+  function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  function get() { for (var i = 0; i < KEYS.length; i++) { var n = norm(ls(KEYS[i])); if (n) return n; } return null; }
+  function set(l) { l = norm(l); if (!l) return; KEYS.forEach(function (k) { ls(k, l); }); for (var g in GAMES) if (ls(g) != null || mode === "game") ls(g, GAMES[g][0][l]); }
+
+  /* 1 · a preference handed over in the URL (?fbl=ca) wins, then it's removed from the address bar */
+  try {
+    var u = new URL(location.href), p = norm(u.searchParams.get("fbl"));
+    if (p) { set(p); u.searchParams.delete("fbl"); history.replaceState(history.state, "", u.pathname + u.search + u.hash); }
+  } catch (e) {}
+  /* 2 · first visit: the browser's own languages */
+  if (!get()) {
+    var nl = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "en"]), pick = "en";
+    for (var i = 0; i < nl.length; i++) { var n = norm(nl[i]); if (n) { pick = n; break; } }
+    set(pick);
+  }
+  /* 3 · games: shared -> game key now; game key -> shared when the page is left */
+  if (mode === "game") {
+    var cur0 = get(); for (var g in GAMES) ls(g, GAMES[g][0][cur0]);
+    var readBack = function () { for (var g in GAMES) { var v = ls(g); if (v && GAMES[g][1][v]) { KEYS.forEach(function (k) { ls(k, GAMES[g][1][v]); }); } } };
+    addEventListener("pagehide", readBack); document.addEventListener("visibilitychange", function () { if (document.hidden) readBack(); });
+  }
+  /* 4 · carry the preference across the two sites */
+  function decorate(e) {
+    var a = e.target && e.target.closest && e.target.closest("a[href]"); if (!a) return;
+    try { if (!/^https?:/i.test(a.getAttribute("href") || "")) return; var t = new URL(a.href, location.href); if (t.host === location.host || !SITES.test(t.hostname)) return; var top0 = ""; try { top0 = window.top.location.host; } catch (x) {} if (t.host === top0) return;
+      if (mode === "game") { for (var g in GAMES) { var v = ls(g); if (v && GAMES[g][1][v]) KEYS.forEach(function (k) { ls(k, GAMES[g][1][v]); }); } }
+      t.searchParams.set("fbl", get() || "en"); a.href = t.toString(); } catch (err) {}
+  }
+  document.addEventListener("click", decorate, true); document.addEventListener("auxclick", decorate, true); document.addEventListener("contextmenu", decorate, true);
+
+  window.FBL = { LANGS: LANGS, NAMES: NAMES, SHORT: SHORT, get: get, set: set, norm: norm };
+  if (mode !== "full") return;
+
+  /* 5 · the menu, opened from the page's own language button */
+  var SEL = "#btn-lang,#lang-btn,#lang-toggle-btn,[onclick*='cycleLanguage'],#w-lang,#sheet-lang,[data-fbl-btn],button[aria-label='Language'],button[title='EN / 中文 / ES']";
+  var LBL = "#lang-lbl,#lang-btn-label,#lang-label,#lang-current,[data-fbl-label]";
+  var syn = false, menu = null, opener = null;
+  function current() { return norm(window.FBL_GET ? window.FBL_GET() : (typeof window.currentLang === "string" ? window.currentLang : "")) || get() || norm(document.documentElement.lang) || "en"; }
+  function paintLabels() { var l = current(); document.querySelectorAll(LBL).forEach(function (el) { if (el.textContent !== SHORT[l]) el.textContent = SHORT[l]; }); document.querySelectorAll(SEL).forEach(function (b) { b.setAttribute("aria-haspopup", "menu"); b.setAttribute("aria-label", "Language: " + NAMES[l]); b.classList.add("fbl-has"); }); }
+  function close(refocus) { if (!menu) return; menu.remove(); menu = null; document.removeEventListener("keydown", onKey, true); if (opener) { opener.setAttribute("aria-expanded", "false"); if (refocus) opener.focus(); } }
+  function onKey(e) {
+    if (!menu) return; var items = [].slice.call(menu.querySelectorAll("button")), i = items.indexOf(document.activeElement);
+    if (e.key === "Escape") { e.preventDefault(); close(true); }
+    else if (e.key === "ArrowDown") { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+    else if (e.key === "Tab") close(false);
+  }
+  function open(btn) {
+    if (menu) { close(true); return; }
+    opener = btn; var l = current();
+    menu = document.createElement("div"); menu.className = "fbl-menu"; menu.setAttribute("role", "menu"); menu.setAttribute("aria-label", "Language");
+    LANGS.forEach(function (c) {
+      var b = document.createElement("button"); b.type = "button"; b.setAttribute("role", "menuitemradio"); b.setAttribute("aria-checked", String(c === l)); b.setAttribute("lang", c);
+      b.innerHTML = "<span>" + NAMES[c] + "</span><small>" + SHORT[c] + (c === l ? " ✓" : "") + "</small>";
+      b.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); choose(c); });
+      menu.appendChild(b);
+    });
+    document.body.appendChild(menu);
+    var r = btn.getBoundingClientRect(), w = menu.offsetWidth, h = menu.offsetHeight;
+    var left = Math.min(Math.max(8, r.right - w), innerWidth - w - 8), top = r.bottom + 6;
+    if (top + h > innerHeight - 8) top = Math.max(8, r.top - h - 6);
+    menu.style.left = left + "px"; menu.style.top = top + "px";
+    btn.setAttribute("aria-expanded", "true");
+    var on = menu.querySelector('[aria-checked="true"]') || menu.querySelector("button"); on.focus({ preventScroll: true });
+    document.addEventListener("keydown", onKey, true);
+  }
+  function choose(l) {
+    var btn = opener; close(true);
+    var setter = window.FBL_SET || (typeof window.setLanguage === "function" ? window.setLanguage : null);
+    if (setter) { setter(l); set(l); paintLabels(); return; }
+    /* pages that only know "next language": step their own button until it lands on l */
+    var n = 0; (function step() {
+      if (current() === l || n++ > LANGS.length) { set(l); paintLabels(); return; }
+      syn = true; try { (document.querySelector(SEL) || btn).click(); } finally { syn = false; }
+      setTimeout(step, 40);
+    })();
+  }
+  document.addEventListener("click", function (e) {
+    if (syn) return;
+    if (menu && !menu.contains(e.target)) { var b0 = e.target.closest && e.target.closest(SEL); close(false); if (b0 === opener) { e.preventDefault(); e.stopImmediatePropagation(); return; } }
+    var b = e.target.closest && e.target.closest(SEL); if (!b) return;
+    e.preventDefault(); e.stopImmediatePropagation(); open(b);
+  }, true);
+  addEventListener("resize", function () { close(false); });
+  var css = ".fbl-menu{position:fixed;z-index:2147483000;min-width:11rem;padding:6px;border-radius:16px;background:var(--white,#fff);color:var(--ink,#17171A);border:1px solid #E5E2DA;box-shadow:0 18px 40px -18px rgba(23,23,26,.45);font:500 14px/1.2 'Plus Jakarta Sans',system-ui,-apple-system,'PingFang SC','PingFang TC','Microsoft YaHei',sans-serif}" +
+    ".fbl-menu button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:14px;padding:10px 12px;border:0;border-radius:10px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}" +
+    ".fbl-menu button:hover,.fbl-menu button:focus-visible{background:#F3F1EB;outline:none}.fbl-menu button[aria-checked='true']{font-weight:700}" +
+    ".fbl-menu small{font:400 11px/1 'Space Mono',ui-monospace,monospace;color:var(--muted,#6B6A70)}.fbl-menu button[aria-checked='true'] small{color:var(--accent-ink,#C2412D)}" +
+    ".fbl-has{cursor:pointer}.fbl-has::after{content:'';display:inline-block;width:6px;height:6px;margin-left:5px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);opacity:.6}" +
+    "@media (prefers-color-scheme:dark){.fbl-menu{background:#1D1D21;color:#ECEBE6;border-color:#303036}.fbl-menu button:hover,.fbl-menu button:focus-visible{background:#2B2B31}.fbl-menu small{color:#A8A7AD}.fbl-menu button[aria-checked='true'] small{color:#F28C76}}";
+  var st = document.createElement("style"); st.id = "fbl-css"; st.textContent = css; (document.head || document.documentElement).appendChild(st);
+  function boot() { paintLabels(); try { new MutationObserver(function () { paintLabels(); }).observe(document.body, { childList: true, subtree: true, characterData: true }); } catch (e) {} }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+})();
+
+/* FBC · FREE//BUILDER data & consent kit (inlined after FBL on every page of both sites).
+   One source for every notice about data. Nothing a visitor types leaves the device until they say yes.
+   - DATA lists every feature that sends something off the device: what, to whom, who sees it.
+   - Requests to those services wait for the visitor's answer; "no" means the page keeps working on this device.
+   - Any other page that tries to send data to another site gets the same question, just in time.
+   - The choice is remembered on this device; the privacy page (/privacy/) lists everything and lets you change it.
+   To add a new feature: add one entry to DATA (and its hosts to HOSTS if new). */
+(function () {
+  "use strict";
+  if (window.FBC) return;
+  var STORE = "fb_consent", V = 1;
+  var HOSTS = /(^|\.)(supabase\.co|workers\.dev|formspree\.io)$|^room\.wei-meng\.org$/i;
+  var PRIVACY = "/privacy/";
+
+  /* ---------- words (EN · 简中 · 繁中 · ES · CA) ---------- */
+  var W = {
+    title: ["Before anything leaves your device", "数据离开你的设备之前", "資料離開你的裝置之前", "Antes de que nada salga de tu dispositivo", "Abans que res surti del teu dispositiu"],
+    what: ["What is sent", "会发送什么", "會傳送什麼", "Qué se envía", "Què s'envia"],
+    to: ["Where it goes", "发送到哪里", "傳送到哪裡", "Adónde va", "On va"],
+    who: ["Who sees it", "谁能看到", "誰能看到", "Quién lo ve", "Qui ho veu"],
+    no: ["If you say no", "如果你选择不", "如果你選擇不", "Si dices que no", "Si dius que no"],
+    promise: ["Never sold, never used for ads, no tracking or analytics. To have your data removed, write to Wei through the contact form.",
+      "绝不出售，不用于广告，没有追踪或统计分析。如需删除你的数据，请通过联系表单告诉 Wei。",
+      "絕不出售，不用於廣告，沒有追蹤或統計分析。如需刪除你的資料，請透過聯絡表單告訴 Wei。",
+      "Nunca se vende ni se usa para publicidad; sin rastreo ni analítica. Para borrar tus datos, escribe a Wei desde el formulario de contacto.",
+      "Mai no es ven ni s'usa per a publicitat; sense seguiment ni analítica. Per esborrar les teves dades, escriu a en Wei des del formulari de contacte."],
+    yes: ["Allow", "允许", "允許", "Permitir", "Permetre"],
+    keep: ["Keep it on this device", "只留在本设备", "只留在本裝置", "Dejarlo en este dispositivo", "Deixar-ho en aquest dispositiu"],
+    more: ["Privacy & data", "隐私与数据", "隱私與資料", "Privacidad y datos", "Privacitat i dades"],
+    generic: ["What you entered on this page.", "你在本页输入的内容。", "你在本頁輸入的內容。", "Lo que has escrito en esta página.", "El que has escrit en aquesta pàgina."],
+    genericWho: ["The service that runs this feature.", "运行该功能的服务。", "執行該功能的服務。", "El servicio que hace funcionar esta función.", "El servei que fa funcionar aquesta funció."],
+    stillWorks: ["Everything still works, saved only on this device.", "一切照常运行，只保存在本设备。", "一切照常運作，只儲存在本裝置。", "Todo sigue funcionando, guardado solo en este dispositivo.", "Tot continua funcionant, desat només en aquest dispositiu."],
+    allowed: ["Allowed", "已允许", "已允許", "Permitido", "Permès"],
+    kept: ["Kept on this device", "只留在本设备", "只留在本裝置", "En este dispositivo", "En aquest dispositiu"],
+    notAsked: ["Not asked yet", "尚未询问", "尚未詢問", "Aún no se ha preguntado", "Encara no s'ha preguntat"],
+    pTitle: ["Privacy & data", "隐私与数据", "隱私與資料", "Privacidad y datos", "Privacitat i dades"],
+    pLead: ["Most of FREE//BUILDER never sends anything anywhere: the demos run on your phone and forget when you close them. A few features need a server. Each one asks you first, and here is the full list.",
+      "FREE//BUILDER 的大部分内容不会把任何东西发送出去：练习在你的手机上运行，关闭即忘记。少数功能需要服务器，每一个都会先征求你的同意。以下是完整清单。",
+      "FREE//BUILDER 的大部分內容不會把任何東西傳送出去：練習在你的手機上執行，關閉即忘記。少數功能需要伺服器，每一個都會先徵求你的同意。以下是完整清單。",
+      "Casi todo FREE//BUILDER no envía nada a ningún sitio: las demos funcionan en tu móvil y lo olvidan al cerrarlas. Algunas funciones necesitan un servidor. Cada una te pregunta antes; aquí tienes la lista completa.",
+      "Gairebé tot FREE//BUILDER no envia res enlloc: les demos funcionen al teu mòbil i ho obliden en tancar-les. Algunes funcions necessiten un servidor. Cadascuna t'ho pregunta abans; aquí tens la llista completa."],
+    pDevice: ["Saved on this device only", "只保存在本设备", "只儲存在本裝置", "Solo en este dispositivo", "Només en aquest dispositiu"],
+    pDeviceText: ["Your language, these choices, and your progress in the demos and games are kept in this browser. When you follow a link between wei-meng.org and freebuilder.net, only your language travels with it, in the address.",
+      "你的语言、本页的选择，以及练习和游戏的进度保存在本浏览器中。在 wei-meng.org 与 freebuilder.net 之间跳转时，只有语言设置会通过网址带过去。",
+      "你的語言、本頁的選擇，以及練習和遊戲的進度儲存在本瀏覽器中。在 wei-meng.org 與 freebuilder.net 之間跳轉時，只有語言設定會透過網址帶過去。",
+      "Tu idioma, estas elecciones y tu progreso en las demos y los juegos se guardan en este navegador. Al pasar entre wei-meng.org y freebuilder.net, solo tu idioma viaja con el enlace, en la dirección.",
+      "El teu idioma, aquestes eleccions i el teu progrés a les demos i els jocs es desen en aquest navegador. En passar entre wei-meng.org i freebuilder.net, només el teu idioma viatja amb l'enllaç, a l'adreça."],
+    pLoads: ["Loaded from other services", "从其他服务加载", "從其他服務載入", "Cargado desde otros servicios", "Carregat des d'altres serveis"],
+    pLoadsText: ["Some games load fonts from Google Fonts and code from public CDNs, and the bar shows Beijing's weather from Open-Meteo. These services see your IP address, like any website you visit, but receive nothing you type.",
+      "部分游戏会从 Google Fonts 加载字体、从公共 CDN 加载代码，酒吧会从 Open-Meteo 获取北京天气。这些服务和任何网站一样能看到你的 IP 地址，但收不到你输入的任何内容。",
+      "部分遊戲會從 Google Fonts 載入字型、從公共 CDN 載入程式碼，酒吧會從 Open-Meteo 取得北京天氣。這些服務和任何網站一樣能看到你的 IP 位址，但收不到你輸入的任何內容。",
+      "Algunos juegos cargan fuentes de Google Fonts y código de CDN públicos, y el bar muestra el tiempo de Pekín con Open-Meteo. Estos servicios ven tu dirección IP, como cualquier web que visitas, pero no reciben nada de lo que escribes.",
+      "Alguns jocs carreguen fonts de Google Fonts i codi de CDN públics, i el bar mostra el temps de Pequín amb Open-Meteo. Aquests serveis veuen la teva adreça IP, com qualsevol web que visites, però no reben res del que escrius."],
+    pFeatures: ["Features that send data", "会发送数据的功能", "會傳送資料的功能", "Funciones que envían datos", "Funcions que envien dades"],
+    pNote: ["Choices are remembered per site: this page shows the ones for this site.", "选择按网站分别记住：本页显示的是本网站的选择。", "選擇按網站分別記住：本頁顯示的是本網站的選擇。", "Las elecciones se recuerdan por sitio: aquí ves las de este sitio.", "Les eleccions es recorden per lloc: aquí veus les d'aquest lloc."],
+    back: ["Back", "返回", "返回", "Volver", "Tornar"]
+  };
+  var TO = {
+    supabase: ["Supabase, a database hosted in Ireland (EU)", "Supabase 数据库，服务器位于爱尔兰（欧盟）", "Supabase 資料庫，伺服器位於愛爾蘭（歐盟）", "Supabase, una base de datos alojada en Irlanda (UE)", "Supabase, una base de dades allotjada a Irlanda (UE)"],
+    cloudflare: ["Wei's own small server on Cloudflare", "Wei 在 Cloudflare 上的小型服务器", "Wei 在 Cloudflare 上的小型伺服器", "El pequeño servidor de Wei en Cloudflare", "El petit servidor d'en Wei a Cloudflare"],
+    relay: ["Wei's relay on Cloudflare, then the room's screen", "Wei 在 Cloudflare 上的中转服务器，再到房间的大屏", "Wei 在 Cloudflare 上的中轉伺服器，再到房間的大螢幕", "El relé de Wei en Cloudflare y de ahí a la pantalla de la sala", "El relé d'en Wei a Cloudflare i d'allà a la pantalla de la sala"],
+    formspree: ["Formspree, which emails it to Wei", "Formspree，再以电子邮件转给 Wei", "Formspree，再以電子郵件轉給 Wei", "Formspree, que se lo envía a Wei por correo", "Formspree, que l'envia a en Wei per correu"]
+  };
+  /* every feature that sends something off the device */
+  var DATA = [
+    { k: "bar", site: "freebuilder.net", name: "Wei's Bar", m: /freebuilder\.net\/game\/bar\//, ask: "load", to: "supabase",
+      what: ["The name you give at the door and what you leave in the bar: notes, drawings, cocktails, tracks, arcade scores, plus a simple log of what you do there.", "你在门口留下的名字，以及你在酒吧留下的东西：便条、涂鸦、鸡尾酒、曲子、街机分数，还有你在酒吧里做了什么的简单记录。", "你在門口留下的名字，以及你在酒吧留下的東西：便條、塗鴉、雞尾酒、曲子、街機分數，還有你在酒吧裡做了什麼的簡單紀錄。", "El nombre que das en la puerta y lo que dejas en el bar: notas, dibujos, cócteles, temas, puntuaciones arcade, más un registro sencillo de lo que haces allí.", "El nom que dones a la porta i el que deixes al bar: notes, dibuixos, còctels, temes, puntuacions arcade, més un registre senzill del que hi fas."],
+      who: ["Other visitors see your name next to what you leave. The log is only for Wei.", "其他访客会在你留下的东西旁看到你的名字。活动记录只有 Wei 能看。", "其他訪客會在你留下的東西旁看到你的名字。活動紀錄只有 Wei 能看。", "Otros visitantes ven tu nombre junto a lo que dejas. El registro solo lo ve Wei.", "Altres visitants veuen el teu nom al costat del que deixes. El registre només el veu en Wei."] },
+    { k: "handoff", name: "Handoff", m: /(game\/love\/|\/bcnpek\/)/, ask: "load", to: "supabase",
+      what: ["Your email and password to sign in, your name and city, and the messages and voice notes you send your partner. Your city is also sent to Open-Meteo to show the weather.", "用于登录的邮箱和密码、你的名字和城市，以及你发给伴侣的消息和语音。你的城市也会发送给 Open-Meteo 以显示天气。", "用於登入的電郵和密碼、你的名字和城市，以及你傳給伴侶的訊息和語音。你的城市也會傳送給 Open-Meteo 以顯示天氣。", "Tu correo y contraseña para entrar, tu nombre y ciudad, y los mensajes y notas de voz que envías a tu pareja. Tu ciudad también se envía a Open-Meteo para mostrar el tiempo.", "El teu correu i contrasenya per entrar, el teu nom i ciutat, i els missatges i notes de veu que envies a la teva parella. La teva ciutat també s'envia a Open-Meteo per mostrar el temps."],
+      who: ["Only you and your partner.", "只有你和你的伴侣。", "只有你和你的伴侶。", "Solo tú y tu pareja.", "Només tu i la teva parella."],
+      ifNo: ["Signing in needs a server, so the app can't connect.", "登录需要服务器，所以应用无法连接。", "登入需要伺服器，所以應用程式無法連線。", "Entrar necesita un servidor, así que la app no podrá conectarse.", "Entrar necessita un servidor, així que l'app no es podrà connectar."] },
+    { k: "climb", site: "freebuilder.net", name: "Climb Master", m: /freebuilder\.net\/game\/climb\//, ask: "use", to: "cloudflare",
+      what: ["Your player name and score when a climb ends.", "攀登结束时你的玩家名和分数。", "攀登結束時你的玩家名稱和分數。", "Tu nombre de jugador y tu puntuación al acabar una escalada.", "El teu nom de jugador i la teva puntuació en acabar una escalada."],
+      who: ["Everyone, on the leaderboard.", "所有人，在排行榜上。", "所有人，在排行榜上。", "Todo el mundo, en la clasificación.", "Tothom, a la classificació."] },
+    { k: "words", site: "freebuilder.net", name: "Vocab practice", m: /freebuilder\.net\/language_learning\//, ask: "load", to: "cloudflare",
+      what: ["The words you add and the verb mistakes you make, so your practice carries on across devices.", "你添加的单词和动词错误，让练习可以在不同设备上继续。", "你新增的單字和動詞錯誤，讓練習可以在不同裝置上繼續。", "Las palabras que añades y los errores de verbos, para que tu práctica siga en otros dispositivos.", "Les paraules que afegeixes i els errors de verbs, perquè la pràctica continuï en altres dispositius."],
+      who: ["Used only by this tool.", "只供这个工具使用。", "只供這個工具使用。", "Solo lo usa esta herramienta.", "Només ho fa servir aquesta eina."] },
+    { k: "room", site: "freebuilder.net", name: "Room Mode", m: /freebuilder\.net\/room\//, ask: "use", to: "relay",
+      what: ["Your anonymous answers and the room code, while the session runs.", "会话进行期间，你的匿名回答和房间代码。", "工作坊進行期間，你的匿名回答和房間代碼。", "Tus respuestas anónimas y el código de la sala, mientras dura la sesión.", "Les teves respostes anònimes i el codi de la sala, mentre dura la sessió."],
+      who: ["The people in the room, without names. Nothing is kept afterwards.", "房间里的人，不显示名字。结束后不保留任何内容。", "房間裡的人，不顯示名字。結束後不保留任何內容。", "La gente de la sala, sin nombres. No se guarda nada después.", "La gent de la sala, sense noms. No es guarda res després."],
+      ifNo: ["You can still use the room on this device alone.", "你仍可以只在本设备上使用房间模式。", "你仍可以只在本裝置上使用房間模式。", "Puedes seguir usando la sala solo en este dispositivo.", "Pots continuar fent servir la sala només en aquest dispositiu."] },
+    { k: "launchpad", site: "freebuilder.net", name: "Launchpad · KILL//SWITCH", m: /freebuilder\.net\/launchpad\//, ask: "use", to: "supabase",
+      what: ["Your team name and progress in live activities such as KILL//SWITCH.", "在 KILL//SWITCH 等现场活动中的队名和进度。", "在 KILL//SWITCH 等現場活動中的隊名和進度。", "El nombre de tu equipo y su progreso en actividades en directo como KILL//SWITCH.", "El nom del teu equip i el seu progrés en activitats en directe com KILL//SWITCH."],
+      who: ["People in the same session, on the event wall.", "同一场活动的人，在活动墙上。", "同一場活動的人，在活動牆上。", "Las personas de la misma sesión, en el mural del evento.", "Les persones de la mateixa sessió, al mur de l'esdeveniment."] },
+    { k: "contact", site: "freebuilder.net", name: "Contact form", m: /freebuilder\.net\/(index\.html)?(\?|#|$)/, ask: "use", to: "formspree",
+      what: ["Your name, email and message.", "你的名字、邮箱和留言。", "你的名字、電郵和留言。", "Tu nombre, tu correo y tu mensaje.", "El teu nom, el teu correu i el teu missatge."],
+      who: ["Only Wei, to reply to you.", "只有 Wei，用来回复你。", "只有 Wei，用來回覆你。", "Solo Wei, para responderte.", "Només en Wei, per respondre't."],
+      ifNo: ["Your message is not sent.", "你的留言不会发送。", "你的留言不會傳送。", "Tu mensaje no se envía.", "El teu missatge no s'envia."] }
+  ];
+
+  /* ---------- state ---------- */
+  var LI = { "en": 0, "zh": 1, "zh-Hant": 2, "es": 3, "ca": 4 };
+  function lang() { var F = window.FBL || {}; var n = F.norm || function (x) { return x; }; return n(window.FBL_GET ? window.FBL_GET() : "") || (F.get && F.get()) || n(document.documentElement.lang) || "en"; }
+  function t(a) { return a ? (a[LI[lang()] || 0] || a[0]) : ""; }
+  function load() { try { return JSON.parse(localStorage.getItem(STORE) || "{}") || {}; } catch (e) { return {}; } }
+  function save(k, yes) { var s = load(); s[k] = { a: yes ? 1 : 0, v: V, t: new Date().toISOString().slice(0, 10) }; try { localStorage.setItem(STORE, JSON.stringify(s)); } catch (e) {} }
+  function choice(k) { var r = load()[k]; return r && r.v === V ? !!r.a : null; }
+  var loc = location; try { if (location.protocol === "about:" && parent !== window) loc = parent.location; } catch (e) {}
+  var here = loc.host.replace(/^www\./, "") + loc.pathname;
+  var page = null; DATA.forEach(function (d) { if (!page && d.m.test(here)) page = d; });
+  var memo = {};   /* answers given in this visit when storage is unavailable */
+
+  /* ---------- the question ---------- */
+  var queue = [], sheet = null;
+  function ask(d) {
+    var c = choice(d.k); if (c === null && d.k in memo) c = memo[d.k];
+    if (c !== null) return Promise.resolve(c);
+    for (var i = 0; i < queue.length; i++) if (queue[i].d.k === d.k) return queue[i].p;
+    var item = { d: d }; item.p = new Promise(function (res) { item.res = res; }); queue.push(item);
+    if (queue.length === 1) show(item); return item.p;
+  }
+  function answer(yes) {
+    var item = queue.shift(); if (!item) return; memo[item.d.k] = yes; save(item.d.k, yes);
+    if (sheet) { sheet.remove(); sheet = null; } item.res(yes); if (queue.length) show(queue[0]);
+  }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function show(item) {
+    var d = item.d;
+    if (!document.body) { document.addEventListener("DOMContentLoaded", function () { show(item); }); return; }
+    sheet = el("section", "fbc"); sheet.setAttribute("role", "dialog"); sheet.setAttribute("aria-labelledby", "fbc-t"); sheet.setAttribute("lang", lang());
+    var h = el("h2", "fbc-t", t(W.title)); h.id = "fbc-t";
+    var nm = el("p", "fbc-k", d.name || location.host);
+    var dl = el("dl", "fbc-l");
+    [[W.what, d.what ? t(d.what) : t(W.generic)], [W.to, d.to ? t(TO[d.to]) : (d.host || "")], [W.who, d.who ? t(d.who) : t(W.genericWho)], [W.no, d.ifNo ? t(d.ifNo) : t(W.stillWorks)]]
+      .forEach(function (r) { dl.appendChild(el("dt", "", t(r[0]))); dl.appendChild(el("dd", "", r[1])); });
+    var pr = el("p", "fbc-p", t(W.promise));
+    var row = el("div", "fbc-b");
+    var no = el("button", "", t(W.keep)), ok = el("button", "", t(W.yes));
+    no.type = ok.type = "button"; no.onclick = function () { answer(false); }; ok.onclick = function () { answer(true); };
+    row.appendChild(no); row.appendChild(ok);
+    var more = el("a", "fbc-m", t(W.more) + " →"); more.href = PRIVACY;
+    sheet.appendChild(nm); sheet.appendChild(h); sheet.appendChild(dl); sheet.appendChild(pr); sheet.appendChild(row); sheet.appendChild(more);
+    document.body.appendChild(sheet);
+    if (d.ask === "use") try { sheet.tabIndex = -1; sheet.focus({ preventScroll: true }); } catch (e) {}   /* focus the question, not either answer */
+  }
+
+  /* ---------- the gate: nothing leaves until the visitor answers ---------- */
+  function feature(url, write) {
+    var u; try { u = new URL(url, location.href); } catch (e) { return null; }
+    if (u.origin === location.origin || u.origin === loc.origin || !/^(https?|wss?):$/.test(u.protocol)) return null;
+    var known = HOSTS.test(u.hostname);
+    if (page && known) return page;
+    if (known || write) return { k: "site:" + u.hostname, host: u.hostname, ask: "use" };
+    return null;
+  }
+  var BLOCK = "FREE//BUILDER: kept on this device (your privacy choice)";
+  var _fetch = window.fetch;
+  if (_fetch) window.fetch = function (input, init) {
+    var url = typeof input === "string" ? input : (input && input.url) || String(input);
+    var m = ((init && init.method) || (input && input.method) || "GET").toUpperCase();
+    var d = feature(url, m !== "GET" && m !== "HEAD"), self = this;
+    if (!d) return _fetch.apply(self, arguments);
+    var args = arguments;
+    return ask(d).then(function (yes) { if (!yes) throw new TypeError(BLOCK); return _fetch.apply(self, args); });
+  };
+  var XO = XMLHttpRequest.prototype.open, XS = XMLHttpRequest.prototype.send;
+  XMLHttpRequest.prototype.open = function (m, url) { this._fbc = feature(url, String(m).toUpperCase() !== "GET"); return XO.apply(this, arguments); };
+  XMLHttpRequest.prototype.send = function () {
+    var x = this, a = arguments; if (!x._fbc) return XS.apply(x, a);
+    ask(x._fbc).then(function (yes) { if (yes) XS.apply(x, a); else { try { x.abort(); } catch (e) {} x.dispatchEvent(new Event("error")); } });
+  };
+  if (navigator.sendBeacon) { var SB = navigator.sendBeacon.bind(navigator); navigator.sendBeacon = function (url) { var d = feature(url, true); return d && choice(d.k) !== true ? false : SB.apply(null, arguments); }; }
+  var RealWS = window.WebSocket;
+  if (RealWS) {
+    var GatedWS = function (url, protocols) {
+      var d = feature(url, true);
+      if (!d) return protocols === undefined ? new RealWS(url) : new RealWS(url, protocols);
+      var self = this, ls = {}, q = []; self.url = String(url); self.readyState = 0; self.protocol = ""; self.extensions = ""; self.bufferedAmount = 0; self._bt = "blob"; self.CONNECTING = 0; self.OPEN = 1; self.CLOSING = 2; self.CLOSED = 3;
+      self.onopen = self.onmessage = self.onclose = self.onerror = null;
+      function emit(type, ev) { if (typeof self["on" + type] === "function") self["on" + type](ev); (ls[type] || []).slice().forEach(function (f) { f.call(self, ev); }); }
+      self.addEventListener = function (type, f) { (ls[type] = ls[type] || []).push(f); };
+      self.removeEventListener = function (type, f) { ls[type] = (ls[type] || []).filter(function (g) { return g !== f; }); };
+      self.send = function (data) { if (self._ws) self._ws.send(data); else q.push(data); };
+      self.close = function (c, r) { if (self._ws) self._ws.close(c, r); else { self._closed = true; self.readyState = 3; emit("close", { code: c || 1000, reason: r || "", wasClean: true }); } };
+      Object.defineProperty(self, "binaryType", { get: function () { return self._ws ? self._ws.binaryType : self._bt; }, set: function (v) { self._bt = v; if (self._ws) self._ws.binaryType = v; } });
+      ask(d).then(function (yes) {
+        if (self._closed) return;
+        if (!yes) { self.readyState = 3; emit("error", new Event("error")); emit("close", { code: 1008, reason: BLOCK, wasClean: false }); return; }
+        var ws = protocols === undefined ? new RealWS(url) : new RealWS(url, protocols); self._ws = ws; ws.binaryType = self._bt;
+        ["open", "message", "close", "error"].forEach(function (type) { ws.addEventListener(type, function (ev) { self.readyState = ws.readyState; self.protocol = ws.protocol; if (type === "open") { while (q.length) ws.send(q.shift()); } emit(type, ev); }); });
+      });
+    };
+    GatedWS.CONNECTING = 0; GatedWS.OPEN = 1; GatedWS.CLOSING = 2; GatedWS.CLOSED = 3; 
+    window.WebSocket = GatedWS;
+  }
+
+  /* ---------- the privacy page renders itself from DATA ---------- */
+  function privacy(root) {
+    root.innerHTML = ""; root.setAttribute("lang", lang());
+    var back = el("a", "fbc-back", "← " + t(W.back)); back.href = "/"; root.appendChild(back);
+    root.appendChild(el("h1", "", t(W.pTitle))); root.appendChild(el("p", "fbc-lead", t(W.pLead)));
+    root.appendChild(el("h2", "", t(W.pFeatures))); root.appendChild(el("p", "fbc-note", t(W.pNote)));
+    DATA.filter(function (d) { return !d.site || loc.host.indexOf(d.site) >= 0; }).forEach(function (d) {
+      var card = el("article", "fbc-card"); card.appendChild(el("h3", "", d.name));
+      var dl = el("dl", "fbc-l");
+      [[W.what, t(d.what)], [W.to, t(TO[d.to])], [W.who, t(d.who)], [W.no, d.ifNo ? t(d.ifNo) : t(W.stillWorks)]].forEach(function (r) { dl.appendChild(el("dt", "", t(r[0]))); dl.appendChild(el("dd", "", r[1])); });
+      card.appendChild(dl);
+      var c = choice(d.k), st = el("p", "fbc-st", c === null ? t(W.notAsked) : c ? t(W.allowed) : t(W.kept)); card.appendChild(st);
+      var row = el("div", "fbc-b"), no = el("button", "", t(W.keep)), ok = el("button", "", t(W.yes));
+      no.type = ok.type = "button"; no.setAttribute("aria-pressed", String(c === false)); ok.setAttribute("aria-pressed", String(c === true));
+      no.onclick = function () { save(d.k, false); privacy(root); }; ok.onclick = function () { save(d.k, true); privacy(root); };
+      row.appendChild(no); row.appendChild(ok); card.appendChild(row); root.appendChild(card);
+    });
+    root.appendChild(el("h2", "", t(W.pDevice))); root.appendChild(el("p", "", t(W.pDeviceText)));
+    root.appendChild(el("h2", "", t(W.pLoads))); root.appendChild(el("p", "", t(W.pLoadsText)));
+    root.appendChild(el("p", "fbc-p", t(W.promise)));
+    document.title = t(W.pTitle) + " — FREE//BUILDER";
+  }
+  window.FBC = { DATA: DATA, ask: ask, choice: choice, PRIVACY: PRIVACY, t: t };
+
+  var css = ".fbc{position:fixed;z-index:2147482990;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(30rem,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;padding:18px 18px 14px;border-radius:20px;background:#FAF9F6;color:var(--ink,#17171A);border:1px solid #E5E2DA;box-shadow:0 24px 60px -24px rgba(23,23,26,.55);font:400 14px/1.45 'Plus Jakarta Sans',system-ui,-apple-system,'PingFang SC','PingFang TC','Microsoft YaHei',sans-serif;text-align:left}" +
+    ".fbc *{box-sizing:border-box}.fbc:focus{outline:none}.fbc-k{margin:0;font:400 11px/1.2 'Space Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink,#C2412D)}" +
+    ".fbc h2,.fbc-t{margin:4px 0 10px;font:700 18px/1.25 'Syne','Plus Jakarta Sans',system-ui,sans-serif;letter-spacing:-.01em}" +
+    ".fbc-l{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0 0 10px}.fbc-l dt{font:400 11px/1.5 'Space Mono',ui-monospace,monospace;color:var(--muted,#6B6A70);white-space:nowrap}.fbc-l dd{margin:0}" +
+    ".fbc-p{margin:0 0 12px;font-size:12.5px;color:#55545A}" +
+    ".fbc-b{display:grid;grid-template-columns:1fr 1fr;gap:8px}.fbc-b button{min-height:44px;padding:10px 12px;border-radius:999px;border:1.5px solid #17171A;background:transparent;color:inherit;font:600 14px/1.2 inherit;font-family:inherit;cursor:pointer}" +
+    ".fbc-b button:hover,.fbc-b button:focus-visible{background:#17171A;color:#FAF9F6;outline:none}.fbc-b button[aria-pressed='true']{background:#17171A;color:#FAF9F6}" +
+    ".fbc-m{display:inline-block;margin-top:10px;font-size:12.5px;color:inherit;text-decoration:underline;text-underline-offset:3px}" +
+    "@media (max-width:360px){.fbc-l{grid-template-columns:1fr}.fbc-b{grid-template-columns:1fr}}" +
+    "[data-fbl-privacy]{max-width:44rem;margin:0 auto;padding:28px 16px 64px;font:400 15px/1.6 'Plus Jakarta Sans',system-ui,-apple-system,'PingFang SC','PingFang TC',sans-serif}" +
+    "[data-fbl-privacy] h1{font:800 clamp(30px,7vw,46px)/1.05 'Syne','Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;margin:18px 0 12px}[data-fbl-privacy] h2{font:700 20px/1.3 'Syne','Plus Jakarta Sans',sans-serif;margin:34px 0 8px}[data-fbl-privacy] h3{font:700 16px/1.3 inherit;font-family:inherit;margin:0 0 10px}" +
+    ".fbc-card{border:1px solid #E5E2DA;border-radius:18px;padding:16px;margin:12px 0;background:var(--white,#fff)}.fbc-st{font:400 11px/1.4 'Space Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink,#C2412D);margin:0 0 10px}" +
+    ".fbc-note{font-size:13px;color:var(--muted,#6B6A70)}.fbc-back{font:400 12px/1 'Space Mono',ui-monospace,monospace;color:inherit}" +
+    "@media (prefers-color-scheme:dark){.fbc{background:#1D1D21;color:#ECEBE6;border-color:#303036}.fbc-l dt,.fbc-note{color:#A8A7AD}.fbc-p{color:#BDBCC2}.fbc-k,.fbc-st{color:#F28C76}" +
+    ".fbc-b button{border-color:#ECEBE6}.fbc-b button:hover,.fbc-b button:focus-visible,.fbc-b button[aria-pressed='true']{background:#ECEBE6;color:var(--ink,#17171A)}.fbc-card{background:#1D1D21;border-color:#303036}[data-fbl-privacy]{color:#ECEBE6}}";
+  var st = document.createElement("style"); st.id = "fbc-css"; st.textContent = css; (document.head || document.documentElement).appendChild(st);
+
+  function boot() {
+    var root = document.querySelector("[data-fbl-privacy]"); if (root) { privacy(root); var L0 = lang(); setInterval(function () { if (lang() !== L0) { L0 = lang(); privacy(root); } }, 500); }
+    if (page && page.ask === "load" && window.self === window.top) ask(page);
+    var L1 = lang(); setInterval(function () { if (sheet && lang() !== L1 && queue[0]) { L1 = lang(); sheet.remove(); sheet = null; show(queue[0]); } else L1 = lang(); }, 600);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+})();
+</script><meta name="viewport" content="width=device-width,initial-scale=1"><title>Privacy &amp; data</title>
+<meta name="description" content="What FREE//BUILDER and wei-meng.org keep on your device, what they send, to whom, and how to change your mind.">
+<link rel="stylesheet" href="/fonts/fonts.css"><style>:root{color-scheme:light dark}body{margin:0;background:#FAF9F6;color:var(--ink,#17171A)}@media (prefers-color-scheme:dark){body{background:#141416;color:#ECEBE6}}</style><meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)"><style id="fb-dark">
+:root{color-scheme:light dark}
+@media (prefers-color-scheme: dark){
+:root{--paper:#141416;--ink:#ECEBE6;--muted:#A8A7AD;--line:#303036;--grid:#26262B;--white:#1D1D21;--inkbg:#2B2B31;--inkbd:#3B3B42;--accent-ink:#F28C76;--good:#62C48F;--paper-rgb:20,20,22;--dot-rgb:255,255,255;--ink-rgb:236,235,230;--white-rgb:29,29,33;--accent-text:#F2806A;--warn-ink:#E3B25C}
+html,body{background-color:var(--paper)}
+/* primary actions read as light on dark */
+.btn.pri,.cta a.pri,.chip.pri{background:#ECEBE6!important;border-color:#ECEBE6!important;color:#141416!important}
+.btn.pri:hover,.cta a.pri:hover,.chip.pri:hover{background:#fff!important;border-color:#fff!important}
+.btn[disabled]{opacity:.45}
+.seg button[aria-pressed="true"],.chip[aria-pressed="true"]{background:#ECEBE6!important;border-color:#ECEBE6!important;color:#141416!important}
+.steps span.done{background:#ECEBE6}
+.curtain{border:1px solid #3B3B42}
+/* illustrations keep their light look on a plate */
+.screen>svg,.plate,.card-art{background:#EFECE4;border-radius:18px}
+.plate{background:#fff!important}
+.card-art~.text-ink\/60,.card-art~span .text-ink\/60{color:rgba(23,23,26,.62)!important}
+.text-accent{color:#F2806A!important}
+.bg-white\/90.text-ink,.bg-white\/90 .text-ink{color:#ECEBE6}
+img{filter:none}
+::selection{background:#E2553F;color:#fff}
+}
+</style></head>
+<body><main data-fbl-privacy><h1>Privacy &amp; data</h1><p>This page needs JavaScript to list each feature. In short: nothing you type leaves your device unless you allow it, nothing is sold, and there is no tracking or analytics.</p></main></body></html>
