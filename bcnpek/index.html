@@ -195,7 +195,7 @@
   };
   /* every feature that sends something off the device */
   var DATA = [
-    { k: "bar", site: "freebuilder.net", name: "Wei's Bar", m: /freebuilder\.net\/game\/bar\//, ask: "load", to: "supabase",
+    { k: "bar", site: "freebuilder.net", offline: true, name: "Wei's Bar", m: /freebuilder\.net\/game\/bar\//, ask: "load", to: "supabase",
       what: ["The name you give at the door and what you leave in the bar: notes, drawings, cocktails, tracks, arcade scores, plus a simple log of what you do there.", "你在门口留下的名字，以及你在酒吧留下的东西：便条、涂鸦、鸡尾酒、曲子、街机分数，还有你在酒吧里做了什么的简单记录。", "你在門口留下的名字，以及你在酒吧留下的東西：便條、塗鴉、雞尾酒、曲子、街機分數，還有你在酒吧裡做了什麼的簡單紀錄。", "El nombre que das en la puerta y lo que dejas en el bar: notas, dibujos, cócteles, temas, puntuaciones arcade, más un registro sencillo de lo que haces allí.", "El nom que dones a la porta i el que deixes al bar: notes, dibuixos, còctels, temes, puntuacions arcade, més un registre senzill del que hi fas."],
       who: ["Other visitors see your name next to what you leave. The log is only for Wei.", "其他访客会在你留下的东西旁看到你的名字。活动记录只有 Wei 能看。", "其他訪客會在你留下的東西旁看到你的名字。活動紀錄只有 Wei 能看。", "Otros visitantes ven tu nombre junto a lo que dejas. El registro solo lo ve Wei.", "Altres visitants veuen el teu nom al costat del que deixes. El registre només el veu en Wei."] },
     { k: "handoff", name: "Handoff", m: /(game\/love\/|\/bcnpek\/)/, ask: "load", to: "supabase",
@@ -242,8 +242,11 @@
     var item = { d: d }; item.p = new Promise(function (res) { item.res = res; }); queue.push(item);
     if (queue.length === 1) show(item); return item.p;
   }
+  /* a page that already said no never even creates its database client, so its own status shows "on this device" */
+  if (page && page.offline && choice(page.k) === false) try { Object.defineProperty(window, "supabase", { configurable: true, get: function () { return undefined; }, set: function () {} }); } catch (e) {}
   function answer(yes) {
     var item = queue.shift(); if (!item) return; memo[item.d.k] = yes; save(item.d.k, yes);
+    if (!yes && item.d === page && page.offline && window.supabase) { location.reload(); return; }   /* restart offline so the page tells the truth */
     if (sheet) { sheet.remove(); sheet = null; } item.res(yes); if (queue.length) show(queue[0]);
   }
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
