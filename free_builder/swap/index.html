@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title id="page-title">Listening Duet — FREE//BUILDER</title>
   <meta name="description" content="Two colleagues, one awkward moment, two halves of the story. Talk until you find a way forward — then reveal both sides.">
-  <meta name="theme-color" content="#F7F6F2">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Crect x='7' y='7' width='8' height='8' rx='2' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='7' y='17' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='17' y='17' width='8' height='8' rx='2' fill='%23E2553F'/%3E%3C/svg%3E">
   <!-- Brand fonts load without blocking the page: where Google Fonts is slow or blocked, system fonts show instantly. -->
   <link rel="stylesheet" href="/fonts/fonts.css">
@@ -35,27 +34,27 @@
     :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:10px; }
     .kicker { font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
     .dots { position:fixed; inset:0; z-index:-1; pointer-events:none;
-      background-image:radial-gradient(rgba(23,23,26,.09) 1px,transparent 1px); background-size:22px 22px;
+      background-image:radial-gradient(rgba(var(--dot-rgb,23,23,26),.09) 1px,transparent 1px); background-size:22px 22px;
       -webkit-mask-image:linear-gradient(to bottom,#000,transparent 60%); mask-image:linear-gradient(to bottom,#000,transparent 60%); }
 
-    header.top { position:sticky; top:0; z-index:40; background:rgba(247,246,242,.92);
+    header.top { position:sticky; top:0; z-index:40; background:rgba(var(--paper-rgb,247,246,242),.92);
       -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); border-bottom:1px solid rgba(229,226,218,.8);
       padding:10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); }
     .top-in { max-width:960px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:10px; }
     .brand { display:flex; align-items:center; gap:10px; text-decoration:none; min-width:0; }
-    .mark { width:34px; height:34px; border-radius:10px; background:var(--ink); display:grid; place-items:center; flex-shrink:0; transition:transform .5s var(--ease); }
+    .mark { width:34px; height:34px; border-radius:10px; background:var(--inkbg,var(--ink)); display:grid; place-items:center; flex-shrink:0; transition:transform .5s var(--ease); }
     .mark rect { transform-box:fill-box; transform-origin:center; transition:transform .6s var(--ease); }
     .mark .last { transform:translate(2.5px,-2.5px) rotate(12deg); }
     .brand:hover .mark { transform:rotate(-4deg); }
     .brand:hover .mark .last { transform:none; }
     .brand-txt { line-height:1; min-width:0; }
     .brand-txt b { font-family:var(--syne); font-weight:700; font-size:13px; display:block; }
-    .brand-txt b i { color:var(--accent); font-style:normal; }
+    .brand-txt b i { color:var(--accent-text,#E2553F); font-style:normal; }
     .brand-txt span { display:block; font-size:11px; color:var(--muted); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .top-actions { display:flex; align-items:center; gap:6px; flex-shrink:0; }
-    .chip { height:32px; padding:0 10px; border:1px solid var(--line); border-radius:9px; background:rgba(255,255,255,.6);
+    .chip { height:32px; padding:0 10px; border:1px solid var(--line); border-radius:9px; background:rgba(var(--white-rgb,255,255,255),.6);
       display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; transition:border-color .2s, transform .1s; }
-    .chip:hover { border-color:rgba(23,23,26,.3); }
+    .chip:hover { border-color:rgba(var(--ink-rgb,23,23,26),.3); }
     .chip:active { transform:scale(.96); }
     .chip svg { width:14px; height:14px; }
     .chip[hidden] { display:none; }
@@ -68,7 +67,7 @@
     .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
     .steps { display:flex; gap:6px; align-items:center; margin-bottom:18px; min-height:8px; }
     .steps span { height:6px; flex:1; border-radius:3px; background:var(--line); transition:background .4s; }
-    .steps span.done { background:var(--ink); }
+    .steps span.done { background:var(--inkbg,var(--ink)); }
     .steps span.now { background:var(--accent); }
 
     /* screens */
@@ -77,22 +76,22 @@
     h1, h2 { font-family:var(--syne); font-weight:700; letter-spacing:-.02em; margin:0; line-height:1.1; }
     h1 { font-size:clamp(34px, 9vw, 52px); }
     h2 { font-size:clamp(26px, 6.5vw, 34px); }
-    .lead { font-size:16px; line-height:1.6; color:rgba(23,23,26,.75); margin:0; }
-    .serif { font-family:var(--serif); font-style:italic; font-size:22px; line-height:1.3; color:rgba(23,23,26,.85); margin:0; }
+    .lead { font-size:16px; line-height:1.6; color:rgba(var(--ink-rgb,23,23,26),.75); margin:0; }
+    .serif { font-family:var(--serif); font-style:italic; font-size:22px; line-height:1.3; color:rgba(var(--ink-rgb,23,23,26),.85); margin:0; }
     .accent-word { font-family:var(--serif); font-style:italic; font-weight:400; color:var(--muted); white-space:nowrap; padding-bottom:.12em;
       background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7 Q 12 1 22 7 T 42 7 T 62 7 T 82 7 T 102 7 T 118 6' fill='none' stroke='%23E2553F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left bottom / 100% .32em; }
     .pills { display:flex; flex-wrap:wrap; gap:6px; }
-    .pill { font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:99px; border:1px solid var(--line); color:var(--muted); background:rgba(255,255,255,.6); }
+    .pill { font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:99px; border:1px solid var(--line); color:var(--muted); background:rgba(var(--white-rgb,255,255,255),.6); }
     .spacer { flex:1; }
 
     .btns { display:flex; gap:8px; flex-wrap:wrap; }
     .btn { flex:1; min-height:52px; padding:0 20px; border-radius:99px; font-family:var(--mono); font-size:13px; font-weight:700;
       display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1px solid var(--line); background:var(--white);
       transition:background .2s, border-color .2s, transform .1s; }
-    .btn:hover { border-color:rgba(23,23,26,.35); }
+    .btn:hover { border-color:rgba(var(--ink-rgb,23,23,26),.35); }
     .btn:active { transform:scale(.98); }
-    .btn.pri { background:var(--ink); border-color:var(--ink); color:#fff; flex:2; }
-    .btn.pri:hover { background:var(--accent); border-color:var(--accent); }
+    .btn.pri { background:var(--inkbg,var(--ink)); border-color:var(--inkbd,var(--ink)); color:#fff; flex:2; }
+    .btn.pri:hover { background:var(--accent-ink); border-color:var(--accent-ink); }
     .btn[disabled] { opacity:.45; pointer-events:none; }
     .link { font-family:var(--mono); font-size:12px; color:var(--muted); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:4px; align-self:center; padding:8px; }
     .link:hover { color:var(--ink); }
@@ -102,22 +101,22 @@
     .field span { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
     .field input, .field textarea { width:100%; font:inherit; font-size:16px; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--white); color:var(--ink); }
     .field textarea { resize:vertical; min-height:96px; line-height:1.5; }
-    .field input:focus, .field textarea:focus { outline:none; border-color:var(--ink); }
+    .field input:focus, .field textarea:focus { outline:none; border-color:var(--inkbd,var(--ink)); }
     .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .seg { display:flex; flex-wrap:wrap; gap:6px; }
     .seg button { padding:9px 14px; border-radius:99px; border:1px solid var(--line); background:var(--white); font-size:13px; transition:all .2s; }
-    .seg button[aria-pressed="true"] { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .seg button[aria-pressed="true"] { background:var(--inkbg,var(--ink)); color:#fff; border-color:var(--inkbd,var(--ink)); }
 
     /* who's who */
     .roles { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .role { border-radius:18px; padding:14px; border:1px solid var(--line); background:var(--white); }
     .role .k { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
     .role .n { font-family:var(--syne); font-weight:700; font-size:18px; margin-top:4px; word-break:break-word; }
-    .role.speak { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .role.speak { background:var(--inkbg,var(--ink)); color:#fff; border-color:var(--inkbd,var(--ink)); }
     .role.speak .k { color:rgba(255,255,255,.55); }
 
     /* prompt card */
-    .prompt { position:relative; background:var(--ink); color:#fff; border-radius:26px; padding:28px 24px 24px; min-height:200px;
+    .prompt { position:relative; background:var(--inkbg,var(--ink)); color:#fff; border-radius:26px; padding:28px 24px 24px; min-height:200px;
       display:flex; flex-direction:column; justify-content:space-between; gap:18px; overflow:hidden; }
     .prompt::after { content:""; position:absolute; right:-50px; top:-50px; width:170px; height:170px; border-radius:50%; border:1px solid rgba(255,255,255,.1); }
     .prompt .q { font-family:var(--serif); font-style:italic; font-size:clamp(24px, 6.4vw, 30px); line-height:1.25; position:relative; }
@@ -137,7 +136,7 @@
     .timer.pulse { animation:pulse 1.2s ease-in-out 2; }
     @keyframes pulse { 50% { transform:scale(1.04); } }
 
-    .tip { display:flex; gap:10px; align-items:flex-start; padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(23,23,26,.2); font-size:14px; line-height:1.5; }
+    .tip { display:flex; gap:10px; align-items:flex-start; padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(var(--ink-rgb,23,23,26),.2); font-size:14px; line-height:1.5; }
     .tip b { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); font-weight:400; display:block; margin-bottom:2px; }
     .tip i { font-style:normal; font-size:18px; line-height:1.2; }
     .stems { display:grid; gap:8px; }
@@ -146,23 +145,25 @@
     /* felt heard */
     .heard { display:grid; gap:8px; }
     .heard button { display:flex; align-items:center; gap:14px; text-align:left; padding:16px 18px; border-radius:18px; border:1px solid var(--line); background:var(--white); transition:all .2s; }
-    .heard button:hover { border-color:rgba(23,23,26,.35); }
+    .heard button:hover { border-color:rgba(var(--ink-rgb,23,23,26),.35); }
     .heard button .e { width:40px; height:40px; border-radius:50%; display:grid; place-items:center; font-size:20px; flex-shrink:0; background:var(--paper); }
     .heard button b { display:block; font-size:16px; }
     .heard button small { display:block; font-size:13px; color:var(--muted); margin-top:2px; }
 
     /* curtain (pass the phone) */
-    .curtain { background:var(--ink); color:#fff; border-radius:28px; padding:32px 24px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px; }
+    .curtain { background:var(--inkbg,var(--ink)); color:#fff; border-radius:28px; padding:32px 24px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px; }
     .curtain .hand { width:84px; height:84px; }
     .curtain h2 { color:#fff; }
     .curtain p { margin:0; color:rgba(255,255,255,.7); line-height:1.55; }
+    .curtain .btn.pri { background:var(--white,#fff); border-color:#fff; color:var(--ink); }
+    .curtain .btn.pri:hover { background:var(--accent-ink); border-color:var(--accent-ink); color:#fff; }
 
     /* summary */
     .sum { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .sum div { background:var(--white); border:1px solid var(--line); border-radius:18px; padding:16px; }
     .sum b { display:block; font-family:var(--syne); font-size:18px; word-break:break-word; }
     .sum span { display:block; font-size:13px; color:var(--muted); margin-top:4px; }
-    .monday { padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(23,23,26,.2); font-size:14px; line-height:1.55; }
+    .monday { padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(var(--ink-rgb,23,23,26),.2); font-size:14px; line-height:1.55; }
     .monday b { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); font-weight:400; margin-bottom:3px; }
     .chain { list-style:none; padding:0; margin:0; display:grid; gap:8px; }
     .chain li { background:var(--white); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-size:14px; line-height:1.5; }
@@ -181,11 +182,11 @@
     .panel h3 { font-family:var(--syne); font-size:22px; margin:4px 0 12px; }
     .panel h4 { font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:400; margin:22px 0 8px; }
     .panel ol, .panel ul { margin:0; padding-left:20px; display:grid; gap:8px; font-size:14px; line-height:1.55; }
-    .panel p { font-size:14px; line-height:1.6; color:rgba(23,23,26,.78); margin:0; }
+    .panel p { font-size:14px; line-height:1.6; color:rgba(var(--ink-rgb,23,23,26),.78); margin:0; }
     .x { width:34px; height:34px; border-radius:50%; display:grid; place-items:center; border:1px solid var(--line); background:var(--white); font-family:var(--mono); flex-shrink:0; }
 
     .toast { position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom)); transform:translate(-50%,10px); opacity:0; pointer-events:none; z-index:70;
-      background:var(--ink); color:#fff; border-radius:99px; padding:9px 16px; font-family:var(--mono); font-size:11px; transition:opacity .25s, transform .35s var(--ease);
+      background:var(--inkbg,var(--ink)); color:#fff; border-radius:99px; padding:9px 16px; font-family:var(--mono); font-size:11px; transition:opacity .25s, transform .35s var(--ease);
       max-width:calc(100% - 32px); }
     .toast.show { opacity:1; transform:translate(-50%,0); }
 
@@ -199,7 +200,28 @@
     /* Chinese: keep CJK upright (no faux italic); Latin italics stay real */
     html:lang(zh) { font-synthesis: weight; }
 </style>
-</head>
+<meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)"><style id="fb-dark">
+:root{color-scheme:light dark}
+@media (prefers-color-scheme: dark){
+:root{--paper:#141416;--ink:#ECEBE6;--muted:#A8A7AD;--line:#303036;--grid:#26262B;--white:#1D1D21;--inkbg:#2B2B31;--inkbd:#3B3B42;--accent-ink:#F28C76;--good:#62C48F;--paper-rgb:20,20,22;--dot-rgb:255,255,255;--ink-rgb:236,235,230;--white-rgb:29,29,33;--accent-text:#F2806A;--warn-ink:#E3B25C}
+html,body{background-color:var(--paper)}
+/* primary actions read as light on dark */
+.btn.pri,.cta a.pri,.chip.pri{background:#ECEBE6!important;border-color:#ECEBE6!important;color:#141416!important}
+.btn.pri:hover,.cta a.pri:hover,.chip.pri:hover{background:#fff!important;border-color:#fff!important}
+.btn[disabled]{opacity:.45}
+.seg button[aria-pressed="true"],.chip[aria-pressed="true"]{background:#ECEBE6!important;border-color:#ECEBE6!important;color:#141416!important}
+.steps span.done{background:#ECEBE6}
+.curtain{border:1px solid #3B3B42}
+/* illustrations keep their light look on a plate */
+.screen>svg,.plate,.card-art{background:#EFECE4;border-radius:18px}
+.plate{background:#fff!important}
+.card-art~.text-ink\/60,.card-art~span .text-ink\/60{color:rgba(23,23,26,.62)!important}
+.text-accent{color:#F2806A!important}
+.bg-white\/90.text-ink,.bg-white\/90 .text-ink{color:#ECEBE6}
+img{filter:none}
+::selection{background:#E2553F;color:#fff}
+}
+</style></head>
 <body>
   <div class="dots" aria-hidden="true"></div>
 
@@ -270,11 +292,11 @@ en: {
   rolePick: "Which role is on this phone?", roleHint: "Pick different roles on the two phones.",
   next: "Next", backBtn: "Back",
   sitKicker: "The situation", rolesLbl: "Roles", goalLbl: "Your shared goal",
-  another: "Another situation",
+  corridorGoal: "Agree how the two of you will handle this next time.", lensLbl: "Three lenses on the same moment", lensNames: { culture: "Culture · average tendencies", power: "Power & position", person: "The individual" }, lineLbl: "A line you can use", fromAtlas: "From the Intercultural Atlas", another: "Another situation",
   readBriefs: "Read your briefs",
-  passTo: "Pass the phone to the {r}", passLead: "Only the {r} looks. The other person, look away for a moment.",
-  ready: "I'm the {r}",
-  briefKicker: "Private · only for the {r}", briefTitle: "What you know", briefNote: "Don't read this aloud. Bring it into the conversation in your own words — or don't.",
+  passTo: "Pass the phone to {r}", passLead: "Only {r} looks. The other person, look away for a moment.",
+  ready: "I'm playing {r}",
+  briefKicker: "Private · only for {r}", briefTitle: "What you know", briefNote: "Don't read this aloud. Bring it into the conversation in your own words — or don't.",
   hide: "Got it — hide it",
   talkTitle: "Now talk.", talkLead: "Find a way forward together. There's no right answer and no winner.",
   talkTips: ["Ask what's behind it before you explain yourself.", "Say what matters to you — and why.", "Notice what you're assuming about them.", "Check: “So for you, the important part is…?”"],
@@ -285,7 +307,7 @@ en: {
   diffLbl: "The hidden difference", reflectLbl: "Talk about it (2 minutes)",
   reflect: ["What did you assume about the other person — and when did you notice?", "Which line in their brief surprised you most?", "What would you ask earlier next time?"],
   swapBtn: "Swap roles and play again", finish: "Finish",
-  swapTitle: "Swap roles", swapLead: "Whoever played the {a} now plays the {b}, and the other way round. Same situation — new shoes.",
+  swapTitle: "Swap roles", swapLead: "Whoever played {a} now plays {b}, and the other way round. Same situation — new shoes.",
   swapGo: "Swap",
   swap2: "On both phones, tap “Swap” so each of you sees the other brief.",
   endKicker: "Swap complete", endTitle: "You stood in someone else's shoes.",
@@ -326,7 +348,7 @@ zh: {
   rolePick: "这部手机是哪个角色？", roleHint: "两部手机请选不同的角色。",
   next: "下一步", backBtn: "返回",
   sitKicker: "情境", rolesLbl: "角色", goalLbl: "你们共同的目标",
-  another: "换一个情境",
+  corridorGoal: "商量好下一次你们俩怎么处理这种情况。", lensLbl: "看同一时刻的三个视角", lensNames: { culture: "文化 · 平均倾向", power: "权力与位置", person: "个人" }, lineLbl: "一句你可以用的话", fromAtlas: "来自跨文化图鉴", another: "换一个情境",
   readBriefs: "阅读角色卡",
   passTo: "把手机交给{r}", passLead: "只有{r}看。另一位请先移开视线。",
   ready: "我是{r}",
@@ -382,7 +404,7 @@ es: {
   rolePick: "¿Qué papel va en este móvil?", roleHint: "Elegid papeles distintos en cada móvil.",
   next: "Siguiente", backBtn: "Atrás",
   sitKicker: "La situación", rolesLbl: "Papeles", goalLbl: "Vuestro objetivo común",
-  another: "Otra situación",
+  corridorGoal: "Acordad cómo lo manejaréis la próxima vez.", lensLbl: "Tres lentes sobre el mismo momento", lensNames: { culture: "Cultura · tendencias medias", power: "Poder y posición", person: "La persona" }, lineLbl: "Una frase que puedes usar", fromAtlas: "Del Atlas Intercultural", another: "Otra situación",
   readBriefs: "Leer las fichas",
   passTo: "Pasa el móvil a quien hace de {r}", passLead: "Solo mira quien hace de {r}. La otra persona, aparta la vista un momento.",
   ready: "Hago de {r}",
@@ -542,6 +564,13 @@ es: [
 ]
 };
 
+/* Eight Intercultural Atlas corridors, played as pairs (from /free_builder/cq/) */
+const CORRIDORS = {"en": [{"id": 1, "dim": "Bad news & hierarchy", "title": "The vanishing roadblock", "cities": ["San Francisco", "Bengaluru"], "sit": [["Alex · Engineering manager, San Francisco", "Shipping the auth service tomorrow. Any blockers?"], ["Rohan · Tech lead, Bengaluru (vendor team)", "The team is actively analysing the payload flows. All good on our side."], ["Alex · next day", "The build broke on a legacy schema dependency! Why wasn't this flagged yesterday?"], ["Rohan", "We worked through the night to fix it without alarming your leadership."]], "aName": "Alex", "bName": "Rohan", "aRole": "Alex · Engineering manager, San Francisco", "bRole": "Rohan · Tech lead, Bengaluru (vendor team)", "aBrief": "I asked directly about blockers. Raising risk early is the job, and bad news early is good news.", "bBrief": "Flagging a blocker in an open channel, to the client's manager, felt like failing in public. “Actively analysing” was my signal that something was wrong.", "lenses": {"culture": "Erin Meyer's Culture Map places India toward the hierarchical end of its “Leading” scale and the US toward the egalitarian end, on average. Taking an unsolved problem to someone senior can feel like a failure of duty.", "power": "Rohan works for a vendor. Admitting a blocker to the client's manager can feel like risking the contract, in any country.", "person": "Rohan is proud of his team's craft and didn't want his junior engineers blamed."}, "script": "Rohan, part of my job is clearing things your team can't control. What's one dependency I can push through for you this week?"}, {"id": 2, "dim": "Feedback & tone", "title": "The blunt code review", "cities": ["Amsterdam", "São Paulo"], "sit": [["Daan · Staff engineer, Amsterdam", "PR review: “This implementation is unacceptable. Scrap the ORM pattern and rewrite it.”"], ["Thiago · Senior developer, São Paulo", "Acknowledged."], ["Daan · later that week", "Why has Thiago gone quiet on every review since?"]], "aName": "Daan", "bName": "Thiago", "aRole": "Daan · Staff engineer, Amsterdam", "bRole": "Thiago · Senior developer, São Paulo", "aBrief": "Code isn't a person. Being clear saves everyone hours of back-and-forth.", "bBrief": "Not one word about what worked, in a public PR, with “unacceptable”. That isn't how you treat a colleague you respect.", "lenses": {"culture": "On Meyer's “Evaluating” scale, the Netherlands sits near the direct end for negative feedback, while Brazil sits further toward indirect, on average.", "power": "Written review comments lose tone, and Daan is more senior. Harsh words from above land harder.", "person": "Daan writes tersely to everyone, including his manager. Thiago had worked late to get this PR in."}, "script": "Thiago, the schema work is solid. One concern: the ORM query pattern will struggle at peak load. Got ten minutes to look at options together?"}, {"id": 3, "dim": "Silence & turn-taking", "title": "The four-second silence", "cities": ["London", "Tokyo"], "sit": [["Harry · Director, London", "Any objections to retiring the legacy schema next month?"], ["Kenji · Architect, Tokyo", "(unmutes… pauses)"], ["Harry", "Great, silence is consent! On to item two."], ["Three days later", "The Tokyo team flags a critical dependency on the legacy schema."]], "aName": "Harry", "bName": "Kenji", "aRole": "Harry · Director, London", "bRole": "Kenji · Architect, Tokyo", "aBrief": "On a video call, silence means agreement. If nobody objects in a couple of seconds, we move on.", "bBrief": "I was forming a disagreement in my second language, carefully, so it wouldn't embarrass anyone. He moved on before I could speak.", "lenses": {"culture": "Pausing before disagreeing with a senior person is often described in Japanese business settings. But research on everyday conversation finds turn-taking gaps are similar across languages (Stivers et al., 2009), so don't assume the pause was “cultural”.", "power": "Harry chairs the call and is the most senior person on it. Objecting to the chair, live and in front of others, is hard anywhere.", "person": "Kenji was working in his second language, at 9pm Tokyo time, on a technical point that needed precise wording."}, "script": "I'm going to pause here. Kenji, when you're ready, I'd love the Tokyo view on any edge cases."}, {"id": 4, "dim": "Trust & relationships", "title": "The cold ping", "cities": ["Munich", "Mexico City"], "sit": [["Stefan · Project manager, Munich", "09:02 · “Carlos, send the API documentation now. We're past the deadline.”"], ["Carlos · Engineering lead, Mexico City", "…"], ["Stefan · next day", "“Did you get my message? Why haven't you sent it?”"], ["Carlos", "“Hola Stefan. We're reviewing it.”"]], "aName": "Stefan", "bName": "Carlos", "aRole": "Stefan · Project manager, Munich", "bRole": "Carlos · Engineering lead, Mexico City", "aBrief": "Getting straight to the point respects his time. Deadlines are deadlines.", "bBrief": "Two messages, no hello, no question about how we're doing. It feels like I'm a ticket, not a colleague.", "lenses": {"culture": "Meyer's “Trusting” scale places Germany toward task-based trust (built through reliable work) and Mexico toward relationship-based trust (built through personal connection), on average.", "power": "Stefan sits at headquarters. Carlos's team are often the last to hear when priorities change, so curt demands land as orders.", "person": "Carlos's team had been fixing a production outage all night. Stefan didn't know because he hadn't asked."}, "script": "Hola Carlos, how's the team doing this week? I hear it's been busy. When could we realistically go through the API docs together?"}, {"id": 5, "dim": "Decoding “yes”", "title": "The yes that meant maybe", "cities": ["Sydney", "Hanoi"], "sit": [["Liam · Client project manager, Sydney", "Can you commit to 15 October? Is that possible?"], ["Linh · Engineering lead, Hanoi", "Yes… we will do our best."], ["Liam · 16 October", "It's not live? You said yes!"], ["Linh", "I said we would do our best. The scope needed services we didn't have."]], "aName": "Liam", "bName": "Linh", "aRole": "Liam · Client project manager, Sydney", "bRole": "Linh · Engineering lead, Hanoi", "aBrief": "Yes means yes. If the date was impossible, she should have said no.", "bBrief": "Saying “no” outright to a client is very hard. “We will do our best”, with a pause, was my warning.", "lenses": {"culture": "In many high-context settings, Vietnam among them, a direct “no” to a client may be avoided, and “we'll do our best” can signal real doubt. Plenty of low-context speakers hedge with the same words.", "power": "Liam controls the budget for Linh's team. Saying no to the person who pays you is hard everywhere.", "person": "Linh had just been promoted and wanted to show she could deliver."}, "script": "Linh, if we aim for 15 October, what are the three things that would have to go perfectly? What would you trade off to get there?"}, {"id": 6, "dim": "Disagreement", "title": "The heated debate", "cities": ["Paris", "Singapore"], "sit": [["Camille · Design lead, Paris", "I completely disagree with this user journey. It makes no logical sense!"], ["Jia Hui · Product manager, Singapore", "(goes quiet; one-word answers for the rest of the sprint)"], ["Camille · at drinks", "Coming? That was a great debate!"]], "aName": "Camille", "bName": "Jia Hui", "aRole": "Camille · Design lead, Paris", "bRole": "Jia Hui · Product manager, Singapore", "aBrief": "Arguing hard about ideas shows I take them seriously. It's not personal; we're still friends afterwards.", "bBrief": "Being told my work “makes no logical sense” in front of the team felt like a public attack. A drink doesn't undo that.", "lenses": {"culture": "Meyer's “Disagreeing” scale places France toward open confrontation as engagement, and many Southeast and East Asian workplaces toward avoiding open confrontation, on average.", "power": "Camille sits at headquarters and has informal influence over regional promotions, which raises the stakes of a public clash.", "person": "Jia Hui had spent two weeks on the journey while caring for a sick parent."}, "script": "Jia Hui, let's look at where our two journeys differ. If we tested both, what user behaviour would tell us which works better?"}, {"id": 7, "dim": "Time & scheduling", "title": "The elastic deadline", "cities": ["Zurich", "Rome"], "sit": [["Anna · Logistics planner, Zurich", "Our dock slot was locked for Friday 09:00. Your trucks arrived Tuesday at 14:00."], ["Matteo · Operations lead, Rome", "A key customer's plant broke down on Thursday. We moved everyone to fix it. We saved them, and delivered today!"], ["Anna", "You broke our whole schedule."]], "aName": "Anna", "bName": "Matteo", "aRole": "Anna · Logistics planner, Zurich", "bRole": "Matteo · Operations lead, Rome", "aBrief": "If slots are elastic, the supply chain collapses. Being on time is respect.", "bBrief": "A customer was in crisis. Protecting an internal slot over a real emergency isn't service.", "lenses": {"culture": "Meyer's “Scheduling” scale places Switzerland near the linear-time end and Italy toward flexible time, on average.", "power": "Anna's plant pays automated penalties for missed dock slots; Matteo's bonus is tied to customer satisfaction.", "person": "Matteo drove to the customer himself on Sunday to make sure the fix worked."}, "script": "Matteo, great work saving that customer. Dock changes here ripple into three other plants. When a crisis hits, can we agree a one-hour alert so we can move slots in time?"}, {"id": 8, "dim": "Persuading", "title": "The “why first” pushback", "cities": ["New York", "Paris"], "sit": [["Jordan · VP Product, New York", "Here's our new CRM! Three case studies show 40% higher close rates. Let's onboard by Friday!"], ["Elodie · Country lead, Paris", "Wait. Why this vendor? What's the reasoning behind its data model?"], ["Jordan · privately", "Why does Paris always want to philosophise?"]], "aName": "Jordan", "bName": "Elodie", "aRole": "Jordan · VP Product, New York", "bRole": "Elodie · Country lead, Paris", "aBrief": "Show results, skip the theory. People want proof that it works.", "bBrief": "If the reasoning is flawed, the case studies are luck. Convince me the method is sound first.", "lenses": {"culture": "Meyer's “Persuading” scale contrasts principles-first reasoning (often associated with France) with applications-first reasoning (often associated with the US). Both are rigorous; they start in different places.", "power": "The decision came from New York with little European input, so “why?” also means “we weren't consulted”.", "person": "Elodie has an engineering background and lived through a failed CRM migration."}, "script": "Elodie, before the demo, let me take five minutes on why we chose this data model over the alternatives. Then the results. I'd value your read on the evaluation."}], "zh": [{"id": 1, "dim": "坏消息与层级", "title": "消失的障碍", "cities": ["旧金山", "班加罗尔"], "sit": [["Alex · 工程经理，旧金山", "认证服务明天上线。有什么阻碍吗？"], ["Rohan · 技术负责人，班加罗尔（供应商团队）", "团队正在积极分析负载流程。我们这边一切正常。"], ["Alex · 第二天", "构建因为一个遗留数据结构依赖挂了！昨天为什么没提出来？"], ["Rohan", "我们通宵修复了它，以免惊动你们的领导层。"]], "aName": "Alex", "bName": "Rohan", "aRole": "Alex · 工程经理，旧金山", "bRole": "Rohan · 技术负责人，班加罗尔（供应商团队）", "aBrief": "我直接问了有没有阻碍。尽早暴露风险是本职工作，坏消息越早越好。", "bBrief": "在公开频道里、当着客户经理的面提出阻碍，感觉就像当众失败。“正在积极分析”是我在发出有问题的信号。", "lenses": {"culture": "Erin Meyer 的《文化地图》在“领导”维度上，平均而言把印度放在偏层级的一端，美国放在偏平等的一端。把一个未解决的问题交给上级，可能会让人觉得是失职。", "power": "Rohan 为供应商工作。在任何国家，向客户经理承认有阻碍，都可能感觉是在拿合同冒险。", "person": "Rohan 为团队的手艺感到自豪，不想让手下的初级工程师受责备。"}, "script": "Rohan，我工作的一部分就是清除你们团队控制不了的障碍。这周有哪一个依赖是我可以帮你推动的？"}, {"id": 2, "dim": "反馈与语气", "title": "直白的代码评审", "cities": ["阿姆斯特丹", "圣保罗"], "sit": [["Daan · 资深工程师，阿姆斯特丹", "PR 评审：“这个实现不可接受。放弃这个 ORM 模式，重写。”"], ["Thiago · 高级开发，圣保罗", "收到。"], ["Daan · 那周晚些时候", "为什么 Thiago 之后在每次评审里都不吭声了？"]], "aName": "Daan", "bName": "Thiago", "aRole": "Daan · 资深工程师，阿姆斯特丹", "bRole": "Thiago · 高级开发，圣保罗", "aBrief": "代码不是人。说清楚能为大家省下好几个小时的来回。", "bBrief": "在公开的 PR 里，一句肯定都没有，还用了“不可接受”。这不是对待一位你尊重的同事的方式。", "lenses": {"culture": "在 Meyer 的“评估”维度上，平均而言，荷兰在负面反馈上接近直接的一端，而巴西更偏向间接。", "power": "书面评审意见会丢失语气，而且 Daan 资历更深。来自上面的严厉措辞，分量更重。", "person": "Daan 对所有人都写得很简短，包括他的经理。Thiago 为了赶上这个 PR 加班到很晚。"}, "script": "Thiago，数据结构部分做得很扎实。有一个顾虑：这个 ORM 查询模式在高峰负载下会吃力。有十分钟一起看看方案吗？"}, {"id": 3, "dim": "沉默与轮流发言", "title": "四秒钟的沉默", "cities": ["伦敦", "东京"], "sit": [["Harry · 总监，伦敦", "下个月停用遗留数据结构，有人反对吗？"], ["Kenji · 架构师，东京", "（取消静音……停顿）"], ["Harry", "很好，沉默就是同意！进入第二项。"], ["三天后", "东京团队指出对遗留数据结构有一个关键依赖。"]], "aName": "Harry", "bName": "Kenji", "aRole": "Harry · 总监，伦敦", "bRole": "Kenji · 架构师，东京", "aBrief": "在视频会议上，沉默就是同意。如果几秒钟内没人反对，我们就继续。", "bBrief": "我正在用第二语言小心地组织反对意见，免得让任何人难堪。还没等我开口，他就继续了。", "lenses": {"culture": "在日本的商务场合中，常有人描述在反对上级之前会先停顿。但关于日常对话的研究发现，不同语言之间的话轮间隔其实相近（Stivers et al., 2009），所以不要假设这次停顿是“文化性的”。", "power": "Harry 主持会议，也是在场资历最深的人。在任何地方，当着别人的面实时反对主持人都很难。", "person": "Kenji 在用第二语言工作，当时是东京时间晚上 9 点，讨论的是一个需要精确措辞的技术问题。"}, "script": "我在这里停一下。Kenji，你准备好的时候，我很想听听东京对边界情况的看法。"}, {"id": 4, "dim": "信任与关系", "title": "冷冰冰的催促", "cities": ["慕尼黑", "墨西哥城"], "sit": [["Stefan · 项目经理，慕尼黑", "09:02 · “Carlos，现在就把 API 文档发过来。已经过截止日期了。”"], ["Carlos · 工程负责人，墨西哥城", "……"], ["Stefan · 第二天", "“收到我的消息了吗？为什么还没发？”"], ["Carlos", "“Hola Stefan。我们正在审阅。”"]], "aName": "Stefan", "bName": "Carlos", "aRole": "Stefan · 项目经理，慕尼黑", "bRole": "Carlos · 工程负责人，墨西哥城", "aBrief": "开门见山是尊重他的时间。截止日期就是截止日期。", "bBrief": "两条消息，没有问候，也没问我们怎么样。感觉我是一张工单，而不是一位同事。", "lenses": {"culture": "在 Meyer 的“信任”维度上，平均而言，德国偏向基于任务的信任（通过可靠的工作建立），墨西哥偏向基于关系的信任（通过个人联系建立）。", "power": "Stefan 在总部。Carlos 的团队常常是最后得知优先级变化的人，所以生硬的要求读起来就像命令。", "person": "Carlos 的团队整晚都在修复一次生产故障。Stefan 不知道，因为他没有问。"}, "script": "Hola Carlos，团队这周怎么样？听说挺忙的。我们什么时候可以比较现实地一起过一遍 API 文档？"}, {"id": 5, "dim": "解读“是”", "title": "意味着“也许”的“是”", "cities": ["悉尼", "河内"], "sit": [["Liam · 客户项目经理，悉尼", "你们能承诺 10 月 15 日吗？可能吗？"], ["Linh · 工程负责人，河内", "可以……我们会尽力。"], ["Liam · 10 月 16 日", "还没上线？你说了可以的！"], ["Linh", "我说的是我们会尽力。这个范围需要我们没有的服务。"]], "aName": "Liam", "bName": "Linh", "aRole": "Liam · 客户项目经理，悉尼", "bRole": "Linh · 工程负责人，河内", "aBrief": "“是”就是“是”。如果日期不可能，她就该说不。", "bBrief": "直接对客户说“不”非常难。“我们会尽力”，加上停顿，就是我的警告。", "lenses": {"culture": "在许多高语境环境中（越南是其中之一），人们可能会避免直接对客户说“不”，“我们会尽力”可能是真正的疑虑信号。不过，很多低语境的人也会用同样的话来含糊其辞。", "power": "Liam 掌握着 Linh 团队的预算。在任何地方，对付钱给你的人说不都很难。", "person": "Linh 刚刚升职，想证明自己能交付。"}, "script": "Linh，如果我们以 10 月 15 日为目标，有哪三件事必须完美进行？为了做到，你会做哪些取舍？"}, {"id": 6, "dim": "分歧", "title": "激烈的辩论", "cities": ["巴黎", "新加坡"], "sit": [["Camille · 设计负责人，巴黎", "我完全不同意这个用户旅程。它在逻辑上完全说不通！"], ["Jia Hui · 产品经理，新加坡", "（沉默下来；这个迭代剩下的时间里只回一两个字）"], ["Camille · 下班喝酒时", "来吗？刚才的辩论太棒了！"]], "aName": "Camille", "bName": "Jia Hui", "aRole": "Camille · 设计负责人，巴黎", "bRole": "Jia Hui · 产品经理，新加坡", "aBrief": "对想法激烈争论，说明我认真对待它们。这不是针对个人；之后我们还是朋友。", "bBrief": "当着团队的面被说我的工作“在逻辑上完全说不通”，感觉像是公开攻击。一杯酒抵消不了。", "lenses": {"culture": "在 Meyer 的“分歧”维度上，平均而言，法国偏向把公开对抗视为投入，而许多东南亚和东亚职场偏向避免公开对抗。", "power": "Camille 在总部，对区域晋升有非正式影响力，这提高了公开冲突的风险。", "person": "Jia Hui 一边照顾生病的父母，一边在这个旅程上花了两周时间。"}, "script": "Jia Hui，我们来看看两个旅程的不同之处。如果两个都测试，什么样的用户行为能告诉我们哪个更好？"}, {"id": 7, "dim": "时间与日程", "title": "有弹性的截止时间", "cities": ["苏黎世", "罗马"], "sit": [["Anna · 物流规划师，苏黎世", "我们的码头时段锁定在周五 09:00。你们的卡车周二 14:00 才到。"], ["Matteo · 运营负责人，罗马", "一个重要客户的工厂周四出了故障。我们调动所有人去修。我们救了他们，今天也送到了！"], ["Anna", "你们打乱了我们整个日程。"]], "aName": "Anna", "bName": "Matteo", "aRole": "Anna · 物流规划师，苏黎世", "bRole": "Matteo · 运营负责人，罗马", "aBrief": "如果时段是有弹性的，供应链就会崩溃。准时就是尊重。", "bBrief": "一个客户陷入了危机。为了保护一个内部时段而不顾真正的紧急情况，这不是服务。", "lenses": {"culture": "在 Meyer 的“日程”维度上，平均而言，瑞士接近线性时间的一端，意大利偏向灵活时间。", "power": "Anna 的工厂错过码头时段会被自动罚款；Matteo 的奖金与客户满意度挂钩。", "person": "Matteo 周日亲自开车去客户那里，确保修复有效。"}, "script": "Matteo，救下那个客户干得漂亮。这里的码头变更会波及另外三家工厂。危机发生时，我们能约定提前一小时预警，好让我们及时调整时段吗？"}, {"id": 8, "dim": "说服", "title": "“先讲为什么”的反推", "cities": ["纽约", "巴黎"], "sit": [["Jordan · 产品副总裁，纽约", "这是我们的新 CRM！三个案例研究显示成交率提高了 40%。周五前完成上线吧！"], ["Elodie · 国家负责人，巴黎", "等等。为什么是这家供应商？它的数据模型背后的逻辑是什么？"], ["Jordan · 私下", "为什么巴黎总想讲哲学？"]], "aName": "Jordan", "bName": "Elodie", "aRole": "Jordan · 产品副总裁，纽约", "bRole": "Elodie · 国家负责人，巴黎", "aBrief": "展示结果，跳过理论。人们想要的是有效的证据。", "bBrief": "如果逻辑有缺陷，那些案例研究就只是运气。先让我相信方法是可靠的。", "lenses": {"culture": "Meyer 的“说服”维度对比了原则优先的推理（常与法国联系在一起）和应用优先的推理（常与美国联系在一起）。两者都很严谨，只是起点不同。", "power": "这个决定来自纽约，欧洲几乎没有参与，所以“为什么？”也意味着“我们没被征求意见”。", "person": "Elodie 有工程背景，经历过一次失败的 CRM 迁移。"}, "script": "Elodie，在演示之前，我先花五分钟讲讲为什么我们选择这个数据模型而不是其他方案，然后再看结果。我很想听听你对评估的看法。"}], "es": [{"id": 1, "dim": "Malas noticias y jerarquía", "title": "El bloqueo que desapareció", "cities": ["San Francisco", "Bengaluru"], "sit": [["Alex · Manager de ingeniería, San Francisco", "Mañana lanzamos el servicio de autenticación. ¿Algún bloqueo?"], ["Rohan · Tech lead, Bengaluru (equipo proveedor)", "El equipo está analizando activamente los flujos de datos. Todo bien por nuestra parte."], ["Alex · al día siguiente", "¡La build se ha roto por una dependencia de un esquema antiguo! ¿Por qué no se avisó ayer?"], ["Rohan", "Trabajamos toda la noche para arreglarlo sin alarmar a vuestra dirección."]], "aName": "Alex", "bName": "Rohan", "aRole": "Alex · Manager de ingeniería, San Francisco", "bRole": "Rohan · Tech lead, Bengaluru (equipo proveedor)", "aBrief": "Pregunté directamente por bloqueos. Avisar pronto de los riesgos es el trabajo; las malas noticias pronto son buenas noticias.", "bBrief": "Señalar un bloqueo en un canal abierto, ante el manager del cliente, era como fallar en público. «Analizando activamente» era mi señal de que algo iba mal.", "lenses": {"culture": "El Culture Map de Erin Meyer sitúa a India hacia el extremo jerárquico de su escala de «Liderar» y a EE. UU. hacia el igualitario, de media. Llevar un problema sin resolver a alguien de más rango puede sentirse como faltar al deber.", "power": "Rohan trabaja para un proveedor. Admitir un bloqueo ante el manager del cliente puede sentirse como arriesgar el contrato, en cualquier país.", "person": "Rohan está orgulloso del oficio de su equipo y no quería que culparan a sus ingenieros júnior."}, "script": "Rohan, parte de mi trabajo es quitar de en medio lo que tu equipo no controla. ¿Qué dependencia puedo desbloquear por ti esta semana?"}, {"id": 2, "dim": "Feedback y tono", "title": "La revisión de código sin filtro", "cities": ["Ámsterdam", "São Paulo"], "sit": [["Daan · Staff engineer, Ámsterdam", "Revisión del PR: «Esta implementación es inaceptable. Descarta el patrón ORM y reescríbelo»."], ["Thiago · Desarrollador sénior, São Paulo", "Recibido."], ["Daan · esa misma semana, más tarde", "¿Por qué Thiago no ha vuelto a decir nada en ninguna revisión?"]], "aName": "Daan", "bName": "Thiago", "aRole": "Daan · Staff engineer, Ámsterdam", "bRole": "Thiago · Desarrollador sénior, São Paulo", "aBrief": "El código no es una persona. Ser claro ahorra horas de idas y venidas a todos.", "bBrief": "Ni una palabra sobre lo que funcionaba, en un PR público, con «inaceptable». Así no se trata a un compañero al que respetas.", "lenses": {"culture": "En la escala de «Evaluar» de Meyer, Países Bajos está cerca del extremo directo para el feedback negativo, mientras que Brasil está más hacia el indirecto, de media.", "power": "Los comentarios escritos pierden el tono, y Daan tiene más antigüedad. Las palabras duras desde arriba pesan más.", "person": "Daan escribe de forma escueta a todo el mundo, incluido su manager. Thiago se había quedado hasta tarde para entregar este PR."}, "script": "Thiago, el trabajo del esquema es sólido. Una duda: el patrón de consultas ORM sufrirá en los picos de carga. ¿Tienes diez minutos para ver opciones juntos?"}, {"id": 3, "dim": "Silencio y turnos de palabra", "title": "El silencio de cuatro segundos", "cities": ["Londres", "Tokio"], "sit": [["Harry · Director, Londres", "¿Alguna objeción a retirar el esquema antiguo el mes que viene?"], ["Kenji · Arquitecto, Tokio", "(activa el micro… hace una pausa)"], ["Harry", "¡Genial, quien calla otorga! Siguiente punto."], ["Tres días después", "El equipo de Tokio avisa de una dependencia crítica del esquema antiguo."]], "aName": "Harry", "bName": "Kenji", "aRole": "Harry · Director, Londres", "bRole": "Kenji · Arquitecto, Tokio", "aBrief": "En una videollamada, el silencio es acuerdo. Si nadie objeta en un par de segundos, seguimos.", "bBrief": "Estaba formulando un desacuerdo en mi segundo idioma, con cuidado, para no avergonzar a nadie. Siguió antes de que pudiera hablar.", "lenses": {"culture": "A menudo se describe que en entornos de negocio japoneses se hace una pausa antes de discrepar de alguien de más rango. Pero la investigación sobre la conversación cotidiana encuentra pausas entre turnos similares en todos los idiomas (Stivers et al., 2009), así que no des por hecho que la pausa era «cultural».", "power": "Harry preside la llamada y es la persona de más rango. Objetar al que preside, en directo y delante de otros, es difícil en cualquier sitio.", "person": "Kenji trabajaba en su segundo idioma, a las 21:00 hora de Tokio, sobre un punto técnico que exigía palabras precisas."}, "script": "Voy a hacer una pausa aquí. Kenji, cuando estés listo, me encantaría oír la visión de Tokio sobre los casos límite."}, {"id": 4, "dim": "Confianza y relaciones", "title": "El mensaje en frío", "cities": ["Múnich", "Ciudad de México"], "sit": [["Stefan · Project manager, Múnich", "09:02 · «Carlos, envía ya la documentación de la API. Vamos tarde.»"], ["Carlos · Líder de ingeniería, Ciudad de México", "…"], ["Stefan · al día siguiente", "«¿Recibiste mi mensaje? ¿Por qué no la has enviado?»"], ["Carlos", "«Hola Stefan. La estamos revisando.»"]], "aName": "Stefan", "bName": "Carlos", "aRole": "Stefan · Project manager, Múnich", "bRole": "Carlos · Líder de ingeniería, Ciudad de México", "aBrief": "Ir al grano respeta su tiempo. Un plazo es un plazo.", "bBrief": "Dos mensajes, sin un hola, sin preguntar cómo estamos. Siento que soy un ticket, no un compañero.", "lenses": {"culture": "La escala de «Confiar» de Meyer sitúa a Alemania hacia la confianza basada en la tarea (construida con trabajo fiable) y a México hacia la confianza basada en la relación (construida con conexión personal), de media.", "power": "Stefan está en la sede central. El equipo de Carlos suele ser el último en enterarse de los cambios de prioridad, así que las exigencias secas suenan a órdenes.", "person": "El equipo de Carlos había pasado la noche arreglando una caída en producción. Stefan no lo sabía porque no preguntó."}, "script": "Hola Carlos, ¿qué tal el equipo esta semana? Me dicen que ha sido intensa. ¿Cuándo podríamos repasar juntos la documentación de la API, de forma realista?"}, {"id": 5, "dim": "Descifrar el «sí»", "title": "El sí que significaba quizá", "cities": ["Sídney", "Hanói"], "sit": [["Liam · Project manager del cliente, Sídney", "¿Podéis comprometeros al 15 de octubre? ¿Es posible?"], ["Linh · Líder de ingeniería, Hanói", "Sí… haremos lo posible."], ["Liam · 16 de octubre", "¿No está en producción? ¡Dijiste que sí!"], ["Linh", "Dije que haríamos lo posible. El alcance necesitaba servicios que no teníamos."]], "aName": "Liam", "bName": "Linh", "aRole": "Liam · Project manager del cliente, Sídney", "bRole": "Linh · Líder de ingeniería, Hanói", "aBrief": "Sí es sí. Si la fecha era imposible, debería haber dicho que no.", "bBrief": "Decirle que no a un cliente sin rodeos es muy difícil. «Haremos lo posible», con una pausa, era mi aviso.", "lenses": {"culture": "En muchos entornos de alto contexto, entre ellos Vietnam, se puede evitar un «no» directo a un cliente, y «haremos lo posible» puede señalar una duda real. Mucha gente de bajo contexto se cubre con las mismas palabras.", "power": "Liam controla el presupuesto del equipo de Linh. Decir que no a quien te paga es difícil en todas partes.", "person": "A Linh acababan de ascenderla y quería demostrar que podía cumplir."}, "script": "Linh, si apuntamos al 15 de octubre, ¿cuáles son las tres cosas que tendrían que salir perfectas? ¿Qué sacrificarías para llegar?"}, {"id": 6, "dim": "Desacuerdo", "title": "El debate acalorado", "cities": ["París", "Singapur"], "sit": [["Camille · Líder de diseño, París", "No estoy nada de acuerdo con este recorrido de usuario. ¡No tiene ningún sentido lógico!"], ["Jia Hui · Product manager, Singapur", "(se queda callada; respuestas de una palabra durante el resto del sprint)"], ["Camille · en las cañas", "¿Vienes? ¡Qué buen debate!"]], "aName": "Camille", "bName": "Jia Hui", "aRole": "Camille · Líder de diseño, París", "bRole": "Jia Hui · Product manager, Singapur", "aBrief": "Discutir con fuerza las ideas demuestra que me las tomo en serio. No es personal; después seguimos siendo amigas.", "bBrief": "Que me dijeran delante del equipo que mi trabajo «no tiene ningún sentido lógico» fue un ataque público. Una copa no lo arregla.", "lenses": {"culture": "La escala de «Discrepar» de Meyer sitúa a Francia hacia la confrontación abierta como forma de implicación, y a muchos entornos de trabajo del sudeste y el este de Asia hacia evitar la confrontación abierta, de media.", "power": "Camille está en la sede central y tiene influencia informal en los ascensos regionales, lo que eleva lo que está en juego en un choque público.", "person": "Jia Hui había dedicado dos semanas al recorrido mientras cuidaba de un familiar enfermo."}, "script": "Jia Hui, veamos dónde difieren nuestros dos recorridos. Si probáramos ambos, ¿qué comportamiento de usuario nos diría cuál funciona mejor?"}, {"id": 7, "dim": "Tiempo y planificación", "title": "El plazo elástico", "cities": ["Zúrich", "Roma"], "sit": [["Anna · Planificadora logística, Zúrich", "Nuestra franja de muelle estaba fijada para el viernes a las 09:00. Vuestros camiones llegaron el martes a las 14:00."], ["Matteo · Líder de operaciones, Roma", "La planta de un cliente clave se averió el jueves. Movimos a todo el mundo para arreglarlo. ¡Les salvamos, y hoy hemos entregado!"], ["Anna", "Habéis roto toda nuestra planificación."]], "aName": "Anna", "bName": "Matteo", "aRole": "Anna · Planificadora logística, Zúrich", "bRole": "Matteo · Líder de operaciones, Roma", "aBrief": "Si las franjas son elásticas, la cadena de suministro se hunde. Ser puntual es respeto.", "bBrief": "Un cliente estaba en crisis. Proteger una franja interna frente a una emergencia real no es servicio.", "lenses": {"culture": "La escala de «Planificar» de Meyer sitúa a Suiza cerca del extremo del tiempo lineal y a Italia hacia el tiempo flexible, de media.", "power": "La planta de Anna paga penalizaciones automáticas por franjas perdidas; el bonus de Matteo depende de la satisfacción del cliente.", "person": "Matteo condujo él mismo hasta el cliente el domingo para asegurarse de que el arreglo funcionaba."}, "script": "Matteo, gran trabajo salvando a ese cliente. Aquí los cambios de muelle afectan a otras tres plantas. Cuando llegue una crisis, ¿acordamos un aviso con una hora de antelación para mover las franjas a tiempo?"}, {"id": 8, "dim": "Persuadir", "title": "El «primero, por qué»", "cities": ["Nueva York", "París"], "sit": [["Jordan · VP de producto, Nueva York", "¡Aquí está nuestro nuevo CRM! Tres casos de éxito muestran un 40 % más de cierres. ¡Implantación antes del viernes!"], ["Elodie · Country lead, París", "Un momento. ¿Por qué este proveedor? ¿Cuál es la lógica de su modelo de datos?"], ["Jordan · en privado", "¿Por qué París siempre quiere filosofar?"]], "aName": "Jordan", "bName": "Elodie", "aRole": "Jordan · VP de producto, Nueva York", "bRole": "Elodie · Country lead, París", "aBrief": "Enseña resultados y sáltate la teoría. La gente quiere pruebas de que funciona.", "bBrief": "Si el razonamiento falla, los casos de éxito son suerte. Convénceme primero de que el método es sólido.", "lenses": {"culture": "La escala de «Persuadir» de Meyer contrapone el razonamiento que empieza por los principios (a menudo asociado con Francia) al que empieza por las aplicaciones (a menudo asociado con EE. UU.). Ambos son rigurosos; solo empiezan en lugares distintos.", "power": "La decisión vino de Nueva York con poca participación europea, así que «¿por qué?» también significa «no nos consultasteis».", "person": "Elodie tiene formación de ingeniera y vivió una migración de CRM fallida."}, "script": "Elodie, antes de la demo, déjame dedicar cinco minutos a por qué elegimos este modelo de datos frente a las alternativas. Luego los resultados. Me interesa mucho tu opinión sobre la evaluación."}]};
+const BASE = SCEN.en.length;
+for (const l of ["en", "zh", "es"]) CORRIDORS[l].forEach(c => SCEN[l].push({
+  corridor: c.id, dim: c.dim + " · " + c.cities.join(" ↔ "), title: c.title, sit: c.sit, goal: I18N[l].corridorGoal,
+  a: { r: c.aName, role: c.aRole, b: [c.aBrief] }, b: { r: c.bName, role: c.bRole, b: [c.bBrief] }, lenses: c.lenses, script: c.script }));
+
 /* =====================================================================
    FB KIT · helpers (copy into every demo)
    ===================================================================== */
@@ -633,11 +662,14 @@ function curtainHTML(title, lead, btnLabel, act) {
 /* =====================================================================
    PERSPECTIVE SWAP
    ===================================================================== */
-const S = { screen: "intro", mode: 1, code: newCode(), role: 0, sc: 0, swapped: false, outcome: null, rounds: 0, tipIdx: 0 };
+const qsC = +(new URLSearchParams(location.search).get("c") || 0);
+const S = { fixed: qsC >= 1 && qsC <= 8 ? BASE + qsC - 1 : null, screen: "intro", mode: 1, code: newCode(), role: 0, sc: 0, swapped: false, outcome: null, rounds: 0, tipIdx: 0 };
 const FLOW = ["situation", "brief", "talk", "reveal"];
 const scen = () => SCEN[lang][S.sc];
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
-const pickFromCode = () => { S.sc = Math.floor(mulberry32(seedFrom(S.code))() * SCEN.en.length); };
+const pickFromCode = () => { if (S.fixed != null) { S.sc = S.fixed; return; } S.sc = Math.floor(mulberry32(seedFrom(S.code))() * BASE); };
+// English needs an article for job titles, not for names
+const rn = r => (lang === "en" && !scen().corridor ? "the " : "") + r;
 // role index currently played by "person on this phone" (two-phone) — swapped flips it
 const myRole = () => S.swapped ? 1 - S.role : S.role;
 const roleObj = i => i === 0 ? scen().a : scen().b;
@@ -664,7 +696,7 @@ function swapArt() {
 
 function briefHTML(i, opts = {}) {
   const t = T(), r = roleObj(i);
-  return `<div class="card" style="display:grid;gap:10px;${opts.dark ? "background:var(--ink);color:#fff;border-color:var(--ink)" : ""}">
+  return `<div class="card" style="display:grid;gap:10px;${opts.dark ? "background:var(--inkbg,var(--ink));color:#fff;border-color:var(--inkbd,var(--ink))" : ""}">
     <span class="kicker" style="${opts.dark ? "color:rgba(255,255,255,.55)" : ""}">${opts.kicker || esc(cap(r.r))}</span>
     ${opts.title ? `<h3 style="margin:0;font-family:var(--syne);font-size:20px">${opts.title}</h3>` : ""}
     <ul style="margin:0;padding-left:18px;display:grid;gap:8px;font-size:15.5px;line-height:1.5">${r.b.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
@@ -713,30 +745,30 @@ function render() {
 
   case "situation":
     h = `<section class="screen">
-      <span class="kicker">${esc(t.sitKicker)}${S.mode === 2 ? " · " + esc(S.code) : ""}</span>
+      <span class="kicker">${esc(sc.corridor ? t.fromAtlas + " · " + sc.dim : t.sitKicker)}${S.mode === 2 ? " · " + esc(S.code) : ""}</span>
       <h2>${esc(sc.title)}</h2>
-      <div class="prompt" style="min-height:0"><div class="q" style="font-size:clamp(19px,5vw,23px)">${esc(sc.sit)}</div></div>
+      ${Array.isArray(sc.sit) ? `<div class="card" style="display:grid;gap:12px;padding:18px">${sc.sit.map(m => `<div><span style="display:block;font-family:var(--mono);font-size:11px;color:var(--muted)">${esc(m[0])}</span><span style="font-family:var(--serif);font-style:italic;font-size:18px;line-height:1.35">${/^[“"]/.test(m[1]) ? esc(m[1]) : "“" + esc(m[1]) + "”"}</span></div>`).join("")}</div>` : `<div class="prompt" style="min-height:0"><div class="q" style="font-size:clamp(19px,5vw,23px)">${esc(sc.sit)}</div></div>`}
       <div class="roles">
-        <div class="role ${S.mode === 2 && myRole() === 0 ? "speak" : ""}"><div class="k">A</div><div class="n">${esc(cap(sc.a.r))}</div></div>
-        <div class="role ${S.mode === 2 && myRole() === 1 ? "speak" : ""}"><div class="k">B</div><div class="n">${esc(cap(sc.b.r))}</div></div>
+        <div class="role ${S.mode === 2 && myRole() === 0 ? "speak" : ""}"><div class="k">A${sc.a.role ? " · " + esc(sc.a.role.split(" · ").slice(1).join(" · ")) : ""}</div><div class="n">${esc(cap(sc.a.r))}</div></div>
+        <div class="role ${S.mode === 2 && myRole() === 1 ? "speak" : ""}"><div class="k">B${sc.b.role ? " · " + esc(sc.b.role.split(" · ").slice(1).join(" · ")) : ""}</div><div class="n">${esc(cap(sc.b.r))}</div></div>
       </div>
       <div class="tip"><i>◎</i><span><b>${esc(t.goalLbl)}</b>${esc(sc.goal)}</span></div>
       <div class="spacer"></div>
       <div class="btns">
-        ${S.mode === 1 && !S.swapped ? `<button class="btn" data-act="another">↻ ${esc(t.another)}</button>` : ""}
+        ${S.mode === 1 && !S.swapped && S.fixed == null ? `<button class="btn" data-act="another">↻ ${esc(t.another)}</button>` : ""}
         <button class="btn pri" data-act="toBrief" data-focus>${esc(t.readBriefs)} →</button>
       </div>
     </section>`; break;
 
   case "pass0": case "pass1": {
     const i = S.screen === "pass0" ? 0 : 1, r = roleObj(i).r;
-    h = `<section class="screen">${curtainHTML(fmt(t.passTo, { r }), fmt(t.passLead, { r }), fmt(t.ready, { r }), i === 0 ? "toBrief0" : "toBrief1")}</section>`; break; }
+    h = `<section class="screen">${curtainHTML(fmt(t.passTo, { r: rn(r) }), fmt(t.passLead, { r: rn(r) }), fmt(t.ready, { r: rn(r) }), i === 0 ? "toBrief0" : "toBrief1")}</section>`; break; }
 
   case "brief0": case "brief1": case "brief": {
     const i = S.screen === "brief" ? myRole() : S.screen === "brief0" ? 0 : 1, r = roleObj(i).r;
     const nextAct = S.screen === "brief0" ? "toPass1" : "toTalk";
     h = `<section class="screen">
-      ${briefHTML(i, { dark: true, kicker: fmt(t.briefKicker, { r }), title: esc(t.briefTitle) })}
+      ${briefHTML(i, { dark: true, kicker: fmt(t.briefKicker, { r: rn(r) }), title: esc(t.briefTitle) })}
       <p style="margin:0;font-size:13.5px;color:var(--muted)">${esc(t.briefNote)}</p>
       <div class="tip"><i>◎</i><span><b>${esc(t.goalLbl)}</b>${esc(sc.goal)}</span></div>
       <div class="spacer"></div>
@@ -769,7 +801,8 @@ function render() {
       <span class="kicker" style="color:var(--accent-ink)">${esc(t.revealKicker)} · ${esc(sc.dim)}</span>
       <h2>${esc(t.revealTitle)}</h2>
       <div style="display:grid;gap:10px">${briefHTML(0, { dark: myRole() === 0 && S.mode === 2, kicker: "A · " + esc(cap(sc.a.r)) })}${briefHTML(1, { dark: myRole() === 1 && S.mode === 2, kicker: "B · " + esc(cap(sc.b.r)) })}</div>
-      <div class="monday"><b>${esc(t.diffLbl)}</b>${esc(sc.diff)}</div>
+      ${sc.lenses ? `<div class="monday"><b>${esc(t.lensLbl)}</b><div style="display:grid;gap:8px;margin-top:6px">${["culture", "power", "person"].map(k => `<div><span style="font-family:var(--mono);font-size:11px;color:var(--muted)">${esc(t.lensNames[k])}</span><br>${esc(sc.lenses[k])}</div>`).join("")}</div></div>
+      <div class="card" style="background:var(--inkbg,var(--ink));color:#fff;border-color:var(--inkbd,var(--ink))"><span class="kicker" style="color:rgba(255,255,255,.55)">${esc(t.lineLbl)}</span><p style="margin:6px 0 0;font-family:var(--serif);font-style:italic;font-size:20px;line-height:1.35">“${esc(sc.script)}”</p></div>` : `<div class="monday"><b>${esc(t.diffLbl)}</b>${esc(sc.diff)}</div>`}
       <p style="margin:0;font-size:12.5px;color:var(--muted)">${esc(t.dimNote)}</p>
       <div><span class="kicker">${esc(t.reflectLbl)}</span>
         <ol style="margin:10px 0 0;padding-left:20px;display:grid;gap:8px;font-size:15px;line-height:1.5">${t.reflect.map(q => `<li>${esc(q)}</li>`).join("")}</ol></div>
@@ -781,7 +814,7 @@ function render() {
     </section>`; break;
 
   case "swap":
-    h = `<section class="screen">${curtainHTML(esc(t.swapTitle), fmt(t.swapLead, { a: sc.a.r, b: sc.b.r }) + (S.mode === 2 ? "<br><br>" + esc(t.swap2) : ""), esc(t.swapGo), "afterSwap")}</section>`; break;
+    h = `<section class="screen">${curtainHTML(esc(t.swapTitle), fmt(t.swapLead, { a: rn(sc.a.r), b: rn(sc.b.r) }) + (S.mode === 2 ? "<br><br>" + esc(t.swap2) : ""), esc(t.swapGo), "afterSwap")}</section>`; break;
 
   case "end":
     h = `<section class="screen">
@@ -876,7 +909,7 @@ $("stage").addEventListener("click", e => {
     case "toSwap": go("swap"); break;
     case "afterSwap": S.swapped = !S.swapped; S.rounds++; S.outcome = null; go(S.mode === 2 ? "brief" : "pass0"); break;
     case "toEnd": sound.warm(); go("end"); break;
-    case "again": reset(true); go(S.mode === 2 ? "code" : "situation"); break;
+    case "again": S.fixed = null; reset(true); go(S.mode === 2 ? "code" : "situation"); break;
     case "teach": go("teach"); break;
     case "saveTeach": {
       const text = ($("lText").value || "").trim(), name = ($("lName").value || "").trim();

@@ -4,8 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title id="page-title">Listening Duet — FREE//BUILDER</title>
-  <meta name="description" content="Two colleagues, one awkward moment, two halves of the story. Talk until you find a way forward — then reveal both sides.">
-  <meta name="theme-color" content="#F7F6F2">
+  <meta name="description" content="Teach one thing to one person; they say it back in their own words. Every teach-back becomes a link in your chain.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Crect x='7' y='7' width='8' height='8' rx='2' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='7' y='17' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='17' y='17' width='8' height='8' rx='2' fill='%23E2553F'/%3E%3C/svg%3E">
   <!-- Brand fonts load without blocking the page: where Google Fonts is slow or blocked, system fonts show instantly. -->
   <link rel="stylesheet" href="/fonts/fonts.css">
@@ -35,27 +34,27 @@
     :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:10px; }
     .kicker { font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
     .dots { position:fixed; inset:0; z-index:-1; pointer-events:none;
-      background-image:radial-gradient(rgba(23,23,26,.09) 1px,transparent 1px); background-size:22px 22px;
+      background-image:radial-gradient(rgba(var(--dot-rgb,23,23,26),.09) 1px,transparent 1px); background-size:22px 22px;
       -webkit-mask-image:linear-gradient(to bottom,#000,transparent 60%); mask-image:linear-gradient(to bottom,#000,transparent 60%); }
 
-    header.top { position:sticky; top:0; z-index:40; background:rgba(247,246,242,.92);
+    header.top { position:sticky; top:0; z-index:40; background:rgba(var(--paper-rgb,247,246,242),.92);
       -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); border-bottom:1px solid rgba(229,226,218,.8);
       padding:10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); }
     .top-in { max-width:960px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:10px; }
     .brand { display:flex; align-items:center; gap:10px; text-decoration:none; min-width:0; }
-    .mark { width:34px; height:34px; border-radius:10px; background:var(--ink); display:grid; place-items:center; flex-shrink:0; transition:transform .5s var(--ease); }
+    .mark { width:34px; height:34px; border-radius:10px; background:var(--inkbg,var(--ink)); display:grid; place-items:center; flex-shrink:0; transition:transform .5s var(--ease); }
     .mark rect { transform-box:fill-box; transform-origin:center; transition:transform .6s var(--ease); }
     .mark .last { transform:translate(2.5px,-2.5px) rotate(12deg); }
     .brand:hover .mark { transform:rotate(-4deg); }
     .brand:hover .mark .last { transform:none; }
     .brand-txt { line-height:1; min-width:0; }
     .brand-txt b { font-family:var(--syne); font-weight:700; font-size:13px; display:block; }
-    .brand-txt b i { color:var(--accent); font-style:normal; }
+    .brand-txt b i { color:var(--accent-text,#E2553F); font-style:normal; }
     .brand-txt span { display:block; font-size:11px; color:var(--muted); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .top-actions { display:flex; align-items:center; gap:6px; flex-shrink:0; }
-    .chip { height:32px; padding:0 10px; border:1px solid var(--line); border-radius:9px; background:rgba(255,255,255,.6);
+    .chip { height:32px; padding:0 10px; border:1px solid var(--line); border-radius:9px; background:rgba(var(--white-rgb,255,255,255),.6);
       display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; transition:border-color .2s, transform .1s; }
-    .chip:hover { border-color:rgba(23,23,26,.3); }
+    .chip:hover { border-color:rgba(var(--ink-rgb,23,23,26),.3); }
     .chip:active { transform:scale(.96); }
     .chip svg { width:14px; height:14px; }
     .chip[hidden] { display:none; }
@@ -68,7 +67,7 @@
     .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
     .steps { display:flex; gap:6px; align-items:center; margin-bottom:18px; min-height:8px; }
     .steps span { height:6px; flex:1; border-radius:3px; background:var(--line); transition:background .4s; }
-    .steps span.done { background:var(--ink); }
+    .steps span.done { background:var(--inkbg,var(--ink)); }
     .steps span.now { background:var(--accent); }
 
     /* screens */
@@ -77,22 +76,22 @@
     h1, h2 { font-family:var(--syne); font-weight:700; letter-spacing:-.02em; margin:0; line-height:1.1; }
     h1 { font-size:clamp(34px, 9vw, 52px); }
     h2 { font-size:clamp(26px, 6.5vw, 34px); }
-    .lead { font-size:16px; line-height:1.6; color:rgba(23,23,26,.75); margin:0; }
-    .serif { font-family:var(--serif); font-style:italic; font-size:22px; line-height:1.3; color:rgba(23,23,26,.85); margin:0; }
+    .lead { font-size:16px; line-height:1.6; color:rgba(var(--ink-rgb,23,23,26),.75); margin:0; }
+    .serif { font-family:var(--serif); font-style:italic; font-size:22px; line-height:1.3; color:rgba(var(--ink-rgb,23,23,26),.85); margin:0; }
     .accent-word { font-family:var(--serif); font-style:italic; font-weight:400; color:var(--muted); white-space:nowrap; padding-bottom:.12em;
       background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7 Q 12 1 22 7 T 42 7 T 62 7 T 82 7 T 102 7 T 118 6' fill='none' stroke='%23E2553F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left bottom / 100% .32em; }
     .pills { display:flex; flex-wrap:wrap; gap:6px; }
-    .pill { font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:99px; border:1px solid var(--line); color:var(--muted); background:rgba(255,255,255,.6); }
+    .pill { font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:99px; border:1px solid var(--line); color:var(--muted); background:rgba(var(--white-rgb,255,255,255),.6); }
     .spacer { flex:1; }
 
     .btns { display:flex; gap:8px; flex-wrap:wrap; }
     .btn { flex:1; min-height:52px; padding:0 20px; border-radius:99px; font-family:var(--mono); font-size:13px; font-weight:700;
       display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1px solid var(--line); background:var(--white);
       transition:background .2s, border-color .2s, transform .1s; }
-    .btn:hover { border-color:rgba(23,23,26,.35); }
+    .btn:hover { border-color:rgba(var(--ink-rgb,23,23,26),.35); }
     .btn:active { transform:scale(.98); }
-    .btn.pri { background:var(--ink); border-color:var(--ink); color:#fff; flex:2; }
-    .btn.pri:hover { background:var(--accent); border-color:var(--accent); }
+    .btn.pri { background:var(--inkbg,var(--ink)); border-color:var(--inkbd,var(--ink)); color:#fff; flex:2; }
+    .btn.pri:hover { background:var(--accent-ink); border-color:var(--accent-ink); }
     .btn[disabled] { opacity:.45; pointer-events:none; }
     .link { font-family:var(--mono); font-size:12px; color:var(--muted); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:4px; align-self:center; padding:8px; }
     .link:hover { color:var(--ink); }
@@ -102,22 +101,22 @@
     .field span { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
     .field input, .field textarea { width:100%; font:inherit; font-size:16px; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--white); color:var(--ink); }
     .field textarea { resize:vertical; min-height:96px; line-height:1.5; }
-    .field input:focus, .field textarea:focus { outline:none; border-color:var(--ink); }
+    .field input:focus, .field textarea:focus { outline:none; border-color:var(--inkbd,var(--ink)); }
     .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .seg { display:flex; flex-wrap:wrap; gap:6px; }
     .seg button { padding:9px 14px; border-radius:99px; border:1px solid var(--line); background:var(--white); font-size:13px; transition:all .2s; }
-    .seg button[aria-pressed="true"] { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .seg button[aria-pressed="true"] { background:var(--inkbg,var(--ink)); color:#fff; border-color:var(--inkbd,var(--ink)); }
 
     /* who's who */
     .roles { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .role { border-radius:18px; padding:14px; border:1px solid var(--line); background:var(--white); }
     .role .k { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
     .role .n { font-family:var(--syne); font-weight:700; font-size:18px; margin-top:4px; word-break:break-word; }
-    .role.speak { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .role.speak { background:var(--inkbg,var(--ink)); color:#fff; border-color:var(--inkbd,var(--ink)); }
     .role.speak .k { color:rgba(255,255,255,.55); }
 
     /* prompt card */
-    .prompt { position:relative; background:var(--ink); color:#fff; border-radius:26px; padding:28px 24px 24px; min-height:200px;
+    .prompt { position:relative; background:var(--inkbg,var(--ink)); color:#fff; border-radius:26px; padding:28px 24px 24px; min-height:200px;
       display:flex; flex-direction:column; justify-content:space-between; gap:18px; overflow:hidden; }
     .prompt::after { content:""; position:absolute; right:-50px; top:-50px; width:170px; height:170px; border-radius:50%; border:1px solid rgba(255,255,255,.1); }
     .prompt .q { font-family:var(--serif); font-style:italic; font-size:clamp(24px, 6.4vw, 30px); line-height:1.25; position:relative; }
@@ -137,7 +136,7 @@
     .timer.pulse { animation:pulse 1.2s ease-in-out 2; }
     @keyframes pulse { 50% { transform:scale(1.04); } }
 
-    .tip { display:flex; gap:10px; align-items:flex-start; padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(23,23,26,.2); font-size:14px; line-height:1.5; }
+    .tip { display:flex; gap:10px; align-items:flex-start; padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(var(--ink-rgb,23,23,26),.2); font-size:14px; line-height:1.5; }
     .tip b { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); font-weight:400; display:block; margin-bottom:2px; }
     .tip i { font-style:normal; font-size:18px; line-height:1.2; }
     .stems { display:grid; gap:8px; }
@@ -146,23 +145,25 @@
     /* felt heard */
     .heard { display:grid; gap:8px; }
     .heard button { display:flex; align-items:center; gap:14px; text-align:left; padding:16px 18px; border-radius:18px; border:1px solid var(--line); background:var(--white); transition:all .2s; }
-    .heard button:hover { border-color:rgba(23,23,26,.35); }
+    .heard button:hover { border-color:rgba(var(--ink-rgb,23,23,26),.35); }
     .heard button .e { width:40px; height:40px; border-radius:50%; display:grid; place-items:center; font-size:20px; flex-shrink:0; background:var(--paper); }
     .heard button b { display:block; font-size:16px; }
     .heard button small { display:block; font-size:13px; color:var(--muted); margin-top:2px; }
 
     /* curtain (pass the phone) */
-    .curtain { background:var(--ink); color:#fff; border-radius:28px; padding:32px 24px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px; }
+    .curtain { background:var(--inkbg,var(--ink)); color:#fff; border-radius:28px; padding:32px 24px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px; }
     .curtain .hand { width:84px; height:84px; }
     .curtain h2 { color:#fff; }
     .curtain p { margin:0; color:rgba(255,255,255,.7); line-height:1.55; }
+    .curtain .btn.pri { background:var(--white,#fff); border-color:#fff; color:var(--ink); }
+    .curtain .btn.pri:hover { background:var(--accent-ink); border-color:var(--accent-ink); color:#fff; }
 
     /* summary */
     .sum { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .sum div { background:var(--white); border:1px solid var(--line); border-radius:18px; padding:16px; }
     .sum b { display:block; font-family:var(--syne); font-size:18px; word-break:break-word; }
     .sum span { display:block; font-size:13px; color:var(--muted); margin-top:4px; }
-    .monday { padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(23,23,26,.2); font-size:14px; line-height:1.55; }
+    .monday { padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(var(--ink-rgb,23,23,26),.2); font-size:14px; line-height:1.55; }
     .monday b { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); font-weight:400; margin-bottom:3px; }
     .chain { list-style:none; padding:0; margin:0; display:grid; gap:8px; }
     .chain li { background:var(--white); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-size:14px; line-height:1.5; }
@@ -181,11 +182,11 @@
     .panel h3 { font-family:var(--syne); font-size:22px; margin:4px 0 12px; }
     .panel h4 { font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:400; margin:22px 0 8px; }
     .panel ol, .panel ul { margin:0; padding-left:20px; display:grid; gap:8px; font-size:14px; line-height:1.55; }
-    .panel p { font-size:14px; line-height:1.6; color:rgba(23,23,26,.78); margin:0; }
+    .panel p { font-size:14px; line-height:1.6; color:rgba(var(--ink-rgb,23,23,26),.78); margin:0; }
     .x { width:34px; height:34px; border-radius:50%; display:grid; place-items:center; border:1px solid var(--line); background:var(--white); font-family:var(--mono); flex-shrink:0; }
 
     .toast { position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom)); transform:translate(-50%,10px); opacity:0; pointer-events:none; z-index:70;
-      background:var(--ink); color:#fff; border-radius:99px; padding:9px 16px; font-family:var(--mono); font-size:11px; transition:opacity .25s, transform .35s var(--ease);
+      background:var(--inkbg,var(--ink)); color:#fff; border-radius:99px; padding:9px 16px; font-family:var(--mono); font-size:11px; transition:opacity .25s, transform .35s var(--ease);
       max-width:calc(100% - 32px); }
     .toast.show { opacity:1; transform:translate(-50%,0); }
 
@@ -199,7 +200,28 @@
     /* Chinese: keep CJK upright (no faux italic); Latin italics stay real */
     html:lang(zh) { font-synthesis: weight; }
 </style>
-</head>
+<meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)"><style id="fb-dark">
+:root{color-scheme:light dark}
+@media (prefers-color-scheme: dark){
+:root{--paper:#141416;--ink:#ECEBE6;--muted:#A8A7AD;--line:#303036;--grid:#26262B;--white:#1D1D21;--inkbg:#2B2B31;--inkbd:#3B3B42;--accent-ink:#F28C76;--good:#62C48F;--paper-rgb:20,20,22;--dot-rgb:255,255,255;--ink-rgb:236,235,230;--white-rgb:29,29,33;--accent-text:#F2806A;--warn-ink:#E3B25C}
+html,body{background-color:var(--paper)}
+/* primary actions read as light on dark */
+.btn.pri,.cta a.pri,.chip.pri{background:#ECEBE6!important;border-color:#ECEBE6!important;color:#141416!important}
+.btn.pri:hover,.cta a.pri:hover,.chip.pri:hover{background:#fff!important;border-color:#fff!important}
+.btn[disabled]{opacity:.45}
+.seg button[aria-pressed="true"],.chip[aria-pressed="true"]{background:#ECEBE6!important;border-color:#ECEBE6!important;color:#141416!important}
+.steps span.done{background:#ECEBE6}
+.curtain{border:1px solid #3B3B42}
+/* illustrations keep their light look on a plate */
+.screen>svg,.plate,.card-art{background:#EFECE4;border-radius:18px}
+.plate{background:#fff!important}
+.card-art~.text-ink\/60,.card-art~span .text-ink\/60{color:rgba(23,23,26,.62)!important}
+.text-accent{color:#F2806A!important}
+.bg-white\/90.text-ink,.bg-white\/90 .text-ink{color:#ECEBE6}
+img{filter:none}
+::selection{background:#E2553F;color:#fff}
+}
+</style></head>
 <body>
   <div class="dots" aria-hidden="true"></div>
 
@@ -212,7 +234,7 @@
             <rect x="3" y="13" width="8" height="8" rx="2" fill="#fff" opacity=".55"/><rect class="last" x="13" y="13" width="8" height="8" rx="2" fill="#E2553F"/>
           </svg>
         </span>
-        <span class="brand-txt"><b>FREE<i>//</i>BUILDER</b><span data-t="product">Perspective Swap</span></span>
+        <span class="brand-txt"><b>FREE<i>//</i>BUILDER</b><span data-t="product">Teach-Back Chain</span></span>
       </a>
       <div class="top-actions">
         <button class="chip" id="btn-lang" type="button" aria-label="Language" title="EN / 中文 / ES">
@@ -229,14 +251,14 @@
   </header>
 
   <main>
-    <h1 class="sr" data-t="product">Perspective Swap</h1>
+    <h1 class="sr" data-t="product">Teach-Back Chain</h1>
     <div class="steps" id="steps" aria-hidden="true"></div>
     <div id="stage" aria-live="polite"></div>
   </main>
 
   <footer>
     <div class="foot-in">
-      <span data-t="privacy">Nothing is recorded. Nothing leaves this phone.</span>
+      <span data-t="privacy">Your chain lives only on this phone.</span>
       <a href="/free_builder/" data-t="back">FREE//BUILDER ↗</a>
     </div>
   </footer>
@@ -254,293 +276,132 @@
    ===================================================================== */
 const I18N = {
 en: {
-  title: "Perspective Swap — FREE//BUILDER", product: "Perspective Swap", guide: "Facilitators",
-  privacy: "Nothing is recorded. Nothing leaves this phone.", back: "FREE//BUILDER ↗",
+  title: "Teach-Back Chain — FREE//BUILDER", product: "Teach-Back Chain", guide: "Facilitators",
+  privacy: "Your chain lives only on this phone.", back: "FREE//BUILDER ↗",
   soundOn: "Sound on", soundOff: "Sound off", left: "left", paused: "paused", close: "Close", resume: "Resume", pause: "Pause",
-  introKicker: "Human skills · Pairs",
-  introTitle: 'Perspective <span class="accent-word">Swap</span>',
-  introLead: "Two colleagues. One awkward moment. Each of you knows only your half of the story. Talk until you find a way forward — then see what the other person was carrying all along.",
-  introMeta: ["2 people", "1 or 2 phones", "≈ 12 minutes"],
-  atlas: "Want the background first? Explore the Intercultural Atlas ↗",
-  start: "Start",
-  modeTitle: "How are you playing?",
-  modes: [["One phone", "Pass it between you. Each reads their brief in private."], ["Two phones", "Share a code. Each phone shows only your half."]],
-  codeTitle: "Share a code", codeLead: "Both phones need the same code. One of you reads yours out; the other types it in.",
-  codeYours: "Your code", codeEnter: "Or enter your partner's code", codeNew: "New code",
-  rolePick: "Which role is on this phone?", roleHint: "Pick different roles on the two phones.",
+  introKicker: "Learning by teaching",
+  introTitle: 'Teach-Back <span class="accent-word">Chain</span>',
+  introLead: "The surest way to learn something is to teach it. Each time you pass a skill on — and your colleague says it back in their own words — it becomes a link in your chain.",
+  links: "{n} links", link1: "1 link", people: "{n} people", person1: "1 person",
+  empty: "No links yet. Teach one thing to one person and your chain begins.",
+  teachNow: "Teach something now", copyChain: "Copy my chain", copied: "Copied.", clear: "Clear this phone", clearSure: "Tap again to clear every link on this phone.", cleared: "Cleared.",
+  whatTitle: "What will you teach?", whatLead: "Pick something you practised — or anything else you learned recently.",
+  other: "Something else", otherPh: "e.g. How I plan my week",
+  prepTitle: "Three things to get across", prepLead: "Short is better. Use an example from your own work.",
+  pointPh: ["The core idea", "How to do it", "When to use it"],
+  teacherLbl: "Your name", teacherPh: "e.g. Wei", learnerLbl: "Who are you teaching?", learnerPh: "e.g. Mei",
   next: "Next", backBtn: "Back",
-  sitKicker: "The situation", rolesLbl: "Roles", goalLbl: "Your shared goal",
-  another: "Another situation",
-  readBriefs: "Read your briefs",
-  passTo: "Pass the phone to the {r}", passLead: "Only the {r} looks. The other person, look away for a moment.",
-  ready: "I'm the {r}",
-  briefKicker: "Private · only for the {r}", briefTitle: "What you know", briefNote: "Don't read this aloud. Bring it into the conversation in your own words — or don't.",
-  hide: "Got it — hide it",
-  talkTitle: "Now talk.", talkLead: "Find a way forward together. There's no right answer and no winner.",
-  talkTips: ["Ask what's behind it before you explain yourself.", "Say what matters to you — and why.", "Notice what you're assuming about them.", "Check: “So for you, the important part is…?”"],
-  reached: "We've reached a point", outcomeTitle: "Did you find a way forward?",
-  outcomes: [["Yes", "We agreed on something we can both live with."], ["Partly", "Some of it. Something's still open."], ["Not yet", "We understand each other better, but no plan."]],
-  outcomeNote: "Every answer is a good answer. Now look behind the curtain.",
-  revealKicker: "Both sides", revealTitle: "What each of you was carrying",
-  diffLbl: "The hidden difference", reflectLbl: "Talk about it (2 minutes)",
-  reflect: ["What did you assume about the other person — and when did you notice?", "Which line in their brief surprised you most?", "What would you ask earlier next time?"],
-  swapBtn: "Swap roles and play again", finish: "Finish",
-  swapTitle: "Swap roles", swapLead: "Whoever played the {a} now plays the {b}, and the other way round. Same situation — new shoes.",
-  swapGo: "Swap",
-  swap2: "On both phones, tap “Swap” so each of you sees the other brief.",
-  endKicker: "Swap complete", endTitle: "You stood in someone else's shoes.",
-  endLead: "Most workplace friction isn't bad intent — it's two reasonable people reading the same moment differently. Asking first is a skill, and you just practised it.",
-  monday: "Try this on Monday", mondayTxt: "Next time someone's reaction surprises you, ask one question before you explain yourself.",
-  again: "New situation", passOn: "Pass it on",
-  teachKicker: "Pass it on", teachTitle: "Teach someone the swap.",
-  teachLead: "Explain the three moves, then let them write, in their own words, what they'll try.",
-  t3: ["Ask first", "Say why it matters", "Check what you heard"], t3sub: ["before explaining", "your reason, not just your position", "“So for you…?”"],
-  learnerName: "Their name (optional)", learnerPh: "e.g. Mei", learned: "What they'll try, in their own words", learnedPh: "Hand them the phone…",
-  save: "Save to this phone", chainTitle: "People you've passed it on to", chainEmpty: "No one yet. Your first teach-back will appear here.",
-  saved: "Saved on this phone only.", restart: "Back to the start", timeUp: "Time's up — wrap up your thought.",
-  dimNote: "These are tendencies people learn from teams and places — never a rule about any individual.",
-  gKicker: "Facilitator guide", gTitle: "Running Perspective Swap",
+  teachTitle: "Teach it, {n}.", teachLead: "Two minutes. Show more than you tell — try it together if you can.",
+  teachTips: ["Start with why it matters.", "Give one real example.", "Let them try it, then stop talking.", "Ask: “What would you do differently?”"],
+  done: "Done teaching",
+  passTitle: "Hand the phone to {l}", passLead: "Now it's their turn to say it back.", passGo: "I'm {l}",
+  backTitle: "{l}, say it back.", backLead: "In your own words — not theirs. What's the one idea, and where will you use it?",
+  backPh: "The one idea is… I'll use it when…",
+  addTitle: "Now hand it back.", addLead: "{t}, read it. What did {l} add that you didn't say? Tell them.",
+  save: "Add the link",
+  linkKicker: "New link", linkTitle: "{l} is now part of your chain.",
+  linkLead: "And the chain doesn't stop with you: ask {l} to teach it to one more person this week.",
+  monday: "Try this on Monday", mondayTxt: "After your next training, teach one idea to a colleague within 48 hours.",
+  again: "Teach something else", seeChain: "See my chain",
+  demos: { listen: "Listening Duet", questions: "Question Deck", thanks: "Specific Thanks", swap: "Perspective Swap", repair: "Repair Kit", discovery: "Discovery Duet", twotruths: "Two Truths", prompt: "Prompt Partner", museum: "Mistake Museum", manual: "My User Manual", dial: "Delegation Dial", decide: "Decision Room", design: "Design Thinking", other: "Other" },
+  gKicker: "Facilitator guide", gTitle: "Running a teach-back round",
   gWhy: "Why it works",
-  gWhyTxt: "Information asymmetry is how most real conflict feels: each side is reasonable with what they know. Hiding half the story makes people ask, not assume — and the reveal turns frustration into curiosity.",
-  gSteps: "Running it (≈ 15 minutes)",
-  gStepList: ["Pair people up — ideally across teams, regions or seniority.", "One phone per pair, or two phones with a shared code.", "Each reads their brief privately (1 minute).", "Talk for 5 minutes toward the shared goal.", "Reveal both sides and discuss the three questions.", "Swap roles and run it once more."],
+  gWhyTxt: "Explaining something forces you to organise it; hearing it back in someone else's words shows what actually landed. It turns a training day into a ripple through the team.",
+  gSteps: "Running it (≈ 10 minutes)",
+  gStepList: ["At the end of a session, pair people with someone who wasn't in it — or across pairs.", "Each person teaches one idea in two minutes.", "The learner says it back in their own words on the teacher's phone.", "The teacher names one thing the learner added.", "Within a week, each learner teaches it on once more."],
   gDebrief: "Debrief questions",
-  gDebriefList: ["When did your view of the other person change?", "Which question unlocked the conversation?", "Where in our real work does this hidden difference show up?"],
+  gDebriefList: ["What did you understand better by teaching it?", "What did your learner add that surprised you?", "Who else in your team should hear this — and who will tell them?"],
   gNotes: "Notes",
-  gNotesList: ["Two phones can use different languages — the code keeps the same situation.", "Stress that the differences are learned habits, not personality or nationality.", "Pairs go deeper with the Intercultural Atlas as pre-work."]
+  gNotesList: ["The chain counts people helped, never compares people.", "Everything stays on this phone; nothing is uploaded.", "Every FREE//BUILDER demo on this phone adds to the same chain."]
 },
 zh: {
-  title: "视角互换 — FREE//BUILDER", product: "视角互换", guide: "引导师",
-  privacy: "不录音，不上传，一切只在这部手机上。", back: "FREE//BUILDER ↗",
+  title: "教回去链条 — FREE//BUILDER", product: "教回去链条", guide: "引导师",
+  privacy: "你的链条只保存在这部手机上。", back: "FREE//BUILDER ↗",
   soundOn: "声音开", soundOff: "声音关", left: "剩余", paused: "已暂停", close: "关闭", resume: "继续", pause: "暂停",
-  introKicker: "人的能力 · 两人一组",
-  introTitle: '视角<span class="accent-word">互换</span>',
-  introLead: "两位同事，一个尴尬的瞬间。你们每人只知道一半的故事。一起聊，直到找到前进的方向——然后看看对方一直在承受什么。",
-  introMeta: ["2 个人", "1 或 2 部手机", "约 12 分钟"],
-  atlas: "想先了解背景？去看看跨文化图鉴 ↗",
-  start: "开始",
-  modeTitle: "你们怎么玩？",
-  modes: [["一部手机", "轮流传递，各自私下阅读自己的角色卡。"], ["两部手机", "共用一个代码，每部手机只显示你的那一半。"]],
-  codeTitle: "共用一个代码", codeLead: "两部手机需要同一个代码。一人读出自己的代码，另一人输入。",
-  codeYours: "你的代码", codeEnter: "或输入对方的代码", codeNew: "换一个代码",
-  rolePick: "这部手机是哪个角色？", roleHint: "两部手机请选不同的角色。",
+  introKicker: "以教促学",
+  introTitle: '教回去<span class="accent-word">链条</span>',
+  introLead: "学会一件事最可靠的方法，就是把它教给别人。每当你把一项能力传下去——同事再用自己的话说回来——它就成为你链条上的一环。",
+  links: "{n} 环", link1: "1 环", people: "{n} 人", person1: "1 人",
+  empty: "还没有任何一环。教一个人一件事，你的链条就开始了。",
+  teachNow: "现在就教点什么", copyChain: "复制我的链条", copied: "已复制。", clear: "清空这部手机", clearSure: "再点一次，清空这部手机上的所有链环。", cleared: "已清空。",
+  whatTitle: "你要教什么？", whatLead: "选一样你练习过的——或者最近学到的任何东西。",
+  other: "其他", otherPh: "例如：我怎么规划一周",
+  prepTitle: "要讲清楚的三件事", prepLead: "越短越好。用你自己工作里的例子。",
+  pointPh: ["核心想法", "怎么做", "什么时候用"],
+  teacherLbl: "你的名字", teacherPh: "例如：小魏", learnerLbl: "你要教给谁？", learnerPh: "例如：小美",
   next: "下一步", backBtn: "返回",
-  sitKicker: "情境", rolesLbl: "角色", goalLbl: "你们共同的目标",
-  another: "换一个情境",
-  readBriefs: "阅读角色卡",
-  passTo: "把手机交给{r}", passLead: "只有{r}看。另一位请先移开视线。",
-  ready: "我是{r}",
-  briefKicker: "私密 · 仅限{r}", briefTitle: "你知道的事", briefNote: "不要照着念。用你自己的话把它带进对话——或者不说也行。",
-  hide: "看好了，隐藏",
-  talkTitle: "开始聊吧。", talkLead: "一起找到前进的方向。没有标准答案，也没有输赢。",
-  talkTips: ["先问对方背后的原因，再解释自己。", "说出什么对你重要——以及为什么。", "留意你对对方做了哪些假设。", "确认一下：“所以对你来说，最重要的是……？”"],
-  reached: "我们聊到一个节点了", outcomeTitle: "你们找到前进的方向了吗？",
-  outcomes: [["找到了", "我们达成了双方都能接受的做法。"], ["部分", "有一些共识，还有问题没解决。"], ["还没有", "更理解彼此了，但还没有方案。"]],
-  outcomeNote: "每个答案都是好答案。现在，掀开帘子看看吧。",
-  revealKicker: "两边的故事", revealTitle: "你们各自承受着什么",
-  diffLbl: "隐藏的差异", reflectLbl: "聊一聊（2 分钟）",
-  reflect: ["你对对方做了什么假设？什么时候发现的？", "对方角色卡里哪一句最让你意外？", "下次你会更早问什么问题？"],
-  swapBtn: "交换角色，再来一次", finish: "结束",
-  swapTitle: "交换角色", swapLead: "刚才扮演{a}的人，现在扮演{b}，反之亦然。同一个情境——换一双鞋。",
-  swapGo: "交换",
-  swap2: "两部手机都点“交换”，这样每人都能看到另一张角色卡。",
-  endKicker: "互换完成", endTitle: "你站到了别人的位置上。",
-  endLead: "职场里的大多数摩擦并非出于恶意——而是两个讲道理的人，对同一刻有不同的解读。先问一句，是一种能力，你刚刚练习了它。",
-  monday: "周一试试这个", mondayTxt: "下次别人的反应让你意外时，先问一个问题，再解释自己。",
-  again: "换个情境", passOn: "传下去",
-  teachKicker: "传下去", teachTitle: "把视角互换教给别人。",
-  teachLead: "讲讲这三个动作，然后让 TA 用自己的话写下想尝试的做法。",
-  t3: ["先问", "说出为什么重要", "确认你听到的"], t3sub: ["再解释自己", "说理由，不只是立场", "“所以对你来说……？”"],
-  learnerName: "TA 的名字（可选）", learnerPh: "例如：小美", learned: "TA 想尝试的做法（用自己的话）", learnedPh: "把手机递给 TA……",
-  save: "保存在这部手机上", chainTitle: "你传给过的人", chainEmpty: "还没有。你的第一次“教回去”会出现在这里。",
-  saved: "只保存在这部手机上。", restart: "回到开头", timeUp: "时间到——把话说完吧。",
-  dimNote: "这些是人们从团队和环境中习得的倾向——绝不是对任何个人的定论。",
-  gKicker: "引导师指南", gTitle: "如何带“视角互换”",
+  teachTitle: "开始教吧，{n}。", teachLead: "两分钟。多示范，少讲——能一起试试就更好。",
+  teachTips: ["先说为什么重要。", "举一个真实的例子。", "让 TA 试一下，然后你停下来。", "问：“你会怎么用？”"],
+  done: "教完了",
+  passTitle: "把手机交给{l}", passLead: "现在轮到 TA 说回来。", passGo: "我是{l}",
+  backTitle: "{l}，请说回来。", backLead: "用你自己的话——不是对方的话。核心想法是什么？你会在哪里用？",
+  backPh: "核心想法是……我会在……的时候用",
+  addTitle: "现在把手机还回去。", addLead: "{t}，读一读。{l}补充了哪些你没说的？告诉 TA。",
+  save: "加上这一环",
+  linkKicker: "新的一环", linkTitle: "{l} 现在是你链条的一部分了。",
+  linkLead: "链条不止于你：请 {l} 这周再教给一个人。",
+  monday: "周一试试这个", mondayTxt: "下次培训后 48 小时内，把一个想法教给一位同事。",
+  again: "再教点别的", seeChain: "看我的链条",
+  demos: { listen: "倾听二重奏", questions: "问题卡组", thanks: "具体的感谢", swap: "视角互换", repair: "修复工具包", discovery: "探询二重奏", twotruths: "两个真相", prompt: "提示搭档", museum: "错误博物馆", manual: "我的使用说明书", dial: "授权刻度盘", decide: "决策室", design: "设计思维", other: "其他" },
+  gKicker: "引导师指南", gTitle: "如何带一轮“教回去”",
   gWhy: "为什么有效",
-  gWhyTxt: "信息不对称正是大多数真实冲突的感觉：每一方根据自己知道的都很合理。藏起一半故事，让人们去问而不是去猜——而最后的揭晓，会把不满变成好奇。",
-  gSteps: "怎么带（约 15 分钟）",
-  gStepList: ["两两配对——最好跨团队、跨地区或跨层级。", "每组一部手机，或两部手机共用一个代码。", "各自私下阅读角色卡（1 分钟）。", "围绕共同目标聊 5 分钟。", "揭晓两边的故事，讨论三个问题。", "交换角色，再来一次。"],
+  gWhyTxt: "讲解会逼你把知识理清楚；听别人用自己的话说回来，才知道什么真正被接住了。它让一天的培训，在团队里一圈圈传开。",
+  gSteps: "怎么带（约 10 分钟）",
+  gStepList: ["课程结束时，让每人找一位没参加的同事——或在组与组之间配对。", "每人用两分钟教一个想法。", "学的人在教的人手机上，用自己的话说回来。", "教的人说出一件对方补充的内容。", "一周内，每位学的人再往下教一次。"],
   gDebrief: "复盘问题",
-  gDebriefList: ["你对对方的看法在什么时候改变了？", "哪个问题打开了对话？", "在我们的真实工作中，这个隐藏差异出现在哪里？"],
+  gDebriefList: ["教的时候，你对哪部分理解得更深了？", "对方补充了什么让你意外的内容？", "团队里还有谁该听到——谁去告诉 TA？"],
   gNotes: "备注",
-  gNotesList: ["两部手机可以用不同语言——代码保证情境相同。", "强调差异是习得的习惯，不是性格或国籍。", "先用跨文化图鉴做预习，对话会更深入。"]
+  gNotesList: ["链条记录帮助过的人，从不比较人。", "一切只在这部手机上，不会上传。", "这部手机上的每个 FREE//BUILDER 练习，都汇入同一条链条。"]
 },
 es: {
-  title: "Cambio de Perspectiva — FREE//BUILDER", product: "Cambio de Perspectiva", guide: "Facilitadores",
-  privacy: "No se graba nada. Nada sale de este móvil.", back: "FREE//BUILDER ↗",
+  title: "Cadena de Enseñar de Vuelta — FREE//BUILDER", product: "Cadena de Enseñar de Vuelta", guide: "Facilitadores",
+  privacy: "Tu cadena vive solo en este móvil.", back: "FREE//BUILDER ↗",
   soundOn: "Sonido sí", soundOff: "Sonido no", left: "quedan", paused: "en pausa", close: "Cerrar", resume: "Seguir", pause: "Pausa",
-  introKicker: "Habilidades humanas · Parejas",
-  introTitle: 'Cambio de <span class="accent-word">Perspectiva</span>',
-  introLead: "Dos colegas. Un momento incómodo. Cada uno conoce solo su mitad de la historia. Hablad hasta encontrar una salida y luego descubrid lo que la otra persona llevaba consigo.",
-  introMeta: ["2 personas", "1 o 2 móviles", "≈ 12 minutos"],
-  atlas: "¿Quieres contexto antes? Explora el Atlas Intercultural ↗",
-  start: "Empezar",
-  modeTitle: "¿Cómo vais a jugar?",
-  modes: [["Un móvil", "Os lo pasáis. Cada uno lee su ficha en privado."], ["Dos móviles", "Compartid un código. Cada móvil muestra solo vuestra mitad."]],
-  codeTitle: "Compartid un código", codeLead: "Los dos móviles necesitan el mismo código. Uno lo lee en voz alta; el otro lo escribe.",
-  codeYours: "Tu código", codeEnter: "O escribe el código de tu pareja", codeNew: "Código nuevo",
-  rolePick: "¿Qué papel va en este móvil?", roleHint: "Elegid papeles distintos en cada móvil.",
+  introKicker: "Aprender enseñando",
+  introTitle: 'Cadena de <span class="accent-word">Enseñar</span>',
+  introLead: "La forma más segura de aprender algo es enseñarlo. Cada vez que transmites una habilidad —y tu colega te la devuelve con sus palabras— se convierte en un eslabón de tu cadena.",
+  links: "{n} eslabones", link1: "1 eslabón", people: "{n} personas", person1: "1 persona",
+  empty: "Todavía no hay eslabones. Enseña una cosa a una persona y tu cadena empieza.",
+  teachNow: "Enseñar algo ahora", copyChain: "Copiar mi cadena", copied: "Copiado.", clear: "Borrar este móvil", clearSure: "Pulsa otra vez para borrar todos los eslabones de este móvil.", cleared: "Borrado.",
+  whatTitle: "¿Qué vas a enseñar?", whatLead: "Elige algo que practicaste, o cualquier otra cosa que aprendiste hace poco.",
+  other: "Otra cosa", otherPh: "p. ej. Cómo planifico mi semana",
+  prepTitle: "Tres cosas que transmitir", prepLead: "Mejor corto. Usa un ejemplo de tu propio trabajo.",
+  pointPh: ["La idea central", "Cómo se hace", "Cuándo usarlo"],
+  teacherLbl: "Tu nombre", teacherPh: "p. ej. Wei", learnerLbl: "¿A quién se lo enseñas?", learnerPh: "p. ej. Mei",
   next: "Siguiente", backBtn: "Atrás",
-  sitKicker: "La situación", rolesLbl: "Papeles", goalLbl: "Vuestro objetivo común",
-  another: "Otra situación",
-  readBriefs: "Leer las fichas",
-  passTo: "Pasa el móvil a quien hace de {r}", passLead: "Solo mira quien hace de {r}. La otra persona, aparta la vista un momento.",
-  ready: "Hago de {r}",
-  briefKicker: "Privado · solo para quien hace de {r}", briefTitle: "Lo que sabes", briefNote: "No lo leas en voz alta. Llévalo a la conversación con tus palabras, o no.",
-  hide: "Entendido, ocultar",
-  talkTitle: "Ahora, hablad.", talkLead: "Buscad juntos una salida. No hay respuesta correcta ni ganador.",
-  talkTips: ["Pregunta qué hay detrás antes de explicarte.", "Di qué te importa y por qué.", "Fíjate en lo que estás suponiendo de la otra persona.", "Comprueba: “Entonces, para ti lo importante es…?”"],
-  reached: "Hemos llegado a un punto", outcomeTitle: "¿Encontrasteis una salida?",
-  outcomes: [["Sí", "Acordamos algo con lo que podemos vivir los dos."], ["En parte", "Algo sí. Queda algo abierto."], ["Todavía no", "Nos entendemos mejor, pero sin plan."]],
-  outcomeNote: "Cualquier respuesta vale. Ahora, mirad detrás del telón.",
-  revealKicker: "Los dos lados", revealTitle: "Lo que cada uno llevaba consigo",
-  diffLbl: "La diferencia oculta", reflectLbl: "Hablad de ello (2 minutos)",
-  reflect: ["¿Qué supusiste de la otra persona y cuándo te diste cuenta?", "¿Qué frase de su ficha te sorprendió más?", "¿Qué preguntarías antes la próxima vez?"],
-  swapBtn: "Cambiar papeles y repetir", finish: "Terminar",
-  swapTitle: "Cambiad de papel", swapLead: "Quien hizo de {a} ahora hace de {b}, y al revés. Misma situación, otros zapatos.",
-  swapGo: "Cambiar",
-  swap2: "En los dos móviles, pulsad “Cambiar” para que cada uno vea la otra ficha.",
-  endKicker: "Cambio completado", endTitle: "Te pusiste en los zapatos de otra persona.",
-  endLead: "La mayor parte de la fricción en el trabajo no es mala intención: son dos personas razonables que leen el mismo momento de forma distinta. Preguntar primero es una habilidad, y acabas de practicarla.",
-  monday: "Pruébalo el lunes", mondayTxt: "La próxima vez que una reacción te sorprenda, haz una pregunta antes de explicarte.",
-  again: "Nueva situación", passOn: "Transmitirlo",
-  teachKicker: "Transmitirlo", teachTitle: "Enseña el cambio a alguien.",
-  teachLead: "Explica los tres movimientos y deja que escriba, con sus palabras, qué va a probar.",
-  t3: ["Pregunta primero", "Di por qué importa", "Comprueba lo que oíste"], t3sub: ["antes de explicarte", "tu razón, no solo tu postura", "“Entonces, para ti…?”"],
-  learnerName: "Su nombre (opcional)", learnerPh: "p. ej. Mei", learned: "Qué va a probar, con sus palabras", learnedPh: "Pásale el móvil…",
-  save: "Guardar en este móvil", chainTitle: "Personas a las que se lo transmitiste", chainEmpty: "Nadie todavía. Tu primera transmisión aparecerá aquí.",
-  saved: "Guardado solo en este móvil.", restart: "Volver al inicio", timeUp: "Se acabó el tiempo: cerrad la idea.",
-  dimNote: "Son tendencias que se aprenden en equipos y lugares, nunca una regla sobre una persona concreta.",
-  gKicker: "Guía para facilitadores", gTitle: "Cómo dinamizar Cambio de Perspectiva",
+  teachTitle: "Enséñalo, {n}.", teachLead: "Dos minutos. Muestra más de lo que cuentas; si podéis, probadlo juntos.",
+  teachTips: ["Empieza por por qué importa.", "Da un ejemplo real.", "Deja que lo pruebe y deja de hablar.", "Pregunta: “¿Cómo lo usarías tú?”"],
+  done: "He terminado",
+  passTitle: "Pasa el móvil a {l}", passLead: "Ahora le toca devolverlo.", passGo: "Soy {l}",
+  backTitle: "{l}, devuélvelo.", backLead: "Con tus palabras, no con las suyas. ¿Cuál es la idea y dónde la usarás?",
+  backPh: "La idea es… La usaré cuando…",
+  addTitle: "Ahora devuelve el móvil.", addLead: "{t}, léelo. ¿Qué añadió {l} que tú no dijiste? Díselo.",
+  save: "Añadir el eslabón",
+  linkKicker: "Nuevo eslabón", linkTitle: "{l} ya forma parte de tu cadena.",
+  linkLead: "Y la cadena no termina en ti: pide a {l} que se lo enseñe a una persona más esta semana.",
+  monday: "Pruébalo el lunes", mondayTxt: "Después de tu próxima formación, enseña una idea a un colega en menos de 48 horas.",
+  again: "Enseñar otra cosa", seeChain: "Ver mi cadena",
+  demos: { listen: "Dúo de escucha", questions: "Mazo de Preguntas", thanks: "Gracias Concretas", swap: "Cambio de Perspectiva", repair: "Kit de Reparación", discovery: "Dúo de Descubrimiento", twotruths: "Dos Verdades", prompt: "Pareja de Prompts", museum: "Museo de Errores", manual: "Mi Manual de Uso", dial: "Dial de Delegación", decide: "Sala de Decisiones", design: "Design Thinking", other: "Otra cosa" },
+  gKicker: "Guía para facilitadores", gTitle: "Cómo hacer una ronda de enseñar de vuelta",
   gWhy: "Por qué funciona",
-  gWhyTxt: "La asimetría de información es como se vive casi todo conflicto real: cada parte es razonable con lo que sabe. Ocultar media historia hace que la gente pregunte en vez de suponer, y la revelación convierte la frustración en curiosidad.",
-  gSteps: "Cómo hacerlo (≈ 15 minutos)",
-  gStepList: ["Formad parejas, mejor de equipos, regiones o niveles distintos.", "Un móvil por pareja, o dos con un código compartido.", "Cada uno lee su ficha en privado (1 minuto).", "Hablad 5 minutos hacia el objetivo común.", "Revelad los dos lados y comentad las tres preguntas.", "Cambiad de papel y repetid."],
+  gWhyTxt: "Explicar algo te obliga a ordenarlo; oírlo de vuelta con las palabras de otra persona muestra qué llegó de verdad. Convierte un día de formación en una onda que recorre el equipo.",
+  gSteps: "Cómo hacerlo (≈ 10 minutos)",
+  gStepList: ["Al final de una sesión, emparejad a cada persona con alguien que no estuvo, o entre parejas.", "Cada uno enseña una idea en dos minutos.", "Quien aprende la devuelve con sus palabras en el móvil de quien enseña.", "Quien enseña nombra algo que la otra persona añadió.", "En una semana, cada aprendiz la transmite una vez más."],
   gDebrief: "Preguntas de cierre",
-  gDebriefList: ["¿Cuándo cambió tu visión de la otra persona?", "¿Qué pregunta abrió la conversación?", "¿Dónde aparece esta diferencia oculta en nuestro trabajo real?"],
+  gDebriefList: ["¿Qué entendiste mejor al enseñarlo?", "¿Qué añadió tu aprendiz que te sorprendió?", "¿Quién más del equipo debería oírlo, y quién se lo contará?"],
   gNotes: "Notas",
-  gNotesList: ["Los dos móviles pueden ir en idiomas distintos: el código mantiene la misma situación.", "Subraya que las diferencias son hábitos aprendidos, no personalidad ni nacionalidad.", "Las parejas profundizan más si usan antes el Atlas Intercultural."]
+  gNotesList: ["La cadena cuenta personas ayudadas, nunca compara personas.", "Todo se queda en este móvil; no se sube nada.", "Todas las demos de FREE//BUILDER en este móvil suman a la misma cadena."]
 }
 };
 
-/* Situations — built around learned working norms, never nationalities.
-   a / b: role name + three private lines. */
-const SCEN = {
-en: [
- { dim: "Direct ↔ indirect feedback", title: "The quiet review",
-   sit: "Yesterday's design review. In front of the team, the team lead said: “This doesn't work. We need to rethink it.” The designer said nothing for the rest of the meeting.",
-   goal: "Agree how you'll give each other feedback before the next review.",
-   a: { r: "team lead", b: ["Saying it straight is how you show respect — you don't waste people's time.", "The designer went quiet, so you assumed they agreed.", "You're worried the launch slips if problems aren't named early."] },
-   b: { r: "designer", b: ["Where you learned to work, criticism in front of others is a public loss of face.", "Your silence meant you were hurt, not that you agreed.", "You would have welcomed the same feedback one-to-one."] },
-   diff: "Direct vs indirect communication. In some teams, saying it plainly is respect; in others, respect means saying it privately and gently. Silence can mean very different things." },
- { dim: "Fixed ↔ flexible time", title: "“By Friday”",
-   sit: "The partner team promised the data “by Friday”. It's Monday, it hasn't arrived, and the project manager has sent two increasingly short messages.",
-   goal: "Agree a new plan — and how you'll talk about dates from now on.",
-   a: { r: "project manager", b: ["“Friday” means Friday, 5 pm. Your whole plan was built on it.", "You've already had to explain the delay to your director.", "No one told you it was slipping — that's what hurts most."] },
-   b: { r: "partner-team lead", b: ["To you, “Friday” was a good-faith estimate, not a contract.", "On Wednesday a key client had a crisis; you chose the client, and you'd do it again.", "The short messages felt cold — after years of working well together."] },
-   diff: "Clock time vs event time. Some teams treat deadlines as fixed promises; others treat them as estimates that bend to relationships and urgent events. Neither is careless." },
- { dim: "Flat ↔ hierarchical", title: "“Any objections?”",
-   sit: "The manager closed the planning meeting with “Any objections?” — silence. A week later, the manager heard through someone else that the senior engineer thinks the plan is risky.",
-   goal: "Agree how risks will reach the manager in time.",
-   a: { r: "manager", b: ["You asked openly. Silence means yes — that's what the question was for.", "Hearing it second-hand feels like going behind your back.", "You genuinely want to hear bad news early."] },
-   b: { r: "senior engineer", b: ["Contradicting your manager in front of the whole team feels deeply disrespectful.", "You raised it through a trusted colleague — the respectful channel, you thought.", "“Any objections?” at the end of a meeting felt like a formality."] },
-   diff: "Low vs high power distance. Some people speak up to anyone in any room; others show respect by raising concerns privately or through others. An open question isn't always an open door." },
- { dim: "Task-first ↔ relationship-first", title: "The first call",
-   sit: "First video call with a new supplier. Ten minutes in, the buyer moved to pricing and contract terms. The supplier became noticeably more reserved.",
-   goal: "Plan your next meeting together.",
-   a: { r: "buyer", b: ["Your time is tight; getting to the point is a courtesy.", "You liked the supplier — that's why you moved straight to terms.", "The supplier's sudden reserve confused you."] },
-   b: { r: "supplier", b: ["You can't trust a partner before you know them a little.", "Jumping to price felt like being treated as a vending machine.", "You'd prepared to talk about how your two teams could work together."] },
-   diff: "Task-based vs relationship-based trust. For some, trust follows good work; for others, good work follows trust. Small talk can be the real business." },
- { dim: "Decisive ↔ consensus", title: "The announcement",
-   sit: "The team lead announced a new tool for the whole team in Monday's all-hands. By Wednesday, the analyst's team had quietly gone back to the old tool.",
-   goal: "Agree how the next team decision will be made.",
-   a: { r: "team lead", b: ["You decided quickly because waiting cost the team weeks last time.", "You thought announcing it clearly was the respectful thing.", "The quiet return to the old tool feels like sabotage."] },
-   b: { r: "analyst", b: ["Your team expects to be consulted before a change that affects daily work.", "A decision without consultation felt like your expertise didn't matter.", "You know a flaw in the new tool no one asked about."] },
-   diff: "Top-down vs consensual decisions. Some teams value a quick call from the top; others value the time it takes to bring everyone along. Fast decisions can be slow to land." },
- { dim: "Always-on ↔ protected time", title: "The 11 pm message",
-   sit: "At 11 pm, the colleague sent a chat message: “Can you check the deck?” The other replied at 9 am. The colleague then asked in the stand-up why it took so long.",
-   goal: "Agree message norms that work for both of you.",
-   a: { r: "colleague who messaged", b: ["You work late because that's when you can think — you don't expect instant replies… usually.", "This time a client was waiting for the deck at 8 am.", "You didn't say it was urgent; you assumed it was obvious."] },
-   b: { r: "colleague who replied", b: ["Evenings are for your family; you switched off your phone on purpose.", "The 11 pm message felt like pressure to always be available.", "Being asked about it in the stand-up felt like being shamed in public."] },
-   diff: "Boundaries and urgency. Teams differ on whether messages after hours are fine, expected or intrusive. Unspoken urgency is the real trap." }
-],
-zh: [
- { dim: "直接 ↔ 含蓄的反馈", title: "沉默的评审",
-   sit: "昨天的设计评审上，组长当着全组的面说：“这个不行，得重新想。”之后设计师一句话也没再说。",
-   goal: "在下次评审前，商量好你们以后怎么给彼此反馈。",
-   a: { r: "组长", b: ["有话直说是对人的尊重——不浪费大家的时间。", "设计师没说话，你以为 TA 同意了。", "你担心问题不早点说出来，上线会延期。"] },
-   b: { r: "设计师", b: ["在你习惯的工作环境里，当众批评会让人丢面子。", "你的沉默是因为受伤，不是同意。", "如果是一对一说同样的话，你会很欢迎。"] },
-   diff: "直接沟通与含蓄沟通。有的团队里，直说是尊重；有的团队里，尊重是私下、温和地说。沉默可能意味着完全不同的东西。" },
- { dim: "固定 ↔ 弹性的时间", title: "“周五前”",
-   sit: "合作团队答应“周五前”给数据。现在是周一，数据还没到，项目经理已经发了两条越来越简短的消息。",
-   goal: "商量一个新计划——以及以后怎么谈日期。",
-   a: { r: "项目经理", b: ["“周五”就是周五下午五点，你的整个计划都建立在它上面。", "你已经不得不向总监解释延期。", "没人告诉你会延期——这才最让你难受。"] },
-   b: { r: "合作团队负责人", b: ["对你来说，“周五”是一个真诚的估计，而不是合同。", "周三一个重要客户出了紧急状况，你选择了客户，再来一次也会这样选。", "那几条简短的消息让你觉得很冷——明明合作了好几年。"] },
-   diff: "钟表时间与事件时间。有的团队把截止日期当作固定承诺；有的团队把它当作估计，会因关系和紧急事件而调整。两者都不是不负责。" },
- { dim: "扁平 ↔ 层级", title: "“有没有异议？”",
-   sit: "经理在规划会结尾问：“有没有异议？”——一片安静。一周后，经理从别人那里听说，资深工程师觉得这个计划有风险。",
-   goal: "商量好风险怎样及时传到经理这里。",
-   a: { r: "经理", b: ["你公开问了。没人说话就是同意——问这个问题就是为了这个。", "从别人那里听到，感觉像被绕过了。", "你是真心想早点听到坏消息。"] },
-   b: { r: "资深工程师", b: ["当着全组的面反驳经理，你觉得非常不尊重。", "你通过一位信任的同事转达了——你以为这是得体的方式。", "会议最后那句“有没有异议？”听起来像走个形式。"] },
-   diff: "低权力距离与高权力距离。有人在任何场合都会直接对任何人发言；有人表达尊重的方式，是私下或通过他人提出顾虑。开放的问题，不一定是敞开的门。" },
- { dim: "任务优先 ↔ 关系优先", title: "第一次通话",
-   sit: "和新供应商的第一次视频会议。十分钟后，采购方就开始谈价格和合同条款。供应商明显变得拘谨起来。",
-   goal: "一起规划下一次会议。",
-   a: { r: "采购方", b: ["你时间很紧，直奔主题是一种礼貌。", "你对这个供应商印象很好——所以才直接谈条款。", "供应商突然变得拘谨，让你很困惑。"] },
-   b: { r: "供应商", b: ["在稍微了解对方之前，你没法信任一个合作伙伴。", "一上来就谈价格，感觉像被当成了自动售货机。", "你准备好了要聊两个团队怎么合作。"] },
-   diff: "基于任务的信任与基于关系的信任。有人先看到好的工作，才建立信任；有人先建立信任，才会有好的工作。寒暄可能才是真正的正事。" },
- { dim: "果断 ↔ 共识", title: "一纸通知",
-   sit: "组长在周一全员会上宣布全组改用一个新工具。到了周三，分析师的小组悄悄换回了旧工具。",
-   goal: "商量好下一个团队决定要怎么做。",
-   a: { r: "组长", b: ["你决定得很快，因为上次等待让团队损失了好几周。", "你觉得清楚地宣布出来，才是尊重大家。", "悄悄换回旧工具，感觉像是在拆台。"] },
-   b: { r: "分析师", b: ["你的团队期待：影响日常工作的改变，事先要征求意见。", "没有征求意见的决定，让你觉得自己的专业不被重视。", "你知道新工具有一个缺陷，但没人问过。"] },
-   diff: "自上而下与共识决策。有的团队重视领导快速拍板；有的团队重视花时间让每个人一起走。快速的决定，落地可能很慢。" },
- { dim: "随时在线 ↔ 守护时间", title: "晚上 11 点的消息",
-   sit: "晚上 11 点，一位同事发来消息：“能帮忙看下这个 PPT 吗？”另一位第二天早上 9 点才回。之后这位同事在站会上问为什么这么久才回。",
-   goal: "商量出对你们俩都合适的消息规则。",
-   a: { r: "发消息的同事", b: ["你习惯晚上工作，因为那时才能静下心来——通常你并不期待马上回复……", "但这一次，客户早上 8 点就要看这份 PPT。", "你没说很急，你以为这很明显。"] },
-   b: { r: "回消息的同事", b: ["晚上属于家人，你是故意关掉手机的。", "晚上 11 点的消息让你觉得必须随时待命。", "在站会上被问起，感觉像被当众指责。"] },
-   diff: "边界与紧急程度。团队对下班后的消息是否可以、是否被期待、是否打扰，看法各不相同。没说出口的紧急，才是真正的陷阱。" }
-],
-es: [
- { dim: "Feedback directo ↔ indirecto", title: "La revisión silenciosa",
-   sit: "Revisión de diseño de ayer. Delante del equipo, la persona líder dijo: “Esto no funciona. Hay que repensarlo.” La diseñadora no volvió a hablar en toda la reunión.",
-   goal: "Acordad cómo os daréis feedback antes de la próxima revisión.",
-   a: { r: "líder del equipo", b: ["Decirlo claro es tu forma de mostrar respeto: no haces perder el tiempo.", "La diseñadora se quedó callada y supusiste que estaba de acuerdo.", "Te preocupa que el lanzamiento se retrase si los problemas no se nombran pronto."] },
-   b: { r: "diseñadora", b: ["Donde aprendiste a trabajar, una crítica delante de otros es quedar en evidencia.", "Tu silencio era dolor, no acuerdo.", "Habrías agradecido el mismo comentario a solas."] },
-   diff: "Comunicación directa frente a indirecta. En unos equipos, decirlo claro es respeto; en otros, el respeto es decirlo en privado y con suavidad. El silencio puede significar cosas muy distintas." },
- { dim: "Tiempo fijo ↔ flexible", title: "“Para el viernes”",
-   sit: "El equipo socio prometió los datos “para el viernes”. Es lunes, no han llegado y la jefa de proyecto ha enviado dos mensajes cada vez más secos.",
-   goal: "Acordad un nuevo plan, y cómo hablaréis de fechas a partir de ahora.",
-   a: { r: "jefa de proyecto", b: ["“Viernes” significa viernes a las 17:00. Todo tu plan dependía de eso.", "Ya has tenido que explicar el retraso a tu directora.", "Nadie te avisó de que se retrasaba: eso es lo que más duele."] },
-   b: { r: "responsable del equipo socio", b: ["Para ti, “viernes” era una estimación de buena fe, no un contrato.", "El miércoles un cliente clave tuvo una crisis; elegiste al cliente y lo volverías a hacer.", "Los mensajes secos te parecieron fríos, después de años trabajando bien juntos."] },
-   diff: "Tiempo de reloj frente a tiempo de evento. Unos equipos tratan las fechas como promesas fijas; otros, como estimaciones que se adaptan a las relaciones y a las urgencias. Ninguno es descuidado." },
- { dim: "Plano ↔ jerárquico", title: "“¿Alguna objeción?”",
-   sit: "El jefe cerró la reunión de planificación con “¿Alguna objeción?”: silencio. Una semana después, supo por otra persona que la ingeniera sénior cree que el plan es arriesgado.",
-   goal: "Acordad cómo llegarán los riesgos al jefe a tiempo.",
-   a: { r: "jefe", b: ["Preguntaste abiertamente. El silencio es un sí: para eso era la pregunta.", "Enterarte por otros se siente como si te hubieran esquivado.", "De verdad quieres oír las malas noticias pronto."] },
-   b: { r: "ingeniera sénior", b: ["Contradecir a tu jefe delante de todo el equipo te parece una falta de respeto.", "Lo hiciste llegar a través de un colega de confianza: el canal respetuoso, pensabas.", "“¿Alguna objeción?” al final de la reunión sonó a mera formalidad."] },
-   diff: "Distancia jerárquica baja frente a alta. Hay quien habla a cualquiera en cualquier sala; hay quien muestra respeto planteando sus dudas en privado o a través de otros. Una pregunta abierta no siempre es una puerta abierta." },
- { dim: "Tarea primero ↔ relación primero", title: "La primera llamada",
-   sit: "Primera videollamada con un proveedor nuevo. A los diez minutos, la compradora pasó a precios y condiciones. El proveedor se volvió claramente más reservado.",
-   goal: "Planificad juntos la próxima reunión.",
-   a: { r: "compradora", b: ["Vas justa de tiempo; ir al grano es una cortesía.", "El proveedor te gustó: por eso pasaste directamente a las condiciones.", "Su repentina reserva te desconcertó."] },
-   b: { r: "proveedor", b: ["No puedes confiar en un socio sin conocerlo un poco.", "Saltar al precio te hizo sentir como una máquina expendedora.", "Habías preparado una charla sobre cómo podrían trabajar juntos los dos equipos."] },
-   diff: "Confianza basada en la tarea frente a la relación. Para unos, la confianza llega tras el buen trabajo; para otros, el buen trabajo llega tras la confianza. La charla previa puede ser el verdadero negocio." },
- { dim: "Decidir rápido ↔ por consenso", title: "El anuncio",
-   sit: "La líder anunció en la reunión general del lunes una herramienta nueva para todo el equipo. El miércoles, el equipo del analista había vuelto en silencio a la antigua.",
-   goal: "Acordad cómo se tomará la próxima decisión del equipo.",
-   a: { r: "líder del equipo", b: ["Decidiste rápido porque la última vez esperar costó semanas.", "Pensaste que anunciarlo con claridad era lo respetuoso.", "La vuelta silenciosa a la herramienta antigua te parece un sabotaje."] },
-   b: { r: "analista", b: ["Tu equipo espera que le consulten antes de un cambio que afecta al día a día.", "Una decisión sin consulta te hizo sentir que tu experiencia no contaba.", "Conoces un fallo de la nueva herramienta por el que nadie preguntó."] },
-   diff: "Decisiones de arriba abajo frente a consenso. Unos equipos valoran una decisión rápida desde arriba; otros, el tiempo que cuesta sumar a todos. Las decisiones rápidas pueden tardar en aterrizar." },
- { dim: "Siempre conectado ↔ tiempo protegido", title: "El mensaje de las 23:00",
-   sit: "A las 23:00, una colega envió un mensaje: “¿Puedes revisar la presentación?” El otro respondió a las 9:00. Luego ella preguntó en la reunión diaria por qué había tardado tanto.",
-   goal: "Acordad normas de mensajes que os sirvan a los dos.",
-   a: { r: "colega que escribió", b: ["Trabajas tarde porque es cuando puedes pensar; normalmente no esperas respuesta inmediata…", "Esta vez, un cliente esperaba la presentación a las 8:00.", "No dijiste que era urgente; supusiste que era obvio."] },
-   b: { r: "colega que respondió", b: ["Las noches son para tu familia; apagaste el móvil a propósito.", "El mensaje de las 23:00 te pareció una presión para estar siempre disponible.", "Que te lo preguntaran en la reunión diaria se sintió como una crítica en público."] },
-   diff: "Límites y urgencia. Los equipos difieren en si los mensajes fuera de horario son normales, esperados o invasivos. La urgencia no dicha es la verdadera trampa." }
-]
+const DEMO_KEYS = ["listen", "questions", "thanks", "swap", "repair", "discovery", "twotruths", "prompt", "museum", "manual", "dial", "decide", "design", "other"];
+const DEMO_COLOR = { listen: "#E2553F", questions: "#7C6FD6", thanks: "#D9921F", swap: "#2E9AB0", repair: "#3B9A6B", discovery: "#C2477A", twotruths: "#8A6D3B", prompt: "#5B6BB5", museum: "#A0522D", manual: "#2F6F8F", dial: "#6B4FA0", decide: "#3D7A3D", design: "#17171A", other: "#6B6A70" };
+const DEMO_HINTS = {
+  en: { listen: ["Listen to understand, not to reply", "Play back what you heard", "Ask: did you feel heard?"], questions: ["One real question", "Go around, anyone can pass", "Listen, don't fix"], thanks: ["Name what they did", "Say what it meant", "Say it in person"], swap: ["Ask before you explain", "Say why it matters to you", "Check what you heard"], repair: ["Own it — no “but”", "Name the impact", "Say what will change"], discovery: ["Ask why now", "Stay in questions", "Summarise the need"], twotruths: ["What did I see?", "What did I add?", "Ask before you believe it"], prompt: ["Say what it's for", "Be specific", "Say what done looks like"], museum: ["Go first", "Share the lesson", "Thank, don't fix"], manual: ["Go first", "Read, then ask", "One promise each"], dial: ["Name the task", "Set it privately", "Talk about the gap"], decide: ["Questions before opinions", "Everyone, once", "Safe enough to try?"], design: ["Empathise first", "Many ideas, then one", "Test with real people"], other: ["", "", ""] },
+  zh: { listen: ["为理解而听，不为回应", "复述你听到的", "问：你感到被听见了吗？"], questions: ["一个真实的问题", "轮流说，可以跳过", "倾听，不急着解决"], thanks: ["说出 TA 做了什么", "说出意味着什么", "当面说"], swap: ["先问再解释", "说出为什么重要", "确认你听到的"], repair: ["承认——不说“但是”", "说出影响", "说出会改变什么"], discovery: ["问为什么是现在", "停留在提问", "总结需求"], twotruths: ["我看到了什么？", "我加了什么？", "先问再相信"], prompt: ["说清用途", "说具体", "说清完成标准"], museum: ["你先来", "分享教训", "说谢谢，别急着修"], manual: ["你先来", "先读，再问", "各一个承诺"], dial: ["说出任务", "私下拨刻度", "聊聊差距"], decide: ["先提问，再表态", "每人说一次", "试一试安全吗？"], design: ["先共情", "先发散，再收敛", "和真实的人测试"], other: ["", "", ""] },
+  es: { listen: ["Escucha para entender, no para responder", "Devuelve lo que oíste", "Pregunta: ¿te sentiste escuchado?"], questions: ["Una pregunta real", "Ronda, se puede pasar", "Escucha, no arregles"], thanks: ["Nombra lo que hizo", "Di lo que significó", "Dilo en persona"], swap: ["Pregunta antes de explicarte", "Di por qué te importa", "Comprueba lo que oíste"], repair: ["Asúmelo, sin “pero”", "Nombra el impacto", "Di qué cambiará"], discovery: ["Pregunta por qué ahora", "Quédate en las preguntas", "Resume la necesidad"], twotruths: ["¿Qué vi?", "¿Qué añadí?", "Pregunta antes de creerlo"], prompt: ["Di para qué es", "Sé concreto", "Di cuándo está listo"], museum: ["Empieza tú", "Comparte la lección", "Agradece, no arregles"], manual: ["Empieza tú", "Lee, luego pregunta", "Una promesa cada uno"], dial: ["Nombra la tarea", "Ajústalo en privado", "Hablad de la diferencia"], decide: ["Preguntas antes que opiniones", "Todos, una vez", "¿Segura para probar?"], design: ["Primero empatiza", "Muchas ideas, luego una", "Prueba con personas reales"], other: ["", "", ""] }
 };
+const DEMO_HREF = { listen: "/free_builder/listen", questions: "/free_builder/questions", thanks: "/free_builder/thanks", swap: "/free_builder/swap", repair: "/free_builder/repair", discovery: "/free_builder/discovery", twotruths: "/free_builder/twotruths", prompt: "/free_builder/prompt", museum: "/free_builder/museum", manual: "/free_builder/manual", dial: "/free_builder/dial", decide: "/free_builder/decide", design: "/free_builder/design/" };
 
 /* =====================================================================
    FB KIT · helpers (copy into every demo)
@@ -631,169 +492,128 @@ function curtainHTML(title, lead, btnLabel, act) {
 
 
 /* =====================================================================
-   PERSPECTIVE SWAP
+   TEACH-BACK CHAIN
    ===================================================================== */
-const S = { screen: "intro", mode: 1, code: newCode(), role: 0, sc: 0, swapped: false, outcome: null, rounds: 0, tipIdx: 0 };
-const FLOW = ["situation", "brief", "talk", "reveal"];
-const scen = () => SCEN[lang][S.sc];
-const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
-const pickFromCode = () => { S.sc = Math.floor(mulberry32(seedFrom(S.code))() * SCEN.en.length); };
-// role index currently played by "person on this phone" (two-phone) — swapped flips it
-const myRole = () => S.swapped ? 1 - S.role : S.role;
-const roleObj = i => i === 0 ? scen().a : scen().b;
-pickFromCode();
+const S = { screen: "chain", demo: null, other: "", points: ["", "", ""], teacher: store.get("fb_tb_teacher", ""), learner: "", back: "", clearArmed: false, fresh: null, tipIdx: 0 };
+const FLOW = ["what", "prep", "teach", "back", "add"];
+const chain = () => store.get("fb_teachback", []).filter(c => c && c.text);
+const demoName = k => T().demos[k] || T().demos.other;
 
-function go(screen) { if (screen !== "talk") timer.stop(); S.screen = screen; render(); window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }); if (screen === "talk") startTalk(); }
-
+function go(screen) {
+  if (screen !== "teach") timer.stop();
+  S.screen = screen; S.clearArmed = false; render(); window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+  if (screen === "teach") startTeach();
+}
 function paintStepsBar() {
-  const key = { situation: 0, pass0: 1, brief0: 1, pass1: 1, brief1: 1, brief: 1, talk: 2, outcome: 2, reveal: 3 }[S.screen];
-  $("steps").innerHTML = key == null ? "" : FLOW.map((_, i) => `<span class="${i < key ? "done" : i === key ? "now" : ""}"></span>`).join("");
+  const at = FLOW.indexOf(S.screen === "pass" ? "back" : S.screen);
+  $("steps").innerHTML = at < 0 ? "" : FLOW.map((_, i) => `<span class="${i < at ? "done" : i === at ? "now" : ""}"></span>`).join("");
 }
 
-function swapArt() {
-  return `<svg viewBox="0 0 320 150" style="width:100%;max-width:420px;height:auto;margin:4px 0" aria-hidden="true">
-    <g transform="rotate(-6 100 76)"><rect x="34" y="28" width="132" height="96" rx="18" fill="#17171A"/>
-      <rect x="54" y="52" width="70" height="6" rx="3" fill="rgba(247,246,242,.55)"/><rect x="54" y="66" width="92" height="6" rx="3" fill="rgba(247,246,242,.3)"/><rect x="54" y="80" width="56" height="6" rx="3" fill="rgba(247,246,242,.3)"/>
-      <text x="54" y="112" font-family="Space Mono, monospace" font-size="11" fill="#E2553F">A</text></g>
-    <g transform="rotate(6 220 76)"><rect x="154" y="28" width="132" height="96" rx="18" fill="#fff" stroke="#E5E2DA"/>
-      <rect x="174" y="52" width="80" height="6" rx="3" fill="#E5E2DA"/><rect x="174" y="66" width="60" height="6" rx="3" fill="#E5E2DA"/><rect x="174" y="80" width="88" height="6" rx="3" fill="#E5E2DA"/>
-      <text x="174" y="112" font-family="Space Mono, monospace" font-size="11" fill="#E2553F">B</text></g>
-    <g fill="none" stroke="#E2553F" stroke-width="2.5" stroke-linecap="round"><path d="M140 16c12-8 28-8 40 0"/><path d="M176 10l4 6-7 2"/><path d="M180 136c-12 8-28 8-40 0"/><path d="M144 142l-4-6 7-2"/></g>
-  </svg>`;
-}
-
-function briefHTML(i, opts = {}) {
-  const t = T(), r = roleObj(i);
-  return `<div class="card" style="display:grid;gap:10px;${opts.dark ? "background:var(--ink);color:#fff;border-color:var(--ink)" : ""}">
-    <span class="kicker" style="${opts.dark ? "color:rgba(255,255,255,.55)" : ""}">${opts.kicker || esc(cap(r.r))}</span>
-    ${opts.title ? `<h3 style="margin:0;font-family:var(--syne);font-size:20px">${opts.title}</h3>` : ""}
-    <ul style="margin:0;padding-left:18px;display:grid;gap:8px;font-size:15.5px;line-height:1.5">${r.b.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
-  </div>`;
+/* the chain itself: one ring per link, coloured by what was taught */
+function chainSVG(items) {
+  const per = 11, n = Math.max(items.length, 1), rows = Math.ceil(n / per), rh = 40, w = 320, h = rows * rh + 6;
+  let g = "";
+  items.forEach((c, i) => {
+    const r = Math.floor(i / per), k = i % per, col = r % 2 ? per - 1 - k : k;
+    const x = 24 + col * 27, y = 23 + r * rh, odd = i % 2 === 1, isNew = S.fresh && c.at === S.fresh;
+    const stroke = DEMO_COLOR[c.demo] || DEMO_COLOR.other;
+    // even links lie flat, odd links stand narrow, so neighbours read as interlocked
+    g += `<ellipse cx="${x}" cy="${y}" rx="${odd ? 15 : 17}" ry="${odd ? 7 : 12}" fill="none" stroke="${stroke}" stroke-width="${isNew ? 5 : 4}">${isNew && !reduceMotion ? `<animate attributeName="stroke-width" values="9;5" dur=".7s"/>` : ""}</ellipse>`;
+  });
+  if (!items.length) g = `<ellipse cx="160" cy="23" rx="17" ry="12" fill="none" stroke="#E5E2DA" stroke-width="4" stroke-dasharray="5 5"/>`;
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;display:block" role="img" aria-label="${esc(items.length === 1 ? T().link1 : fmt(T().links, { n: items.length }))}">${g}</svg>`;
 }
 
 function render() {
   const t = T(), stage = $("stage");
   paintStepsBar();
   let h = "";
-  const sc = scen();
   switch (S.screen) {
-  case "intro":
+  case "chain": {
+    const items = chain(), people = new Set(items.map(c => (c.name || "").trim().toLowerCase()).filter(Boolean)).size;
+    const by = {}; items.forEach(c => { by[c.demo] = (by[c.demo] || 0) + 1; });
     h = `<section class="screen">
       <span class="kicker">${t.introKicker}</span><h1>${t.introTitle}</h1>
       <p class="lead">${esc(t.introLead)}</p>
-      <div class="pills">${t.introMeta.map(m => `<span class="pill">${esc(m)}</span>`).join("")}</div>
-      ${swapArt()}
-      <a class="link" href="/free_builder/cq/" target="_blank" rel="noopener" style="align-self:flex-start">${esc(t.atlas)}</a>
-      <div class="spacer"></div>
-      <div class="btns"><button class="btn pri" data-act="toMode" data-focus>${esc(t.start)} →</button></div>
-    </section>`; break;
-
-  case "mode":
-    h = `<section class="screen">
-      <h2>${esc(t.modeTitle)}</h2>
-      <div class="heard">${t.modes.map((m, i) => `<button data-mode="${i + 1}" ${i === 0 ? "data-focus" : ""}><span class="e">${i === 0 ? PHONE1 : PHONE2}</span><span><b>${esc(m[0])}</b><small>${esc(m[1])}</small></span></button>`).join("")}</div>
-      <div class="spacer"></div>
-      <div class="btns"><button class="btn" data-act="toIntro">← ${esc(t.backBtn)}</button></div>
-    </section>`; break;
-
-  case "code":
-    h = `<section class="screen">
-      <h2>${esc(t.codeTitle)}</h2><p class="lead">${esc(t.codeLead)}</p>
-      <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-        <div><span class="kicker">${esc(t.codeYours)}</span><div id="codeShow" style="font-family:var(--mono);font-size:clamp(30px,10vw,40px);font-weight:700;letter-spacing:.12em;margin-top:6px">${esc(S.code)}</div></div>
-        <button class="btn" data-act="newCode" style="flex:none">↻ ${esc(t.codeNew)}</button>
+      <div class="card" style="display:grid;gap:14px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill" style="color:var(--ink)">${esc(items.length === 1 ? t.link1 : fmt(t.links, { n: items.length }))}</span>${people ? `<span class="pill">${esc(people === 1 ? t.person1 : fmt(t.people, { n: people }))}</span>` : ""}
+          ${Object.keys(by).map(k => `<span class="pill" style="display:inline-flex;gap:6px;align-items:center"><i style="width:8px;height:8px;border-radius:50%;background:${DEMO_COLOR[k] || DEMO_COLOR.other}"></i>${esc(demoName(k))} · ${by[k]}</span>`).join("")}</div>
+        ${chainSVG(items)}
+        ${items.length ? "" : `<p style="margin:0;font-size:14px;color:var(--muted)">${esc(t.empty)}</p>`}
       </div>
-      <label class="field"><span>${esc(t.codeEnter)}</span><input id="codeIn" maxlength="6" autocapitalize="characters" autocomplete="off" spellcheck="false" style="font-family:var(--mono);letter-spacing:.2em;text-transform:uppercase"></label>
-      <div><span class="kicker">${esc(t.rolePick)}</span>
-        <div class="seg" role="group" style="margin-top:10px">${[0, 1].map(i => `<button type="button" data-role="${i}" aria-pressed="${S.role === i}">${esc(cap(roleObj(i).r))}</button>`).join("")}</div>
-        <p style="margin:8px 0 0;font-size:12.5px;color:var(--muted)">${esc(t.roleHint)}</p></div>
+      ${items.length ? `<ul class="chain">${items.slice().reverse().slice(0, 30).map(c => `<li style="border-left:3px solid ${DEMO_COLOR[c.demo] || DEMO_COLOR.other}">${esc(c.text)}<small>${c.name ? esc(c.name) + " · " : ""}${esc(demoName(c.demo))} · ${esc(new Date(c.at).toLocaleDateString(lang === "zh" ? "zh-CN" : lang))}</small></li>`).join("")}</ul>` : ""}
       <div class="spacer"></div>
-      <div class="btns"><button class="btn" data-act="toMode">← ${esc(t.backBtn)}</button><button class="btn pri" data-act="toSituation" data-focus>${esc(t.next)} →</button></div>
-    </section>`; break;
-
-  case "situation":
-    h = `<section class="screen">
-      <span class="kicker">${esc(t.sitKicker)}${S.mode === 2 ? " · " + esc(S.code) : ""}</span>
-      <h2>${esc(sc.title)}</h2>
-      <div class="prompt" style="min-height:0"><div class="q" style="font-size:clamp(19px,5vw,23px)">${esc(sc.sit)}</div></div>
-      <div class="roles">
-        <div class="role ${S.mode === 2 && myRole() === 0 ? "speak" : ""}"><div class="k">A</div><div class="n">${esc(cap(sc.a.r))}</div></div>
-        <div class="role ${S.mode === 2 && myRole() === 1 ? "speak" : ""}"><div class="k">B</div><div class="n">${esc(cap(sc.b.r))}</div></div>
-      </div>
-      <div class="tip"><i>◎</i><span><b>${esc(t.goalLbl)}</b>${esc(sc.goal)}</span></div>
-      <div class="spacer"></div>
-      <div class="btns">
-        ${S.mode === 1 && !S.swapped ? `<button class="btn" data-act="another">↻ ${esc(t.another)}</button>` : ""}
-        <button class="btn pri" data-act="toBrief" data-focus>${esc(t.readBriefs)} →</button>
-      </div>
-    </section>`; break;
-
-  case "pass0": case "pass1": {
-    const i = S.screen === "pass0" ? 0 : 1, r = roleObj(i).r;
-    h = `<section class="screen">${curtainHTML(fmt(t.passTo, { r }), fmt(t.passLead, { r }), fmt(t.ready, { r }), i === 0 ? "toBrief0" : "toBrief1")}</section>`; break; }
-
-  case "brief0": case "brief1": case "brief": {
-    const i = S.screen === "brief" ? myRole() : S.screen === "brief0" ? 0 : 1, r = roleObj(i).r;
-    const nextAct = S.screen === "brief0" ? "toPass1" : "toTalk";
-    h = `<section class="screen">
-      ${briefHTML(i, { dark: true, kicker: fmt(t.briefKicker, { r }), title: esc(t.briefTitle) })}
-      <p style="margin:0;font-size:13.5px;color:var(--muted)">${esc(t.briefNote)}</p>
-      <div class="tip"><i>◎</i><span><b>${esc(t.goalLbl)}</b>${esc(sc.goal)}</span></div>
-      <div class="spacer"></div>
-      <div class="btns"><button class="btn pri" data-act="${nextAct}" data-focus>${esc(t.hide)} →</button></div>
+      <div class="btns"><button class="btn pri" data-act="toWhat" data-focus>${esc(t.teachNow)} →</button></div>
+      ${items.length ? `<div class="btns"><button class="btn" data-act="copy">⧉ ${esc(t.copyChain)}</button><button class="btn" data-act="clear" style="color:var(--muted)">${esc(t.clear)}</button></div>` : ""}
     </section>`; break; }
 
-  case "talk":
+  case "what":
     h = `<section class="screen">
-      <h2>${esc(t.talkTitle)}</h2>
-      <p class="lead">${esc(t.talkLead)}</p>
-      <div class="tip"><i>◎</i><span><b>${esc(t.goalLbl)}</b>${esc(sc.goal)}</span></div>
-      <div class="timer" id="timer" style="width:min(56vw,210px)">${ringSVG()}<div class="num"><div><b id="tnum">5:00</b><small id="tlbl"></small></div></div></div>
-      <div class="tip" id="ltip"><i>✦</i><span>${esc(t.talkTips[S.tipIdx % t.talkTips.length])}</span></div>
-      <div class="spacer"></div>
-      <div class="btns">
-        <button class="btn" data-act="pause" id="pauseBtn">${esc(timer.running || timer.ended ? t.pause : t.resume)}</button>
-        <button class="btn pri" data-act="toOutcome" data-focus>${esc(t.reached)} →</button>
+      <h2>${esc(t.whatTitle)}</h2><p class="lead">${esc(t.whatLead)}</p>
+      <div class="seg" role="group">${DEMO_KEYS.map(k => `<button type="button" data-demo="${k}" aria-pressed="${S.demo === k}" style="display:inline-flex;gap:7px;align-items:center"><i style="width:8px;height:8px;border-radius:50%;background:${DEMO_COLOR[k]}"></i>${esc(k === "other" ? t.other : demoName(k))}</button>`).join("")}</div>
+      ${S.demo === "other" ? `<label class="field"><span>${esc(t.other)}</span><input id="otherIn" maxlength="60" autocomplete="off" placeholder="${esc(t.otherPh)}" value="${esc(S.other)}"></label>` : ""}
+      <div class="row2">
+        <label class="field"><span>${esc(t.teacherLbl)}</span><input id="teacherIn" maxlength="24" autocomplete="off" placeholder="${esc(t.teacherPh)}" value="${esc(S.teacher)}"></label>
+        <label class="field"><span>${esc(t.learnerLbl)}</span><input id="learnerIn" maxlength="24" autocomplete="off" placeholder="${esc(t.learnerPh)}" value="${esc(S.learner)}"></label>
       </div>
-    </section>`; break;
-
-  case "outcome":
-    h = `<section class="screen">
-      <h2>${esc(t.outcomeTitle)}</h2>
-      <div class="heard">${t.outcomes.map((o, i) => `<button data-out="${i}" ${i === 0 ? "data-focus" : ""}><span class="e">${OUT_ICONS[i]}</span><span><b>${esc(o[0])}</b><small>${esc(o[1])}</small></span></button>`).join("")}</div>
-      <p style="margin:0;font-size:13.5px;color:var(--muted)">${esc(t.outcomeNote)}</p>
-    </section>`; break;
-
-  case "reveal":
-    h = `<section class="screen">
-      <span class="kicker" style="color:var(--accent-ink)">${esc(t.revealKicker)} · ${esc(sc.dim)}</span>
-      <h2>${esc(t.revealTitle)}</h2>
-      <div style="display:grid;gap:10px">${briefHTML(0, { dark: myRole() === 0 && S.mode === 2, kicker: "A · " + esc(cap(sc.a.r)) })}${briefHTML(1, { dark: myRole() === 1 && S.mode === 2, kicker: "B · " + esc(cap(sc.b.r)) })}</div>
-      <div class="monday"><b>${esc(t.diffLbl)}</b>${esc(sc.diff)}</div>
-      <p style="margin:0;font-size:12.5px;color:var(--muted)">${esc(t.dimNote)}</p>
-      <div><span class="kicker">${esc(t.reflectLbl)}</span>
-        <ol style="margin:10px 0 0;padding-left:20px;display:grid;gap:8px;font-size:15px;line-height:1.5">${t.reflect.map(q => `<li>${esc(q)}</li>`).join("")}</ol></div>
       <div class="spacer"></div>
-      <div class="btns">
-        ${S.rounds < 1 ? `<button class="btn" data-act="toSwap">⇄ ${esc(t.swapBtn)}</button>` : ""}
-        <button class="btn pri" data-act="toEnd" ${S.rounds >= 1 ? "data-focus" : ""}>${esc(t.finish)} →</button>
-      </div>
+      <div class="btns"><button class="btn" data-act="toChain">← ${esc(t.backBtn)}</button><button class="btn pri" data-act="toPrep" id="nextBtn" ${canPrep() ? "" : "disabled"}>${esc(t.next)} →</button></div>
     </section>`; break;
 
-  case "swap":
-    h = `<section class="screen">${curtainHTML(esc(t.swapTitle), fmt(t.swapLead, { a: sc.a.r, b: sc.b.r }) + (S.mode === 2 ? "<br><br>" + esc(t.swap2) : ""), esc(t.swapGo), "afterSwap")}</section>`; break;
-
-  case "end":
+  case "prep": {
+    const hints = DEMO_HINTS[lang][S.demo] || DEMO_HINTS[lang].other;
     h = `<section class="screen">
-      <span class="kicker" style="color:var(--good)">✓ ${esc(t.endKicker)}</span>
-      <h2>${esc(t.endTitle)}</h2>
-      <p class="serif">${esc(t.endLead)}</p>
+      <span class="kicker">${esc(S.demo === "other" ? S.other : demoName(S.demo))}</span>
+      <h2>${esc(t.prepTitle)}</h2><p class="lead">${esc(t.prepLead)}</p>
+      ${[0, 1, 2].map(i => `<label class="field"><span>0${i + 1}</span><input data-pt="${i}" maxlength="80" autocomplete="off" placeholder="${esc(hints[i] || t.pointPh[i])}" value="${esc(S.points[i])}"></label>`).join("")}
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="toWhat">← ${esc(t.backBtn)}</button><button class="btn pri" data-act="toTeach" data-focus>${esc(t.next)} →</button></div>
+    </section>`; break; }
+
+  case "teach": {
+    const hints = DEMO_HINTS[lang][S.demo] || DEMO_HINTS[lang].other;
+    const pts = S.points.map((p, i) => p.trim() || hints[i]).filter(Boolean);
+    h = `<section class="screen">
+      <h2>${fmt(t.teachTitle, { n: S.teacher.trim() })}</h2>
+      <p class="lead">${esc(t.teachLead)}</p>
+      ${pts.length ? `<div class="stems">${pts.map((p, i) => `<div><b style="font-family:var(--mono);color:var(--accent-ink);font-weight:400;margin-right:8px">0${i + 1}</b>${esc(p)}</div>`).join("")}</div>` : ""}
+      <div class="timer" id="timer" style="width:min(48vw,180px)">${ringSVG()}<div class="num"><div><b id="tnum">2:00</b><small id="tlbl"></small></div></div></div>
+      <div class="tip" id="ltip"><i>✦</i><span>${esc(t.teachTips[S.tipIdx % t.teachTips.length])}</span></div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="pause" id="pauseBtn">${esc(timer.running || timer.ended ? t.pause : t.resume)}</button><button class="btn pri" data-act="toPass" data-focus>${esc(t.done)} →</button></div>
+    </section>`; break; }
+
+  case "pass":
+    h = `<section class="screen">${curtainHTML(fmt(t.passTitle, { l: S.learner.trim() }), esc(t.passLead), fmt(t.passGo, { l: S.learner.trim() }), "toBack")}</section>`; break;
+
+  case "back":
+    h = `<section class="screen">
+      <h2>${fmt(t.backTitle, { l: S.learner.trim() })}</h2>
+      <p class="lead">${esc(t.backLead)}</p>
+      <label class="field"><textarea id="backIn" maxlength="280" placeholder="${esc(t.backPh)}" style="min-height:140px">${esc(S.back)}</textarea></label>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="toAdd" id="nextBtn" ${S.back.trim().length > 3 ? "" : "disabled"}>${esc(t.next)} →</button></div>
+    </section>`; break;
+
+  case "add":
+    h = `<section class="screen">
+      <h2>${esc(t.addTitle)}</h2>
+      <p class="lead">${fmt(t.addLead, { t: S.teacher.trim(), l: S.learner.trim() })}</p>
+      <div class="prompt" style="min-height:0"><div class="q" style="font-size:21px">“${esc(S.back.trim())}”</div><div class="meta"><span>${esc(S.learner.trim())}</span><span>${esc(S.demo === "other" ? S.other : demoName(S.demo))}</span></div></div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="save" data-focus>⊂⊃ ${esc(t.save)}</button></div>
+    </section>`; break;
+
+  case "link":
+    h = `<section class="screen">
+      <span class="kicker" style="color:var(--good)">✓ ${esc(t.linkKicker)}</span>
+      <h2>${fmt(t.linkTitle, { l: S.learner.trim() })}</h2>
+      <div class="card">${chainSVG(chain())}</div>
+      <p class="serif">${fmt(t.linkLead, { l: S.learner.trim() })}</p>
       <div class="monday"><b>${esc(t.monday)}</b>${esc(t.mondayTxt)}</div>
       <div class="spacer"></div>
-      <div class="btns"><button class="btn" data-act="again">↻ ${esc(t.again)}</button><button class="btn pri" data-act="teach" data-focus>${esc(t.passOn)} →</button></div>
+      <div class="btns"><button class="btn" data-act="toWhatAgain">↻ ${esc(t.again)}</button><button class="btn pri" data-act="toChain" data-focus>${esc(t.seeChain)} →</button></div>
     </section>`; break;
-
-  case "teach": h = teachHTML("swap"); break;
   }
   const hadFocus = stage.contains(document.activeElement);
   stage.innerHTML = h;
@@ -801,93 +621,66 @@ function render() {
   if (f && hadFocus) f.focus({ preventScroll: true });
 }
 
-const svgI = p => `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#17171A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
-const PHONE1 = svgI('<rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2" stroke="#E2553F"/>');
-const PHONE2 = svgI('<rect x="2.5" y="5" width="8" height="15" rx="2"/><rect x="13.5" y="5" width="8" height="15" rx="2"/><path d="M8.5 2.5c2-1.3 5-1.3 7 0" stroke="#E2553F"/>');
-const OUT_ICONS = [
-  '<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="9" fill="var(--good)"/></svg>',
-  '<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="8.25" fill="none" stroke="var(--ink)" stroke-width="1.5"/><path d="M11 2.75a8.25 8.25 0 0 1 0 16.5z" fill="var(--ink)"/></svg>',
-  '<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="8.25" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 3"/></svg>'
-];
+function canPrep() { return S.demo && S.learner.trim() && S.teacher.trim() && (S.demo !== "other" || S.other.trim()); }
 
-function teachHTML(demo) {
-  const t = T(), chain = store.get("fb_teachback", []).filter(c => c.demo === demo);
-  return `<section class="screen">
-    <span class="kicker" style="color:var(--accent-ink)">${esc(t.teachKicker)}</span>
-    <h2>${esc(t.teachTitle)}</h2>
-    <p class="lead">${esc(t.teachLead)}</p>
-    <div class="steps3">${t.t3.map((s, i) => `<div><b>0${i + 1}</b><span>${esc(s)}</span><small style="display:block;font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.4">${esc(t.t3sub[i])}</small></div>`).join("")}</div>
-    <div class="card" style="display:grid;gap:12px">
-      <label class="field"><span>${esc(t.learnerName)}</span><input id="lName" maxlength="30" autocomplete="off" placeholder="${esc(t.learnerPh)}"></label>
-      <label class="field"><span>${esc(t.learned)}</span><textarea id="lText" maxlength="280" placeholder="${esc(t.learnedPh)}"></textarea></label>
-      <button class="btn pri" data-act="saveTeach" style="flex:none">${esc(t.save)}</button>
-    </div>
-    <div><span class="kicker">${esc(t.chainTitle)}</span>
-      <ul class="chain" style="margin-top:10px">${chain.length ? chain.slice().reverse().map(c => `<li>${esc(c.text)}<small>${c.name ? esc(c.name) + " · " : ""}${esc(new Date(c.at).toLocaleDateString(lang === "zh" ? "zh-CN" : lang))}</small></li>`).join("") : `<li style="color:var(--muted)">${esc(t.chainEmpty)}</li>`}</ul></div>
-    <a class="link" href="/free_builder/teachback">⊂⊃ ${esc(lang === "zh" ? "教回去链条 ↗" : lang === "es" ? "Cadena de Enseñar de Vuelta ↗" : "Teach-Back Chain ↗")}</a>
-    <button class="link" data-act="restart">${esc(t.restart)}</button>
-  </section>`;
-}
-
-function startTalk() {
-  timer.start(300, () => toast(T().timeUp));
+function startTeach() {
+  timer.start(120, () => toast(T().teachTips[0]));
   const pb = $("pauseBtn"); if (pb) pb.textContent = T().pause;
-  const tips = setInterval(() => {
-    if (S.screen !== "talk") { clearInterval(tips); return; }
-    S.tipIdx++; const el = $("ltip"); if (el) el.querySelector("span").textContent = T().talkTips[S.tipIdx % T().talkTips.length];
+  const iv = setInterval(() => {
+    if (S.screen !== "teach") { clearInterval(iv); return; }
+    S.tipIdx++; const el = $("ltip"); if (el) el.querySelector("span").textContent = T().teachTips[S.tipIdx % T().teachTips.length];
   }, 25000);
 }
 
-function reset(full) {
-  Object.assign(S, { swapped: false, outcome: null, rounds: 0, tipIdx: 0 });
-  if (full) { S.code = newCode(); pickFromCode(); }
+function chainText() {
+  const t = T(), items = chain();
+  return [`FREE//BUILDER — ${t.product}`, items.length === 1 ? t.link1 : fmt(t.links, { n: items.length }), "",
+    ...items.map(c => `⊂⊃ ${demoName(c.demo)}${c.name ? " · " + c.name : ""}: ${c.text}`), "", "wei-meng.org/free_builder/teachback"].join("\n");
 }
 
 $("stage").addEventListener("input", e => {
-  if (e.target.id !== "codeIn") return;
-  const v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-  if (v !== e.target.value) e.target.value = v;
-  if (v.length === 6) { S.code = v; pickFromCode(); const c = $("codeShow"); if (c) c.textContent = v; render(); toast("✓ " + v); }
+  const el = e.target, nb = $("nextBtn");
+  if (el.id === "otherIn") { S.other = el.value; if (nb) nb.disabled = !canPrep(); }
+  if (el.id === "teacherIn") { S.teacher = el.value; store.set("fb_tb_teacher", el.value); if (nb) nb.disabled = !canPrep(); }
+  if (el.id === "learnerIn") { S.learner = el.value; if (nb) nb.disabled = !canPrep(); }
+  if (el.dataset.pt) S.points[+el.dataset.pt] = el.value;
+  if (el.id === "backIn") { S.back = el.value; if (nb) nb.disabled = !(el.value.trim().length > 3); }
 });
 $("stage").addEventListener("click", e => {
   sound.init();
-  const m = e.target.closest("[data-mode]"), r = e.target.closest("[data-role]"), o = e.target.closest("[data-out]"), a = e.target.closest("[data-act]");
-  if (m) { sound.tap(); S.mode = +m.dataset.mode; reset(true); go(S.mode === 2 ? "code" : "situation"); return; }
-  if (r) { sound.tap(); S.role = +r.dataset.role; render(); return; }
-  if (o) { sound.warm(); S.outcome = +o.dataset.out; go("reveal"); return; }
+  const d = e.target.closest("[data-demo]"), a = e.target.closest("[data-act]");
+  if (d) { sound.tap(); S.demo = d.dataset.demo; render(); if (S.demo === "other") { const o = $("otherIn"); if (o && !matchMedia("(pointer: coarse)").matches) o.focus(); } return; }
   if (!a) return;
   const k = a.dataset.act; sound.tap();
   switch (k) {
-    case "toIntro": go("intro"); break;
-    case "toMode": go("mode"); break;
-    case "newCode": S.code = newCode(); pickFromCode(); render(); break;
-    case "toSituation": go("situation"); break;
-    case "another": { const prev = S.sc; let g = 0; do { S.code = newCode(); pickFromCode(); g++; } while (S.sc === prev && g < 40); render(); break; }
-    case "toBrief": go(S.mode === 2 ? "brief" : "pass0"); break;
-    case "toBrief0": go("brief0"); break;
-    case "toPass1": go("pass1"); break;
-    case "toBrief1": go("brief1"); break;
-    case "toTalk": go("talk"); break;
+    case "toChain": S.fresh = null; go("chain"); break;
+    case "toWhat": go("what"); break;
+    case "toWhatAgain": Object.assign(S, { demo: null, other: "", points: ["", "", ""], learner: "", back: "", fresh: null }); go("what"); break;
+    case "toPrep": if (canPrep()) go("prep"); break;
+    case "toTeach": go("teach"); break;
     case "pause":
       if (timer.ended) return;
       if (timer.running) { timer.pause(); a.textContent = T().resume; } else { timer.resume(); a.textContent = T().pause; }
       break;
-    case "toOutcome": timer.stop(); go("outcome"); break;
-    case "toSwap": go("swap"); break;
-    case "afterSwap": S.swapped = !S.swapped; S.rounds++; S.outcome = null; go(S.mode === 2 ? "brief" : "pass0"); break;
-    case "toEnd": sound.warm(); go("end"); break;
-    case "again": reset(true); go(S.mode === 2 ? "code" : "situation"); break;
-    case "teach": go("teach"); break;
-    case "saveTeach": {
-      const text = ($("lText").value || "").trim(), name = ($("lName").value || "").trim();
-      if (!text) { $("lText").focus(); return; }
-      const chain = store.get("fb_teachback", []); chain.push({ demo: "swap", text, name, at: Date.now() }); store.set("fb_teachback", chain.slice(-50));
-      sound.warm(); toast(T().saved); render(); break; }
-    case "restart": reset(true); go("intro"); break;
+    case "toPass": go("pass"); break;
+    case "toBack": go("back"); break;
+    case "toAdd": go("add"); break;
+    case "save": {
+      const at = Date.now(), list = store.get("fb_teachback", []);
+      list.push({ demo: S.demo, text: S.back.trim() + (S.demo === "other" && S.other.trim() ? ` (${S.other.trim()})` : ""), name: S.learner.trim(), at });
+      store.set("fb_teachback", list.slice(-50)); S.fresh = at; sound.warm(); buzz(30); go("link"); break; }
+    case "copy": {
+      const text = chainText(), ok = () => toast(T().copied);
+      if (navigator.clipboard) navigator.clipboard.writeText(text).then(ok).catch(fb); else fb();
+      function fb() { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove(); ok(); }
+      break; }
+    case "clear":
+      if (!S.clearArmed) { S.clearArmed = true; toast(T().clearSure); a.style.color = "var(--accent)"; a.style.borderColor = "var(--accent)"; return; }
+      store.set("fb_teachback", []); toast(T().cleared); S.clearArmed = false; render(); break;
   }
 });
 
-window.__app = { S, go, render, timer, pickFromCode, SCEN };
+window.__app = { S, go, render, timer, chain };
 
 /* ---------- facilitator guide ---------- */
 const drawer = $("drawer");

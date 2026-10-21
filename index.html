@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="page-title">WEI MENG — L&D Architect & Experience Designer</title>
   <meta name="description" content="Wei Meng designs playful, hands-on learning for the human skills AI can't replace — listening, empathy, trust — built to end in real conversations between colleagues.">
-  <meta name="theme-color" content="#F7F6F2">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Cpolyline points='7.5,12 11.75,22 16,14.5 20.25,22 24.5,12' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='8' r='1.7' fill='%23E2553F'/%3E%3C/svg%3E">
 
   <!-- Fonts -->
@@ -35,7 +34,7 @@
     /* Dot grid that fades out toward the bottom of the viewport */
     .bg-dots {
       position: fixed; inset: 0; z-index: -1; pointer-events: none;
-      background-image: radial-gradient(rgba(23,23,26,.09) 1px, transparent 1px);
+      background-image: radial-gradient(rgba(var(--dot-rgb,23,23,26),.09) 1px, transparent 1px);
       background-size: 22px 22px;
       -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
               mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
@@ -57,7 +56,7 @@
       font-family: 'Instrument Serif', Georgia, serif;
       font-style: italic;
       font-weight: 400;
-      color: #6B6A70;
+      color:var(--muted,#6B6A70);
       white-space: nowrap;
       padding-bottom: .12em;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7 Q 12 1 22 7 T 42 7 T 62 7 T 82 7 T 102 7 T 118 6' fill='none' stroke='%23E2553F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
@@ -114,7 +113,7 @@
     .term-id { display:inline-flex; align-items:center; gap:10px; min-width:0; }
     .term-sub { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .term-hint { display:inline-flex; align-items:center; gap:8px; color:rgba(247,246,242,.7); white-space:nowrap; }
-    .term-chev { display:inline-block; color:#E2553F; transition:transform .45s var(--ease); }
+    .term-chev { display:inline-block; color:var(--accent-text,#E2553F); transition:transform .45s var(--ease); }
     .term.open .term-chev { transform:rotate(90deg); }
     .term-bar:hover .term-hint { color:#fff; }
     .term-panel { display:grid; grid-template-rows:0fr; transition:grid-template-rows .55s var(--ease); }
@@ -128,12 +127,12 @@
     .term-line { white-space:pre-wrap; word-break:break-word; color:rgba(247,246,242,.82); }
     .term-line.dim { color:rgba(247,246,242,.4); }
     .term-line.hi { color:#fff; }
-    .term-line .c { color:#E2553F; }
+    .term-line .c { color:var(--accent-text,#E2553F); }
     html.js .term-line.pending { display:none; }
     .prog { display:grid; grid-template-columns:7.5rem 1fr auto; gap:6px 16px; align-items:baseline; width:100%; text-align:left;
       padding:10px 12px; margin:2px -12px; border-radius:12px; color:inherit; text-decoration:none; transition:background .2s, color .2s; }
-    .prog:hover, .prog:focus-visible { background:#F7F6F2; color:#17171A; outline:none; }
-    .prog .code { font-weight:700; color:#E2553F; white-space:nowrap; }
+    .prog:hover, .prog:focus-visible { background:var(--paper,#F7F6F2); color:var(--ink,#17171A); outline:none; }
+    .prog .code { font-weight:700; color:var(--accent-text,#E2553F); white-space:nowrap; }
     .prog .ttl { font-weight:700; }
     .prog .ttl small { display:block; font-weight:400; font-size:12px; opacity:.6; margin-top:2px; font-family:'Plus Jakarta Sans', system-ui, sans-serif; letter-spacing:0; }
     .prog .go { font-size:12px; opacity:.5; white-space:nowrap; }
@@ -154,14 +153,42 @@
     }
   
     /* small coral labels: a deeper tone keeps WCAG AA contrast */
-    .text-accent.text-\[11px\], .text-accent.text-\[10px\], .text-accent.text-xs { color:#C2412D; }
-    .bg-ink .text-accent, .text-accent[data-i18n="realityLabel"] { color:#E2553F; }
+    .text-accent.text-\[11px\], .text-accent.text-\[10px\], .text-accent.text-xs { color:var(--accent-ink,#C2412D); }
+    .bg-ink .text-accent, .text-accent[data-i18n="realityLabel"] { color:var(--accent-text,#E2553F); }
 
     /* Chinese: keep CJK upright (no faux italic); Latin italics stay real */
     html:lang(zh) { font-synthesis: weight; }
+
+    /* a11y + small-screen fixes (2026-10-21) */
+    .bg-ink .text-accent, .on-dark .text-accent { color:#F2A091 !important; }
+    .bg-ink .text-white\/45, .bg-ink .text-white\/40 { color:rgba(255,255,255,.64); }
+    .bg-accent.text-white.text-\[10px\] { background:#C2412D; }
+    html, body { overflow-x:clip; }
+    @media (max-width:359px) { header .px-3\.5 { padding-left:.6rem; padding-right:.6rem; } header .gap-2, header .gap-3 { gap:.4rem; } header button[onclick="cycleLanguage()"] svg { display:none; } }
 </style>
   <script>document.documentElement.classList.add('js');</script>
-</head>
+<meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)"><style id="fb-dark">
+:root{color-scheme:light dark}
+@media (prefers-color-scheme: dark){
+:root{--paper:#141416;--ink:#ECEBE6;--muted:#A8A7AD;--line:#303036;--grid:#26262B;--white:#1D1D21;--inkbg:#2B2B31;--inkbd:#3B3B42;--accent-ink:#F28C76;--good:#62C48F;--paper-rgb:20,20,22;--dot-rgb:255,255,255;--ink-rgb:236,235,230;--white-rgb:29,29,33;--accent-text:#F2806A;--warn-ink:#E3B25C}
+html,body{background-color:var(--paper)}
+/* primary actions read as light on dark */
+.btn.pri,.cta a.pri,.chip.pri{background:#ECEBE6!important;border-color:#ECEBE6!important;color:#141416!important}
+.btn.pri:hover,.cta a.pri:hover,.chip.pri:hover{background:#fff!important;border-color:#fff!important}
+.btn[disabled]{opacity:.45}
+.seg button[aria-pressed="true"],.chip[aria-pressed="true"]{background:#ECEBE6!important;border-color:#ECEBE6!important;color:#141416!important}
+.steps span.done{background:#ECEBE6}
+.curtain{border:1px solid #3B3B42}
+/* illustrations keep their light look on a plate */
+.screen>svg,.plate,.card-art{background:#EFECE4;border-radius:18px}
+.plate{background:#fff!important}
+.card-art~.text-ink\/60,.card-art~span .text-ink\/60{color:rgba(23,23,26,.62)!important}
+.text-accent{color:#F2806A!important}
+.bg-white\/90.text-ink,.bg-white\/90 .text-ink{color:#ECEBE6}
+img{filter:none}
+::selection{background:#E2553F;color:#fff}
+}
+@media (prefers-color-scheme: dark){.border-line{border-color:rgb(50 50 56/var(--tw-border-opacity,1))}.border-line\/80{border-color:rgba(50,50,56,.8)}.bg-ink{background-color:rgb(46 46 53/var(--tw-bg-opacity,1))}.bg-ink\/40{background-color:rgba(46,46,53,.4)}.bg-line{background-color:rgb(48 48 54/var(--tw-bg-opacity,1))}.bg-line\/70{background-color:rgba(48,48,54,.7)}.bg-paper{background-color:rgb(20 20 22/var(--tw-bg-opacity,1))}.bg-paper\/85{background-color:rgba(20,20,22,.85)}.bg-white{background-color:rgb(30 30 34/var(--tw-bg-opacity,1))}.bg-white\/50{background-color:rgba(30,30,34,.5)}.bg-white\/60{background-color:rgba(30,30,34,.6)}.text-accent{color:rgb(242 128 106/var(--tw-text-opacity,1))}.text-emerald-700{color:rgb(110 215 170/var(--tw-text-opacity,1))}.text-ink{color:rgb(236 235 230/var(--tw-text-opacity,1))}.text-ink\/70{color:rgba(236,235,230,.7)}.text-ink\/75{color:rgba(236,235,230,.75)}.text-muted{color:rgb(168 167 173/var(--tw-text-opacity,1))}.text-muted\/80{color:rgba(168,167,173,.8)}.selection\:bg-ink ::-moz-selection{background-color:rgb(46 46 53/var(--tw-bg-opacity,1))}.selection\:bg-ink ::selection{background-color:rgb(46 46 53/var(--tw-bg-opacity,1))}.selection\:bg-ink::-moz-selection{background-color:rgb(46 46 53/var(--tw-bg-opacity,1))}.selection\:bg-ink::selection{background-color:rgb(46 46 53/var(--tw-bg-opacity,1))}.hover\:border-ink\/30:hover{border-color:rgba(236,235,230,.3)}.hover\:border-ink\/40:hover{border-color:rgba(236,235,230,.4)}.hover\:text-ink:hover{color:rgb(236 235 230/var(--tw-text-opacity,1))}}</style></head>
 
 <body class="font-sans min-h-screen antialiased selection:bg-ink selection:text-white">
   <div class="bg-dots" aria-hidden="true"></div>
@@ -393,7 +420,7 @@
               <div id="term-progs"></div>
             </div>
             <div class="term-prompt">
-              <span style="color:#E2553F">EXEC&gt;</span>
+              <span style="color:var(--accent-text,#E2553F)">EXEC&gt;</span>
               <a href="/free_builder/game/" target="_blank" rel="noopener noreferrer" id="term-open">
                 <span data-i18n="termOpen">open the full console</span><span class="term-cursor" aria-hidden="true"></span>
               </a>

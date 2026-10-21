@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="page-title">WEI MENG — Portfolio: Learning That Ends in Conversation</title>
   <meta name="description" content="Playable learning by Wei Meng. Tools are scaffolding — the point is what people do with each other afterwards.">
-  <meta name="theme-color" content="#F7F6F2">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Cpolyline points='7.5,12 11.75,22 16,14.5 20.25,22 24.5,12' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='8' r='1.7' fill='%23E2553F'/%3E%3C/svg%3E">
 
   <link rel="stylesheet" href="/fonts/fonts.css">
@@ -22,7 +21,7 @@
 
     .bg-dots {
       position: fixed; inset: 0; z-index: -1; pointer-events: none;
-      background-image: radial-gradient(rgba(23,23,26,.09) 1px, transparent 1px);
+      background-image: radial-gradient(rgba(var(--dot-rgb,23,23,26),.09) 1px, transparent 1px);
       background-size: 22px 22px;
       -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
               mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
@@ -38,7 +37,7 @@
 
     .accent-word {
       font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400;
-      color: #6B6A70; white-space: nowrap; padding-bottom: .12em;
+      color:var(--muted,#6B6A70); white-space: nowrap; padding-bottom: .12em;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7 Q 12 1 22 7 T 42 7 T 62 7 T 82 7 T 102 7 T 118 6' fill='none' stroke='%23E2553F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
       background-repeat: no-repeat; background-position: left bottom; background-size: 0% .32em;
       animation: draw 1.1s .5s var(--ease) forwards;
@@ -47,7 +46,7 @@
 
     /* Cards */
     .card { transition: transform .45s var(--ease), box-shadow .45s var(--ease), border-color .3s ease; }
-    .card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -24px rgba(23,23,26,.35); border-color: rgba(23,23,26,.14); }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -24px rgba(23,23,26,.35); border-color: rgba(var(--ink-rgb,23,23,26),.14); }
     .card-img { filter: grayscale(.45) contrast(1.02); opacity: .88; transition: filter .6s var(--ease), transform .8s var(--ease), opacity .6s ease; }
     .card:hover .card-img { filter: none; opacity: 1; transform: scale(1.05); }
     .card-art { transition: transform .8s var(--ease); }
@@ -58,6 +57,16 @@
     .wave { animation: wave 1.6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
     .wave:nth-child(2) { animation-delay: .2s; } .wave:nth-child(3) { animation-delay: .4s; }
     @keyframes wave { 50% { transform: scaleY(.45); } }
+
+    .hop { animation: hop 1.8s cubic-bezier(.3,.7,.4,1) infinite; transform-box: fill-box; }
+    @keyframes hop { 40% { transform: translateY(-16px); } 60% { transform: translateY(-16px); } }
+    .ping { animation: ping 2.4s ease-out infinite; transform-origin: center; transform-box: fill-box; opacity: 0; }
+    .ping:nth-of-type(2) { animation-delay: .8s; }
+    @keyframes ping { 0% { opacity: .7; transform: scale(1); } 100% { opacity: 0; transform: scale(1.7); } }
+    .flicker { animation: flicker .5s ease-in-out infinite alternate; transform-origin: top; transform-box: fill-box; }
+    @keyframes flicker { to { transform: scaleY(1.5); } }
+    .flag { animation: flag 2.2s ease-in-out infinite; transform-origin: left; transform-box: fill-box; }
+    @keyframes flag { 50% { transform: scaleX(.86); } }
 
     @keyframes eggIn { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
     .egg-unlocked { animation: eggIn .5s var(--ease) both; }
@@ -71,23 +80,51 @@
     }
   
     /* small coral labels: a deeper tone keeps WCAG AA contrast */
-    .text-accent.text-\[11px\], .text-accent.text-\[10px\], .text-accent.text-xs { color:#C2412D; }
+    .text-accent.text-\[11px\], .text-accent.text-\[10px\], .text-accent.text-xs { color:var(--accent-ink,#C2412D); }
 
     /* Chinese: keep CJK upright (no faux italic); Latin italics stay real */
     html:lang(zh) { font-synthesis: weight; }
 
     /* C / Beyond the screen */
     .bts-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; }
-    .bts-card { position:relative; display:flex; flex-direction:column; gap:6px; padding:18px 20px 20px; border-radius:22px; border:1px solid #E5E2DA; background:#fff; text-decoration:none; color:#17171A; transition:border-color .2s, transform .2s; }
-    .bts-card:hover { border-color:rgba(23,23,26,.4); transform:translateY(-2px); }
-    .bts-k { font-family:"Space Mono",ui-monospace,monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:#C2412D; }
+    .bts-card { position:relative; display:flex; flex-direction:column; gap:6px; padding:18px 20px 20px; border-radius:22px; border:1px solid #E5E2DA; background:var(--white,#fff); text-decoration:none; color:var(--ink,#17171A); transition:border-color .2s, transform .2s; }
+    .bts-card:hover { border-color:rgba(var(--ink-rgb,23,23,26),.4); transform:translateY(-2px); }
+    .bts-k { font-family:"Space Mono",ui-monospace,monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent-ink,#C2412D); }
     .bts-t { font-family:Syne,"Plus Jakarta Sans","PingFang SC",sans-serif; font-weight:700; font-size:18px; line-height:1.2; padding-right:22px; }
-    .bts-d { font-size:13.5px; line-height:1.5; color:rgba(23,23,26,.7); }
-    .bts-go { position:absolute; top:16px; right:18px; font-family:"Space Mono",monospace; font-size:13px; color:rgba(23,23,26,.45); }
-    .bts-card:hover .bts-go { color:#C2412D; }
+    .bts-d { font-size:13.5px; line-height:1.5; color:rgba(var(--ink-rgb,23,23,26),.7); }
+    .bts-go { position:absolute; top:16px; right:18px; font-family:"Space Mono",monospace; font-size:13px; color:rgba(var(--ink-rgb,23,23,26),.45); }
+    .bts-card:hover .bts-go { color:var(--accent-ink,#C2412D); }
+
+    /* a11y + small-screen fixes (2026-10-21) */
+    .bg-ink .text-accent, .on-dark .text-accent { color:#F2A091 !important; }
+    .bg-ink .text-white\/45, .bg-ink .text-white\/40 { color:rgba(255,255,255,.64); }
+    .bg-accent.text-white.text-\[10px\] { background:#C2412D; }
+    html, body { overflow-x:clip; }
+    @media (max-width:359px) { header .px-3\.5 { padding-left:.6rem; padding-right:.6rem; } header .gap-2, header .gap-3 { gap:.4rem; } header button[onclick="cycleLanguage()"] svg { display:none; } }
 </style>
   <script>document.documentElement.classList.add('js');</script>
-</head>
+<meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)"><style id="fb-dark">
+:root{color-scheme:light dark}
+@media (prefers-color-scheme: dark){
+:root{--paper:#141416;--ink:#ECEBE6;--muted:#A8A7AD;--line:#303036;--grid:#26262B;--white:#1D1D21;--inkbg:#2B2B31;--inkbd:#3B3B42;--accent-ink:#F28C76;--good:#62C48F;--paper-rgb:20,20,22;--dot-rgb:255,255,255;--ink-rgb:236,235,230;--white-rgb:29,29,33;--accent-text:#F2806A;--warn-ink:#E3B25C}
+html,body{background-color:var(--paper)}
+/* primary actions read as light on dark */
+.btn.pri,.cta a.pri,.chip.pri{background:#ECEBE6!important;border-color:#ECEBE6!important;color:#141416!important}
+.btn.pri:hover,.cta a.pri:hover,.chip.pri:hover{background:#fff!important;border-color:#fff!important}
+.btn[disabled]{opacity:.45}
+.seg button[aria-pressed="true"],.chip[aria-pressed="true"]{background:#ECEBE6!important;border-color:#ECEBE6!important;color:#141416!important}
+.steps span.done{background:#ECEBE6}
+.curtain{border:1px solid #3B3B42}
+/* illustrations keep their light look on a plate */
+.screen>svg,.plate,.card-art{background:#EFECE4;border-radius:18px}
+.plate{background:#fff!important}
+.card-art~.text-ink\/60,.card-art~span .text-ink\/60{color:rgba(23,23,26,.62)!important}
+.text-accent{color:#F2806A!important}
+.bg-white\/90.text-ink,.bg-white\/90 .text-ink{color:#ECEBE6}
+img{filter:none}
+::selection{background:#E2553F;color:#fff}
+}
+@media (prefers-color-scheme: dark){.border-ink{border-color:rgb(236 235 230/var(--tw-border-opacity,1))}.border-ink\/20{border-color:rgba(236,235,230,.2)}.border-ink\/25{border-color:rgba(236,235,230,.25)}.border-line{border-color:rgb(50 50 56/var(--tw-border-opacity,1))}.border-line\/80{border-color:rgba(50,50,56,.8)}.bg-\[\#F3F3F3\]{background-color:rgb(20 20 22/var(--tw-bg-opacity,1))}.bg-ink{background-color:rgb(46 46 53/var(--tw-bg-opacity,1))}.bg-ink\/40{background-color:rgba(46,46,53,.4)}.bg-ink\/80{background-color:rgba(46,46,53,.8)}.bg-ink\/85{background-color:rgba(46,46,53,.85)}.bg-line{background-color:rgb(48 48 54/var(--tw-bg-opacity,1))}.bg-line\/60{background-color:rgba(48,48,54,.6)}.bg-paper{background-color:rgb(20 20 22/var(--tw-bg-opacity,1))}.bg-paper\/85{background-color:rgba(20,20,22,.85)}.bg-white{background-color:rgb(30 30 34/var(--tw-bg-opacity,1))}.bg-white\/60{background-color:rgba(30,30,34,.6)}.bg-white\/90{background-color:rgba(30,30,34,.9)}.bg-white\/95{background-color:rgba(30,30,34,.95)}.from-ink\/80{--tw-gradient-from:rgba(46,46,53,.8) var(--tw-gradient-from-position);--tw-gradient-to:rgba(46,46,53,0) var(--tw-gradient-to-position)}.text-accent{color:rgb(242 128 106/var(--tw-text-opacity,1))}.text-emerald-700{color:rgb(110 215 170/var(--tw-text-opacity,1))}.text-ink{color:rgb(236 235 230/var(--tw-text-opacity,1))}.text-ink\/60{color:rgba(236,235,230,.6)}.text-ink\/70{color:rgba(236,235,230,.7)}.text-ink\/75{color:rgba(236,235,230,.75)}.text-muted{color:rgb(168 167 173/var(--tw-text-opacity,1))}.text-muted\/70{color:rgba(168,167,173,.7)}.decoration-accent{text-decoration-color:rgb(242,128,106)}.selection\:bg-ink ::-moz-selection{background-color:rgb(46 46 53/var(--tw-bg-opacity,1))}.selection\:bg-ink ::selection{background-color:rgb(46 46 53/var(--tw-bg-opacity,1))}.selection\:bg-ink::-moz-selection{background-color:rgb(46 46 53/var(--tw-bg-opacity,1))}.selection\:bg-ink::selection{background-color:rgb(46 46 53/var(--tw-bg-opacity,1))}.hover\:border-ink\/30:hover{border-color:rgba(236,235,230,.3)}.hover\:border-ink\/40:hover{border-color:rgba(236,235,230,.4)}.hover\:border-ink\/50:hover{border-color:rgba(236,235,230,.5)}.hover\:bg-ink:hover{background-color:rgb(46 46 53/var(--tw-bg-opacity,1))}.hover\:text-accent:hover{color:rgb(242 128 106/var(--tw-text-opacity,1))}.hover\:text-ink:hover{color:rgb(236 235 230/var(--tw-text-opacity,1))}}</style></head>
 
 <body class="font-sans min-h-screen antialiased selection:bg-ink selection:text-white">
   <div class="bg-dots" aria-hidden="true"></div>
@@ -294,14 +331,13 @@
         <!-- 02 INTERCULTURAL ATLAS + PERSPECTIVE SWAP -->
         <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <a href="https://wei-meng.org/free_builder/cq/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-ink block" tabindex="-1" aria-hidden="true">
-              <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="" loading="lazy" class="card-img w-full h-full object-cover">
-              <div class="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent"></div>
+            <a href="https://wei-meng.org/free_builder/cq/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+              <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-atlas" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-atlas)"/><g fill="none" stroke="rgba(23,23,26,.2)" stroke-width="1.5"><circle cx="160" cy="96" r="60"/><ellipse cx="160" cy="96" rx="26" ry="60"/><ellipse cx="160" cy="96" rx="48" ry="60"/><path d="M100 96h120M108 66h104M108 126h104"/></g><g class="bubble-a"><g transform="rotate(-8 88 96)"><rect x="40" y="64" width="96" height="66" rx="16" fill="#17171A"/><rect x="56" y="80" width="52" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/><rect x="56" y="92" width="38" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/><rect x="56" y="104" width="46" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/><text x="118" y="122" font-family="Space Mono, monospace" font-size="12" font-weight="700" fill="#E2553F">A</text></g></g><g class="bubble-b"><g transform="rotate(8 232 96)"><rect x="184" y="64" width="96" height="66" rx="16" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/><rect x="200" y="80" width="52" height="5" rx="2.5" fill="#E5E2DA"/><rect x="200" y="92" width="38" height="5" rx="2.5" fill="#E5E2DA"/><rect x="200" y="104" width="46" height="5" rx="2.5" fill="#E5E2DA"/><text x="262" y="122" font-family="Space Mono, monospace" font-size="12" font-weight="700" fill="#E2553F">B</text></g></g><g fill="none" stroke="#E2553F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M112 52c28-18 68-18 96 0"/><path d="M200 44l8 8-10 4"/><path d="M208 142c-28 18-68 18-96 0"/><path d="M120 150l-8-8 10-4"/></g></svg>
               <span class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 text-ink flex items-center justify-center font-mono text-xs">↗</span>
               <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span data-i18n="c2Badge">Live · two-player soon</span>
               </span>
-              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-white/80 truncate" data-i18n="c2Caption">8 corridors · 2 perspectives · 1 agreement</span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="c2Caption">8 corridors · 2 perspectives · 1 agreement</span>
             </a>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">02</span> — <span data-i18n="c2Category">Cultural intelligence · Solo → pairs</span></div>
@@ -327,14 +363,13 @@
         <!-- 03 COACHING CO-PILOT + REPAIR KIT -->
         <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <a href="https://wei-meng.org/free_builder/coach/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-ink block" tabindex="-1" aria-hidden="true">
-              <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80" alt="" loading="lazy" class="card-img w-full h-full object-cover">
-              <div class="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent"></div>
+            <a href="https://wei-meng.org/free_builder/coach/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+              <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-coach" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-coach)"/><g class="bubble-a"><rect x="34" y="42" width="66" height="112" rx="14" fill="#17171A"/><rect x="44" y="60" width="38" height="13" rx="6.5" fill="rgba(247,246,242,.45)"/><rect x="54" y="80" width="36" height="13" rx="6.5" fill="#E2553F"/><rect x="44" y="100" width="30" height="13" rx="6.5" fill="rgba(247,246,242,.45)"/><rect x="54" y="120" width="36" height="13" rx="6.5" fill="#E2553F" opacity=".55"/><rect x="58" y="144" width="18" height="3" rx="1.5" fill="rgba(247,246,242,.35)"/></g><g fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 6"><path d="M110 98h26"/></g><path d="M134 92l7 6-7 6" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><g class="bubble-a"><rect x="152" y="50" width="88" height="54" rx="22" fill="#17171A"/><path d="M174 102l-6 16 20-14z" fill="#17171A"/><rect x="170" y="70" width="40" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/><rect x="170" y="80" width="28" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/></g><g class="bubble-b"><rect x="206" y="96" width="88" height="54" rx="22" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/><path d="M272 148l6 16-20-14z" fill="#fff" stroke="#E5E2DA" stroke-width="1.5" stroke-linejoin="round"/><rect x="226" y="116" width="44" height="5" rx="2.5" fill="#E5E2DA"/><rect x="226" y="126" width="30" height="5" rx="2.5" fill="#E5E2DA"/></g><g transform="rotate(-32 226 100)"><rect x="198" y="90" width="56" height="20" rx="10" fill="#E2553F"/><rect x="217" y="93" width="18" height="14" rx="3" fill="rgba(255,255,255,.35)"/><g fill="rgba(255,255,255,.55)"><circle cx="206" cy="97" r="1.3"/><circle cx="206" cy="103" r="1.3"/><circle cx="246" cy="97" r="1.3"/><circle cx="246" cy="103" r="1.3"/></g></g></svg>
               <span class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 text-ink flex items-center justify-center font-mono text-xs">↗</span>
               <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span data-i18n="c3Badge">Live · Repair Kit soon</span>
               </span>
-              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-white/80 truncate" data-i18n="c3Caption">Rehearse alone → repair together</span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="c3Caption">Rehearse alone → repair together</span>
             </a>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">03</span> — <span data-i18n="c3Category">Leadership · Rehearsal → real talk</span></div>
@@ -378,14 +413,13 @@
         <!-- 04 DESIGN THINKING ODYSSEY -->
         <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <a href="https://wei-meng.org/free_builder/design/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-ink block" tabindex="-1" aria-hidden="true">
-              <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80" alt="" loading="lazy" class="card-img w-full h-full object-cover">
-              <div class="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent"></div>
+            <a href="https://wei-meng.org/free_builder/design/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+              <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-odyssey" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-odyssey)"/><g fill="rgba(23,23,26,.14)"><rect x="60" y="48" width="4" height="4"/><rect x="130" y="40" width="4" height="4"/><rect x="200" y="36" width="4" height="4"/><rect x="30" y="92" width="4" height="4"/><rect x="176" y="58" width="3" height="3"/></g><rect x="22" y="132" width="46" height="14" rx="4" fill="#17171A"/><text x="45" y="142.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">E</text><rect x="78" y="114" width="46" height="14" rx="4" fill="#17171A"/><text x="101" y="124.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">D</text><rect x="134" y="96" width="46" height="14" rx="4" fill="#17171A"/><text x="157" y="106.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">I</text><rect x="190" y="78" width="46" height="14" rx="4" fill="#17171A"/><text x="213" y="88.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">P</text><rect x="246" y="60" width="46" height="14" rx="4" fill="#17171A"/><text x="269" y="70.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">T</text><path d="M112 96c10-22 30-26 44-10" fill="none" stroke="#E2553F" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 5"/><g class="hop"><rect x="93" y="98" width="16" height="16" rx="3" fill="#E2553F"/><rect x="102" y="102" width="3" height="4" fill="#fff"/></g><path d="M256 60V34" stroke="#17171A" stroke-width="2.5" stroke-linecap="round"/><path class="flag" d="M257 35h18l-5 7 5 7h-18z" fill="#E2553F"/></svg>
               <span class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 text-ink flex items-center justify-center font-mono text-xs">↗</span>
               <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
                 <span class="w-1.5 h-1.5 rounded-full bg-accent"></span><span data-i18n="c4Badge">5-phase platformer</span>
               </span>
-              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-white/80 truncate" data-i18n="c4Caption">Empathize · Define · Ideate · Prototype · Test</span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="c4Caption">Empathize · Define · Ideate · Prototype · Test</span>
             </a>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">04</span> — <span data-i18n="c4Category">Innovation · Game-based</span></div>
@@ -414,14 +448,13 @@
         <!-- 05 ONBOARDING -->
         <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <a href="/free_builder/launchpad/" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-ink block" tabindex="-1" aria-hidden="true">
-              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80" alt="" loading="lazy" class="card-img w-full h-full object-cover">
-              <div class="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent"></div>
+            <a href="/free_builder/launchpad/" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+              <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-launch" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-launch)"/><path d="M38 146C90 150 92 82 140 84S198 142 240 112 266 76 274 66" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 7"/><circle class="ping" cx="38" cy="146" r="15" fill="none" stroke="#E2553F" stroke-width="2"/><circle cx="38" cy="146" r="13" fill="#fff" stroke="#17171A" stroke-width="1.5"/><text x="38" y="150" text-anchor="middle" font-family="Space Mono, monospace" font-size="11" font-weight="700" fill="#17171A">1</text><circle class="ping" cx="140" cy="84" r="15" fill="none" stroke="#E2553F" stroke-width="2"/><circle cx="140" cy="84" r="13" fill="#17171A" stroke="#17171A" stroke-width="1.5"/><text x="140" y="88" text-anchor="middle" font-family="Space Mono, monospace" font-size="11" font-weight="700" fill="#fff">2</text><circle class="ping" cx="226" cy="120" r="15" fill="none" stroke="#E2553F" stroke-width="2"/><circle cx="226" cy="120" r="13" fill="#fff" stroke="#17171A" stroke-width="1.5"/><text x="226" y="124" text-anchor="middle" font-family="Space Mono, monospace" font-size="11" font-weight="700" fill="#17171A">3</text><g fill="#17171A"><circle cx="112" cy="52" r="6"/><path d="M101 72c0-8 5-12 11-12s11 4 11 12z"/></g><g fill="#E2553F"><circle cx="132" cy="50" r="6"/><path d="M121 70c0-8 5-12 11-12s11 4 11 12z"/></g><g fill="#17171A" opacity=".85"><circle cx="186" cy="132" r="5"/><path d="M177 149c0-7 4-10 9-10s9 3 9 10z"/></g><g fill="#E2553F" opacity=".85"><circle cx="202" cy="138" r="5"/><path d="M193 155c0-7 4-10 9-10s9 3 9 10z"/></g><g class="bubble-a"><g transform="translate(282 56) rotate(40)"><path class="flicker" d="M-4 13q4 12 8 0z" fill="#E2553F"/><path d="M0-18C9-9 9 5 6 12H-6C-9 5-9-9 0-18Z" fill="#17171A"/><circle cx="0" cy="-4" r="3.2" fill="#F7F6F2"/><path d="M-6 4l-6 9h6zM6 4l6 9H6z" fill="#E2553F"/></g></g></svg>
               <span class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 text-ink flex items-center justify-center font-mono text-xs">↗</span>
               <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span data-i18n="c5Badge">Live · new colleague trail</span>
               </span>
-              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-white/80 truncate" data-i18n="c5Caption">One day · every phone · real people</span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="c5Caption">One day · every phone · real people</span>
             </a>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">05</span> — <span data-i18n="c5Category">Onboarding · Simulation</span></div>
@@ -446,16 +479,15 @@
         <!-- 06 CORPORATE SURVIVAL DRAMA -->
         <article class="card group reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <button type="button" onclick="openVideoModal()" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-ink block text-left" aria-label="Play trailer">
-              <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=800&q=80" alt="" loading="lazy" class="card-img w-full h-full object-cover">
-              <div class="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent"></div>
+            <button type="button" onclick="openVideoModal()" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block text-left" aria-label="Play trailer">
+              <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-drama" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-drama)"/><rect x="118" y="26" width="84" height="138" rx="14" fill="#17171A"/><g fill="rgba(247,246,242,.5)"><circle cx="146" cy="48" r="8"/><path d="M132 68c0-8 6-12 14-12s14 4 14 12z"/></g><g fill="#E2553F"><circle cx="176" cy="48" r="8"/><path d="M162 68c0-8 6-12 14-12s14 4 14 12z"/></g><rect x="132" y="134" width="56" height="5" rx="2.5" fill="rgba(247,246,242,.5)"/><rect x="140" y="144" width="40" height="5" rx="2.5" fill="rgba(247,246,242,.3)"/><g fill="none" stroke="#17171A" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="2 6"><path d="M114 96C96 96 92 82 84 76"/><path d="M206 104c18 0 22 12 30 18"/></g><g class="bubble-a"><rect x="38" y="52" width="52" height="34" rx="14" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/><text x="64" y="74" text-anchor="middle" font-family="Space Mono, monospace" font-size="14" font-weight="700" fill="#17171A">A?</text></g><g class="bubble-b"><rect x="230" y="112" width="52" height="34" rx="14" fill="#E2553F"/><text x="256" y="134" text-anchor="middle" font-family="Space Mono, monospace" font-size="14" font-weight="700" fill="#fff">B?</text></g></svg>
               <div class="absolute inset-0 flex items-center justify-center">
                 <span class="w-14 h-14 rounded-full bg-white/95 text-ink flex items-center justify-center shadow-xl transition-transform duration-500 group-hover:scale-110"><span class="ml-1">▶</span></span>
               </div>
               <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
                 <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span><span data-i18n="c6Badge">Episodic series</span>
               </span>
-              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-white/80 truncate" data-i18n="c6Caption">EP.01: “Just Checking In”</span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="c6Caption">EP.01: “Just Checking In”</span>
             </button>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">06</span> — <span data-i18n="c6Category">Narrative drama · Watch together</span></div>
@@ -474,11 +506,197 @@
     </section>
 
 
-    <!-- GROUP C: BEYOND THE SCREEN -->
+    <!-- GROUP C: SANDBOX & PLAY -->
+    <section class="space-y-5" aria-labelledby="gs-h">
+      <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
+        <div>
+          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gsKicker">C / Sandbox &amp; play</span>
+          <h2 id="gs-h" class="font-syne text-2xl sm:text-3xl font-bold tracking-tight mt-1" data-i18n="gsTitle">Safe places to get it wrong, together.</h2>
+        </div>
+        <span class="text-[11px] font-mono text-muted" data-i18n="gsNote">No scores. No winners. Just better questions.</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        <!-- 07 -->
+        <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
+          <div class="space-y-4">
+            <a href="/free_builder/twotruths" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+              <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-tt" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-tt)"/><g class="bubble-a"><g transform="rotate(-6 92 96)"><rect x="24" y="48" width="136" height="96" rx="18" fill="#17171A"/>
+  <circle cx="56" cy="82" r="14" fill="none" stroke="#F7F6F2" stroke-width="2.5"/><circle cx="56" cy="82" r="5" fill="#E2553F"/>
+  <rect x="80" y="74" width="56" height="6" rx="3" fill="rgba(247,246,242,.55)"/><rect x="80" y="86" width="40" height="6" rx="3" fill="rgba(247,246,242,.3)"/><rect x="40" y="114" width="96" height="6" rx="3" fill="rgba(247,246,242,.3)"/></g></g>
+  <g class="bubble-b"><g transform="rotate(6 228 100)"><rect x="160" y="52" width="136" height="96" rx="18" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/>
+  <path d="M186 80c4-10 22-10 22 0 0 7-9 8-11 15M197 104v.5" fill="none" stroke="#E2553F" stroke-width="3" stroke-linecap="round"/>
+  <rect x="222" y="78" width="52" height="6" rx="3" fill="#E5E2DA"/><rect x="222" y="90" width="36" height="6" rx="3" fill="#E5E2DA"/><rect x="180" y="120" width="92" height="6" rx="3" fill="#E5E2DA"/></g></g></svg>
+              <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span data-i18n="s7Badge"></span>
+              </span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="s7Caption"></span>
+            </a>
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">07</span> — <span data-i18n="s7Category"></span></div>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/twotruths" class="hover:text-accent transition-colors" data-i18n="s7Title"></a></h3>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed" data-i18n="s7Desc"></p>
+          </div>
+          <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
+            <a href="/free_builder/twotruths" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+              <span data-i18n="s7Action"></span><span aria-hidden="true">↗</span>
+            </a>
+            <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
+          </div>
+        </article>
+        <!-- 08 -->
+        <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
+          <div class="space-y-4">
+            <a href="/free_builder/prompt" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+              <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-pp" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-pp)"/><g class="bubble-a"><g transform="rotate(-5 90 98)"><rect x="26" y="44" width="130" height="104" rx="18" fill="#17171A"/>
+  <text x="44" y="74" font-family="Space Mono, monospace" font-size="11" fill="#E2553F">&gt;_</text>
+  <rect x="66" y="66" width="70" height="6" rx="3" fill="rgba(247,246,242,.55)"/><rect x="44" y="84" width="92" height="6" rx="3" fill="rgba(247,246,242,.3)"/>
+  <rect x="44" y="98" width="60" height="6" rx="3" fill="rgba(247,246,242,.3)"/><rect x="44" y="112" width="80" height="6" rx="3" fill="rgba(247,246,242,.3)"/></g></g>
+  <g class="bubble-b"><g transform="rotate(5 232 100)"><rect x="166" y="46" width="130" height="104" rx="18" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/>
+  <path d="M196 112l35-30 35 30" fill="none" stroke="#17171A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M204 114c2 12-2 18 2 22M258 112c-4 10 3 16-1 24M204 136c18 2 36-3 54 0" fill="none" stroke="#17171A" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="270" cy="68" r="8" fill="#E2553F"/></g></g></svg>
+              <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span data-i18n="s8Badge"></span>
+              </span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="s8Caption"></span>
+            </a>
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">08</span> — <span data-i18n="s8Category"></span></div>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/prompt" class="hover:text-accent transition-colors" data-i18n="s8Title"></a></h3>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed" data-i18n="s8Desc"></p>
+          </div>
+          <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
+            <a href="/free_builder/prompt" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+              <span data-i18n="s8Action"></span><span aria-hidden="true">↗</span>
+            </a>
+            <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
+          </div>
+        </article>
+        <!-- 09 -->
+        <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
+          <div class="space-y-4">
+            <a href="/free_builder/museum" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+              <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-mm" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-mm)"/><path d="M14 156h292" stroke="#E5E2DA" stroke-width="2"/>
+  <g class="bubble-a"><g transform="rotate(-3 72 92)"><rect x="22" y="48" width="100" height="84" rx="4" fill="#fff" stroke="#17171A" stroke-width="3"/><rect x="32" y="58" width="80" height="64" fill="#F1EEE6"/>
+  <path d="M44 108l18-22 14 14 10-8 16 16" fill="none" stroke="#17171A" stroke-width="2.5" stroke-linejoin="round"/><circle cx="92" cy="74" r="6" fill="#E2553F"/></g></g>
+  <rect x="134" y="40" width="70" height="100" rx="4" fill="#17171A"/><rect x="142" y="48" width="54" height="84" fill="#2A2A2F"/>
+  <path d="M156 76c0-10 26-10 26 0 0 8-13 9-13 18M169 106v1" fill="none" stroke="#E2553F" stroke-width="3.5" stroke-linecap="round"/>
+  <g class="bubble-b"><g transform="rotate(4 258 92)"><rect x="216" y="54" width="86" height="76" rx="4" fill="#fff" stroke="#17171A" stroke-width="3"/><rect x="226" y="64" width="66" height="56" fill="#F1EEE6"/>
+  <text x="259" y="101" text-anchor="middle" font-family="Space Mono, monospace" font-size="22" font-weight="700" fill="#17171A">oops</text></g></g></svg>
+              <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span data-i18n="s9Badge"></span>
+              </span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="s9Caption"></span>
+            </a>
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">09</span> — <span data-i18n="s9Category"></span></div>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/museum" class="hover:text-accent transition-colors" data-i18n="s9Title"></a></h3>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed" data-i18n="s9Desc"></p>
+          </div>
+          <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
+            <a href="/free_builder/museum" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+              <span data-i18n="s9Action"></span><span aria-hidden="true">↗</span>
+            </a>
+            <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- GROUP D: FOR MANAGERS -->
+    <section class="space-y-5" aria-labelledby="gm-h">
+      <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
+        <div>
+          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gmKicker">D / For managers</span>
+          <h2 id="gm-h" class="font-syne text-2xl sm:text-3xl font-bold tracking-tight mt-1" data-i18n="gmTitle">Trust, autonomy, decisions: practised, not preached.</h2>
+        </div>
+        <a href="/free_builder/managers" class="text-[11px] font-mono text-ink hover:text-accent underline decoration-dotted underline-offset-4 transition-colors" data-i18n="gmLink">Three tracks for managers →</a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        <!-- 10 -->
+        <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
+          <div class="space-y-4">
+            <a href="/free_builder/manual" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+              <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-ma" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-ma)"/><g class="bubble-a"><g transform="rotate(-6 94 98)"><rect x="34" y="40" width="116" height="118" rx="10" fill="#17171A"/><rect x="34" y="40" width="14" height="118" rx="6" fill="#E2553F"/>
+  <rect x="62" y="64" width="64" height="6" rx="3" fill="rgba(247,246,242,.6)"/><rect x="62" y="82" width="72" height="5" rx="2.5" fill="rgba(247,246,242,.35)"/><rect x="62" y="94" width="56" height="5" rx="2.5" fill="rgba(247,246,242,.35)"/><rect x="62" y="106" width="66" height="5" rx="2.5" fill="rgba(247,246,242,.35)"/></g></g>
+  <g class="bubble-b"><g transform="rotate(6 226 100)"><rect x="168" y="42" width="116" height="118" rx="10" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/><rect x="168" y="42" width="14" height="118" rx="6" fill="#17171A"/>
+  <rect x="196" y="66" width="64" height="6" rx="3" fill="#E2553F"/><rect x="196" y="84" width="72" height="5" rx="2.5" fill="#E5E2DA"/><rect x="196" y="96" width="56" height="5" rx="2.5" fill="#E5E2DA"/><rect x="196" y="108" width="66" height="5" rx="2.5" fill="#E5E2DA"/></g></g></svg>
+              <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span data-i18n="m1Badge"></span>
+              </span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="m1Caption"></span>
+            </a>
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">10</span> — <span data-i18n="m1Category"></span></div>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/manual" class="hover:text-accent transition-colors" data-i18n="m1Title"></a></h3>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed" data-i18n="m1Desc"></p>
+          </div>
+          <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
+            <a href="/free_builder/manual" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+              <span data-i18n="m1Action"></span><span aria-hidden="true">↗</span>
+            </a>
+            <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
+          </div>
+        </article>
+        <!-- 11 -->
+        <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
+          <div class="space-y-4">
+            <a href="/free_builder/dial" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+              <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-di" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-di)"/><path d="M56.0 148.9A104 104 0 0 1 74.1 93.4" fill="none" stroke="#E5E2DA" stroke-width="16" stroke-linecap="round"/><path d="M77.7 88.4A104 104 0 0 1 124.9 54.1" fill="none" stroke="#17171A" stroke-width="16" stroke-linecap="round"/><path d="M130.8 52.2A104 104 0 0 1 189.2 52.2" fill="none" stroke="#E5E2DA" stroke-width="16" stroke-linecap="round"/><path d="M195.1 54.1A104 104 0 0 1 242.3 88.4" fill="none" stroke="#17171A" stroke-width="16" stroke-linecap="round"/><path d="M245.9 93.4A104 104 0 0 1 264.0 148.9" fill="none" stroke="#E5E2DA" stroke-width="16" stroke-linecap="round"/><g class="bubble-a"><path d="M160 152L107.1 79.2" stroke="#17171A" stroke-width="4" stroke-linecap="round"/><circle cx="107.1" cy="79.2" r="8" fill="#17171A"/></g><g class="bubble-b"><path d="M160 152L195.3 103.5" stroke="#E2553F" stroke-width="4" stroke-linecap="round"/><circle cx="195.3" cy="103.5" r="8" fill="#E2553F"/></g><circle cx="160" cy="152" r="9" fill="#17171A"/></svg>
+              <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span data-i18n="m2Badge"></span>
+              </span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="m2Caption"></span>
+            </a>
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">11</span> — <span data-i18n="m2Category"></span></div>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/dial" class="hover:text-accent transition-colors" data-i18n="m2Title"></a></h3>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed" data-i18n="m2Desc"></p>
+          </div>
+          <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
+            <a href="/free_builder/dial" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+              <span data-i18n="m2Action"></span><span aria-hidden="true">↗</span>
+            </a>
+            <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
+          </div>
+        </article>
+        <!-- 12 -->
+        <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
+          <div class="space-y-4">
+            <a href="/free_builder/decide" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+              <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-de" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-de)"/><ellipse cx="160" cy="100" rx="96" ry="44" fill="#fff" stroke="#E5E2DA" stroke-width="2"/>
+  <rect x="128" y="80" width="64" height="40" rx="8" fill="#17171A"/><rect x="138" y="92" width="44" height="5" rx="2.5" fill="rgba(247,246,242,.55)"/><rect x="138" y="103" width="30" height="5" rx="2.5" fill="rgba(247,246,242,.3)"/><g class="bubble-a"><circle cx="48" cy="100" r="14" fill="#17171A"/><text x="48" y="105" text-anchor="middle" font-family="Space Mono, monospace" font-size="13" font-weight="700" fill="#fff">✓</text></g><g class="bubble-a"><circle cx="84" cy="52" r="14" fill="#17171A"/><text x="84" y="57" text-anchor="middle" font-family="Space Mono, monospace" font-size="13" font-weight="700" fill="#fff">✓</text></g><g class="bubble-b"><circle cx="160" cy="40" r="14" fill="#E2553F"/><text x="160" y="45" text-anchor="middle" font-family="Space Mono, monospace" font-size="13" font-weight="700" fill="#fff">~</text></g><g class="bubble-a"><circle cx="236" cy="52" r="14" fill="#17171A"/><text x="236" y="57" text-anchor="middle" font-family="Space Mono, monospace" font-size="13" font-weight="700" fill="#fff">✓</text></g><g class="bubble-a"><circle cx="272" cy="100" r="14" fill="#17171A"/><text x="272" y="105" text-anchor="middle" font-family="Space Mono, monospace" font-size="13" font-weight="700" fill="#fff">✓</text></g><g class="bubble-a"><circle cx="236" cy="148" r="14" fill="#17171A"/><text x="236" y="153" text-anchor="middle" font-family="Space Mono, monospace" font-size="13" font-weight="700" fill="#fff">✓</text></g><g class="bubble-a"><circle cx="84" cy="148" r="14" fill="#17171A"/><text x="84" y="153" text-anchor="middle" font-family="Space Mono, monospace" font-size="13" font-weight="700" fill="#fff">✓</text></g></svg>
+              <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span data-i18n="m3Badge"></span>
+              </span>
+              <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="m3Caption"></span>
+            </a>
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">12</span> — <span data-i18n="m3Category"></span></div>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/decide" class="hover:text-accent transition-colors" data-i18n="m3Title"></a></h3>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed" data-i18n="m3Desc"></p>
+          </div>
+          <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
+            <a href="/free_builder/decide" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+              <span data-i18n="m3Action"></span><span aria-hidden="true">↗</span>
+            </a>
+            <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- GROUP E: BEYOND THE SCREEN -->
     <section class="space-y-5" aria-labelledby="gc-h">
       <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
         <div>
-          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gcKicker">C / Beyond the screen</span>
+          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gcKicker">E / Beyond the screen</span>
           <h2 id="gc-h" class="font-syne text-2xl sm:text-3xl font-bold tracking-tight mt-1" data-i18n="gcTitle">How I decide, prove and spread what works.</h2>
         </div>
         <span class="text-[11px] font-mono text-muted" data-i18n="gcNote">Diagnose · Prove · Spread · Adapt</span>
@@ -628,7 +846,15 @@
         c6Title: "Corporate Survival Drama",
         c6Desc: "A vertical mini-series built on real workplace dilemmas, made to be watched together. Every episode ends on a choice — and a question for the team to argue over.",
         c6Action: "Play trailer", c6Meta: "1-min trailer",
-        gcKicker: "C / Beyond the screen", gcTitle: "How I decide, prove and spread what works.", gcNote: "Diagnose · Prove · Spread · Adapt", btConcept: "concept", btCap1: "Diagnose", btT1: "Training or not?", btD1: "A 2-minute check that tells a manager whether training will help — or what to fix instead.", btCap2: "Prove", btT2: "Impact, without ranking", btD2: "A sample 30-day report: felt heard, kept talking, used it at work. No names, no leaderboards.", btCap3: "Prove", btT3: "The cost of training nobody uses", btD3: "A calculator that turns hours in a training room into an honest budget conversation.", btCap4: "Spread", btT4: "Learning circles", btD4: "Six weeks, five colleagues, one human skill a week — run by the circle itself.", btCap5: "Spread", btT5: "Team rituals", btD5: "Twelve weeks of five-minute practices for the team meeting you already have.", btCap6: "Spread", btT6: "Train the facilitator", btD6: "Two weeks to grow facilitators inside — certified by evidence, not test scores.", btCap7: "Adapt", btT7: "Adapted, not translated", btD7: "Real lines in English, Chinese and Spanish, side by side, with the reasoning behind each.", btCap8: "Adapt", btT8: "Learning for the frontline", btD8: "For people without laptops: 60-second paired practice at shift handover.", btCap9: "AI, with judgement", btT9: "AI drafts, people deliver", btD9: "Where AI belongs in learning, where it doesn't, and a one-page guardrail policy.", btCap10: "Give back", btT10: "The open starter kit", btD10: "The template behind every practice, free for other learning designers.",
+        gsKicker: "C / Sandbox & play", gsTitle: "Safe places to get it wrong, together.", gsNote: "No scores. No winners. Just better questions.",
+        s7Badge: "Live · new", s7Caption: "2 versions · 8 lines · 1 camera", s7Category: "Critical thinking · Sandbox", s7Title: "Two Truths", s7Desc: "Two colleagues each hold a private version of one awkward morning. They rebuild it together, then sort every line into what a camera saw and the story someone added. Both sides always added stories.", s7Action: "Play in pairs",
+        s8Badge: "Live · new", s8Caption: "1 secret picture · 1 very literal “AI”", s8Category: "AI literacy · Game", s8Title: "Prompt Partner", s8Desc: "One writes instructions for a secret picture; the other plays an AI that does exactly what the words say. The drawings are hilarious, and the lesson about clear asking works on colleagues and AI tools alike. No AI inside.", s8Action: "Play in pairs",
+        s9Badge: "Live · new", s9Caption: "Anonymous exhibits · “me too”, never ranked", s9Category: "Psychological safety · Teams", s9Title: "Mistake Museum", s9Desc: "Each person hangs one anonymous exhibit: a mistake of their own and the lesson it taught. Then the team walks the gallery. Visitors can say “me too”; nobody scores an exhibit.", s9Action: "Open the museum",
+        gmKicker: "D / For managers", gmTitle: "Trust, autonomy, decisions: practised, not preached.", gmLink: "Three tracks for managers →",
+        m1Badge: "Live · new", m1Caption: "2 manuals · 1 promise each", m1Category: "Trust · Manager + team member", m1Title: "My User Manual", m1Desc: "Manager and team member each write a private one-page “how to work with me”, then swap, ask and make one promise each. The manager goes first.", m1Action: "Write yours",
+        m2Badge: "Live · new", m2Caption: "1 task · 2 private settings · 1 conversation", m2Category: "Autonomy · Delegation", m2Title: "Delegation Dial", m2Desc: "For a real task, manager and team member each set who should decide, privately. The reveal shows the gap, and the gap is the conversation that prevents micromanaging.", m2Action: "Set the dial",
+        m3Badge: "Live · new", m3Caption: "Present · clarify · react · consent", m3Category: "Decisions · Whole team", m3Title: "Decision Room", m3Desc: "A real team decision in 15 minutes. Everyone is heard once, objections must name a harm, and the test is “safe enough to try?”. The manager's voice counts once.", m3Action: "Run a decision",
+        gcKicker: "E / Beyond the screen", gcTitle: "How I decide, prove and spread what works.", gcNote: "Diagnose · Prove · Spread · Adapt", btConcept: "concept", btCap1: "Diagnose", btT1: "Training or not?", btD1: "A 2-minute check that tells a manager whether training will help — or what to fix instead.", btCap2: "Prove", btT2: "Impact, without ranking", btD2: "A sample 30-day report: felt heard, kept talking, used it at work. No names, no leaderboards.", btCap3: "Prove", btT3: "The cost of training nobody uses", btD3: "A calculator that turns hours in a training room into an honest budget conversation.", btCap4: "Spread", btT4: "Learning circles", btD4: "Six weeks, five colleagues, one human skill a week — run by the circle itself.", btCap5: "Spread", btT5: "Team rituals", btD5: "Twelve weeks of five-minute practices for the team meeting you already have.", btCap6: "Spread", btT6: "Train the facilitator", btD6: "Two weeks to grow facilitators inside — certified by evidence, not test scores.", btCap7: "Adapt", btT7: "Adapted, not translated", btD7: "Real lines in English, Chinese and Spanish, side by side, with the reasoning behind each.", btCap8: "Adapt", btT8: "Learning for the frontline", btD8: "For people without laptops: 60-second paired practice at shift handover.", btCap9: "AI, with judgement", btT9: "AI drafts, people deliver", btD9: "Where AI belongs in learning, where it doesn't, and a one-page guardrail policy.", btCap10: "Give back", btT10: "The open starter kit", btD10: "The template behind every practice, free for other learning designers.",
         moreLabel: "More in the lab:", moreSales: "Sales Psychology Academy", moreQuestions: "Question Deck", moreDiscovery: "Discovery Duet", moreTeach: "Teach-Back Chain", moreThanks: "Specific Thanks", moreFB: "Work with FREE//BUILDER →",
 
         eggLTag: "Listening check · pick your reply",
@@ -702,7 +928,15 @@
         c6Title: "职场生存大戏",
         c6Desc: "以真实职场困境为底的竖屏微短剧，为“一起看”而设计。每集都停在一个抉择上——留给团队一个值得争论的问题。",
         c6Action: "播放预告", c6Meta: "1 分钟预告",
-        gcKicker: "C / 屏幕之外", gcTitle: "我如何判断、证明并传开真正有效的东西。", gcNote: "诊断 · 证明 · 传播 · 本地化", btConcept: "概念", btCap1: "诊断", btT1: "要不要培训？", btD1: "两分钟判断培训是否有用——或者该先解决什么。", btCap2: "证明", btT2: "不排名的影响力报告", btD2: "30 天报告示例：感到被倾听、继续交谈、在工作中用上。不点名，不排行。", btCap3: "证明", btT3: "没人用上的培训，代价有多大", btD3: "把培训教室里的小时数，变成一场诚实的预算对话。", btCap4: "传播", btT4: "学习圈", btD4: "六周、五位同事、每周一项人际能力——由学习圈自己运转。", btCap5: "传播", btT5: "团队小仪式", btD5: "十二周、每周五分钟的小练习，放进你本来就有的团队例会。", btCap6: "传播", btT6: "引导师培养", btD6: "两周在内部培养引导师——以证据认证，而不是考试分数。", btCap7: "本地化", btT7: "本地化，而不是翻译", btD7: "英文、中文、西语的真实句子并排对照，附上每个选择的理由。", btCap8: "本地化", btT8: "面向一线的学习", btD8: "给没有电脑的人：交接班时 60 秒的两人练习。", btCap9: "有判断地用 AI", btT9: "AI 起草，人来表达", btD9: "AI 在学习中该出现在哪、不该出现在哪，以及一页护栏政策。", btCap10: "回馈", btT10: "开放入门套件", btD10: "每个练习背后的模板，免费提供给其他学习设计师。",
+        gsKicker: "C / 沙盒与游戏", gsTitle: "一起犯错也安全的地方。", gsNote: "不打分，不分输赢，只有更好的问题。",
+        s7Badge: "已上线 · 新", s7Caption: "2 个版本 · 8 句话 · 1 台摄像头", s7Category: "批判性思维 · 沙盒", s7Title: "两个真相", s7Desc: "两位同事各自掌握同一个尴尬早上的私密版本。一起还原它，再把每一句分成两类：摄像头看到的，和有人加上的故事。结果总是：双方都加了故事。", s7Action: "两人一起玩",
+        s8Badge: "已上线 · 新", s8Caption: "1 张秘密图片 · 1 个只懂字面的“AI”", s8Category: "AI 素养 · 游戏", s8Title: "提示搭档", s8Desc: "一人为秘密图片写指令，另一人扮演只按字面执行的 AI。画出来的东西很好笑，而“清楚提要求”的道理，对同事和 AI 工具同样适用。全程不含 AI。", s8Action: "两人一起玩",
+        s9Badge: "已上线 · 新", s9Caption: "匿名展品 · “我也是”，从不排名", s9Category: "心理安全 · 团队", s9Title: "错误博物馆", s9Desc: "每人挂上一件匿名展品：自己犯过的一个错误，和它教会自己的事。然后全队一起逛展。参观者可以说“我也是”，没有人给展品打分。", s9Action: "开馆参观",
+        gmKicker: "D / 给管理者", gmTitle: "信任、授权、决策：靠练，不靠讲。", gmLink: "管理者的三条路径 →",
+        m1Badge: "已上线 · 新", m1Caption: "2 份说明书 · 各 1 个承诺", m1Category: "信任 · 管理者 + 团队成员", m1Title: "我的使用说明书", m1Desc: "管理者和团队成员各自私下写一页“怎么和我合作”，然后交换、提问，各做一个承诺。管理者先写。", m1Action: "写你的说明书",
+        m2Badge: "已上线 · 新", m2Caption: "1 件任务 · 2 个私下的刻度 · 1 场对话", m2Category: "自主 · 授权", m2Title: "授权刻度盘", m2Desc: "针对一件真实任务，管理者和团队成员各自私下设定由谁来决定。揭晓时看到差距，而这个差距就是避免管得太细的那场对话。", m2Action: "拨刻度",
+        m3Badge: "已上线 · 新", m3Caption: "介绍 · 澄清 · 回应 · 同意", m3Category: "决策 · 整个团队", m3Title: "决策室", m3Desc: "15 分钟做一个真实的团队决定。每人被听到一次，反对必须说出伤害，标准是“试一试安全吗？”。管理者的声音只算一次。", m3Action: "做一个决定",
+        gcKicker: "E / 屏幕之外", gcTitle: "我如何判断、证明并传开真正有效的东西。", gcNote: "诊断 · 证明 · 传播 · 本地化", btConcept: "概念", btCap1: "诊断", btT1: "要不要培训？", btD1: "两分钟判断培训是否有用——或者该先解决什么。", btCap2: "证明", btT2: "不排名的影响力报告", btD2: "30 天报告示例：感到被倾听、继续交谈、在工作中用上。不点名，不排行。", btCap3: "证明", btT3: "没人用上的培训，代价有多大", btD3: "把培训教室里的小时数，变成一场诚实的预算对话。", btCap4: "传播", btT4: "学习圈", btD4: "六周、五位同事、每周一项人际能力——由学习圈自己运转。", btCap5: "传播", btT5: "团队小仪式", btD5: "十二周、每周五分钟的小练习，放进你本来就有的团队例会。", btCap6: "传播", btT6: "引导师培养", btD6: "两周在内部培养引导师——以证据认证，而不是考试分数。", btCap7: "本地化", btT7: "本地化，而不是翻译", btD7: "英文、中文、西语的真实句子并排对照，附上每个选择的理由。", btCap8: "本地化", btT8: "面向一线的学习", btD8: "给没有电脑的人：交接班时 60 秒的两人练习。", btCap9: "有判断地用 AI", btT9: "AI 起草，人来表达", btD9: "AI 在学习中该出现在哪、不该出现在哪，以及一页护栏政策。", btCap10: "回馈", btT10: "开放入门套件", btD10: "每个练习背后的模板，免费提供给其他学习设计师。",
         moreLabel: "实验室里还有：", moreSales: "销售心理学实战学院", moreQuestions: "问题卡组", moreDiscovery: "探询二重奏", moreTeach: "教回去链条", moreThanks: "具体的感谢", moreFB: "与 FREE//BUILDER 合作 →",
 
         eggLTag: "倾听测试 · 选择你的回应",
@@ -776,7 +1010,15 @@
         c6Title: "Drama de Supervivencia Corporativa",
         c6Desc: "Una miniserie vertical sobre dilemas laborales reales, pensada para verse en grupo. Cada episodio termina en una decisión y en una pregunta para que el equipo la debata.",
         c6Action: "Ver tráiler", c6Meta: "Tráiler de 1 min",
-        gcKicker: "C / Más allá de la pantalla", gcTitle: "Cómo decido, demuestro y extiendo lo que funciona.", gcNote: "Diagnosticar · Demostrar · Extender · Adaptar", btConcept: "concepto", btCap1: "Diagnosticar", btT1: "¿Formación o no?", btD1: "Una comprobación de 2 minutos que dice si la formación ayudará, o qué arreglar antes.", btCap2: "Demostrar", btT2: "Impacto sin clasificar", btD2: "Un informe de 30 días de ejemplo: escuchados, siguieron hablando, lo usaron. Sin nombres ni rankings.", btCap3: "Demostrar", btT3: "El coste de la formación que nadie usa", btD3: "Una calculadora que convierte horas de aula en una conversación honesta sobre presupuesto.", btCap4: "Extender", btT4: "Círculos de aprendizaje", btD4: "Seis semanas, cinco colegas, una habilidad humana por semana, gestionado por el propio círculo.", btCap5: "Extender", btT5: "Rituales de equipo", btD5: "Doce semanas de prácticas de cinco minutos para la reunión de equipo que ya tienes.", btCap6: "Extender", btT6: "Formar facilitadores", btD6: "Dos semanas para formar facilitadores internos, certificados por evidencias, no por notas.", btCap7: "Adaptar", btT7: "Adaptado, no traducido", btD7: "Frases reales en inglés, chino y español, lado a lado, con el porqué de cada una.", btCap8: "Adaptar", btT8: "Aprendizaje para primera línea", btD8: "Para quien no tiene portátil: 60 segundos de práctica en pareja en el cambio de turno.", btCap9: "IA, con criterio", btT9: "La IA redacta, las personas entregan", btD9: "Dónde encaja la IA en el aprendizaje, dónde no, y una política de una página.", btCap10: "Devolver", btT10: "El kit abierto", btD10: "La plantilla detrás de cada práctica, gratis para otros diseñadores de aprendizaje.",
+        gsKicker: "C / Sandbox y juego", gsTitle: "Lugares seguros para equivocarse juntos.", gsNote: "Sin puntos. Sin ganadores. Solo mejores preguntas.",
+        s7Badge: "En línea · nuevo", s7Caption: "2 versiones · 8 frases · 1 cámara", s7Category: "Pensamiento crítico · Sandbox", s7Title: "Dos Verdades", s7Desc: "Dos colegas tienen cada uno una versión privada de la misma mañana incómoda. La reconstruyen juntos y luego separan cada frase: lo que vio una cámara y la historia que alguien añadió. Los dos lados siempre añaden historias.", s7Action: "Jugar en pareja",
+        s8Badge: "En línea · nuevo", s8Caption: "1 dibujo secreto · 1 “IA” muy literal", s8Category: "Alfabetización en IA · Juego", s8Title: "Pareja de Prompts", s8Desc: "Uno escribe instrucciones para un dibujo secreto; el otro hace de IA y hace exactamente lo que dicen las palabras. Los dibujos son divertidísimos, y la lección sobre pedir con claridad sirve con colegas y con herramientas de IA. Sin IA dentro.", s8Action: "Jugar en pareja",
+        s9Badge: "En línea · nuevo", s9Caption: "Piezas anónimas · “a mí también”, nunca un ranking", s9Category: "Seguridad psicológica · Equipos", s9Title: "Museo de Errores", s9Desc: "Cada persona cuelga una pieza anónima: un error propio y la lección que le dejó. Luego el equipo recorre la galería. Se puede decir “a mí también”; nadie puntúa una pieza.", s9Action: "Abrir el museo",
+        gmKicker: "D / Para mandos", gmTitle: "Confianza, autonomía, decisiones: se practican, no se predican.", gmLink: "Tres itinerarios para mandos →",
+        m1Badge: "En línea · nuevo", m1Caption: "2 manuales · 1 promesa cada uno", m1Category: "Confianza · Responsable + equipo", m1Title: "Mi Manual de Uso", m1Desc: "Responsable y miembro del equipo escriben en privado una página de “cómo trabajar conmigo”; luego la intercambian, preguntan y cada uno hace una promesa. Quien lidera empieza.", m1Action: "Escribe el tuyo",
+        m2Badge: "En línea · nuevo", m2Caption: "1 tarea · 2 ajustes privados · 1 conversación", m2Category: "Autonomía · Delegación", m2Title: "Dial de Delegación", m2Desc: "Para una tarea real, responsable y miembro del equipo deciden en privado quién debería decidir. La revelación muestra la diferencia, y esa diferencia es la conversación que evita controlar de más.", m2Action: "Ajustar el dial",
+        m3Badge: "En línea · nuevo", m3Caption: "Presentar · aclarar · reaccionar · consentir", m3Category: "Decisiones · Todo el equipo", m3Title: "Sala de Decisiones", m3Desc: "Una decisión real de equipo en 15 minutos. Todos hablan una vez, las objeciones deben nombrar un daño y la prueba es “¿segura para probar?”. La voz del responsable cuenta una vez.", m3Action: "Tomar una decisión",
+        gcKicker: "E / Más allá de la pantalla", gcTitle: "Cómo decido, demuestro y extiendo lo que funciona.", gcNote: "Diagnosticar · Demostrar · Extender · Adaptar", btConcept: "concepto", btCap1: "Diagnosticar", btT1: "¿Formación o no?", btD1: "Una comprobación de 2 minutos que dice si la formación ayudará, o qué arreglar antes.", btCap2: "Demostrar", btT2: "Impacto sin clasificar", btD2: "Un informe de 30 días de ejemplo: escuchados, siguieron hablando, lo usaron. Sin nombres ni rankings.", btCap3: "Demostrar", btT3: "El coste de la formación que nadie usa", btD3: "Una calculadora que convierte horas de aula en una conversación honesta sobre presupuesto.", btCap4: "Extender", btT4: "Círculos de aprendizaje", btD4: "Seis semanas, cinco colegas, una habilidad humana por semana, gestionado por el propio círculo.", btCap5: "Extender", btT5: "Rituales de equipo", btD5: "Doce semanas de prácticas de cinco minutos para la reunión de equipo que ya tienes.", btCap6: "Extender", btT6: "Formar facilitadores", btD6: "Dos semanas para formar facilitadores internos, certificados por evidencias, no por notas.", btCap7: "Adaptar", btT7: "Adaptado, no traducido", btD7: "Frases reales en inglés, chino y español, lado a lado, con el porqué de cada una.", btCap8: "Adaptar", btT8: "Aprendizaje para primera línea", btD8: "Para quien no tiene portátil: 60 segundos de práctica en pareja en el cambio de turno.", btCap9: "IA, con criterio", btT9: "La IA redacta, las personas entregan", btD9: "Dónde encaja la IA en el aprendizaje, dónde no, y una política de una página.", btCap10: "Devolver", btT10: "El kit abierto", btD10: "La plantilla detrás de cada práctica, gratis para otros diseñadores de aprendizaje.",
         moreLabel: "Más en el laboratorio:", moreSales: "Academia de Psicología de Ventas", moreQuestions: "Mazo de Preguntas", moreDiscovery: "Dúo de Descubrimiento", moreTeach: "Cadena de Enseñar de Vuelta", moreThanks: "Gracias Concretas", moreFB: "Trabaja con FREE//BUILDER →",
 
         eggLTag: "Prueba de escucha · elige tu respuesta",

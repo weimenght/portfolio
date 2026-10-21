@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title id="page-title">Listening Duet — FREE//BUILDER</title>
+  <meta name="description" content="Each of you writes a one-page “how to work with me”, privately. Then swap, read, ask, and make one promise each.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Crect x='7' y='7' width='8' height='8' rx='2' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='7' y='17' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='17' y='17' width='8' height='8' rx='2' fill='%23E2553F'/%3E%3C/svg%3E">
+  <!-- Brand fonts load without blocking the page: where Google Fonts is slow or blocked, system fonts show instantly. -->
+  <link rel="stylesheet" href="/fonts/fonts.css">
+
+  <style>
+    /* =================================================================
+       FB KIT · tokens + shell (shared by every FREE//BUILDER demo)
+       ================================================================= */
+    :root {
+      --paper:#F7F6F2; --ink:#17171A; --muted:#6B6A70; --line:#E5E2DA; --accent:#E2553F; --accent-ink:#C2412D; --white:#fff; --good:#2F8A5C;
+      --st:#E2553F;
+      --ease:cubic-bezier(.23,1,.32,1);
+      --sans:"Plus Jakarta Sans",system-ui,-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+      --mono:"Space Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+      --syne:Syne,"Plus Jakarta Sans",system-ui,"PingFang SC","Noto Sans SC",sans-serif;
+      --serif:"Instrument Serif",Georgia,"Songti SC","STSong",serif;
+    }
+    * { box-sizing:border-box; }
+    html, body { margin:0; overflow-x:hidden; }
+    body {
+      background:var(--paper); color:var(--ink); font-family:var(--sans);
+      -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;
+      min-height:100vh; min-height:100svh; display:flex; flex-direction:column;
+    }
+    button { font:inherit; color:inherit; cursor:pointer; background:none; border:0; padding:0; touch-action:manipulation; }
+    a { color:inherit; }
+    :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:10px; }
+    .kicker { font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
+    .dots { position:fixed; inset:0; z-index:-1; pointer-events:none;
+      background-image:radial-gradient(rgba(var(--dot-rgb,23,23,26),.09) 1px,transparent 1px); background-size:22px 22px;
+      -webkit-mask-image:linear-gradient(to bottom,#000,transparent 60%); mask-image:linear-gradient(to bottom,#000,transparent 60%); }
+
+    header.top { position:sticky; top:0; z-index:40; background:rgba(var(--paper-rgb,247,246,242),.92);
+      -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); border-bottom:1px solid rgba(229,226,218,.8);
+      padding:10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); }
+    .top-in { max-width:960px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .brand { display:flex; align-items:center; gap:10px; text-decoration:none; min-width:0; }
+    .mark { width:34px; height:34px; border-radius:10px; background:var(--inkbg,var(--ink)); display:grid; place-items:center; flex-shrink:0; transition:transform .5s var(--ease); }
+    .mark rect { transform-box:fill-box; transform-origin:center; transition:transform .6s var(--ease); }
+    .mark .last { transform:translate(2.5px,-2.5px) rotate(12deg); }
+    .brand:hover .mark { transform:rotate(-4deg); }
+    .brand:hover .mark .last { transform:none; }
+    .brand-txt { line-height:1; min-width:0; }
+    .brand-txt b { font-family:var(--syne); font-weight:700; font-size:13px; display:block; }
+    .brand-txt b i { color:var(--accent-text,#E2553F); font-style:normal; }
+    .brand-txt span { display:block; font-size:11px; color:var(--muted); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .top-actions { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+    .chip { height:32px; padding:0 10px; border:1px solid var(--line); border-radius:9px; background:rgba(var(--white-rgb,255,255,255),.6);
+      display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; transition:border-color .2s, transform .1s; }
+    .chip:hover { border-color:rgba(var(--ink-rgb,23,23,26),.3); }
+    .chip:active { transform:scale(.96); }
+    .chip svg { width:14px; height:14px; }
+    .chip[hidden] { display:none; }
+    @media (max-width:420px) { .chip .lbl { display:none; } }
+    @media (max-width:340px) { .brand-txt { display:none; } }
+
+    main { flex:1; width:100%; max-width:600px; margin:0 auto; padding:24px max(16px, env(safe-area-inset-right)) 32px max(16px, env(safe-area-inset-left)); display:flex; flex-direction:column; }
+
+    /* progress dots */
+    .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+    .steps { display:flex; gap:6px; align-items:center; margin-bottom:18px; min-height:8px; }
+    .steps span { height:6px; flex:1; border-radius:3px; background:var(--line); transition:background .4s; }
+    .steps span.done { background:var(--inkbg,var(--ink)); }
+    .steps span.now { background:var(--accent); }
+
+    /* screens */
+    .screen { flex:1; display:flex; flex-direction:column; gap:18px; animation:in .5s var(--ease) both; }
+    @keyframes in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+    h1, h2 { font-family:var(--syne); font-weight:700; letter-spacing:-.02em; margin:0; line-height:1.1; }
+    h1 { font-size:clamp(34px, 9vw, 52px); }
+    h2 { font-size:clamp(26px, 6.5vw, 34px); }
+    .lead { font-size:16px; line-height:1.6; color:rgba(var(--ink-rgb,23,23,26),.75); margin:0; }
+    .serif { font-family:var(--serif); font-style:italic; font-size:22px; line-height:1.3; color:rgba(var(--ink-rgb,23,23,26),.85); margin:0; }
+    .accent-word { font-family:var(--serif); font-style:italic; font-weight:400; color:var(--muted); white-space:nowrap; padding-bottom:.12em;
+      background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7 Q 12 1 22 7 T 42 7 T 62 7 T 82 7 T 102 7 T 118 6' fill='none' stroke='%23E2553F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left bottom / 100% .32em; }
+    .pills { display:flex; flex-wrap:wrap; gap:6px; }
+    .pill { font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:99px; border:1px solid var(--line); color:var(--muted); background:rgba(var(--white-rgb,255,255,255),.6); }
+    .spacer { flex:1; }
+
+    .btns { display:flex; gap:8px; flex-wrap:wrap; }
+    .btn { flex:1; min-height:52px; padding:0 20px; border-radius:99px; font-family:var(--mono); font-size:13px; font-weight:700;
+      display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1px solid var(--line); background:var(--white);
+      transition:background .2s, border-color .2s, transform .1s; }
+    .btn:hover { border-color:rgba(var(--ink-rgb,23,23,26),.35); }
+    .btn:active { transform:scale(.98); }
+    .btn.pri { background:var(--inkbg,var(--ink)); border-color:var(--inkbd,var(--ink)); color:#fff; flex:2; }
+    .btn.pri:hover { background:var(--accent-ink); border-color:var(--accent-ink); }
+    .btn[disabled] { opacity:.45; pointer-events:none; }
+    .link { font-family:var(--mono); font-size:12px; color:var(--muted); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:4px; align-self:center; padding:8px; }
+    .link:hover { color:var(--ink); }
+
+    .card { background:var(--white); border:1px solid var(--line); border-radius:24px; padding:22px; }
+    .field { display:block; }
+    .field span { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+    .field input, .field textarea { width:100%; font:inherit; font-size:16px; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--white); color:var(--ink); }
+    .field textarea { resize:vertical; min-height:96px; line-height:1.5; }
+    .field input:focus, .field textarea:focus { outline:none; border-color:var(--inkbd,var(--ink)); }
+    .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .seg { display:flex; flex-wrap:wrap; gap:6px; }
+    .seg button { padding:9px 14px; border-radius:99px; border:1px solid var(--line); background:var(--white); font-size:13px; transition:all .2s; }
+    .seg button[aria-pressed="true"] { background:var(--inkbg,var(--ink)); color:#fff; border-color:var(--inkbd,var(--ink)); }
+
+    /* who's who */
+    .roles { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .role { border-radius:18px; padding:14px; border:1px solid var(--line); background:var(--white); }
+    .role .k { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+    .role .n { font-family:var(--syne); font-weight:700; font-size:18px; margin-top:4px; word-break:break-word; }
+    .role.speak { background:var(--inkbg,var(--ink)); color:#fff; border-color:var(--inkbd,var(--ink)); }
+    .role.speak .k { color:rgba(255,255,255,.55); }
+
+    /* prompt card */
+    .prompt { position:relative; background:var(--inkbg,var(--ink)); color:#fff; border-radius:26px; padding:28px 24px 24px; min-height:200px;
+      display:flex; flex-direction:column; justify-content:space-between; gap:18px; overflow:hidden; }
+    .prompt::after { content:""; position:absolute; right:-50px; top:-50px; width:170px; height:170px; border-radius:50%; border:1px solid rgba(255,255,255,.1); }
+    .prompt .q { font-family:var(--serif); font-style:italic; font-size:clamp(24px, 6.4vw, 30px); line-height:1.25; position:relative; }
+    .prompt .meta { display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; color:rgba(255,255,255,.5); position:relative; }
+    .prompt.flip { animation:flip .55s var(--ease); }
+    @keyframes flip { 0% { transform:rotateX(0); } 50% { transform:rotateX(80deg); opacity:.4; } 100% { transform:none; } }
+
+    /* timer ring */
+    .timer { display:grid; place-items:center; margin:4px auto; position:relative; width:min(68vw, 260px); aspect-ratio:1; }
+    .timer svg { width:100%; height:100%; transform:rotate(-90deg); }
+    .timer .bg { stroke:var(--line); }
+    .timer .fg { stroke:var(--st); transition:stroke .3s; }
+    .timer .num { position:absolute; inset:0; display:grid; place-items:center; text-align:center; }
+    .timer .num b { font-family:var(--mono); font-size:clamp(40px, 13vw, 56px); font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:-.02em; display:block; }
+    .timer .num small { font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.12em; text-transform:uppercase; }
+    .timer.done .fg { stroke:var(--good); }
+    .timer.pulse { animation:pulse 1.2s ease-in-out 2; }
+    @keyframes pulse { 50% { transform:scale(1.04); } }
+
+    .tip { display:flex; gap:10px; align-items:flex-start; padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(var(--ink-rgb,23,23,26),.2); font-size:14px; line-height:1.5; }
+    .tip b { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); font-weight:400; display:block; margin-bottom:2px; }
+    .tip i { font-style:normal; font-size:18px; line-height:1.2; }
+    .stems { display:grid; gap:8px; }
+    .stems div { padding:12px 14px; border-radius:14px; background:var(--white); border:1px solid var(--line); font-family:var(--serif); font-style:italic; font-size:19px; }
+
+    /* felt heard */
+    .heard { display:grid; gap:8px; }
+    .heard button { display:flex; align-items:center; gap:14px; text-align:left; padding:16px 18px; border-radius:18px; border:1px solid var(--line); background:var(--white); transition:all .2s; }
+    .heard button:hover { border-color:rgba(var(--ink-rgb,23,23,26),.35); }
+    .heard button .e { width:40px; height:40px; border-radius:50%; display:grid; place-items:center; font-size:20px; flex-shrink:0; background:var(--paper); }
+    .heard button b { display:block; font-size:16px; }
+    .heard button small { display:block; font-size:13px; color:var(--muted); margin-top:2px; }
+
+    /* curtain (pass the phone) */
+    .curtain { background:var(--inkbg,var(--ink)); color:#fff; border-radius:28px; padding:32px 24px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px; }
+    .curtain .hand { width:84px; height:84px; }
+    .curtain h2 { color:#fff; }
+    .curtain p { margin:0; color:rgba(255,255,255,.7); line-height:1.55; }
+    .curtain .btn.pri { background:var(--white,#fff); border-color:#fff; color:var(--ink); }
+    .curtain .btn.pri:hover { background:var(--accent-ink); border-color:var(--accent-ink); color:#fff; }
+
+    /* summary */
+    .sum { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .sum div { background:var(--white); border:1px solid var(--line); border-radius:18px; padding:16px; }
+    .sum b { display:block; font-family:var(--syne); font-size:18px; word-break:break-word; }
+    .sum span { display:block; font-size:13px; color:var(--muted); margin-top:4px; }
+    .monday { padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(var(--ink-rgb,23,23,26),.2); font-size:14px; line-height:1.55; }
+    .monday b { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); font-weight:400; margin-bottom:3px; }
+    .chain { list-style:none; padding:0; margin:0; display:grid; gap:8px; }
+    .chain li { background:var(--white); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-size:14px; line-height:1.5; }
+    .chain li small { display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-top:4px; }
+    .steps3 { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .steps3 div { background:var(--white); border:1px solid var(--line); border-radius:16px; padding:14px 12px; text-align:center; }
+    .steps3 b { display:block; font-family:var(--mono); font-size:11px; color:var(--accent-ink); }
+    .steps3 span { display:block; font-family:var(--syne); font-weight:700; font-size:15px; margin-top:4px; }
+
+    /* drawer (facilitator guide) */
+    .drawer { position:fixed; inset:0; z-index:60; display:flex; justify-content:flex-end; background:rgba(23,23,26,.45); opacity:0; pointer-events:none; transition:opacity .25s; }
+    .drawer.show { opacity:1; pointer-events:auto; }
+    .panel { width:100%; max-width:460px; height:100%; background:var(--paper); overflow-y:auto; padding:22px 22px calc(28px + env(safe-area-inset-bottom)); transform:translateX(30px); transition:transform .45s var(--ease); overscroll-behavior:contain; }
+    .drawer.show .panel { transform:none; }
+    @media (max-width:560px) { .drawer { align-items:flex-end; } .panel { max-width:none; height:88vh; height:88svh; border-radius:24px 24px 0 0; transform:translateY(40px); } }
+    .panel h3 { font-family:var(--syne); font-size:22px; margin:4px 0 12px; }
+    .panel h4 { font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:400; margin:22px 0 8px; }
+    .panel ol, .panel ul { margin:0; padding-left:20px; display:grid; gap:8px; font-size:14px; line-height:1.55; }
+    .panel p { font-size:14px; line-height:1.6; color:rgba(var(--ink-rgb,23,23,26),.78); margin:0; }
+    .x { width:34px; height:34px; border-radius:50%; display:grid; place-items:center; border:1px solid var(--line); background:var(--white); font-family:var(--mono); flex-shrink:0; }
+
+    .toast { position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom)); transform:translate(-50%,10px); opacity:0; pointer-events:none; z-index:70;
+      background:var(--inkbg,var(--ink)); color:#fff; border-radius:99px; padding:9px 16px; font-family:var(--mono); font-size:11px; transition:opacity .25s, transform .35s var(--ease);
+      max-width:calc(100% - 32px); }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+
+    footer { border-top:1px solid var(--line); padding:18px max(16px, env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+    .foot-in { max-width:960px; margin:0 auto; display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--muted); }
+    .foot-in a { text-decoration:none; } .foot-in a:hover { color:var(--ink); }
+
+    @media (min-width:700px) { main { padding-top:40px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.001ms !important; transition-duration:.001ms !important; } }
+  
+    /* Chinese: keep CJK upright (no faux italic); Latin italics stay real */
+    html:lang(zh) { font-synthesis: weight; }
+</style>
+<meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)"><style id="fb-dark">
+:root{color-scheme:light dark}
+@media (prefers-color-scheme: dark){
+:root{--paper:#141416;--ink:#ECEBE6;--muted:#A8A7AD;--line:#303036;--grid:#26262B;--white:#1D1D21;--inkbg:#2B2B31;--inkbd:#3B3B42;--accent-ink:#F28C76;--good:#62C48F;--paper-rgb:20,20,22;--dot-rgb:255,255,255;--ink-rgb:236,235,230;--white-rgb:29,29,33;--accent-text:#F2806A;--warn-ink:#E3B25C}
+html,body{background-color:var(--paper)}
+/* primary actions read as light on dark */
+.btn.pri,.cta a.pri,.chip.pri{background:#ECEBE6!important;border-color:#ECEBE6!important;color:#141416!important}
+.btn.pri:hover,.cta a.pri:hover,.chip.pri:hover{background:#fff!important;border-color:#fff!important}
+.btn[disabled]{opacity:.45}
+.seg button[aria-pressed="true"],.chip[aria-pressed="true"]{background:#ECEBE6!important;border-color:#ECEBE6!important;color:#141416!important}
+.steps span.done{background:#ECEBE6}
+.curtain{border:1px solid #3B3B42}
+/* illustrations keep their light look on a plate */
+.screen>svg,.plate,.card-art{background:#EFECE4;border-radius:18px}
+.plate{background:#fff!important}
+.card-art~.text-ink\/60,.card-art~span .text-ink\/60{color:rgba(23,23,26,.62)!important}
+.text-accent{color:#F2806A!important}
+.bg-white\/90.text-ink,.bg-white\/90 .text-ink{color:#ECEBE6}
+img{filter:none}
+::selection{background:#E2553F;color:#fff}
+}
+</style></head>
+<body>
+  <div class="dots" aria-hidden="true"></div>
+
+  <header class="top">
+    <div class="top-in">
+      <a class="brand" href="/free_builder/" aria-label="FREE//BUILDER">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="19" height="19" style="overflow:visible">
+            <rect x="3" y="3" width="8" height="8" rx="2" fill="#fff"/><rect x="13" y="3" width="8" height="8" rx="2" fill="#fff" opacity=".55"/>
+            <rect x="3" y="13" width="8" height="8" rx="2" fill="#fff" opacity=".55"/><rect class="last" x="13" y="13" width="8" height="8" rx="2" fill="#E2553F"/>
+          </svg>
+        </span>
+        <span class="brand-txt"><b>FREE<i>//</i>BUILDER</b><span data-t="product">My User Manual</span></span>
+      </a>
+      <div class="top-actions">
+        <button class="chip" id="btn-lang" type="button" aria-label="Language" title="EN / 中文 / ES">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
+          <b id="lang-lbl">EN</b>
+        </button>
+        <button class="chip" id="btn-sound" type="button"></button>
+        <button class="chip" id="btn-guide" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2zM22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg>
+          <span class="lbl" data-t="guide">Facilitators</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <h1 class="sr" data-t="product">My User Manual</h1>
+    <div class="steps" id="steps" aria-hidden="true"></div>
+    <div id="stage" aria-live="polite"></div>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span data-t="privacy">Nothing is stored. Nothing leaves this phone.</span>
+      <a href="/free_builder/" data-t="back">FREE//BUILDER ↗</a>
+    </div>
+  </footer>
+
+  <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="g-title">
+    <div class="panel" id="panel"></div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+"use strict";
+/* =====================================================================
+   COPY — EN / 中文 / ES
+   ===================================================================== */
+const I18N = {
+en: {
+  title: "My User Manual — FREE//BUILDER", product: "My User Manual", guide: "Facilitators",
+  privacy: "Nothing is stored. Nothing leaves this phone.", back: "FREE//BUILDER ↗",
+  soundOn: "Sound on", soundOff: "Sound off", left: "left", paused: "paused", close: "Close", resume: "Resume", pause: "Pause",
+  introKicker: "Trust · Manager + team member",
+  introTitle: 'My User <span class="accent-word">Manual</span>',
+  introLead: "Every person comes without instructions. Each of you writes a one-page “how to work with me”, privately. Then you swap, read, ask, and make one promise each. Months of guessing, done in fifteen minutes.",
+  introMeta: ["2 people", "1 phone", "≈ 15 minutes"],
+  start: "Start", next: "Next", backBtn: "Back",
+  setupTitle: "Who's writing?", nameA: "First person (name or role)", nameB: "Second person (name or role)", phA: "e.g. Mei, team lead", phB: "e.g. Sam",
+  defA: "Person A", defB: "Person B",
+  goFirst: "If one of you is the manager, the manager writes first. Being open first makes it safe for the other.",
+  passTo: "Pass the phone to {r}", passLead: "Write privately. The other person, look away until it's your turn.", ready: "I'm {r}",
+  writeKicker: "{r} · private for now", writeTitle: "How to work with me", writeNote: "Answer at least three. Short is fine. Honest is better.",
+  prompts: [["I'm at my best when…", "e.g. I have a quiet morning to think"], ["The best way to give me feedback is…", "e.g. privately, soon, with an example"], ["When I'm stressed, you'll notice… and what helps is…", "e.g. I go quiet. Ask what's on my plate."], ["Something people often get wrong about me…", "e.g. I'm not annoyed, I'm thinking"], ["What I need from you is…", "e.g. tell me early when something's off"]],
+  needThree: "Answer at least three.", done: "Done, hide it",
+  readKicker: "Swap", readTitle: "Read each other's manuals", readLead: "Put the phone between you. Read both, slowly. Then talk.",
+  talk: "Talk about them",
+  talkTitle: "Ask, don't defend.", talkLead: "Take turns. Ask about what you read. You don't need to agree with everything.",
+  talkTips: ["Ask about one answer that surprised you.", "Say one thing in their manual you'd never have guessed.", "Where do your manuals clash? That's useful, not bad.", "Manager: ask “What makes it hard to tell me things?”"],
+  talkDone: "We've talked",
+  agreeTitle: "One promise each", agreeLead: "Based on what you read, write one thing you'll do differently. Start with “I'll…”.", agreePh: "I'll…",
+  needPromise: "Each of you writes one promise.", toSummary: "See our agreement",
+  sumKicker: "Your working agreement", sumTitle: "Keep this somewhere you'll see it.", promiseLbl: "Promise",
+  copy: "Copy the agreement", copied: "Copied.", revisit: "Revisit it in three months. People change, and so do manuals.",
+  finish: "Finish",
+  endKicker: "Done", endTitle: "You just saved months of guessing.",
+  endLead: "Most friction between managers and their teams isn't about skill. It's about not knowing how the other person works. Writing it down, privately, then reading it together turns guesses into questions.",
+  monday: "Try this on Monday", mondayTxt: "Share your manual with your whole team at the next meeting and invite theirs. Put a reminder in three months to update it.",
+  again: "Start over", passOn: "Pass it on",
+  teachKicker: "Pass it on", teachTitle: "Teach someone the user manual.",
+  teachLead: "Explain the three moves, then let them write, in their own words, what they'll try.",
+  t3: ["Go first", "Read, then ask", "One promise each"], t3sub: ["the manager opens up first", "curious, not defensive", "small and specific"],
+  learnerName: "Their name (optional)", learnerPh: "e.g. Mei", learned: "What they'll try, in their own words", learnedPh: "Hand them the phone…",
+  save: "Save to this phone", chainTitle: "People you've passed it on to", chainEmpty: "No one yet. Your first teach-back will appear here.",
+  saved: "Saved on this phone only.", restart: "Back to the start", timeUp: "Time's up. Finish your thought.",
+  gKicker: "Facilitator guide", gTitle: "Running My User Manual",
+  gWhy: "Why it works",
+  gWhyTxt: "A personal “user manual” makes the unwritten rules of working together visible. Writing privately first avoids copying the other person's answers. When the manager goes first, they model the openness they hope to get back, which is how trust and psychological safety start.",
+  gSteps: "Running it (≈ 15 minutes)",
+  gStepList: ["Pair a manager with a team member, or any two colleagues.", "Each writes privately (4 minutes each). The manager goes first.", "Read both manuals together (2 minutes).", "Talk: ask about what surprised you (5 minutes).", "Each writes one promise.", "Copy the agreement and set a date to revisit it."],
+  gDebrief: "Debrief questions",
+  gDebriefList: ["What was hard to write about yourself?", "What will change in how you work together this week?", "What would a whole-team version look like?"],
+  gNotes: "Notes",
+  gNotesList: ["Nothing is stored. Copy the agreement if you want to keep it.", "Works for new teams, new managers and cross-team partners.", "Never use manuals to judge people. They describe preferences, not performance."]
+},
+zh: {
+  title: "我的使用说明书 — FREE//BUILDER", product: "我的使用说明书", guide: "引导师",
+  privacy: "不保存任何内容，不离开这部手机。", back: "FREE//BUILDER ↗",
+  soundOn: "声音开", soundOff: "声音关", left: "剩余", paused: "已暂停", close: "关闭", resume: "继续", pause: "暂停",
+  introKicker: "信任 · 管理者 + 团队成员",
+  introTitle: '我的使用<span class="accent-word">说明书</span>',
+  introLead: "每个人出厂时都没带说明书。你们各自私下写一页“怎么和我合作”。然后交换、阅读、提问，各自做出一个承诺。几个月的猜测，十五分钟搞定。",
+  introMeta: ["2 个人", "1 部手机", "约 15 分钟"],
+  start: "开始", next: "下一步", backBtn: "返回",
+  setupTitle: "谁来写？", nameA: "第一位（名字或角色）", nameB: "第二位（名字或角色）", phA: "例如：小美，组长", phB: "例如：阿森",
+  defA: "A", defB: "B",
+  goFirst: "如果其中一位是管理者，请管理者先写。先打开自己，对方才会觉得安全。",
+  passTo: "把手机交给{r}", passLead: "私下写。另一位请先移开视线，等轮到你。", ready: "我是{r}",
+  writeKicker: "{r} · 暂时保密", writeTitle: "怎么和我合作", writeNote: "至少回答三题。简短没关系，真诚更重要。",
+  prompts: [["我状态最好的时候是……", "例如：上午有一段安静的时间思考"], ["给我反馈最好的方式是……", "例如：私下说、尽早说、带个例子"], ["我有压力时，你会看到……这时有帮助的是……", "例如：我会变安静。问问我手上有什么事。"], ["别人常常误会我的一点是……", "例如：我不是不高兴，我只是在想事情"], ["我需要你做的是……", "例如：有不对劲的地方早点告诉我"]],
+  needThree: "请至少回答三题。", done: "写好了，隐藏",
+  readKicker: "交换", readTitle: "读一读彼此的说明书", readLead: "把手机放在你们中间。慢慢读完两份。然后聊一聊。",
+  talk: "聊一聊",
+  talkTitle: "多问，别辩解。", talkLead: "轮流来。问问你读到的内容。不需要每一条都认同。",
+  talkTips: ["问一个让你意外的回答。", "说一件你从没猜到的事。", "你们的说明书哪里有冲突？这很有用，不是坏事。", "管理者可以问：“什么让你很难跟我说实话？”"],
+  talkDone: "我们聊完了",
+  agreeTitle: "各做一个承诺", agreeLead: "根据你读到的，写一件你会做得不一样的事。以“我会……”开头。", agreePh: "我会……",
+  needPromise: "每人写一个承诺。", toSummary: "看我们的约定",
+  sumKicker: "你们的合作约定", sumTitle: "把它放在你看得到的地方。", promiseLbl: "承诺",
+  copy: "复制约定", copied: "已复制。", revisit: "三个月后再看一次。人会变，说明书也会变。",
+  finish: "结束",
+  endKicker: "完成", endTitle: "你们刚刚省掉了几个月的猜测。",
+  endLead: "管理者和团队之间的大多数摩擦，不是能力问题，而是不知道对方是怎么工作的。先私下写下来，再一起读，猜测就变成了提问。",
+  monday: "周一试试这个", mondayTxt: "在下次团队会议上分享你的说明书，也邀请大家写自己的。设一个三个月后的提醒，更新它。",
+  again: "重新开始", passOn: "传下去",
+  teachKicker: "传下去", teachTitle: "把使用说明书教给别人。",
+  teachLead: "讲讲这三个动作，然后让 TA 用自己的话写下想尝试的做法。",
+  t3: ["你先来", "先读，再问", "各一个承诺"], t3sub: ["管理者先打开自己", "好奇，不辩解", "小而具体"],
+  learnerName: "TA 的名字（可选）", learnerPh: "例如：小美", learned: "TA 想尝试的做法（用自己的话）", learnedPh: "把手机递给 TA……",
+  save: "保存在这部手机上", chainTitle: "你传给过的人", chainEmpty: "还没有。你的第一次“教回去”会出现在这里。",
+  saved: "只保存在这部手机上。", restart: "回到开头", timeUp: "时间到，把话说完吧。",
+  gKicker: "引导师指南", gTitle: "如何带“我的使用说明书”",
+  gWhy: "为什么有效",
+  gWhyTxt: "一份个人“使用说明书”，让合作中那些没说出口的规则变得看得见。先私下写，可以避免照着对方的答案写。管理者先写，就是在示范自己希望得到的坦诚，信任和心理安全感就是这样开始的。",
+  gSteps: "怎么带（约 15 分钟）",
+  gStepList: ["管理者和团队成员一组，或任意两位同事。", "各自私下写（每人 4 分钟），管理者先写。", "一起读两份说明书（2 分钟）。", "聊一聊：问问让你意外的地方（5 分钟）。", "每人写一个承诺。", "复制约定，定一个回顾的日期。"],
+  gDebrief: "复盘问题",
+  gDebriefList: ["写关于自己的哪部分最难？", "这周你们的合作方式会有什么变化？", "全团队版本会是什么样子？"],
+  gNotes: "备注",
+  gNotesList: ["不保存任何内容。想留下就复制约定。", "适用于新团队、新管理者和跨团队伙伴。", "绝不要用说明书评判人。它描述的是偏好，不是绩效。"]
+},
+es: {
+  title: "Mi Manual de Uso — FREE//BUILDER", product: "Mi Manual de Uso", guide: "Facilitadores",
+  privacy: "No se guarda nada. Nada sale de este móvil.", back: "FREE//BUILDER ↗",
+  soundOn: "Sonido sí", soundOff: "Sonido no", left: "quedan", paused: "en pausa", close: "Cerrar", resume: "Seguir", pause: "Pausa",
+  introKicker: "Confianza · Responsable + miembro del equipo",
+  introTitle: 'Mi Manual de <span class="accent-word">Uso</span>',
+  introLead: "Nadie viene con instrucciones. Cada uno escribe en privado una página de “cómo trabajar conmigo”. Luego os las intercambiáis, las leéis, preguntáis y cada uno hace una promesa. Meses de suposiciones, resueltos en quince minutos.",
+  introMeta: ["2 personas", "1 móvil", "≈ 15 minutos"],
+  start: "Empezar", next: "Siguiente", backBtn: "Atrás",
+  setupTitle: "¿Quién escribe?", nameA: "Primera persona (nombre o rol)", nameB: "Segunda persona (nombre o rol)", phA: "p. ej. Mei, responsable", phB: "p. ej. Sam",
+  defA: "Persona A", defB: "Persona B",
+  goFirst: "Si uno de los dos es responsable del equipo, escribe primero. Abrirse primero hace que sea seguro para el otro.",
+  passTo: "Pasa el móvil a {r}", passLead: "Escribe en privado. La otra persona, aparta la vista hasta su turno.", ready: "Soy {r}",
+  writeKicker: "{r} · privado por ahora", writeTitle: "Cómo trabajar conmigo", writeNote: "Responde al menos tres. Corto está bien. Sincero, mejor.",
+  prompts: [["Doy lo mejor de mí cuando…", "p. ej. tengo una mañana tranquila para pensar"], ["La mejor forma de darme feedback es…", "p. ej. en privado, pronto, con un ejemplo"], ["Cuando estoy bajo presión, notarás… y lo que ayuda es…", "p. ej. me callo. Pregúntame qué tengo encima."], ["Algo que la gente suele malinterpretar de mí…", "p. ej. no estoy molesto, estoy pensando"], ["Lo que necesito de ti es…", "p. ej. que me avises pronto si algo no va bien"]],
+  needThree: "Responde al menos tres.", done: "Listo, ocultar",
+  readKicker: "Intercambio", readTitle: "Leed el manual del otro", readLead: "Poned el móvil entre los dos. Leed ambos, despacio. Luego hablad.",
+  talk: "Hablar de ello",
+  talkTitle: "Pregunta, no te defiendas.", talkLead: "Por turnos. Preguntad por lo que habéis leído. No hace falta estar de acuerdo con todo.",
+  talkTips: ["Pregunta por una respuesta que te sorprendió.", "Di algo de su manual que nunca habrías adivinado.", "¿Dónde chocan vuestros manuales? Es útil, no malo.", "Responsable: pregunta “¿Qué hace difícil contarme cosas?”"],
+  talkDone: "Ya hemos hablado",
+  agreeTitle: "Una promesa cada uno", agreeLead: "A partir de lo que leíste, escribe una cosa que harás distinto. Empieza con “Voy a…”.", agreePh: "Voy a…",
+  needPromise: "Cada uno escribe una promesa.", toSummary: "Ver nuestro acuerdo",
+  sumKicker: "Vuestro acuerdo de trabajo", sumTitle: "Guardadlo donde lo veáis.", promiseLbl: "Promesa",
+  copy: "Copiar el acuerdo", copied: "Copiado.", revisit: "Revisadlo dentro de tres meses. Las personas cambian, y los manuales también.",
+  finish: "Terminar",
+  endKicker: "Hecho", endTitle: "Acabáis de ahorraros meses de suposiciones.",
+  endLead: "La mayor parte de la fricción entre responsables y equipos no tiene que ver con la capacidad, sino con no saber cómo trabaja la otra persona. Escribirlo en privado y leerlo juntos convierte suposiciones en preguntas.",
+  monday: "Pruébalo el lunes", mondayTxt: "Comparte tu manual con todo el equipo en la próxima reunión e invita a los demás a escribir el suyo. Pon un recordatorio para actualizarlo en tres meses.",
+  again: "Empezar de nuevo", passOn: "Transmitirlo",
+  teachKicker: "Transmitirlo", teachTitle: "Enseña a alguien el manual de uso.",
+  teachLead: "Explica los tres movimientos y deja que escriba, con sus palabras, qué va a probar.",
+  t3: ["Empieza tú", "Lee, luego pregunta", "Una promesa cada uno"], t3sub: ["quien lidera se abre primero", "con curiosidad, sin defenderse", "pequeña y concreta"],
+  learnerName: "Su nombre (opcional)", learnerPh: "p. ej. Mei", learned: "Qué va a probar, con sus palabras", learnedPh: "Pásale el móvil…",
+  save: "Guardar en este móvil", chainTitle: "Personas a las que se lo transmitiste", chainEmpty: "Nadie todavía. Tu primera transmisión aparecerá aquí.",
+  saved: "Guardado solo en este móvil.", restart: "Volver al inicio", timeUp: "Se acabó el tiempo: cerrad la idea.",
+  gKicker: "Guía para facilitadores", gTitle: "Cómo dinamizar Mi Manual de Uso",
+  gWhy: "Por qué funciona",
+  gWhyTxt: "Un “manual de uso” personal hace visibles las reglas no escritas de trabajar juntos. Escribir primero en privado evita copiar las respuestas del otro. Cuando quien lidera empieza, muestra la apertura que espera recibir: así empiezan la confianza y la seguridad psicológica.",
+  gSteps: "Cómo hacerlo (≈ 15 minutos)",
+  gStepList: ["Una persona responsable con alguien de su equipo, o dos colegas cualesquiera.", "Cada uno escribe en privado (4 minutos); quien lidera, primero.", "Leed juntos los dos manuales (2 minutos).", "Hablad: preguntad por lo que os sorprendió (5 minutos).", "Cada uno escribe una promesa.", "Copiad el acuerdo y poned fecha para revisarlo."],
+  gDebrief: "Preguntas de cierre",
+  gDebriefList: ["¿Qué fue difícil de escribir sobre ti?", "¿Qué cambiará esta semana en cómo trabajáis?", "¿Cómo sería una versión para todo el equipo?"],
+  gNotes: "Notas",
+  gNotesList: ["No se guarda nada. Copiad el acuerdo si queréis conservarlo.", "Sirve para equipos nuevos, responsables nuevos y colaboraciones entre equipos.", "Nunca uséis los manuales para juzgar a nadie. Describen preferencias, no rendimiento."]
+}
+};
+
+/* =====================================================================
+   FB KIT · helpers (copy into every demo)
+   ===================================================================== */
+const LANGS = ["en", "zh", "es"], LANG_LBL = { en: "EN", zh: "中文", es: "ES" };
+let lang = "en";
+const T = () => I18N[lang];
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = (s, v = {}) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in v ? esc(v[k]) : m));
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+/* Seeded random + pairing codes: the same code on two phones gives the same scenario, no server needed. */
+function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const CODE_CHARS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+function newCode(n = 6) { let s = ""; for (let i = 0; i < n; i++) s += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]; return s; }
+function seedFrom(code) { let h = 2166136261; for (const c of String(code).toUpperCase()) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+
+/* Sound: soft, short, optional */
+const sound = {
+  ctx: null, muted: store.get("fb_muted", false),
+  init() { if (!this.ctx) { const A = window.AudioContext || window.webkitAudioContext; if (A) this.ctx = new A(); } if (this.ctx && this.ctx.state === "suspended") this.ctx.resume(); },
+  tone(f, d = .3, g = .06, type = "sine", at = 0) {
+    if (this.muted || !this.ctx) return;
+    try { const t = this.ctx.currentTime + at, o = this.ctx.createOscillator(), a = this.ctx.createGain();
+      o.type = type; o.frequency.setValueAtTime(f, t); a.gain.setValueAtTime(.0001, t); a.gain.linearRampToValueAtTime(g, t + .02); a.gain.exponentialRampToValueAtTime(.0001, t + d);
+      o.connect(a); a.connect(this.ctx.destination); o.start(t); o.stop(t + d + .05); } catch (e) {}
+  },
+  tap() { this.tone(520, .12, .04, "triangle"); },
+  chime() { [659.25, 880, 1318.5].forEach((f, i) => this.tone(f, 1.2, .05, "sine", i * .12)); },
+  warm() { [392, 493.88, 587.33].forEach((f, i) => this.tone(f, .9, .05, "sine", i * .1)); }
+};
+const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
+
+/* Keep the screen awake while a timer runs (where supported) */
+let wakeLock = null;
+async function keepAwake(on) {
+  try {
+    if (on && "wakeLock" in navigator && !wakeLock) wakeLock = await navigator.wakeLock.request("screen");
+    if (!on && wakeLock) { await wakeLock.release(); wakeLock = null; }
+  } catch (e) { wakeLock = null; }
+}
+
+/* Timer ring */
+function ringSVG() {
+  return `<svg viewBox="0 0 120 120" aria-hidden="true"><circle class="bg" cx="60" cy="60" r="54" fill="none" stroke-width="6"/><circle class="fg" id="ring" cx="60" cy="60" r="54" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="339.29" stroke-dashoffset="0"/></svg>`;
+}
+const timer = {
+  total: 90, left: 90, running: false, raf: 0, last: 0, onEnd: null, ended: false,
+  start(total, onEnd) { this.stop(); this.total = this.left = total; this.onEnd = onEnd; this.ended = false; this.resume(); },
+  resume() { if (this.running || this.ended) return; this.running = true; this.last = performance.now(); keepAwake(true); this.tick(); },
+  pause() { this.running = false; cancelAnimationFrame(this.raf); keepAwake(false); this.paint(); },
+  stop() { this.running = false; cancelAnimationFrame(this.raf); keepAwake(false); },
+  tick() {
+    if (!this.running) return;
+    const now = performance.now(); this.left = Math.max(0, this.left - (now - this.last) / 1000); this.last = now;
+    this.paint();
+    if (this.left <= 0) { this.running = false; this.ended = true; keepAwake(false); sound.chime(); buzz([60, 80, 60]); this.onEnd && this.onEnd(); return; }
+    this.raf = requestAnimationFrame(() => this.tick());
+  },
+  paint() {
+    const ring = $("ring"), num = $("tnum"), lbl = $("tlbl"), wrap = $("timer");
+    if (!ring) return;
+    ring.setAttribute("stroke-dashoffset", String(339.29 * (1 - this.left / this.total)));
+    const s = Math.ceil(this.left);
+    num.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+    lbl.textContent = this.ended ? "" : (this.running ? T().left : T().paused);
+    wrap.classList.toggle("done", this.ended);
+  }
+};
+
+/* Toast */
+let toastT;
+function toast(msg) { const el = $("toast"); el.textContent = msg; el.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("show"), 2600); }
+
+/* Pass-the-phone curtain */
+function curtainHTML(title, lead, btnLabel, act) {
+  return `<div class="curtain">
+    <svg class="hand" viewBox="0 0 84 84" aria-hidden="true"><rect x="27" y="10" width="30" height="52" rx="7" fill="none" stroke="#fff" stroke-width="2.5"/><circle cx="42" cy="54" r="2.5" fill="#E2553F"/><path d="M14 54c6 0 10 4 13 9M70 54c-6 0-10 4-13 9" stroke="rgba(255,255,255,.5)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M34 72h16" stroke="#E2553F" stroke-width="2.5" stroke-linecap="round"/></svg>
+    <h2>${title}</h2><p>${lead}</p>
+    <button class="btn pri" data-act="${act}" style="width:100%;margin-top:6px">${btnLabel} →</button></div>`;
+}
+
+
+
+/* =====================================================================
+   MY USER MANUAL
+   ===================================================================== */
+const S = { screen: "intro", names: ["", ""], ans: [["", "", "", "", ""], ["", "", "", "", ""]], promise: ["", ""], tipIdx: 0 };
+const FLOW = ["setup", "write", "read", "talk", "agree"];
+const nm = i => (S.names[i] || "").trim() || (i ? T().defB : T().defA);
+const answered = i => S.ans[i].filter(x => x.trim()).length;
+
+function go(screen) { if (screen !== "talk") timer.stop(); S.screen = screen; render(); window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }); if (screen === "talk") startTalk(); }
+function paintStepsBar() {
+  const key = { setup: 0, pass0: 1, write0: 1, pass1: 1, write1: 1, read: 2, talk: 3, agree: 4 }[S.screen];
+  $("steps").innerHTML = key == null ? "" : FLOW.map((_, i) => `<span class="${i < key ? "done" : i === key ? "now" : ""}"></span>`).join("");
+}
+
+function art() {
+  return `<svg viewBox="0 0 320 150" style="width:100%;max-width:420px;height:auto;margin:4px 0" aria-hidden="true">
+    <g transform="rotate(-6 94 76)"><rect x="34" y="18" width="116" height="118" rx="10" fill="#17171A"/><rect x="34" y="18" width="14" height="118" rx="6" fill="#E2553F"/>
+      <text x="62" y="46" font-family="Space Mono, monospace" font-size="10" font-weight="700" fill="#F7F6F2">MANUAL · A</text>
+      <rect x="62" y="60" width="72" height="5" rx="2.5" fill="rgba(247,246,242,.5)"/><rect x="62" y="72" width="56" height="5" rx="2.5" fill="rgba(247,246,242,.3)"/><rect x="62" y="84" width="66" height="5" rx="2.5" fill="rgba(247,246,242,.3)"/><rect x="62" y="96" width="44" height="5" rx="2.5" fill="rgba(247,246,242,.3)"/></g>
+    <g transform="rotate(6 226 78)"><rect x="168" y="20" width="116" height="118" rx="10" fill="#fff" stroke="#E5E2DA"/><rect x="168" y="20" width="14" height="118" rx="6" fill="#17171A"/>
+      <text x="196" y="48" font-family="Space Mono, monospace" font-size="10" font-weight="700" fill="#E2553F">MANUAL · B</text>
+      <rect x="196" y="62" width="72" height="5" rx="2.5" fill="#E5E2DA"/><rect x="196" y="74" width="56" height="5" rx="2.5" fill="#E5E2DA"/><rect x="196" y="86" width="66" height="5" rx="2.5" fill="#E5E2DA"/><rect x="196" y="98" width="44" height="5" rx="2.5" fill="#E5E2DA"/></g>
+    <path d="M150 142c6 6 14 6 20 0" fill="none" stroke="#E2553F" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function manualHTML(i, dark) {
+  const t = T();
+  const rows = t.prompts.map((p, k) => S.ans[i][k].trim() ? `<div><span style="display:block;font-family:var(--mono);font-size:11px;letter-spacing:.04em;${dark ? "color:rgba(255,255,255,.6)" : "color:var(--muted)"}">${esc(p[0])}</span><span style="font-size:15.5px;line-height:1.45">${esc(S.ans[i][k].trim())}</span></div>` : "").join("");
+  return `<div class="card" style="display:grid;gap:12px;${dark ? "background:var(--inkbg,var(--ink));color:#fff;border-color:var(--inkbd,var(--ink))" : ""}">
+    <span class="kicker" style="${dark ? "color:rgba(255,255,255,.55)" : "color:var(--accent-ink)"}">${esc(nm(i))}</span>${rows}</div>`;
+}
+
+function render() {
+  const t = T(), stage = $("stage");
+  paintStepsBar();
+  let h = "";
+  switch (S.screen) {
+  case "intro":
+    h = `<section class="screen">
+      <span class="kicker">${t.introKicker}</span><h1>${t.introTitle}</h1>
+      <p class="lead">${esc(t.introLead)}</p>
+      <div class="pills">${t.introMeta.map(m => `<span class="pill">${esc(m)}</span>`).join("")}</div>
+      ${art()}
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="toSetup" data-focus>${esc(t.start)} →</button></div>
+    </section>`; break;
+
+  case "setup":
+    h = `<section class="screen">
+      <h2>${esc(t.setupTitle)}</h2>
+      <label class="field"><span>${esc(t.nameA)}</span><input id="nA" maxlength="30" autocomplete="off" placeholder="${esc(t.phA)}" value="${esc(S.names[0])}"></label>
+      <label class="field"><span>${esc(t.nameB)}</span><input id="nB" maxlength="30" autocomplete="off" placeholder="${esc(t.phB)}" value="${esc(S.names[1])}"></label>
+      <div class="tip"><i>✦</i><span>${esc(t.goFirst)}</span></div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="toIntro">← ${esc(t.backBtn)}</button><button class="btn pri" data-act="toPass0" data-focus>${esc(t.next)} →</button></div>
+    </section>`; break;
+
+  case "pass0": case "pass1": {
+    const i = S.screen === "pass0" ? 0 : 1, r = nm(i);
+    h = `<section class="screen">${curtainHTML(fmt(t.passTo, { r }), esc(t.passLead), fmt(t.ready, { r }), i ? "toWrite1" : "toWrite0")}</section>`; break; }
+
+  case "write0": case "write1": {
+    const i = S.screen === "write0" ? 0 : 1;
+    h = `<section class="screen">
+      <span class="kicker" style="color:var(--accent-ink)">${fmt(t.writeKicker, { r: nm(i) })}</span>
+      <h2>${esc(t.writeTitle)}</h2>
+      <p style="margin:0;font-size:14px;color:var(--muted)">${esc(t.writeNote)}</p>
+      ${t.prompts.map((p, k) => `<label class="field"><span>${esc(p[0])}</span><textarea data-ans="${k}" maxlength="220" style="min-height:70px" placeholder="${esc(p[1])}">${esc(S.ans[i][k])}</textarea></label>`).join("")}
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="${i ? "toRead" : "toPass1"}">${esc(t.done)} →</button></div>
+    </section>`; break; }
+
+  case "read":
+    h = `<section class="screen">
+      <span class="kicker">${esc(t.readKicker)}</span>
+      <h2>${esc(t.readTitle)}</h2>
+      <p class="lead">${esc(t.readLead)}</p>
+      <div style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">${manualHTML(0, true)}${manualHTML(1, false)}</div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="toTalk" data-focus>${esc(t.talk)} →</button></div>
+    </section>`; break;
+
+  case "talk":
+    h = `<section class="screen">
+      <h2>${esc(t.talkTitle)}</h2>
+      <p class="lead">${esc(t.talkLead)}</p>
+      <div class="timer" id="timer" style="width:min(56vw,210px)">${ringSVG()}<div class="num"><div><b id="tnum">5:00</b><small id="tlbl"></small></div></div></div>
+      <div class="tip" id="ltip"><i>✦</i><span>${esc(t.talkTips[S.tipIdx % t.talkTips.length])}</span></div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="pause" id="pauseBtn">${esc(timer.running || timer.ended ? t.pause : t.resume)}</button><button class="btn pri" data-act="toAgree" data-focus>${esc(t.talkDone)} →</button></div>
+    </section>`; break;
+
+  case "agree":
+    h = `<section class="screen">
+      <h2>${esc(t.agreeTitle)}</h2>
+      <p class="lead">${esc(t.agreeLead)}</p>
+      ${[0, 1].map(i => `<label class="field"><span>${esc(nm(i))}</span><input data-prom="${i}" maxlength="140" autocomplete="off" placeholder="${esc(t.agreePh)}" value="${esc(S.promise[i])}"></label>`).join("")}
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn pri" data-act="toSummary">${esc(t.toSummary)} →</button></div>
+    </section>`; break;
+
+  case "summary":
+    h = `<section class="screen">
+      <span class="kicker" style="color:var(--good)">✓ ${esc(t.sumKicker)}</span>
+      <h2>${esc(t.sumTitle)}</h2>
+      ${[0, 1].map(i => `<div class="card" style="display:grid;gap:6px;padding:14px 16px"><span class="kicker" style="color:var(--accent-ink)">${esc(nm(i))} · ${esc(t.promiseLbl)}</span><span style="font-family:var(--serif);font-style:italic;font-size:21px;line-height:1.3">“${esc(S.promise[i].trim())}”</span></div>`).join("")}
+      <div style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">${manualHTML(0, false)}${manualHTML(1, false)}</div>
+      <div class="tip"><i>◷</i><span>${esc(t.revisit)}</span></div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="copy">⧉ ${esc(t.copy)}</button><button class="btn pri" data-act="toEnd" data-focus>${esc(t.finish)} →</button></div>
+    </section>`; break;
+
+  case "end":
+    h = `<section class="screen">
+      <span class="kicker" style="color:var(--good)">✓ ${esc(t.endKicker)}</span>
+      <h2>${esc(t.endTitle)}</h2>
+      <p class="serif">${esc(t.endLead)}</p>
+      <div class="monday"><b>${esc(t.monday)}</b>${esc(t.mondayTxt)}</div>
+      <div class="spacer"></div>
+      <div class="btns"><button class="btn" data-act="again">↻ ${esc(t.again)}</button><button class="btn pri" data-act="teach" data-focus>${esc(t.passOn)} →</button></div>
+    </section>`; break;
+
+  case "teach": h = teachHTML("manual"); break;
+  }
+  const hadFocus = stage.contains(document.activeElement);
+  stage.innerHTML = h;
+  const f = stage.querySelector("[data-focus]");
+  if (f && hadFocus) f.focus({ preventScroll: true });
+}
+
+function teachHTML(demo) {
+  const t = T(), chain = store.get("fb_teachback", []).filter(c => c.demo === demo);
+  return `<section class="screen">
+    <span class="kicker" style="color:var(--accent-ink)">${esc(t.teachKicker)}</span>
+    <h2>${esc(t.teachTitle)}</h2>
+    <p class="lead">${esc(t.teachLead)}</p>
+    <div class="steps3">${t.t3.map((s, i) => `<div><b>0${i + 1}</b><span>${esc(s)}</span><small style="display:block;font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.4">${esc(t.t3sub[i])}</small></div>`).join("")}</div>
+    <div class="card" style="display:grid;gap:12px">
+      <label class="field"><span>${esc(t.learnerName)}</span><input id="lName" maxlength="30" autocomplete="off" placeholder="${esc(t.learnerPh)}"></label>
+      <label class="field"><span>${esc(t.learned)}</span><textarea id="lText" maxlength="280" placeholder="${esc(t.learnedPh)}"></textarea></label>
+      <button class="btn pri" data-act="saveTeach" style="flex:none">${esc(t.save)}</button>
+    </div>
+    <div><span class="kicker">${esc(t.chainTitle)}</span>
+      <ul class="chain" style="margin-top:10px">${chain.length ? chain.slice().reverse().map(c => `<li>${esc(c.text)}<small>${c.name ? esc(c.name) + " · " : ""}${esc(new Date(c.at).toLocaleDateString(lang === "zh" ? "zh-CN" : lang))}</small></li>`).join("") : `<li style="color:var(--muted)">${esc(t.chainEmpty)}</li>`}</ul></div>
+    <a class="link" href="/free_builder/teachback">⊂⊃ ${esc(lang === "zh" ? "教回去链条 ↗" : lang === "es" ? "Cadena de Enseñar de Vuelta ↗" : "Teach-Back Chain ↗")}</a>
+    <button class="link" data-act="restart">${esc(t.restart)}</button>
+  </section>`;
+}
+
+function startTalk() {
+  timer.start(300, () => toast(T().timeUp));
+  const pb = $("pauseBtn"); if (pb) pb.textContent = T().pause;
+  const tips = setInterval(() => {
+    if (S.screen !== "talk") { clearInterval(tips); return; }
+    S.tipIdx++; const el = $("ltip"); if (el) el.querySelector("span").textContent = T().talkTips[S.tipIdx % T().talkTips.length];
+  }, 25000);
+}
+
+function summaryText() {
+  const t = T();
+  const man = i => [`— ${nm(i)} —`, ...t.prompts.map((p, k) => S.ans[i][k].trim() ? `${p[0]} ${S.ans[i][k].trim()}` : "").filter(Boolean)].join("\n");
+  return [t.sumKicker, "", `${nm(0)} · ${t.promiseLbl}: ${S.promise[0].trim()}`, `${nm(1)} · ${t.promiseLbl}: ${S.promise[1].trim()}`, "", man(0), "", man(1), "", t.revisit, "", "wei-meng.org/free_builder/manual"].join("\n");
+}
+
+$("stage").addEventListener("input", e => {
+  const el = e.target;
+  if (el.id === "nA") S.names[0] = el.value; else if (el.id === "nB") S.names[1] = el.value;
+  else if (el.dataset.ans != null) S.ans[S.screen === "write1" ? 1 : 0][+el.dataset.ans] = el.value;
+  else if (el.dataset.prom != null) S.promise[+el.dataset.prom] = el.value;
+});
+$("stage").addEventListener("click", e => {
+  sound.init();
+  const a = e.target.closest("[data-act]");
+  if (!a) return;
+  const k = a.dataset.act; sound.tap();
+  switch (k) {
+    case "toIntro": go("intro"); break;
+    case "toSetup": go("setup"); break;
+    case "toPass0": go("pass0"); break;
+    case "toWrite0": go("write0"); break;
+    case "toPass1": if (answered(0) < 3) { toast(T().needThree); return; } go("pass1"); break;
+    case "toWrite1": go("write1"); break;
+    case "toRead": if (answered(1) < 3) { toast(T().needThree); return; } sound.warm(); go("read"); break;
+    case "toTalk": go("talk"); break;
+    case "pause":
+      if (timer.ended) return;
+      if (timer.running) { timer.pause(); a.textContent = T().resume; } else { timer.resume(); a.textContent = T().pause; }
+      break;
+    case "toAgree": timer.stop(); go("agree"); break;
+    case "toSummary": if (!S.promise[0].trim() || !S.promise[1].trim()) { toast(T().needPromise); return; } sound.chime(); go("summary"); break;
+    case "copy": {
+      const text = summaryText(), ok = () => toast(T().copied);
+      if (navigator.clipboard) navigator.clipboard.writeText(text).then(ok).catch(fb); else fb();
+      function fb() { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove(); ok(); }
+      break; }
+    case "toEnd": sound.warm(); go("end"); break;
+    case "again": S.ans = [["", "", "", "", ""], ["", "", "", "", ""]]; S.promise = ["", ""]; go("setup"); break;
+    case "teach": go("teach"); break;
+    case "saveTeach": {
+      const text = ($("lText").value || "").trim(), name = ($("lName").value || "").trim();
+      if (!text) { $("lText").focus(); return; }
+      const chain = store.get("fb_teachback", []); chain.push({ demo: "manual", text, name, at: Date.now() }); store.set("fb_teachback", chain.slice(-50));
+      sound.warm(); toast(T().saved); render(); break; }
+    case "restart": S.ans = [["", "", "", "", ""], ["", "", "", "", ""]]; S.promise = ["", ""]; go("intro"); break;
+  }
+});
+
+window.__app = { S, go, render, summaryText };
+
+/* ---------- facilitator guide ---------- */
+const drawer = $("drawer");
+function openGuide() {
+  const t = T();
+  $("panel").innerHTML = `
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+      <div><span class="kicker">${esc(t.gKicker)}</span><h3 id="g-title">${esc(t.gTitle)}</h3></div>
+      <button class="x" data-close aria-label="${esc(t.close)}">✕</button>
+    </div>
+    <h4>${esc(t.gWhy)}</h4><p>${esc(t.gWhyTxt)}</p>
+    <h4>${esc(t.gSteps)}</h4><ol>${t.gStepList.map(s => `<li>${esc(s)}</li>`).join("")}</ol>
+    <h4>${esc(t.gDebrief)}</h4><ul>${t.gDebriefList.map(s => `<li>${esc(s)}</li>`).join("")}</ul>
+    <h4>${esc(t.gNotes)}</h4><ul>${t.gNotesList.map(s => `<li>${esc(s)}</li>`).join("")}</ul>`;
+  drawer.classList.add("show");
+  setTimeout(() => drawer.querySelector("[data-close]").focus({ preventScroll: true }), 60);
+}
+function closeGuide() { drawer.classList.remove("show"); $("btn-guide").focus({ preventScroll: true }); }
+drawer.addEventListener("click", e => { if (e.target === drawer || e.target.closest("[data-close]")) closeGuide(); });
+$("btn-guide").addEventListener("click", openGuide);
+window.addEventListener("keydown", e => { if (e.key === "Escape" && drawer.classList.contains("show")) closeGuide(); });
+
+/* ---------- language + sound ---------- */
+function paintSound() {
+  const b = $("btn-sound"), t = T();
+  b.innerHTML = sound.muted
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>';
+  b.setAttribute("aria-label", sound.muted ? t.soundOff : t.soundOn); b.title = b.getAttribute("aria-label");
+}
+$("btn-sound").addEventListener("click", () => { sound.muted = !sound.muted; store.set("fb_muted", sound.muted); sound.init(); paintSound(); if (!sound.muted) sound.tap(); });
+
+function applyLang(l) {
+  lang = LANGS.includes(l) ? l : "en";
+  document.documentElement.lang = lang === "zh" ? "zh-CN" : lang;
+  document.title = T().title;
+  $("lang-lbl").textContent = LANG_LBL[lang];
+  $("btn-guide").setAttribute("aria-label", T().guide); drawer.setAttribute("aria-label", T().guide);
+  document.querySelectorAll("[data-t]").forEach(el => { const v = T()[el.dataset.t]; if (typeof v === "string") el.textContent = v; });
+  paintSound();
+  render();               // the clock object survives a re-render
+  timer.paint();
+  const pb = $("pauseBtn"); if (pb && !timer.running && !timer.ended) pb.textContent = T().resume;
+  if (drawer.classList.contains("show")) openGuide();
+  try { localStorage.setItem("wm_preferred_lang", lang); localStorage.setItem("wm_cases_lang", lang); } catch (e) {}
+}
+$("btn-lang").addEventListener("click", () => applyLang(LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length]));
+
+/* ---------- boot ---------- */
+let saved = null;
+try { saved = localStorage.getItem("wm_preferred_lang") || localStorage.getItem("wm_cases_lang"); } catch (e) {}
+const nav = (navigator.language || "").toLowerCase();
+applyLang(LANGS.includes(saved) ? saved : nav.startsWith("zh") ? "zh" : nav.startsWith("es") ? "es" : "en");
+document.addEventListener("visibilitychange", () => { if (!document.hidden && timer.running) keepAwake(true); });
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) navigator.serviceWorker.register("/free_builder/sw.js", { scope: "/free_builder/" }).catch(() => {}); // offline cache
+})();
+</script>
+</body>
+</html>

@@ -1,9 +1,9 @@
 /* FREE//BUILDER — offline cache for the demos (upload to /free_builder/sw.js)
  * Pages: network first, so updates show up straight away; the cached copy is used when offline.
  * Fonts and vendor scripts: cache first. Nothing about the people using the demos is stored here. */
-const VERSION = "fb-2026-10-21";
+const VERSION = "fb-2026-10-21d";
 // Launchpad (1.3 MB) is cached when first opened, not up front.
-const PAGES = ["listen", "questions", "thanks", "swap", "repair", "teachback", "discovery", "room", "design", "guide", "coach", "cq"].map(n => `/free_builder/${n}/`);
+const PAGES = ["listen", "questions", "thanks", "swap", "repair", "teachback", "discovery", "room", "design", "guide", "coach", "cq", "diagnose", "cost", "impact", "adapted", "ai", "frontline", "circles", "rituals", "facilitator", "kit", "twotruths", "prompt", "museum", "manual", "dial", "decide", "managers"].map(n => `/free_builder/${n}/`);
 const FONTS = [
   "/fonts/fonts.css",
   "/fonts/syne-latin-600-normal.woff2", "/fonts/syne-latin-700-normal.woff2", "/fonts/syne-latin-800-normal.woff2",
