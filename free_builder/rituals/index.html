@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Team Rituals — FREE//BUILDER</title>
+  <meta name="description" content="A 12-week calendar of 5-minute team rituals for managers — one small human-skills practice a week, in the meeting you already have.">
+  <meta name="theme-color" content="#F7F6F2">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Crect x='7' y='7' width='8' height='8' rx='2' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='7' y='17' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='17' y='17' width='8' height='8' rx='2' fill='%23E2553F'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/fonts/fonts.css">
+  <style>
+    :root { --paper:#F7F6F2; --ink:#17171A; --muted:#6B6A70; --line:#E5E2DA; --grid:#ECE9E2; --accent:#E2553F; --accent-ink:#C2412D; --white:#fff; --good:#2F7A55;
+      --sans:"Plus Jakarta Sans",system-ui,-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+      --mono:"Space Mono",ui-monospace,Menlo,monospace; --syne:Syne,"Plus Jakarta Sans","PingFang SC","Noto Sans SC",sans-serif; --serif:"Instrument Serif",Georgia,"Songti SC",serif; }
+    * { box-sizing:border-box; }
+    html { -webkit-text-size-adjust:100%; }
+    html:lang(zh) { font-synthesis: weight; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); line-height:1.55; }
+    a { color:inherit; }
+    .top { position:sticky; top:0; z-index:5; background:rgba(247,246,242,.9); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
+    .top-in { max-width:1000px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .mark { width:34px; height:34px; border-radius:10px; background:var(--ink); display:grid; place-items:center; flex-shrink:0; }
+    .brand b { font-family:var(--syne); font-size:14px; } .brand b i { color:var(--accent); font-style:normal; }
+    .chips { display:flex; gap:6px; }
+    .chip { font:inherit; font-family:var(--mono); font-size:12px; padding:8px 12px; border-radius:99px; border:1px solid var(--line); background:var(--white); color:var(--ink); cursor:pointer; text-decoration:none; }
+    .chip[aria-pressed="true"] { background:var(--ink); color:#fff; border-color:var(--ink); }
+    main { max-width:1000px; margin:0 auto; padding:28px 16px 64px; }
+    .kicker { font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+    h1 { font-family:var(--syne); font-size:clamp(32px,6vw,54px); line-height:1.06; margin:10px 0 12px; letter-spacing:-.01em; }
+    h2 { font-family:var(--syne); font-size:clamp(22px,3.4vw,30px); line-height:1.15; margin:6px 0 10px; }
+    h3 { font-family:var(--syne); font-size:18px; line-height:1.25; margin:0 0 6px; }
+    .acc { font-family:var(--serif); font-style:italic; font-weight:400; color:var(--accent-ink); }
+    html:lang(zh) .acc { font-style:normal; }
+    .lead { font-size:17px; color:rgba(23,23,26,.75); max-width:700px; margin:0; }
+    .flag { display:inline-flex; align-items:center; gap:8px; margin-top:16px; padding:6px 12px; border-radius:99px; border:1px dashed #B7791F; color:#8F5E12; font-family:var(--mono); font-size:11.5px; }
+    .meta { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+    .pill { font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:99px; border:1px solid var(--line); color:var(--muted); background:rgba(255,255,255,.6); }
+    section { margin-top:36px; }
+    .sub { color:var(--muted); font-size:14.5px; margin:0 0 14px; max-width:700px; }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+    .card { background:var(--white); border:1px solid var(--line); border-radius:22px; padding:18px 20px; }
+    .card .k { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent-ink); display:block; margin-bottom:6px; }
+    .card p { margin:0; font-size:14.5px; color:rgba(23,23,26,.8); }
+    .card .x { margin-top:10px; padding-top:10px; border-top:1px dashed var(--line); font-size:13.5px; }
+    .card .x b { font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:400; display:block; }
+    .card.bad { background:#fff; border-style:dashed; }
+    .card.bad .k { color:var(--muted); }
+    .steps { list-style:none; margin:0; padding:0; display:grid; gap:0; }
+    .steps li { display:grid; grid-template-columns:72px 1fr; gap:16px; padding:16px 0; border-top:1px solid var(--line); }
+    .steps li:last-child { border-bottom:1px solid var(--line); }
+    .steps .n { font-family:var(--mono); font-size:12px; color:var(--accent-ink); padding-top:3px; }
+    .steps .n small { display:block; color:var(--muted); font-size:11px; margin-top:2px; }
+    .steps p { margin:4px 0 0; font-size:14.5px; color:rgba(23,23,26,.8); }
+    .steps .tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+    .steps .tags a, .steps .tags span { font-family:var(--mono); font-size:11px; padding:3px 9px; border-radius:99px; border:1px solid var(--line); background:var(--white); text-decoration:none; }
+    .tw { overflow-x:auto; border:1px solid var(--line); border-radius:20px; background:var(--white); }
+    table { width:100%; border-collapse:collapse; font-size:14px; min-width:640px; }
+    th, td { text-align:left; vertical-align:top; padding:12px 14px; border-bottom:1px solid var(--grid); }
+    th { font-family:var(--mono); font-size:11px; font-weight:400; color:var(--muted); letter-spacing:.06em; background:#FBFAF7; }
+    td.note { color:var(--muted); font-size:13px; }
+    td:first-child { font-family:var(--mono); font-size:11.5px; color:var(--accent-ink); white-space:nowrap; }
+    .list { margin:0; padding-left:20px; display:grid; gap:8px; font-size:15px; }
+    .dark { background:var(--ink); color:#fff; border-radius:24px; padding:22px 24px; }
+    .dark .kicker { color:rgba(255,255,255,.55); }
+    .dark .acc { color:#F2A091; }
+    .dark ol, .dark ul { margin:12px 0 0; padding-left:20px; display:grid; gap:8px; font-size:15px; }
+    .quote { font-family:var(--serif); font-style:italic; font-size:clamp(20px,3vw,26px); line-height:1.3; margin:0; }
+    html:lang(zh) .quote { font-style:normal; font-family:var(--sans); }
+    .note { font-size:12.5px; color:var(--muted); }
+    .cta { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .cta a { font-family:var(--mono); font-size:12px; font-weight:700; text-decoration:none; padding:11px 16px; border-radius:99px; border:1px solid var(--ink); }
+    .cta a.pri { background:var(--ink); color:#fff; }
+    .field { display:grid; gap:6px; max-width:280px; }
+    .field span { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+    .field input { font:inherit; font-size:15px; padding:10px 12px; border-radius:12px; border:1px solid var(--line); background:var(--white); color:var(--ink); }
+    footer { text-align:center; font-family:var(--mono); font-size:11px; color:var(--muted); padding:20px 16px 40px; }
+    :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:6px; }
+    @media (max-width:520px) { .steps li { grid-template-columns:1fr; gap:4px; } }
+    @media (max-width:420px) { .brand b { display:none; } .chip { padding:7px 10px; } }
+    @media print { .top, .cta, footer, .noprint { display:none !important; } body { background:#fff; } .card, .steps li, .dark { break-inside:avoid; } .dark { background:#fff; color:var(--ink); border:1px solid var(--ink); } .dark .kicker { color:var(--muted); } }
+    
+  </style>
+</head>
+<body>
+  <header class="top"><div class="top-in">
+    <a class="brand" href="/free_builder/" aria-label="FREE//BUILDER"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19"><rect x="3" y="3" width="8" height="8" rx="2" fill="#fff"/><rect x="13" y="3" width="8" height="8" rx="2" fill="#fff" opacity=".55"/><rect x="3" y="13" width="8" height="8" rx="2" fill="#fff" opacity=".55"/><rect x="13" y="13" width="8" height="8" rx="2" fill="#E2553F"/></svg></span><b>FREE<i>//</i>BUILDER</b></a>
+    <div class="chips" role="group" aria-label="Language"><button class="chip" data-lang="en" type="button">EN</button><button class="chip" data-lang="zh" type="button">中文</button><button class="chip" data-lang="es" type="button">ES</button></div>
+  </div></header>
+  <main id="main"></main>
+  <footer>wei-meng.org/free_builder/rituals · © FREE//BUILDER</footer>
+<script>
+(() => {
+"use strict";
+const P = {"en": {"title": "Team Rituals — FREE//BUILDER", "blocks": [{"type": "lead", "kicker": "Programme · 12 weeks · for managers", "title": "One small practice a week, <span class=\"acc\">for twelve<\/span> weeks.", "text": "Habits grow in the team meeting you already have, not in a workshop once a year. Each week takes five to ten minutes, uses one free practice, and ends with the team talking to each other — not to a screen.", "meta": ["5–10 minutes a week", "in your existing team meeting", "printable"]}, {"type": "html", "html": "<label class=\"field noprint\"><span>Start on (a Monday)<\/span><input type=\"date\" id=\"startDate\"><\/label>"}, {"type": "steps", "kicker": "The calendar", "title": "Twelve weeks of <span class=\"acc\">small<\/span> rituals", "items": [{"n": "Week 1", "when": "·", "week": 0, "t": "A light question", "d": "Open the team meeting with one Light card. Anyone can pass.", "tags": [{"l": "Question Deck", "href": "/free_builder/questions"}]}, {"n": "Week 2", "when": "·", "week": 1, "t": "Thank-you round", "d": "Each person thanks one colleague for something specific.", "tags": [{"l": "Specific Thanks", "href": "/free_builder/thanks"}]}, {"n": "Week 3", "when": "·", "week": 2, "t": "Listening pairs", "d": "Ten minutes in pairs: talk, play back, swap.", "tags": [{"l": "Listening Duet", "href": "/free_builder/listen"}]}, {"n": "Week 4", "when": "·", "week": 3, "t": "What's in the way?", "d": "Pick one recurring frustration and run the 2-minute diagnosis together.", "tags": [{"l": "Training or not?", "href": "/free_builder/diagnose"}]}, {"n": "Week 5", "when": "·", "week": 4, "t": "Two sides", "d": "Play one Perspective Swap situation in pairs.", "tags": [{"l": "Perspective Swap", "href": "/free_builder/swap"}]}, {"n": "Week 6", "when": "·", "week": 5, "t": "Look back", "d": "Halfway: what stuck, what didn't, what to keep?", "tags": [{"l": "Room Mode", "href": "/free_builder/room"}]}, {"n": "Week 7", "when": "·", "week": 6, "t": "A real question", "d": "One Real card from the Question Deck.", "tags": [{"l": "Question Deck", "href": "/free_builder/questions"}]}, {"n": "Week 8", "when": "·", "week": 7, "t": "Repair norms", "d": "Agree how the team owns a misstep — then practise once.", "tags": [{"l": "Repair Kit", "href": "/free_builder/repair"}]}, {"n": "Week 9", "when": "·", "week": 8, "t": "Our internal client", "d": "Discovery Duet with a request from another team.", "tags": [{"l": "Discovery Duet", "href": "/free_builder/discovery"}]}, {"n": "Week 10", "when": "·", "week": 9, "t": "Teach it on", "d": "Each person teaches one practice to someone outside the team.", "tags": [{"l": "Teach-Back Chain", "href": "/free_builder/teachback"}]}, {"n": "Week 11", "when": "·", "week": 10, "t": "A deep question", "d": "One Deep card — only if the team chooses it.", "tags": [{"l": "Question Deck", "href": "/free_builder/questions"}]}, {"n": "Week 12", "when": "·", "week": 11, "t": "The room speaks", "d": "Anonymous retro in Room Mode: what will we keep doing?", "tags": [{"l": "Room Mode", "href": "/free_builder/room"}]}]}, {"type": "dark", "kicker": "Tips for the manager", "items": ["Go first — answer the question or give the first thank-you yourself.", "Keep it optional and light. Passing is always fine.", "Never turn it into a score, a report or a ranking.", "Week 6 and week 12: ask the team what to keep."]}, {"type": "cta", "kicker": "Print it, then start Monday", "links": [{"l": "Open the facilitator pack", "href": "/free_builder/guide"}, {"l": "Try the Question Deck", "href": "/free_builder/questions"}]}]}, "zh": {"title": "团队小仪式 — FREE//BUILDER", "blocks": [{"type": "lead", "kicker": "项目 · 12 周 · 给管理者", "title": "每周一个小练习，<span class=\"acc\">坚持十二<\/span>周。", "text": "习惯在你本来就有的团队例会里生长，而不是在一年一次的工作坊里。每周 5 到 10 分钟，用一个免费练习，最后是团队成员彼此交谈——而不是对着屏幕。", "meta": ["每周 5–10 分钟", "放进现有的团队例会", "可打印"]}, {"type": "html", "html": "<label class=\"field noprint\"><span>开始日期（周一）<\/span><input type=\"date\" id=\"startDate\"><\/label>"}, {"type": "steps", "kicker": "日历", "title": "十二周的<span class=\"acc\">小<\/span>仪式", "items": [{"n": "第 1 周", "when": "·", "week": 0, "t": "一个轻松的问题", "d": "用一张“轻松”卡开场。任何人都可以跳过。", "tags": [{"l": "问题卡组", "href": "/free_builder/questions"}]}, {"n": "第 2 周", "when": "·", "week": 1, "t": "感谢一轮", "d": "每人为一件具体的事感谢一位同事。", "tags": [{"l": "具体的感谢", "href": "/free_builder/thanks"}]}, {"n": "第 3 周", "when": "·", "week": 2, "t": "两两倾听", "d": "两人一组十分钟：说、复述、交换。", "tags": [{"l": "倾听二重奏", "href": "/free_builder/listen"}]}, {"n": "第 4 周", "when": "·", "week": 3, "t": "是什么在阻碍？", "d": "挑一个反复出现的烦恼，一起做两分钟诊断。", "tags": [{"l": "要不要培训？", "href": "/free_builder/diagnose"}]}, {"n": "第 5 周", "when": "·", "week": 4, "t": "两边的故事", "d": "两两一组玩一个视角互换情境。", "tags": [{"l": "视角互换", "href": "/free_builder/swap"}]}, {"n": "第 6 周", "when": "·", "week": 5, "t": "回顾", "d": "过半了：什么坚持下来了？什么没有？保留什么？", "tags": [{"l": "Room Mode", "href": "/free_builder/room"}]}, {"n": "第 7 周", "when": "·", "week": 6, "t": "一个真实的问题", "d": "从问题卡组抽一张“真实”卡。", "tags": [{"l": "问题卡组", "href": "/free_builder/questions"}]}, {"n": "第 8 周", "when": "·", "week": 7, "t": "修复的约定", "d": "约定团队如何承认失误——然后练一次。", "tags": [{"l": "修复工具包", "href": "/free_builder/repair"}]}, {"n": "第 9 周", "when": "·", "week": 8, "t": "我们的内部客户", "d": "用另一个团队的需求玩一次探询二重奏。", "tags": [{"l": "探询二重奏", "href": "/free_builder/discovery"}]}, {"n": "第 10 周", "when": "·", "week": 9, "t": "传下去", "d": "每人把一个练习教给团队以外的人。", "tags": [{"l": "教回去链条", "href": "/free_builder/teachback"}]}, {"n": "第 11 周", "when": "·", "week": 10, "t": "一个深入的问题", "d": "一张“深入”卡——只有团队选择时才用。", "tags": [{"l": "问题卡组", "href": "/free_builder/questions"}]}, {"n": "第 12 周", "when": "·", "week": 11, "t": "让全场发声", "d": "用 Room Mode 做匿名复盘：我们要继续做什么？", "tags": [{"l": "Room Mode", "href": "/free_builder/room"}]}]}, {"type": "dark", "kicker": "给管理者的提示", "items": ["你先来——先回答问题，或第一个说出感谢。", "保持自愿和轻松。跳过永远没问题。", "绝不把它变成分数、报告或排名。", "第 6 周和第 12 周：问团队想保留什么。"]}, {"type": "cta", "kicker": "打印出来，周一开始", "links": [{"l": "打开引导师手册", "href": "/free_builder/guide"}, {"l": "试试问题卡组", "href": "/free_builder/questions"}]}]}, "es": {"title": "Rituales de equipo — FREE//BUILDER", "blocks": [{"type": "lead", "kicker": "Programa · 12 semanas · para mandos", "title": "Una pequeña práctica a la semana, <span class=\"acc\">durante doce<\/span> semanas.", "text": "Los hábitos crecen en la reunión de equipo que ya tienes, no en un taller una vez al año. Cada semana son cinco o diez minutos, una práctica gratuita, y termina con el equipo hablando entre sí, no con una pantalla.", "meta": ["5–10 minutos a la semana", "en tu reunión de equipo", "imprimible"]}, {"type": "html", "html": "<label class=\"field noprint\"><span>Empieza el (un lunes)<\/span><input type=\"date\" id=\"startDate\"><\/label>"}, {"type": "steps", "kicker": "El calendario", "title": "Doce semanas de <span class=\"acc\">pequeños<\/span> rituales", "items": [{"n": "Semana 1", "when": "·", "week": 0, "t": "Una pregunta ligera", "d": "Abre la reunión con una carta Ligera. Cualquiera puede pasar.", "tags": [{"l": "Mazo de Preguntas", "href": "/free_builder/questions"}]}, {"n": "Semana 2", "when": "·", "week": 1, "t": "Ronda de gracias", "d": "Cada persona agradece algo concreto a un colega.", "tags": [{"l": "Gracias Concretas", "href": "/free_builder/thanks"}]}, {"n": "Semana 3", "when": "·", "week": 2, "t": "Parejas de escucha", "d": "Diez minutos en parejas: hablar, devolver, cambiar.", "tags": [{"l": "Dúo de escucha", "href": "/free_builder/listen"}]}, {"n": "Semana 4", "when": "·", "week": 3, "t": "¿Qué lo impide?", "d": "Elegid una frustración recurrente y haced juntos el diagnóstico de 2 minutos.", "tags": [{"l": "¿Formación o no?", "href": "/free_builder/diagnose"}]}, {"n": "Semana 5", "when": "·", "week": 4, "t": "Dos lados", "d": "Jugad en parejas una situación de Cambio de Perspectiva.", "tags": [{"l": "Cambio de Perspectiva", "href": "/free_builder/swap"}]}, {"n": "Semana 6", "when": "·", "week": 5, "t": "Mirar atrás", "d": "A mitad de camino: ¿qué se quedó, qué no, qué mantenemos?", "tags": [{"l": "Room Mode", "href": "/free_builder/room"}]}, {"n": "Semana 7", "when": "·", "week": 6, "t": "Una pregunta real", "d": "Una carta Real del Mazo de Preguntas.", "tags": [{"l": "Mazo de Preguntas", "href": "/free_builder/questions"}]}, {"n": "Semana 8", "when": "·", "week": 7, "t": "Normas de reparación", "d": "Acordad cómo asume el equipo un error y practicadlo una vez.", "tags": [{"l": "Kit de Reparación", "href": "/free_builder/repair"}]}, {"n": "Semana 9", "when": "·", "week": 8, "t": "Nuestro cliente interno", "d": "Dúo de Descubrimiento con una petición de otro equipo.", "tags": [{"l": "Dúo de Descubrimiento", "href": "/free_builder/discovery"}]}, {"n": "Semana 10", "when": "·", "week": 9, "t": "Transmitirlo", "d": "Cada persona enseña una práctica a alguien de fuera del equipo.", "tags": [{"l": "Cadena de Enseñar de Vuelta", "href": "/free_builder/teachback"}]}, {"n": "Semana 11", "when": "·", "week": 10, "t": "Una pregunta profunda", "d": "Una carta Profunda, solo si el equipo lo elige.", "tags": [{"l": "Mazo de Preguntas", "href": "/free_builder/questions"}]}, {"n": "Semana 12", "when": "·", "week": 11, "t": "La sala habla", "d": "Retro anónima en Room Mode: ¿qué seguiremos haciendo?", "tags": [{"l": "Room Mode", "href": "/free_builder/room"}]}]}, {"type": "dark", "kicker": "Consejos para el mando", "items": ["Empieza tú: responde la pregunta o da el primer agradecimiento.", "Que sea opcional y ligero. Pasar siempre está bien.", "Nunca lo conviertas en una puntuación, un informe o un ranking.", "Semana 6 y semana 12: pregunta al equipo qué mantener."]}, {"type": "cta", "kicker": "Imprímelo y empieza el lunes", "links": [{"l": "Abrir la guía para facilitadores", "href": "/free_builder/guide"}, {"l": "Probar el Mazo de Preguntas", "href": "/free_builder/questions"}]}]}};
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let lang = "en";
+const B = {
+  lead: b => `<span class="kicker">${esc(b.kicker)}</span><h1>${b.title}</h1><p class="lead">${esc(b.text)}</p>${b.flag ? `<div class="flag">◌ ${esc(b.flag)}</div>` : ""}${b.meta ? `<div class="meta">${b.meta.map(m => `<span class="pill">${esc(m)}</span>`).join("")}</div>` : ""}`,
+  head: b => `${b.kicker ? `<span class="kicker">${esc(b.kicker)}</span>` : ""}${b.title ? `<h2>${b.title}</h2>` : ""}${b.text ? `<p class="sub">${esc(b.text)}</p>` : ""}`,
+  cards: b => B.head(b) + `<div class="cards">${b.items.map(c => `<div class="card${c.bad ? " bad" : ""}">${c.k ? `<span class="k">${esc(c.k)}</span>` : ""}${c.t ? `<h3>${esc(c.t)}</h3>` : ""}${c.d ? `<p>${esc(c.d)}</p>` : ""}${c.x ? `<div class="x"><b>${esc(c.xk || "")}</b>${esc(c.x)}</div>` : ""}${c.href ? `<p style="margin-top:10px"><a href="${c.href}" style="font-family:var(--mono);font-size:12px">${esc(c.link || "↗")}</a></p>` : ""}</div>`).join("")}</div>`,
+  steps: b => B.head(b) + `<ol class="steps">${b.items.map(s => `<li><span class="n">${esc(s.n)}${s.when ? `<small class="when" data-week="${s.week != null ? s.week : ""}">${esc(s.when)}</small>` : ""}</span><div><h3>${esc(s.t)}</h3>${s.d ? `<p>${esc(s.d)}</p>` : ""}${s.tags ? `<div class="tags">${s.tags.map(t => t.href ? `<a href="${t.href}">${esc(t.l)} ↗</a>` : `<span>${esc(t.l)}</span>`).join("")}</div>` : ""}</div></li>`).join("")}</ol>`,
+  table: b => B.head(b) + `<div class="tw" tabindex="0" role="region" aria-label="${esc(b.aria || b.kicker || "")}"><table><thead><tr>${b.cols.map(c => `<th scope="col">${esc(c)}</th>`).join("")}</tr></thead><tbody>${b.rows.map(r => `<tr>${r.map((c, i) => `<td class="${i === r.length - 1 && b.noteCol ? "note" : ""}">${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`,
+  list: b => B.head(b) + `<ul class="list">${b.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>`,
+  dark: b => `<div class="dark"><span class="kicker">${esc(b.kicker)}</span>${b.title ? `<h2 style="color:#fff">${b.title}</h2>` : ""}${b.text ? `<p style="margin:6px 0 0;color:rgba(255,255,255,.8)">${esc(b.text)}</p>` : ""}${b.items ? `<${b.ordered ? "ol" : "ul"}>${b.items.map(i => `<li>${esc(i)}</li>`).join("")}</${b.ordered ? "ol" : "ul"}>` : ""}</div>`,
+  quote: b => `<p class="quote">“${esc(b.text)}”</p>${b.by ? `<p class="note" style="margin-top:8px">${esc(b.by)}</p>` : ""}`,
+  note: b => `<p class="note">${esc(b.text)}</p>`,
+  html: b => b.html,
+  cta: b => B.head(b) + `<div class="cta">${b.links.map((l, i) => `<a class="${i === 0 ? "pri" : ""}" href="${l.href}"${l.download ? " download" : ""}>${esc(l.l)} ${l.download ? "↓" : "↗"}</a>`).join("")}</div>`
+};
+function render() {
+  const s = P[lang];
+  document.documentElement.lang = lang === "zh" ? "zh-CN" : lang;
+  document.title = s.title;
+  document.querySelectorAll("[data-lang]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+  document.getElementById("main").innerHTML = s.blocks.map((b, i) => i === 0 ? B[b.type](b) : `<section${b.id ? ` id="${b.id}"` : ""}${b.noprint ? ' class="noprint"' : ""}>${B[b.type](b)}</section>`).join("");
+  if (window.__after) window.__after(lang, s);
+  try { localStorage.setItem("wm_preferred_lang", lang); localStorage.setItem("wm_cases_lang", lang); } catch (e) {}
+}
+document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => { lang = b.dataset.lang; render(); }));
+let saved = null; try { saved = localStorage.getItem("wm_preferred_lang") || localStorage.getItem("wm_cases_lang"); } catch (e) {}
+const nav = (navigator.language || "").toLowerCase();
+lang = ["en", "zh", "es"].includes(saved) ? saved : nav.startsWith("zh") ? "zh" : nav.startsWith("es") ? "es" : "en";
+
+window.__after = (lang, s) => {
+  const inp = document.getElementById("startDate"); if (!inp) return;
+  let d0 = null; try { d0 = localStorage.getItem("fb_rituals_start"); } catch (e) {}
+  if (!d0) { const t = new Date(); const day = (t.getDay() + 6) % 7; t.setDate(t.getDate() - day + 7); d0 = t.toISOString().slice(0, 10); }
+  inp.value = d0;
+  const paint = () => {
+    const base = new Date(inp.value + "T00:00:00"); if (isNaN(base)) return;
+    document.querySelectorAll(".when[data-week]").forEach(el => { const w = +el.dataset.week, d = new Date(base); d.setDate(d.getDate() + w * 7);
+      el.textContent = d.toLocaleDateString(lang === "zh" ? "zh-CN" : lang, { month: "short", day: "numeric" }); });
+  };
+  inp.addEventListener("change", () => { try { localStorage.setItem("fb_rituals_start", inp.value); } catch (e) {} paint(); });
+  paint();
+};
+
+render();
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) navigator.serviceWorker.register("/free_builder/sw.js", { scope: "/free_builder/" }).catch(() => {});
+})();
+</script>
+</body>
+</html>
