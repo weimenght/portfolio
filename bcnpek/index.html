@@ -181,7 +181,11 @@
       "Alguns jocs carreguen fonts de Google Fonts i codi de CDN públics, i el bar mostra el temps de Pequín amb Open-Meteo. Aquests serveis veuen la teva adreça IP, com qualsevol web que visites, però no reben res del que escrius."],
     pFeatures: ["Features that send data", "会发送数据的功能", "會傳送資料的功能", "Funciones que envían datos", "Funcions que envien dades"],
     pNote: ["Choices are remembered per site: this page shows the ones for this site.", "选择按网站分别记住：本页显示的是本网站的选择。", "選擇按網站分別記住：本頁顯示的是本網站的選擇。", "Las elecciones se recuerdan por sitio: aquí ves las de este sitio.", "Les eleccions es recorden per lloc: aquí veus les d'aquest lloc."],
-    back: ["Back", "返回", "返回", "Volver", "Tornar"]
+    back: ["Back", "返回", "返回", "Volver", "Tornar"],
+    fPrivacy: ["Privacy", "隐私", "隱私", "Privacidad", "Privacitat"],
+    fMade: ["Made with AI & ♥", "用 AI 与 ♥ 制作", "用 AI 與 ♥ 製作", "Hecho con IA y ♥", "Fet amb IA i ♥"],
+    fBy: ["A practice by Wei", "Wei的独立工作室", "Wei的獨立工作室", "Una práctica de Wei", "Una pràctica de Wei"],
+    fHome: ["FREE//BUILDER home", "FREE//BUILDER 首页", "FREE//BUILDER 首頁", "Inicio de FREE//BUILDER", "Inici de FREE//BUILDER"]
   };
   var TO = {
     supabase: ["Supabase, a database hosted in Ireland (EU)", "Supabase 数据库，服务器位于爱尔兰（欧盟）", "Supabase 資料庫，伺服器位於愛爾蘭（歐盟）", "Supabase, una base de datos alojada en Irlanda (UE)", "Supabase, una base de dades allotjada a Irlanda (UE)"],
@@ -351,13 +355,21 @@
     ".fbc-card{border:1px solid #E5E2DA;border-radius:18px;padding:16px;margin:12px 0;background:#fff}.fbc-st{font:400 11px/1.4 'Space Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#C2412D;margin:0 0 10px}" +
     ".fbc-note{font-size:13px;color:#6B6A70}.fbc-back{font:400 12px/1 'Space Mono',ui-monospace,monospace;color:inherit}" +
     "@media (prefers-color-scheme:dark){.fbc{background:#1D1D21;color:#ECEBE6;border-color:#303036}.fbc-l dt,.fbc-note{color:#A8A7AD}.fbc-p{color:#BDBCC2}.fbc-k,.fbc-st{color:#F28C76}" +
-    ".fbc-b button{border-color:#ECEBE6}.fbc-b button:hover,.fbc-b button:focus-visible,.fbc-b button[aria-pressed='true']{background:#ECEBE6;color:#17171A}.fbc-card{background:#1D1D21;border-color:#303036}[data-fbl-privacy]{color:#ECEBE6}}";
+    ".fbc-b button{border-color:#ECEBE6}.fbc-b button:hover,.fbc-b button:focus-visible,.fbc-b button[aria-pressed='true']{background:#ECEBE6;color:#17171A}.fbc-card{background:#1D1D21;border-color:#303036}[data-fbl-privacy]{color:#ECEBE6}}"+
+    ".fbf{margin-top:40px;border-top:1px solid rgba(128,128,128,.28);padding:22px 16px calc(22px + env(safe-area-inset-bottom));font:400 11px/1.6 'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.02em;color:inherit}" +
+    ".fbf-in{max-width:64rem;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 20px;opacity:.68}" +
+    ".fbf-note{flex-basis:100%;margin:0 0 2px}.fbf nav{display:flex;flex-wrap:wrap;gap:6px 16px}.fbf a{color:inherit;text-decoration:none;border-bottom:1px solid transparent}.fbf a:hover,.fbf a:focus-visible{border-bottom-color:currentColor;outline:none}" +
+    ".fbf .fbf-heart{color:#E2553F}";
   var st = document.createElement("style"); st.id = "fbc-css"; st.textContent = css; (document.head || document.documentElement).appendChild(st);
 
+  /* ---------- the shared footer: words follow the visitor's language ---------- */
+  var FKEY = { privacy: "fPrivacy", made: "fMade", by: "fBy", home: "fHome" };
+  function paintFooter() { document.querySelectorAll("[data-fbf]").forEach(function (e) { var k = FKEY[e.getAttribute("data-fbf")]; if (k && e.textContent !== t(W[k])) e.textContent = t(W[k]); }); }
   function boot() {
+    paintFooter();
     var root = document.querySelector("[data-fbl-privacy]"); if (root) { privacy(root); var L0 = lang(); setInterval(function () { if (lang() !== L0) { L0 = lang(); privacy(root); } }, 500); }
     if (page && page.ask === "load" && window.self === window.top) ask(page);
-    var L1 = lang(); setInterval(function () { if (sheet && lang() !== L1 && queue[0]) { L1 = lang(); sheet.remove(); sheet = null; show(queue[0]); } else L1 = lang(); }, 600);
+    var L1 = lang(); setInterval(function () { if (lang() !== L1) paintFooter(); if (sheet && lang() !== L1 && queue[0]) { L1 = lang(); sheet.remove(); sheet = null; show(queue[0]); } else L1 = lang(); }, 600);
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 })();
