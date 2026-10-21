@@ -1,7 +1,131 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8"><script data-fbl data-mode="full">/* FBL · FREE//BUILDER language kit (inlined into every page's <head>).
+   One preference for the whole suite: EN · 简体中文 · 繁體中文 · Español · Català.
+   - remembered on this device (localStorage), and carried between wei-meng.org and freebuilder.net
+     by adding ?fbl=<lang> to links between the two sites (browsers keep each site's storage separate)
+   - opens a language menu from the page's own language button
+   - games keep their own pickers; their choice is read back into the shared preference */
+(function () {
+  "use strict";
+  if (window.FBL) return;
+  var LANGS = ["en", "zh", "zh-Hant", "es", "ca"];
+  var NAMES = { "en": "English", "zh": "简体中文", "zh-Hant": "繁體中文", "es": "Español", "ca": "Català" };
+  var SHORT = { "en": "EN", "zh": "简中", "zh-Hant": "繁中", "es": "ES", "ca": "CA" };
+  var KEYS = ["wm_preferred_lang", "wm_cases_lang"];
+  var SITES = /(^|\.)(wei-meng\.org|freebuilder\.net)$/i;
+  var GAMES = {   /* game storage key -> [shared -> game code, game code -> shared] */
+    "weis-lang": [{ "en": "en", "zh": "zh", "zh-Hant": "tw", "es": "es", "ca": "ca" }, { "en": "en", "zh": "zh", "tw": "zh-Hant", "yue": "zh-Hant", "es": "es", "ca": "ca" }],
+    "handoff_lang": [{ "en": "en", "zh": "zh-CN", "zh-Hant": "zh-TW", "es": "es", "ca": "ca" }, { "en": "en", "zh-CN": "zh", "zh-TW": "zh-Hant", "es": "es", "ca": "ca" }]
+  };
+  var mode = (document.currentScript && document.currentScript.getAttribute("data-mode")) || "full";
+
+  function norm(x) {
+    x = String(x || "").toLowerCase();
+    if (!x) return null;
+    if (x === "zh-hant" || /^zh-(tw|hk|mo)/.test(x) || x === "tw" || x === "yue") return "zh-Hant";
+    if (x.indexOf("zh") === 0) return "zh";
+    if (x.indexOf("ca") === 0) return "ca";
+    if (x.indexOf("es") === 0) return "es";
+    if (x.indexOf("en") === 0) return "en";
+    return null;
+  }
+  function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  function get() { for (var i = 0; i < KEYS.length; i++) { var n = norm(ls(KEYS[i])); if (n) return n; } return null; }
+  function set(l) { l = norm(l); if (!l) return; KEYS.forEach(function (k) { ls(k, l); }); for (var g in GAMES) if (ls(g) != null || mode === "game") ls(g, GAMES[g][0][l]); }
+
+  /* 1 · a preference handed over in the URL (?fbl=ca) wins, then it's removed from the address bar */
+  try {
+    var u = new URL(location.href), p = norm(u.searchParams.get("fbl"));
+    if (p) { set(p); u.searchParams.delete("fbl"); history.replaceState(history.state, "", u.pathname + u.search + u.hash); }
+  } catch (e) {}
+  /* 2 · first visit: the browser's own languages */
+  if (!get()) {
+    var nl = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "en"]), pick = "en";
+    for (var i = 0; i < nl.length; i++) { var n = norm(nl[i]); if (n) { pick = n; break; } }
+    set(pick);
+  }
+  /* 3 · games: shared -> game key now; game key -> shared when the page is left */
+  if (mode === "game") {
+    var cur0 = get(); for (var g in GAMES) ls(g, GAMES[g][0][cur0]);
+    var readBack = function () { for (var g in GAMES) { var v = ls(g); if (v && GAMES[g][1][v]) { KEYS.forEach(function (k) { ls(k, GAMES[g][1][v]); }); } } };
+    addEventListener("pagehide", readBack); document.addEventListener("visibilitychange", function () { if (document.hidden) readBack(); });
+  }
+  /* 4 · carry the preference across the two sites */
+  function decorate(e) {
+    var a = e.target && e.target.closest && e.target.closest("a[href]"); if (!a) return;
+    try { var t = new URL(a.href, location.href); if (t.host === location.host || !SITES.test(t.hostname)) return;
+      if (mode === "game") { for (var g in GAMES) { var v = ls(g); if (v && GAMES[g][1][v]) KEYS.forEach(function (k) { ls(k, GAMES[g][1][v]); }); } }
+      t.searchParams.set("fbl", get() || "en"); a.href = t.toString(); } catch (err) {}
+  }
+  document.addEventListener("click", decorate, true); document.addEventListener("auxclick", decorate, true); document.addEventListener("contextmenu", decorate, true);
+
+  window.FBL = { LANGS: LANGS, NAMES: NAMES, SHORT: SHORT, get: get, set: set, norm: norm };
+  if (mode !== "full") return;
+
+  /* 5 · the menu, opened from the page's own language button */
+  var SEL = "#btn-lang,#lang-btn,#lang-toggle-btn,[onclick*='cycleLanguage'],#w-lang,#sheet-lang,[data-fbl-btn],button[aria-label='Language'],button[title='EN / 中文 / ES']";
+  var LBL = "#lang-lbl,#lang-btn-label,#lang-label,#lang-current,[data-fbl-label]";
+  var syn = false, menu = null, opener = null;
+  function current() { return norm(window.FBL_GET ? window.FBL_GET() : (typeof window.currentLang === "string" ? window.currentLang : "")) || get() || norm(document.documentElement.lang) || "en"; }
+  function paintLabels() { var l = current(); document.querySelectorAll(LBL).forEach(function (el) { if (el.textContent !== SHORT[l]) el.textContent = SHORT[l]; }); document.querySelectorAll(SEL).forEach(function (b) { b.setAttribute("aria-haspopup", "menu"); b.setAttribute("aria-label", "Language: " + NAMES[l]); b.classList.add("fbl-has"); }); }
+  function close(refocus) { if (!menu) return; menu.remove(); menu = null; document.removeEventListener("keydown", onKey, true); if (opener) { opener.setAttribute("aria-expanded", "false"); if (refocus) opener.focus(); } }
+  function onKey(e) {
+    if (!menu) return; var items = [].slice.call(menu.querySelectorAll("button")), i = items.indexOf(document.activeElement);
+    if (e.key === "Escape") { e.preventDefault(); close(true); }
+    else if (e.key === "ArrowDown") { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+    else if (e.key === "Tab") close(false);
+  }
+  function open(btn) {
+    if (menu) { close(true); return; }
+    opener = btn; var l = current();
+    menu = document.createElement("div"); menu.className = "fbl-menu"; menu.setAttribute("role", "menu"); menu.setAttribute("aria-label", "Language");
+    LANGS.forEach(function (c) {
+      var b = document.createElement("button"); b.type = "button"; b.setAttribute("role", "menuitemradio"); b.setAttribute("aria-checked", String(c === l)); b.setAttribute("lang", c);
+      b.innerHTML = "<span>" + NAMES[c] + "</span><small>" + SHORT[c] + (c === l ? " ✓" : "") + "</small>";
+      b.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); choose(c); });
+      menu.appendChild(b);
+    });
+    document.body.appendChild(menu);
+    var r = btn.getBoundingClientRect(), w = menu.offsetWidth, h = menu.offsetHeight;
+    var left = Math.min(Math.max(8, r.right - w), innerWidth - w - 8), top = r.bottom + 6;
+    if (top + h > innerHeight - 8) top = Math.max(8, r.top - h - 6);
+    menu.style.left = left + "px"; menu.style.top = top + "px";
+    btn.setAttribute("aria-expanded", "true");
+    var on = menu.querySelector('[aria-checked="true"]') || menu.querySelector("button"); on.focus({ preventScroll: true });
+    document.addEventListener("keydown", onKey, true);
+  }
+  function choose(l) {
+    var btn = opener; close(true);
+    var setter = window.FBL_SET || (typeof window.setLanguage === "function" ? window.setLanguage : null);
+    if (setter) { setter(l); set(l); paintLabels(); return; }
+    /* pages that only know "next language": step their own button until it lands on l */
+    var n = 0; (function step() {
+      if (current() === l || n++ > LANGS.length) { set(l); paintLabels(); return; }
+      syn = true; try { (document.querySelector(SEL) || btn).click(); } finally { syn = false; }
+      setTimeout(step, 40);
+    })();
+  }
+  document.addEventListener("click", function (e) {
+    if (syn) return;
+    if (menu && !menu.contains(e.target)) { var b0 = e.target.closest && e.target.closest(SEL); close(false); if (b0 === opener) { e.preventDefault(); e.stopImmediatePropagation(); return; } }
+    var b = e.target.closest && e.target.closest(SEL); if (!b) return;
+    e.preventDefault(); e.stopImmediatePropagation(); open(b);
+  }, true);
+  addEventListener("resize", function () { close(false); });
+  var css = ".fbl-menu{position:fixed;z-index:2147483000;min-width:11rem;padding:6px;border-radius:16px;background:var(--white,#fff);color:var(--ink,#17171A);border:1px solid #E5E2DA;box-shadow:0 18px 40px -18px rgba(23,23,26,.45);font:500 14px/1.2 'Plus Jakarta Sans',system-ui,-apple-system,'PingFang SC','PingFang TC','Microsoft YaHei',sans-serif}" +
+    ".fbl-menu button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:14px;padding:10px 12px;border:0;border-radius:10px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}" +
+    ".fbl-menu button:hover,.fbl-menu button:focus-visible{background:#F3F1EB;outline:none}.fbl-menu button[aria-checked='true']{font-weight:700}" +
+    ".fbl-menu small{font:400 11px/1 'Space Mono',ui-monospace,monospace;color:var(--muted,#6B6A70)}.fbl-menu button[aria-checked='true'] small{color:var(--accent-ink,#C2412D)}" +
+    ".fbl-has{cursor:pointer}.fbl-has::after{content:'';display:inline-block;width:6px;height:6px;margin-left:5px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);opacity:.6}" +
+    "@media (prefers-color-scheme:dark){.fbl-menu{background:#1D1D21;color:#ECEBE6;border-color:#303036}.fbl-menu button:hover,.fbl-menu button:focus-visible{background:#2B2B31}.fbl-menu small{color:#A8A7AD}.fbl-menu button[aria-checked='true'] small{color:#F28C76}}";
+  var st = document.createElement("style"); st.id = "fbl-css"; st.textContent = css; (document.head || document.documentElement).appendChild(st);
+  function boot() { paintLabels(); try { new MutationObserver(function () { paintLabels(); }).observe(document.body, { childList: true, subtree: true, characterData: true }); } catch (e) {} }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+})();
+</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="page-title">WEI MENG — L&D Architect & Experience Designer</title>
   <meta name="description" content="Wei Meng designs playful, hands-on learning for the human skills AI can't replace — listening, empathy, trust — built to end in real conversations between colleagues.">
@@ -421,7 +545,7 @@ img{filter:none}
             </div>
             <div class="term-prompt">
               <span style="color:var(--accent-text,#E2553F)">EXEC&gt;</span>
-              <a href="/free_builder/game/" target="_blank" rel="noopener noreferrer" id="term-open">
+              <a href="https://www.freebuilder.net/game/" target="_blank" rel="noopener noreferrer" id="term-open">
                 <span data-i18n="termOpen">open the full console</span><span class="term-cursor" aria-hidden="true"></span>
               </a>
             </div>
@@ -453,7 +577,7 @@ img{filter:none}
               data-i18n="contactCopy">Copy email</button>
 
             <div class="relative group flex-shrink-0">
-              <a href="/free_builder/game/bar" id="drink-link"
+              <a href="https://www.freebuilder.net/game/bar" id="drink-link"
                  class="drink inline-flex items-center justify-center w-12 h-12 rounded-full border border-line bg-white hover:border-ink/40 active:scale-95 transition-all"
                  aria-label="psst — need a drink?">
                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" style="shape-rendering:crispEdges;" aria-hidden="true">
@@ -486,7 +610,7 @@ img{filter:none}
   <footer class="border-t border-line px-4 sm:px-10 py-8">
     <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-mono text-muted">
       <span>© <span id="current-year"></span> FREE//BUILDER L&D Solutions</span>
-      <a href="https://wei-meng.org/free_builder" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 hover:text-ink transition-colors">
+      <a href="https://www.freebuilder.net" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 hover:text-ink transition-colors">
         <span data-i18n="footerMade">Made with AI &</span>
         <span class="text-accent inline-block transition-transform group-hover:scale-125">♥</span>
         <svg viewBox="0 0 24 24" class="w-4 h-4 overflow-visible" aria-hidden="true">
@@ -652,11 +776,111 @@ img{filter:none}
         contactCopy: "Copiar email", copiedText: "✓ Copiado",
         drinkTooltip: "psst… ¿un trago?",
         footerMade: "Hecho con IA y"
+      }, "zh-Hant": {
+        pageTitle: "孟瑋 — 學習體驗架構師",
+        roleSubtitle: "學習體驗架構師 · 體驗設計師",
+        navWho: "關於我", navWhat: "我做什麼", navWork: "作品", navContact: "聯絡",
+        heroKicker: "你好，我是孟瑋",
+        heroTitle: "讓職場學習<br class=\"hidden sm:inline\">重新回到<span class=\"accent-word\">人</span>身上。",
+        heroDesc: "大多數企業培訓，不過是一份靜音播放的 60 頁課件。我做的恰恰相反：為 AI 無法替代的能力——傾聽、共情、信任——設計好玩、上手即練的練習，並以同事之間真實的對話收尾。",
+        stat1Val: "8+ 年", stat1Label: "企業科技 L&D",
+        stat2Val: "三重身份", stat2Label: "引導師 · 培訓師 · 教練",
+        stat3Val: "三種語言",
+        stat4Val: "以人為本", stat4Label: "工具只是腳手架",
+        identityLabel: "01 / 關於我",
+        btnFormal: "履歷", btnReality: "底色",
+        flipHint: "點選翻面", flipBack: "翻回去",
+        formalLabel: "正式履歷",
+        formalTitle: "戰略級學習體驗架構師",
+        formalDesc: "八年以上為高速發展的科技團隊搭建能力模型與學習架構，紮根於成人學習理論與循證評估，並專注於在 AI 接手日常工作後愈發重要的人的能力。",
+        realityLabel: "真實底色",
+        realityTitle: "職業“話題發起人”",
+        realityDesc: "我對“玻璃會議室裡職業假笑”的相簿照片嚴重過敏。成年人從未失去學習的胃口——他們只是受夠了像填表一樣的培訓。而房間裡最好的老師，往往就是坐在你旁邊的同事。我的工作，就是給他們一個好好聊聊的理由。",
+        realityFooter: "人是目的，而非手段。",
+        methodologyLabel: "02 / 我做什麼",
+        protocols: [
+          { tag: "01 · 根因診斷", title: "先傾聽，再動手",
+            desc: "管理層說要一場“溝通技巧培訓”，真正缺的往往是心理安全感或清晰的角色。動手寫第一頁 PPT 之前，我先聽當事人怎麼說，找到真正的摩擦點。" },
+          { tag: "02 · 人的能力", title: "以真實對話收尾的練習",
+            desc: "傾聽、共情、修復、換位思考。簡短有趣的引導把同事兩兩配對——AI 角色只是熱身——然後放下手機，真正的對話開始。" },
+          { tag: "03 · 遊戲與故事", title: "為分享而做的遊戲和短劇",
+            desc: "大家一起看的職場短劇，把方法變成世界規則的遊戲。樂趣降低了風險，人們才敢去練——每一輪都以一件和同事一起嘗試的小事收尾。" },
+          { tag: "04 · 傳下去", title: "人人都教，人人都學",
+            desc: "學習在分享中紮根。每個專案都以“把學到的教給另一個人”收尾——沒有排行榜，沒有學員，只有夥伴。" }
+        ],
+        workLabel: "03 / 作品", workLive: "線上演示", workStudio: "互動實驗室",
+        workTitle: "以對話收尾的學習",
+        workDesc: "線上演示和打磨中的作品——人的能力練習、遊戲與故事，每一個都為了讓人們聊起來。",
+        workBtn: "進入實驗室",
+        contactLabel: "05 / 打個招呼",
+        navArcade: "下班後", arcadeLabel: "04 / 下班後", arcadeKey: "任意處按 `",
+        termBar: "遊戲倉庫", termBoot1: "MEMEX-68 啟動中……核心正常。", termCount: "磁帶裝載：發現 {n} 個程式。",
+        termRun: "執行", termLoading: "正在尋找磁帶 {c}……", termOpen: "開啟完整控制檯", termBootBtn: "啟動", termFoldBtn: "收起",
+        arcadeNote: "這個網站的其他東西都在用遊戲來教學。這裡的，就只是遊戲。",
+        games: {
+          CLIMB: ["攀巖大師", "從 5.6 到 5.15d 的徒手攀策略。控制泵感、上鎂粉、讀懂難點。"],
+          DJ: ["復古 DJ", "轉動 8-bit 黑膠，對拍，在電臺裡丟下合成器迴圈。"],
+          BAR: ["酒吧與咖啡", "坐下來，嚐嚐雞尾酒，和調酒師聊聊天。"]
+        },
+        contactTitle: "一起做讓人<span class=\"accent-word\">願意分享</span>的學習。",
+        contactCopy: "複製郵箱", copiedText: "✓ 已複製",
+        drinkTooltip: "噓——來一杯？",
+        footerMade: "由 AI 與"
+      }, "ca": {
+        pageTitle: "WEI MENG — Arquitecte d'Aprenentatge i Dissenyador d'Experiències",
+        roleSubtitle: "Arquitecte de L&D · Dissenyador d'Experiències",
+        navWho: "Qui soc", navWhat: "Què faig", navWork: "Portafoli", navContact: "Contacte",
+        heroKicker: "Hola, soc en Wei",
+        heroTitle: "Un aprenentatge laboral <br class=\"hidden sm:inline\">de nou <span class=\"accent-word\">humà</span>.",
+        heroDesc: "La majoria de les formacions corporatives són 60 diapositives que passen en silenci. Jo construeixo el contrari: pràctica lúdica i real per a les habilitats que la IA no pot substituir —escoltar, empatitzar, confiar—, pensada per acabar en converses reals entre col·legues.",
+        stat1Val: "8+ anys", stat1Label: "L&D en tecnologia",
+        stat2Val: "3 barrets", stat2Label: "Facilitador · Formador · Coach",
+        stat3Val: "3 idiomes",
+        stat4Val: "Primer el que és humà", stat4Label: "Eines com a bastida",
+        identityLabel: "01 / Qui soc",
+        btnFormal: "Dossier", btnReality: "Realitat",
+        flipHint: "toca per girar", flipBack: "tornar",
+        formalLabel: "El dossier formal",
+        formalTitle: "Arquitecte Estratègic d'Experiències d'Aprenentatge",
+        formalDesc: "Més de 8 anys dissenyant marcs de competències i arquitectures d'aprenentatge per a equips tecnològics de ritme ràpid, amb base en la ciència de l'aprenentatge adult i l'avaluació basada en evidències, i centrat en les habilitats humanes que més importen ara que la IA assumeix la rutina.",
+        realityLabel: "La realitat sense filtre",
+        realityTitle: "Iniciador Professional de Converses",
+        realityDesc: "Soc al·lèrgic a les fotos d'arxiu de models rient en sales de vidre. Els adults mai no perden les ganes d'aprendre: perden la paciència amb la formació que sembla paperassa. I el millor professor de la sala sol ser el col·lega del costat. La meva feina és donar-los una bona excusa per parlar.",
+        realityFooter: "Les persones són el fi, mai el mitjà.",
+        methodologyLabel: "02 / Què faig",
+        protocols: [
+          { tag: "01 · Diagnòstic", title: "Escoltar abans de construir",
+            desc: "Quan la direcció demana un “taller de comunicació”, sovint el que falta és seguretat psicològica o rols clars. Escolto les persones implicades i trobo la fricció real abans de dissenyar una sola diapositiva." },
+          { tag: "02 · Habilitats humanes", title: "Pràctica que acaba en una conversa real",
+            desc: "Escoltar, empatitzar, reparar, posar-se al lloc de l'altre. Dinàmiques breus i lúdiques fan parelles de col·legues —els personatges d'IA són només l'escalfament— i després el mòbil es guarda i comença la conversa real." },
+          { tag: "03 · Joc i història", title: "Jocs i drames per compartir",
+            desc: "Drames laborals per veure en grup i jocs que converteixen un mètode en les regles d'un món. La diversió baixa el risc perquè la gent s'atreveixi a practicar, i cada ronda acaba amb alguna cosa per provar amb un col·lega." },
+          { tag: "04 · Transmetre", title: "Tothom ensenya, tothom aprèn",
+            desc: "L'aprenentatge arrela quan es comparteix. Cada programa acaba amb les persones ensenyant el que han après a una altra persona: sense rànquings, sense alumnes, només companys." }
+        ],
+        workLabel: "03 / Portafoli", workLive: "Demos en directe", workStudio: "Laboratori interactiu",
+        workTitle: "Aprenentatge que acaba en conversa",
+        workDesc: "Demos en directe i treballs en curs: pràctica d'habilitats humanes, jocs i històries, tots pensats perquè la gent conversi.",
+        workBtn: "Entrar al laboratori",
+        contactLabel: "05 / Saludem-nos",
+        navArcade: "Fora d'horari", arcadeLabel: "04 / Fora d'horari", arcadeKey: "prem ` on sigui",
+        termBar: "Repertori de jocs", termBoot1: "Arrencant MEMEX-68… nucli OK.", termCount: "Muntant cinta: {n} programes trobats.",
+        termRun: "executar", termLoading: "Cercant cinta {c}…", termOpen: "obrir la consola completa", termBootBtn: "arrencar", termFoldBtn: "plegar",
+        arcadeNote: "Tota la resta d'aquest lloc ensenya jugant. Això és només el joc.",
+        games: {
+          CLIMB: ["Climb Master", "Estratègia d'escalada en solitari, de 5.6 a 5.15d. Controla el bombeig, posa't magnesi, llegeix el pas clau."],
+          DJ: ["Retro DJ", "Fes girar vinils de 8 bits, sincronitza el tempo i llança loops de sintetitzador."],
+          BAR: ["Bar i cafè", "Seu a la barra. Tasta els còctels, xerra amb el bàrman."]
+        },
+        contactTitle: "Creem aprenentatges que la gent <span class=\"accent-word\">comparteixi</span>.",
+        contactCopy: "Copiar correu", copiedText: "✓ Copiat",
+        drinkTooltip: "psst… una copa?",
+        footerMade: "Fet amb IA i"
       }
     };
 
-    const supportedLangs = ['en', 'zh', 'es'];
-    const langLabels = { en: 'EN', zh: '中文', es: 'ES' };
+    const supportedLangs = ['en', 'zh', 'zh-Hant', 'es', 'ca'];
+    const langLabels = { en: 'EN', zh: '中文', es: 'ES', "zh-Hant": "繁中", "ca": "CA" };
     let currentLang = 'en';
     let isFlipped = false;
     let currentSlide = 0;
@@ -731,7 +955,7 @@ img{filter:none}
     function setLanguage(lang) {
       if (!translations[lang]) return;
       currentLang = lang;
-      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+      document.documentElement.lang = (/*i18n*/lang === 'zh' ? 'zh-CN' : (lang === "zh-Hant" ? "zh-TW" : lang));
       document.getElementById('page-title').textContent = t().pageTitle;
       document.getElementById('lang-btn-label').textContent = langLabels[lang];
 
@@ -785,7 +1009,7 @@ img{filter:none}
 
 
     /* ---------- 04 After hours: game console teaser ---------- */
-    const CONSOLE_BASE = location.origin.startsWith('http') ? location.origin + '/free_builder/game/' : 'https://wei-meng.org/free_builder/game/';
+    const CONSOLE_BASE = 'https://www.freebuilder.net/game/';
     let GAMES = [
       { code: 'CLIMB', url: 'climb' },
       { code: 'DJ', url: 'dj' },
@@ -879,7 +1103,7 @@ img{filter:none}
       toggle.addEventListener('click', () => setFold(!term.classList.contains('open')));
 
       // Pull the live directory the console reads, if this page is served next to it
-      fetch('/free_builder/game/game.txt?t=' + Date.now(), { cache: 'no-store' })
+      fetch('https://www.freebuilder.net/game/game.txt?t=' + Date.now(), { cache: 'no-store' })
         .then(r => (r.ok ? r.text() : ''))
         .then(txt => { const list = parseGames(txt); if (list.length) { GAMES = list; renderGames(); } })
         .catch(() => {});

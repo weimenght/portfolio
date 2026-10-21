@@ -1,7 +1,131 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8"><script data-fbl data-mode="full">/* FBL · FREE//BUILDER language kit (inlined into every page's <head>).
+   One preference for the whole suite: EN · 简体中文 · 繁體中文 · Español · Català.
+   - remembered on this device (localStorage), and carried between wei-meng.org and freebuilder.net
+     by adding ?fbl=<lang> to links between the two sites (browsers keep each site's storage separate)
+   - opens a language menu from the page's own language button
+   - games keep their own pickers; their choice is read back into the shared preference */
+(function () {
+  "use strict";
+  if (window.FBL) return;
+  var LANGS = ["en", "zh", "zh-Hant", "es", "ca"];
+  var NAMES = { "en": "English", "zh": "简体中文", "zh-Hant": "繁體中文", "es": "Español", "ca": "Català" };
+  var SHORT = { "en": "EN", "zh": "简中", "zh-Hant": "繁中", "es": "ES", "ca": "CA" };
+  var KEYS = ["wm_preferred_lang", "wm_cases_lang"];
+  var SITES = /(^|\.)(wei-meng\.org|freebuilder\.net)$/i;
+  var GAMES = {   /* game storage key -> [shared -> game code, game code -> shared] */
+    "weis-lang": [{ "en": "en", "zh": "zh", "zh-Hant": "tw", "es": "es", "ca": "ca" }, { "en": "en", "zh": "zh", "tw": "zh-Hant", "yue": "zh-Hant", "es": "es", "ca": "ca" }],
+    "handoff_lang": [{ "en": "en", "zh": "zh-CN", "zh-Hant": "zh-TW", "es": "es", "ca": "ca" }, { "en": "en", "zh-CN": "zh", "zh-TW": "zh-Hant", "es": "es", "ca": "ca" }]
+  };
+  var mode = (document.currentScript && document.currentScript.getAttribute("data-mode")) || "full";
+
+  function norm(x) {
+    x = String(x || "").toLowerCase();
+    if (!x) return null;
+    if (x === "zh-hant" || /^zh-(tw|hk|mo)/.test(x) || x === "tw" || x === "yue") return "zh-Hant";
+    if (x.indexOf("zh") === 0) return "zh";
+    if (x.indexOf("ca") === 0) return "ca";
+    if (x.indexOf("es") === 0) return "es";
+    if (x.indexOf("en") === 0) return "en";
+    return null;
+  }
+  function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  function get() { for (var i = 0; i < KEYS.length; i++) { var n = norm(ls(KEYS[i])); if (n) return n; } return null; }
+  function set(l) { l = norm(l); if (!l) return; KEYS.forEach(function (k) { ls(k, l); }); for (var g in GAMES) if (ls(g) != null || mode === "game") ls(g, GAMES[g][0][l]); }
+
+  /* 1 · a preference handed over in the URL (?fbl=ca) wins, then it's removed from the address bar */
+  try {
+    var u = new URL(location.href), p = norm(u.searchParams.get("fbl"));
+    if (p) { set(p); u.searchParams.delete("fbl"); history.replaceState(history.state, "", u.pathname + u.search + u.hash); }
+  } catch (e) {}
+  /* 2 · first visit: the browser's own languages */
+  if (!get()) {
+    var nl = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "en"]), pick = "en";
+    for (var i = 0; i < nl.length; i++) { var n = norm(nl[i]); if (n) { pick = n; break; } }
+    set(pick);
+  }
+  /* 3 · games: shared -> game key now; game key -> shared when the page is left */
+  if (mode === "game") {
+    var cur0 = get(); for (var g in GAMES) ls(g, GAMES[g][0][cur0]);
+    var readBack = function () { for (var g in GAMES) { var v = ls(g); if (v && GAMES[g][1][v]) { KEYS.forEach(function (k) { ls(k, GAMES[g][1][v]); }); } } };
+    addEventListener("pagehide", readBack); document.addEventListener("visibilitychange", function () { if (document.hidden) readBack(); });
+  }
+  /* 4 · carry the preference across the two sites */
+  function decorate(e) {
+    var a = e.target && e.target.closest && e.target.closest("a[href]"); if (!a) return;
+    try { var t = new URL(a.href, location.href); if (t.host === location.host || !SITES.test(t.hostname)) return;
+      if (mode === "game") { for (var g in GAMES) { var v = ls(g); if (v && GAMES[g][1][v]) KEYS.forEach(function (k) { ls(k, GAMES[g][1][v]); }); } }
+      t.searchParams.set("fbl", get() || "en"); a.href = t.toString(); } catch (err) {}
+  }
+  document.addEventListener("click", decorate, true); document.addEventListener("auxclick", decorate, true); document.addEventListener("contextmenu", decorate, true);
+
+  window.FBL = { LANGS: LANGS, NAMES: NAMES, SHORT: SHORT, get: get, set: set, norm: norm };
+  if (mode !== "full") return;
+
+  /* 5 · the menu, opened from the page's own language button */
+  var SEL = "#btn-lang,#lang-btn,#lang-toggle-btn,[onclick*='cycleLanguage'],#w-lang,#sheet-lang,[data-fbl-btn],button[aria-label='Language'],button[title='EN / 中文 / ES']";
+  var LBL = "#lang-lbl,#lang-btn-label,#lang-label,#lang-current,[data-fbl-label]";
+  var syn = false, menu = null, opener = null;
+  function current() { return norm(window.FBL_GET ? window.FBL_GET() : (typeof window.currentLang === "string" ? window.currentLang : "")) || get() || norm(document.documentElement.lang) || "en"; }
+  function paintLabels() { var l = current(); document.querySelectorAll(LBL).forEach(function (el) { if (el.textContent !== SHORT[l]) el.textContent = SHORT[l]; }); document.querySelectorAll(SEL).forEach(function (b) { b.setAttribute("aria-haspopup", "menu"); b.setAttribute("aria-label", "Language: " + NAMES[l]); b.classList.add("fbl-has"); }); }
+  function close(refocus) { if (!menu) return; menu.remove(); menu = null; document.removeEventListener("keydown", onKey, true); if (opener) { opener.setAttribute("aria-expanded", "false"); if (refocus) opener.focus(); } }
+  function onKey(e) {
+    if (!menu) return; var items = [].slice.call(menu.querySelectorAll("button")), i = items.indexOf(document.activeElement);
+    if (e.key === "Escape") { e.preventDefault(); close(true); }
+    else if (e.key === "ArrowDown") { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+    else if (e.key === "Tab") close(false);
+  }
+  function open(btn) {
+    if (menu) { close(true); return; }
+    opener = btn; var l = current();
+    menu = document.createElement("div"); menu.className = "fbl-menu"; menu.setAttribute("role", "menu"); menu.setAttribute("aria-label", "Language");
+    LANGS.forEach(function (c) {
+      var b = document.createElement("button"); b.type = "button"; b.setAttribute("role", "menuitemradio"); b.setAttribute("aria-checked", String(c === l)); b.setAttribute("lang", c);
+      b.innerHTML = "<span>" + NAMES[c] + "</span><small>" + SHORT[c] + (c === l ? " ✓" : "") + "</small>";
+      b.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); choose(c); });
+      menu.appendChild(b);
+    });
+    document.body.appendChild(menu);
+    var r = btn.getBoundingClientRect(), w = menu.offsetWidth, h = menu.offsetHeight;
+    var left = Math.min(Math.max(8, r.right - w), innerWidth - w - 8), top = r.bottom + 6;
+    if (top + h > innerHeight - 8) top = Math.max(8, r.top - h - 6);
+    menu.style.left = left + "px"; menu.style.top = top + "px";
+    btn.setAttribute("aria-expanded", "true");
+    var on = menu.querySelector('[aria-checked="true"]') || menu.querySelector("button"); on.focus({ preventScroll: true });
+    document.addEventListener("keydown", onKey, true);
+  }
+  function choose(l) {
+    var btn = opener; close(true);
+    var setter = window.FBL_SET || (typeof window.setLanguage === "function" ? window.setLanguage : null);
+    if (setter) { setter(l); set(l); paintLabels(); return; }
+    /* pages that only know "next language": step their own button until it lands on l */
+    var n = 0; (function step() {
+      if (current() === l || n++ > LANGS.length) { set(l); paintLabels(); return; }
+      syn = true; try { (document.querySelector(SEL) || btn).click(); } finally { syn = false; }
+      setTimeout(step, 40);
+    })();
+  }
+  document.addEventListener("click", function (e) {
+    if (syn) return;
+    if (menu && !menu.contains(e.target)) { var b0 = e.target.closest && e.target.closest(SEL); close(false); if (b0 === opener) { e.preventDefault(); e.stopImmediatePropagation(); return; } }
+    var b = e.target.closest && e.target.closest(SEL); if (!b) return;
+    e.preventDefault(); e.stopImmediatePropagation(); open(b);
+  }, true);
+  addEventListener("resize", function () { close(false); });
+  var css = ".fbl-menu{position:fixed;z-index:2147483000;min-width:11rem;padding:6px;border-radius:16px;background:var(--white,#fff);color:var(--ink,#17171A);border:1px solid #E5E2DA;box-shadow:0 18px 40px -18px rgba(23,23,26,.45);font:500 14px/1.2 'Plus Jakarta Sans',system-ui,-apple-system,'PingFang SC','PingFang TC','Microsoft YaHei',sans-serif}" +
+    ".fbl-menu button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:14px;padding:10px 12px;border:0;border-radius:10px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}" +
+    ".fbl-menu button:hover,.fbl-menu button:focus-visible{background:#F3F1EB;outline:none}.fbl-menu button[aria-checked='true']{font-weight:700}" +
+    ".fbl-menu small{font:400 11px/1 'Space Mono',ui-monospace,monospace;color:var(--muted,#6B6A70)}.fbl-menu button[aria-checked='true'] small{color:var(--accent-ink,#C2412D)}" +
+    ".fbl-has{cursor:pointer}.fbl-has::after{content:'';display:inline-block;width:6px;height:6px;margin-left:5px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);opacity:.6}" +
+    "@media (prefers-color-scheme:dark){.fbl-menu{background:#1D1D21;color:#ECEBE6;border-color:#303036}.fbl-menu button:hover,.fbl-menu button:focus-visible{background:#2B2B31}.fbl-menu small{color:#A8A7AD}.fbl-menu button[aria-checked='true'] small{color:#F28C76}}";
+  var st = document.createElement("style"); st.id = "fbl-css"; st.textContent = css; (document.head || document.documentElement).appendChild(st);
+  function boot() { paintLabels(); try { new MutationObserver(function () { paintLabels(); }).observe(document.body, { childList: true, subtree: true, characterData: true }); } catch (e) {} }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+})();
+</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="page-title">WEI MENG — Portfolio: Learning That Ends in Conversation</title>
   <meta name="description" content="Playable learning by Wei Meng. Tools are scaffolding — the point is what people do with each other afterwards.">
@@ -287,7 +411,7 @@ img{filter:none}
         <!-- 01 LISTENING DUET (new) -->
         <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <a href="/free_builder/listen" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+            <a href="https://www.freebuilder.net/listen" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
               <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice">
                 <defs><pattern id="dots-l" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs>
                 <rect width="320" height="190" fill="url(#dots-l)"/>
@@ -304,7 +428,7 @@ img{filter:none}
             </a>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">01</span> — <span data-i18n="c1Category">Active listening · Pairs</span></div>
-              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/listen" class="hover:text-accent transition-colors" data-i18n="c1Title">Listening Duet</a></h3>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/listen" class="hover:text-accent transition-colors" data-i18n="c1Title">Listening Duet</a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="c1Desc">Two people, one phone. One talks for 90 seconds, the other plays back what they heard. The only score: did they feel heard? Then swap.</p>
             <div class="card-easter-egg hidden p-3 rounded-2xl border border-dashed border-ink/20 bg-paper space-y-2">
@@ -321,7 +445,7 @@ img{filter:none}
             </div>
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
-            <a href="/free_builder/listen" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+            <a href="https://www.freebuilder.net/listen" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
               <span data-i18n="c1Action">Start a duet</span><span aria-hidden="true">↗</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
@@ -331,7 +455,7 @@ img{filter:none}
         <!-- 02 INTERCULTURAL ATLAS + PERSPECTIVE SWAP -->
         <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <a href="https://wei-meng.org/free_builder/cq/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+            <a href="https://www.freebuilder.net/cq/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
               <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-atlas" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-atlas)"/><g fill="none" stroke="rgba(23,23,26,.2)" stroke-width="1.5"><circle cx="160" cy="96" r="60"/><ellipse cx="160" cy="96" rx="26" ry="60"/><ellipse cx="160" cy="96" rx="48" ry="60"/><path d="M100 96h120M108 66h104M108 126h104"/></g><g class="bubble-a"><g transform="rotate(-8 88 96)"><rect x="40" y="64" width="96" height="66" rx="16" fill="#17171A"/><rect x="56" y="80" width="52" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/><rect x="56" y="92" width="38" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/><rect x="56" y="104" width="46" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/><text x="118" y="122" font-family="Space Mono, monospace" font-size="12" font-weight="700" fill="#E2553F">A</text></g></g><g class="bubble-b"><g transform="rotate(8 232 96)"><rect x="184" y="64" width="96" height="66" rx="16" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/><rect x="200" y="80" width="52" height="5" rx="2.5" fill="#E5E2DA"/><rect x="200" y="92" width="38" height="5" rx="2.5" fill="#E5E2DA"/><rect x="200" y="104" width="46" height="5" rx="2.5" fill="#E5E2DA"/><text x="262" y="122" font-family="Space Mono, monospace" font-size="12" font-weight="700" fill="#E2553F">B</text></g></g><g fill="none" stroke="#E2553F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M112 52c28-18 68-18 96 0"/><path d="M200 44l8 8-10 4"/><path d="M208 142c-28 18-68 18-96 0"/><path d="M120 150l-8-8 10-4"/></g></svg>
               <span class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 text-ink flex items-center justify-center font-mono text-xs">↗</span>
               <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
@@ -341,7 +465,7 @@ img{filter:none}
             </a>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">02</span> — <span data-i18n="c2Category">Cultural intelligence · Solo → pairs</span></div>
-              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://wei-meng.org/free_builder/cq/" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors" data-i18n="c2Title">Intercultural Atlas × Perspective Swap</a></h3>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/cq/" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors" data-i18n="c2Title">Intercultural Atlas × Perspective Swap</a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="c2Desc">Explore eight cross-border friction points on your own. Then Perspective Swap pairs two colleagues, each holding only half the story, who can only reach agreement by talking.</p>
             <div class="card-easter-egg hidden p-3 rounded-2xl border border-dashed border-ink/20 bg-paper space-y-2">
@@ -353,17 +477,17 @@ img{filter:none}
             </div>
           </div>
           <div class="pt-4 mt-5 border-t border-line flex flex-wrap items-center justify-between gap-3">
-            <a href="https://wei-meng.org/free_builder/cq/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+            <a href="https://www.freebuilder.net/cq/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
               <span data-i18n="c2Action">Open the atlas</span><span aria-hidden="true">↗</span>
             </a>
-            <a href="/free_builder/swap" class="text-[11px] font-mono text-ink hover:text-accent underline decoration-dotted underline-offset-4 transition-colors" data-i18n="c2Next">Play it in pairs: Perspective Swap →</a>
+            <a href="https://www.freebuilder.net/swap" class="text-[11px] font-mono text-ink hover:text-accent underline decoration-dotted underline-offset-4 transition-colors" data-i18n="c2Next">Play it in pairs: Perspective Swap →</a>
           </div>
         </article>
 
         <!-- 03 COACHING CO-PILOT + REPAIR KIT -->
         <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <a href="https://wei-meng.org/free_builder/coach/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+            <a href="https://www.freebuilder.net/coach/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
               <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-coach" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-coach)"/><g class="bubble-a"><rect x="34" y="42" width="66" height="112" rx="14" fill="#17171A"/><rect x="44" y="60" width="38" height="13" rx="6.5" fill="rgba(247,246,242,.45)"/><rect x="54" y="80" width="36" height="13" rx="6.5" fill="#E2553F"/><rect x="44" y="100" width="30" height="13" rx="6.5" fill="rgba(247,246,242,.45)"/><rect x="54" y="120" width="36" height="13" rx="6.5" fill="#E2553F" opacity=".55"/><rect x="58" y="144" width="18" height="3" rx="1.5" fill="rgba(247,246,242,.35)"/></g><g fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 6"><path d="M110 98h26"/></g><path d="M134 92l7 6-7 6" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><g class="bubble-a"><rect x="152" y="50" width="88" height="54" rx="22" fill="#17171A"/><path d="M174 102l-6 16 20-14z" fill="#17171A"/><rect x="170" y="70" width="40" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/><rect x="170" y="80" width="28" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/></g><g class="bubble-b"><rect x="206" y="96" width="88" height="54" rx="22" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/><path d="M272 148l6 16-20-14z" fill="#fff" stroke="#E5E2DA" stroke-width="1.5" stroke-linejoin="round"/><rect x="226" y="116" width="44" height="5" rx="2.5" fill="#E5E2DA"/><rect x="226" y="126" width="30" height="5" rx="2.5" fill="#E5E2DA"/></g><g transform="rotate(-32 226 100)"><rect x="198" y="90" width="56" height="20" rx="10" fill="#E2553F"/><rect x="217" y="93" width="18" height="14" rx="3" fill="rgba(255,255,255,.35)"/><g fill="rgba(255,255,255,.55)"><circle cx="206" cy="97" r="1.3"/><circle cx="206" cy="103" r="1.3"/><circle cx="246" cy="97" r="1.3"/><circle cx="246" cy="103" r="1.3"/></g></g></svg>
               <span class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 text-ink flex items-center justify-center font-mono text-xs">↗</span>
               <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
@@ -373,7 +497,7 @@ img{filter:none}
             </a>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">03</span> — <span data-i18n="c3Category">Leadership · Rehearsal → real talk</span></div>
-              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://wei-meng.org/free_builder/coach/" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors" data-i18n="c3Title">Coaching Co-Pilot × Repair Kit</a></h3>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/coach/" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors" data-i18n="c3Title">Coaching Co-Pilot × Repair Kit</a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="c3Desc">Rehearse the hard conversation with AI direct reports — the AI is only the warm-up. Repair Kit then hands you an opening line and sends you to have it for real, with a person.</p>
             <div class="card-easter-egg hidden p-3 rounded-2xl border border-dashed border-ink/20 bg-paper space-y-2">
@@ -389,10 +513,10 @@ img{filter:none}
             </div>
           </div>
           <div class="pt-4 mt-5 border-t border-line flex flex-wrap items-center justify-between gap-3">
-            <a href="https://wei-meng.org/free_builder/coach/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+            <a href="https://www.freebuilder.net/coach/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
               <span data-i18n="c3Action">Open the co-pilot</span><span aria-hidden="true">↗</span>
             </a>
-            <a href="/free_builder/repair" class="text-[11px] font-mono text-ink hover:text-accent underline decoration-dotted underline-offset-4 transition-colors" data-i18n="c3Next">Then repair together: Repair Kit →</a>
+            <a href="https://www.freebuilder.net/repair" class="text-[11px] font-mono text-ink hover:text-accent underline decoration-dotted underline-offset-4 transition-colors" data-i18n="c3Next">Then repair together: Repair Kit →</a>
           </div>
         </article>
       </div>
@@ -413,7 +537,7 @@ img{filter:none}
         <!-- 04 DESIGN THINKING ODYSSEY -->
         <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <a href="https://wei-meng.org/free_builder/design/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+            <a href="https://www.freebuilder.net/design/" target="_blank" rel="noopener noreferrer" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
               <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-odyssey" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-odyssey)"/><g fill="rgba(23,23,26,.14)"><rect x="60" y="48" width="4" height="4"/><rect x="130" y="40" width="4" height="4"/><rect x="200" y="36" width="4" height="4"/><rect x="30" y="92" width="4" height="4"/><rect x="176" y="58" width="3" height="3"/></g><rect x="22" y="132" width="46" height="14" rx="4" fill="#17171A"/><text x="45" y="142.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">E</text><rect x="78" y="114" width="46" height="14" rx="4" fill="#17171A"/><text x="101" y="124.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">D</text><rect x="134" y="96" width="46" height="14" rx="4" fill="#17171A"/><text x="157" y="106.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">I</text><rect x="190" y="78" width="46" height="14" rx="4" fill="#17171A"/><text x="213" y="88.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">P</text><rect x="246" y="60" width="46" height="14" rx="4" fill="#17171A"/><text x="269" y="70.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">T</text><path d="M112 96c10-22 30-26 44-10" fill="none" stroke="#E2553F" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 5"/><g class="hop"><rect x="93" y="98" width="16" height="16" rx="3" fill="#E2553F"/><rect x="102" y="102" width="3" height="4" fill="#fff"/></g><path d="M256 60V34" stroke="#17171A" stroke-width="2.5" stroke-linecap="round"/><path class="flag" d="M257 35h18l-5 7 5 7h-18z" fill="#E2553F"/></svg>
               <span class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 text-ink flex items-center justify-center font-mono text-xs">↗</span>
               <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
@@ -423,7 +547,7 @@ img{filter:none}
             </a>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">04</span> — <span data-i18n="c4Category">Innovation · Game-based</span></div>
-              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://wei-meng.org/free_builder/design/" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors" data-i18n="c4Title">Design Thinking Odyssey</a></h3>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/design/" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors" data-i18n="c4Title">Design Thinking Odyssey</a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="c4Desc">Every rule of the world is a design-thinking habit: bridges appear only through the user's eyes, every fall becomes a step. Each phase ends with something to try on Monday — with a real colleague.</p>
             <div class="card-easter-egg hidden p-3 rounded-2xl border border-dashed border-ink/20 bg-paper space-y-2">
@@ -438,17 +562,17 @@ img{filter:none}
             </div>
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
-            <a href="https://wei-meng.org/free_builder/design/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+            <a href="https://www.freebuilder.net/design/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
               <span data-i18n="c4Action">Play the odyssey</span><span aria-hidden="true">↗</span>
             </a>
-            <span class="text-[11px] font-mono text-muted" data-i18n="c4Meta">EN · 中文 · ES</span>
+            <span class="text-[11px] font-mono text-muted" data-i18n="c4Meta">EN · 简中 · 繁中 · ES · CA</span>
           </div>
         </article>
 
         <!-- 05 ONBOARDING -->
         <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <a href="/free_builder/launchpad/" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+            <a href="https://www.freebuilder.net/launchpad/" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
               <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-launch" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-launch)"/><path d="M38 146C90 150 92 82 140 84S198 142 240 112 266 76 274 66" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 7"/><circle class="ping" cx="38" cy="146" r="15" fill="none" stroke="#E2553F" stroke-width="2"/><circle cx="38" cy="146" r="13" fill="#fff" stroke="#17171A" stroke-width="1.5"/><text x="38" y="150" text-anchor="middle" font-family="Space Mono, monospace" font-size="11" font-weight="700" fill="#17171A">1</text><circle class="ping" cx="140" cy="84" r="15" fill="none" stroke="#E2553F" stroke-width="2"/><circle cx="140" cy="84" r="13" fill="#17171A" stroke="#17171A" stroke-width="1.5"/><text x="140" y="88" text-anchor="middle" font-family="Space Mono, monospace" font-size="11" font-weight="700" fill="#fff">2</text><circle class="ping" cx="226" cy="120" r="15" fill="none" stroke="#E2553F" stroke-width="2"/><circle cx="226" cy="120" r="13" fill="#fff" stroke="#17171A" stroke-width="1.5"/><text x="226" y="124" text-anchor="middle" font-family="Space Mono, monospace" font-size="11" font-weight="700" fill="#17171A">3</text><g fill="#17171A"><circle cx="112" cy="52" r="6"/><path d="M101 72c0-8 5-12 11-12s11 4 11 12z"/></g><g fill="#E2553F"><circle cx="132" cy="50" r="6"/><path d="M121 70c0-8 5-12 11-12s11 4 11 12z"/></g><g fill="#17171A" opacity=".85"><circle cx="186" cy="132" r="5"/><path d="M177 149c0-7 4-10 9-10s9 3 9 10z"/></g><g fill="#E2553F" opacity=".85"><circle cx="202" cy="138" r="5"/><path d="M193 155c0-7 4-10 9-10s9 3 9 10z"/></g><g class="bubble-a"><g transform="translate(282 56) rotate(40)"><path class="flicker" d="M-4 13q4 12 8 0z" fill="#E2553F"/><path d="M0-18C9-9 9 5 6 12H-6C-9 5-9-9 0-18Z" fill="#17171A"/><circle cx="0" cy="-4" r="3.2" fill="#F7F6F2"/><path d="M-6 4l-6 9h6zM6 4l6 9H6z" fill="#E2553F"/></g></g></svg>
               <span class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 text-ink flex items-center justify-center font-mono text-xs">↗</span>
               <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
@@ -458,7 +582,7 @@ img{filter:none}
             </a>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">05</span> — <span data-i18n="c5Category">Onboarding · Simulation</span></div>
-              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/launchpad/" class="hover:text-accent transition-colors" data-i18n="c5Title">Launchpad · Onboarding Day</a></h3>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/launchpad/" class="hover:text-accent transition-colors" data-i18n="c5Title">Launchpad · Onboarding Day</a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="c5Desc">A whole graduate onboarding day in one app: route cards, station tools and the KILL//SWITCH team investigation — plus a colleague trail that sends new joiners to real people, not handbooks.</p>
             <div class="card-easter-egg hidden p-3 rounded-2xl border border-dashed border-ink/20 bg-paper space-y-2">
@@ -469,10 +593,10 @@ img{filter:none}
             </div>
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
-            <a href="/free_builder/launchpad/" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+            <a href="https://www.freebuilder.net/launchpad/" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
               <span data-i18n="c5Action">Open Launchpad</span><span aria-hidden="true">↗</span>
             </a>
-            <span class="text-[11px] font-mono text-muted" data-i18n="c5Meta">EN · 中文 · ES</span>
+            <span class="text-[11px] font-mono text-muted" data-i18n="c5Meta">EN · 简中 · 繁中 · ES · CA</span>
           </div>
         </article>
 
@@ -519,7 +643,7 @@ img{filter:none}
         <!-- 07 -->
         <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <a href="/free_builder/twotruths" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+            <a href="https://www.freebuilder.net/twotruths" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
               <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-tt" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-tt)"/><g class="bubble-a"><g transform="rotate(-6 92 96)"><rect x="24" y="48" width="136" height="96" rx="18" fill="#17171A"/>
   <circle cx="56" cy="82" r="14" fill="none" stroke="#F7F6F2" stroke-width="2.5"/><circle cx="56" cy="82" r="5" fill="#E2553F"/>
   <rect x="80" y="74" width="56" height="6" rx="3" fill="rgba(247,246,242,.55)"/><rect x="80" y="86" width="40" height="6" rx="3" fill="rgba(247,246,242,.3)"/><rect x="40" y="114" width="96" height="6" rx="3" fill="rgba(247,246,242,.3)"/></g></g>
@@ -533,12 +657,12 @@ img{filter:none}
             </a>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">07</span> — <span data-i18n="s7Category"></span></div>
-              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/twotruths" class="hover:text-accent transition-colors" data-i18n="s7Title"></a></h3>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/twotruths" class="hover:text-accent transition-colors" data-i18n="s7Title"></a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="s7Desc"></p>
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
-            <a href="/free_builder/twotruths" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+            <a href="https://www.freebuilder.net/twotruths" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
               <span data-i18n="s7Action"></span><span aria-hidden="true">↗</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
@@ -547,7 +671,7 @@ img{filter:none}
         <!-- 08 -->
         <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <a href="/free_builder/prompt" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+            <a href="https://www.freebuilder.net/prompt" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
               <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-pp" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-pp)"/><g class="bubble-a"><g transform="rotate(-5 90 98)"><rect x="26" y="44" width="130" height="104" rx="18" fill="#17171A"/>
   <text x="44" y="74" font-family="Space Mono, monospace" font-size="11" fill="#E2553F">&gt;_</text>
   <rect x="66" y="66" width="70" height="6" rx="3" fill="rgba(247,246,242,.55)"/><rect x="44" y="84" width="92" height="6" rx="3" fill="rgba(247,246,242,.3)"/>
@@ -563,12 +687,12 @@ img{filter:none}
             </a>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">08</span> — <span data-i18n="s8Category"></span></div>
-              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/prompt" class="hover:text-accent transition-colors" data-i18n="s8Title"></a></h3>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/prompt" class="hover:text-accent transition-colors" data-i18n="s8Title"></a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="s8Desc"></p>
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
-            <a href="/free_builder/prompt" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+            <a href="https://www.freebuilder.net/prompt" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
               <span data-i18n="s8Action"></span><span aria-hidden="true">↗</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
@@ -577,7 +701,7 @@ img{filter:none}
         <!-- 09 -->
         <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <a href="/free_builder/museum" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+            <a href="https://www.freebuilder.net/museum" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
               <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-mm" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-mm)"/><path d="M14 156h292" stroke="#E5E2DA" stroke-width="2"/>
   <g class="bubble-a"><g transform="rotate(-3 72 92)"><rect x="22" y="48" width="100" height="84" rx="4" fill="#fff" stroke="#17171A" stroke-width="3"/><rect x="32" y="58" width="80" height="64" fill="#F1EEE6"/>
   <path d="M44 108l18-22 14 14 10-8 16 16" fill="none" stroke="#17171A" stroke-width="2.5" stroke-linejoin="round"/><circle cx="92" cy="74" r="6" fill="#E2553F"/></g></g>
@@ -592,12 +716,12 @@ img{filter:none}
             </a>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">09</span> — <span data-i18n="s9Category"></span></div>
-              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/museum" class="hover:text-accent transition-colors" data-i18n="s9Title"></a></h3>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/museum" class="hover:text-accent transition-colors" data-i18n="s9Title"></a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="s9Desc"></p>
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
-            <a href="/free_builder/museum" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+            <a href="https://www.freebuilder.net/museum" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
               <span data-i18n="s9Action"></span><span aria-hidden="true">↗</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
@@ -613,13 +737,13 @@ img{filter:none}
           <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gmKicker">D / For managers</span>
           <h2 id="gm-h" class="font-syne text-2xl sm:text-3xl font-bold tracking-tight mt-1" data-i18n="gmTitle">Trust, autonomy, decisions: practised, not preached.</h2>
         </div>
-        <a href="/free_builder/managers" class="text-[11px] font-mono text-ink hover:text-accent underline decoration-dotted underline-offset-4 transition-colors" data-i18n="gmLink">Three tracks for managers →</a>
+        <a href="https://www.freebuilder.net/managers" class="text-[11px] font-mono text-ink hover:text-accent underline decoration-dotted underline-offset-4 transition-colors" data-i18n="gmLink">Three tracks for managers →</a>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
         <!-- 10 -->
         <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <a href="/free_builder/manual" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+            <a href="https://www.freebuilder.net/manual" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
               <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-ma" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-ma)"/><g class="bubble-a"><g transform="rotate(-6 94 98)"><rect x="34" y="40" width="116" height="118" rx="10" fill="#17171A"/><rect x="34" y="40" width="14" height="118" rx="6" fill="#E2553F"/>
   <rect x="62" y="64" width="64" height="6" rx="3" fill="rgba(247,246,242,.6)"/><rect x="62" y="82" width="72" height="5" rx="2.5" fill="rgba(247,246,242,.35)"/><rect x="62" y="94" width="56" height="5" rx="2.5" fill="rgba(247,246,242,.35)"/><rect x="62" y="106" width="66" height="5" rx="2.5" fill="rgba(247,246,242,.35)"/></g></g>
   <g class="bubble-b"><g transform="rotate(6 226 100)"><rect x="168" y="42" width="116" height="118" rx="10" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/><rect x="168" y="42" width="14" height="118" rx="6" fill="#17171A"/>
@@ -631,12 +755,12 @@ img{filter:none}
             </a>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">10</span> — <span data-i18n="m1Category"></span></div>
-              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/manual" class="hover:text-accent transition-colors" data-i18n="m1Title"></a></h3>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/manual" class="hover:text-accent transition-colors" data-i18n="m1Title"></a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="m1Desc"></p>
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
-            <a href="/free_builder/manual" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+            <a href="https://www.freebuilder.net/manual" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
               <span data-i18n="m1Action"></span><span aria-hidden="true">↗</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
@@ -645,7 +769,7 @@ img{filter:none}
         <!-- 11 -->
         <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <a href="/free_builder/dial" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+            <a href="https://www.freebuilder.net/dial" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
               <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-di" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-di)"/><path d="M56.0 148.9A104 104 0 0 1 74.1 93.4" fill="none" stroke="#E5E2DA" stroke-width="16" stroke-linecap="round"/><path d="M77.7 88.4A104 104 0 0 1 124.9 54.1" fill="none" stroke="#17171A" stroke-width="16" stroke-linecap="round"/><path d="M130.8 52.2A104 104 0 0 1 189.2 52.2" fill="none" stroke="#E5E2DA" stroke-width="16" stroke-linecap="round"/><path d="M195.1 54.1A104 104 0 0 1 242.3 88.4" fill="none" stroke="#17171A" stroke-width="16" stroke-linecap="round"/><path d="M245.9 93.4A104 104 0 0 1 264.0 148.9" fill="none" stroke="#E5E2DA" stroke-width="16" stroke-linecap="round"/><g class="bubble-a"><path d="M160 152L107.1 79.2" stroke="#17171A" stroke-width="4" stroke-linecap="round"/><circle cx="107.1" cy="79.2" r="8" fill="#17171A"/></g><g class="bubble-b"><path d="M160 152L195.3 103.5" stroke="#E2553F" stroke-width="4" stroke-linecap="round"/><circle cx="195.3" cy="103.5" r="8" fill="#E2553F"/></g><circle cx="160" cy="152" r="9" fill="#17171A"/></svg>
               <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span data-i18n="m2Badge"></span>
@@ -654,12 +778,12 @@ img{filter:none}
             </a>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">11</span> — <span data-i18n="m2Category"></span></div>
-              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/dial" class="hover:text-accent transition-colors" data-i18n="m2Title"></a></h3>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/dial" class="hover:text-accent transition-colors" data-i18n="m2Title"></a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="m2Desc"></p>
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
-            <a href="/free_builder/dial" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+            <a href="https://www.freebuilder.net/dial" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
               <span data-i18n="m2Action"></span><span aria-hidden="true">↗</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
@@ -668,7 +792,7 @@ img{filter:none}
         <!-- 12 -->
         <article class="card reveal bg-white rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between">
           <div class="space-y-4">
-            <a href="/free_builder/decide" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
+            <a href="https://www.freebuilder.net/decide" class="relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden bg-[#F1EEE6] block" tabindex="-1" aria-hidden="true">
               <svg class="card-art absolute inset-0 w-full h-full" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-de" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-de)"/><ellipse cx="160" cy="100" rx="96" ry="44" fill="#fff" stroke="#E5E2DA" stroke-width="2"/>
   <rect x="128" y="80" width="64" height="40" rx="8" fill="#17171A"/><rect x="138" y="92" width="44" height="5" rx="2.5" fill="rgba(247,246,242,.55)"/><rect x="138" y="103" width="30" height="5" rx="2.5" fill="rgba(247,246,242,.3)"/><g class="bubble-a"><circle cx="48" cy="100" r="14" fill="#17171A"/><text x="48" y="105" text-anchor="middle" font-family="Space Mono, monospace" font-size="13" font-weight="700" fill="#fff">✓</text></g><g class="bubble-a"><circle cx="84" cy="52" r="14" fill="#17171A"/><text x="84" y="57" text-anchor="middle" font-family="Space Mono, monospace" font-size="13" font-weight="700" fill="#fff">✓</text></g><g class="bubble-b"><circle cx="160" cy="40" r="14" fill="#E2553F"/><text x="160" y="45" text-anchor="middle" font-family="Space Mono, monospace" font-size="13" font-weight="700" fill="#fff">~</text></g><g class="bubble-a"><circle cx="236" cy="52" r="14" fill="#17171A"/><text x="236" y="57" text-anchor="middle" font-family="Space Mono, monospace" font-size="13" font-weight="700" fill="#fff">✓</text></g><g class="bubble-a"><circle cx="272" cy="100" r="14" fill="#17171A"/><text x="272" y="105" text-anchor="middle" font-family="Space Mono, monospace" font-size="13" font-weight="700" fill="#fff">✓</text></g><g class="bubble-a"><circle cx="236" cy="148" r="14" fill="#17171A"/><text x="236" y="153" text-anchor="middle" font-family="Space Mono, monospace" font-size="13" font-weight="700" fill="#fff">✓</text></g><g class="bubble-a"><circle cx="84" cy="148" r="14" fill="#17171A"/><text x="84" y="153" text-anchor="middle" font-family="Space Mono, monospace" font-size="13" font-weight="700" fill="#fff">✓</text></g></svg>
               <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.12em] bg-white/90 backdrop-blur text-ink px-2.5 py-1 rounded-full">
@@ -678,12 +802,12 @@ img{filter:none}
             </a>
             <div class="space-y-1.5">
               <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">12</span> — <span data-i18n="m3Category"></span></div>
-              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="/free_builder/decide" class="hover:text-accent transition-colors" data-i18n="m3Title"></a></h3>
+              <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/decide" class="hover:text-accent transition-colors" data-i18n="m3Title"></a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="m3Desc"></p>
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
-            <a href="/free_builder/decide" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
+            <a href="https://www.freebuilder.net/decide" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
               <span data-i18n="m3Action"></span><span aria-hidden="true">↗</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
@@ -702,61 +826,61 @@ img{filter:none}
         <span class="text-[11px] font-mono text-muted" data-i18n="gcNote">Diagnose · Prove · Spread · Adapt</span>
       </div>
       <div class="bts-grid">
-        <a class="bts-card reveal" href="/free_builder/diagnose">
+        <a class="bts-card reveal" href="https://www.freebuilder.net/diagnose">
           <span class="bts-k"><span data-i18n="btCap1">Diagnose</span></span>
           <span class="bts-t" data-i18n="btT1">Training or not?</span>
           <span class="bts-d" data-i18n="btD1">A 2-minute check that tells a manager whether training will help — or what to fix instead.</span>
           <span class="bts-go" aria-hidden="true">↗</span>
         </a>
-        <a class="bts-card reveal" href="/free_builder/impact">
+        <a class="bts-card reveal" href="https://www.freebuilder.net/impact">
           <span class="bts-k"><span data-i18n="btCap2">Prove</span></span>
           <span class="bts-t" data-i18n="btT2">Impact, without ranking</span>
           <span class="bts-d" data-i18n="btD2">A sample 30-day report: felt heard, kept talking, used it at work. No names, no leaderboards.</span>
           <span class="bts-go" aria-hidden="true">↗</span>
         </a>
-        <a class="bts-card reveal" href="/free_builder/cost">
+        <a class="bts-card reveal" href="https://www.freebuilder.net/cost">
           <span class="bts-k"><span data-i18n="btCap3">Prove</span></span>
           <span class="bts-t" data-i18n="btT3">The cost of training nobody uses</span>
           <span class="bts-d" data-i18n="btD3">A calculator that turns hours in a training room into an honest budget conversation.</span>
           <span class="bts-go" aria-hidden="true">↗</span>
         </a>
-        <a class="bts-card reveal" href="/free_builder/circles">
+        <a class="bts-card reveal" href="https://www.freebuilder.net/circles">
           <span class="bts-k"><span data-i18n="btCap4">Spread</span></span>
           <span class="bts-t" data-i18n="btT4">Learning circles</span>
           <span class="bts-d" data-i18n="btD4">Six weeks, five colleagues, one human skill a week — run by the circle itself.</span>
           <span class="bts-go" aria-hidden="true">↗</span>
         </a>
-        <a class="bts-card reveal" href="/free_builder/rituals">
+        <a class="bts-card reveal" href="https://www.freebuilder.net/rituals">
           <span class="bts-k"><span data-i18n="btCap5">Spread</span></span>
           <span class="bts-t" data-i18n="btT5">Team rituals</span>
           <span class="bts-d" data-i18n="btD5">Twelve weeks of five-minute practices for the team meeting you already have.</span>
           <span class="bts-go" aria-hidden="true">↗</span>
         </a>
-        <a class="bts-card reveal" href="/free_builder/facilitator">
+        <a class="bts-card reveal" href="https://www.freebuilder.net/facilitator">
           <span class="bts-k"><span data-i18n="btCap6">Spread</span></span>
           <span class="bts-t" data-i18n="btT6">Train the facilitator</span>
           <span class="bts-d" data-i18n="btD6">Two weeks to grow facilitators inside — certified by evidence, not test scores.</span>
           <span class="bts-go" aria-hidden="true">↗</span>
         </a>
-        <a class="bts-card reveal" href="/free_builder/adapted">
+        <a class="bts-card reveal" href="https://www.freebuilder.net/adapted">
           <span class="bts-k"><span data-i18n="btCap7">Adapt</span></span>
           <span class="bts-t" data-i18n="btT7">Adapted, not translated</span>
           <span class="bts-d" data-i18n="btD7">Real lines in English, Chinese and Spanish, side by side, with the reasoning behind each.</span>
           <span class="bts-go" aria-hidden="true">↗</span>
         </a>
-        <a class="bts-card reveal" href="/free_builder/frontline">
+        <a class="bts-card reveal" href="https://www.freebuilder.net/frontline">
           <span class="bts-k"><span data-i18n="btCap8">Adapt</span> · <span data-i18n="btConcept">concept</span></span>
           <span class="bts-t" data-i18n="btT8">Learning for the frontline</span>
           <span class="bts-d" data-i18n="btD8">For people without laptops: 60-second paired practice at shift handover.</span>
           <span class="bts-go" aria-hidden="true">↗</span>
         </a>
-        <a class="bts-card reveal" href="/free_builder/ai">
+        <a class="bts-card reveal" href="https://www.freebuilder.net/ai">
           <span class="bts-k"><span data-i18n="btCap9">AI, with judgement</span></span>
           <span class="bts-t" data-i18n="btT9">AI drafts, people deliver</span>
           <span class="bts-d" data-i18n="btD9">Where AI belongs in learning, where it doesn't, and a one-page guardrail policy.</span>
           <span class="bts-go" aria-hidden="true">↗</span>
         </a>
-        <a class="bts-card reveal" href="/free_builder/kit">
+        <a class="bts-card reveal" href="https://www.freebuilder.net/kit">
           <span class="bts-k"><span data-i18n="btCap10">Give back</span></span>
           <span class="bts-t" data-i18n="btT10">The open starter kit</span>
           <span class="bts-d" data-i18n="btD10">The template behind every practice, free for other learning designers.</span>
@@ -769,13 +893,13 @@ img{filter:none}
     <section class="reveal flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-y border-line py-5">
       <div class="flex flex-wrap items-center gap-2 text-[12px] font-mono">
         <span class="text-muted mr-1" data-i18n="moreLabel">More in the lab:</span>
-        <a href="https://wei-meng.org/free_builder/sales/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-white hover:border-ink/40 transition-colors"><span data-i18n="moreSales">Sales Psychology Academy</span><span aria-hidden="true">↗</span></a>
-        <a href="/free_builder/discovery" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-white hover:border-ink/40 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span><span data-i18n="moreDiscovery">Discovery Duet</span><span aria-hidden="true">↗</span></a>
-        <a href="/free_builder/questions" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-white hover:border-ink/40 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span><span data-i18n="moreQuestions">Question Deck</span><span aria-hidden="true">↗</span></a>
-        <a href="/free_builder/thanks" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-white hover:border-ink/40 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span><span data-i18n="moreThanks">Specific Thanks</span><span aria-hidden="true">↗</span></a>
-        <a href="/free_builder/teachback" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-white hover:border-ink/40 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span><span data-i18n="moreTeach">Teach-Back Chain</span><span aria-hidden="true">↗</span></a>
+        <a href="https://www.freebuilder.net/sales/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-white hover:border-ink/40 transition-colors"><span data-i18n="moreSales">Sales Psychology Academy</span><span aria-hidden="true">↗</span></a>
+        <a href="https://www.freebuilder.net/discovery" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-white hover:border-ink/40 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span><span data-i18n="moreDiscovery">Discovery Duet</span><span aria-hidden="true">↗</span></a>
+        <a href="https://www.freebuilder.net/questions" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-white hover:border-ink/40 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span><span data-i18n="moreQuestions">Question Deck</span><span aria-hidden="true">↗</span></a>
+        <a href="https://www.freebuilder.net/thanks" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-white hover:border-ink/40 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span><span data-i18n="moreThanks">Specific Thanks</span><span aria-hidden="true">↗</span></a>
+        <a href="https://www.freebuilder.net/teachback" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-white hover:border-ink/40 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span><span data-i18n="moreTeach">Teach-Back Chain</span><span aria-hidden="true">↗</span></a>
       </div>
-      <a href="https://wei-meng.org/free_builder" target="_blank" rel="noopener noreferrer" class="text-sm font-mono underline decoration-accent decoration-2 underline-offset-4 hover:text-accent transition-colors whitespace-nowrap" data-i18n="moreFB">Work with FREE//BUILDER →</a>
+      <a href="https://www.freebuilder.net" target="_blank" rel="noopener noreferrer" class="text-sm font-mono underline decoration-accent decoration-2 underline-offset-4 hover:text-accent transition-colors whitespace-nowrap" data-i18n="moreFB">Work with FREE//BUILDER →</a>
     </section>
 
     <!-- CLOSING -->
@@ -794,7 +918,7 @@ img{filter:none}
   <footer class="border-t border-line px-4 sm:px-10 py-8">
     <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-mono text-muted">
       <span>© <span id="current-year"></span> FREE//BUILDER L&amp;D Solutions</span>
-      <a href="https://wei-meng.org/free_builder" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 hover:text-ink transition-colors">
+      <a href="https://www.freebuilder.net" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 hover:text-ink transition-colors">
         <span data-i18n="footerMade">Made with AI &amp;</span>
         <span class="text-accent inline-block transition-transform group-hover:scale-125">♥</span>
         <svg viewBox="0 0 24 24" class="w-4 h-4 overflow-visible" aria-hidden="true">
@@ -837,11 +961,11 @@ img{filter:none}
         c4Badge: "5-phase platformer", c4Caption: "Empathize · Define · Ideate · Prototype · Test", c4Category: "Innovation · Game-based",
         c4Title: "Design Thinking Odyssey",
         c4Desc: "Every rule of the world is a design-thinking habit: bridges appear only through the user's eyes, every fall becomes a step. Each phase ends with something to try on Monday — with a real colleague.",
-        c4Action: "Play the odyssey", c4Meta: "EN · 中文 · ES",
+        c4Action: "Play the odyssey", c4Meta: "EN · 简中 · 繁中 · ES · CA",
         c5Badge: "Live · new colleague trail", c5Caption: "One day · every phone · real people", c5Category: "Onboarding · Simulation",
         c5Title: "Launchpad · Onboarding Day",
         c5Desc: "A whole graduate onboarding day in one app: route cards, station tools and the KILL//SWITCH team investigation — plus a colleague trail that sends new joiners to real people, not handbooks.",
-        c5Action: "Open Launchpad", c5Meta: "EN · 中文 · ES",
+        c5Action: "Open Launchpad", c5Meta: "EN · 简中 · 繁中 · ES · CA",
         c6Badge: "Episodic series", c6Caption: "EP.01: “Just Checking In”", c6Category: "Narrative drama · Watch together",
         c6Title: "Corporate Survival Drama",
         c6Desc: "A vertical mini-series built on real workplace dilemmas, made to be watched together. Every episode ends on a choice — and a question for the team to argue over.",
@@ -919,11 +1043,11 @@ img{filter:none}
         c4Badge: "五阶段闯关游戏", c4Caption: "共情 · 定义 · 构想 · 原型 · 测试", c4Category: "创新 · 游戏化",
         c4Title: "设计思维奥德赛",
         c4Desc: "这个世界的每条规则都是一个设计思维习惯：桥只有用用户的眼睛才看得见，每次跌落都会变成台阶。每个阶段都以一件周一和同事一起做的小事收尾。",
-        c4Action: "开始闯关", c4Meta: "EN · 中文 · ES",
+        c4Action: "开始闯关", c4Meta: "EN · 简中 · 繁中 · ES · CA",
         c5Badge: "已上线 · 新增同事寻访", c5Caption: "一天 · 每部手机 · 真实的人", c5Category: "入职培训 · 仿真",
         c5Title: "启航台 · 新人入职日",
         c5Desc: "一个应用承载一整天的新人入职：路线卡、站点工具和熔断行动团队调查——还有一条同事寻访之路，把新人引向真实的人，而不是手册。",
-        c5Action: "打开启航台", c5Meta: "EN · 中文 · ES",
+        c5Action: "打开启航台", c5Meta: "EN · 简中 · 繁中 · ES · CA",
         c6Badge: "系列短剧", c6Caption: "EP.01：“就是来问问进度”", c6Category: "叙事短剧 · 一起看",
         c6Title: "职场生存大戏",
         c6Desc: "以真实职场困境为底的竖屏微短剧，为“一起看”而设计。每集都停在一个抉择上——留给团队一个值得争论的问题。",
@@ -1001,11 +1125,11 @@ img{filter:none}
         c4Badge: "Plataformas en 5 fases", c4Caption: "Empatizar · Definir · Idear · Prototipar · Testear", c4Category: "Innovación · Basado en juego",
         c4Title: "Odisea de Design Thinking",
         c4Desc: "Cada regla del mundo es un hábito de design thinking: los puentes solo aparecen con los ojos del usuario y cada caída se vuelve un escalón. Cada fase termina con algo para probar el lunes, con un colega real.",
-        c4Action: "Jugar la odisea", c4Meta: "EN · 中文 · ES",
+        c4Action: "Jugar la odisea", c4Meta: "EN · 简中 · 繁中 · ES · CA",
         c5Badge: "En vivo · nueva ruta de colegas", c5Caption: "Un día · cada móvil · personas reales", c5Category: "Onboarding · Simulación",
         c5Title: "Launchpad · Día de bienvenida",
         c5Desc: "Todo un día de bienvenida para recién graduados en una app: rutas, herramientas de estación y la investigación en equipo KILL//SWITCH, más una ruta de colegas que lleva a personas reales, no a manuales.",
-        c5Action: "Abrir Launchpad", c5Meta: "EN · 中文 · ES",
+        c5Action: "Abrir Launchpad", c5Meta: "EN · 简中 · 繁中 · ES · CA",
         c6Badge: "Serie episódica", c6Caption: "EP.01: “Solo un check-in”", c6Category: "Drama narrativo · Para ver juntos",
         c6Title: "Drama de Supervivencia Corporativa",
         c6Desc: "Una miniserie vertical sobre dilemas laborales reales, pensada para verse en grupo. Cada episodio termina en una decisión y en una pregunta para que el equipo la debata.",
@@ -1052,11 +1176,173 @@ img{filter:none}
         contactLabel: "04 / Saludemos",
         contactTitle: 'Creemos aprendizajes que la gente <span class="accent-word">elija</span> terminar.',
         contactCopy: "Copiar email", copiedText: "✓ Copiado", footerMade: "Hecho con IA y"
+      }, "zh-Hant": {
+        pageTitle: "孟瑋 — 作品集：以真實對話收尾的學習",
+        headerSubtitle: "作品集", backHome: "關於我", navEasterEgg: "來份 60 頁 PPT？",
+        heroKicker: "03 / 作品集",
+        heroTitle: "用作品說話，<br class=\"hidden sm:inline\">而不是<span class=\"accent-word\">PPT</span>。",
+        heroDesc: "可以上手的作品，基於一個信念：工具只是腳手架。真正重要的，是人們之後彼此之間發生了什麼。",
+        heroHint: "噓——想先體驗一下“反面教材”嗎？", heroHintBtn: "硬著頭皮看完 60 頁 PPT",
+        unlockToast: "認知尊嚴已恢復——下方 5 個隱藏的迷你沙盒已解鎖。",
+        buildLabel: "我的設計原則",
+        p1t: "在做中學", p1d: "沒上手試過，就不算學會。先玩，後理論。",
+        p2t: "人的能力優先", p2d: "AI 可以起草備忘錄，但傾聽、共情和信任，仍要靠我們自己去練。",
+        p3t: "一起更好", p3d: "學習是社交的、相互的。人人都教，人人都學——分享即關懷。",
+        p4t: "人是目的", p4d: "應用只是工具。目標是真實的人之間一次真誠、有意義的對話。",
+        gaKicker: "A / 人的能力優先", gaTitle: "簡短的引導，以一場真實對話收尾。", gaNote: "螢幕放下，人繼續。",
+        gbKicker: "B / 遊戲與故事", gbTitle: "讓方法真正落地的遊戲和故事。", gbNote: "每一個都以“找同事一起試試”收尾。",
+        c1Badge: "已上線 · 新", c1Action: "開始二重奏", freeMeta: "免費 · 無需註冊", soonBadge: "工作室打磨中", soonAction: "預覽概念", soonMeta: "即將上線", soonShort: "即將",
+
+        c1Caption: "2 個人 · 1 部手機 · 每人 90 秒", c1Category: "積極傾聽 · 雙人", c1Title: "傾聽二重奏",
+        c1Desc: "兩個人，一部手機。一人說 90 秒，另一人複述聽到的內容。唯一的評分：對方覺得被聽見了嗎？然後交換。",
+        c2Badge: "已上線 · 可雙人", c2Caption: "8 條航線 · 2 個視角 · 1 個共識", c2Category: "文化智商 · 單人 → 雙人",
+        c2Title: "跨文化圖鑑 × 視角互換",
+        c2Desc: "先獨自探索八個跨國協作的摩擦點。然後“視角互換”把兩位同事配成一組，每人只掌握一半的故事，只有透過交談才能達成共識。",
+        c2Action: "開啟圖鑑", c2Next: "兩人一起玩：視角互換 →",
+        c3Badge: "已上線 · + 修復工具包", c3Caption: "獨自演練 → 一起修復", c3Category: "領導力 · 演練 → 真實對話",
+        c3Title: "管理者 AI 教練 × 修復工具包",
+        c3Desc: "先和 AI 下屬演練那場難談的對話——AI 只是熱身。接著，修復工具包給你一句開場白，讓你去和真人把這場對話談完。",
+        c3Action: "開啟教練", c3Next: "再一起修復：修復工具包 →",
+        c4Badge: "五階段闖關遊戲", c4Caption: "共情 · 定義 · 構想 · 原型 · 測試", c4Category: "創新 · 遊戲化",
+        c4Title: "設計思維奧德賽",
+        c4Desc: "這個世界的每條規則都是一個設計思維習慣：橋只有用使用者的眼睛才看得見，每次跌落都會變成臺階。每個階段都以一件週一和同事一起做的小事收尾。",
+        c4Action: "開始闖關", c4Meta: "EN · 简中 · 繁中 · ES · CA",
+        c5Badge: "已上線 · 新增同事尋訪", c5Caption: "一天 · 每部手機 · 真實的人", c5Category: "入職培訓 · 模擬",
+        c5Title: "啟航臺 · 新人入職日",
+        c5Desc: "一個應用承載一整天的新人入職：路線卡、站點工具和熔斷行動團隊調查——還有一條同事尋訪之路，把新人引向真實的人，而不是手冊。",
+        c5Action: "開啟啟航臺", c5Meta: "EN · 简中 · 繁中 · ES · CA",
+        c6Badge: "系列短劇", c6Caption: "EP.01：“就是來問問進度”", c6Category: "敘事短劇 · 一起看",
+        c6Title: "職場生存大戲",
+        c6Desc: "以真實職場困境為底的豎屏微短劇，為“一起看”而設計。每集都停在一個抉擇上——留給團隊一個值得爭論的問題。",
+        c6Action: "播放預告", c6Meta: "1 分鐘預告",
+        gsKicker: "C / 沙盒與遊戲", gsTitle: "一起犯錯也安全的地方。", gsNote: "不打分，不分輸贏，只有更好的問題。",
+        s7Badge: "已上線 · 新", s7Caption: "2 個版本 · 8 句話 · 1 臺攝像頭", s7Category: "批判性思維 · 沙盒", s7Title: "兩個真相", s7Desc: "兩位同事各自掌握同一個尷尬早上的私密版本。一起還原它，再把每一句分成兩類：攝像頭看到的，和有人加上的故事。結果總是：雙方都加了故事。", s7Action: "兩人一起玩",
+        s8Badge: "已上線 · 新", s8Caption: "1 張秘密圖片 · 1 個只懂字面的“AI”", s8Category: "AI 素養 · 遊戲", s8Title: "提示搭檔", s8Desc: "一人為秘密圖片寫指令，另一人扮演只按字面執行的 AI。畫出來的東西很好笑，而“清楚提要求”的道理，對同事和 AI 工具同樣適用。全程不含 AI。", s8Action: "兩人一起玩",
+        s9Badge: "已上線 · 新", s9Caption: "匿名展品 · “我也是”，從不排名", s9Category: "心理安全 · 團隊", s9Title: "錯誤博物館", s9Desc: "每人掛上一件匿名展品：自己犯過的一個錯誤，和它教會自己的事。然後全隊一起逛展。參觀者可以說“我也是”，沒有人給展品打分。", s9Action: "開館參觀",
+        gmKicker: "D / 給管理者", gmTitle: "信任、授權、決策：靠練，不靠講。", gmLink: "管理者的三條路徑 →",
+        m1Badge: "已上線 · 新", m1Caption: "2 份說明書 · 各 1 個承諾", m1Category: "信任 · 管理者 + 團隊成員", m1Title: "我的使用說明書", m1Desc: "管理者和團隊成員各自私下寫一頁“怎麼和我合作”，然後交換、提問，各做一個承諾。管理者先寫。", m1Action: "寫你的說明書",
+        m2Badge: "已上線 · 新", m2Caption: "1 件任務 · 2 個私下的刻度 · 1 場對話", m2Category: "自主 · 授權", m2Title: "授權刻度盤", m2Desc: "針對一件真實任務，管理者和團隊成員各自私下設定由誰來決定。揭曉時看到差距，而這個差距就是避免管得太細的那場對話。", m2Action: "撥刻度",
+        m3Badge: "已上線 · 新", m3Caption: "介紹 · 澄清 · 回應 · 同意", m3Category: "決策 · 整個團隊", m3Title: "決策室", m3Desc: "15 分鐘做一個真實的團隊決定。每人被聽到一次，反對必須說出傷害，標準是“試一試安全嗎？”。管理者的聲音只算一次。", m3Action: "做一個決定",
+        gcKicker: "E / 螢幕之外", gcTitle: "我如何判斷、證明並傳開真正有效的東西。", gcNote: "診斷 · 證明 · 傳播 · 本地化", btConcept: "概念", btCap1: "診斷", btT1: "要不要培訓？", btD1: "兩分鐘判斷培訓是否有用——或者該先解決什麼。", btCap2: "證明", btT2: "不排名的影響力報告", btD2: "30 天報告示例：感到被傾聽、繼續交談、在工作中用上。不點名，不排行。", btCap3: "證明", btT3: "沒人用上的培訓，代價有多大", btD3: "把培訓教室裡的小時數，變成一場誠實的預算對話。", btCap4: "傳播", btT4: "學習圈", btD4: "六週、五位同事、每週一項人際能力——由學習圈自己運轉。", btCap5: "傳播", btT5: "團隊小儀式", btD5: "十二週、每週五分鐘的小練習，放進你本來就有的團隊例會。", btCap6: "傳播", btT6: "引導師培養", btD6: "兩週在內部培養引導師——以證據認證，而不是考試分數。", btCap7: "本地化", btT7: "本地化，而不是翻譯", btD7: "英文、中文、西語的真實句子並排對照，附上每個選擇的理由。", btCap8: "本地化", btT8: "面向一線的學習", btD8: "給沒有電腦的人：交接班時 60 秒的兩人練習。", btCap9: "有判斷地用 AI", btT9: "AI 起草，人來表達", btD9: "AI 在學習中該出現在哪、不該出現在哪，以及一頁護欄政策。", btCap10: "回饋", btT10: "開放入門套件", btD10: "每個練習背後的模板，免費提供給其他學習設計師。",
+        moreLabel: "實驗室裡還有：", moreSales: "銷售心理學實戰學院", moreQuestions: "問題卡組", moreDiscovery: "探詢二重奏", moreTeach: "教回去鏈條", moreThanks: "具體的感謝", moreFB: "與 FREE//BUILDER 合作 →",
+
+        eggLTag: "傾聽測試 · 選擇你的回應",
+        eggLSaid: "同事：“他們又把我的截止日期改了。這個月第三次了。”",
+        eggLA: "“我也是——我這周也一團糟。”",
+        eggLB: "“第三次？聽起來好累。這對你影響有多大？”",
+        eggLReady: "就緒", eggLSelf: "話題被搶走了", eggLHeard: "對方感到被聽見 ✓",
+        eggLFbSelf: "你把話題轉到了自己身上。對方禮貌地點點頭——然後不再說了。試試 [B]。",
+        eggLFbHeard: "複述 + 一個好奇的問題。對方願意繼續說，你也聽到了真正發生的事。",
+        egg2Tag: "機密線索 · 點選解密",
+        egg2Hidden: "████████ $22,000,000 電匯至 APEX ████",
+        egg2Shown: "✓ 已破解：$22,000,000 電匯至 Apex Logistics——未經審計",
+        egg4Tag: "安全試錯 · 下屬又延期了",
+        egg4A: "“怎麼又晚了？”", egg4B: "“是什麼卡住了交付？”",
+        egg4Ready: "就緒", egg4Threat: "地位威脅 ⚠", egg4Safe: "自主感恢復 ✓",
+        egg4FbThreat: "觸發 SCARF 威脅：下屬感到被指責，轉入防禦式服從。反正是沙盒——試試 [B]。",
+        egg4FbSafe: "心理安全感開啟：下屬坦言是工程團隊的依賴卡住了。現在，去問問真實的同事吧。",
+        egg5Tag: "雙重視角 · 點選切換",
+        egg5Low: "低語境 · 直接", egg5High: "高語境 · 委婉",
+        egg5LowText: "“這個方案行不通，第 3 部分得全部重寫。”",
+        egg5HighText: "“這個方向有很多亮點，第 3 部分或許還有值得進一步探討的空間。”",
+        egg6Tag: "Crazy 8s 脈衝",
+        egg6Ready: "就緒", egg6Running: "構思中", egg6Done: "完成 ✓",
+        egg6Label: "啟動 8 秒靈感衝刺", egg6RunLabel: "畫！別想，快畫…", egg6DoneLabel: "✓ 靈感已記錄，拿給身邊的人看看。",
+
+        modalTitle: "職場生存大戲 · 預告", modalEp: "第 01 集：看不見的營收漏洞", modalEscHint: "按 ESC 或點選空白處關閉",
+        deckTop: "企業強制培訓課件 · 模擬", deckCount: "第 {n} / 62 頁",
+        deckSlideTitle: "1.1 節：協同正規化與政策合規",
+        deckSlideText: "“全體員工須透過非同步文件工作流，最佳化跨部門協同共振。倒計時結束前，請勿進行任何互動。”",
+        deckSpeaker: "講解：單調 AI 配音", deckLocked: "鎖定中", deckNext: "下一頁", deckEject: "彈射回認知尊嚴",
+        contactLabel: "04 / 打個招呼",
+        contactTitle: "一起做讓人<span class=\"accent-word\">主動</span>學完的學習體驗。",
+        contactCopy: "複製郵箱", copiedText: "✓ 已複製", footerMade: "由 AI 與"
+      }, "ca": {
+        pageTitle: "WEI MENG — Portafoli: aprenentatge que acaba en conversa",
+        headerSubtitle: "Portafoli", backHome: "Sobre mi", navEasterEgg: "60 diapositives?",
+        heroKicker: "03 / Portafoli",
+        heroTitle: "Proves, no <span class=\"accent-word\">diapositives</span>.",
+        heroDesc: "Feina jugable, construïda sobre una convicció: les eines són bastides. El que importa és el que les persones fan entre si després.",
+        heroHint: "Psst… vols veure primer l'alternativa?", heroHintBtn: "Aguanta les 60 diapositives",
+        unlockToast: "Dignitat cognitiva restaurada: 5 mini-sandboxes desbloquejats a sota.",
+        buildLabel: "Com dissenyo",
+        p1t: "Aprendre fent", p1d: "Si no ho pots provar, no ho has après. Primer el joc, després la teoria.",
+        p2t: "Primer el que és humà", p2d: "La IA pot redactar el memo. Escoltar, empatitzar i confiar continuen sent cosa nostra.",
+        p3t: "Millor junts", p3d: "Aprendre és social i mutu. Tothom ensenya, tothom aprèn: compartir és cuidar.",
+        p4t: "Les persones són el fi", p4d: "Les apps són eines. La meta és una conversa sincera i amb sentit entre persones reals.",
+        gaKicker: "A / Primer l'humà", gaTitle: "Dinàmiques curtes que acaben en una conversa real.", gaNote: "La pantalla s'apaga. Les persones continuen.",
+        gbKicker: "B / Joc i història", gbTitle: "Jocs i històries que fan que un mètode es quedi.", gbNote: "Cadascun acaba amb alguna cosa per provar amb un col·lega.",
+        c1Badge: "En línia · nou", c1Action: "Començar un duo", freeMeta: "Gratis · sense registre", soonBadge: "Al taller", soonAction: "Veure el concepte", soonMeta: "Molt aviat", soonShort: "aviat",
+
+        c1Caption: "2 persones · 1 mòbil · 90 segons cadascuna", c1Category: "Escolta activa · En parella", c1Title: "Duo d'escolta",
+        c1Desc: "Dues persones, un mòbil. Una parla 90 segons; l'altra retorna el que ha escoltat. L'única puntuació: s'ha sentit escoltada? Després, canvi.",
+        c2Badge: "En directe · ara en parella", c2Caption: "8 corredors · 2 perspectives · 1 acord", c2Category: "Intel·ligència cultural · Sol → parella",
+        c2Title: "Atles Intercultural × Canvi de Perspectiva",
+        c2Desc: "Explora tot sol vuit punts de fricció entre cultures. Després, Canvi de Perspectiva ajunta dos col·legues, cadascun amb només la meitat de la història, que només poden arribar a un acord parlant.",
+        c2Action: "Obrir l'atles", c2Next: "Jugueu en parella: Canvi de Perspectiva →",
+        c3Badge: "En directe · + Kit de Reparació", c3Caption: "Assaja tot sol → repara en companyia", c3Category: "Lideratge · Assaig → conversa real",
+        c3Title: "Copilot de Coaching × Kit de Reparació",
+        c3Desc: "Assaja la conversa difícil amb col·laboradors d'IA: la IA és només l'escalfament. Després el Kit de Reparació et dona una frase d'obertura i t'envia a tenir-la de debò, amb una persona.",
+        c3Action: "Obrir el copilot", c3Next: "Després repareu junts: Kit de Reparació →",
+        c4Badge: "Plataformes en 5 fases", c4Caption: "Empatitzar · Definir · Idear · Prototipar · Testar", c4Category: "Innovació · Basat en joc",
+        c4Title: "Odissea de Design Thinking",
+        c4Desc: "Cada regla del món és un hàbit de design thinking: els ponts només apareixen amb els ulls de l'usuari i cada caiguda es converteix en un graó. Cada fase acaba amb alguna cosa per provar dilluns, amb un col·lega real.",
+        c4Action: "Jugar l'odissea", c4Meta: "EN · 简中 · 繁中 · ES · CA",
+        c5Badge: "En directe · nova ruta de col·legues", c5Caption: "Un dia · cada mòbil · persones reals", c5Category: "Onboarding · Simulació",
+        c5Title: "Launchpad · Dia de benvinguda",
+        c5Desc: "Tot un dia de benvinguda per a nous graduats en una app: rutes, eines d'estació i la investigació en equip KILL//SWITCH, més una ruta de col·legues que porta a persones reals, no a manuals.",
+        c5Action: "Obrir Launchpad", c5Meta: "EN · 简中 · 繁中 · ES · CA",
+        c6Badge: "Sèrie episòdica", c6Caption: "EP.01: “Només un check-in”", c6Category: "Drama narratiu · Per veure junts",
+        c6Title: "Drama de Supervivència Corporativa",
+        c6Desc: "Una minisèrie vertical sobre dilemes laborals reals, pensada per veure's en grup. Cada episodi acaba en una decisió i en una pregunta perquè l'equip la debati.",
+        c6Action: "Veure tràiler", c6Meta: "Tràiler d'1 min",
+        gsKicker: "C / Sandbox i joc", gsTitle: "Llocs segurs per equivocar-se junts.", gsNote: "Sense punts. Sense guanyadors. Només millors preguntes.",
+        s7Badge: "En línia · nou", s7Caption: "2 versions · 8 frases · 1 càmera", s7Category: "Pensament crític · Sandbox", s7Title: "Dues Veritats", s7Desc: "Dos col·legues tenen cadascun una versió privada del mateix matí incòmode. La reconstrueixen junts i després separen cada frase: el que va veure una càmera i la història que algú hi va afegir. Els dos costats sempre hi afegeixen històries.", s7Action: "Jugar en parella",
+        s8Badge: "En línia · nou", s8Caption: "1 dibuix secret · 1 “IA” molt literal", s8Category: "Alfabetització en IA · Joc", s8Title: "Parella de Prompts", s8Desc: "Un escriu instruccions per a un dibuix secret; l'altre fa d'IA i fa exactament el que diuen les paraules. Els dibuixos són divertidíssims, i la lliçó sobre demanar amb claredat serveix amb col·legues i amb eines d'IA. Sense IA a dins.", s8Action: "Jugar en parella",
+        s9Badge: "En línia · nou", s9Caption: "Peces anònimes · “a mi també”, mai un rànquing", s9Category: "Seguretat psicològica · Equips", s9Title: "Museu d'Errors", s9Desc: "Cada persona penja una peça anònima: un error propi i la lliçó que li va deixar. Després l'equip recorre la galeria. Es pot dir “a mi també”; ningú no puntua cap peça.", s9Action: "Obrir el museu",
+        gmKicker: "D / Per a comandaments", gmTitle: "Confiança, autonomia, decisions: es practiquen, no es prediquen.", gmLink: "Tres itineraris per a comandaments →",
+        m1Badge: "En línia · nou", m1Caption: "2 manuals · 1 promesa cadascun", m1Category: "Confiança · Responsable + equip", m1Title: "El Meu Manual d'Ús", m1Desc: "Responsable i membre de l'equip escriuen en privat una pàgina de “com treballar amb mi”; després la intercanvien, pregunten i cadascú fa una promesa. Qui lidera comença.", m1Action: "Escriu el teu",
+        m2Badge: "En línia · nou", m2Caption: "1 tasca · 2 ajustos privats · 1 conversa", m2Category: "Autonomia · Delegació", m2Title: "Dial de Delegació", m2Desc: "Per a una tasca real, responsable i membre de l'equip decideixen en privat qui hauria de decidir. La revelació mostra la diferència, i aquesta diferència és la conversa que evita controlar de més.", m2Action: "Ajustar el dial",
+        m3Badge: "En línia · nou", m3Caption: "Presentar · aclarir · reaccionar · consentir", m3Category: "Decisions · Tot l'equip", m3Title: "Sala de Decisions", m3Desc: "Una decisió real d'equip en 15 minuts. Tothom parla una vegada, les objeccions han d'anomenar un dany i la prova és “és segur provar-ho?”. La veu del responsable compta una vegada.", m3Action: "Prendre una decisió",
+        gcKicker: "E / Més enllà de la pantalla", gcTitle: "Com decideixo, demostro i estenc el que funciona.", gcNote: "Diagnosticar · Demostrar · Estendre · Adaptar", btConcept: "concepte", btCap1: "Diagnosticar", btT1: "Formació o no?", btD1: "Una comprovació de 2 minuts que diu si la formació ajudarà, o què cal arreglar abans.", btCap2: "Demostrar", btT2: "Impacte sense classificar", btD2: "Un informe de 30 dies d'exemple: escoltats, van continuar parlant, ho van fer servir. Sense noms ni rànquings.", btCap3: "Demostrar", btT3: "El cost de la formació que ningú no fa servir", btD3: "Una calculadora que converteix hores d'aula en una conversa honesta sobre pressupost.", btCap4: "Estendre", btT4: "Cercles d'aprenentatge", btD4: "Sis setmanes, cinc col·legues, una habilitat humana per setmana, gestionat pel mateix cercle.", btCap5: "Estendre", btT5: "Rituals d'equip", btD5: "Dotze setmanes de pràctiques de cinc minuts per a la reunió d'equip que ja tens.", btCap6: "Estendre", btT6: "Formar facilitadors", btD6: "Dues setmanes per formar facilitadors interns, certificats per evidències, no per notes.", btCap7: "Adaptar", btT7: "Adaptat, no traduït", btD7: "Frases reals en anglès, xinès i espanyol, costat a costat, amb el perquè de cadascuna.", btCap8: "Adaptar", btT8: "Aprenentatge per a primera línia", btD8: "Per a qui no té portàtil: 60 segons de pràctica en parella al canvi de torn.", btCap9: "IA, amb criteri", btT9: "La IA redacta, les persones lliuren", btD9: "On encaixa la IA en l'aprenentatge, on no, i una política d'una pàgina.", btCap10: "Retornar", btT10: "El kit obert", btD10: "La plantilla darrere de cada pràctica, gratis per a altres dissenyadors d'aprenentatge.",
+        moreLabel: "Més al laboratori:", moreSales: "Acadèmia de Psicologia de Vendes", moreQuestions: "Baralla de Preguntes", moreDiscovery: "Duo de Descobriment", moreTeach: "Cadena d'Ensenyar de Tornada", moreThanks: "Gràcies Concretes", moreFB: "Treballa amb FREE//BUILDER →",
+
+        eggLTag: "Prova d'escolta · tria la teva resposta",
+        eggLSaid: "Col·lega: “M'han tornat a moure la data de lliurament. Tercera vegada aquest mes.”",
+        eggLA: "“Igual que jo: la meva setmana també és un caos.”",
+        eggLB: "“Tercera vegada? Sona esgotador. Què t'està costant?”",
+        eggLReady: "Llest", eggLSelf: "Conversa segrestada", eggLHeard: "Se sent escoltat ✓",
+        eggLFbSelf: "Ho has fet sobre tu. Assenteix per cortesia… i deixa de parlar. Prova [B].",
+        eggLFbHeard: "Retornar el que has escoltat més una pregunta curiosa. Continua parlant i descobreixes el que realment passa.",
+        egg2Tag: "Pista classificada · toca per desxifrar",
+        egg2Hidden: "████████ $22,000,000 TRANSFERÈNCIA A APEX ████",
+        egg2Shown: "✓ Descobert: transferència de $22,000,000 a Apex Logistics — sense auditar",
+        egg4Tag: "Segur per fallar · el teu col·laborador torna a arribar tard",
+        egg4A: "“Per què tard un altre cop?”", egg4B: "“Què està bloquejant el lliurament?”",
+        egg4Ready: "Llest", egg4Threat: "Amenaça d'estatus ⚠", egg4Safe: "Autonomia restaurada ✓",
+        egg4FbThreat: "Amenaça SCARF activada: el teu col·laborador se sent culpat i es refugia en el compliment defensiu. És un sandbox: prova [B].",
+        egg4FbSafe: "Seguretat psicològica oberta: el teu col·laborador explica que el bloquegen dependències d'Enginyeria. Ara, pregunta-ho a una persona real.",
+        egg5Tag: "Mirall de doble lent · toca per canviar",
+        egg5Low: "Baix context · directe", egg5High: "Alt context · indirecte",
+        egg5LowText: "“Aquest pla no funcionarà. Cal reescriure tota la secció 3.”",
+        egg5HighText: "“Hi veiem molts aspectes positius; potser la secció 3 mereix un estudi més profund.”",
+        egg6Tag: "Pols Crazy 8s",
+        egg6Ready: "Llest", egg6Running: "Esbossant", egg6Done: "Fet ✓",
+        egg6Label: "Llançar un sprint d'idees de 8 s", egg6RunLabel: "Dibuixa! No pensis…", egg6DoneLabel: "✓ Idea registrada. Ensenya-la a algú.",
+
+        modalTitle: "Drama de Supervivència Corporativa · Tràiler", modalEp: "Episodi 01 · La fuga d'ingressos", modalEscHint: "Prem ESC o fes clic fora per tancar",
+        deckTop: "Formació obligatòria · Simulació 2026", deckCount: "Diapositiva {n} de 62",
+        deckSlideTitle: "Mòdul 1.1: Paradigmes de sinergia i compliment",
+        deckSlideText: "“Tot el personal ha d'optimitzar la sincronització interdepartamental mitjançant fluxos documentals asíncrons. Eviteu qualsevol interacció fins que acabi el temporitzador.”",
+        deckSpeaker: "Narració: veu monòtona d'IA", deckLocked: "Bloquejat", deckNext: "Següent", deckEject: "Escapar cap a la dignitat cognitiva",
+        contactLabel: "04 / Saludem-nos",
+        contactTitle: "Creem aprenentatges que la gent <span class=\"accent-word\">triï</span> acabar.",
+        contactCopy: "Copiar correu", copiedText: "✓ Copiat", footerMade: "Fet amb IA i"
       }
     };
 
-    const supportedLangs = ['en', 'zh', 'es'];
-    const langLabels = { en: 'EN', zh: '中文', es: 'ES' };
+    const supportedLangs = ['en', 'zh', 'zh-Hant', 'es', 'ca'];
+    const langLabels = { en: 'EN', zh: '中文', es: 'ES', "zh-Hant": "繁中", "ca": "CA" };
     let currentLang = 'en';
     const t = () => translations[currentLang];
     const $ = id => document.getElementById(id);
@@ -1220,7 +1506,7 @@ img{filter:none}
     function setLanguage(lang) {
       if (!translations[lang]) return;
       currentLang = lang;
-      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+      document.documentElement.lang = (/*i18n*/lang === 'zh' ? 'zh-CN' : (lang === "zh-Hant" ? "zh-TW" : lang));
       $('page-title').textContent = t().pageTitle;
       $('lang-btn-label').textContent = langLabels[lang];
       document.querySelectorAll('[data-i18n]').forEach(el => { const v = t()[el.getAttribute('data-i18n')]; if (v) el.textContent = v; });
