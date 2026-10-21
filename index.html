@@ -55,7 +55,7 @@
   /* 4 · carry the preference across the two sites */
   function decorate(e) {
     var a = e.target && e.target.closest && e.target.closest("a[href]"); if (!a) return;
-    try { var t = new URL(a.href, location.href); if (t.host === location.host || !SITES.test(t.hostname)) return;
+    try { if (!/^https?:/i.test(a.getAttribute("href") || "")) return; var t = new URL(a.href, location.href); if (t.host === location.host || !SITES.test(t.hostname)) return; var top0 = ""; try { top0 = window.top.location.host; } catch (x) {} if (t.host === top0) return;
       if (mode === "game") { for (var g in GAMES) { var v = ls(g); if (v && GAMES[g][1][v]) KEYS.forEach(function (k) { ls(k, GAMES[g][1][v]); }); } }
       t.searchParams.set("fbl", get() || "en"); a.href = t.toString(); } catch (err) {}
   }
