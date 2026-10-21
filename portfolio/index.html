@@ -75,6 +75,16 @@
 
     /* Chinese: keep CJK upright (no faux italic); Latin italics stay real */
     html:lang(zh) { font-synthesis: weight; }
+
+    /* C / Beyond the screen */
+    .bts-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; }
+    .bts-card { position:relative; display:flex; flex-direction:column; gap:6px; padding:18px 20px 20px; border-radius:22px; border:1px solid #E5E2DA; background:#fff; text-decoration:none; color:#17171A; transition:border-color .2s, transform .2s; }
+    .bts-card:hover { border-color:rgba(23,23,26,.4); transform:translateY(-2px); }
+    .bts-k { font-family:"Space Mono",ui-monospace,monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:#C2412D; }
+    .bts-t { font-family:Syne,"Plus Jakarta Sans","PingFang SC",sans-serif; font-weight:700; font-size:18px; line-height:1.2; padding-right:22px; }
+    .bts-d { font-size:13.5px; line-height:1.5; color:rgba(23,23,26,.7); }
+    .bts-go { position:absolute; top:16px; right:18px; font-family:"Space Mono",monospace; font-size:13px; color:rgba(23,23,26,.45); }
+    .bts-card:hover .bts-go { color:#C2412D; }
 </style>
   <script>document.documentElement.classList.add('js');</script>
 </head>
@@ -463,6 +473,80 @@
       </div>
     </section>
 
+
+    <!-- GROUP C: BEYOND THE SCREEN -->
+    <section class="space-y-5" aria-labelledby="gc-h">
+      <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
+        <div>
+          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gcKicker">C / Beyond the screen</span>
+          <h2 id="gc-h" class="font-syne text-2xl sm:text-3xl font-bold tracking-tight mt-1" data-i18n="gcTitle">How I decide, prove and spread what works.</h2>
+        </div>
+        <span class="text-[11px] font-mono text-muted" data-i18n="gcNote">Diagnose · Prove · Spread · Adapt</span>
+      </div>
+      <div class="bts-grid">
+        <a class="bts-card reveal" href="/free_builder/diagnose">
+          <span class="bts-k"><span data-i18n="btCap1">Diagnose</span></span>
+          <span class="bts-t" data-i18n="btT1">Training or not?</span>
+          <span class="bts-d" data-i18n="btD1">A 2-minute check that tells a manager whether training will help — or what to fix instead.</span>
+          <span class="bts-go" aria-hidden="true">↗</span>
+        </a>
+        <a class="bts-card reveal" href="/free_builder/impact">
+          <span class="bts-k"><span data-i18n="btCap2">Prove</span></span>
+          <span class="bts-t" data-i18n="btT2">Impact, without ranking</span>
+          <span class="bts-d" data-i18n="btD2">A sample 30-day report: felt heard, kept talking, used it at work. No names, no leaderboards.</span>
+          <span class="bts-go" aria-hidden="true">↗</span>
+        </a>
+        <a class="bts-card reveal" href="/free_builder/cost">
+          <span class="bts-k"><span data-i18n="btCap3">Prove</span></span>
+          <span class="bts-t" data-i18n="btT3">The cost of training nobody uses</span>
+          <span class="bts-d" data-i18n="btD3">A calculator that turns hours in a training room into an honest budget conversation.</span>
+          <span class="bts-go" aria-hidden="true">↗</span>
+        </a>
+        <a class="bts-card reveal" href="/free_builder/circles">
+          <span class="bts-k"><span data-i18n="btCap4">Spread</span></span>
+          <span class="bts-t" data-i18n="btT4">Learning circles</span>
+          <span class="bts-d" data-i18n="btD4">Six weeks, five colleagues, one human skill a week — run by the circle itself.</span>
+          <span class="bts-go" aria-hidden="true">↗</span>
+        </a>
+        <a class="bts-card reveal" href="/free_builder/rituals">
+          <span class="bts-k"><span data-i18n="btCap5">Spread</span></span>
+          <span class="bts-t" data-i18n="btT5">Team rituals</span>
+          <span class="bts-d" data-i18n="btD5">Twelve weeks of five-minute practices for the team meeting you already have.</span>
+          <span class="bts-go" aria-hidden="true">↗</span>
+        </a>
+        <a class="bts-card reveal" href="/free_builder/facilitator">
+          <span class="bts-k"><span data-i18n="btCap6">Spread</span></span>
+          <span class="bts-t" data-i18n="btT6">Train the facilitator</span>
+          <span class="bts-d" data-i18n="btD6">Two weeks to grow facilitators inside — certified by evidence, not test scores.</span>
+          <span class="bts-go" aria-hidden="true">↗</span>
+        </a>
+        <a class="bts-card reveal" href="/free_builder/adapted">
+          <span class="bts-k"><span data-i18n="btCap7">Adapt</span></span>
+          <span class="bts-t" data-i18n="btT7">Adapted, not translated</span>
+          <span class="bts-d" data-i18n="btD7">Real lines in English, Chinese and Spanish, side by side, with the reasoning behind each.</span>
+          <span class="bts-go" aria-hidden="true">↗</span>
+        </a>
+        <a class="bts-card reveal" href="/free_builder/frontline">
+          <span class="bts-k"><span data-i18n="btCap8">Adapt</span> · <span data-i18n="btConcept">concept</span></span>
+          <span class="bts-t" data-i18n="btT8">Learning for the frontline</span>
+          <span class="bts-d" data-i18n="btD8">For people without laptops: 60-second paired practice at shift handover.</span>
+          <span class="bts-go" aria-hidden="true">↗</span>
+        </a>
+        <a class="bts-card reveal" href="/free_builder/ai">
+          <span class="bts-k"><span data-i18n="btCap9">AI, with judgement</span></span>
+          <span class="bts-t" data-i18n="btT9">AI drafts, people deliver</span>
+          <span class="bts-d" data-i18n="btD9">Where AI belongs in learning, where it doesn't, and a one-page guardrail policy.</span>
+          <span class="bts-go" aria-hidden="true">↗</span>
+        </a>
+        <a class="bts-card reveal" href="/free_builder/kit">
+          <span class="bts-k"><span data-i18n="btCap10">Give back</span></span>
+          <span class="bts-t" data-i18n="btT10">The open starter kit</span>
+          <span class="bts-d" data-i18n="btD10">The template behind every practice, free for other learning designers.</span>
+          <span class="bts-go" aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </section>
+
     <!-- MORE IN THE LAB -->
     <section class="reveal flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-y border-line py-5">
       <div class="flex flex-wrap items-center gap-2 text-[12px] font-mono">
@@ -544,6 +628,7 @@
         c6Title: "Corporate Survival Drama",
         c6Desc: "A vertical mini-series built on real workplace dilemmas, made to be watched together. Every episode ends on a choice — and a question for the team to argue over.",
         c6Action: "Play trailer", c6Meta: "1-min trailer",
+        gcKicker: "C / Beyond the screen", gcTitle: "How I decide, prove and spread what works.", gcNote: "Diagnose · Prove · Spread · Adapt", btConcept: "concept", btCap1: "Diagnose", btT1: "Training or not?", btD1: "A 2-minute check that tells a manager whether training will help — or what to fix instead.", btCap2: "Prove", btT2: "Impact, without ranking", btD2: "A sample 30-day report: felt heard, kept talking, used it at work. No names, no leaderboards.", btCap3: "Prove", btT3: "The cost of training nobody uses", btD3: "A calculator that turns hours in a training room into an honest budget conversation.", btCap4: "Spread", btT4: "Learning circles", btD4: "Six weeks, five colleagues, one human skill a week — run by the circle itself.", btCap5: "Spread", btT5: "Team rituals", btD5: "Twelve weeks of five-minute practices for the team meeting you already have.", btCap6: "Spread", btT6: "Train the facilitator", btD6: "Two weeks to grow facilitators inside — certified by evidence, not test scores.", btCap7: "Adapt", btT7: "Adapted, not translated", btD7: "Real lines in English, Chinese and Spanish, side by side, with the reasoning behind each.", btCap8: "Adapt", btT8: "Learning for the frontline", btD8: "For people without laptops: 60-second paired practice at shift handover.", btCap9: "AI, with judgement", btT9: "AI drafts, people deliver", btD9: "Where AI belongs in learning, where it doesn't, and a one-page guardrail policy.", btCap10: "Give back", btT10: "The open starter kit", btD10: "The template behind every practice, free for other learning designers.",
         moreLabel: "More in the lab:", moreSales: "Sales Psychology Academy", moreQuestions: "Question Deck", moreDiscovery: "Discovery Duet", moreTeach: "Teach-Back Chain", moreThanks: "Specific Thanks", moreFB: "Work with FREE//BUILDER →",
 
         eggLTag: "Listening check · pick your reply",
@@ -617,6 +702,7 @@
         c6Title: "职场生存大戏",
         c6Desc: "以真实职场困境为底的竖屏微短剧，为“一起看”而设计。每集都停在一个抉择上——留给团队一个值得争论的问题。",
         c6Action: "播放预告", c6Meta: "1 分钟预告",
+        gcKicker: "C / 屏幕之外", gcTitle: "我如何判断、证明并传开真正有效的东西。", gcNote: "诊断 · 证明 · 传播 · 本地化", btConcept: "概念", btCap1: "诊断", btT1: "要不要培训？", btD1: "两分钟判断培训是否有用——或者该先解决什么。", btCap2: "证明", btT2: "不排名的影响力报告", btD2: "30 天报告示例：感到被倾听、继续交谈、在工作中用上。不点名，不排行。", btCap3: "证明", btT3: "没人用上的培训，代价有多大", btD3: "把培训教室里的小时数，变成一场诚实的预算对话。", btCap4: "传播", btT4: "学习圈", btD4: "六周、五位同事、每周一项人际能力——由学习圈自己运转。", btCap5: "传播", btT5: "团队小仪式", btD5: "十二周、每周五分钟的小练习，放进你本来就有的团队例会。", btCap6: "传播", btT6: "引导师培养", btD6: "两周在内部培养引导师——以证据认证，而不是考试分数。", btCap7: "本地化", btT7: "本地化，而不是翻译", btD7: "英文、中文、西语的真实句子并排对照，附上每个选择的理由。", btCap8: "本地化", btT8: "面向一线的学习", btD8: "给没有电脑的人：交接班时 60 秒的两人练习。", btCap9: "有判断地用 AI", btT9: "AI 起草，人来表达", btD9: "AI 在学习中该出现在哪、不该出现在哪，以及一页护栏政策。", btCap10: "回馈", btT10: "开放入门套件", btD10: "每个练习背后的模板，免费提供给其他学习设计师。",
         moreLabel: "实验室里还有：", moreSales: "销售心理学实战学院", moreQuestions: "问题卡组", moreDiscovery: "探询二重奏", moreTeach: "教回去链条", moreThanks: "具体的感谢", moreFB: "与 FREE//BUILDER 合作 →",
 
         eggLTag: "倾听测试 · 选择你的回应",
@@ -690,6 +776,7 @@
         c6Title: "Drama de Supervivencia Corporativa",
         c6Desc: "Una miniserie vertical sobre dilemas laborales reales, pensada para verse en grupo. Cada episodio termina en una decisión y en una pregunta para que el equipo la debata.",
         c6Action: "Ver tráiler", c6Meta: "Tráiler de 1 min",
+        gcKicker: "C / Más allá de la pantalla", gcTitle: "Cómo decido, demuestro y extiendo lo que funciona.", gcNote: "Diagnosticar · Demostrar · Extender · Adaptar", btConcept: "concepto", btCap1: "Diagnosticar", btT1: "¿Formación o no?", btD1: "Una comprobación de 2 minutos que dice si la formación ayudará, o qué arreglar antes.", btCap2: "Demostrar", btT2: "Impacto sin clasificar", btD2: "Un informe de 30 días de ejemplo: escuchados, siguieron hablando, lo usaron. Sin nombres ni rankings.", btCap3: "Demostrar", btT3: "El coste de la formación que nadie usa", btD3: "Una calculadora que convierte horas de aula en una conversación honesta sobre presupuesto.", btCap4: "Extender", btT4: "Círculos de aprendizaje", btD4: "Seis semanas, cinco colegas, una habilidad humana por semana, gestionado por el propio círculo.", btCap5: "Extender", btT5: "Rituales de equipo", btD5: "Doce semanas de prácticas de cinco minutos para la reunión de equipo que ya tienes.", btCap6: "Extender", btT6: "Formar facilitadores", btD6: "Dos semanas para formar facilitadores internos, certificados por evidencias, no por notas.", btCap7: "Adaptar", btT7: "Adaptado, no traducido", btD7: "Frases reales en inglés, chino y español, lado a lado, con el porqué de cada una.", btCap8: "Adaptar", btT8: "Aprendizaje para primera línea", btD8: "Para quien no tiene portátil: 60 segundos de práctica en pareja en el cambio de turno.", btCap9: "IA, con criterio", btT9: "La IA redacta, las personas entregan", btD9: "Dónde encaja la IA en el aprendizaje, dónde no, y una política de una página.", btCap10: "Devolver", btT10: "El kit abierto", btD10: "La plantilla detrás de cada práctica, gratis para otros diseñadores de aprendizaje.",
         moreLabel: "Más en el laboratorio:", moreSales: "Academia de Psicología de Ventas", moreQuestions: "Mazo de Preguntas", moreDiscovery: "Dúo de Descubrimiento", moreTeach: "Cadena de Enseñar de Vuelta", moreThanks: "Gracias Concretas", moreFB: "Trabaja con FREE//BUILDER →",
 
         eggLTag: "Prueba de escucha · elige tu respuesta",
