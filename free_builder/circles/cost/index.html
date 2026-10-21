@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title id="page-title">Listening Duet — FREE//BUILDER</title>
+  <meta name="description" content="Put a number on the training that never reaches the job — with your own figures — and see what the same hours buy as practice.">
+  <meta name="theme-color" content="#F7F6F2">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Crect x='7' y='7' width='8' height='8' rx='2' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='7' y='17' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='17' y='17' width='8' height='8' rx='2' fill='%23E2553F'/%3E%3C/svg%3E">
+  <!-- Brand fonts load without blocking the page: where Google Fonts is slow or blocked, system fonts show instantly. -->
+  <link rel="stylesheet" href="/fonts/fonts.css">
+
+  <style>
+    /* =================================================================
+       FB KIT · tokens + shell (shared by every FREE//BUILDER demo)
+       ================================================================= */
+    :root {
+      --paper:#F7F6F2; --ink:#17171A; --muted:#6B6A70; --line:#E5E2DA; --accent:#E2553F; --accent-ink:#C2412D; --white:#fff; --good:#2F8A5C;
+      --st:#E2553F;
+      --ease:cubic-bezier(.23,1,.32,1);
+      --sans:"Plus Jakarta Sans",system-ui,-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+      --mono:"Space Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+      --syne:Syne,"Plus Jakarta Sans",system-ui,"PingFang SC","Noto Sans SC",sans-serif;
+      --serif:"Instrument Serif",Georgia,"Songti SC","STSong",serif;
+    }
+    * { box-sizing:border-box; }
+    html, body { margin:0; overflow-x:hidden; }
+    body {
+      background:var(--paper); color:var(--ink); font-family:var(--sans);
+      -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;
+      min-height:100vh; min-height:100svh; display:flex; flex-direction:column;
+    }
+    button { font:inherit; color:inherit; cursor:pointer; background:none; border:0; padding:0; touch-action:manipulation; }
+    a { color:inherit; }
+    :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:10px; }
+    .kicker { font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
+    .dots { position:fixed; inset:0; z-index:-1; pointer-events:none;
+      background-image:radial-gradient(rgba(23,23,26,.09) 1px,transparent 1px); background-size:22px 22px;
+      -webkit-mask-image:linear-gradient(to bottom,#000,transparent 60%); mask-image:linear-gradient(to bottom,#000,transparent 60%); }
+
+    header.top { position:sticky; top:0; z-index:40; background:rgba(247,246,242,.92);
+      -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); border-bottom:1px solid rgba(229,226,218,.8);
+      padding:10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); }
+    .top-in { max-width:960px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .brand { display:flex; align-items:center; gap:10px; text-decoration:none; min-width:0; }
+    .mark { width:34px; height:34px; border-radius:10px; background:var(--ink); display:grid; place-items:center; flex-shrink:0; transition:transform .5s var(--ease); }
+    .mark rect { transform-box:fill-box; transform-origin:center; transition:transform .6s var(--ease); }
+    .mark .last { transform:translate(2.5px,-2.5px) rotate(12deg); }
+    .brand:hover .mark { transform:rotate(-4deg); }
+    .brand:hover .mark .last { transform:none; }
+    .brand-txt { line-height:1; min-width:0; }
+    .brand-txt b { font-family:var(--syne); font-weight:700; font-size:13px; display:block; }
+    .brand-txt b i { color:var(--accent); font-style:normal; }
+    .brand-txt span { display:block; font-size:11px; color:var(--muted); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .top-actions { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+    .chip { height:32px; padding:0 10px; border:1px solid var(--line); border-radius:9px; background:rgba(255,255,255,.6);
+      display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; transition:border-color .2s, transform .1s; }
+    .chip:hover { border-color:rgba(23,23,26,.3); }
+    .chip:active { transform:scale(.96); }
+    .chip svg { width:14px; height:14px; }
+    .chip[hidden] { display:none; }
+    @media (max-width:420px) { .chip .lbl { display:none; } }
+    @media (max-width:340px) { .brand-txt { display:none; } }
+
+    main { flex:1; width:100%; max-width:600px; margin:0 auto; padding:24px max(16px, env(safe-area-inset-right)) 32px max(16px, env(safe-area-inset-left)); display:flex; flex-direction:column; }
+
+    /* progress dots */
+    .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+    .steps { display:flex; gap:6px; align-items:center; margin-bottom:18px; min-height:8px; }
+    .steps span { height:6px; flex:1; border-radius:3px; background:var(--line); transition:background .4s; }
+    .steps span.done { background:var(--ink); }
+    .steps span.now { background:var(--accent); }
+
+    /* screens */
+    .screen { flex:1; display:flex; flex-direction:column; gap:18px; animation:in .5s var(--ease) both; }
+    @keyframes in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+    h1, h2 { font-family:var(--syne); font-weight:700; letter-spacing:-.02em; margin:0; line-height:1.1; }
+    h1 { font-size:clamp(34px, 9vw, 52px); }
+    h2 { font-size:clamp(26px, 6.5vw, 34px); }
+    .lead { font-size:16px; line-height:1.6; color:rgba(23,23,26,.75); margin:0; }
+    .serif { font-family:var(--serif); font-style:italic; font-size:22px; line-height:1.3; color:rgba(23,23,26,.85); margin:0; }
+    .accent-word { font-family:var(--serif); font-style:italic; font-weight:400; color:var(--muted); white-space:nowrap; padding-bottom:.12em;
+      background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7 Q 12 1 22 7 T 42 7 T 62 7 T 82 7 T 102 7 T 118 6' fill='none' stroke='%23E2553F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left bottom / 100% .32em; }
+    .pills { display:flex; flex-wrap:wrap; gap:6px; }
+    .pill { font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:99px; border:1px solid var(--line); color:var(--muted); background:rgba(255,255,255,.6); }
+    .spacer { flex:1; }
+
+    .btns { display:flex; gap:8px; flex-wrap:wrap; }
+    .btn { flex:1; min-height:52px; padding:0 20px; border-radius:99px; font-family:var(--mono); font-size:13px; font-weight:700;
+      display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1px solid var(--line); background:var(--white);
+      transition:background .2s, border-color .2s, transform .1s; }
+    .btn:hover { border-color:rgba(23,23,26,.35); }
+    .btn:active { transform:scale(.98); }
+    .btn.pri { background:var(--ink); border-color:var(--ink); color:#fff; flex:2; }
+    .btn.pri:hover { background:var(--accent); border-color:var(--accent); }
+    .btn[disabled] { opacity:.45; pointer-events:none; }
+    .link { font-family:var(--mono); font-size:12px; color:var(--muted); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:4px; align-self:center; padding:8px; }
+    .link:hover { color:var(--ink); }
+
+    .card { background:var(--white); border:1px solid var(--line); border-radius:24px; padding:22px; }
+    .field { display:block; }
+    .field span { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+    .field input, .field textarea { width:100%; font:inherit; font-size:16px; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--white); color:var(--ink); }
+    .field textarea { resize:vertical; min-height:96px; line-height:1.5; }
+    .field input:focus, .field textarea:focus { outline:none; border-color:var(--ink); }
+    .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .seg { display:flex; flex-wrap:wrap; gap:6px; }
+    .seg button { padding:9px 14px; border-radius:99px; border:1px solid var(--line); background:var(--white); font-size:13px; transition:all .2s; }
+    .seg button[aria-pressed="true"] { background:var(--ink); color:#fff; border-color:var(--ink); }
+
+    /* who's who */
+    .roles { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .role { border-radius:18px; padding:14px; border:1px solid var(--line); background:var(--white); }
+    .role .k { font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+    .role .n { font-family:var(--syne); font-weight:700; font-size:18px; margin-top:4px; word-break:break-word; }
+    .role.speak { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .role.speak .k { color:rgba(255,255,255,.55); }
+
+    /* prompt card */
+    .prompt { position:relative; background:var(--ink); color:#fff; border-radius:26px; padding:28px 24px 24px; min-height:200px;
+      display:flex; flex-direction:column; justify-content:space-between; gap:18px; overflow:hidden; }
+    .prompt::after { content:""; position:absolute; right:-50px; top:-50px; width:170px; height:170px; border-radius:50%; border:1px solid rgba(255,255,255,.1); }
+    .prompt .q { font-family:var(--serif); font-style:italic; font-size:clamp(24px, 6.4vw, 30px); line-height:1.25; position:relative; }
+    .prompt .meta { display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; color:rgba(255,255,255,.5); position:relative; }
+    .prompt.flip { animation:flip .55s var(--ease); }
+    @keyframes flip { 0% { transform:rotateX(0); } 50% { transform:rotateX(80deg); opacity:.4; } 100% { transform:none; } }
+
+    /* timer ring */
+    .timer { display:grid; place-items:center; margin:4px auto; position:relative; width:min(68vw, 260px); aspect-ratio:1; }
+    .timer svg { width:100%; height:100%; transform:rotate(-90deg); }
+    .timer .bg { stroke:var(--line); }
+    .timer .fg { stroke:var(--st); transition:stroke .3s; }
+    .timer .num { position:absolute; inset:0; display:grid; place-items:center; text-align:center; }
+    .timer .num b { font-family:var(--mono); font-size:clamp(40px, 13vw, 56px); font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:-.02em; display:block; }
+    .timer .num small { font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.12em; text-transform:uppercase; }
+    .timer.done .fg { stroke:var(--good); }
+    .timer.pulse { animation:pulse 1.2s ease-in-out 2; }
+    @keyframes pulse { 50% { transform:scale(1.04); } }
+
+    .tip { display:flex; gap:10px; align-items:flex-start; padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(23,23,26,.2); font-size:14px; line-height:1.5; }
+    .tip b { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); font-weight:400; display:block; margin-bottom:2px; }
+    .tip i { font-style:normal; font-size:18px; line-height:1.2; }
+    .stems { display:grid; gap:8px; }
+    .stems div { padding:12px 14px; border-radius:14px; background:var(--white); border:1px solid var(--line); font-family:var(--serif); font-style:italic; font-size:19px; }
+
+    /* felt heard */
+    .heard { display:grid; gap:8px; }
+    .heard button { display:flex; align-items:center; gap:14px; text-align:left; padding:16px 18px; border-radius:18px; border:1px solid var(--line); background:var(--white); transition:all .2s; }
+    .heard button:hover { border-color:rgba(23,23,26,.35); }
+    .heard button .e { width:40px; height:40px; border-radius:50%; display:grid; place-items:center; font-size:20px; flex-shrink:0; background:var(--paper); }
+    .heard button b { display:block; font-size:16px; }
+    .heard button small { display:block; font-size:13px; color:var(--muted); margin-top:2px; }
+
+    /* curtain (pass the phone) */
+    .curtain { background:var(--ink); color:#fff; border-radius:28px; padding:32px 24px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px; }
+    .curtain .hand { width:84px; height:84px; }
+    .curtain h2 { color:#fff; }
+    .curtain p { margin:0; color:rgba(255,255,255,.7); line-height:1.55; }
+
+    /* summary */
+    .sum { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .sum div { background:var(--white); border:1px solid var(--line); border-radius:18px; padding:16px; }
+    .sum b { display:block; font-family:var(--syne); font-size:18px; word-break:break-word; }
+    .sum span { display:block; font-size:13px; color:var(--muted); margin-top:4px; }
+    .monday { padding:14px 16px; border-radius:16px; background:var(--white); border:1px dashed rgba(23,23,26,.2); font-size:14px; line-height:1.55; }
+    .monday b { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); font-weight:400; margin-bottom:3px; }
+    .chain { list-style:none; padding:0; margin:0; display:grid; gap:8px; }
+    .chain li { background:var(--white); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-size:14px; line-height:1.5; }
+    .chain li small { display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-top:4px; }
+    .steps3 { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .steps3 div { background:var(--white); border:1px solid var(--line); border-radius:16px; padding:14px 12px; text-align:center; }
+    .steps3 b { display:block; font-family:var(--mono); font-size:11px; color:var(--accent-ink); }
+    .steps3 span { display:block; font-family:var(--syne); font-weight:700; font-size:15px; margin-top:4px; }
+
+    /* drawer (facilitator guide) */
+    .drawer { position:fixed; inset:0; z-index:60; display:flex; justify-content:flex-end; background:rgba(23,23,26,.45); opacity:0; pointer-events:none; transition:opacity .25s; }
+    .drawer.show { opacity:1; pointer-events:auto; }
+    .panel { width:100%; max-width:460px; height:100%; background:var(--paper); overflow-y:auto; padding:22px 22px calc(28px + env(safe-area-inset-bottom)); transform:translateX(30px); transition:transform .45s var(--ease); overscroll-behavior:contain; }
+    .drawer.show .panel { transform:none; }
+    @media (max-width:560px) { .drawer { align-items:flex-end; } .panel { max-width:none; height:88vh; height:88svh; border-radius:24px 24px 0 0; transform:translateY(40px); } }
+    .panel h3 { font-family:var(--syne); font-size:22px; margin:4px 0 12px; }
+    .panel h4 { font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:400; margin:22px 0 8px; }
+    .panel ol, .panel ul { margin:0; padding-left:20px; display:grid; gap:8px; font-size:14px; line-height:1.55; }
+    .panel p { font-size:14px; line-height:1.6; color:rgba(23,23,26,.78); margin:0; }
+    .x { width:34px; height:34px; border-radius:50%; display:grid; place-items:center; border:1px solid var(--line); background:var(--white); font-family:var(--mono); flex-shrink:0; }
+
+    .toast { position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom)); transform:translate(-50%,10px); opacity:0; pointer-events:none; z-index:70;
+      background:var(--ink); color:#fff; border-radius:99px; padding:9px 16px; font-family:var(--mono); font-size:11px; transition:opacity .25s, transform .35s var(--ease);
+      max-width:calc(100% - 32px); }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+
+    footer { border-top:1px solid var(--line); padding:18px max(16px, env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+    .foot-in { max-width:960px; margin:0 auto; display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--muted); }
+    .foot-in a { text-decoration:none; } .foot-in a:hover { color:var(--ink); }
+
+    @media (min-width:700px) { main { padding-top:40px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.001ms !important; transition-duration:.001ms !important; } }
+  
+    /* Chinese: keep CJK upright (no faux italic); Latin italics stay real */
+    html:lang(zh) { font-synthesis: weight; }
+</style>
+</head>
+<body>
+  <div class="dots" aria-hidden="true"></div>
+
+  <header class="top">
+    <div class="top-in">
+      <a class="brand" href="/free_builder/" aria-label="FREE//BUILDER">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="19" height="19" style="overflow:visible">
+            <rect x="3" y="3" width="8" height="8" rx="2" fill="#fff"/><rect x="13" y="3" width="8" height="8" rx="2" fill="#fff" opacity=".55"/>
+            <rect x="3" y="13" width="8" height="8" rx="2" fill="#fff" opacity=".55"/><rect class="last" x="13" y="13" width="8" height="8" rx="2" fill="#E2553F"/>
+          </svg>
+        </span>
+        <span class="brand-txt"><b>FREE<i>//</i>BUILDER</b><span data-t="product">Cost calculator</span></span>
+      </a>
+      <div class="top-actions">
+        <button class="chip" id="btn-lang" type="button" aria-label="Language" title="EN / 中文 / ES">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
+          <b id="lang-lbl">EN</b>
+        </button>
+        <button class="chip" id="btn-sound" type="button"></button>
+        <button class="chip" id="btn-guide" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2zM22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg>
+          <span class="lbl" data-t="guide">Facilitators</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <h1 class="sr" data-t="product">Cost calculator</h1>
+    <div class="steps" id="steps" aria-hidden="true"></div>
+    <div id="stage" aria-live="polite"></div>
+  </main>
+
+  <footer>
+    <div class="foot-in">
+      <span data-t="privacy">Nothing is recorded. Nothing leaves this device.</span>
+      <a href="/free_builder/" data-t="back">FREE//BUILDER ↗</a>
+    </div>
+  </footer>
+
+  <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="g-title">
+    <div class="panel" id="panel"></div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+"use strict";
+/* =====================================================================
+   COPY — EN / 中文 / ES
+   ===================================================================== */
+const I18N = {
+en: {
+  title: "The Cost of Training Nobody Uses — FREE//BUILDER", product: "Cost calculator", guide: "Assumptions",
+  privacy: "Nothing is recorded. Nothing leaves this device.", back: "FREE//BUILDER ↗",
+  soundOn: "Sound on", soundOff: "Sound off", left: "left", paused: "paused", close: "Close", resume: "Resume", pause: "Pause",
+  introKicker: "Business case · For budget owners",
+  introTitle: 'What does training nobody <span class="accent-word">uses</span> cost?',
+  introLead: "Every hour in a training room is an hour of salary. This puts a number on the part that never reaches the job — using your own figures — and shows what the same hours could buy as practice with real people.",
+  inputs: "Your numbers", currency: "Currency",
+  people: "People in the programme", hours: "Training hours each, per year", salary: "Average yearly cost of one person (salary + on-costs)",
+  workHours: "Working hours in a year", used: "Your estimate: share actually used on the job",
+  usedHint: "There is no reliable universal figure. Use your own evaluation data — or a cautious guess — and change it to see the range.",
+  outKicker: "What it adds up to",
+  timeCost: "Paid time spent in training", wasted: "Paid time that never reaches the job", perPerson: "per person",
+  usedLbl: "used on the job", notUsedLbl: "not used",
+  sameHours: "The same hours, spent as practice",
+  sameHoursTxt: "{h} hours each is {n} twenty-minute practice sessions with a colleague — about {w} a month, every month.",
+  talkLbl: "Take this to the person who owns the budget",
+  talkQs: ["What would “used on the job” look like for this programme?", "How would we know in 30 days — without a survey nobody answers?", "Which part could become practice with real colleagues?"],
+  copy: "Copy the summary", copied: "Copied.",
+  monday: "Try this on Monday", mondayTxt: "Before approving your next training, ask: what will people do differently, and how will we see it?",
+  diagnose: "Not sure it's a training problem? Try the 2-minute diagnosis ↗",
+  summaryHead: "The cost of training nobody uses",
+  gKicker: "Assumptions", gTitle: "How the numbers work",
+  gWhy: "The formula",
+  gWhyTxt: "Hourly cost = yearly cost of one person ÷ working hours. Paid time in training = people × training hours × hourly cost. Not reaching the job = that × (100% − your estimate). It counts time only — not fees, venues or travel, which would add more.",
+  gSteps: "Using it well",
+  gStepList: ["Use your own numbers; the defaults are only examples.", "Change the “used on the job” estimate to see a range, not a single answer.", "Bring the result to a conversation, not a slide.", "Pair it with the 2-minute diagnosis before deciding anything."],
+  gDebrief: "Questions it should raise",
+  gDebriefList: ["What do we measure today — attendance, or behaviour?", "Which programme would we cut if we had to fund practice instead?", "Who already does this well, and how did they learn it?"],
+  gNotes: "Notes",
+  gNotesList: ["Defaults are illustrative, not benchmarks.", "Nothing you type is stored or sent.", "Training that people use is cheap at any price. This is about the part they don't."]
+},
+zh: {
+  title: "没人用上的培训，代价有多大？— FREE//BUILDER", product: "成本计算器", guide: "假设说明",
+  privacy: "不记录任何内容，不离开这台设备。", back: "FREE//BUILDER ↗",
+  soundOn: "声音开", soundOff: "声音关", left: "剩余", paused: "已暂停", close: "关闭", resume: "继续", pause: "暂停",
+  introKicker: "商业论证 · 给预算负责人",
+  introTitle: '没人<span class="accent-word">用上</span>的培训，代价有多大？',
+  introLead: "培训教室里的每一小时，都是一小时的薪资。用你自己的数字，算出从未落到工作中的那一部分——再看看同样的时间，用来和真实的同事练习能换来什么。",
+  inputs: "你的数字", currency: "货币",
+  people: "参训人数", hours: "每人每年的培训小时数", salary: "一个人每年的平均用人成本（薪资 + 附加成本）",
+  workHours: "每年工作小时数", used: "你的估计：真正用到工作中的比例",
+  usedHint: "并没有可靠的通用数字。请用你们自己的评估数据——或一个保守的猜测——调一调，看看区间。",
+  outKicker: "加起来是多少",
+  timeCost: "花在培训上的带薪时间", wasted: "没有落到工作中的带薪时间", perPerson: "每人",
+  usedLbl: "用到了工作中", notUsedLbl: "没用上",
+  sameHours: "同样的时间，用来练习",
+  sameHoursTxt: "每人 {h} 小时，相当于和同事进行 {n} 次 20 分钟的练习——大约每月 {w} 次，月月如此。",
+  talkLbl: "把这个带给预算负责人",
+  talkQs: ["对这个项目来说，“用到工作中”是什么样子？", "30 天后我们怎么知道——而不是靠一份没人填的问卷？", "哪一部分可以变成和真实同事的练习？"],
+  copy: "复制总结", copied: "已复制。",
+  monday: "周一试试这个", mondayTxt: "在批准下一个培训之前先问：大家会有什么不同的做法？我们怎么看得到？",
+  diagnose: "不确定这是不是培训问题？试试两分钟诊断 ↗",
+  summaryHead: "没人用上的培训，代价有多大",
+  gKicker: "假设说明", gTitle: "数字是怎么算的",
+  gWhy: "公式",
+  gWhyTxt: "每小时成本 = 一个人每年的用人成本 ÷ 工作小时数。培训带薪时间 = 人数 × 培训小时 × 每小时成本。没有落到工作中的部分 = 前者 ×（100% − 你的估计）。这里只计算时间——不含讲师费、场地和差旅，那些只会更多。",
+  gSteps: "怎么用好它",
+  gStepList: ["用你们自己的数字；默认值只是示例。", "调整“用到工作中”的估计，看一个区间，而不是单一答案。", "把结果带进一场对话，而不是一页 PPT。", "在做任何决定之前，先配合两分钟诊断一起用。"],
+  gDebrief: "它应该引出的问题",
+  gDebriefList: ["我们现在衡量的是出勤，还是行为？", "如果必须拿出预算做练习，我们会砍掉哪个项目？", "谁已经做得很好？他们是怎么学会的？"],
+  gNotes: "备注",
+  gNotesList: ["默认值仅为示例，不是行业基准。", "你输入的任何内容都不会被保存或发送。", "被用上的培训，花多少都值。这里算的是没被用上的那部分。"]
+},
+es: {
+  title: "El coste de la formación que nadie usa — FREE//BUILDER", product: "Calculadora de coste", guide: "Supuestos",
+  privacy: "No se guarda nada. Nada sale de este dispositivo.", back: "FREE//BUILDER ↗",
+  soundOn: "Sonido sí", soundOff: "Sonido no", left: "quedan", paused: "en pausa", close: "Cerrar", resume: "Seguir", pause: "Pausa",
+  introKicker: "Caso de negocio · Para quien tiene el presupuesto",
+  introTitle: '¿Cuánto cuesta la formación que nadie <span class="accent-word">usa</span>?',
+  introLead: "Cada hora en un aula de formación es una hora de salario. Esto pone cifra a la parte que nunca llega al trabajo, con tus propios datos, y muestra qué podrían comprar esas mismas horas como práctica con personas reales.",
+  inputs: "Tus cifras", currency: "Moneda",
+  people: "Personas en el programa", hours: "Horas de formación por persona y año", salary: "Coste anual medio de una persona (salario + cargas)",
+  workHours: "Horas de trabajo al año", used: "Tu estimación: parte que se usa de verdad en el trabajo",
+  usedHint: "No hay una cifra universal fiable. Usa tus datos de evaluación, o una estimación prudente, y cámbiala para ver el rango.",
+  outKicker: "Lo que suma",
+  timeCost: "Tiempo pagado en formación", wasted: "Tiempo pagado que nunca llega al trabajo", perPerson: "por persona",
+  usedLbl: "usado en el trabajo", notUsedLbl: "no usado",
+  sameHours: "Las mismas horas, como práctica",
+  sameHoursTxt: "{h} horas por persona son {n} sesiones de práctica de 20 minutos con un colega: unas {w} al mes, todos los meses.",
+  talkLbl: "Llévalo a quien tiene el presupuesto",
+  talkQs: ["¿Cómo sería «usarlo en el trabajo» en este programa?", "¿Cómo lo sabríamos en 30 días, sin una encuesta que nadie responde?", "¿Qué parte podría convertirse en práctica con colegas reales?"],
+  copy: "Copiar el resumen", copied: "Copiado.",
+  monday: "Pruébalo el lunes", mondayTxt: "Antes de aprobar la próxima formación, pregunta: ¿qué hará la gente distinto y cómo lo veremos?",
+  diagnose: "¿No sabes si es un problema de formación? Prueba el diagnóstico de 2 minutos ↗",
+  summaryHead: "El coste de la formación que nadie usa",
+  gKicker: "Supuestos", gTitle: "Cómo funcionan las cifras",
+  gWhy: "La fórmula",
+  gWhyTxt: "Coste por hora = coste anual de una persona ÷ horas de trabajo. Tiempo pagado en formación = personas × horas de formación × coste por hora. Lo que no llega al trabajo = eso × (100 % − tu estimación). Solo cuenta tiempo: no honorarios, salas ni viajes, que sumarían más.",
+  gSteps: "Usarla bien",
+  gStepList: ["Usa tus cifras; los valores por defecto son solo ejemplos.", "Cambia la estimación de uso para ver un rango, no una única respuesta.", "Lleva el resultado a una conversación, no a una diapositiva.", "Combínala con el diagnóstico de 2 minutos antes de decidir nada."],
+  gDebrief: "Preguntas que debería abrir",
+  gDebriefList: ["¿Qué medimos hoy: asistencia o comportamiento?", "¿Qué programa recortaríamos si tuviéramos que financiar práctica?", "¿Quién lo hace ya bien y cómo lo aprendió?"],
+  gNotes: "Notas",
+  gNotesList: ["Los valores por defecto son ilustrativos, no referencias del sector.", "Nada de lo que escribes se guarda ni se envía.", "La formación que se usa sale barata a cualquier precio. Esto va de la parte que no."]
+}
+};
+
+/* =====================================================================
+   FB KIT · helpers (copy into every demo)
+   ===================================================================== */
+const LANGS = ["en", "zh", "es"], LANG_LBL = { en: "EN", zh: "中文", es: "ES" };
+let lang = "en";
+const T = () => I18N[lang];
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = (s, v = {}) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in v ? esc(v[k]) : m));
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+/* Seeded random + pairing codes: the same code on two phones gives the same scenario, no server needed. */
+function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const CODE_CHARS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+function newCode(n = 6) { let s = ""; for (let i = 0; i < n; i++) s += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]; return s; }
+function seedFrom(code) { let h = 2166136261; for (const c of String(code).toUpperCase()) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+
+/* Sound: soft, short, optional */
+const sound = {
+  ctx: null, muted: store.get("fb_muted", false),
+  init() { if (!this.ctx) { const A = window.AudioContext || window.webkitAudioContext; if (A) this.ctx = new A(); } if (this.ctx && this.ctx.state === "suspended") this.ctx.resume(); },
+  tone(f, d = .3, g = .06, type = "sine", at = 0) {
+    if (this.muted || !this.ctx) return;
+    try { const t = this.ctx.currentTime + at, o = this.ctx.createOscillator(), a = this.ctx.createGain();
+      o.type = type; o.frequency.setValueAtTime(f, t); a.gain.setValueAtTime(.0001, t); a.gain.linearRampToValueAtTime(g, t + .02); a.gain.exponentialRampToValueAtTime(.0001, t + d);
+      o.connect(a); a.connect(this.ctx.destination); o.start(t); o.stop(t + d + .05); } catch (e) {}
+  },
+  tap() { this.tone(520, .12, .04, "triangle"); },
+  chime() { [659.25, 880, 1318.5].forEach((f, i) => this.tone(f, 1.2, .05, "sine", i * .12)); },
+  warm() { [392, 493.88, 587.33].forEach((f, i) => this.tone(f, .9, .05, "sine", i * .1)); }
+};
+const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
+
+/* Keep the screen awake while a timer runs (where supported) */
+let wakeLock = null;
+async function keepAwake(on) {
+  try {
+    if (on && "wakeLock" in navigator && !wakeLock) wakeLock = await navigator.wakeLock.request("screen");
+    if (!on && wakeLock) { await wakeLock.release(); wakeLock = null; }
+  } catch (e) { wakeLock = null; }
+}
+
+/* Timer ring */
+function ringSVG() {
+  return `<svg viewBox="0 0 120 120" aria-hidden="true"><circle class="bg" cx="60" cy="60" r="54" fill="none" stroke-width="6"/><circle class="fg" id="ring" cx="60" cy="60" r="54" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="339.29" stroke-dashoffset="0"/></svg>`;
+}
+const timer = {
+  total: 90, left: 90, running: false, raf: 0, last: 0, onEnd: null, ended: false,
+  start(total, onEnd) { this.stop(); this.total = this.left = total; this.onEnd = onEnd; this.ended = false; this.resume(); },
+  resume() { if (this.running || this.ended) return; this.running = true; this.last = performance.now(); keepAwake(true); this.tick(); },
+  pause() { this.running = false; cancelAnimationFrame(this.raf); keepAwake(false); this.paint(); },
+  stop() { this.running = false; cancelAnimationFrame(this.raf); keepAwake(false); },
+  tick() {
+    if (!this.running) return;
+    const now = performance.now(); this.left = Math.max(0, this.left - (now - this.last) / 1000); this.last = now;
+    this.paint();
+    if (this.left <= 0) { this.running = false; this.ended = true; keepAwake(false); sound.chime(); buzz([60, 80, 60]); this.onEnd && this.onEnd(); return; }
+    this.raf = requestAnimationFrame(() => this.tick());
+  },
+  paint() {
+    const ring = $("ring"), num = $("tnum"), lbl = $("tlbl"), wrap = $("timer");
+    if (!ring) return;
+    ring.setAttribute("stroke-dashoffset", String(339.29 * (1 - this.left / this.total)));
+    const s = Math.ceil(this.left);
+    num.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+    lbl.textContent = this.ended ? "" : (this.running ? T().left : T().paused);
+    wrap.classList.toggle("done", this.ended);
+  }
+};
+
+/* Toast */
+let toastT;
+function toast(msg) { const el = $("toast"); el.textContent = msg; el.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("show"), 2600); }
+
+/* Pass-the-phone curtain */
+function curtainHTML(title, lead, btnLabel, act) {
+  return `<div class="curtain">
+    <svg class="hand" viewBox="0 0 84 84" aria-hidden="true"><rect x="27" y="10" width="30" height="52" rx="7" fill="none" stroke="#fff" stroke-width="2.5"/><circle cx="42" cy="54" r="2.5" fill="#E2553F"/><path d="M14 54c6 0 10 4 13 9M70 54c-6 0-10 4-13 9" stroke="rgba(255,255,255,.5)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M34 72h16" stroke="#E2553F" stroke-width="2.5" stroke-linecap="round"/></svg>
+    <h2>${title}</h2><p>${lead}</p>
+    <button class="btn pri" data-act="${act}" style="width:100%;margin-top:6px">${btnLabel} →</button></div>`;
+}
+
+
+
+/* =====================================================================
+   COST CALCULATOR
+   ===================================================================== */
+const CUR = { CNY: { sym: "¥", salary: 250000 }, EUR: { sym: "€", salary: 45000 }, USD: { sym: "$", salary: 70000 } };
+const L0 = (() => { let l = null; try { l = localStorage.getItem("wm_preferred_lang"); } catch (e) {} const n = (navigator.language || "").toLowerCase(); return l || (n.startsWith("zh") ? "zh" : n.startsWith("es") ? "es" : "en"); })();
+const S = { cur: { zh: "CNY", es: "EUR", en: "USD" }[L0] || "USD", people: 60, hours: 16, salary: null, work: 1800, used: 20, touched: false };
+
+function money(v) {
+  try { return new Intl.NumberFormat(lang === "zh" ? "zh-CN" : lang, { style: "currency", currency: S.cur, maximumFractionDigits: 0 }).format(v); }
+  catch (e) { return CUR[S.cur].sym + Math.round(v).toLocaleString(); }
+}
+function calc() {
+  const salary = S.salary == null ? CUR[S.cur].salary : S.salary;
+  const hourly = salary / Math.max(1, S.work);
+  const time = S.people * S.hours * hourly;
+  const wasted = time * (1 - S.used / 100);
+  const sessions = Math.floor(S.hours * 3);
+  return { salary, hourly, time, wasted, per: S.people ? wasted / S.people : 0, sessions, perMonth: Math.max(1, Math.round(sessions / 12)) };
+}
+
+function num(id, label, val, min, max, step, extra = "") {
+  return `<label class="field"><span>${esc(label)}</span><input id="${id}" type="number" inputmode="decimal" min="${min}" max="${max}" step="${step}" value="${val}" ${extra}></label>`;
+}
+
+function render() {
+  const t = T(), stage = $("stage"), c = calc();
+  $("steps").innerHTML = "";
+  const focusId = stage.contains(document.activeElement) ? document.activeElement.id : null;
+  stage.innerHTML = `<section class="screen">
+    <span class="kicker">${t.introKicker}</span><h1>${t.introTitle}</h1>
+    <p class="lead">${esc(t.introLead)}</p>
+    <div class="card" style="display:grid;gap:12px">
+      <span class="kicker">${esc(t.inputs)}</span>
+      <div><span class="kicker" style="font-size:10px">${esc(t.currency)}</span><div class="seg" role="group" style="margin-top:6px">${Object.keys(CUR).map(k => `<button type="button" data-cur="${k}" aria-pressed="${S.cur === k}">${CUR[k].sym} ${k}</button>`).join("")}</div></div>
+      <div class="row2">${num("inPeople", t.people, S.people, 1, 100000, 1)}${num("inHours", t.hours, S.hours, 0, 500, 1)}</div>
+      ${num("inSalary", t.salary, Math.round(c.salary), 0, 100000000, 1000)}
+      ${num("inWork", t.workHours, S.work, 500, 3000, 10)}
+      <label class="field"><span>${esc(t.used)} — <b id="usedOut" style="color:var(--ink)">${S.used}%</b></span><input id="inUsed" type="range" min="0" max="100" step="5" value="${S.used}" style="width:100%;accent-color:#E2553F"></label>
+      <p style="margin:-4px 0 0;font-size:12.5px;color:var(--muted)">${esc(t.usedHint)}</p>
+    </div>
+    <div id="out">${outHTML(c)}</div>
+  </section>`;
+  if (focusId && $(focusId)) $(focusId).focus({ preventScroll: true });
+}
+
+function outHTML(c) {
+  const t = T(), usedPct = S.used;
+  return `<div class="card" style="display:grid;gap:14px;background:var(--ink);color:#fff;border-color:var(--ink)">
+      <span class="kicker" style="color:rgba(255,255,255,.55)">${esc(t.outKicker)}</span>
+      <div><span style="font-size:13px;color:rgba(255,255,255,.7)">${esc(t.timeCost)}</span><div style="font-family:var(--syne);font-weight:700;font-size:clamp(26px,7vw,36px)">${esc(money(c.time))}</div></div>
+      <div role="img" aria-label="${esc(usedPct + "% " + t.usedLbl + ", " + (100 - usedPct) + "% " + t.notUsedLbl)}" style="display:flex;height:14px;border-radius:7px;overflow:hidden;background:rgba(255,255,255,.12)">
+        <span style="width:${usedPct}%;background:#7FD1A4"></span><span style="width:${100 - usedPct}%;background:#E2553F"></span></div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.75)"><span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#7FD1A4;margin-right:6px"></i>${usedPct}% ${esc(t.usedLbl)}</span><span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#E2553F;margin-right:6px"></i>${100 - usedPct}% ${esc(t.notUsedLbl)}</span></div>
+      <div><span style="font-size:13px;color:rgba(255,255,255,.7)">${esc(t.wasted)}</span><div style="font-family:var(--syne);font-weight:700;font-size:clamp(30px,8vw,44px);color:#F2A091">${esc(money(c.wasted))}</div>
+        <span style="font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.6)">${esc(money(c.per))} ${esc(t.perPerson)}</span></div>
+    </div>
+    <div class="tip" style="margin-top:14px"><i>✦</i><span><b>${esc(t.sameHours)}</b>${esc(fmt(t.sameHoursTxt, { h: S.hours, n: c.sessions, w: c.perMonth }).replace(/&amp;/g, "&"))}</span></div>
+    <div class="card" style="margin-top:14px"><span class="kicker">${esc(t.talkLbl)}</span>
+      <ol style="margin:10px 0 0;padding-left:20px;display:grid;gap:8px;font-family:var(--serif);font-style:italic;font-size:18px;line-height:1.35">${t.talkQs.map(q => `<li>${esc(q)}</li>`).join("")}</ol></div>
+    <div class="monday" style="margin-top:14px"><b>${esc(t.monday)}</b>${esc(t.mondayTxt)}</div>
+    <div class="btns" style="margin-top:14px"><button class="btn" data-act="copy">⧉ ${esc(t.copy)}</button></div>
+    <a class="link" href="/free_builder/diagnose" style="display:inline-block;margin-top:12px">${esc(t.diagnose)}</a>`;
+}
+
+function paintOut() { const o = $("out"); if (o) o.innerHTML = outHTML(calc()); const u = $("usedOut"); if (u) u.textContent = S.used + "%"; }
+
+function summaryText() {
+  const t = T(), c = calc();
+  return [t.summaryHead, `${t.people}: ${S.people} · ${t.hours}: ${S.hours} · ${t.salary}: ${money(c.salary)} · ${t.workHours}: ${S.work} · ${t.used}: ${S.used}%`, "",
+    `${t.timeCost}: ${money(c.time)}`, `${t.wasted}: ${money(c.wasted)} (${money(c.per)} ${t.perPerson})`, "",
+    fmt(t.sameHoursTxt, { h: S.hours, n: c.sessions, w: c.perMonth }).replace(/&amp;/g, "&"), "", ...t.talkQs.map(q => `? ${q}`), "", "wei-meng.org/free_builder/cost"].join("\n");
+}
+
+$("stage").addEventListener("input", e => {
+  const v = parseFloat(e.target.value), ok = Number.isFinite(v) && v >= 0;
+  switch (e.target.id) {
+    case "inPeople": if (ok) S.people = Math.round(v); break;
+    case "inHours": if (ok) S.hours = v; break;
+    case "inSalary": if (ok) S.salary = v; break;
+    case "inWork": if (ok && v > 0) S.work = v; break;
+    case "inUsed": if (ok) S.used = Math.min(100, Math.round(v)); break;
+    default: return;
+  }
+  paintOut();
+});
+$("stage").addEventListener("click", e => {
+  sound.init();
+  const cb = e.target.closest("[data-cur]"), a = e.target.closest("[data-act]");
+  if (cb) { S.cur = cb.dataset.cur; S.salary = null; sound.tap(); render(); return; }
+  if (a && a.dataset.act === "copy") {
+    const text = summaryText(), ok = () => toast(T().copied);
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(ok).catch(fb); else fb();
+    function fb() { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (_) {} ta.remove(); ok(); }
+  }
+});
+
+function teachHTML() { return ""; }
+window.__app = { S, calc, render, summaryText };
+
+/* ---------- facilitator guide ---------- */
+const drawer = $("drawer");
+function openGuide() {
+  const t = T();
+  $("panel").innerHTML = `
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+      <div><span class="kicker">${esc(t.gKicker)}</span><h3 id="g-title">${esc(t.gTitle)}</h3></div>
+      <button class="x" data-close aria-label="${esc(t.close)}">✕</button>
+    </div>
+    <h4>${esc(t.gWhy)}</h4><p>${esc(t.gWhyTxt)}</p>
+    <h4>${esc(t.gSteps)}</h4><ol>${t.gStepList.map(s => `<li>${esc(s)}</li>`).join("")}</ol>
+    <h4>${esc(t.gDebrief)}</h4><ul>${t.gDebriefList.map(s => `<li>${esc(s)}</li>`).join("")}</ul>
+    <h4>${esc(t.gNotes)}</h4><ul>${t.gNotesList.map(s => `<li>${esc(s)}</li>`).join("")}</ul>`;
+  drawer.classList.add("show");
+  setTimeout(() => drawer.querySelector("[data-close]").focus({ preventScroll: true }), 60);
+}
+function closeGuide() { drawer.classList.remove("show"); $("btn-guide").focus({ preventScroll: true }); }
+drawer.addEventListener("click", e => { if (e.target === drawer || e.target.closest("[data-close]")) closeGuide(); });
+$("btn-guide").addEventListener("click", openGuide);
+window.addEventListener("keydown", e => { if (e.key === "Escape" && drawer.classList.contains("show")) closeGuide(); });
+
+/* ---------- language + sound ---------- */
+function paintSound() {
+  const b = $("btn-sound"), t = T();
+  b.innerHTML = sound.muted
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>';
+  b.setAttribute("aria-label", sound.muted ? t.soundOff : t.soundOn); b.title = b.getAttribute("aria-label");
+}
+$("btn-sound").addEventListener("click", () => { sound.muted = !sound.muted; store.set("fb_muted", sound.muted); sound.init(); paintSound(); if (!sound.muted) sound.tap(); });
+
+function applyLang(l) {
+  lang = LANGS.includes(l) ? l : "en";
+  document.documentElement.lang = lang === "zh" ? "zh-CN" : lang;
+  document.title = T().title;
+  $("lang-lbl").textContent = LANG_LBL[lang];
+  $("btn-guide").setAttribute("aria-label", T().guide); drawer.setAttribute("aria-label", T().guide);
+  document.querySelectorAll("[data-t]").forEach(el => { const v = T()[el.dataset.t]; if (typeof v === "string") el.textContent = v; });
+  paintSound();
+  render();               // the clock object survives a re-render
+  timer.paint();
+  const pb = $("pauseBtn"); if (pb && !timer.running && !timer.ended) pb.textContent = T().resume;
+  if (drawer.classList.contains("show")) openGuide();
+  try { localStorage.setItem("wm_preferred_lang", lang); localStorage.setItem("wm_cases_lang", lang); } catch (e) {}
+}
+$("btn-lang").addEventListener("click", () => applyLang(LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length]));
+
+/* ---------- boot ---------- */
+let saved = null;
+try { saved = localStorage.getItem("wm_preferred_lang") || localStorage.getItem("wm_cases_lang"); } catch (e) {}
+const nav = (navigator.language || "").toLowerCase();
+applyLang(LANGS.includes(saved) ? saved : nav.startsWith("zh") ? "zh" : nav.startsWith("es") ? "es" : "en");
+document.addEventListener("visibilitychange", () => { if (!document.hidden && timer.running) keepAwake(true); });
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) navigator.serviceWorker.register("/free_builder/sw.js", { scope: "/free_builder/" }).catch(() => {}); // offline cache
+})();
+</script>
+</body>
+</html>
