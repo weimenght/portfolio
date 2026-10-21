@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AI Drafts, People Deliver — FREE//BUILDER</title>
+  <meta name="description" content="Where AI belongs in learning and where it doesn't: six patterns that keep people at the centre, four lines not to cross, and a one-page guardrail policy.">
+  <meta name="theme-color" content="#F7F6F2">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Crect x='7' y='7' width='8' height='8' rx='2' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='7' y='17' width='8' height='8' rx='2' fill='%23fff' opacity='.55'/%3E%3Crect x='17' y='17' width='8' height='8' rx='2' fill='%23E2553F'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/fonts/fonts.css">
+  <style>
+    :root { --paper:#F7F6F2; --ink:#17171A; --muted:#6B6A70; --line:#E5E2DA; --grid:#ECE9E2; --accent:#E2553F; --accent-ink:#C2412D; --white:#fff; --good:#2F7A55;
+      --sans:"Plus Jakarta Sans",system-ui,-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+      --mono:"Space Mono",ui-monospace,Menlo,monospace; --syne:Syne,"Plus Jakarta Sans","PingFang SC","Noto Sans SC",sans-serif; --serif:"Instrument Serif",Georgia,"Songti SC",serif; }
+    * { box-sizing:border-box; }
+    html { -webkit-text-size-adjust:100%; }
+    html:lang(zh) { font-synthesis: weight; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); line-height:1.55; }
+    a { color:inherit; }
+    .top { position:sticky; top:0; z-index:5; background:rgba(247,246,242,.9); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
+    .top-in { max-width:1000px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .mark { width:34px; height:34px; border-radius:10px; background:var(--ink); display:grid; place-items:center; flex-shrink:0; }
+    .brand b { font-family:var(--syne); font-size:14px; } .brand b i { color:var(--accent); font-style:normal; }
+    .chips { display:flex; gap:6px; }
+    .chip { font:inherit; font-family:var(--mono); font-size:12px; padding:8px 12px; border-radius:99px; border:1px solid var(--line); background:var(--white); color:var(--ink); cursor:pointer; text-decoration:none; }
+    .chip[aria-pressed="true"] { background:var(--ink); color:#fff; border-color:var(--ink); }
+    main { max-width:1000px; margin:0 auto; padding:28px 16px 64px; }
+    .kicker { font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+    h1 { font-family:var(--syne); font-size:clamp(32px,6vw,54px); line-height:1.06; margin:10px 0 12px; letter-spacing:-.01em; }
+    h2 { font-family:var(--syne); font-size:clamp(22px,3.4vw,30px); line-height:1.15; margin:6px 0 10px; }
+    h3 { font-family:var(--syne); font-size:18px; line-height:1.25; margin:0 0 6px; }
+    .acc { font-family:var(--serif); font-style:italic; font-weight:400; color:var(--accent-ink); }
+    html:lang(zh) .acc { font-style:normal; }
+    .lead { font-size:17px; color:rgba(23,23,26,.75); max-width:700px; margin:0; }
+    .flag { display:inline-flex; align-items:center; gap:8px; margin-top:16px; padding:6px 12px; border-radius:99px; border:1px dashed #B7791F; color:#8F5E12; font-family:var(--mono); font-size:11.5px; }
+    .meta { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+    .pill { font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:99px; border:1px solid var(--line); color:var(--muted); background:rgba(255,255,255,.6); }
+    section { margin-top:36px; }
+    .sub { color:var(--muted); font-size:14.5px; margin:0 0 14px; max-width:700px; }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+    .card { background:var(--white); border:1px solid var(--line); border-radius:22px; padding:18px 20px; }
+    .card .k { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent-ink); display:block; margin-bottom:6px; }
+    .card p { margin:0; font-size:14.5px; color:rgba(23,23,26,.8); }
+    .card .x { margin-top:10px; padding-top:10px; border-top:1px dashed var(--line); font-size:13.5px; }
+    .card .x b { font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:400; display:block; }
+    .card.bad { background:#fff; border-style:dashed; }
+    .card.bad .k { color:var(--muted); }
+    .steps { list-style:none; margin:0; padding:0; display:grid; gap:0; }
+    .steps li { display:grid; grid-template-columns:72px 1fr; gap:16px; padding:16px 0; border-top:1px solid var(--line); }
+    .steps li:last-child { border-bottom:1px solid var(--line); }
+    .steps .n { font-family:var(--mono); font-size:12px; color:var(--accent-ink); padding-top:3px; }
+    .steps .n small { display:block; color:var(--muted); font-size:11px; margin-top:2px; }
+    .steps p { margin:4px 0 0; font-size:14.5px; color:rgba(23,23,26,.8); }
+    .steps .tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+    .steps .tags a, .steps .tags span { font-family:var(--mono); font-size:11px; padding:3px 9px; border-radius:99px; border:1px solid var(--line); background:var(--white); text-decoration:none; }
+    .tw { overflow-x:auto; border:1px solid var(--line); border-radius:20px; background:var(--white); }
+    table { width:100%; border-collapse:collapse; font-size:14px; min-width:640px; }
+    th, td { text-align:left; vertical-align:top; padding:12px 14px; border-bottom:1px solid var(--grid); }
+    th { font-family:var(--mono); font-size:11px; font-weight:400; color:var(--muted); letter-spacing:.06em; background:#FBFAF7; }
+    td.note { color:var(--muted); font-size:13px; }
+    td:first-child { font-family:var(--mono); font-size:11.5px; color:var(--accent-ink); white-space:nowrap; }
+    .list { margin:0; padding-left:20px; display:grid; gap:8px; font-size:15px; }
+    .dark { background:var(--ink); color:#fff; border-radius:24px; padding:22px 24px; }
+    .dark .kicker { color:rgba(255,255,255,.55); }
+    .dark .acc { color:#F2A091; }
+    .dark ol, .dark ul { margin:12px 0 0; padding-left:20px; display:grid; gap:8px; font-size:15px; }
+    .quote { font-family:var(--serif); font-style:italic; font-size:clamp(20px,3vw,26px); line-height:1.3; margin:0; }
+    html:lang(zh) .quote { font-style:normal; font-family:var(--sans); }
+    .note { font-size:12.5px; color:var(--muted); }
+    .cta { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .cta a { font-family:var(--mono); font-size:12px; font-weight:700; text-decoration:none; padding:11px 16px; border-radius:99px; border:1px solid var(--ink); }
+    .cta a.pri { background:var(--ink); color:#fff; }
+    .field { display:grid; gap:6px; max-width:280px; }
+    .field span { font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+    .field input { font:inherit; font-size:15px; padding:10px 12px; border-radius:12px; border:1px solid var(--line); background:var(--white); color:var(--ink); }
+    footer { text-align:center; font-family:var(--mono); font-size:11px; color:var(--muted); padding:20px 16px 40px; }
+    :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:6px; }
+    @media (max-width:520px) { .steps li { grid-template-columns:1fr; gap:4px; } }
+    @media (max-width:420px) { .brand b { display:none; } .chip { padding:7px 10px; } }
+    @media print { .top, .cta, footer, .noprint { display:none !important; } body { background:#fff; } .card, .steps li, .dark { break-inside:avoid; } .dark { background:#fff; color:var(--ink); border:1px solid var(--ink); } .dark .kicker { color:var(--muted); } }
+    
+  </style>
+</head>
+<body>
+  <header class="top"><div class="top-in">
+    <a class="brand" href="/free_builder/" aria-label="FREE//BUILDER"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19"><rect x="3" y="3" width="8" height="8" rx="2" fill="#fff"/><rect x="13" y="3" width="8" height="8" rx="2" fill="#fff" opacity=".55"/><rect x="3" y="13" width="8" height="8" rx="2" fill="#fff" opacity=".55"/><rect x="13" y="13" width="8" height="8" rx="2" fill="#E2553F"/></svg></span><b>FREE<i>//</i>BUILDER</b></a>
+    <div class="chips" role="group" aria-label="Language"><button class="chip" data-lang="en" type="button">EN</button><button class="chip" data-lang="zh" type="button">中文</button><button class="chip" data-lang="es" type="button">ES</button></div>
+  </div></header>
+  <main id="main"></main>
+  <footer>wei-meng.org/free_builder/ai · © FREE//BUILDER</footer>
+<script>
+(() => {
+"use strict";
+const P = {"en": {"title": "AI Drafts, People Deliver — FREE//BUILDER", "blocks": [{"type": "lead", "kicker": "Stance · AI in learning", "title": "AI drafts. <span class=\"acc\">People<\/span> deliver.", "text": "AI is a good rehearsal partner, a fast first draft and a patient explainer. It is not the conversation, and it never judges a person. Here is where it belongs in learning — and where it doesn't.", "meta": ["a pattern library", "a one-page guardrail policy", "used across every FREE//BUILDER demo"]}, {"type": "cards", "kicker": "Where AI helps", "title": "Six patterns that keep <span class=\"acc\">people<\/span> at the centre", "items": [{"k": "Rehearse", "d": "Practise a hard conversation with a simulated colleague before the real one.", "xk": "Then", "x": "Then say it to a person.", "href": "/free_builder/coach/", "link": "Try: Coaching Co-Pilot ↗"}, {"k": "First draft", "d": "Turn rough notes into a first version of a thank-you, a repair or a question.", "xk": "Then", "x": "The person edits it into their own words.", "href": "/free_builder/thanks", "link": "Try: Specific Thanks ↗"}, {"k": "Explain it again", "d": "Re-explain a concept at a different level, in a different language, with a new example.", "xk": "Then", "x": "A colleague checks it makes sense here.", "href": "/free_builder/adapted", "link": "Try: Adapted, not translated ↗"}, {"k": "Prepare questions", "d": "Suggest open questions before a 1:1 or a client call.", "xk": "Then", "x": "You choose two and listen to the answers.", "href": "/free_builder/discovery", "link": "Try: Discovery Duet ↗"}, {"k": "Group the noise", "d": "Cluster many anonymous answers into themes for a facilitator.", "xk": "Then", "x": "The room renames and corrects the themes.", "href": "/free_builder/room", "link": "Try: Room Mode ↗"}, {"k": "Reflect", "d": "Ask a reflective question at the end of a session.", "xk": "Then", "x": "The answer is kept by the learner, not stored by us.", "href": "/free_builder/teachback", "link": "Try: Teach-Back Chain ↗"}]}, {"type": "cards", "kicker": "Where AI doesn't belong", "title": "Four <span class=\"acc\">lines<\/span> we don't cross", "items": [{"k": "✕", "t": "Delivering feedback", "d": "Feedback lands because a person chose to give it. A generated message from a manager is a broken promise.", "bad": true}, {"k": "✕", "t": "Judging people", "d": "No automated scoring of empathy, attitude or potential. No AI-written performance ratings.", "bad": true}, {"k": "✕", "t": "Replacing the conversation", "d": "If the tool can do the whole exercise alone, it has missed the point. It sets up the moment, then hands off.", "bad": true}, {"k": "✕", "t": "Learning from people without asking", "d": "Nobody's words become training data unless they knowingly agree.", "bad": true}]}, {"type": "dark", "kicker": "One-page guardrails", "title": "The AI guardrails for a <span class=\"acc\">learning<\/span> team", "items": ["Never put personal data, names or performance information into a public AI tool.", "A person reviews every AI-generated learning material before anyone sees it.", "Tell learners when they are talking to AI — every time.", "No AI decision about a person: hiring, rating, promotion or ranking.", "Learners can always choose a human alternative.", "Check outputs for bias across gender, culture and language before release.", "Keep data in the region your rules require; prefer tools that work offline when in doubt.", "Review this page every six months — the tools change fast."], "ordered": true}, {"type": "cta", "kicker": "See the patterns in action", "links": [{"l": "Coaching Co-Pilot", "href": "/free_builder/coach/"}, {"l": "Repair Kit", "href": "/free_builder/repair"}]}]}, "zh": {"title": "AI 起草，人来表达 — FREE//BUILDER", "blocks": [{"type": "lead", "kicker": "立场 · 学习中的 AI", "title": "AI 起草，<span class=\"acc\">人<\/span>来表达。", "text": "AI 是很好的排练对象、快速的初稿工具和耐心的讲解员。但它不是对话本身，也永远不评判一个人。这里说明它在学习中该出现在哪里——以及不该出现在哪里。", "meta": ["一套模式库", "一页护栏政策", "贯穿每个 FREE//BUILDER 练习"]}, {"type": "cards", "kicker": "AI 能帮忙的地方", "title": "让<span class=\"acc\">人<\/span>始终在中心的六种模式", "items": [{"k": "排练", "d": "在真实对话之前，先和一位模拟同事练习一场艰难对话。", "xk": "然后", "x": "然后对真人说出来。", "href": "/free_builder/coach/", "link": "试试: 教练副驾 ↗"}, {"k": "初稿", "d": "把零散的笔记变成感谢、修复或提问的初稿。", "xk": "然后", "x": "由本人改成自己的话。", "href": "/free_builder/thanks", "link": "试试: 具体的感谢 ↗"}, {"k": "换个方式讲", "d": "用不同的深度、不同的语言、新的例子重新解释一个概念。", "xk": "然后", "x": "由同事确认在这里讲得通。", "href": "/free_builder/adapted", "link": "试试: 本地化，而不是翻译 ↗"}, {"k": "准备问题", "d": "在一对一或客户沟通前，建议一些开放式问题。", "xk": "然后", "x": "你挑两个，然后认真听回答。", "href": "/free_builder/discovery", "link": "试试: 探询二重奏 ↗"}, {"k": "整理信息", "d": "为引导师把大量匿名回答归类成主题。", "xk": "然后", "x": "由现场的人重新命名、纠正主题。", "href": "/free_builder/room", "link": "试试: Room Mode ↗"}, {"k": "反思", "d": "在活动结束时提出一个反思问题。", "xk": "然后", "x": "答案留在学习者手里，我们不保存。", "href": "/free_builder/teachback", "link": "试试: 教回去链条 ↗"}]}, {"type": "cards", "kicker": "AI 不该出现的地方", "title": "我们不越过的<span class=\"acc\">四条线<\/span>", "items": [{"k": "✕", "t": "代替人给反馈", "d": "反馈之所以有分量，是因为一个人选择了给出它。由 AI 生成、以管理者名义发出的消息，是失信。", "bad": true}, {"k": "✕", "t": "评判人", "d": "不对同理心、态度或潜力做自动评分。不用 AI 写绩效评价。", "bad": true}, {"k": "✕", "t": "取代对话", "d": "如果工具能独自完成整个练习，那就偏离了初衷。它只负责搭台，然后交给人。", "bad": true}, {"k": "✕", "t": "未经同意从人身上学习", "d": "除非本人知情同意，任何人的话都不会成为训练数据。", "bad": true}]}, {"type": "dark", "kicker": "一页护栏", "title": "<span class=\"acc\">学习<\/span>团队的 AI 护栏", "items": ["绝不把个人数据、姓名或绩效信息输入公共 AI 工具。", "任何 AI 生成的学习材料，都要先经人审核再发布。", "每一次都告诉学习者：你正在和 AI 对话。", "不由 AI 对人做决定：招聘、评级、晋升或排名。", "学习者随时可以选择由真人来完成。", "发布前检查输出在性别、文化和语言上的偏见。", "按规定把数据留在所需地区；拿不准时，优先选择可离线使用的工具。", "每六个月回顾一次本页——工具变化很快。"], "ordered": true}, {"type": "cta", "kicker": "看看这些模式的实际应用", "links": [{"l": "教练副驾", "href": "/free_builder/coach/"}, {"l": "修复工具包", "href": "/free_builder/repair"}]}]}, "es": {"title": "La IA redacta, las personas entregan — FREE//BUILDER", "blocks": [{"type": "lead", "kicker": "Postura · IA en el aprendizaje", "title": "La IA redacta. Las <span class=\"acc\">personas<\/span> entregan.", "text": "La IA es buena compañera de ensayo, un primer borrador rápido y una explicadora paciente. No es la conversación y nunca juzga a una persona. Aquí está dónde encaja en el aprendizaje, y dónde no.", "meta": ["una biblioteca de patrones", "una política de una página", "aplicada en todas las demos de FREE//BUILDER"]}, {"type": "cards", "kicker": "Dónde ayuda la IA", "title": "Seis patrones que mantienen a las <span class=\"acc\">personas<\/span> en el centro", "items": [{"k": "Ensayar", "d": "Practica una conversación difícil con un colega simulado antes de la real.", "xk": "Después", "x": "Después, dísela a una persona.", "href": "/free_builder/coach/", "link": "Pruébalo: Copiloto de Coaching ↗"}, {"k": "Primer borrador", "d": "Convierte notas sueltas en un primer borrador de un agradecimiento, una reparación o una pregunta.", "xk": "Después", "x": "La persona lo reescribe con sus palabras.", "href": "/free_builder/thanks", "link": "Pruébalo: Gracias Concretas ↗"}, {"k": "Explicarlo otra vez", "d": "Reexplica un concepto a otro nivel, en otro idioma, con un ejemplo nuevo.", "xk": "Después", "x": "Un colega comprueba que tiene sentido aquí.", "href": "/free_builder/adapted", "link": "Pruébalo: Adaptado, no traducido ↗"}, {"k": "Preparar preguntas", "d": "Sugiere preguntas abiertas antes de un 1:1 o una llamada con un cliente.", "xk": "Después", "x": "Tú eliges dos y escuchas las respuestas.", "href": "/free_builder/discovery", "link": "Pruébalo: Dúo de Descubrimiento ↗"}, {"k": "Agrupar el ruido", "d": "Agrupa muchas respuestas anónimas en temas para quien facilita.", "xk": "Después", "x": "La sala renombra y corrige los temas.", "href": "/free_builder/room", "link": "Pruébalo: Room Mode ↗"}, {"k": "Reflexionar", "d": "Haz una pregunta de reflexión al final de una sesión.", "xk": "Después", "x": "La respuesta se la queda quien aprende; no la guardamos.", "href": "/free_builder/teachback", "link": "Pruébalo: Cadena de Enseñar de Vuelta ↗"}]}, {"type": "cards", "kicker": "Dónde no encaja la IA", "title": "Cuatro <span class=\"acc\">líneas<\/span> que no cruzamos", "items": [{"k": "✕", "t": "Dar feedback por otra persona", "d": "El feedback llega porque alguien eligió darlo. Un mensaje generado en nombre de un jefe es una promesa rota.", "bad": true}, {"k": "✕", "t": "Juzgar a personas", "d": "Nada de puntuar automáticamente la empatía, la actitud o el potencial. Nada de evaluaciones de desempeño escritas por IA.", "bad": true}, {"k": "✕", "t": "Sustituir la conversación", "d": "Si la herramienta puede hacer sola todo el ejercicio, se ha perdido el sentido. Prepara el momento y lo cede.", "bad": true}, {"k": "✕", "t": "Aprender de las personas sin preguntar", "d": "Las palabras de nadie se convierten en datos de entrenamiento sin su consentimiento informado.", "bad": true}]}, {"type": "dark", "kicker": "Reglas en una página", "title": "Las reglas de IA para un equipo de <span class=\"acc\">aprendizaje<\/span>", "items": ["Nunca metas datos personales, nombres ni información de desempeño en una herramienta de IA pública.", "Una persona revisa todo material generado por IA antes de que nadie lo vea.", "Di a quien aprende cuándo habla con una IA, siempre.", "Ninguna decisión de IA sobre una persona: selección, evaluación, promoción o ranking.", "Quien aprende siempre puede elegir una alternativa humana.", "Revisa los resultados en busca de sesgos de género, cultura e idioma antes de publicar.", "Mantén los datos en la región que exijan tus normas; ante la duda, herramientas que funcionen sin conexión.", "Revisa esta página cada seis meses: las herramientas cambian rápido."], "ordered": true}, {"type": "cta", "kicker": "Mira los patrones en acción", "links": [{"l": "Copiloto de Coaching", "href": "/free_builder/coach/"}, {"l": "Kit de Reparación", "href": "/free_builder/repair"}]}]}};
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let lang = "en";
+const B = {
+  lead: b => `<span class="kicker">${esc(b.kicker)}</span><h1>${b.title}</h1><p class="lead">${esc(b.text)}</p>${b.flag ? `<div class="flag">◌ ${esc(b.flag)}</div>` : ""}${b.meta ? `<div class="meta">${b.meta.map(m => `<span class="pill">${esc(m)}</span>`).join("")}</div>` : ""}`,
+  head: b => `${b.kicker ? `<span class="kicker">${esc(b.kicker)}</span>` : ""}${b.title ? `<h2>${b.title}</h2>` : ""}${b.text ? `<p class="sub">${esc(b.text)}</p>` : ""}`,
+  cards: b => B.head(b) + `<div class="cards">${b.items.map(c => `<div class="card${c.bad ? " bad" : ""}">${c.k ? `<span class="k">${esc(c.k)}</span>` : ""}${c.t ? `<h3>${esc(c.t)}</h3>` : ""}${c.d ? `<p>${esc(c.d)}</p>` : ""}${c.x ? `<div class="x"><b>${esc(c.xk || "")}</b>${esc(c.x)}</div>` : ""}${c.href ? `<p style="margin-top:10px"><a href="${c.href}" style="font-family:var(--mono);font-size:12px">${esc(c.link || "↗")}</a></p>` : ""}</div>`).join("")}</div>`,
+  steps: b => B.head(b) + `<ol class="steps">${b.items.map(s => `<li><span class="n">${esc(s.n)}${s.when ? `<small class="when" data-week="${s.week != null ? s.week : ""}">${esc(s.when)}</small>` : ""}</span><div><h3>${esc(s.t)}</h3>${s.d ? `<p>${esc(s.d)}</p>` : ""}${s.tags ? `<div class="tags">${s.tags.map(t => t.href ? `<a href="${t.href}">${esc(t.l)} ↗</a>` : `<span>${esc(t.l)}</span>`).join("")}</div>` : ""}</div></li>`).join("")}</ol>`,
+  table: b => B.head(b) + `<div class="tw" tabindex="0" role="region" aria-label="${esc(b.aria || b.kicker || "")}"><table><thead><tr>${b.cols.map(c => `<th scope="col">${esc(c)}</th>`).join("")}</tr></thead><tbody>${b.rows.map(r => `<tr>${r.map((c, i) => `<td class="${i === r.length - 1 && b.noteCol ? "note" : ""}">${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`,
+  list: b => B.head(b) + `<ul class="list">${b.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>`,
+  dark: b => `<div class="dark"><span class="kicker">${esc(b.kicker)}</span>${b.title ? `<h2 style="color:#fff">${b.title}</h2>` : ""}${b.text ? `<p style="margin:6px 0 0;color:rgba(255,255,255,.8)">${esc(b.text)}</p>` : ""}${b.items ? `<${b.ordered ? "ol" : "ul"}>${b.items.map(i => `<li>${esc(i)}</li>`).join("")}</${b.ordered ? "ol" : "ul"}>` : ""}</div>`,
+  quote: b => `<p class="quote">“${esc(b.text)}”</p>${b.by ? `<p class="note" style="margin-top:8px">${esc(b.by)}</p>` : ""}`,
+  note: b => `<p class="note">${esc(b.text)}</p>`,
+  html: b => b.html,
+  cta: b => B.head(b) + `<div class="cta">${b.links.map((l, i) => `<a class="${i === 0 ? "pri" : ""}" href="${l.href}"${l.download ? " download" : ""}>${esc(l.l)} ${l.download ? "↓" : "↗"}</a>`).join("")}</div>`
+};
+function render() {
+  const s = P[lang];
+  document.documentElement.lang = lang === "zh" ? "zh-CN" : lang;
+  document.title = s.title;
+  document.querySelectorAll("[data-lang]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+  document.getElementById("main").innerHTML = s.blocks.map((b, i) => i === 0 ? B[b.type](b) : `<section${b.id ? ` id="${b.id}"` : ""}${b.noprint ? ' class="noprint"' : ""}>${B[b.type](b)}</section>`).join("");
+  if (window.__after) window.__after(lang, s);
+  try { localStorage.setItem("wm_preferred_lang", lang); localStorage.setItem("wm_cases_lang", lang); } catch (e) {}
+}
+document.querySelectorAll("[data-lang]").forEach(b => b.addEventListener("click", () => { lang = b.dataset.lang; render(); }));
+let saved = null; try { saved = localStorage.getItem("wm_preferred_lang") || localStorage.getItem("wm_cases_lang"); } catch (e) {}
+const nav = (navigator.language || "").toLowerCase();
+lang = ["en", "zh", "es"].includes(saved) ? saved : nav.startsWith("zh") ? "zh" : nav.startsWith("es") ? "es" : "en";
+
+render();
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) navigator.serviceWorker.register("/free_builder/sw.js", { scope: "/free_builder/" }).catch(() => {});
+})();
+</script>
+</body>
+</html>
