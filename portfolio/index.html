@@ -205,7 +205,7 @@
     { k: "climb", site: "freebuilder.net", name: "Climb Master", m: /freebuilder\.net\/game\/climb\//, ask: "use", to: "cloudflare",
       what: ["Your player name and score when a climb ends.", "攀登结束时你的玩家名和分数。", "攀登結束時你的玩家名稱和分數。", "Tu nombre de jugador y tu puntuación al acabar una escalada.", "El teu nom de jugador i la teva puntuació en acabar una escalada."],
       who: ["Everyone, on the leaderboard.", "所有人，在排行榜上。", "所有人，在排行榜上。", "Todo el mundo, en la clasificación.", "Tothom, a la classificació."] },
-    { k: "words", site: "freebuilder.net", name: "Vocab practice", m: /freebuilder\.net\/language_learning\//, ask: "load", to: "cloudflare",
+    { k: "words", site: "freebuilder.net", name: "Vocab practice", m: /freebuilder\.net\/language_learning\/(es|cat)\//, ask: "load", to: "cloudflare",
       what: ["The words you add and the verb mistakes you make, so your practice carries on across devices.", "你添加的单词和动词错误，让练习可以在不同设备上继续。", "你新增的單字和動詞錯誤，讓練習可以在不同裝置上繼續。", "Las palabras que añades y los errores de verbos, para que tu práctica siga en otros dispositivos.", "Les paraules que afegeixes i els errors de verbs, perquè la pràctica continuï en altres dispositius."],
       who: ["Used only by this tool.", "只供这个工具使用。", "只供這個工具使用。", "Solo lo usa esta herramienta.", "Només ho fa servir aquesta eina."] },
     { k: "books", site: "freebuilder.net", name: "The Dog-Eared Corner", m: /freebuilder\.net\/game\/books\//, ask: "use", readFree: true, to: "supabase",
@@ -240,7 +240,7 @@
   /* ---------- state ---------- */
   var LI = { "en": 0, "zh": 1, "zh-Hant": 2, "es": 3, "ca": 4 };
   /* the language-learning apps speak only the language they teach */
-  var FORCE = /\/language_learning\/cat\//.test(location.pathname) ? "ca" : /\/language_learning\/es\//.test(location.pathname) ? "es" : null;
+  var FORCE = /\/language_learning\/cat\//.test(location.pathname) ? "ca" : /\/language_learning\/es\//.test(location.pathname) ? "es" : /\/language_learning\/yue\//.test(location.pathname) ? "zh-Hant" : null;
   function lang() { if (FORCE) return FORCE; var F = window.FBL || {}; var n = F.norm || function (x) { return x; }; return n(window.FBL_GET ? window.FBL_GET() : "") || (F.get && F.get()) || n(document.documentElement.lang) || "en"; }
   function t(a) { return a ? (a[LI[lang()] || 0] || a[0]) : ""; }
   function load() { try { return JSON.parse(localStorage.getItem(STORE) || "{}") || {}; } catch (e) { return {}; } }
