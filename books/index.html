@@ -383,7 +383,10 @@
 
   /* ---------- the shared footer: words follow the visitor's language ---------- */
   var FKEY = { privacy: "fPrivacy", made: "fMade", by: "fBy", home: "fHome" };
-  function paintFooter() { document.querySelectorAll("[data-fbf]").forEach(function (e) { var k = FKEY[e.getAttribute("data-fbf")]; if (k && e.textContent !== t(W[k])) e.textContent = t(W[k]); }); }
+  function paintFooter() { document.querySelectorAll("[data-fbf]").forEach(function (e) { var k = FKEY[e.getAttribute("data-fbf")]; if (!k || e.textContent === t(W[k])) return;
+    var door = e.getAttribute("data-fbf-door");   /* the heart is a quiet door to what Wei does after hours */
+    if (door) { e.textContent = ""; t(W[k]).split("♥").forEach(function (part, i) { if (i) { var a = document.createElement("a"); a.href = door; a.className = "fbf-heart"; a.textContent = "♥"; a.setAttribute("aria-label", "♥"); e.appendChild(a); } e.appendChild(document.createTextNode(part)); }); }
+    else e.textContent = t(W[k]); }); }
   function boot() {
     paintFooter();
     var root = document.querySelector("[data-fbl-privacy]"); if (root) { privacy(root); var L0 = lang(); setInterval(function () { if (lang() !== L0) { L0 = lang(); privacy(root); } }, 500); }
