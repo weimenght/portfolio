@@ -208,6 +208,14 @@
     { k: "words", site: "freebuilder.net", name: "Vocab practice", m: /freebuilder\.net\/language_learning\//, ask: "load", to: "cloudflare",
       what: ["The words you add and the verb mistakes you make, so your practice carries on across devices.", "你添加的单词和动词错误，让练习可以在不同设备上继续。", "你新增的單字和動詞錯誤，讓練習可以在不同裝置上繼續。", "Las palabras que añades y los errores de verbos, para que tu práctica siga en otros dispositivos.", "Les paraules que afegeixes i els errors de verbs, perquè la pràctica continuï en altres dispositius."],
       who: ["Used only by this tool.", "只供这个工具使用。", "只供這個工具使用。", "Solo lo usa esta herramienta.", "Només ho fa servir aquesta eina."] },
+    { k: "books", site: "freebuilder.net", name: "The Dog-Eared Corner", m: /freebuilder\.net\/game\/books\//, ask: "use", readFree: true, to: "supabase",
+      what: ["When you tuck in a book: its title, your note and a pen name you choose. When you ask for a book: a pen name, how the owner can reach you, and an optional message. Your phone keeps a private key; we store only a one-way fingerprint of it. No account, no email needed.", "放入一本书时：书名、你的便条和你自选的笔名。想要一本书时：笔名、主人联系你的方式和可选的留言。你的手机保存一把私人钥匙，我们只保存它的单向指纹。不需要账号，也不需要邮箱。", "放入一本書時：書名、你的便條和你自選的筆名。想要一本書時：筆名、主人聯絡你的方式和可選的留言。你的手機保存一把私人鑰匙，我們只儲存它的單向指紋。不需要帳號，也不需要電郵。", "Al dejar un libro: el título, tu nota y un seudónimo que eliges. Al pedir uno: un seudónimo, cómo puede contactarte el dueño y un mensaje opcional. Tu móvil guarda una clave privada; solo guardamos una huella irreversible. Sin cuenta ni correo.", "En deixar un llibre: el títol, la teva nota i un pseudònim que tries. En demanar-ne un: un pseudònim, com et pot contactar el propietari i un missatge opcional. El teu mòbil guarda una clau privada; només en desem una empremta irreversible. Sense compte ni correu."],
+      who: ["Everyone sees the shelves: titles, notes and pen names. Only the book's current owner sees how to reach you, and that line is erased 30 days after the handover. You can delete everything with “Forget me”.", "所有人都能看到书架：书名、便条和笔名。只有这本书现在的主人能看到你的联系方式，交接后 30 天删除。你可以用“忘记我”删除全部内容。", "所有人都能看到書架：書名、便條和筆名。只有這本書現在的主人能看到你的聯絡方式，交接後 30 天刪除。你可以用「忘記我」刪除全部內容。", "Todos ven las estanterías: títulos, notas y seudónimos. Solo el dueño actual del libro ve cómo contactarte, y se borra 30 días después de la entrega. Puedes borrarlo todo con «Olvídame».", "Tothom veu les prestatgeries: títols, notes i pseudònims. Només el propietari actual del llibre veu com contactar-te, i s'esborra 30 dies després del lliurament. Ho pots esborrar tot amb «Oblida'm»."],
+      ifNo: ["You can still wander the house and read every note.", "你仍然可以在屋里随意逛，读每一张便条。", "你仍然可以在屋裡隨意逛，讀每一張便條。", "Puedes seguir paseando por la casa y leer cada nota.", "Pots continuar passejant per la casa i llegir cada nota."] },
+    { k: "train", site: "freebuilder.net", name: "Sleeper Car · shared cabin", m: /freebuilder\.net\/game\/train\//, ask: "use", to: "relay",
+      what: ["Only what happens in a cabin you share: the view out of the window, words you write on the glass, knocks, and a random seat number. No names, no account.", "只有你分享的车厢里发生的事：窗外的景色、你写在玻璃上的字、敲窗，以及一个随机座位号。没有名字，也不需要账号。", "只有你分享的車廂裡發生的事：窗外的景色、你寫在玻璃上的字、敲窗，以及一個隨機座位號。沒有名字，也不需要帳號。", "Solo lo que pasa en un compartimento que compartes: la vista por la ventana, lo que escribes en el cristal, los golpecitos y un número de asiento al azar. Sin nombres ni cuenta.", "Només el que passa en un compartiment que comparteixes: la vista per la finestra, el que escrius al vidre, els copets i un número de seient a l'atzar. Sense noms ni compte."],
+      who: ["Friends who open your cabin link, while the trip lasts. Nothing is stored: the cabin disappears when everyone leaves.", "打开你车厢链接的朋友，仅在旅途中。不保存任何内容：所有人离开后车厢就消失了。", "打開你車廂連結的朋友，僅在旅途中。不儲存任何內容：所有人離開後車廂就消失了。", "Los amigos que abren el enlace de tu compartimento, mientras dura el viaje. No se guarda nada: el compartimento desaparece cuando todos se van.", "Els amics que obren l'enllaç del teu compartiment, mentre dura el viatge. No es desa res: el compartiment desapareix quan tothom marxa."],
+      ifNo: ["You keep riding on your own.", "你可以继续一个人坐车。", "你可以繼續一個人坐車。", "Sigues viajando por tu cuenta.", "Continues viatjant pel teu compte."] },
     { k: "room", site: "freebuilder.net", name: "Room Mode", m: /freebuilder\.net\/room\//, ask: "use", to: "relay",
       what: ["Your anonymous answers and the room code, while the session runs.", "会话进行期间，你的匿名回答和房间代码。", "工作坊進行期間，你的匿名回答和房間代碼。", "Tus respuestas anónimas y el código de la sala, mientras dura la sesión.", "Les teves respostes anònimes i el codi de la sala, mentre dura la sessió."],
       who: ["The people in the room, without names. Nothing is kept afterwards.", "房间里的人，不显示名字。结束后不保留任何内容。", "房間裡的人，不顯示名字。結束後不保留任何內容。", "La gente de la sala, sin nombres. No se guarda nada después.", "La gent de la sala, sense noms. No es guarda res després."],
@@ -223,7 +231,9 @@
 
   /* ---------- state ---------- */
   var LI = { "en": 0, "zh": 1, "zh-Hant": 2, "es": 3, "ca": 4 };
-  function lang() { var F = window.FBL || {}; var n = F.norm || function (x) { return x; }; return n(window.FBL_GET ? window.FBL_GET() : "") || (F.get && F.get()) || n(document.documentElement.lang) || "en"; }
+  /* the language-learning apps speak only the language they teach */
+  var FORCE = /\/language_learning\/cat\//.test(location.pathname) ? "ca" : /\/language_learning\/es\//.test(location.pathname) ? "es" : null;
+  function lang() { if (FORCE) return FORCE; var F = window.FBL || {}; var n = F.norm || function (x) { return x; }; return n(window.FBL_GET ? window.FBL_GET() : "") || (F.get && F.get()) || n(document.documentElement.lang) || "en"; }
   function t(a) { return a ? (a[LI[lang()] || 0] || a[0]) : ""; }
   function load() { try { return JSON.parse(localStorage.getItem(STORE) || "{}") || {}; } catch (e) { return {}; } }
   function save(k, yes) { var s = load(); s[k] = { a: yes ? 1 : 0, v: V, t: new Date().toISOString().slice(0, 10) }; try { localStorage.setItem(STORE, JSON.stringify(s)); } catch (e) {} }
@@ -275,7 +285,7 @@
     var u; try { u = new URL(url, location.href); } catch (e) { return null; }
     if (u.origin === location.origin || u.origin === loc.origin || !/^(https?|wss?):$/.test(u.protocol)) return null;
     var known = HOSTS.test(u.hostname);
-    if (page && known) return page;
+    if (page && known) return (page.readFree && !write) ? null : page;   /* browsing a public page needs no answer; sending does */
     if (known || write) return { k: "site:" + u.hostname, host: u.hostname, ask: "use" };
     return null;
   }
