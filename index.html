@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8"><script data-fbl data-mode="full" src="/fbkit/fb.js?v=4fbc6732bf"></script>
+  <meta charset="UTF-8"><script data-fbl data-mode="full" src="/fbkit/fb.js?v=778904681c"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="page-title">WEI MENG — L&D Architect & Experience Designer</title>
   <meta name="description" content="Wei Meng designs playful, hands-on learning for the human skills AI can't replace — listening, empathy, trust — built to end in real conversations between colleagues.">
@@ -539,6 +539,7 @@ img{filter:none}
           TRAIN: ["Train Window", "A night sleeper past stations from Kyoto to Sitges, each announced in its own language. Write on the misty glass, share the cabin."],
           KINTSUGI: ["Kintsugi Studio", "Mend a broken bowl with lacquer and gold, then sign it into a book everyone can leaf through."],
           GARDEN: ["The Garden", "One endless garden everyone plants together, and it keeps growing."],
+          BREWERY: ["The Brewery", "Brew your own beer, design the can, and send it to the bar and the club."],
           SANCTUARY: ["The Sanctuary", "Mantou the dog's home, and a board where real animals find homes."],
           NEST: ["The Cats' Nest", "Miso and Yuzu's room: pet them, play, and fill their photo album."],
           SORA: ["Sora", "Lie back under the sky. Draw a cloud, breathe with it, watch shapes drift by."]
@@ -600,6 +601,7 @@ img{filter:none}
           TRAIN: ["火车窗", "一节夜行卧铺，驶过从京都到锡切斯的车站，每站都用当地语言报站。在起雾的玻璃上写字，和朋友共享包厢。"],
           KINTSUGI: ["金缮工房", "用漆和金修好一只碎碗，再署名放进一本人人都能翻看的书。"],
           GARDEN: ["大家的花园", "一座大家一起种的无尽花园，一直在长。"],
+          BREWERY: ["啤酒坊", "酿你自己的啤酒，设计罐子，送去酒吧和俱乐部。"],
           SANCTUARY: ["动物庇护所", "小狗馒头的家，也是真实动物找家的领养板。"],
           NEST: ["猫窝", "味噌和柚子的小房间：摸摸、陪玩，再把它们的相册填满。"],
           SORA: ["Sora（空）", "躺在天空下。画一朵云，跟着它呼吸，看形状慢慢飘过。"]
@@ -661,6 +663,7 @@ img{filter:none}
           TRAIN: ["Ventana de tren", "Un coche cama nocturno por estaciones de Kioto a Sitges, cada una anunciada en su idioma. Escribe en el cristal empañado y comparte el compartimento."],
           KINTSUGI: ["Taller de kintsugi", "Repara un cuenco roto con laca y oro y fírmalo en un libro que todos pueden hojear."],
           GARDEN: ["El Jardín", "Un jardín sin fin que plantamos entre todos y que no para de crecer."],
+          BREWERY: ["La Cervecería", "Elabora tu propia cerveza, diseña la lata y mándala al bar y al club."],
           SANCTUARY: ["El refugio", "El hogar del perro Mantou y un tablón donde animales reales encuentran hogar."],
           NEST: ["El nido de los gatos", "La habitación de Miso y Yuzu: acarícialos, juega y llena su álbum de fotos."],
           SORA: ["Sora", "Túmbate bajo el cielo. Dibuja una nube, respira con ella, mira pasar las formas."]
@@ -721,6 +724,7 @@ img{filter:none}
           TRAIN: ["火車窗", "一節夜行臥鋪，駛過從京都到錫切斯的車站，每站都用當地語言報站。在起霧的玻璃上寫字，和朋友共享包廂。"],
           KINTSUGI: ["金繕工房", "用漆和金修好一隻碎碗，再署名放進一本人人都能翻看的書。"],
           GARDEN: ["大家的花園", "一座大家一起種的無盡花園，一直在長。"],
+          BREWERY: ["啤酒坊", "釀你自己的啤酒，設計罐子，送去酒吧和俱樂部。"],
           SANCTUARY: ["動物庇護所", "小狗饅頭的家，也是真實動物找家的領養板。"],
           NEST: ["貓窩", "味噌和柚子的小房間：摸摸、陪玩，再把它們的相簿填滿。"],
           SORA: ["Sora（空）", "躺在天空下。畫一朵雲，跟著它呼吸，看形狀慢慢飄過。"]
@@ -781,6 +785,7 @@ img{filter:none}
           TRAIN: ["Finestra de tren", "Un cotxe llit nocturn per estacions de Kyoto a Sitges, cadascuna anunciada en la seva llengua. Escriu al vidre entelat i comparteix el compartiment."],
           KINTSUGI: ["Taller de kintsugi", "Adoba un bol trencat amb laca i or i signa'l en un llibre que tothom pot fullejar."],
           GARDEN: ["El Jardí", "Un jardí sense fi que plantem entre tots i que no para de créixer."],
+          BREWERY: ["La Cerveseria", "Elabora la teva pròpia cervesa, dissenya la llauna i envia-la al bar i al club."],
           SANCTUARY: ["El refugi", "La llar del gos Mantou i un tauler on animals reals troben llar."],
           NEST: ["El niu dels gats", "L'habitació de Miso i Yuzu: acarona'ls, juga i omple el seu àlbum de fotos."],
           SORA: ["Sora", "Estira't sota el cel. Dibuixa un núvol, respira-hi, mira com passen les formes."]
@@ -926,6 +931,7 @@ img{filter:none}
     let GAMES = [
       { code: 'SORA', url: 'cloud' },
       { code: 'GARDEN', url: 'garden' },
+      { code: 'BREWERY', url: 'brewery' },
       { code: 'NEST', url: 'nest' },
       { code: 'SANCTUARY', url: 'sanctuary' },
       { code: 'TRAIN', url: 'train' },
@@ -981,7 +987,7 @@ img{filter:none}
         const desc = known ? known[1] : (g.desc || '');
         const a = document.createElement('a');
         a.className = 'prog'; a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer';
-        const code = document.createElement('span'); code.className = 'code'; code.textContent = ({ CLIMB: '🧗', DJ: '🎧', BAR: '🍸', HANDOFF: '🕰️', BOOKS: '📚', TRAIN: '🚃', KINTSUGI: '🍵', SORA: '☁️', NEST: '🐈', SANCTUARY: '🐕', GARDEN: '🌸', JUKEBOX: '💿', POSTCARD: '📮' })[g.code] || '◆';
+        const code = document.createElement('span'); code.className = 'code'; code.textContent = ({ CLIMB: '🧗', DJ: '🎧', BAR: '🍸', HANDOFF: '🕰️', BOOKS: '📚', TRAIN: '🚃', KINTSUGI: '🍵', SORA: '☁️', NEST: '🐈', SANCTUARY: '🐕', GARDEN: '🌸', BREWERY: '🍺', JUKEBOX: '💿', POSTCARD: '📮' })[g.code] || '◆';
         const ttl = document.createElement('span'); ttl.className = 'ttl'; ttl.textContent = title;
         if (desc) { const sm = document.createElement('small'); sm.textContent = desc; ttl.appendChild(sm); }
         const go = document.createElement('span'); go.className = 'go'; go.textContent = '↗';
