@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8"><script data-fbl data-mode="full" src="/fbkit/fb.js?v=964439ade2"></script>
+  <meta charset="UTF-8"><script data-fbl data-mode="full" src="/fbkit/fb.js?v=b2339bbdda"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="page-title">WEI MENG — L&D Architect & Experience Designer</title>
   <meta name="description" content="Wei Meng designs playful, hands-on learning for the human skills AI can't replace — listening, empathy, trust — built to end in real conversations between colleagues.">
@@ -538,6 +538,7 @@ img{filter:none}
           BOOKS: ["The Dog-Eared Corner", "A second-hand book house next to the bar. Read the notes inside, ask, pass it on by hand."],
           TRAIN: ["Train Window", "A night sleeper past stations from Kyoto to Sitges, each announced in its own language. Write on the misty glass, share the cabin."],
           KINTSUGI: ["Kintsugi Studio", "Mend a broken bowl with lacquer and gold, then sign it into a book everyone can leaf through."],
+          SANCTUARY: ["The Sanctuary", "Mantou the dog's home, and a board where real animals find homes."],
           NEST: ["The Cats' Nest", "Miso and Yuzu's room: pet them, play, and fill their photo album."],
           SORA: ["Sora", "Lie back under the sky. Draw a cloud, breathe with it, watch shapes drift by."]
         },
@@ -597,6 +598,7 @@ img{filter:none}
           BOOKS: ["折角书屋", "酒吧隔壁的旧书屋。读书里的字条，开口要书，再亲手传下去。"],
           TRAIN: ["火车窗", "一节夜行卧铺，驶过从京都到锡切斯的车站，每站都用当地语言报站。在起雾的玻璃上写字，和朋友共享包厢。"],
           KINTSUGI: ["金缮工房", "用漆和金修好一只碎碗，再署名放进一本人人都能翻看的书。"],
+          SANCTUARY: ["动物庇护所", "小狗馒头的家，也是真实动物找家的领养板。"],
           NEST: ["猫窝", "味噌和柚子的小房间：摸摸、陪玩，再把它们的相册填满。"],
           SORA: ["Sora（空）", "躺在天空下。画一朵云，跟着它呼吸，看形状慢慢飘过。"]
         },
@@ -656,6 +658,7 @@ img{filter:none}
           BOOKS: ["El Rincón de la Página Doblada", "Una casa de libros de segunda mano junto al bar. Lee las notas, pide uno y pásalo en mano."],
           TRAIN: ["Ventana de tren", "Un coche cama nocturno por estaciones de Kioto a Sitges, cada una anunciada en su idioma. Escribe en el cristal empañado y comparte el compartimento."],
           KINTSUGI: ["Taller de kintsugi", "Repara un cuenco roto con laca y oro y fírmalo en un libro que todos pueden hojear."],
+          SANCTUARY: ["El refugio", "El hogar del perro Mantou y un tablón donde animales reales encuentran hogar."],
           NEST: ["El nido de los gatos", "La habitación de Miso y Yuzu: acarícialos, juega y llena su álbum de fotos."],
           SORA: ["Sora", "Túmbate bajo el cielo. Dibuja una nube, respira con ella, mira pasar las formas."]
         },
@@ -714,6 +717,7 @@ img{filter:none}
           BOOKS: ["折角書屋", "酒吧隔壁的舊書屋。讀書裡的字條，開口要書，再親手傳下去。"],
           TRAIN: ["火車窗", "一節夜行臥鋪，駛過從京都到錫切斯的車站，每站都用當地語言報站。在起霧的玻璃上寫字，和朋友共享包廂。"],
           KINTSUGI: ["金繕工房", "用漆和金修好一隻碎碗，再署名放進一本人人都能翻看的書。"],
+          SANCTUARY: ["動物庇護所", "小狗饅頭的家，也是真實動物找家的領養板。"],
           NEST: ["貓窩", "味噌和柚子的小房間：摸摸、陪玩，再把它們的相簿填滿。"],
           SORA: ["Sora（空）", "躺在天空下。畫一朵雲，跟著它呼吸，看形狀慢慢飄過。"]
         },
@@ -772,6 +776,7 @@ img{filter:none}
           BOOKS: ["El Racó de la Pàgina Doblegada", "Una casa de llibres de segona mà al costat del bar. Llegeix les notes, demana'n un i passa'l en mà."],
           TRAIN: ["Finestra de tren", "Un cotxe llit nocturn per estacions de Kyoto a Sitges, cadascuna anunciada en la seva llengua. Escriu al vidre entelat i comparteix el compartiment."],
           KINTSUGI: ["Taller de kintsugi", "Adoba un bol trencat amb laca i or i signa'l en un llibre que tothom pot fullejar."],
+          SANCTUARY: ["El refugi", "La llar del gos Mantou i un tauler on animals reals troben llar."],
           NEST: ["El niu dels gats", "L'habitació de Miso i Yuzu: acarona'ls, juga i omple el seu àlbum de fotos."],
           SORA: ["Sora", "Estira't sota el cel. Dibuixa un núvol, respira-hi, mira com passen les formes."]
         },
@@ -916,6 +921,7 @@ img{filter:none}
     let GAMES = [
       { code: 'SORA', url: 'cloud' },
       { code: 'NEST', url: 'nest' },
+      { code: 'SANCTUARY', url: 'sanctuary' },
       { code: 'TRAIN', url: 'train' },
       { code: 'JUKEBOX', url: 'jukebox' },
       { code: 'POSTCARD', url: 'postcard' },
@@ -969,7 +975,7 @@ img{filter:none}
         const desc = known ? known[1] : (g.desc || '');
         const a = document.createElement('a');
         a.className = 'prog'; a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer';
-        const code = document.createElement('span'); code.className = 'code'; code.textContent = ({ CLIMB: '🧗', DJ: '🎧', BAR: '🍸', HANDOFF: '🕰️', BOOKS: '📚', TRAIN: '🚃', KINTSUGI: '🍵', SORA: '☁️', NEST: '🐈', JUKEBOX: '💿', POSTCARD: '📮' })[g.code] || '◆';
+        const code = document.createElement('span'); code.className = 'code'; code.textContent = ({ CLIMB: '🧗', DJ: '🎧', BAR: '🍸', HANDOFF: '🕰️', BOOKS: '📚', TRAIN: '🚃', KINTSUGI: '🍵', SORA: '☁️', NEST: '🐈', SANCTUARY: '🐕', JUKEBOX: '💿', POSTCARD: '📮' })[g.code] || '◆';
         const ttl = document.createElement('span'); ttl.className = 'ttl'; ttl.textContent = title;
         if (desc) { const sm = document.createElement('small'); sm.textContent = desc; ttl.appendChild(sm); }
         const go = document.createElement('span'); go.className = 'go'; go.textContent = '↗';
