@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8"><script data-fbl data-mode="full" src="/fbkit/fb.js?v=76726a190b"></script>
+  <meta charset="UTF-8"><script data-fbl data-mode="full" src="/fbkit/fb.js?v=02f84761fb"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="page-title">WEI MENG — L&D Architect & Experience Designer</title>
   <meta name="description" content="Wei Meng designs playful, hands-on learning for the human skills AI can't replace — listening, empathy, trust — built to end in real conversations between colleagues.">
@@ -100,49 +100,24 @@
     }
 
 
-    /* After-hours console */
-    .term { position:relative; background:#17171A; color:#F7F6F2; border-radius:24px; overflow:hidden; box-shadow:0 24px 50px -32px rgba(23,23,26,.55); }
-    .term::after { content:""; position:absolute; inset:0; pointer-events:none;
-      background:repeating-linear-gradient(to bottom, rgba(255,255,255,.025) 0 1px, transparent 1px 3px); }
-    .term-bar { width:100%; background:none; border:0; cursor:pointer; text-align:left; color:inherit; font:inherit;
-      display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 20px;
-      font-family:'Space Mono', monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:rgba(247,246,242,.45); }
-    .term-bar b { color:rgba(247,246,242,.9); font-weight:700; white-space:nowrap; }
-    @media (max-width:400px) { .term-sub { display:none; } .term-bar { padding:16px 18px; } }
-    .term-bar:focus-visible { outline:2px solid var(--accent); outline-offset:-4px; border-radius:20px; }
-    .term-id { display:inline-flex; align-items:center; gap:10px; min-width:0; }
-    .term-sub { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .term-hint { display:inline-flex; align-items:center; gap:8px; color:rgba(247,246,242,.7); white-space:nowrap; }
-    .term-chev { display:inline-block; color:var(--accent-text,#E2553F); transition:transform .45s var(--ease); }
-    .term.open .term-chev { transform:rotate(90deg); }
-    .term-bar:hover .term-hint { color:#fff; }
-    .term-panel { display:grid; grid-template-rows:0fr; transition:grid-template-rows .55s var(--ease); }
-    .term.open .term-panel { grid-template-rows:1fr; }
-    .term-inner { overflow:hidden; min-height:0; border-top:1px solid transparent; transition:border-color .3s; }
-    .term.open .term-inner { border-top-color:rgba(255,255,255,.08); }
-    .term-panel[hidden-fold] .term-inner { visibility:hidden; }
-    .term-led { display:inline-block; flex-shrink:0; width:7px; height:7px; border-radius:50%; background:#E2553F; box-shadow:0 0 10px rgba(226,85,63,.8); animation:led 2.4s ease-in-out infinite; }
-    @keyframes led { 50% { opacity:.35; } }
-    .term-body { padding:18px 20px 8px; font-family:'Space Mono', monospace; font-size:13px; line-height:1.7; }
-    .term-line { white-space:pre-wrap; word-break:break-word; color:rgba(247,246,242,.82); }
-    .term-line.dim { color:rgba(247,246,242,.4); }
-    .term-line.hi { color:#fff; }
-    .term-line .c { color:var(--accent-text,#E2553F); }
-    html.js .term-line.pending { display:none; }
-    .prog { display:grid; grid-template-columns:7.5rem 1fr auto; gap:6px 16px; align-items:baseline; width:100%; text-align:left;
-      padding:10px 12px; margin:2px -12px; border-radius:12px; color:inherit; text-decoration:none; transition:background .2s, color .2s; }
-    .prog:hover, .prog:focus-visible { background:var(--paper,#F7F6F2); color:var(--ink,#17171A); outline:none; }
-    .prog .code { font-weight:700; color:var(--accent-text,#E2553F); white-space:nowrap; }
-    .prog .ttl { font-weight:700; }
-    .prog .ttl small { display:block; font-weight:400; font-size:12px; opacity:.6; margin-top:2px; font-family:'Plus Jakarta Sans', system-ui, sans-serif; letter-spacing:0; }
-    .prog .go { font-size:12px; opacity:.5; white-space:nowrap; }
-    .prog:hover .go { opacity:1; }
-    @media (max-width:560px) { .prog { grid-template-columns:1fr auto; } .prog .code { grid-column:1 / -1; } }
-    .term-prompt { display:flex; align-items:center; gap:8px; padding:12px 20px 18px; font-family:'Space Mono', monospace; font-size:13px; border-top:1px dashed rgba(255,255,255,.1); }
-    .term-prompt a { color:rgba(247,246,242,.85); text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
-    .term-prompt a:hover { color:#fff; }
-    .term-cursor { width:.6em; height:1.1em; background:#E2553F; display:inline-block; animation:blink 1s steps(2, start) infinite; }
-    @keyframes blink { to { visibility:hidden; } }
+    /* 04 Nearby: the town, after hours */
+    .nb { display:grid; grid-template-columns:1fr; gap:28px; align-items:center; }
+    @media (min-width:768px) { .nb { grid-template-columns:1.05fr 1fr; gap:40px; } }
+    .nb-view { position:relative; display:block; border-radius:24px; overflow:hidden; background:#14101e; box-shadow:0 24px 50px -32px rgba(23,23,26,.55); }
+    .nb-view img { display:block; width:100%; height:auto; aspect-ratio:9/8; object-fit:cover; image-rendering:pixelated; transition:transform .8s var(--ease); }
+    .nb-view:hover img { transform:scale(1.03); }
+    .nb-view .nb-cta { position:absolute; left:14px; bottom:14px; padding:8px 12px; border-radius:999px; background:rgba(var(--paper-rgb,247,246,242),.92); color:var(--ink,#17171A); font:700 12px 'Space Mono', monospace; }
+    .nb-copy h3 { font-family:'Syne', 'Plus Jakarta Sans', sans-serif; font-size:clamp(1.8rem,4vw,2.6rem); line-height:1.08; font-weight:700; letter-spacing:-.02em; margin:0 0 14px; }
+    .nb-copy h3 em { font-family:'Instrument Serif', Georgia, serif; font-weight:400; font-style:italic; }
+    .nb-copy p { margin:0 0 12px; color:rgba(var(--ink-rgb,23,23,26),.75); line-height:1.65; }
+    .nb-go { display:inline-flex; align-items:center; gap:8px; margin-top:8px; padding:12px 18px; border-radius:999px; background:#17171A; color:#fff; font:700 12px 'Space Mono', monospace; text-decoration:none; transition:background .2s; }
+    .nb-go:hover { background:var(--accent); }
+    .nb-dir { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:4px 18px; }
+    .nb-dir a { display:grid; grid-template-columns:1.6rem 1fr; gap:2px 10px; padding:10px 8px; margin:0 -8px; border-radius:12px; color:inherit; text-decoration:none; transition:background .2s; }
+    .nb-dir a:hover, .nb-dir a:focus-visible { background:var(--white,#fff); }
+    .nb-dir .ic { grid-row:span 2; font-size:1.15rem; line-height:1.4; }
+    .nb-dir b { font-weight:700; font-size:14px; }
+    .nb-dir small { color:rgba(var(--ink-rgb,23,23,26),.6); font-size:12.5px; line-height:1.45; }
 
     :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 10px; }
 
@@ -217,7 +192,7 @@ img{filter:none}
           <a href="#identity" class="hover:text-ink transition-colors hidden md:inline" data-i18n="navWho">Who I Am</a>
           <a href="#methodology" class="hover:text-ink transition-colors hidden md:inline" data-i18n="navWhat">What I Do</a>
           <a href="#work" class="hover:text-ink transition-colors hidden sm:inline" data-i18n="navWork">Portfolio</a>
-          <a href="#arcade" class="hover:text-ink transition-colors hidden md:inline" data-i18n="navArcade">After hours</a>
+          <a href="#nearby" class="hover:text-ink transition-colors hidden md:inline" data-i18n="navArcade">Nearby</a>
         </nav>
 
         <button type="button" id="lang-toggle-btn" onclick="cycleLanguage()"
@@ -399,39 +374,25 @@ img{filter:none}
     </section>
 
 
-    <!-- 04 AFTER HOURS: the game console -->
-    <section id="arcade" class="reveal scroll-mt-24 space-y-5">
+    <!-- 04 NEARBY: the town, after hours -->
+    <section id="nearby" class="reveal scroll-mt-24 space-y-8">
       <div class="flex items-center justify-between border-b border-line pb-3">
-        <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="arcadeLabel">04 / After hours</span>
-        <span class="text-[11px] font-mono text-muted hidden sm:inline" data-i18n="arcadeKey">press ` anywhere</span>
+        <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="arcadeLabel">04 / Nearby</span>
+        <span class="text-[11px] font-mono text-muted hidden sm:inline" data-i18n="nbAfter">after hours</span>
       </div>
-
-      <div class="term" id="term">
-        <button type="button" class="term-bar" id="term-toggle" aria-expanded="false" aria-controls="term-panel">
-          <span class="term-id"><span class="term-led" aria-hidden="true"></span><b data-i18n="townName">THE NEIGHBOURHOOD</b><span class="term-sub" data-i18n="termBar">a pixel town of little games</span></span>
-          <span class="term-hint"><span id="term-hint" data-i18n="termBootBtn">boot</span><span class="term-chev" aria-hidden="true">▸</span></span>
-        </button>
-        <div class="term-panel" id="term-panel">
-          <div class="term-inner">
-            <div class="term-body" id="term-body" aria-live="polite">
-              <div class="term-line dim pending" data-i18n="termBoot1">Every game is a place in one small town.</div>
-              <div class="term-line dim pending" id="term-count">Mounting tape: 3 programs found.</div>
-              <div class="term-line pending">&nbsp;</div>
-              <div id="term-progs"></div>
-            </div>
-            <div class="term-prompt">
-              <span style="color:var(--accent-text,#E2553F)">→</span>
-              <a href="https://www.freebuilder.net/nearby/" target="_blank" rel="noopener noreferrer" id="term-open">
-                <span data-i18n="termOpen">walk into the neighbourhood</span><span class="term-cursor" aria-hidden="true"></span>
-              </a>
-            </div>
-          </div>
+      <div class="nb">
+        <a class="nb-view" href="https://www.freebuilder.net/nearby/" target="_blank" rel="noopener noreferrer">
+          <img src="/portfolio/nearby.png" width="720" height="640" loading="lazy" alt="Nearby, a small pixel town: a bar, a bookshop, a post office, a park on the hill, a lake and a station.">
+          <span class="nb-cta" data-i18n="nbWalk">Walk in →</span>
+        </a>
+        <div class="nb-copy">
+          <h3 data-i18n-html="nbTitle">A town for <em>after work</em>.</h3>
+          <p data-i18n="nbP1">Nearby is a small pixel town where nothing is asking for your attention. Have a drink next door, lie back and watch the clouds, write to someone far away, plant something next to a stranger's flowers.</p>
+          <p data-i18n="nbP2">It's the same belief as my work, after hours: people are the point, AI is only a tool, and a screen should bring us closer rather than keep us busy. Doing nothing counts.</p>
+          <a class="nb-go" href="https://www.freebuilder.net/nearby/" target="_blank" rel="noopener noreferrer"><span data-i18n="nbGo">Walk into Nearby</span><span aria-hidden="true">→</span></a>
         </div>
       </div>
-
-      <p class="font-serif italic text-lg sm:text-xl text-ink/70 leading-snug max-w-2xl" data-i18n="arcadeNote">
-        Everything else on this site teaches through play. These are just the play.
-      </p>
+      <ul class="nb-dir" id="nb-dir" aria-label="Places in Nearby"></ul>
     </section>
 
     <!-- 05 CONTACT -->
@@ -524,27 +485,7 @@ img{filter:none}
         workDesc: "Live demos and works in progress — human-first practice, games and stories, each designed to get people talking.",
         workBtn: "Enter the lab",
         contactLabel: "05 / Say Hello",
-        navArcade: "After hours", arcadeLabel: "04 / After hours", arcadeKey: "press ` anywhere",
-        townName: "THE NEIGHBOURHOOD", termBar: "a pixel town of little games", termBoot1: "Every game is a place in one small town.", termCount: "{n} places to walk into:",
-        termRun: "run", termLoading: "Walking to {c}…", termOpen: "walk into the neighbourhood", termBootBtn: "look", termFoldBtn: "fold",
-        arcadeNote: "Everything else on this site teaches through play. These are just the play.",
-        games: {
-          CLIMB: ["Crag Master", "Read the wall, plan your hands, commit. Ten real crags, 5.6 to 5.15d — alone or roped up with a friend."],
-          DJ: ["Retro DJ World Tour", "Hit the records, scratch the bars, drop the bass. City by city."],
-          JUKEBOX: ["Jukebox", "Light up a tune, press it into a record, drop a coin: it plays in the bar and the bookshop at once."],
-          POSTCARD: ["Postcard", "Write a card, seal it until a date you choose, then send it to a friend or hang it in the bar."],
-          BAR: ["Wei's Bar & Coffee", "A tiny hutong counter: coffee by day, cocktails by night, two cats and a jukebox. Sometimes Wei's out and you mix your own."],
-          HANDOFF: ["Handoff", "For two people apart: your partner sees only the ending, then guesses the rest."],
-          BOOKS: ["The Dog-Eared Corner", "A second-hand book house next to the bar. Read the notes inside, ask, pass it on by hand."],
-          TRAIN: ["Train Window", "A night sleeper past stations from Kyoto to Sitges, each announced in its own language. Write on the misty glass, share the cabin."],
-          KINTSUGI: ["Kintsugi Studio", "Mend a broken bowl with lacquer and gold, then sign it into a book everyone can leaf through."],
-          GARDEN: ["The Garden", "One endless garden everyone plants together, and it keeps growing."],
-          BREWERY: ["The Brewery", "Brew your own beer, design the can, and send it to the bar and the club."],
-          CANDLES: ["Two Candles", "A candlelit table for two people who live apart: cook the same dinner and raise a glass together."],
-          SANCTUARY: ["The Sanctuary", "Mantou the dog's home, and a board where real animals find homes."],
-          NEST: ["The Cats' Nest", "Miso and Yuzu's room: pet them, play, and fill their photo album."],
-          SORA: ["Sora", "Lie back under the sky. Draw a cloud, breathe with it, watch shapes drift by."]
-        },
+        navArcade: "Nearby", arcadeLabel: "04 / Nearby", nbAfter: "after hours", nbWalk: "Walk in →", nbGo: "Walk into Nearby", nbTitle: "A town for <em>after work</em>.", nbP1: "Nearby is a small pixel town where nothing is asking for your attention. Have a drink next door, lie back and watch the clouds, write to someone far away, plant something next to a stranger's flowers.", nbP2: "It's the same belief as my work, after hours: people are the point, AI is only a tool, and a screen should bring us closer rather than keep us busy. Doing nothing counts.",
         contactTitle: 'Let\'s build learning people <span class="accent-word">share</span>.',
         contactCopy: "Copy email", copiedText: "✓ Copied",
         drinkTooltip: "psst — need a drink?",
@@ -587,27 +528,7 @@ img{filter:none}
         workDesc: "在线演示和打磨中的作品——人的能力练习、游戏与故事，每一个都为了让人们聊起来。",
         workBtn: "进入实验室",
         contactLabel: "05 / 打个招呼",
-        navArcade: "下班后", arcadeLabel: "04 / 下班后", arcadeKey: "任意处按 `",
-        townName: "街坊", termBar: "一座装满小游戏的像素小镇", termBoot1: "每个游戏，都是小镇里的一个地方。", termCount: "{n} 个地方可以走进去：",
-        termRun: "运行", termLoading: "正在走去 {c}……", termOpen: "走进街坊", termBootBtn: "看看", termFoldBtn: "收起",
-        arcadeNote: "这个网站的其他东西都在用游戏来教学。这里的，就只是游戏。",
-        games: {
-          CLIMB: ["岩场大师", "先读岩壁，规划手序，果断出发。十个真实岩场，5.6 到 5.15d，可以独攀，也能和朋友结绳同攀。"],
-          DJ: ["复古 DJ 世界巡演", "击中唱片、搓碟、引爆低音，一城接一城。"],
-          JUKEBOX: ["点唱机", "点亮一段旋律，压成唱片，投一枚硬币：酒吧和书屋同时响起。"],
-          POSTCARD: ["明信片", "写一张明信片，封存到你选的日子，寄给朋友，或挂到酒吧的墙上。"],
-          BAR: ["Wei 的酒吧与咖啡", "胡同里的小吧台：白天咖啡，晚上鸡尾酒，两只猫和一台点唱机。Wei 不在时，自己调一杯。"],
-          HANDOFF: ["Handoff", "写给相隔两地的两个人：对方只先看到结尾，再猜出前面。"],
-          BOOKS: ["折角书屋", "酒吧隔壁的旧书屋。读书里的字条，开口要书，再亲手传下去。"],
-          TRAIN: ["火车窗", "一节夜行卧铺，驶过从京都到锡切斯的车站，每站都用当地语言报站。在起雾的玻璃上写字，和朋友共享包厢。"],
-          KINTSUGI: ["金缮工房", "用漆和金修好一只碎碗，再署名放进一本人人都能翻看的书。"],
-          GARDEN: ["大家的花园", "一座大家一起种的无尽花园，一直在长。"],
-          BREWERY: ["啤酒坊", "酿你自己的啤酒，设计罐子，送去酒吧和俱乐部。"],
-          CANDLES: ["双烛小馆", "给相隔两地的两个人的烛光餐桌：一起做同一顿饭，一起举杯。"],
-          SANCTUARY: ["动物庇护所", "小狗馒头的家，也是真实动物找家的领养板。"],
-          NEST: ["猫窝", "味噌和柚子的小房间：摸摸、陪玩，再把它们的相册填满。"],
-          SORA: ["Sora（空）", "躺在天空下。画一朵云，跟着它呼吸，看形状慢慢飘过。"]
-        },
+        navArcade: "近邻", arcadeLabel: "04 / 近邻", nbAfter: "下班以后", nbWalk: "走进去 →", nbGo: "走进近邻", nbTitle: "一座<em>下班后</em>的小镇。", nbP1: "近邻是一座不向你索取注意力的像素小镇。去隔壁喝一杯，躺下看云，给远方的人写几句，在陌生人的花旁边种点什么。", nbP2: "这和我的工作是同一个信念，只是在下班以后：人才是目的，AI 只是工具，屏幕应该让我们更近，而不是让我们更忙。什么都不做也算数。",
         contactTitle: '一起做让人<span class="accent-word">愿意分享</span>的学习。',
         contactCopy: "复制邮箱", copiedText: "✓ 已复制",
         drinkTooltip: "嘘——来一杯？",
@@ -650,27 +571,7 @@ img{filter:none}
         workDesc: "Demos en vivo y trabajos en curso: práctica de habilidades humanas, juegos e historias, todos pensados para que la gente converse.",
         workBtn: "Entrar al laboratorio",
         contactLabel: "05 / Saludemos",
-        navArcade: "Fuera de horario", arcadeLabel: "04 / Fuera de horario", arcadeKey: "pulsa ` donde sea",
-        townName: "EL BARRIO", termBar: "un pueblo pixelado de pequeños juegos", termBoot1: "Cada juego es un lugar de un pueblo pequeño.", termCount: "{n} lugares donde entrar:",
-        termRun: "ejecutar", termLoading: "Caminando hacia {c}…", termOpen: "entrar en el barrio", termBootBtn: "mirar", termFoldBtn: "plegar",
-        arcadeNote: "Todo lo demás en este sitio enseña jugando. Esto es solo el juego.",
-        games: {
-          CLIMB: ["Crag Master", "Lee la pared, planifica tus manos y comprométete. Diez escuelas reales, de 5.6 a 5.15d, solo o encordado con un amigo."],
-          DJ: ["Retro DJ: Gira mundial", "Toca los discos, haz scratch y suelta el bajo. Ciudad a ciudad."],
-          JUKEBOX: ["Gramola", "Enciende una melodía, grábala en un disco, echa una moneda: suena a la vez en el bar y en la librería."],
-          POSTCARD: ["Postal", "Escribe una postal, ciérrala hasta la fecha que elijas y envíasela a un amigo o cuélgala en el bar."],
-          BAR: ["El bar y café de Wei", "Una barra diminuta en un hutong: café de día, cócteles de noche, dos gatos y una gramola. Si Wei no está, te preparas tu copa."],
-          HANDOFF: ["Handoff", "Para dos personas lejos: tu pareja solo ve el final y adivina el resto."],
-          BOOKS: ["El Rincón de la Página Doblada", "Una casa de libros de segunda mano junto al bar. Lee las notas, pide uno y pásalo en mano."],
-          TRAIN: ["Ventana de tren", "Un coche cama nocturno por estaciones de Kioto a Sitges, cada una anunciada en su idioma. Escribe en el cristal empañado y comparte el compartimento."],
-          KINTSUGI: ["Taller de kintsugi", "Repara un cuenco roto con laca y oro y fírmalo en un libro que todos pueden hojear."],
-          GARDEN: ["El Jardín", "Un jardín sin fin que plantamos entre todos y que no para de crecer."],
-          BREWERY: ["La Cervecería", "Elabora tu propia cerveza, diseña la lata y mándala al bar y al club."],
-          CANDLES: ["Dos Velas", "Una mesa a la luz de las velas para dos personas que viven lejos: cocinad la misma cena y brindad juntos."],
-          SANCTUARY: ["El refugio", "El hogar del perro Mantou y un tablón donde animales reales encuentran hogar."],
-          NEST: ["El nido de los gatos", "La habitación de Miso y Yuzu: acarícialos, juega y llena su álbum de fotos."],
-          SORA: ["Sora", "Túmbate bajo el cielo. Dibuja una nube, respira con ella, mira pasar las formas."]
-        },
+        navArcade: "Cerca", arcadeLabel: "04 / Cerca", nbAfter: "fuera de horario", nbWalk: "Entra →", nbGo: "Entrar en Cerca", nbTitle: "Un pueblo para <em>después del trabajo</em>.", nbP1: "Cerca es un pueblito pixelado donde nada reclama tu atención. Tómate algo en el bar de al lado, túmbate a mirar las nubes, escribe a alguien que está lejos, planta algo junto a las flores de un desconocido.", nbP2: "Es la misma idea que mi trabajo, fuera de horario: las personas son lo importante, la IA solo una herramienta, y una pantalla debería acercarnos en vez de tenernos ocupados. No hacer nada también cuenta.",
         contactTitle: 'Creemos aprendizajes que la gente <span class="accent-word">comparta</span>.',
         contactCopy: "Copiar email", copiedText: "✓ Copiado",
         drinkTooltip: "psst… ¿un trago?",
@@ -712,27 +613,7 @@ img{filter:none}
         workDesc: "線上演示和打磨中的作品——人的能力練習、遊戲與故事，每一個都為了讓人們聊起來。",
         workBtn: "進入實驗室",
         contactLabel: "05 / 打個招呼",
-        navArcade: "下班後", arcadeLabel: "04 / 下班後", arcadeKey: "任意處按 `",
-        townName: "街坊", termBar: "一座裝滿小遊戲的畫素小鎮", termBoot1: "每個遊戲，都是小鎮裡的一個地方。", termCount: "{n} 個地方可以走進去：",
-        termRun: "執行", termLoading: "正在走去 {c}……", termOpen: "走進街坊", termBootBtn: "看看", termFoldBtn: "收起",
-        arcadeNote: "這個網站的其他東西都在用遊戲來教學。這裡的，就只是遊戲。",
-        games: {
-          CLIMB: ["岩場大師", "先讀岩壁，規劃手序，果斷出發。十個真實岩場，5.6 到 5.15d，可以獨攀，也能和朋友結繩同攀。"],
-          DJ: ["復古 DJ 世界巡演", "擊中唱片、搓碟、引爆低音，一城接一城。"],
-          JUKEBOX: ["點唱機", "點亮一段旋律，壓成唱片，投一枚硬幣：酒吧和書屋同時響起。"],
-          POSTCARD: ["明信片", "寫一張明信片，封存到你選的日子，寄給朋友，或掛到酒吧的牆上。"],
-          BAR: ["Wei 的酒吧與咖啡", "胡同裡的小吧檯：白天咖啡，晚上雞尾酒，兩隻貓和一臺點唱機。Wei 不在時，自己調一杯。"],
-          HANDOFF: ["Handoff", "寫給相隔兩地的兩個人：對方只先看到結尾，再猜出前面。"],
-          BOOKS: ["折角書屋", "酒吧隔壁的舊書屋。讀書裡的字條，開口要書，再親手傳下去。"],
-          TRAIN: ["火車窗", "一節夜行臥鋪，駛過從京都到錫切斯的車站，每站都用當地語言報站。在起霧的玻璃上寫字，和朋友共享包廂。"],
-          KINTSUGI: ["金繕工房", "用漆和金修好一隻碎碗，再署名放進一本人人都能翻看的書。"],
-          GARDEN: ["大家的花園", "一座大家一起種的無盡花園，一直在長。"],
-          BREWERY: ["啤酒坊", "釀你自己的啤酒，設計罐子，送去酒吧和俱樂部。"],
-          CANDLES: ["雙燭小館", "給相隔兩地的兩個人的燭光餐桌：一起做同一頓飯，一起舉杯。"],
-          SANCTUARY: ["動物庇護所", "小狗饅頭的家，也是真實動物找家的領養板。"],
-          NEST: ["貓窩", "味噌和柚子的小房間：摸摸、陪玩，再把它們的相簿填滿。"],
-          SORA: ["Sora（空）", "躺在天空下。畫一朵雲，跟著它呼吸，看形狀慢慢飄過。"]
-        },
+        navArcade: "近鄰", arcadeLabel: "04 / 近鄰", nbAfter: "下班以後", nbWalk: "走進去 →", nbGo: "走進近鄰", nbTitle: "一座<em>下班後</em>的小鎮。", nbP1: "近鄰是一座不向你索取注意力的畫素小鎮。去隔壁喝一杯，躺下看雲，給遠方的人寫幾句，在陌生人的花旁邊種點什麼。", nbP2: "這和我的工作是同一個信念，只是在下班以後：人才是目的，AI 只是工具，螢幕應該讓我們更近，而不是讓我們更忙。什麼都不做也算數。",
         contactTitle: "一起做讓人<span class=\"accent-word\">願意分享</span>的學習。",
         contactCopy: "複製郵箱", copiedText: "✓ 已複製",
         drinkTooltip: "噓——來一杯？",
@@ -774,27 +655,7 @@ img{filter:none}
         workDesc: "Demos en directe i treballs en curs: pràctica d'habilitats humanes, jocs i històries, tots pensats perquè la gent conversi.",
         workBtn: "Entrar al laboratori",
         contactLabel: "05 / Saludem-nos",
-        navArcade: "Fora d'horari", arcadeLabel: "04 / Fora d'horari", arcadeKey: "prem ` on sigui",
-        townName: "EL BARRI", termBar: "un poble pixelat de jocs petits", termBoot1: "Cada joc és un lloc d'un poble petit.", termCount: "{n} llocs on entrar:",
-        termRun: "executar", termLoading: "Caminant cap a {c}…", termOpen: "entrar al barri", termBootBtn: "mirar", termFoldBtn: "plegar",
-        arcadeNote: "Tota la resta d'aquest lloc ensenya jugant. Això és només el joc.",
-        games: {
-          CLIMB: ["Crag Master", "Llegeix la paret, planifica les mans i compromet-t'hi. Deu escoles reals, de 5.6 a 5.15d, sol o encordat amb un amic."],
-          DJ: ["Retro DJ: Gira mundial", "Toca els discos, fes scratch i deixa anar el baix. Ciutat a ciutat."],
-          JUKEBOX: ["Gramola", "Encén una melodia, grava-la en un disc, tira una moneda: sona alhora al bar i a la llibreria."],
-          POSTCARD: ["Postal", "Escriu una postal, tanca-la fins a la data que triïs i envia-la a un amic o penja-la al bar."],
-          BAR: ["El bar i cafè d'en Wei", "Una barra petita en un hutong: cafè de dia, còctels de nit, dos gats i una gramola. Si en Wei no hi és, et prepares la teva copa."],
-          HANDOFF: ["Handoff", "Per a dues persones lluny: la teva parella només en veu el final i endevina la resta."],
-          BOOKS: ["El Racó de la Pàgina Doblegada", "Una casa de llibres de segona mà al costat del bar. Llegeix les notes, demana'n un i passa'l en mà."],
-          TRAIN: ["Finestra de tren", "Un cotxe llit nocturn per estacions de Kyoto a Sitges, cadascuna anunciada en la seva llengua. Escriu al vidre entelat i comparteix el compartiment."],
-          KINTSUGI: ["Taller de kintsugi", "Adoba un bol trencat amb laca i or i signa'l en un llibre que tothom pot fullejar."],
-          GARDEN: ["El Jardí", "Un jardí sense fi que plantem entre tots i que no para de créixer."],
-          BREWERY: ["La Cerveseria", "Elabora la teva pròpia cervesa, dissenya la llauna i envia-la al bar i al club."],
-          CANDLES: ["Dues Espelmes", "Una taula a la llum de les espelmes per a dues persones que viuen lluny: cuineu el mateix sopar i brindeu junts."],
-          SANCTUARY: ["El refugi", "La llar del gos Mantou i un tauler on animals reals troben llar."],
-          NEST: ["El niu dels gats", "L'habitació de Miso i Yuzu: acarona'ls, juga i omple el seu àlbum de fotos."],
-          SORA: ["Sora", "Estira't sota el cel. Dibuixa un núvol, respira-hi, mira com passen les formes."]
-        },
+        navArcade: "A Prop", arcadeLabel: "04 / A Prop", nbAfter: "fora d'hores", nbWalk: "Entra →", nbGo: "Entrar a A Prop", nbTitle: "Un poble per a <em>després de la feina</em>.", nbP1: "A Prop és un poblet pixelat on res no reclama la teva atenció. Pren alguna cosa al bar del costat, estira't a mirar els núvols, escriu a algú que és lluny, planta alguna cosa al costat de les flors d'un desconegut.", nbP2: "És la mateixa idea que la meva feina, fora d'hores: les persones són el que importa, la IA només una eina, i una pantalla ens hauria d'acostar en lloc de tenir-nos ocupats. No fer res també compta.",
         contactTitle: "Creem aprenentatges que la gent <span class=\"accent-word\">comparteixi</span>.",
         contactCopy: "Copiar correu", copiedText: "✓ Copiat",
         drinkTooltip: "psst… una copa?",
@@ -894,8 +755,7 @@ img{filter:none}
 
       renderSlide(false);
       if (typeof renderGames === 'function') renderGames();
-      const th = document.getElementById('term-hint');
-      if (th) th.textContent = document.getElementById('term').classList.contains('open') ? t().termFoldBtn : t().termBootBtn;
+      if (typeof renderTown === 'function') renderTown();
       try {
         localStorage.setItem('wm_preferred_lang', lang);
         localStorage.setItem('wm_cases_lang', lang);
@@ -931,10 +791,11 @@ img{filter:none}
     })();
 
 
-    /* ---------- 04 After hours: game console teaser ---------- */
-    const CONSOLE_BASE = 'https://www.freebuilder.net/nearby/';
+    /* ---------- 04 Nearby: the town's places, in game.txt order, named by the shared list (FBWorld) ---------- */
+    const TOWN = location.origin.startsWith('http') ? location.origin + 'https://www.freebuilder.net/nearby/' : 'https://www.freebuilder.net/nearby/';
     let GAMES = [
       { code: 'SORA', url: 'lie-back' },
+      { code: 'CABIN', url: 'no-hurry' },
       { code: 'GARDEN', url: 'plant-a-friend' },
       { code: 'BREWERY', url: 'neighbours-brew' },
       { code: 'NEST', url: 'miso-and-yuzu' },
@@ -950,109 +811,21 @@ img{filter:none}
       { code: 'DJ', url: 'late-light' },
       { code: 'CLIMB', url: 'hold-on' }
     ];
-    let termTyped = false;
-
-    function safeGameUrl(u) {
-      const raw = String(u || '').trim();
-      if (!raw || /^(javascript|data|vbscript):/i.test(raw.replace(/[\s\u0000-\u001f]/g, ''))) return null;
-      try { return new URL(raw, CONSOLE_BASE).href; } catch (e) { return null; }
-    }
-
-    // Same formats the console accepts: JSON, or CODE:/TITLE:/DESC:/URL: blocks
-    function parseGames(text) {
-      const clean = (text || '').trim();
-      if (!clean) return [];
-      if (/^[\[{]/.test(clean)) {
-        try { const j = JSON.parse(clean); return (Array.isArray(j) ? j : [j]).map(g => ({ code: String(g.code || g.id || '').toUpperCase(), title: g.title || g.name, desc: g.desc || g.intro, url: g.url || g.link })); } catch (e) {}
-      }
-      const out = []; let cur = null;
-      clean.split(/\r?\n/).forEach(line => {
-        const t = line.trim(); if (!t || t.startsWith('#') || t.startsWith('//')) return;
-        const i = t.indexOf(':'); if (i < 0) return;
-        const k = t.slice(0, i).trim().toUpperCase(), v = t.slice(i + 1).trim();
-        if (['CODE', 'GAME', 'PROGRAM'].includes(k)) { if (cur) out.push(cur); cur = { code: v.toUpperCase().replace(/\s+/g, '') }; }
-        else if (cur) {
-          if (k === 'TITLE' || k === 'NAME') cur.title = v;
-          else if (k === 'DESC' || k === 'INTRO' || k === 'SUMMARY') cur.desc = v;
-          else if (['URL', 'LINK', 'FILE', 'PATH'].includes(k)) cur.url = v;
-        }
-      });
-      if (cur) out.push(cur);
-      return out.filter(g => g.code);
-    }
-
-    function renderGames() {
-      const box = document.getElementById('term-progs');
-      if (!box) return;
+    function renderTown() {
+      const box = document.getElementById('nb-dir'), W = window.FBWorld;
+      if (!box || !W || !W.here) return;
       box.innerHTML = '';
       GAMES.forEach(g => {
-        const href = safeGameUrl(g.url);
-        if (!href) return;
-        const known = (t().games || {})[g.code];
-        const title = known ? known[0] : (g.title || g.code);
-        const desc = known ? known[1] : (g.desc || '');
-        const a = document.createElement('a');
-        a.className = 'prog'; a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer';
-        const code = document.createElement('span'); code.className = 'code'; code.textContent = ({ CLIMB: '🧗', DJ: '🎧', BAR: '🍸', HANDOFF: '🕰️', BOOKS: '📚', TRAIN: '🚃', KINTSUGI: '🍵', SORA: '☁️', NEST: '🐈', SANCTUARY: '🐕', GARDEN: '🌸', BREWERY: '🍺', CANDLES: '🕯️', JUKEBOX: '💿', POSTCARD: '📮' })[g.code] || '◆';
-        const ttl = document.createElement('span'); ttl.className = 'ttl'; ttl.textContent = title;
-        if (desc) { const sm = document.createElement('small'); sm.textContent = desc; ttl.appendChild(sm); }
-        const go = document.createElement('span'); go.className = 'go'; go.textContent = '↗';
-        a.append(code, ttl, go);
-        a.addEventListener('click', () => {
-          const line = document.createElement('div');
-          line.className = 'term-line dim'; line.textContent = '> ' + t().termLoading.replace('{c}', g.code);
-          box.after(line); setTimeout(() => line.remove(), 2400);
-        });
-        if (!termTyped) a.classList.add('term-line', 'pending');
-        if (!document.getElementById('term').classList.contains('open')) a.setAttribute('tabindex', '-1');
-        box.appendChild(a);
+        const k = W.here('/nearby/' + String(g.url).replace(/^\/+/, '').replace(/\/?$/, '/')); if (!W.PLACES[k]) return;
+        const li = document.createElement('li'), a = document.createElement('a');
+        a.href = new URL(String(g.url).replace(/^\/+/, ''), TOWN).href; a.target = '_blank'; a.rel = 'noopener noreferrer';
+        const ic = document.createElement('span'); ic.className = 'ic'; ic.setAttribute('aria-hidden', 'true'); ic.textContent = W.icon(k);
+        const b = document.createElement('b'); b.textContent = W.name(k); const sm = document.createElement('small'); sm.textContent = W.line(k);
+        a.append(ic, b, sm); li.appendChild(a); box.appendChild(li);
       });
-      const count = document.getElementById('term-count');
-      if (count) count.textContent = t().termCount.replace('{n}', box.children.length);
     }
-
-    function typeTerminal() {
-      if (termTyped) return;
-      termTyped = true;
-      const lines = [...document.querySelectorAll('#term .pending')];
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      lines.forEach((el, i) => setTimeout(() => el.classList.remove('pending'), reduce ? 0 : 220 + i * 260));
-    }
-
-    (function initConsole() {
-      renderGames();
-      const term = document.getElementById('term');
-      const toggle = document.getElementById('term-toggle');
-      const panel = document.getElementById('term-panel');
-      // Folded by default: links inside are hidden from tab order until opened
-      const setFold = open => {
-        term.classList.toggle('open', open);
-        toggle.setAttribute('aria-expanded', String(open));
-        panel.toggleAttribute('hidden-fold', !open);
-        panel.querySelectorAll('a').forEach(a => (open ? a.removeAttribute('tabindex') : a.setAttribute('tabindex', '-1')));
-        document.getElementById('term-hint').textContent = open ? t().termFoldBtn : t().termBootBtn;
-        if (open) typeTerminal();
-      };
-      window.__setTermFold = setFold;
-      setFold(false);
-      toggle.addEventListener('click', () => setFold(!term.classList.contains('open')));
-
-      // Pull the live directory the console reads, if this page is served next to it
-      fetch('https://www.freebuilder.net/nearby/game.txt?t=' + Date.now(), { cache: 'no-store' })
-        .then(r => (r.ok ? r.text() : ''))
-        .then(txt => { const list = parseGames(txt); if (list.length) { GAMES = list; renderGames(); } })
-        .catch(() => {});
-
-      // Backtick (the old-school console key) jumps to the terminal
-      document.addEventListener('keydown', e => {
-        if (e.key !== '`' || e.ctrlKey || e.metaKey || e.altKey) return;
-        if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
-        e.preventDefault();
-        setFold(true);
-        term.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        setTimeout(() => { const first = term.querySelector('.prog'); if (first) first.focus({ preventScroll: true }); }, 500);
-      });
-    })();
+    renderTown();
+    (function () { let l0 = window.FBL && FBL.get(); setInterval(() => { const l = window.FBL && FBL.get(); if (l !== l0) { l0 = l; renderTown(); } }, 500); })();
 
     /* ---------- Init ---------- */
     document.getElementById('current-year').textContent = new Date().getFullYear();
