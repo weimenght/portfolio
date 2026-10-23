@@ -161,6 +161,10 @@ html,body{background-color:var(--paper)}
 .seg button[aria-pressed="true"],.chip[aria-pressed="true"]{background:#ECEBE6!important;border-color:#ECEBE6!important;color:#141416!important}
 .steps span.done{background:#ECEBE6}
 .curtain{border:1px solid #3B3B42}
+/* light mock-ups (the Frontline chat phone) keep their light look: restore the light tokens inside */
+.phone{--ink:#17171A;--muted:#6B6A70;--line:#E5E2DA;--grid:#ECEAE4;--white:#fff;--paper:#F7F6F2;--white-rgb:255,255,255;--paper-rgb:247,246,242;--ink-rgb:23,23,26;color:#17171A}
+/* reversed (near-white) buttons and selected chips: everything inside takes their dark text, so nothing can turn white on white */
+.btn.pri *,.cta a.pri *,.chip.pri *,.seg button[aria-pressed="true"] *,.chip[aria-pressed="true"] *{color:inherit!important}
 /* illustrations keep their light look on a plate */
 .screen>svg,.plate,.card-art{background:#EFECE4;border-radius:18px}
 .plate{background:#fff!important}
