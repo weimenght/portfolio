@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8"><script data-fbl data-mode="full" src="/fbkit/fb.js?v=bdfce8f9ac"></script>
+  <meta charset="UTF-8"><script data-fbl data-mode="full" src="/fbkit/fb.js?v=b15f9632bf"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="page-title">WEI MENG — L&D Architect & Experience Designer</title>
   <meta name="description" content="Wei Meng designs playful, hands-on learning for the human skills AI can't replace — listening, empathy, trust — built to end in real conversations between colleagues.">
@@ -398,8 +398,8 @@ img{filter:none}
         </a>
         <div class="nb-copy">
           <h3 data-i18n-html="nbTitle">A town for <em>your people</em>.</h3>
-          <p data-i18n="nbP1">Nearby is a small pixel town with Wei, the bartender, at the door. Wander alone or bring a friend. Leave something you made for the neighbours: a cocktail, a tune, a plant, a photo of the cats. Borrow a real book, give a real animal a home, or climb and DJ together with someone far away.</p>
-          <p data-i18n="nbP2">It's the same belief as my work, after hours: people are the point, AI is a tool, and a screen should bring us closer rather than keep us busy. Doing nothing counts. When you're done, go and see someone you love.</p>
+          <p data-i18n="nbP1">Nearby is a small pixel town. Wander alone or bring a friend. Leave something you made for the neighbours, borrow a real book, or climb together with someone far away.</p>
+          <p data-i18n="nbP2">It's the same belief as my work, after hours: people are the point, and a screen should bring us closer. Doing nothing counts.</p>
           <a class="nb-go" href="https://www.freebuilder.net/nearby/" target="_blank" rel="noopener noreferrer"><span data-i18n="nbGo">Walk into Nearby</span><span aria-hidden="true">→</span></a>
         </div>
       </div>
@@ -669,7 +669,7 @@ img{filter:none}
         workDesc: "Demos en directe i treballs en curs: pràctica d'habilitats humanes, jocs i històries, tots pensats perquè la gent conversi.",
         workBtn: "Entrar al laboratori",
         contactLabel: "05 / Saludem-nos",
-        navArcade: "A Prop", arcadeLabel: "04 / A Prop", nbAfter: "fora d'hores", nbWalk: "Entra →", nbGo: "Entrar a A Prop", nbAll: "Tots els llocs del poble", nbTitle: "Un pueblo para <em>tu gente</em>.", nbP1: "Cerca es un pueblito pixelado. Pasea solo o con un amigo. Deja a los vecinos algo hecho por ti, toma prestado un libro de verdad, o escala con alguien lejos.", nbP2: "Es la misma idea que mi trabajo, fuera de horario: las personas son lo importante, y una pantalla debería acercarnos. No hacer nada también cuenta.",
+        navArcade: "A Prop", arcadeLabel: "04 / A Prop", nbAfter: "fora d'hores", nbWalk: "Entra →", nbGo: "Entra a A Prop", nbAll: "Tots els llocs del poble", nbTitle: "Un poble per a <em>la teva gent</em>.", nbP1: "A Prop és un poblet pixelat. Passeja sol o amb un amic. Deixa als veïns alguna cosa feta per tu, agafa en préstec un llibre de veritat o escala amb algú de lluny.", nbP2: "És la mateixa idea que la meva feina, fora d'hores: les persones són el que importa, i una pantalla ens hauria d'acostar. No fer res també compta.",
         contactTitle: "Creem aprenentatges que la gent <span class=\"accent-word\">comparteixi</span>.",
         contactCopy: "Copiar correu", copiedText: "✓ Copiat",
         drinkTooltip: "psst… una copa?",
@@ -806,7 +806,7 @@ img{filter:none}
 
 
     /* ---------- 04 Nearby: the town's places, in game.txt order, named by the shared list (FBWorld) ---------- */
-    const TOWN = location.origin.startsWith('http') ? location.origin + 'https://www.freebuilder.net/nearby/' : 'https://www.freebuilder.net/nearby/';
+    const TOWN = 'https://www.freebuilder.net/nearby/';   /* the town lives on freebuilder.net */
     let GAMES = [
       { code: 'SORA', url: 'lie-back' },
       { code: 'CABIN', url: 'no-hurry' },
