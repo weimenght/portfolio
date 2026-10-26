@@ -115,6 +115,9 @@
     .nb-rules li { display:grid; grid-template-columns:1.6rem 1fr; gap:8px; font-size:14px; line-height:1.5; color:rgba(var(--ink-rgb,23,23,26),.8); }
     .nb-go { display:inline-flex; align-items:center; gap:8px; margin-top:10px; padding:12px 18px; border-radius:999px; background:#17171A; color:#fff; font:700 12px 'Space Mono', monospace; text-decoration:none; }
     .nb-go:hover { background:#E2553F; }
+    .nb-acts { display:flex; flex-wrap:wrap; align-items:center; gap:6px 18px; }
+    .nb-why { margin-top:10px; font:700 12px 'Space Mono', monospace; text-decoration:underline; text-decoration-color:#E2553F; text-decoration-thickness:2px; text-underline-offset:5px; }
+    .nb-why:hover { color:var(--accent-text,#E2553F); }
     .nb-fold > summary { display:inline-flex; align-items:center; gap:8px; cursor:pointer; list-style:none; padding:10px 16px; border:1px solid #E5E2DA; border-radius:999px; font:700 12px 'Space Mono', monospace; }
     .nb-fold > summary::-webkit-details-marker { display:none; }
     .nb-fold > summary::after { content:'+'; font-size:15px; line-height:1; }
@@ -822,7 +825,7 @@ img{filter:none}
             <li><span aria-hidden="true">🍸</span><span data-i18n="nbR4">No scores, no streaks. Wei the bartender is a guide, never the point. Doing nothing counts.</span></li>
           </ul>
           <p data-i18n="nbP3">If it makes you call someone, it worked.</p>
-          <a class="nb-go" href="https://www.freebuilder.net/nearby/" target="_blank" rel="noopener noreferrer"><span data-i18n="nbGo">Walk into Nearby</span><span aria-hidden="true">→</span></a>
+          <div class="nb-acts"><a class="nb-go" href="https://www.freebuilder.net/nearby/" target="_blank" rel="noopener noreferrer"><span data-i18n="nbGo">Walk into Nearby</span><span aria-hidden="true">→</span></a><a class="nb-why" href="https://www.freebuilder.net/nearby/about/" target="_blank" rel="noopener noreferrer"><span data-i18n="nbWhy">Why I built it</span> <span aria-hidden="true">↗</span></a></div>
         </div>
       </div>
       <details class="nb-fold reveal">
@@ -912,7 +915,7 @@ img{filter:none}
         nbKicker: "F / After hours", nbH: "Nearby: an experiment in staying close.", nbNote: "Live · free · still learning", nbWalk: "Walk in →", nbTitle: "A town for <em>your people</em>.",
         nbP1: "By day I build FREE//BUILDER: short, playful practice for the skills AI can't do for us: listening, trust, saying a hard thing kindly. Nearby asks the same question after hours. As technology gets better at holding our attention, can a screen send us back to each other instead?",
         nbP2: "So it's a small pixel town with a few rules of its own:", nbR1: "Every place works alone or with someone far away, at the same moment.", nbR2: "The drinks on the menu are neighbours' real favourites, in cafés you can walk to.", nbR3: "Leaving a place, and every game, ends with something to do off the screen.", nbR4: "No scores, no streaks. Wei the bartender is a guide, never the point. Doing nothing counts.",
-        nbP3: "If it makes you call someone, it worked.", nbGo: "Walk into Nearby", nbAll: "Every place in town",
+        nbP3: "If it makes you call someone, it worked.", nbGo: "Walk into Nearby", nbWhy: "Why I built it", nbAll: "Every place in town",
         moreLabel: "More in the lab:", moreSales: "Sales Psychology Academy", moreQuestions: "Question Deck", moreDiscovery: "Discovery Duet", moreTeach: "Teach-Back Chain", moreThanks: "Specific Thanks", moreFB: "Work with FREE//BUILDER →",
 
         eggLTag: "Listening check · pick your reply",
@@ -998,7 +1001,7 @@ img{filter:none}
         nbKicker: "F / 下班以后", nbH: "近邻：一个关于“靠近”的实验。", nbNote: "已上线 · 免费 · 还在学", nbWalk: "走进去 →", nbTitle: "一座为<em>身边人</em>的小镇。",
         nbP1: "白天，我做 FREE//BUILDER：用短小好玩的练习，练那些 AI 替不了我们的本事——倾听、信任、把难开口的话好好说出来。近邻是下班后的同一个问题：当科技越来越会抓住我们的注意力，屏幕能不能反过来，把我们送回彼此身边？",
         nbP2: "所以它是一座像素小镇，有几条自己的规矩：", nbR1: "每个地方都能一个人去，也能和远方的人同时一起去。", nbR2: "菜单上的饮品是邻居们真实的心头好，在你走得到的咖啡馆里。", nbR3: "离开一个地方、打完每一局游戏，都会留下一件屏幕之外的小事。", nbR4: "没有分数，没有连续打卡。酒保 Wei 只是向导，从来不是目的。什么都不做，也算数。",
-        nbP3: "如果它让你给某个人打了个电话，它就成功了。", nbGo: "走进近邻", nbAll: "镇上的每个地方",
+        nbP3: "如果它让你给某个人打了个电话，它就成功了。", nbGo: "走进近邻", nbWhy: "我为什么做它", nbAll: "镇上的每个地方",
         moreLabel: "实验室里还有：", moreSales: "销售心理学实战学院", moreQuestions: "问题卡组", moreDiscovery: "探询二重奏", moreTeach: "教回去链条", moreThanks: "具体的感谢", moreFB: "与 FREE//BUILDER 合作 →",
 
         eggLTag: "倾听测试 · 选择你的回应",
@@ -1084,7 +1087,7 @@ img{filter:none}
         nbKicker: "F / Fuera de horario", nbH: "Cerca: un experimento para seguir cerca.", nbNote: "En línea · gratis · aprendiendo", nbWalk: "Entra →", nbTitle: "Un pueblo para <em>tu gente</em>.",
         nbP1: "De día hago FREE//BUILDER: prácticas cortas y lúdicas para las habilidades que la IA no puede hacer por nosotros: escuchar, confiar, decir algo difícil con cariño. Cerca se hace la misma pregunta fuera de horario. Si la tecnología es cada vez mejor reteniendo nuestra atención, ¿puede una pantalla devolvernos los unos a los otros?",
         nbP2: "Por eso es un pequeño pueblo de píxeles con unas reglas propias:", nbR1: "Cada sitio funciona solo o con alguien lejos, en el mismo momento.", nbR2: "Las bebidas del menú son favoritas reales de los vecinos, en cafés a los que puedes ir a pie.", nbR3: "Salir de un sitio, y cada partida, termina con algo que hacer fuera de la pantalla.", nbR4: "Sin puntos, sin rachas. Wei, el camarero, es un guía, nunca el objetivo. No hacer nada también cuenta.",
-        nbP3: "Si te hace llamar a alguien, ha funcionado.", nbGo: "Entrar en Cerca", nbAll: "Todos los sitios del pueblo",
+        nbP3: "Si te hace llamar a alguien, ha funcionado.", nbGo: "Entrar en Cerca", nbWhy: "Por qué lo hice", nbAll: "Todos los sitios del pueblo",
         moreLabel: "Más en el laboratorio:", moreSales: "Academia de Psicología de Ventas", moreQuestions: "Mazo de Preguntas", moreDiscovery: "Dúo de Descubrimiento", moreTeach: "Cadena de Enseñar de Vuelta", moreThanks: "Gracias Concretas", moreFB: "Trabaja con FREE//BUILDER →",
 
         eggLTag: "Prueba de escucha · elige tu respuesta",
@@ -1169,7 +1172,7 @@ img{filter:none}
         nbKicker: "F / 下班以後", nbH: "近鄰：一個關於“靠近”的實驗。", nbNote: "已上線 · 免費 · 還在學", nbWalk: "走進去 →", nbTitle: "一座為<em>身邊人</em>的小鎮。",
         nbP1: "白天，我做 FREE//BUILDER：用短小好玩的練習，練那些 AI 替不了我們的本事——傾聽、信任、把難開口的話好好說出來。近鄰是下班後的同一個問題：當科技越來越會抓住我們的注意力，螢幕能不能反過來，把我們送回彼此身邊？",
         nbP2: "所以它是一座畫素小鎮，有幾條自己的規矩：", nbR1: "每個地方都能一個人去，也能和遠方的人同時一起去。", nbR2: "選單上的飲品是鄰居們真實的心頭好，在你走得到的咖啡館裡。", nbR3: "離開一個地方、打完每一局遊戲，都會留下一件螢幕之外的小事。", nbR4: "沒有分數，沒有連續打卡。酒保 Wei 只是嚮導，從來不是目的。什麼都不做，也算數。",
-        nbP3: "如果它讓你給某個人打了個電話，它就成功了。", nbGo: "走進近鄰", nbAll: "鎮上的每個地方",
+        nbP3: "如果它讓你給某個人打了個電話，它就成功了。", nbGo: "走進近鄰", nbWhy: "我為什麼做它", nbAll: "鎮上的每個地方",
         moreLabel: "實驗室裡還有：", moreSales: "銷售心理學實戰學院", moreQuestions: "問題卡組", moreDiscovery: "探詢二重奏", moreTeach: "教回去鏈條", moreThanks: "具體的感謝", moreFB: "與 FREE//BUILDER 合作 →",
 
         eggLTag: "傾聽測試 · 選擇你的回應",
@@ -1254,7 +1257,7 @@ img{filter:none}
         nbKicker: "F / Fora d'hores", nbH: "A Prop: un experiment per seguir a prop.", nbNote: "En línia · gratuït · aprenent", nbWalk: "Entra →", nbTitle: "Un poble per a <em>la teva gent</em>.",
         nbP1: "De dia faig FREE//BUILDER: pràctiques curtes i lúdiques per a les habilitats que la IA no pot fer per nosaltres: escoltar, confiar, dir una cosa difícil amb estima. A Prop es fa la mateixa pregunta fora d'hores. Si la tecnologia és cada cop millor retenint la nostra atenció, una pantalla ens pot tornar els uns als altres?",
         nbP2: "Per això és un petit poble de píxels amb unes regles pròpies:", nbR1: "Cada lloc funciona sol o amb algú lluny, al mateix moment.", nbR2: "Les begudes de la carta són preferides reals dels veïns, en cafès on pots anar a peu.", nbR3: "Sortir d'un lloc, i cada partida, acaba amb alguna cosa per fer fora de la pantalla.", nbR4: "Sense punts, sense ratxes. En Wei, el cambrer, és un guia, mai l'objectiu. No fer res també compta.",
-        nbP3: "Si et fa trucar a algú, ha funcionat.", nbGo: "Entra a A Prop", nbAll: "Tots els llocs del poble",
+        nbP3: "Si et fa trucar a algú, ha funcionat.", nbGo: "Entra a A Prop", nbWhy: "Per què el vaig fer", nbAll: "Tots els llocs del poble",
         moreLabel: "Més al laboratori:", moreSales: "Acadèmia de Psicologia de Vendes", moreQuestions: "Baralla de Preguntes", moreDiscovery: "Duo de Descobriment", moreTeach: "Cadena d'Ensenyar de Tornada", moreThanks: "Gràcies Concretes", moreFB: "Treballa amb FREE//BUILDER →",
 
         eggLTag: "Prova d'escolta · tria la teva resposta",
