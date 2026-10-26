@@ -91,25 +91,29 @@
       50% { transform: translate(-10px, 12px); }
     }
 
-    /* The drink: a warm pill that glows like a lit window, with fizz rising, so a passer-by wants to step in */
-    .drink { position: relative; color: #3B1F0B; background: linear-gradient(180deg, #FFF8E7, #FDE7B0); border: 1.5px solid #E7A93A; box-shadow: 0 6px 18px -8px rgba(217,119,6,.7); transition: transform .2s ease, box-shadow .2s ease; animation: drinkGlow 3.2s ease-in-out infinite; }
-    .drink:hover, .drink:focus-visible { transform: translateY(-2px); box-shadow: 0 12px 26px -8px rgba(217,119,6,.85); }
-    .drink:active { transform: scale(.96); }
-    .drink-cup { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 9999px; background:var(--white,#fff); box-shadow: inset 0 0 0 1.5px #E7A93A; }
-    .drink-cup svg { width: 24px; height: 28px; transform-origin: 50% 90%; animation: drinkClink 6s ease-in-out infinite; }
-    .drink:hover .drink-cup svg { animation: wiggle .5s ease-in-out; }
+    /* The drink: the little boba cup sips and fizzes; hover (or a first tap) pours a small card with the way in */
+    .drink-wrap { position: relative; display: inline-flex; }
+    .drink { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 9999px; border: 1px solid #E5E2DA; background:var(--white,#fff); transition: transform .2s ease, border-color .2s ease; }
+    .drink:hover, .drink:focus-visible, .drink-wrap.open .drink { border-color: rgba(var(--ink-rgb,23,23,26),.4); transform: translateY(-2px); }
+    .drink:active { transform: scale(.94); }
+    .drink svg { width: 22px; height: 26px; transform-origin: 50% 90%; animation: drinkClink 6s ease-in-out infinite; }
+    .drink:hover svg, .drink-wrap.open .drink svg { animation: wiggle .5s ease-in-out; }
     .drink-fizz rect { animation: drinkFizz 1.8s ease-in infinite; }
     .drink-fizz rect:nth-child(2) { animation-delay: .6s; } .drink-fizz rect:nth-child(3) { animation-delay: 1.2s; }
     .drink-pearls rect { animation: drinkPearl 2.4s ease-in-out infinite; }
     .drink-pearls rect:nth-child(2) { animation-delay: .5s; } .drink-pearls rect:nth-child(3) { animation-delay: 1s; }
-    .drink-open { position: absolute; top: 2px; right: 6px; width: 8px; height: 8px; border-radius: 9999px; background: #F59E0B; box-shadow: 0 0 0 0 rgba(245,158,11,.6); animation: drinkPing 2s ease-out infinite; }
-    @keyframes drinkGlow { 0%,100% { box-shadow: 0 6px 18px -8px rgba(217,119,6,.7), 0 0 0 0 rgba(251,191,36,0); } 50% { box-shadow: 0 6px 18px -8px rgba(217,119,6,.7), 0 0 0 6px rgba(251,191,36,.18); } }
+    .drink-open { position: absolute; top: 3px; right: 3px; width: 7px; height: 7px; border-radius: 9999px; background: #F59E0B; animation: drinkPing 2s ease-out infinite; }
+    .drink-pop { position: absolute; bottom: calc(100% + 10px); left: 50%; z-index: 30; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 9px 14px 10px; border-radius: 14px; background: #17171A; color: #fff; font: 700 11px/1.3 'Space Mono', ui-monospace, monospace; white-space: nowrap; text-decoration: none; box-shadow: 0 14px 30px -12px rgba(23,23,26,.6); opacity: 0; pointer-events: none; transform: translate(-50%, 6px) scale(.96); transform-origin: 50% 100%; transition: opacity .18s ease, transform .18s ease; }
+    .drink-pop::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -6px; border: 6px solid transparent; border-top-color: #17171A; }
+    .drink-pop b { color: #FBBF24; font-weight: 700; }
+    .drink-wrap:hover .drink-pop, .drink-wrap:focus-within .drink-pop, .drink-wrap.open .drink-pop { opacity: 1; pointer-events: auto; transform: translate(-50%, 0) scale(1); }
+    @media (max-width: 480px) { .drink-pop { left: auto; right: 0; transform: translate(0, 6px) scale(.96); transform-origin: 85% 100%; } .drink-pop::after { left: auto; right: 22px; } .drink-wrap:hover .drink-pop, .drink-wrap:focus-within .drink-pop, .drink-wrap.open .drink-pop { transform: none; } }
     @keyframes drinkClink { 0%,86%,100% { transform: rotate(0); } 90% { transform: rotate(-10deg); } 95% { transform: rotate(7deg); } }
     @keyframes drinkFizz { 0% { transform: translateY(4px); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(-5px); opacity: 0; } }
     @keyframes drinkPearl { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-1px); } }
     @keyframes drinkPing { 0% { box-shadow: 0 0 0 0 rgba(245,158,11,.6); } 80%,100% { box-shadow: 0 0 0 7px rgba(245,158,11,0); } }
     @keyframes wiggle { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-12deg); } 75% { transform: rotate(10deg); } }
-    @media (prefers-reduced-motion: reduce) { .drink, .drink-cup svg, .drink-fizz rect, .drink-pearls rect, .drink-open { animation: none !important; } }
+    @media (prefers-reduced-motion: reduce) { .drink svg, .drink-fizz rect, .drink-pearls rect, .drink-open { animation: none !important; } }
 
 
     /* 04 Nearby: the town, after hours */
@@ -415,11 +419,9 @@ img{filter:none}
               class="flex-1 sm:flex-none inline-flex items-center justify-center px-5 py-3.5 rounded-full border border-line bg-white hover:border-ink/40 active:scale-95 text-xs font-bold font-mono transition-all"
               data-i18n="contactCopy">Copy email</button>
 
-            <a href="https://www.freebuilder.net/nearby/next-door" id="drink-link"
-               class="drink flex-shrink-0 inline-flex items-center gap-2 pl-1.5 pr-5 h-12 rounded-full font-mono text-xs font-bold whitespace-nowrap"
-               aria-label="psst — need a drink?">
-              <span class="drink-cup" aria-hidden="true">
-                <svg viewBox="0 0 24 28" fill="none" style="shape-rendering:crispEdges;">
+            <span class="drink-wrap flex-shrink-0" id="drink-wrap">
+              <a href="https://www.freebuilder.net/nearby/next-door" id="drink-link" class="drink" aria-label="a drink?" aria-describedby="drink-pop">
+                  <svg viewBox="0 0 24 28" fill="none" style="shape-rendering:crispEdges;">
                   <g class="drink-fizz"><rect x="10" y="6" width="1" height="1" fill="#F59E0B"/><rect x="13" y="5" width="1" height="1" fill="#F59E0B"/><rect x="11" y="3" width="1" height="1" fill="#F59E0B"/></g>
                   <g class="drink-straw"><rect x="14" y="2" width="2" height="2" fill="#E2553F"/><rect x="13" y="4" width="2" height="2" fill="#E2553F"/><rect x="12" y="6" width="2" height="4" fill="#E2553F"/></g>
                   <rect x="5" y="10" width="14" height="2" fill="#27272A"/>
@@ -431,10 +433,13 @@ img{filter:none}
                   <rect x="8" y="13" width="3" height="3" fill="#FEF3C7"/>
                   <g class="drink-pearls"><rect x="8" y="21" width="2" height="2" fill="#78350F"/><rect x="11" y="20" width="2" height="2" fill="#78350F"/><rect x="14" y="21" width="2" height="2" fill="#78350F"/></g>
                 </svg>
-              </span>
-              <span class="drink-label" data-i18n="drinkTooltip">psst — need a drink?</span>
-              <span class="drink-open" aria-hidden="true"></span>
-            </a>
+                <span class="drink-open" aria-hidden="true"></span>
+              </a>
+              <a href="https://www.freebuilder.net/nearby/next-door" class="drink-pop" id="drink-pop" role="tooltip">
+                <span data-i18n="drinkTooltip">a drink?</span>
+                <b data-i18n="drinkGo">Next Door →</b>
+              </a>
+            </span>
           </div>
         </div>
       </div>
@@ -486,7 +491,7 @@ img{filter:none}
         navArcade: "Nearby", arcadeLabel: "04 / Nearby", nbAfter: "after hours", nbWalk: "Walk in →", nbGo: "Walk into Nearby", nbAll: "Every place in town", nbTitle: "A town for <em>your people</em>.", nbP1: "Nearby is a small pixel town. Wander alone or bring a friend. Leave something you made for the neighbours, borrow a real book, or climb together with someone far away.", nbP2: "It's the same belief as my work, after hours: people are the point, and a screen should bring us closer. Doing nothing counts.",
         contactTitle: 'Let\'s build learning people <span class="accent-word">share</span>.',
         contactCopy: "Copy email", copiedText: "✓ Copied",
-        drinkTooltip: "a drink?",
+        drinkTooltip: "a drink?", drinkGo: "Next Door →",
         footerMade: "Made with AI &"
       },
       zh: {
@@ -529,7 +534,7 @@ img{filter:none}
         navArcade: "近邻", arcadeLabel: "04 / 近邻", nbAfter: "下班以后", nbWalk: "走进去 →", nbGo: "走进近邻", nbAll: "镇上的每个地方", nbTitle: "一座为<em>身边人</em>而建的小镇。", nbP1: "近邻是一座像素小镇。一个人逛，或者带上朋友。给街坊留下你做的东西，借一本真的书，或者和远方的人一起攀岩。", nbP2: "这和我的工作是同一个信念，只是在下班以后：人才是目的，屏幕应该让我们更近。什么都不做也算数。",
         contactTitle: '一起做让人<span class="accent-word">愿意分享</span>的学习。',
         contactCopy: "复制邮箱", copiedText: "✓ 已复制",
-        drinkTooltip: "来一杯？",
+        drinkTooltip: "来一杯？", drinkGo: "隔壁 →",
         footerMade: "由 AI 与"
       },
       es: {
@@ -572,7 +577,7 @@ img{filter:none}
         navArcade: "Cerca", arcadeLabel: "04 / Cerca", nbAfter: "fuera de horario", nbWalk: "Entra →", nbGo: "Entrar en Cerca", nbAll: "Todos los sitios del pueblo", nbTitle: "Un pueblo para <em>tu gente</em>.", nbP1: "Cerca es un pueblito pixelado. Pasea solo o con un amigo. Deja a los vecinos algo hecho por ti, toma prestado un libro de verdad, o escala con alguien lejos.", nbP2: "Es la misma idea que mi trabajo, fuera de horario: las personas son lo importante, y una pantalla debería acercarnos. No hacer nada también cuenta.",
         contactTitle: 'Creemos aprendizajes que la gente <span class="accent-word">comparta</span>.',
         contactCopy: "Copiar email", copiedText: "✓ Copiado",
-        drinkTooltip: "¿un trago?",
+        drinkTooltip: "¿un trago?", drinkGo: "Al Lado →",
         footerMade: "Hecho con IA y"
       }, "zh-Hant": {
         pageTitle: "孟瑋 — 學習體驗架構師",
@@ -614,7 +619,7 @@ img{filter:none}
         navArcade: "近鄰", arcadeLabel: "04 / 近鄰", nbAfter: "下班以後", nbWalk: "走進去 →", nbGo: "走進近鄰", nbAll: "鎮上的每個地方", nbTitle: "一座為<em>身邊人</em>而建的小鎮。", nbP1: "近鄰是一座畫素小鎮。一個人逛，或者帶上朋友。給街坊留下你做的東西，借一本真的書，或者和遠方的人一起攀岩。", nbP2: "這和我的工作是同一個信念，只是在下班以後：人才是目的，螢幕應該讓我們更近。什麼都不做也算數。",
         contactTitle: "一起做讓人<span class=\"accent-word\">願意分享</span>的學習。",
         contactCopy: "複製郵箱", copiedText: "✓ 已複製",
-        drinkTooltip: "來一杯？",
+        drinkTooltip: "來一杯？", drinkGo: "隔壁 →",
         footerMade: "由 AI 與"
       }, "ca": {
         pageTitle: "WEI MENG — Arquitecte d'Aprenentatge i Dissenyador d'Experiències",
@@ -656,7 +661,7 @@ img{filter:none}
         navArcade: "A Prop", arcadeLabel: "04 / A Prop", nbAfter: "fora d'hores", nbWalk: "Entra →", nbGo: "Entra a A Prop", nbAll: "Tots els llocs del poble", nbTitle: "Un poble per a <em>la teva gent</em>.", nbP1: "A Prop és un poblet pixelat. Passeja sol o amb un amic. Deixa als veïns alguna cosa feta per tu, agafa en préstec un llibre de veritat o escala amb algú de lluny.", nbP2: "És la mateixa idea que la meva feina, fora d'hores: les persones són el que importa, i una pantalla ens hauria d'acostar. No fer res també compta.",
         contactTitle: "Creem aprenentatges que la gent <span class=\"accent-word\">comparteixi</span>.",
         contactCopy: "Copiar correu", copiedText: "✓ Copiat",
-        drinkTooltip: "una copa?",
+        drinkTooltip: "una copa?", drinkGo: "Al Costat →",
         footerMade: "Fet amb IA i"
       }
     };
@@ -799,6 +804,17 @@ img{filter:none}
       const b = (navigator.language || '').toLowerCase();
       setLanguage(b.startsWith('zh') ? 'zh' : b.startsWith('es') ? 'es' : 'en');
     })();
-  </script>
+  
+  /* the drink on a touch screen: the first tap pours the little card, a tap on the cup or the card walks you in */
+  (function () {
+    var w = document.getElementById('drink-wrap'), cup = document.getElementById('drink-link'); if (!w || !cup) return;
+    var t = null;
+    cup.addEventListener('click', function (e) {
+      if (!window.matchMedia('(hover: none)').matches || w.classList.contains('open')) return;
+      e.preventDefault(); w.classList.add('open'); clearTimeout(t); t = setTimeout(function () { w.classList.remove('open'); }, 5000);
+    });
+    document.addEventListener('pointerdown', function (e) { if (!w.contains(e.target)) w.classList.remove('open'); }, true);
+  })();
+</script>
 </body>
 </html>
