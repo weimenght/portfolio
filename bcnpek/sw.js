@@ -1,7 +1,7 @@
-// Handoff moved to Nearby (https://www.freebuilder.net/nearby/handoff/).
+// Handoff moved to https://www.freebuilder.net/handoff/ (its own app).
 // This worker stays only so phones that installed Handoff from here keep getting their notifications,
 // and every tap opens Handoff at its new home. It no longer keeps an offline copy of the old app.
-const HOME = 'https://www.freebuilder.net/nearby/handoff/';
+const HOME = 'https://www.freebuilder.net/handoff/';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {

@@ -1,7 +1,7 @@
 {
   "name": "Handoff",
   "short_name": "Handoff",
-  "description": "Handoff lives in Nearby now.",
+  "description": "Handoff lives at freebuilder.net/handoff/ now.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
