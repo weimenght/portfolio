@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="referrer" content="same-origin" data-fbr><script data-fbl data-mode="full" src="/fbkit/fb.js?v=b09feb0a24"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">WEI MENG — After hours: small things, made for the people between us</title>
+  <meta name="description" content="What Wei Meng makes after work: Little Things, Nearby, Home Ground, Handoff and Vocab. Small, free things built on one idea: people aren't the means, people are the point.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317171A'/%3E%3Cpolyline points='7.5,12 11.75,22 16,14.5 20.25,22 24.5,12' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='8' r='1.7' fill='%23E2553F'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/fonts/fonts.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <style>
+    /* After hours: ink and lamplight. The town's lit windows are the projects; the day panel is the one light card. */
+    :root { --ink:#120F18; --cream:#F4ECDD; --mut:rgba(244,236,221,.72); --line:rgba(244,236,221,.12); --card:#1B1826; --lamp:#F6B65B; --lamp2:#FFC97A; --ember:#E8794A; }
+    *, *::before, *::after { box-sizing:border-box; }
+    html { background:var(--inkbg,var(--ink)); -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+    body { margin:0; min-height:100vh; color:var(--cream); font:400 16px/1.6 'Plus Jakarta Sans', system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif; -webkit-font-smoothing:antialiased;
+      background-image:
+        radial-gradient(1.2px 1.2px at 9% 14%, rgba(244,236,221,.7), transparent 70%),
+        radial-gradient(1px 1px at 23% 47%, rgba(244,236,221,.5), transparent 70%),
+        radial-gradient(1.4px 1.4px at 41% 9%, rgba(244,236,221,.6), transparent 70%),
+        radial-gradient(1px 1px at 58% 33%, rgba(244,236,221,.45), transparent 70%),
+        radial-gradient(1.2px 1.2px at 77% 12%, rgba(244,236,221,.6), transparent 70%),
+        radial-gradient(1px 1px at 91% 58%, rgba(244,236,221,.5), transparent 70%),
+        radial-gradient(1px 1px at 15% 78%, rgba(244,236,221,.35), transparent 70%),
+        radial-gradient(900px 560px at 88% 0%, rgba(142,127,230,.17), transparent 70%),
+        radial-gradient(760px 520px at 0% 30%, rgba(232,121,74,.12), transparent 70%);
+      background-repeat:no-repeat; background-size:100% 780px; background-color:var(--inkbg,var(--ink)); }
+    a { color:inherit; }
+    main { overflow-x:hidden; overflow-x:clip; }   /* the projects' glows reach past the phone's edge; they are clipped, never scrolled */
+    .wrap { max-width:1080px; margin:0 auto; padding:0 22px; }
+    @media (min-width:640px) { .wrap { padding:0 40px; } }
+    .dh { font-family:'Instrument Serif', Georgia, 'Times New Roman', serif; font-weight:400; letter-spacing:-.01em; }
+    html:lang(zh) .dh, html:lang(zh-Hant) .dh { font-family:'Songti SC','STSong','Noto Serif SC','Noto Serif CJK SC','Source Han Serif SC',serif; font-weight:700; letter-spacing:0; }
+    html:lang(zh) .dh2, html:lang(zh-Hant) .dh2 { font-family:inherit; font-style:normal; font-weight:600; }
+    html:lang(zh) .accent, html:lang(zh-Hant) .accent, html:lang(zh) .accent-word, html:lang(zh-Hant) .accent-word { font-style:normal; }
+
+    /* header */
+    .top { position:sticky; top:0; z-index:30; background:rgba(18,15,24,.74); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); }
+    .top-in { display:flex; align-items:center; justify-content:space-between; gap:12px; height:60px; }
+    .mark { display:flex; align-items:center; gap:10px; text-decoration:none; min-width:0; }
+    .markg { width:26px; height:26px; flex:none; overflow:visible; }
+    .mark b { font:700 13px 'Syne', 'Plus Jakarta Sans', sans-serif; letter-spacing:.04em; white-space:nowrap; }
+    .mark i { font:400 12px 'Space Mono', monospace; font-style:normal; color:var(--mut); white-space:nowrap; }
+    .top-r { display:flex; align-items:center; gap:14px; flex:none; }
+    .back { font:400 12px 'Space Mono', monospace; color:var(--mut); text-decoration:none; white-space:nowrap; }
+    .back:hover { color:var(--cream); }
+    .lang { height:32px; min-width:44px; padding:0 12px; border-radius:999px; border:1px solid rgba(244,236,221,.22); background:transparent; color:var(--cream); font:700 11px 'Space Mono', monospace; cursor:pointer; }
+    .lang:hover { border-color:var(--lamp); color:var(--lamp); }
+    .lang:focus-visible, .go:focus-visible, .why:focus-visible, .jump a:focus-visible, .sub-d:focus-visible { outline:2px solid var(--lamp); outline-offset:3px; }
+    @media (max-width:479px) { .mark i { display:none; } }
+
+    /* hero */
+    .hero { padding-top:clamp(44px,8vw,104px); }
+    .kicker { display:flex; align-items:center; gap:12px; margin:0; font:400 12px 'Space Mono', monospace; letter-spacing:.18em; text-transform:uppercase; color:var(--mut); }
+    .kicker .kd { width:28px; height:1px; background:var(--lamp); }
+    .hero-h { margin:22px 0 0; font-size:clamp(2.7rem,7.4vw,5.7rem); line-height:1.02; max-width:14ch; }
+    .hb { display:none; }
+    @media (min-width:640px) { .hb { display:inline; } }
+    .accent-word { font-style:italic; color:var(--lamp); }
+    .lede { margin:24px 0 0; max-width:38rem; font-size:clamp(1.02rem,1.5vw,1.18rem); line-height:1.7; color:var(--mut); }
+    .sky { margin:clamp(40px,7vw,72px) 0 0; }
+    .skyline { display:block; width:100%; height:auto; overflow:visible; }
+    .skyline .bld { fill:#1B1827; }
+    .skyline .ground { fill:#2A2540; }
+    .skyline .ant { stroke:#2A2540; stroke-width:2; fill:none; }
+    .skyline .beacon { fill:#E2553F; animation:breathe 2.4s ease-in-out infinite alternate; }
+    .skyline .win { fill:#2A2540; }
+    .skyline .lit, .skyline .deco { fill:url(#litg); }
+    .skyline .lit { animation:warm 1.6s ease-out both; animation-delay:var(--d,0s); }
+    .skyline .deco { animation:breathe 7s ease-in-out infinite alternate; animation-delay:var(--d,0s); }
+    .skyline .sil { fill:#3A2217; }
+    .skyline .wl { cursor:pointer; }
+    .skyline .wl:hover .win, .skyline .wl:focus-visible .win { filter:brightness(1.12); }
+    .skyline .wl:focus { outline:none; }
+    .skyline .wl:focus-visible .win { stroke:var(--cream); stroke-width:2; }
+    @keyframes warm { from { opacity:.25; } to { opacity:1; } }
+    @keyframes breathe { from { opacity:.78; } to { opacity:1; } }
+    .sky figcaption { margin-top:14px; font:400 15px/1.4 'Special Elite', 'Space Mono', monospace; color:var(--mut); transform:rotate(-.4deg); }
+    .jump { display:flex; flex-wrap:wrap; gap:8px; margin-top:22px; }
+    .jump a { display:inline-flex; align-items:center; padding:7px 14px; border-radius:999px; border:1px solid var(--line); background:rgba(244,236,221,.04); font:400 12px 'Space Mono', monospace; text-decoration:none; transition:border-color .2s, color .2s; }
+    .jump a:hover { border-color:var(--lamp); color:var(--lamp); }
+
+    /* sections */
+    .sec { margin-top:clamp(84px,12vw,150px); }
+    .eyebrow { margin:0; font:400 12px 'Space Mono', monospace; letter-spacing:.16em; text-transform:uppercase; color:var(--mut); }
+    .sec h2, .day-h { margin:12px 0 0; font-size:clamp(2.2rem,4.6vw,3.4rem); line-height:1.06; }
+    .note-line { margin:10px 0 0; font:400 12px 'Space Mono', monospace; color:var(--mut); }
+    .head { margin-bottom:34px; }
+    html:lang(zh) .head .eyebrow, html:lang(zh-Hant) .head .eyebrow, html:lang(zh) .day-eyebrow, html:lang(zh-Hant) .day-eyebrow { letter-spacing:.04em; }
+
+    /* the rules: cards on the night desk */
+    .rules { list-style:none; margin:0; padding:0; display:grid; gap:14px; grid-template-columns:1fr; counter-reset:none; }
+    @media (min-width:640px) { .rules { grid-template-columns:repeat(2,1fr); } }
+    @media (min-width:960px) { .rules { grid-template-columns:repeat(3,1fr); } }
+    .rules li { display:flex; flex-direction:column; gap:10px; padding:24px 24px 26px; border-radius:22px; background:linear-gradient(180deg,#221E2F,#191624); border:1px solid rgba(244,236,221,.08); box-shadow:0 1px 0 rgba(244,236,221,.05) inset; }
+    .rules .rn { font:400 12px 'Space Mono', monospace; color:var(--lamp); letter-spacing:.14em; }
+    .rules b { font:400 28px/1.12 'Instrument Serif', Georgia, serif; }
+    html:lang(zh) .rules b, html:lang(zh-Hant) .rules b { font:700 19px/1.35 inherit; font-family:inherit; }
+    .rules li > span:last-child { color:var(--mut); font-size:15px; line-height:1.65; }
+
+    /* the projects: a lit room each, the phone in its own glow */
+    .proj { display:grid; gap:30px; align-items:center; margin-top:clamp(64px,9vw,112px); scroll-margin-top:84px; }
+    .proj:first-of-type { margin-top:0; }
+    @media (min-width:800px) { .proj { grid-template-columns:minmax(0,5fr) minmax(0,7fr); gap:64px; } .proj.flip .shot { order:2; } }
+    .shot { position:relative; isolation:isolate; display:block; justify-self:center; width:min(100%,300px); aspect-ratio:3/5; padding:9px; border-radius:34px; background:#0C0A10; box-shadow:0 0 0 1px rgba(244,236,221,.09), 0 36px 70px -34px var(--glow); transition:transform .6s cubic-bezier(.2,.8,.2,1); }
+    .shot::before { content:""; position:absolute; inset:-54px; z-index:-1; border-radius:50%; background:radial-gradient(closest-side, var(--glow), transparent 72%); opacity:.22; filter:blur(10px); }
+    .shot img { display:block; width:100%; height:100%; object-fit:cover; border-radius:26px; }
+    .shot:hover { transform:translateY(-4px); }
+    .shot { text-decoration:none; }
+    .shot .soon { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; height:100%; border-radius:26px; background:radial-gradient(120% 70% at 50% 100%, rgba(156,196,122,.16), transparent 70%), #15121D; }
+    .shot .soon svg { width:62%; height:auto; shape-rendering:crispEdges; }
+    .shot .soon b { font:400 12px 'Space Mono', monospace; letter-spacing:.18em; text-transform:uppercase; color:var(--glow); }
+    .pn { display:flex; align-items:center; gap:12px; margin:0; font:400 12px 'Space Mono', monospace; letter-spacing:.14em; color:var(--mut); }
+    .pnum { color:var(--lamp); }
+    .pbar { width:34px; height:1px; background:var(--line); }
+    .ptxt h3 { margin:12px 0 0; font-size:clamp(2.7rem,5.2vw,4rem); line-height:1; }
+    .pline { margin:12px 0 0; font:italic 400 clamp(1.3rem,2.5vw,1.7rem)/1.25 'Instrument Serif', Georgia, serif; color:var(--lamp); }
+    .pd { margin:14px 0 0; max-width:34rem; line-height:1.72; color:var(--mut); }
+    .tags { list-style:none; margin:18px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:8px; }
+    .tags li { padding:5px 12px; border-radius:999px; border:1px solid rgba(244,236,221,.16); font:400 11px 'Space Mono', monospace; color:var(--mut); }
+    .acts { display:flex; flex-wrap:wrap; align-items:center; gap:14px 24px; margin-top:24px; }
+    .go { display:inline-flex; align-items:center; gap:8px; padding:12px 20px; border-radius:999px; background:var(--lamp); color:#1A1208; font:700 12px 'Space Mono', monospace; text-decoration:none; transition:background .2s, transform .2s; }
+    .go:hover { background:var(--lamp2); transform:translateY(-2px); }
+    .why { font:400 12px 'Space Mono', monospace; color:var(--cream); text-decoration:none; border-bottom:1px solid rgba(246,182,91,.55); padding-bottom:2px; }
+    .why:hover { color:var(--lamp); }
+
+    /* by day: the one light panel, a dawn */
+    .wrap-day { width:min(1080px, calc(100% - 44px)); margin:clamp(96px,13vw,160px) auto 0; }
+    @media (min-width:640px) { .wrap-day { width:min(1080px, calc(100% - 80px)); } }
+    .day { position:relative; overflow:hidden; border-radius:32px; padding:clamp(30px,6vw,64px); background:linear-gradient(180deg,#F8E6C6 0%,#F4EDE1 58%,#F3EEE6 100%); color:#1E1A16; }
+    .sunrise { position:absolute; right:-70px; bottom:-150px; width:min(520px,88%); height:auto; pointer-events:none; }
+    .day .eyebrow { color:#7A5A3A; }
+    .day-h { color:#1E1A16; max-width:18ch; }
+    .day .accent-word { color:#B4472E; font-style:italic; }
+    html:lang(zh) .day .accent-word, html:lang(zh-Hant) .day .accent-word { font-style:normal; }
+    .dayd { position:relative; margin:18px 0 0; max-width:40rem; line-height:1.7; color:#4A4037; }
+    .day .acts { position:relative; }
+    .go-d { background:#1E1A16; color:#FFF7EA; }
+    .go-d:hover { background:#B4472E; color:#fff; }
+    .sub-d { font:400 12px 'Space Mono', monospace; color:#1E1A16; text-decoration:none; border-bottom:1px solid #B4472E; padding-bottom:2px; }
+    .sub-d:hover { color:#B4472E; }
+
+    /* footer */
+    .foot { margin-top:clamp(80px,11vw,128px); padding:26px 0 40px; border-top:1px solid var(--line); font:400 11px 'Space Mono', monospace; color:var(--mut); }
+    .foot .wrap { display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; }
+    .foot a { text-decoration:none; }
+    .foot a:hover { color:var(--cream); }
+    .heart { color:var(--ember); }
+
+    /* reveal: things settle in like a lamp coming on (no motion for those who ask for none) */
+    html.js .reveal { opacity:0; transform:translateY(14px); transition:opacity .9s ease, transform .9s ease; }
+    html.js .reveal.in { opacity:1; transform:none; }
+    .rules li:nth-child(2) { transition-delay:.08s; } .rules li:nth-child(3) { transition-delay:.16s; } .rules li:nth-child(4) { transition-delay:.24s; } .rules li:nth-child(5) { transition-delay:.32s; }
+    @media (prefers-reduced-motion:reduce) {
+      html { scroll-behavior:auto; }
+      html.js .reveal { opacity:1; transform:none; transition:none; }
+      .skyline .lit, .skyline .deco, .skyline .beacon { animation:none; }
+      .shot { transition:none; }
+    }
+</style>
+<meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)"><style id="fb-dark">
+:root{color-scheme:light dark}
+@media (prefers-color-scheme: dark){
+:root{--paper:#141416;--ink:#ECEBE6;--muted:#A8A7AD;--line:#303036;--grid:#26262B;--white:#1D1D21;--inkbg:#2B2B31;--inkbd:#3B3B42;--accent-ink:#F28C76;--good:#62C48F;--paper-rgb:20,20,22;--dot-rgb:255,255,255;--ink-rgb:236,235,230;--white-rgb:29,29,33;--accent-text:#F2806A;--warn-ink:#E3B25C}
+html,body{background-color:var(--paper)}
+/* primary actions read as light on dark */
+.btn.pri,.cta a.pri,.chip.pri{background:#ECEBE6!important;border-color:#ECEBE6!important;color:#141416!important}
+.btn.pri:hover,.cta a.pri:hover,.chip.pri:hover{background:#fff!important;border-color:#fff!important}
+.btn[disabled]{opacity:.45}
+.seg button[aria-pressed="true"],.chip[aria-pressed="true"]{background:#ECEBE6!important;border-color:#ECEBE6!important;color:#141416!important}
+.steps span.done{background:#ECEBE6}
+.curtain{border:1px solid #3B3B42}
+/* light mock-ups (the Frontline chat phone) keep their light look: restore the light tokens inside */
+.phone{--ink:#17171A;--muted:#6B6A70;--line:#E5E2DA;--grid:#ECEAE4;--white:#fff;--paper:#F7F6F2;--white-rgb:255,255,255;--paper-rgb:247,246,242;--ink-rgb:23,23,26;color:#17171A}
+/* reversed (near-white) buttons and selected chips: everything inside takes their dark text, so nothing can turn white on white */
+.btn.pri *,.cta a.pri *,.chip.pri *,.seg button[aria-pressed="true"] *,.chip[aria-pressed="true"] *{color:inherit!important}
+/* illustrations keep their light look on a plate */
+.screen>svg,.plate,.card-art{background:#EFECE4;border-radius:18px}
+.plate{background:#fff!important}
+.card-art~.text-ink\/60,.card-art~span .text-ink\/60{color:rgba(23,23,26,.62)!important}
+.text-accent{color:#F2806A!important}
+.bg-white\/90.text-ink,.bg-white\/90 .text-ink{color:#ECEBE6}
+img{filter:none}
+::selection{background:#E2553F;color:#fff}
+}
+</style></head>
+<body>
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="mark" href="https://wei-meng.org" aria-label="WEI MENG">
+        <svg viewBox="0 0 24 24" class="markg" aria-hidden="true"><polyline points="3.5,7 7.75,17 12,9.5 16.25,17 20.5,7" fill="none" stroke="#F4ECDD" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="3.4" r="1.45" fill="#F6B65B"/></svg>
+        <b>WEI MENG</b><i data-i18n="headerSubtitle">After hours</i>
+      </a>
+      <div class="top-r">
+        <a class="back" href="/portfolio/"><span data-i18n="backHome">Portfolio</span> <span aria-hidden="true">→</span></a>
+        <button type="button" class="lang" onclick="cycleLanguage()" aria-label="Switch language"><span id="lang-btn-label">EN</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="hero-h">
+      <p class="kicker reveal"><span class="kd" aria-hidden="true"></span><span data-i18n="heroKicker">After hours</span></p>
+      <h1 id="hero-h" class="dh hero-h reveal" data-i18n-html="heroTitle">People aren't the means. <br class="hb">People are the <span class="accent-word">point</span>.</h1>
+      <p class="lede reveal" data-i18n="heroDesc">After work I make small, free things that try to take that seriously: a jar, a town, a town for your own people, a way to stay close, a few words in someone else's language. None of them want more of your time. They'd rather you spent it with someone.</p>
+      <figure class="sky reveal">
+        <svg class="skyline" viewBox="0 0 760 270" role="group" aria-labelledby="sky-cap"><defs><linearGradient id="litg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE7AE"/><stop offset="1" stop-color="#EA9550"/></linearGradient><filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect class="bld" x="24" y="126" width="170" height="136"/><rect class="bld" x="200" y="40" width="240" height="222"/><rect class="bld" x="446" y="86" width="180" height="176"/><rect class="bld" x="632" y="150" width="112" height="112"/><path class="ant" d="M320 40V16"/><circle class="beacon" cx="320" cy="14" r="2.6"/><rect class="ground" x="0" y="262" width="760" height="2"/><rect class="win" x="46" y="146" width="24" height="28" rx="2"/><rect class="win" x="86" y="146" width="24" height="28" rx="2"/><rect class="win" x="126" y="146" width="24" height="28" rx="2"/><rect class="win" x="166" y="146" width="24" height="28" rx="2"/><rect class="win" x="46" y="188" width="24" height="28" rx="2"/><rect class="win" x="126" y="188" width="24" height="28" rx="2"/><rect class="win" x="166" y="188" width="24" height="28" rx="2"/><rect class="win" x="46" y="230" width="24" height="28" rx="2"/><rect class="win" x="86" y="230" width="24" height="28" rx="2"/><rect class="win" x="126" y="230" width="24" height="28" rx="2"/><rect class="win" x="228" y="64" width="24" height="28" rx="2"/><rect class="win" x="308" y="64" width="24" height="28" rx="2"/><rect class="win" x="388" y="64" width="24" height="28" rx="2"/><rect class="win" x="228" y="108" width="24" height="28" rx="2"/><rect class="win" x="268" y="108" width="24" height="28" rx="2"/><rect class="win" x="308" y="108" width="24" height="28" rx="2"/><rect class="win" x="388" y="108" width="24" height="28" rx="2"/><rect class="win" x="228" y="152" width="24" height="28" rx="2"/><rect class="win" x="308" y="152" width="24" height="28" rx="2"/><rect class="win" x="348" y="152" width="24" height="28" rx="2"/><rect class="win" x="268" y="196" width="24" height="28" rx="2"/><rect class="win" x="348" y="196" width="24" height="28" rx="2"/><rect class="win" x="388" y="196" width="24" height="28" rx="2"/><rect class="win" x="470" y="110" width="24" height="28" rx="2"/><rect class="win" x="510" y="110" width="24" height="28" rx="2"/><rect class="win" x="550" y="110" width="24" height="28" rx="2"/><rect class="win" x="470" y="152" width="24" height="28" rx="2"/><rect class="win" x="550" y="152" width="24" height="28" rx="2"/><rect class="win" x="590" y="152" width="24" height="28" rx="2"/><rect class="win" x="470" y="194" width="24" height="28" rx="2"/><rect class="win" x="510" y="194" width="24" height="28" rx="2"/><rect class="win" x="550" y="194" width="24" height="28" rx="2"/><rect class="win" x="590" y="194" width="24" height="28" rx="2"/><rect class="win" x="652" y="172" width="24" height="28" rx="2"/><rect class="win" x="700" y="172" width="24" height="28" rx="2"/><rect class="win" x="700" y="214" width="24" height="28" rx="2"/><g filter="url(#glow)"><rect class="win deco" x="86" y="188" width="24" height="28" rx="2" style="--d:2.0s"/><rect class="win deco" x="166" y="230" width="24" height="28" rx="2" style="--d:5.0s"/><a class="wl" href="#nearby"><title>Nearby</title><rect class="win lit" x="268" y="64" width="24" height="28" rx="2" style="--d:0.3s"/></a><a class="wl" href="#vocab"><title>Vocab</title><rect class="win lit" x="348" y="64" width="24" height="28" rx="2" style="--d:0.9s"/></a><a class="wl" href="#little-things"><title data-i18n="ltName">Little Things</title><rect class="win lit" x="348" y="108" width="24" height="28" rx="2" style="--d:1.5s"/></a><a class="wl" href="#home-ground"><title data-i18n="hgName">Home Ground</title><rect class="win lit" x="268" y="152" width="24" height="28" rx="2" style="--d:3.3s"/></a><a class="wl" href="#handoff"><title>Handoff</title><rect class="win lit" x="388" y="152" width="24" height="28" rx="2" style="--d:2.1s"/></a><rect class="win deco" x="228" y="196" width="24" height="28" rx="2" style="--d:3.0s"/><rect class="win lit" x="308" y="196" width="24" height="28" rx="2" style="--d:2.7s"/><circle class="sil" cx="316" cy="206" r="2.6"/><circle class="sil" cx="324" cy="205.5" r="2.6"/><path class="sil" d="M311 224Q312 214 316 213Q320 214 321 224Z"/><path class="sil" d="M319 224Q320 214 324 213Q328 214 329 224Z"/><rect class="win deco" x="590" y="110" width="24" height="28" rx="2" style="--d:6.0s"/><rect class="win deco" x="510" y="152" width="24" height="28" rx="2" style="--d:1.0s"/><rect class="win deco" x="652" y="214" width="24" height="28" rx="2" style="--d:4.0s"/></g></svg>
+        <figcaption id="sky-cap" data-i18n="skyCap">Five windows are still lit. Walk in.</figcaption>
+      </figure>
+      <nav class="jump reveal" aria-label="Projects"><a href="#little-things"><span data-i18n="ltName">Little Things</span></a><a href="#nearby">Nearby</a><a href="#home-ground"><span data-i18n="hgName">Home Ground</span></a><a href="#handoff">Handoff</a><a href="#vocab">Vocab</a></nav>
+    </section>
+
+    <section class="sec wrap" aria-labelledby="ph-h">
+      <div class="head reveal">
+        <p class="eyebrow" data-i18n="phK">How I design them</p>
+        <h2 id="ph-h" class="dh" data-i18n="phH">Five rules I keep</h2>
+      </div>
+      <ol class="rules"><li class="reveal"><span class="rn">01</span><b data-i18n="p1T">It ends off the screen.</b><span data-i18n="p1D">Every visit closes with something to do away from it: call someone, cook, go outside, sleep.</span></li><li class="reveal"><span class="rn">02</span><b data-i18n="p2T">Nothing to win.</b><span data-i18n="p2D">No scores, streaks or badges. Nothing counts how long you stayed.</span></li><li class="reveal"><span class="rn">03</span><b data-i18n="p3T">Made for two.</b><span data-i18n="p3D">Most things work alone or with someone far away, from one link.</span></li><li class="reveal"><span class="rn">04</span><b data-i18n="p4T">Yours stays yours.</b><span data-i18n="p4D">No ads, no tracking, sign-in only where it has to be. Most of it never leaves your device.</span></li><li class="reveal"><span class="rn">05</span><b data-i18n="p5T">Small on purpose.</b><span data-i18n="p5D">One thing at a time. A short visit is a good visit.</span></li></ol>
+    </section>
+
+    <section class="sec wrap" aria-labelledby="pr-h">
+      <div class="head reveal">
+        <p class="eyebrow" data-i18n="prK">The projects</p>
+        <h2 id="pr-h" class="dh" data-i18n="prH">Five small things</h2>
+        <p class="note-line" data-i18n="prNote">Free · five languages · works on a phone</p>
+      </div>
+      <article id="little-things" class="proj reveal" style="--glow:#F6B65B">
+        <a class="shot" href="https://www.freebuilder.net/little-things/" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true"><img src="/after-hours/little-things.webp?v=671c05d2" width="480" height="800" loading="lazy" alt=""></a>
+        <div class="ptxt">
+          <p class="pn"><span class="pnum">01</span><span class="pbar" aria-hidden="true"></span></p>
+          <h3 class="dh"><span data-i18n="ltName">Little Things</span></h3>
+          <p class="pline dh2" data-i18n="ltL">One small offline thing at a time.</p>
+          <p class="pd" data-i18n="ltD">In Popo's kitchen, she hands you one little thing from her jar: ring someone, cook for someone, walk a different way home. What you did goes back in as a dated paper note, never counted.</p>
+          <ul class="tags"><li data-i18n="ltT1">100 little things</li><li data-i18n="ltT2">On your device</li><li data-i18n="ltT3">Popo sleeps at 9</li></ul>
+          <div class="acts"><a class="go" href="https://www.freebuilder.net/little-things/" target="_blank" rel="noopener noreferrer"><span data-i18n="ltGo">Open the jar</span> ↗</a></div>
+        </div>
+      </article>
+      <article id="nearby" class="proj reveal flip" style="--glow:#8E7FE6">
+        <a class="shot" href="https://www.freebuilder.net/nearby/" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true"><img src="/after-hours/nearby.webp?v=369e0268" width="480" height="800" loading="lazy" alt=""></a>
+        <div class="ptxt">
+          <p class="pn"><span class="pnum">02</span><span class="pbar" aria-hidden="true"></span></p>
+          <h3 class="dh">Nearby</h3>
+          <p class="pline dh2" data-i18n="nbL">A little world that sends you back to yours.</p>
+          <p class="pd" data-i18n="nbD">A pixel town with a bar, a bookshop, a cabin, a lake and a night train. Wander alone or bring a friend, leave something for the neighbours, and let Wei the bartender point the way.</p>
+          <ul class="tags"><li data-i18n="nbT1">20+ places</li><li data-i18n="nbT2">Alone or together</li><li data-i18n="nbT3">No scores</li></ul>
+          <div class="acts"><a class="go" href="https://www.freebuilder.net/nearby/" target="_blank" rel="noopener noreferrer"><span data-i18n="nbGo">Walk in</span> ↗</a><a class="why" href="https://www.freebuilder.net/nearby/about/" target="_blank" rel="noopener noreferrer"><span data-i18n="nbWhy">Why I built it</span> ↗</a></div>
+        </div>
+      </article>
+      <article id="home-ground" class="proj reveal" style="--glow:#9CC47A">
+        <a class="shot" href="https://www.freebuilder.net/home-ground/" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true"><span class="soon"><svg viewBox="0 0 60 44" aria-hidden="true"><rect x="2" y="38" width="56" height="2" fill="#2A2540"/><rect x="6" y="22" width="14" height="16" fill="#2A2540"/><rect x="23" y="14" width="14" height="24" fill="#2A2540"/><rect x="40" y="26" width="14" height="12" fill="#2A2540"/><rect x="10" y="27" width="5" height="6" fill="#9CC47A"/><rect x="27" y="19" width="5" height="6" fill="#9CC47A"/><rect x="27" y="29" width="5" height="6" fill="#F6B65B"/><rect x="44" y="30" width="5" height="5" fill="#9CC47A"/></svg><b data-i18n="hgT1">New</b></span></a>
+        <div class="ptxt">
+          <p class="pn"><span class="pnum">03</span><span class="pbar" aria-hidden="true"></span></p>
+          <h3 class="dh"><span data-i18n="hgName">Home Ground</span></h3>
+          <p class="pline dh2" data-i18n="hgL">A town your people build together.</p>
+          <p class="pd" data-i18n="hgD">A family or a few friends each move in next door, then put down the ways you look after each other: Sunday dinner, the long walk, the call that comes every week. It ends at the dinner table, with one thing to try. New, and still being built.</p>
+          <ul class="tags"><li data-i18n="hgT1">New</li><li data-i18n="hgT2">For family & friends</li><li data-i18n="hgT3">Ends at dinner</li></ul>
+          <div class="acts"><a class="go" href="https://www.freebuilder.net/home-ground/" target="_blank" rel="noopener noreferrer"><span data-i18n="hgGo">Open Home Ground</span> ↗</a></div>
+        </div>
+      </article>
+      <article id="handoff" class="proj reveal flip" style="--glow:#E9825E">
+        <a class="shot" href="https://www.freebuilder.net/handoff/" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true"><img src="/after-hours/handoff.webp?v=d103c7ed" width="480" height="800" loading="lazy" alt=""></a>
+        <div class="ptxt">
+          <p class="pn"><span class="pnum">04</span><span class="pbar" aria-hidden="true"></span></p>
+          <h3 class="dh">Handoff</h3>
+          <p class="pline dh2" data-i18n="hoL">For two people in different cities.</p>
+          <p class="pd" data-i18n="hoD">Notes and voice messages for one person, each other's weather and time of day, and a capsule that opens later. Only the two of you see it.</p>
+          <ul class="tags"><li data-i18n="hoT1">For two</li><li data-i18n="hoT2">Installs like an app</li><li data-i18n="hoT3">Private</li></ul>
+          <div class="acts"><a class="go" href="https://www.freebuilder.net/handoff/" target="_blank" rel="noopener noreferrer"><span data-i18n="hoGo">Open Handoff</span> ↗</a></div>
+        </div>
+      </article>
+      <article id="vocab" class="proj reveal" style="--glow:#7FC9B8">
+        <a class="shot" href="https://www.freebuilder.net/vocab/" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true"><img src="/after-hours/vocab.webp?v=526a414d" width="480" height="800" loading="lazy" alt=""></a>
+        <div class="ptxt">
+          <p class="pn"><span class="pnum">05</span><span class="pbar" aria-hidden="true"></span></p>
+          <h3 class="dh">Vocab</h3>
+          <p class="pline dh2" data-i18n="voL">A few words in someone else's language.</p>
+          <p class="pd" data-i18n="voD">Little rooms for Catalan, Spanish, Welsh, Cantonese and Chinese idioms, and flashcards for any words of your own. A way to say good morning to someone in their language.</p>
+          <ul class="tags"><li data-i18n="voT1">6 rooms</li><li data-i18n="voT2">Flashcards & sound</li><li data-i18n="voT3">On your device</li></ul>
+          <div class="acts"><a class="go" href="https://www.freebuilder.net/vocab/" target="_blank" rel="noopener noreferrer"><span data-i18n="voGo">Open Vocab</span> ↗</a></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="day reveal wrap-day" aria-labelledby="day-h">
+      <svg class="sunrise" viewBox="0 0 420 240" aria-hidden="true" focusable="false">
+        <g fill="none" stroke="#B4472E" stroke-opacity=".3" stroke-width="1.2"><circle cx="330" cy="240" r="96"/><circle cx="330" cy="240" r="140"/><circle cx="330" cy="240" r="186"/><circle cx="330" cy="240" r="234"/></g>
+        <circle cx="330" cy="240" r="66" fill="#F2B25C" opacity=".9"/>
+      </svg>
+      <p class="eyebrow day-eyebrow"><span data-i18n="dayK">By day</span></p>
+      <h2 id="day-h" class="dh day-h" data-i18n-html="dayH">The same idea, <span class="accent-word">at work</span>.</h2>
+      <p class="dayd" data-i18n="dayD">FREE//BUILDER turns it into learning for teams: better work starts between people. Short, hands-on practice in listening, feedback and trust that ends in a real conversation.</p>
+      <div class="acts">
+        <a class="go go-d" href="https://www.freebuilder.net/" target="_blank" rel="noopener noreferrer"><span data-i18n="dayGo">Visit FREE//BUILDER</span> ↗</a>
+        <a class="sub-d" href="/portfolio/"><span data-i18n="dayPf">Back to the portfolio</span> →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="fbf" data-fbf-root><div class="fbf-in"><span>© <span id="current-year">2026</span> <a href="/" data-fbf-title="home">FREE//BUILDER</a> L&amp;D Solutions</span><nav aria-label="Footer"><a href="/privacy/" data-fbf="privacy">Privacy</a><a href="https://www.freebuilder.net/">FREE//BUILDER ↗</a><span data-fbf="made">Made with <a href="https://www.freebuilder.net/notes/ai-use/" class="fbf-ai">AI</a> &amp; <a href="https://www.freebuilder.net/nearby/" class="fbf-heart">♥</a></span></nav></div></footer>
+
+  <script>
+    (function () {
+      var T = {
+ "en": {
+  "pageTitle": "WEI MENG — After hours: small things, made for the people between us",
+  "headerSubtitle": "After hours",
+  "backHome": "Portfolio",
+  "heroKicker": "After hours",
+  "heroTitle": "People aren't the means. <br class=\"hb\">People are the <span class=\"accent-word\">point</span>.",
+  "heroDesc": "After work I make small, free things that try to take that seriously: a jar, a town, a town for your own people, a way to stay close, a few words in someone else's language. None of them want more of your time. They'd rather you spent it with someone.",
+  "skyCap": "Five windows are still lit. Walk in.",
+  "phK": "How I design them",
+  "phH": "Five rules I keep",
+  "p1T": "It ends off the screen.",
+  "p1D": "Every visit closes with something to do away from it: call someone, cook, go outside, sleep.",
+  "p2T": "Nothing to win.",
+  "p2D": "No scores, streaks or badges. Nothing counts how long you stayed.",
+  "p3T": "Made for two.",
+  "p3D": "Most things work alone or with someone far away, from one link.",
+  "p4T": "Yours stays yours.",
+  "p4D": "No ads, no tracking, sign-in only where it has to be. Most of it never leaves your device.",
+  "p5T": "Small on purpose.",
+  "p5D": "One thing at a time. A short visit is a good visit.",
+  "prK": "The projects",
+  "prH": "Five small things",
+  "prNote": "Free · five languages · works on a phone",
+  "nbL": "A little world that sends you back to yours.",
+  "nbD": "A pixel town with a bar, a bookshop, a cabin, a lake and a night train. Wander alone or bring a friend, leave something for the neighbours, and let Wei the bartender point the way.",
+  "nbT1": "20+ places",
+  "nbT2": "Alone or together",
+  "nbT3": "No scores",
+  "nbGo": "Walk in",
+  "nbWhy": "Why I built it",
+  "ltL": "One small offline thing at a time.",
+  "ltD": "In Popo's kitchen, she hands you one little thing from her jar: ring someone, cook for someone, walk a different way home. What you did goes back in as a dated paper note, never counted.",
+  "ltT1": "100 little things",
+  "ltT2": "On your device",
+  "ltT3": "Popo sleeps at 9",
+  "ltGo": "Open the jar",
+  "hoL": "For two people in different cities.",
+  "hoD": "Notes and voice messages for one person, each other's weather and time of day, and a capsule that opens later. Only the two of you see it.",
+  "hoT1": "For two",
+  "hoT2": "Installs like an app",
+  "hoT3": "Private",
+  "hoGo": "Open Handoff",
+  "voL": "A few words in someone else's language.",
+  "voD": "Little rooms for Catalan, Spanish, Welsh, Cantonese and Chinese idioms, and flashcards for any words of your own. A way to say good morning to someone in their language.",
+  "voT1": "6 rooms",
+  "voT2": "Flashcards & sound",
+  "voT3": "On your device",
+  "voGo": "Open Vocab",
+  "hgL": "A town your people build together.",
+  "hgD": "A family or a few friends each move in next door, then put down the ways you look after each other: Sunday dinner, the long walk, the call that comes every week. It ends at the dinner table, with one thing to try. New, and still being built.",
+  "hgT1": "New",
+  "hgT2": "For family & friends",
+  "hgT3": "Ends at dinner",
+  "hgGo": "Open Home Ground",
+  "dayK": "By day",
+  "dayH": "The same idea, <span class=\"accent-word\">at work</span>.",
+  "dayD": "FREE//BUILDER turns it into learning for teams: better work starts between people. Short, hands-on practice in listening, feedback and trust that ends in a real conversation.",
+  "dayGo": "Visit FREE//BUILDER",
+  "dayPf": "Back to the portfolio",
+  "footerMade": "Made with AI &",
+  "ltName": "Little Things",
+  "hgName": "Home Ground"
+ },
+ "zh": {
+  "pageTitle": "孟玮 — 下班以后：为人与人之间做的小东西",
+  "headerSubtitle": "下班以后",
+  "backHome": "作品集",
+  "heroKicker": "下班以后",
+  "heroTitle": "人不是手段，<br class=\"hb\">人本身就是<span class=\"accent-word\">意义</span>。",
+  "heroDesc": "下班后，我做一些小小的、免费的东西，认真对待这件事：一个罐子、一座小镇、一座属于自家人的小镇、一种保持亲近的方式、几句别人语言里的话。它们都不想多占你的时间，只希望你把时间花在某个人身上。",
+  "skyCap": "还有五扇窗亮着，走进去看看。",
+  "phK": "我怎么设计它们",
+  "phH": "我守着的五条规矩",
+  "p1T": "最后落在屏幕外。",
+  "p1D": "每次都以一件屏幕外的事收尾：给谁打个电话、做顿饭、出门走走、去睡觉。",
+  "p2T": "没有输赢。",
+  "p2D": "不计分，不打卡，没有徽章。没有什么会记你待了多久。",
+  "p3T": "为两个人做。",
+  "p3D": "大多数东西都能一个人用，也能和远方的人一起，一个链接就够。",
+  "p4T": "你的就是你的。",
+  "p4D": "没有广告，不追踪，只在必要时才登录。大部分内容从不离开你的设备。",
+  "p5T": "故意做小。",
+  "p5D": "一次只做一件事。短短的一次来访，就是好的来访。",
+  "prK": "作品",
+  "prH": "五样小东西",
+  "prNote": "免费 · 五种语言 · 手机上就能用",
+  "nbL": "一个小小的世界，把你送回你自己的世界。",
+  "nbD": "一座像素小镇：一间酒吧、一家书店、一间小屋、一片湖和一趟夜车。一个人逛，或者带上朋友；给街坊留点东西；让酒保 Wei 给你指路。",
+  "nbT1": "20 多个地方",
+  "nbT2": "一个人或一起",
+  "nbT3": "不计分",
+  "nbGo": "走进去",
+  "nbWhy": "我为什么做它",
+  "ltL": "一次一件屏幕外的小事。",
+  "ltD": "在婆婆的厨房里，她从罐子里递给你一件小事：给谁打个电话、为谁做顿饭、换条路回家。做过的事会变成一张写了日期的小纸条放回罐子里，从不计数。",
+  "ltT1": "100 件小事",
+  "ltT2": "只在你的设备上",
+  "ltT3": "婆婆九点睡",
+  "ltGo": "打开罐子",
+  "hoL": "给分隔两座城市的两个人。",
+  "hoD": "只写给一个人的留言和语音、彼此那边的天气和时间，还有一个以后才打开的时间胶囊。只有你们两个人看得到。",
+  "hoT1": "两个人用",
+  "hoT2": "能像 App 一样安装",
+  "hoT3": "私密",
+  "hoGo": "打开 Handoff",
+  "voL": "几句别人语言里的话。",
+  "voD": "几间小小的语言教室：加泰罗尼亚语、西班牙语、威尔士语、粤语和成语，还有给你自己任何词的单词卡。用对方的语言跟人说声早安。",
+  "voT1": "6 间教室",
+  "voT2": "单词卡和发音",
+  "voT3": "只在你的设备上",
+  "voGo": "打开 Vocab",
+  "hgL": "一座家人朋友一起盖的小镇。",
+  "hgD": "一家人或几个朋友各自搬进隔壁，再放下你们照顾彼此的方式：周日的晚饭、长长的散步、每周都会打来的电话。最后落在饭桌上，带着一件可以试试的事。新做的，还在盖。",
+  "hgT1": "新",
+  "hgT2": "给家人和朋友",
+  "hgT3": "在饭桌上收尾",
+  "hgGo": "打开我们的家园",
+  "dayK": "白天",
+  "dayH": "同一个想法，<span class=\"accent-word\">在工作里</span>。",
+  "dayD": "FREE//BUILDER 把它变成给团队的学习：更好的工作，从人与人之间开始。短小、上手即练的倾听、反馈与信任练习，以一场真实的对话收尾。",
+  "dayGo": "看看 FREE//BUILDER",
+  "dayPf": "回到作品集",
+  "footerMade": "用 AI 与",
+  "ltName": "小事",
+  "hgName": "我们的家园"
+ },
+ "es": {
+  "pageTitle": "WEI MENG — Fuera de horario: cosas pequeñas para lo que hay entre las personas",
+  "headerSubtitle": "Fuera de horario",
+  "backHome": "Portafolio",
+  "heroKicker": "Fuera de horario",
+  "heroTitle": "Las personas no son el medio. <br class=\"hb\">Son lo que <span class=\"accent-word\">importa</span>.",
+  "heroDesc": "Después del trabajo hago cosas pequeñas y gratuitas que intentan tomárselo en serio: un tarro, un pueblo, un pueblo para los tuyos, una forma de seguir cerca, unas palabras en el idioma de otra persona. Ninguna quiere más de tu tiempo. Prefieren que lo pases con alguien.",
+  "skyCap": "Cinco ventanas siguen encendidas. Entra en una.",
+  "phK": "Cómo las diseño",
+  "phH": "Cinco reglas que mantengo",
+  "p1T": "Termina fuera de la pantalla.",
+  "p1D": "Cada visita acaba con algo que hacer lejos de ella: llamar a alguien, cocinar, salir, dormir.",
+  "p2T": "Nada que ganar.",
+  "p2D": "Sin puntos, rachas ni insignias. Nada cuenta cuánto tiempo te quedaste.",
+  "p3T": "Hecho para dos.",
+  "p3D": "Casi todo funciona solo o con alguien lejos, desde un enlace.",
+  "p4T": "Lo tuyo es tuyo.",
+  "p4D": "Sin anuncios, sin rastreo, con cuenta solo donde hace falta. Casi nada sale de tu dispositivo.",
+  "p5T": "Pequeño a propósito.",
+  "p5D": "Una cosa cada vez. Una visita corta es una buena visita.",
+  "prK": "Los proyectos",
+  "prH": "Cinco cosas pequeñas",
+  "prNote": "Gratis · cinco idiomas · funciona en el móvil",
+  "nbL": "Un mundo pequeño que te devuelve al tuyo.",
+  "nbD": "Un pueblo de píxeles con un bar, una librería, una cabaña, un lago y un tren nocturno. Pasea solo o con un amigo, deja algo a los vecinos y deja que Wei, el barman, te indique el camino.",
+  "nbT1": "Más de 20 sitios",
+  "nbT2": "Solo o en compañía",
+  "nbT3": "Sin puntos",
+  "nbGo": "Entra",
+  "nbWhy": "Por qué lo hice",
+  "ltL": "Una cosita fuera de la pantalla cada vez.",
+  "ltD": "En la cocina de Popo, ella te da una cosita de su tarro: llamar a alguien, cocinar para alguien, volver a casa por otro camino. Lo que hiciste vuelve al tarro como una nota de papel con fecha, nunca contada.",
+  "ltT1": "100 cositas",
+  "ltT2": "En tu dispositivo",
+  "ltT3": "Popo duerme a las 9",
+  "ltGo": "Abrir el tarro",
+  "hoL": "Para dos personas en ciudades distintas.",
+  "hoD": "Notas y mensajes de voz para una sola persona, el tiempo y la hora del otro, y una cápsula que se abre más adelante. Solo lo veis vosotros dos.",
+  "hoT1": "Para dos",
+  "hoT2": "Se instala como una app",
+  "hoT3": "Privado",
+  "hoGo": "Abrir Handoff",
+  "voL": "Unas palabras en el idioma de otra persona.",
+  "voD": "Pequeñas salas de catalán, español, galés, cantonés y chengyu chinos, y tarjetas para cualquier palabra tuya. Una forma de dar los buenos días a alguien en su idioma.",
+  "voT1": "6 salas",
+  "voT2": "Tarjetas y sonido",
+  "voT3": "En tu dispositivo",
+  "voGo": "Abrir Vocab",
+  "hgL": "Un pueblo que construyen los tuyos.",
+  "hgD": "Una familia o unos amigos se mudan a la casa de al lado y luego ponen las formas en que os cuidáis: la cena del domingo, el paseo largo, la llamada de cada semana. Termina en la mesa, con una cosa que probar. Nuevo, y todavía en obras.",
+  "hgT1": "Nuevo",
+  "hgT2": "Para familia y amigos",
+  "hgT3": "Acaba en la cena",
+  "hgGo": "Abrir Nuestro Rincón",
+  "dayK": "De día",
+  "dayH": "La misma idea, <span class=\"accent-word\">en el trabajo</span>.",
+  "dayD": "FREE//BUILDER la convierte en aprendizaje para equipos: el buen trabajo empieza entre personas. Práctica breve de escucha, feedback y confianza que termina en una conversación real.",
+  "dayGo": "Visitar FREE//BUILDER",
+  "dayPf": "Volver al portafolio",
+  "footerMade": "Hecho con IA y",
+  "ltName": "Cosas pequeñas",
+  "hgName": "Nuestro Rincón"
+ }, "zh-Hant": {
+  "pageTitle": "孟瑋 — 下班以後：為人與人之間做的小東西",
+  "headerSubtitle": "下班以後",
+  "backHome": "作品集",
+  "heroKicker": "下班以後",
+  "heroTitle": "人不是手段，<br class=\"hb\">人本身就是<span class=\"accent-word\">意義</span>。",
+  "heroDesc": "下班後，我做一些小小的、免費的東西，認真對待這件事：一個罐子、一座小鎮、一座屬於自家人的小鎮、一種保持親近的方式、幾句別人語言裡的話。它們都不想多佔你的時間，只希望你把時間花在某個人身上。",
+  "skyCap": "還有五扇窗亮著，走進去看看。",
+  "phK": "我怎麼設計它們",
+  "phH": "我守著的五條規矩",
+  "p1T": "最後落在螢幕外。",
+  "p1D": "每次都以一件螢幕外的事收尾：給誰打個電話、做頓飯、出門走走、去睡覺。",
+  "p2T": "沒有輸贏。",
+  "p2D": "不計分，不打卡，沒有徽章。沒有什麼會記你待了多久。",
+  "p3T": "為兩個人做。",
+  "p3D": "大多數東西都能一個人用，也能和遠方的人一起，一個連結就夠。",
+  "p4T": "你的就是你的。",
+  "p4D": "沒有廣告，不追蹤，只在必要時才登入。大部分內容從不離開你的裝置。",
+  "p5T": "故意做小。",
+  "p5D": "一次只做一件事。短短的一次來訪，就是好的來訪。",
+  "prK": "作品",
+  "prH": "五樣小東西",
+  "prNote": "免費 · 五種語言 · 手機上就能用",
+  "nbL": "一個小小的世界，把你送回你自己的世界。",
+  "nbD": "一座畫素小鎮：一間酒吧、一家書店、一間小屋、一片湖和一趟夜車。一個人逛，或者帶上朋友；給街坊留點東西；讓酒保 Wei 給你指路。",
+  "nbT1": "20 多個地方",
+  "nbT2": "一個人或一起",
+  "nbT3": "不計分",
+  "nbGo": "走進去",
+  "nbWhy": "我為什麼做它",
+  "ltL": "一次一件螢幕外的小事。",
+  "ltD": "在婆婆的廚房裡，她從罐子裡遞給你一件小事：給誰打個電話、為誰做頓飯、換條路回家。做過的事會變成一張寫了日期的小紙條放回罐子裡，從不計數。",
+  "ltT1": "100 件小事",
+  "ltT2": "只在你的裝置上",
+  "ltT3": "婆婆九點睡",
+  "ltGo": "開啟罐子",
+  "hoL": "給分隔兩座城市的兩個人。",
+  "hoD": "只寫給一個人的留言和語音、彼此那邊的天氣和時間，還有一個以後才打開的時間膠囊。只有你們兩個人看得到。",
+  "hoT1": "兩個人用",
+  "hoT2": "能像 App 一樣安裝",
+  "hoT3": "私密",
+  "hoGo": "開啟 Handoff",
+  "voL": "幾句別人語言裡的話。",
+  "voD": "幾間小小的語言教室：加泰羅尼亞語、西班牙語、威爾士語、粵語和成語，還有給你自己任何詞的單詞卡。用對方的語言跟人說聲早安。",
+  "voT1": "6 間教室",
+  "voT2": "單詞卡和發音",
+  "voT3": "只在你的裝置上",
+  "voGo": "開啟 Vocab",
+  "hgL": "一座家人朋友一起蓋的小鎮。",
+  "hgD": "一家人或幾個朋友各自搬進隔壁，再放下你們照顧彼此的方式：週日的晚飯、長長的散步、每週都會打來的電話。最後落在飯桌上，帶著一件可以試試的事。新做的，還在蓋。",
+  "hgT1": "新",
+  "hgT2": "給家人和朋友",
+  "hgT3": "在飯桌上收尾",
+  "hgGo": "開啟我們的家園",
+  "dayK": "白天",
+  "dayH": "同一個想法，<span class=\"accent-word\">在工作裡</span>。",
+  "dayD": "FREE//BUILDER 把它變成給團隊的學習：更好的工作，從人與人之間開始。短小、上手即練的傾聽、反饋與信任練習，以一場真實的對話收尾。",
+  "dayGo": "看看 FREE//BUILDER",
+  "dayPf": "回到作品集",
+  "footerMade": "用 AI 與",
+  "ltName": "小事",
+  "hgName": "我們的家園"
+ }, "ca": {
+  "pageTitle": "WEI MENG — Fora d'hores: coses petites per al que hi ha entre les persones",
+  "headerSubtitle": "Fora d'hores",
+  "backHome": "Portafoli",
+  "heroKicker": "Fora d'hores",
+  "heroTitle": "Las personas no son el medio. <br class=\"hb\">Son lo que <span class=\"accent-word\">importa</span>.",
+  "heroDesc": "Després de la feina faig coses petites i gratuïtes que intenten prendre-s'ho seriosament: un pot, un poble, un joc per a un equip, una manera de seguir a prop, unes paraules en la llengua d'una altra persona. Cap no vol més del teu temps. Prefereixen que el passis amb algú.",
+  "skyCap": "Cinc finestres encara són enceses. Entra en una.",
+  "phK": "Com les dissenyo",
+  "phH": "Cinc regles que mantinc",
+  "p1T": "Acaba fora de la pantalla.",
+  "p1D": "Cada visita acaba amb alguna cosa per fer lluny d'ella: trucar a algú, cuinar, sortir, dormir.",
+  "p2T": "Res a guanyar.",
+  "p2D": "Sense punts, ratxes ni insígnies. Res no compta quant de temps t'hi has quedat.",
+  "p3T": "Fet per a dos.",
+  "p3D": "Gairebé tot funciona sol o amb algú lluny, des d'un enllaç.",
+  "p4T": "El que és teu és teu.",
+  "p4D": "Sense anuncis, sense rastreig, amb compte només on cal. Gairebé res no surt del teu dispositiu.",
+  "p5T": "Petit a propòsit.",
+  "p5D": "Una cosa cada vegada. Una visita curta és una bona visita.",
+  "prK": "Els projectes",
+  "prH": "Cinc coses petites",
+  "prNote": "Gratis · cinc llengües · funciona al mòbil",
+  "nbL": "Un món petit que et torna al teu.",
+  "nbD": "Un poble de píxels amb un bar, una llibreria, una cabana, un llac i un tren de nit. Passeja sol o amb un amic, deixa alguna cosa als veïns i deixa que en Wei, el cambrer, t'indiqui el camí.",
+  "nbT1": "Més de 20 llocs",
+  "nbT2": "Sol o en companyia",
+  "nbT3": "Sin puntos",
+  "nbGo": "Entra",
+  "nbWhy": "Per què el vaig fer",
+  "ltL": "Una coseta fora de la pantalla cada vegada.",
+  "ltD": "A la cuina de la Popo, ella et dona una coseta del seu pot: trucar a algú, cuinar per a algú, tornar a casa per un altre camí. El que has fet torna al pot com una nota de paper amb data, mai comptada.",
+  "ltT1": "100 cosetes",
+  "ltT2": "Al teu dispositiu",
+  "ltT3": "La Popo dorm a les 9",
+  "ltGo": "Obrir el pot",
+  "hoL": "Per a dues persones en ciutats diferents.",
+  "hoD": "Notes i missatges de veu per a una sola persona, el temps i l'hora de l'altre, i una càpsula que s'obre més endavant. Només ho veieu vosaltres dos.",
+  "hoT1": "Per a dos",
+  "hoT2": "S'instal·la com una app",
+  "hoT3": "Privat",
+  "hoGo": "Obrir Handoff",
+  "voL": "Unes paraules en la llengua d'una altra persona.",
+  "voD": "Petites sales de català, castellà, gal·lès, cantonès i chengyu xinesos, i targetes per a qualsevol paraula teva. Una manera de dir bon dia a algú en la seva llengua.",
+  "voT1": "6 sales",
+  "voT2": "Targetes i so",
+  "voT3": "Al teu dispositiu",
+  "voGo": "Obrir Vocab",
+  "hgL": "Un poble que construeixen els teus.",
+  "hgD": "Una família o uns amics es muden a la casa del costat i després hi posen les maneres com us cuideu: el sopar del diumenge, la passejada llarga, la trucada de cada setmana. Acaba a taula, amb una cosa per provar. Nou, i encara en obres.",
+  "hgT1": "Nou",
+  "hgT2": "Per a família i amics",
+  "hgT3": "Acaba al sopar",
+  "hgGo": "Obrir El Nostre Racó",
+  "dayK": "De dia",
+  "dayH": "La mateixa idea, <span class=\"accent-word\">a la feina</span>.",
+  "dayD": "FREE//BUILDER la converteix en aprenentatge per a equips: la bona feina comença entre persones. Pràctica breu d'escolta, feedback i confiança que acaba en una conversa real.",
+  "dayGo": "Visitar FREE//BUILDER",
+  "dayPf": "Tornar al portafoli",
+  "footerMade": "Fet amb IA i",
+  "ltName": "Petites coses",
+  "hgName": "El Nostre Racó"
+ }
+};
+      var langs = ['en', 'zh', 'zh-Hant', 'es', 'ca'], labels = { en: 'EN', zh: '中文', es: 'ES', "zh-Hant": "繁中", "ca": "CA" }, cur = 'en';
+      var $ = function (id) { return document.getElementById(id); };
+      function setLanguage(lang) {
+        if (!T[lang]) return;
+        cur = lang;
+        var t = T[lang];
+        document.documentElement.lang = (/*i18n*/lang === 'zh' ? 'zh-CN' : (lang === "zh-Hant" ? "zh-TW" : lang));
+        $('page-title').textContent = t.pageTitle;
+        $('lang-btn-label').textContent = labels[lang];
+        document.querySelectorAll('[data-i18n]').forEach(function (el) { var v = t[el.getAttribute('data-i18n')]; if (v) el.textContent = v; });
+        document.querySelectorAll('[data-i18n-html]').forEach(function (el) { var v = t[el.getAttribute('data-i18n-html')]; if (v) el.innerHTML = v; });
+        try { localStorage.setItem('wm_cases_lang', lang); localStorage.setItem('wm_preferred_lang', lang); } catch (e) {}
+      }
+      window.cycleLanguage = function () { setLanguage(langs[(langs.indexOf(cur) + 1) % langs.length]); };
+      (function reveal() {
+        var els = document.querySelectorAll('.reveal');
+        if (!('IntersectionObserver' in window)) { els.forEach(function (e) { e.classList.add('in'); }); return; }
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+        }, { threshold: 0.12 });
+        els.forEach(function (e) { io.observe(e); });
+      })();
+      $('current-year').textContent = new Date().getFullYear();
+      (function initLanguage() {
+        var saved = null;
+        try { saved = localStorage.getItem('wm_cases_lang') || localStorage.getItem('wm_preferred_lang'); } catch (e) {}
+        if (saved && langs.indexOf(saved) >= 0) return setLanguage(saved);
+        var b = (navigator.language || '').toLowerCase();
+        setLanguage(b.indexOf('zh') === 0 ? 'zh' : b.indexOf('es') === 0 ? 'es' : 'en');
+      })();
+    })();
+  </script>
+</body>
+</html>

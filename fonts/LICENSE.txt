@@ -1,0 +1,1 @@
+Syne, Plus Jakarta Sans, Space Mono and Instrument Serif are licensed under the SIL Open Font License, Version 1.1 (https://openfontlicense.org). Files from the @fontsource npm packages.
