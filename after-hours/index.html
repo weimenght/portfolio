@@ -170,6 +170,31 @@
       .skyline .lit, .skyline .deco, .skyline .beacon { animation:none; }
       .shot { transition:none; }
     }
+
+    /* ===== Nov 6: quieter (the owner: fun, elegant, show don't tell, no information dump) ===== */
+    .lede, .note-line, .dayd, .tags { display:none; }
+    .jump { gap:6px; margin-top:16px; }
+    .jump a { padding:5px 11px; font-size:11px; }
+    /* the five rules: one row of short lines; a tap (or a hover) opens the one you want */
+    .rules { display:flex; flex-wrap:wrap; gap:8px; }
+    @media (min-width:640px), (min-width:960px) { .rules { grid-template-columns:none; } }
+    .rules li { position:relative; flex:0 1 auto; flex-direction:row; align-items:baseline; gap:10px; padding:10px 16px 11px; border-radius:999px; cursor:pointer; transition:border-color .25s, background .25s; }
+    .rules li:hover, .rules li.open { border-color:rgba(244,236,221,.28); }
+    .rules .rn { font-size:11px; }
+    .rules b { font-size:20px; line-height:1.15; }
+    html:lang(zh) .rules b, html:lang(zh-Hant) .rules b { font-size:16px; }
+    .rules li > span:last-child { display:none; flex-basis:100%; font-size:14px; }
+    .rules li.open { flex-basis:100%; flex-wrap:wrap; border-radius:22px; padding:14px 20px 16px; }
+    .rules li.open > span:last-child { display:block; }
+    /* the projects: numbers in the lamp's serif; each phone leans a little and sits up when you reach for it */
+    .pnum { font:italic 400 1.8rem/1 'Instrument Serif', Georgia, serif; letter-spacing:-.02em; }
+    .pbar { display:none; }
+    .shot { width:min(100%,250px); transform:rotate(-2.2deg); transition:transform .5s cubic-bezier(.23,1,.32,1); }
+    .proj.flip .shot { transform:rotate(2.2deg); }
+    .shot:hover, .proj:hover .shot { transform:rotate(0) translateY(-4px); }
+    @media (min-width:800px) { .shot { width:min(100%,280px); } }
+    .proj { margin-top:clamp(52px,7vw,88px); }
+    @media (prefers-reduced-motion: reduce) { .shot, .proj.flip .shot { transform:none; } }
 </style>
 <meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)"><style id="fb-dark">
 :root{color-scheme:light dark}
@@ -1055,6 +1080,9 @@ img{filter:none}
         var b = (navigator.language || '').toLowerCase();
         setLanguage(b.indexOf('zh') === 0 ? 'zh' : b.indexOf('es') === 0 ? 'es' : 'en');
       })();
+      document.querySelectorAll('.rules li').forEach(function (li) {
+        li.addEventListener('click', function () { var on = li.classList.contains('open'); document.querySelectorAll('.rules li.open').forEach(function (o) { o.classList.remove('open'); }); if (!on) li.classList.add('open'); });
+      });
     })();
   </script>
   <script src="/after-hours/pets.js?v=ac782fb1" defer></script>
