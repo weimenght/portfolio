@@ -139,6 +139,13 @@
     .af-night:hover .af-go { background:#FFC97A; }
     @media (min-width:760px) { .af-night { grid-template-columns:240px 1fr auto; } }
     @media (prefers-reduced-motion:reduce) { .af-w, .af-beacon { animation:none; } }
+    /* the chip row: pick one group, or all */
+    .pf-chips { position:sticky; top:62px; z-index:30; display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; padding:8px 0; margin:-8px 0; background:linear-gradient(#F7F6F2 80%, rgba(247,246,242,0)); -webkit-overflow-scrolling:touch; }
+    .pf-chips::-webkit-scrollbar { display:none; }
+    .pf-chip { flex:0 0 auto; padding:7px 12px; border:1px solid #E5E2DA; border-radius:999px; background:var(--white,#fff); font:400 11px "Space Mono",monospace; letter-spacing:.06em; text-transform:uppercase; color:var(--muted,#6B6A70); white-space:nowrap; transition:border-color .15s,color .15s,background .15s; }
+    .pf-chip:hover { border-color:rgba(var(--ink-rgb,23,23,26),.4); color:var(--ink,#17171A); }
+    .pf-chip.on { background:#17171A; border-color:#17171A; color:#fff; }
+    section[data-g].pf-off { display:none; }
 </style>
   <script>document.documentElement.classList.add('js');</script>
 <meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)"><style id="fb-dark">
@@ -269,7 +276,7 @@ img{filter:none}
     <!-- INTRO -->
     <section class="max-w-3xl space-y-6">
       <p class="reveal inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.18em] text-muted">
-        <span class="w-6 h-px bg-ink/40"></span><span data-i18n="heroKicker">03 / Portfolio</span>
+        <span class="w-6 h-px bg-ink/40"></span><span data-i18n="heroKicker">Portfolio</span>
       </p>
       <h1 class="reveal font-syne text-[2.35rem] sm:text-6xl font-bold tracking-tight leading-[1.08]" data-i18n-html="heroTitle">
         Small experiences. <br class="hidden sm:inline"><span class="accent-word">Meaningful</span> possibilities.
@@ -316,8 +323,19 @@ img{filter:none}
       </div>
     </section>
 
+    <!-- CHIPS: one row to pick a group -->
+    <nav class="pf-chips reveal" aria-label="Groups" id="pf-chips">
+      <button type="button" class="pf-chip on" data-pick="all" data-i18n="allLbl">All</button>
+      <button type="button" class="pf-chip" data-pick="a" data-i18n="gaKicker">A / Human first</button>
+      <button type="button" class="pf-chip" data-pick="b" data-i18n="gbKicker">B / Play &amp; story</button>
+      <button type="button" class="pf-chip" data-pick="s" data-i18n="gsKicker">C / Sandbox &amp; play</button>
+      <button type="button" class="pf-chip" data-pick="m" data-i18n="gmKicker">D / For managers</button>
+      <button type="button" class="pf-chip" data-pick="c" data-i18n="gcKicker">E / Beyond the screen</button>
+      <button type="button" class="pf-chip" data-pick="f" data-i18n="nbKicker">F / After hours</button>
+    </nav>
+
     <!-- GROUP A: HUMAN FIRST -->
-    <section class="space-y-5" aria-labelledby="ga-h">
+    <section data-g="a" class="space-y-5" aria-labelledby="ga-h">
       <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
         <div>
           <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gaKicker">A / Human first</span>
@@ -467,7 +485,7 @@ img{filter:none}
     </section>
 
     <!-- GROUP B: PLAY & STORY -->
-    <section class="space-y-5" aria-labelledby="gb-h">
+    <section data-g="b" class="space-y-5" aria-labelledby="gb-h">
       <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
         <div>
           <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gbKicker">B / Play &amp; story</span>
@@ -575,7 +593,7 @@ img{filter:none}
 
 
     <!-- GROUP C: SANDBOX & PLAY -->
-    <section class="space-y-5" aria-labelledby="gs-h">
+    <section data-g="s" class="space-y-5" aria-labelledby="gs-h">
       <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
         <div>
           <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gsKicker">C / Sandbox &amp; play</span>
@@ -675,7 +693,7 @@ img{filter:none}
     </section>
 
     <!-- GROUP D: FOR MANAGERS -->
-    <section class="space-y-5" aria-labelledby="gm-h">
+    <section data-g="m" class="space-y-5" aria-labelledby="gm-h">
       <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
         <div>
           <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gmKicker">D / For managers</span>
@@ -761,7 +779,7 @@ img{filter:none}
     </section>
 
     <!-- GROUP E: BEYOND THE SCREEN -->
-    <section class="space-y-5" aria-labelledby="gc-h">
+    <section data-g="c" class="space-y-5" aria-labelledby="gc-h">
       <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
         <div>
           <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gcKicker">E / Beyond the screen</span>
@@ -777,7 +795,7 @@ img{filter:none}
     </section>
 
     <!-- F / AFTER WORK: Nearby, Handoff, Vocab (each opens its own page on freebuilder.net) -->
-    <section id="nearby" class="space-y-5" aria-labelledby="nb-h">
+    <section data-g="f" id="nearby" class="space-y-5" aria-labelledby="nb-h">
       <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
         <div>
           <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="nbKicker">F / After hours</span>
@@ -816,7 +834,7 @@ img{filter:none}
 
     <!-- CLOSING -->
     <section class="reveal text-center py-6 sm:py-10 space-y-6">
-      <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="contactLabel">04 / Say Hello</span>
+      <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="contactLabel">Say hello</span>
       <h2 class="font-syne text-3xl sm:text-5xl font-bold tracking-tight leading-[1.1] max-w-2xl mx-auto" data-i18n-html="contactTitle">
         Let's build learning people <span class="accent-word">choose</span> to finish.
       </h2>
@@ -835,7 +853,7 @@ img{filter:none}
         g1Badge: "Live · new", g1Category: "Team practices · Whole team", g1Title: "Common Ground", g1Desc: "A team builds a little town together from one link. Everyone moves into a house; each place they put down is a way the team listens, gives feedback or trusts each other, and asks one honest question. Then: what's missing, and a printed sheet of questions for the next meeting.", g1Caption: "1 team · 1 link · 1 sheet for the table", g1Action: "Build your team's town",
         pageTitle: "WEI MENG — Portfolio: Small experiences, meaningful possibilities",
         headerSubtitle: "Portfolio", backHome: "About me", navEasterEgg: "60-slide deck?",
-        heroKicker: "03 / Portfolio",
+        heroKicker: "Portfolio", allLbl: "All",
         heroTitle: 'Small experiences. <br class="hidden sm:inline"><span class="accent-word">Meaningful</span> possibilities.',
         heroDesc: "Learning experiences, interactive tools and creative experiments exploring how we understand, connect with and learn from one another. All of it playable.",
         heroHint: "Psst — want to see the alternative first?", heroHintBtn: "Sit through the 60-slide deck",
@@ -911,7 +929,7 @@ img{filter:none}
         deckSlideTitle: "Module 1.1: Synergy Paradigms & Policy Compliance",
         deckSlideText: "“All personnel must optimize interdepartmental synchronization through asynchronous documentation workflows. Please avoid interaction until this timer expires.”",
         deckSpeaker: "Narrated by: Monotone AI Voice", deckLocked: "Locked", deckNext: "Next slide", deckEject: "Eject to cognitive dignity",
-        contactLabel: "04 / Say Hello",
+        contactLabel: "Say hello",
         contactTitle: 'Let\'s build learning people <span class="accent-word">choose</span> to finish.',
         contactCopy: "Copy email", copiedText: "✓ Copied", footerMade: "Made with AI &"
       },
@@ -919,7 +937,7 @@ img{filter:none}
         g1Badge: "已上线 · 新", g1Category: "团队习惯 · 整个团队", g1Title: "共同之地", g1Desc: "一个团队用一个链接一起盖一座小镇。每人搬进一栋房子；放下的每个地方，都是团队倾听、反馈或彼此信任的一种方式，并问一个真诚的问题。然后看看还缺什么，再打印一页问题，带到下一次会议上。", g1Caption: "1 个团队 · 1 个链接 · 1 页带上会议桌", g1Action: "建一座团队小镇",
         pageTitle: "孟玮 — 作品集：小小的体验，大大的可能",
         headerSubtitle: "作品集", backHome: "关于我", navEasterEgg: "来份 60 页 PPT？",
-        heroKicker: "03 / 作品集",
+        heroKicker: "作品集", allLbl: "全部",
         heroTitle: '小小的体验，<br class="hidden sm:inline"><span class="accent-word">大大的</span>可能。',
         heroDesc: "学习体验、互动工具和创意实验，探索我们如何理解彼此、彼此连接、向彼此学习。每一件都可以上手玩。",
         heroHint: "嘘——想先体验一下“反面教材”吗？", heroHintBtn: "硬着头皮看完 60 页 PPT",
@@ -995,7 +1013,7 @@ img{filter:none}
         deckSlideTitle: "1.1 节：协同范式与政策合规",
         deckSlideText: "“全体员工须通过异步文档工作流，优化跨部门协同共振。倒计时结束前，请勿进行任何交互。”",
         deckSpeaker: "讲解：单调 AI 配音", deckLocked: "锁定中", deckNext: "下一页", deckEject: "弹射回认知尊严",
-        contactLabel: "04 / 打个招呼",
+        contactLabel: "打个招呼",
         contactTitle: '一起做让人<span class="accent-word">主动</span>学完的学习体验。',
         contactCopy: "复制邮箱", copiedText: "✓ 已复制", footerMade: "由 AI 与"
       },
@@ -1003,7 +1021,7 @@ img{filter:none}
         g1Badge: "En vivo · nuevo", g1Category: "Prácticas de equipo · Todo el equipo", g1Title: "Terreno Común", g1Desc: "Un equipo construye junto un pueblecito desde un enlace. Cada persona se muda a una casa; cada lugar que ponen es una forma en que el equipo escucha, se da feedback o confía, y hace una pregunta sincera. Luego: qué falta, y una hoja impresa con preguntas para la próxima reunión.", g1Caption: "1 equipo · 1 enlace · 1 hoja para la mesa", g1Action: "Construir el pueblo del equipo",
         pageTitle: "WEI MENG — Portafolio: pequeñas experiencias, posibilidades con sentido",
         headerSubtitle: "Portafolio", backHome: "Sobre mí", navEasterEgg: "¿60 diapositivas?",
-        heroKicker: "03 / Portafolio",
+        heroKicker: "Portafolio", allLbl: "Todo",
         heroTitle: 'Pequeñas experiencias. <br class="hidden sm:inline">Posibilidades con <span class="accent-word">sentido</span>.',
         heroDesc: "Experiencias de aprendizaje, herramientas interactivas y experimentos creativos que exploran cómo nos entendemos, nos conectamos y aprendemos unos de otros. Todo se puede jugar.",
         heroHint: "Psst… ¿quieres ver primero la alternativa?", heroHintBtn: "Aguanta las 60 diapositivas",
@@ -1079,14 +1097,14 @@ img{filter:none}
         deckSlideTitle: "Módulo 1.1: Paradigmas de sinergia y cumplimiento",
         deckSlideText: "“Todo el personal debe optimizar la sincronización interdepartamental mediante flujos documentales asíncronos. Evite cualquier interacción hasta que termine el temporizador.”",
         deckSpeaker: "Narración: voz monótona de IA", deckLocked: "Bloqueado", deckNext: "Siguiente", deckEject: "Escapar hacia la dignidad cognitiva",
-        contactLabel: "04 / Saludemos",
+        contactLabel: "Saludemos",
         contactTitle: 'Creemos aprendizajes que la gente <span class="accent-word">elija</span> terminar.',
         contactCopy: "Copiar email", copiedText: "✓ Copiado", footerMade: "Hecho con IA y"
       }, "zh-Hant": {
         g1Badge: "已上線 · 新", g1Category: "團隊習慣 · 整個團隊", g1Title: "共同之地", g1Desc: "一個團隊用一個連結一起蓋一座小鎮。每人搬進一棟房子；放下的每個地方，都是團隊傾聽、反饋或彼此信任的一種方式，並問一個真誠的問題。然後看看還缺什麼，再列印一頁問題，帶到下一次會議上。", g1Caption: "1 個團隊 · 1 個連結 · 1 頁帶上會議桌", g1Action: "建一座團隊小鎮",
         pageTitle: "孟瑋 — 作品集：小小的體驗，大大的可能",
         headerSubtitle: "作品集", backHome: "關於我", navEasterEgg: "來份 60 頁 PPT？",
-        heroKicker: "03 / 作品集",
+        heroKicker: "作品集", allLbl: "全部",
         heroTitle: "小小的體驗，<br class=\"hidden sm:inline\"><span class=\"accent-word\">大大的</span>可能。",
         heroDesc: "學習體驗、互動工具和創意實驗，探索我們如何理解彼此、彼此連線、向彼此學習。每一件都可以上手玩。",
         heroHint: "噓——想先體驗一下“反面教材”嗎？", heroHintBtn: "硬著頭皮看完 60 頁 PPT",
@@ -1162,14 +1180,14 @@ img{filter:none}
         deckSlideTitle: "1.1 節：協同正規化與政策合規",
         deckSlideText: "“全體員工須透過非同步文件工作流，最佳化跨部門協同共振。倒計時結束前，請勿進行任何互動。”",
         deckSpeaker: "講解：單調 AI 配音", deckLocked: "鎖定中", deckNext: "下一頁", deckEject: "彈射回認知尊嚴",
-        contactLabel: "04 / 打個招呼",
+        contactLabel: "打個招呼",
         contactTitle: "一起做讓人<span class=\"accent-word\">主動</span>學完的學習體驗。",
         contactCopy: "複製郵箱", copiedText: "✓ 已複製", footerMade: "由 AI 與"
       }, "ca": {
         g1Badge: "En directe · nou", g1Category: "Pràctiques d'equip · Tot l'equip", g1Title: "Terreny Comú", g1Desc: "Un equip construeix junt un poblet des d'un enllaç. Cada persona es muda a una casa; cada lloc que hi posen és una manera com l'equip escolta, es dona feedback o confia, i fa una pregunta sincera. Després: què hi falta, i un full imprès amb preguntes per a la propera reunió.", g1Caption: "1 equip · 1 enllaç · 1 full per a la taula", g1Action: "Construir el poble de l'equip",
         pageTitle: "WEI MENG — Portafoli: petites experiències, possibilitats amb sentit",
         headerSubtitle: "Portafoli", backHome: "Sobre mi", navEasterEgg: "60 diapositives?",
-        heroKicker: "03 / Portafoli",
+        heroKicker: "Portafoli", allLbl: "Tot",
         heroTitle: "Petites experiències. <br class=\"hidden sm:inline\">Possibilitats amb <span class=\"accent-word\">sentit</span>.",
         heroDesc: "Experiències d'aprenentatge, eines interactives i experiments creatius que exploren com ens entenem, ens connectem i aprenem els uns dels altres. Tot es pot jugar.",
         heroHint: "Psst… vols veure primer l'alternativa?", heroHintBtn: "Aguanta les 60 diapositives",
@@ -1245,7 +1263,7 @@ img{filter:none}
         deckSlideTitle: "Mòdul 1.1: Paradigmes de sinergia i compliment",
         deckSlideText: "“Tot el personal ha d'optimitzar la sincronització interdepartamental mitjançant fluxos documentals asíncrons. Eviteu qualsevol interacció fins que acabi el temporitzador.”",
         deckSpeaker: "Narració: veu monòtona d'IA", deckLocked: "Bloquejat", deckNext: "Següent", deckEject: "Escapar cap a la dignitat cognitiva",
-        contactLabel: "04 / Saludem-nos",
+        contactLabel: "Saludem",
         contactTitle: "Creem aprenentatges que la gent <span class=\"accent-word\">triï</span> acabar.",
         contactCopy: "Copiar correu", copiedText: "✓ Copiat", footerMade: "Fet amb IA i"
       }
@@ -1424,6 +1442,18 @@ img{filter:none}
       renderEggs(); renderDeck();
       try { localStorage.setItem('wm_cases_lang', lang); localStorage.setItem('wm_preferred_lang', lang); } catch (e) {}
     }
+
+    /* ---------- Chips: one group or all ---------- */
+    (function chips() {
+      const nav = $('pf-chips'); if (!nav) return;
+      const pick = g => {
+        nav.querySelectorAll('.pf-chip').forEach(b => b.classList.toggle('on', b.dataset.pick === g));
+        document.querySelectorAll('section[data-g]').forEach(sec => sec.classList.toggle('pf-off', g !== 'all' && sec.dataset.g !== g));
+        try { if (g === 'all') history.replaceState(null, '', location.pathname + location.search); else history.replaceState(null, '', '#g=' + g); } catch (e) {}
+      };
+      nav.addEventListener('click', e => { const b = e.target.closest('.pf-chip'); if (b) pick(b.dataset.pick); });
+      const m = /[#&]g=([absmcf])\b/.exec(location.hash); if (m) pick(m[1]);
+    })();
 
     /* ---------- Contact ---------- */
     function copyEmailAddress(btn) {
