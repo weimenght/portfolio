@@ -147,6 +147,44 @@
     .pf-chip.on { background:#17171A; border-color:#17171A; color:#fff; }
     @media (prefers-color-scheme: dark) { .pf-chip.on { background:#ECEBE6; border-color:#ECEBE6; color:#141416; } }
     section[data-g].pf-off { display:none; }
+    /* ===== Nov 6: the portfolio, quieter (show the work, say less) ===== */
+    .bg-glow { position:fixed; inset:0; z-index:-1; pointer-events:none;
+      background: radial-gradient(60% 42% at 18% 0%, rgba(226,85,63,.13), transparent 70%), radial-gradient(40% 30% at 92% 12%, rgba(251,191,36,.12), transparent 70%); }
+    @media (prefers-color-scheme: dark) { .bg-glow { background: radial-gradient(60% 42% at 18% 0%, rgba(242,140,118,.14), transparent 70%), radial-gradient(40% 30% at 92% 12%, rgba(251,191,36,.08), transparent 70%); } }
+    .accent-word { color:var(--ink,#17171A); padding-bottom:.06em; }
+    header a[href="/"]:hover, main a[href^="mailto"]:hover { background:#E2553F !important; }
+
+    /* group marks: the letter in coral serif, the words beside it; no side notes */
+    .sec-lab { display:inline-flex; align-items:baseline; gap:10px; }
+    .sec-n { font:italic 400 1.9rem/1 'Instrument Serif', Georgia, serif; color:var(--accent-text,#E2553F); letter-spacing:-.02em; transform:translateY(.12em); }
+    section[data-g] > .reveal > span.text-muted:not(.uppercase) { display:none; }
+    section[data-g] > .reveal { border-bottom:0; padding-bottom:0; }
+    .pf-chips { padding:10px 0; }
+    .pf-chip { font-size:11.5px; }
+
+    /* cards: the picture, a name, one paragraph, one way in. Everything else goes. */
+    .card { position:relative; padding:14px 14px 16px !important; border-radius:22px; }
+    .card a[tabindex="-1"] > span { display:none; }
+    .card a[tabindex="-1"] { height:11.5rem; border-radius:16px; }
+    .card .uppercase.tracking-\[0\.14em\] { display:none; }
+    .card .space-y-4 > .space-y-1\.5, .card .space-y-4 > p, .card .cg-txt .space-y-3 { padding:0 6px; }
+    .card .space-y-4 > .space-y-1\.5 { padding-top:4px; }
+    .card h3 { font-size:1.2rem; letter-spacing:-.02em; }
+    .card h3 a, .card h3 button { pointer-events:none; }
+    .card p.text-sm { font-size:13.5px; color:rgba(var(--ink-rgb,23,23,26),.66); }
+    .card [data-i18n="freeMeta"], .card [data-i18n$="Caption"], .card [data-i18n$="Meta"]:not([data-i18n="c6Meta"]), .card .absolute.top-3 { display:none; }
+    .card > div:last-child, .card .cg-txt > div:last-child { border-top:0; margin-top:10px; padding:0 6px; }
+    .card > div:last-child a, .card > div:last-child button, .card .cg-txt > div:last-child a { background:transparent; color:var(--ink,#17171A); padding:6px 0; font-size:12px; gap:8px; }
+    .card > div:last-child a:hover, .card > div:last-child button:hover, .card .cg-txt > div:last-child a:hover { background:transparent; color:var(--accent-ink,#C2412D); }
+    .card > div:last-child a > span:last-child, .card > div:last-child button > span:last-child, .card .cg-txt > div:last-child a > span:last-child { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; border:1px solid rgba(var(--ink-rgb,23,23,26),.25); transition:all .3s var(--ease); }
+    .card:hover > div:last-child a > span:last-child, .card:hover > div:last-child button > span:last-child, .card:hover .cg-txt > div:last-child a > span:last-child { background:#E2553F; border-color:#E2553F; color:#fff; transform:translate(2px,-2px); }
+    .card > div:last-child a::after, .card > div:last-child button::after, .card .cg-txt > div:last-child a::after { content:''; position:absolute; inset:0; border-radius:22px; }
+    .card .card-easter-egg, .card [data-i18n$="Next"], .card .cg-txt .space-y-3 a { position:relative; z-index:2; }
+    .card:hover { transform:translateY(-5px); box-shadow:0 26px 50px -30px rgba(23,23,26,.45); }
+
+    /* E and F: one card each, the picture and a way in; the paragraphs go */
+    .bt-d, .af-d { display:none; }
+    .af-names { font-size:15px; }
 </style>
   <script>document.documentElement.classList.add('js');</script>
 <meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)"><style id="fb-dark">
@@ -178,6 +216,7 @@ img{filter:none}
 
 <body class="font-sans min-h-screen antialiased selection:bg-ink selection:text-white">
   <div class="bg-dots" aria-hidden="true"></div>
+  <div class="bg-glow" aria-hidden="true"></div>
 
   <!-- UNLOCK TOAST -->
   <div id="unlock-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none hidden opacity-0 transition-opacity duration-300 w-[calc(100%-32px)] sm:w-auto" role="status" aria-live="polite">
@@ -295,35 +334,6 @@ img{filter:none}
       -->
     </section>
 
-    <!-- HOW I BUILD -->
-    <section class="reveal space-y-4" aria-labelledby="build-h">
-      <div class="flex items-center justify-between border-b border-line pb-3">
-        <span id="build-h" class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="buildLabel">How I build</span>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-line border border-line rounded-3xl overflow-hidden">
-        <div class="bg-white p-5 sm:p-6 space-y-2">
-          <div class="font-mono text-[11px] text-accent">01</div>
-          <h2 class="font-syne text-lg font-bold tracking-tight" data-i18n="p1t">Learn by doing</h2>
-          <p class="text-sm text-ink/70 leading-relaxed" data-i18n="p1d">If you can't try it, you haven't learned it. Play first, theory second.</p>
-        </div>
-        <div class="bg-white p-5 sm:p-6 space-y-2">
-          <div class="font-mono text-[11px] text-accent">02</div>
-          <h2 class="font-syne text-lg font-bold tracking-tight" data-i18n="p2t">Human skills first</h2>
-          <p class="text-sm text-ink/70 leading-relaxed" data-i18n="p2d">AI can draft the memo. Listening, empathy and trust are still ours to practise.</p>
-        </div>
-        <div class="bg-white p-5 sm:p-6 space-y-2">
-          <div class="font-mono text-[11px] text-accent">03</div>
-          <h2 class="font-syne text-lg font-bold tracking-tight" data-i18n="p3t">Better together</h2>
-          <p class="text-sm text-ink/70 leading-relaxed" data-i18n="p3d">Learning is social and mutual. Everyone teaches, everyone learns — sharing is caring.</p>
-        </div>
-        <div class="bg-white p-5 sm:p-6 space-y-2">
-          <div class="font-mono text-[11px] text-accent">04</div>
-          <h2 class="font-syne text-lg font-bold tracking-tight" data-i18n="p4t">People are the end</h2>
-          <p class="text-sm text-ink/70 leading-relaxed" data-i18n="p4d">Apps are tools. The goal is a sincere, meaningful conversation between real people.</p>
-        </div>
-      </div>
-    </section>
-
     <!-- CHIPS: one row to pick a group -->
     <nav class="pf-chips reveal" aria-label="Groups" id="pf-chips">
       <button type="button" class="pf-chip on" data-pick="all" data-i18n="allLbl">All</button>
@@ -339,7 +349,7 @@ img{filter:none}
     <section data-g="a" class="space-y-5" aria-labelledby="ga-h">
       <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
         <div>
-          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gaKicker">A / Human first</span>
+          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted sec-lab" data-i18n="gaKicker">A / Human first</span>
           <h2 id="ga-h" class="font-syne text-2xl sm:text-3xl font-bold tracking-tight mt-1" data-i18n="gaTitle">Short setups that end in a real conversation.</h2>
         </div>
         <span class="text-[11px] font-mono text-muted" data-i18n="gaNote">The screen goes down. The people keep going.</span>
@@ -489,7 +499,7 @@ img{filter:none}
     <section data-g="b" class="space-y-5" aria-labelledby="gb-h">
       <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
         <div>
-          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gbKicker">B / Play &amp; story</span>
+          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted sec-lab" data-i18n="gbKicker">B / Play &amp; story</span>
           <h2 id="gb-h" class="font-syne text-2xl sm:text-3xl font-bold tracking-tight mt-1" data-i18n="gbTitle">Games and stories that make a method stick.</h2>
         </div>
         <span class="text-[11px] font-mono text-muted" data-i18n="gbNote">Each one ends with something to try with a colleague.</span>
@@ -597,7 +607,7 @@ img{filter:none}
     <section data-g="s" class="space-y-5" aria-labelledby="gs-h">
       <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
         <div>
-          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gsKicker">C / Sandbox &amp; play</span>
+          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted sec-lab" data-i18n="gsKicker">C / Sandbox &amp; play</span>
           <h2 id="gs-h" class="font-syne text-2xl sm:text-3xl font-bold tracking-tight mt-1" data-i18n="gsTitle">Safe places to get it wrong, together.</h2>
         </div>
         <span class="text-[11px] font-mono text-muted" data-i18n="gsNote">No scores. No winners. Just better questions.</span>
@@ -697,7 +707,7 @@ img{filter:none}
     <section data-g="m" class="space-y-5" aria-labelledby="gm-h">
       <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
         <div>
-          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gmKicker">D / For managers</span>
+          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted sec-lab" data-i18n="gmKicker">D / For managers</span>
           <h2 id="gm-h" class="font-syne text-2xl sm:text-3xl font-bold tracking-tight mt-1" data-i18n="gmTitle">Trust, autonomy, decisions: practised, not preached.</h2>
         </div>
         <a href="https://www.freebuilder.net/programmes/managers" class="text-[11px] font-mono text-ink hover:text-accent underline decoration-dotted underline-offset-4 transition-colors" data-i18n="gmLink">Three tracks for managers →</a>
@@ -783,7 +793,7 @@ img{filter:none}
     <section data-g="c" class="space-y-5" aria-labelledby="gc-h">
       <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
         <div>
-          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="gcKicker">E / Beyond the screen</span>
+          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted sec-lab" data-i18n="gcKicker">E / Beyond the screen</span>
           <h2 id="gc-h" class="font-syne text-2xl sm:text-3xl font-bold tracking-tight mt-1" data-i18n="gcTitle">How I decide, prove and spread what works.</h2>
         </div>
         <span class="text-[11px] font-mono text-muted" data-i18n="gcNote">Diagnose · Prove · Spread · Adapt</span>
@@ -799,7 +809,7 @@ img{filter:none}
     <section data-g="f" id="nearby" class="space-y-5" aria-labelledby="nb-h">
       <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
         <div>
-          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="nbKicker">F / After hours</span>
+          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted sec-lab" data-i18n="nbKicker">F / After hours</span>
           <h2 id="nb-h" class="font-syne text-2xl sm:text-3xl font-bold tracking-tight mt-1" data-i18n="nbH">What I make after work.</h2>
         </div>
         <span class="text-[11px] font-mono text-muted" data-i18n="nbNote">Free · no ads · no tracking</span>
@@ -1441,6 +1451,11 @@ img{filter:none}
       document.querySelectorAll('[data-i18n]').forEach(el => { const v = t()[el.getAttribute('data-i18n')]; if (v) el.textContent = v; });
       document.querySelectorAll('[data-i18n-html]').forEach(el => { const v = t()[el.getAttribute('data-i18n-html')]; if (v) el.innerHTML = v; });
       renderEggs(); renderDeck();
+      document.querySelectorAll('.sec-lab').forEach(el => {
+        const m = /^([A-F0-9]+)\s*\/\s*(.*)$/.exec(el.textContent.trim()); if (!m) return;
+        el.textContent = ''; const n = document.createElement('b'); n.className = 'sec-n'; n.textContent = m[1]; el.append(n, m[2]);
+      });
+      document.querySelectorAll('.pf-chip[data-pick]').forEach(b => { b.textContent = b.textContent.replace(/^[A-F]\s*\/\s*/, ''); });
       try { localStorage.setItem('wm_cases_lang', lang); localStorage.setItem('wm_preferred_lang', lang); } catch (e) {}
     }
 

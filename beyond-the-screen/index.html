@@ -147,6 +147,44 @@
     .pf-chip.on { background:#17171A; border-color:#17171A; color:#fff; }
     @media (prefers-color-scheme: dark) { .pf-chip.on { background:#ECEBE6; border-color:#ECEBE6; color:#141416; } }
     section[data-g].pf-off { display:none; }
+    /* ===== Nov 6: the portfolio, quieter (show the work, say less) ===== */
+    .bg-glow { position:fixed; inset:0; z-index:-1; pointer-events:none;
+      background: radial-gradient(60% 42% at 18% 0%, rgba(226,85,63,.13), transparent 70%), radial-gradient(40% 30% at 92% 12%, rgba(251,191,36,.12), transparent 70%); }
+    @media (prefers-color-scheme: dark) { .bg-glow { background: radial-gradient(60% 42% at 18% 0%, rgba(242,140,118,.14), transparent 70%), radial-gradient(40% 30% at 92% 12%, rgba(251,191,36,.08), transparent 70%); } }
+    .accent-word { color:var(--ink,#17171A); padding-bottom:.06em; }
+    header a[href="/"]:hover, main a[href^="mailto"]:hover { background:#E2553F !important; }
+
+    /* group marks: the letter in coral serif, the words beside it; no side notes */
+    .sec-lab { display:inline-flex; align-items:baseline; gap:10px; }
+    .sec-n { font:italic 400 1.9rem/1 'Instrument Serif', Georgia, serif; color:var(--accent-text,#E2553F); letter-spacing:-.02em; transform:translateY(.12em); }
+    section[data-g] > .reveal > span.text-muted:not(.uppercase) { display:none; }
+    section[data-g] > .reveal { border-bottom:0; padding-bottom:0; }
+    .pf-chips { padding:10px 0; }
+    .pf-chip { font-size:11.5px; }
+
+    /* cards: the picture, a name, one paragraph, one way in. Everything else goes. */
+    .card { position:relative; padding:14px 14px 16px !important; border-radius:22px; }
+    .card a[tabindex="-1"] > span { display:none; }
+    .card a[tabindex="-1"] { height:11.5rem; border-radius:16px; }
+    .card .uppercase.tracking-\[0\.14em\] { display:none; }
+    .card .space-y-4 > .space-y-1\.5, .card .space-y-4 > p, .card .cg-txt .space-y-3 { padding:0 6px; }
+    .card .space-y-4 > .space-y-1\.5 { padding-top:4px; }
+    .card h3 { font-size:1.2rem; letter-spacing:-.02em; }
+    .card h3 a, .card h3 button { pointer-events:none; }
+    .card p.text-sm { font-size:13.5px; color:rgba(var(--ink-rgb,23,23,26),.66); }
+    .card [data-i18n="freeMeta"], .card [data-i18n$="Caption"], .card [data-i18n$="Meta"]:not([data-i18n="c6Meta"]), .card .absolute.top-3 { display:none; }
+    .card > div:last-child, .card .cg-txt > div:last-child { border-top:0; margin-top:10px; padding:0 6px; }
+    .card > div:last-child a, .card > div:last-child button, .card .cg-txt > div:last-child a { background:transparent; color:var(--ink,#17171A); padding:6px 0; font-size:12px; gap:8px; }
+    .card > div:last-child a:hover, .card > div:last-child button:hover, .card .cg-txt > div:last-child a:hover { background:transparent; color:var(--accent-ink,#C2412D); }
+    .card > div:last-child a > span:last-child, .card > div:last-child button > span:last-child, .card .cg-txt > div:last-child a > span:last-child { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; border:1px solid rgba(var(--ink-rgb,23,23,26),.25); transition:all .3s var(--ease); }
+    .card:hover > div:last-child a > span:last-child, .card:hover > div:last-child button > span:last-child, .card:hover .cg-txt > div:last-child a > span:last-child { background:#E2553F; border-color:#E2553F; color:#fff; transform:translate(2px,-2px); }
+    .card > div:last-child a::after, .card > div:last-child button::after, .card .cg-txt > div:last-child a::after { content:''; position:absolute; inset:0; border-radius:22px; }
+    .card .card-easter-egg, .card [data-i18n$="Next"], .card .cg-txt .space-y-3 a { position:relative; z-index:2; }
+    .card:hover { transform:translateY(-5px); box-shadow:0 26px 50px -30px rgba(23,23,26,.45); }
+
+    /* E and F: one card each, the picture and a way in; the paragraphs go */
+    .bt-d, .af-d { display:none; }
+    .af-names { font-size:15px; }
 
     /* Beyond the screen */
     .by-main > section + section { margin-top:clamp(56px,8vw,96px); }
