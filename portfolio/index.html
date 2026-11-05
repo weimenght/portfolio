@@ -114,6 +114,21 @@
     .af-d { font-size:14px; line-height:1.55; color:rgba(var(--ink-rgb,23,23,26),.7); max-width:44rem; }
     .af-go { justify-self:start; display:inline-flex; gap:6px; padding:11px 17px; border-radius:999px; background:#17171A; color:#fff; font:700 12px "Space Mono",monospace; white-space:nowrap; }
     .af-one:hover .af-go { background:#E2553F; }
+    /* F / After hours: one card into /after-hours/, in that page's night (ink and lamplight, five lit windows) */
+    .af-night { background:radial-gradient(110% 120% at 88% 0%, rgba(246,182,91,.18), transparent 55%), #120F18 !important; border-color:#2A2540 !important; color:#F4ECDD !important; }
+    .af-night:hover { border-color:#F6B65B !important; }
+    .af-sky { width:100%; max-width:300px; height:auto; display:block; }
+    .af-w { animation:afw 3.6s ease-in-out infinite alternate; animation-delay:var(--d,0s); }
+    .af-beacon { animation:afw 2.4s ease-in-out infinite alternate; }
+    @keyframes afw { from { opacity:.55; } to { opacity:1; } }
+    .af-night .af-k { font:400 11px "Space Mono", monospace; letter-spacing:.16em; text-transform:uppercase; color:rgba(244,236,221,.6); }
+    .af-night .af-names { font-family:"Instrument Serif", Georgia, serif; font-weight:400; font-size:clamp(24px,3.2vw,32px); line-height:1.12; letter-spacing:-.01em; color:#F4ECDD; }
+    html:lang(zh) .af-night .af-names { font-family:"Songti SC","STSong","Noto Serif SC",serif; font-weight:700; }
+    .af-night .af-d { color:rgba(244,236,221,.72); }
+    .af-night .af-go { background:#F6B65B; color:#120F18; }
+    .af-night:hover .af-go { background:#FFC97A; }
+    @media (min-width:760px) { .af-night { grid-template-columns:240px 1fr auto; } }
+    @media (prefers-reduced-motion:reduce) { .af-w, .af-beacon { animation:none; } }
 </style>
   <script>document.documentElement.classList.add('js');</script>
 <meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)"><style id="fb-dark">
@@ -426,7 +441,7 @@ img{filter:none}
         </a>
         <div class="cg-txt flex flex-col justify-between gap-4">
           <div class="space-y-3">
-            <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">13</span> — <span data-i18n="g1Category">Team practices · Whole team</span></div>
+            <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">04</span> — <span data-i18n="g1Category">Team practices · Whole team</span></div>
             <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/labs/common-ground/" class="hover:text-accent transition-colors" data-i18n="g1Title">Common Ground</a></h3>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="g1Desc">A team builds a little town together from one link. Everyone moves into a house; each place they put down is a way the team listens, gives feedback or trusts each other, and asks one honest question. Then: what's missing, and a printed sheet of questions for the next meeting.</p>
             <p class="text-[11px] font-mono text-muted" data-i18n="g1Caption">1 team · 1 link · 1 sheet for the table</p>
@@ -465,7 +480,7 @@ img{filter:none}
               <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="c4Caption">Empathize · Define · Ideate · Prototype · Test</span>
             </a>
             <div class="space-y-1.5">
-              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">04</span> — <span data-i18n="c4Category">Innovation · Game-based</span></div>
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">05</span> — <span data-i18n="c4Category">Innovation · Game-based</span></div>
               <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/tools/design/" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors" data-i18n="c4Title">Design Thinking Odyssey</a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="c4Desc">Every rule of the world is a design-thinking habit: bridges appear only through the user's eyes, every fall becomes a step. Each phase ends with something to try on Monday — with a real colleague.</p>
@@ -500,7 +515,7 @@ img{filter:none}
               <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="c5Caption">One day · every phone · real people</span>
             </a>
             <div class="space-y-1.5">
-              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">05</span> — <span data-i18n="c5Category">Onboarding · Simulation</span></div>
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">06</span> — <span data-i18n="c5Category">Onboarding · Simulation</span></div>
               <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/labs/launchpad/" class="hover:text-accent transition-colors" data-i18n="c5Title">Launchpad · Onboarding Day</a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="c5Desc">A whole graduate onboarding day in one app: route cards, station tools and the KILL//SWITCH team investigation — plus a colleague trail that sends new joiners to real people, not handbooks.</p>
@@ -533,7 +548,7 @@ img{filter:none}
               <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="c6Caption">EP.01: “Just Checking In”</span>
             </button>
             <div class="space-y-1.5">
-              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">06</span> — <span data-i18n="c6Category">Narrative drama · Watch together</span></div>
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">07</span> — <span data-i18n="c6Category">Narrative drama · Watch together</span></div>
               <h3 class="font-syne text-xl font-bold tracking-tight"><button type="button" onclick="openVideoModal()" class="text-left hover:text-accent transition-colors" data-i18n="c6Title">Corporate Survival Drama</button></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="c6Desc">A vertical mini-series built on real workplace dilemmas, made to be watched together. Every episode ends on a choice — and a question for the team to argue over.</p>
@@ -575,7 +590,7 @@ img{filter:none}
               <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="s7Caption"></span>
             </a>
             <div class="space-y-1.5">
-              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">07</span> — <span data-i18n="s7Category"></span></div>
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">08</span> — <span data-i18n="s7Category"></span></div>
               <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/tools/twotruths" class="hover:text-accent transition-colors" data-i18n="s7Title"></a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="s7Desc"></p>
@@ -605,7 +620,7 @@ img{filter:none}
               <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="s8Caption"></span>
             </a>
             <div class="space-y-1.5">
-              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">08</span> — <span data-i18n="s8Category"></span></div>
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">09</span> — <span data-i18n="s8Category"></span></div>
               <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/tools/prompt" class="hover:text-accent transition-colors" data-i18n="s8Title"></a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="s8Desc"></p>
@@ -634,7 +649,7 @@ img{filter:none}
               <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="s9Caption"></span>
             </a>
             <div class="space-y-1.5">
-              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">09</span> — <span data-i18n="s9Category"></span></div>
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">10</span> — <span data-i18n="s9Category"></span></div>
               <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/tools/museum" class="hover:text-accent transition-colors" data-i18n="s9Title"></a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="s9Desc"></p>
@@ -673,7 +688,7 @@ img{filter:none}
               <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="m1Caption"></span>
             </a>
             <div class="space-y-1.5">
-              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">10</span> — <span data-i18n="m1Category"></span></div>
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">11</span> — <span data-i18n="m1Category"></span></div>
               <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/tools/manual" class="hover:text-accent transition-colors" data-i18n="m1Title"></a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="m1Desc"></p>
@@ -696,7 +711,7 @@ img{filter:none}
               <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="m2Caption"></span>
             </a>
             <div class="space-y-1.5">
-              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">11</span> — <span data-i18n="m2Category"></span></div>
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">12</span> — <span data-i18n="m2Category"></span></div>
               <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/tools/dial" class="hover:text-accent transition-colors" data-i18n="m2Title"></a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="m2Desc"></p>
@@ -720,7 +735,7 @@ img{filter:none}
               <span class="absolute bottom-3 left-3 right-3 text-[11px] font-mono text-ink/60 truncate" data-i18n="m3Caption"></span>
             </a>
             <div class="space-y-1.5">
-              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">12</span> — <span data-i18n="m3Category"></span></div>
+              <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-muted"><span class="text-ink">13</span> — <span data-i18n="m3Category"></span></div>
               <h3 class="font-syne text-xl font-bold tracking-tight"><a href="https://www.freebuilder.net/tools/decide" class="hover:text-accent transition-colors" data-i18n="m3Title"></a></h3>
             </div>
             <p class="text-sm text-ink/70 leading-relaxed" data-i18n="m3Desc"></p>
@@ -817,9 +832,15 @@ img{filter:none}
         </div>
         <span class="text-[11px] font-mono text-muted" data-i18n="nbNote">Free · no ads · no tracking</span>
       </div>
-      <a class="af-one reveal" href="/after-hours/">
-        <span class="af-icons" aria-hidden="true"><span>🫙</span><span>🏘️</span><span>🏡</span><span>💌</span><span>🗣️</span></span>
+      <a class="af-one af-night reveal" href="/after-hours/">
+        <svg class="af-sky" viewBox="0 0 300 96" aria-hidden="true"><defs><radialGradient id="afg" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#FFE3A8"/><stop offset="1" stop-color="#F6B65B"/></radialGradient></defs>
+          <rect x="18" y="40" width="64" height="52" fill="#1B1827"/><rect x="92" y="14" width="96" height="78" fill="#1B1827"/><rect x="198" y="34" width="70" height="58" fill="#1B1827"/><rect x="274" y="56" width="22" height="36" fill="#1B1827"/>
+          <line x1="140" y1="14" x2="140" y2="3" stroke="#2A2540" stroke-width="2"/><circle class="af-beacon" cx="140" cy="3" r="2" fill="#E2553F"/>
+          <g fill="#2A2540"><rect x="28" y="50" width="10" height="9"/><rect x="46" y="50" width="10" height="9"/><rect x="64" y="66" width="10" height="9"/><rect x="104" y="26" width="10" height="9"/><rect x="122" y="26" width="10" height="9"/><rect x="158" y="26" width="10" height="9"/><rect x="104" y="44" width="10" height="9"/><rect x="140" y="62" width="10" height="9"/><rect x="176" y="62" width="10" height="9"/><rect x="210" y="44" width="10" height="9"/><rect x="246" y="44" width="10" height="9"/><rect x="210" y="62" width="10" height="9"/><rect x="280" y="66" width="10" height="9"/></g>
+          <g fill="url(#afg)"><rect class="af-w" style="--d:.2s" x="28" y="66" width="10" height="9"/><rect class="af-w" style="--d:.6s" x="140" y="26" width="10" height="9"/><rect class="af-w" style="--d:1s" x="122" y="62" width="10" height="9"/><rect class="af-w" style="--d:1.4s" x="228" y="44" width="10" height="9"/><rect class="af-w" style="--d:1.8s" x="246" y="62" width="10" height="9"/></g>
+          <rect x="0" y="92" width="300" height="4" fill="#2A2540"/></svg>
         <span class="af-txt">
+          <span class="af-k" data-i18n="afK">Five windows are still lit.</span>
           <span class="af-names"><span data-i18n="afLT">Little Things</span> · Nearby · <span data-i18n="afHG">Home Ground</span> · Handoff · Vocab</span>
           <span class="af-d" data-i18n="afD">A jar, a town, a home your people build together, a way to stay close, a few words in someone else's language. Small, free things built on one idea: people aren't the means, people are the point.</span>
         </span>
@@ -906,7 +927,7 @@ img{filter:none}
         m2Badge: "Live · new", m2Caption: "1 task · 2 private settings · 1 conversation", m2Category: "Autonomy · Delegation", m2Title: "Delegation Dial", m2Desc: "For a real task, manager and team member each set who should decide, privately. The reveal shows the gap, and the gap is the conversation that prevents micromanaging.", m2Action: "Set the dial",
         m3Badge: "Live · new", m3Caption: "Present · clarify · react · consent", m3Category: "Decisions · Whole team", m3Title: "Decision Room", m3Desc: "A real team decision in 15 minutes. Everyone is heard once, objections must name a harm, and the test is “safe enough to try?”. The manager's voice counts once.", m3Action: "Run a decision",
         gcKicker: "E / Beyond the screen", gcTitle: "How I decide, prove and spread what works.", gcNote: "Diagnose · Prove · Spread · Adapt", btConcept: "concept", btCap1: "Diagnose", btT1: "Training or not?", btD1: "A 2-minute check that tells a manager whether training will help — or what to fix instead.", btCap2: "Prove", btT2: "Impact, without ranking", btD2: "A sample 30-day report: felt heard, kept talking, used it at work. No names, no leaderboards.", btCap3: "Prove", btT3: "The cost of training nobody uses", btD3: "A calculator that turns hours in a training room into an honest budget conversation.", btCap4: "Spread", btT4: "Learning circles", btD4: "Six weeks, five colleagues, one human skill a week — run by the circle itself.", btCap5: "Spread", btT5: "Team rituals", btD5: "Twelve weeks of five-minute practices for the team meeting you already have.", btCap6: "Spread", btT6: "Train the facilitator", btD6: "Two weeks to grow facilitators inside — certified by evidence, not test scores.", btCap7: "Adapt", btT7: "Adapted, not translated", btD7: "Real lines in English, Chinese and Spanish, side by side, with the reasoning behind each.", btCap8: "Adapt", btT8: "Learning for the frontline", btD8: "For people without laptops: 60-second paired practice at shift handover.", btCap9: "AI, with judgement", btT9: "AI drafts, people deliver", btD9: "Where AI belongs in learning, where it doesn't, and a one-page guardrail policy.", btCap10: "Give back", btT10: "The open starter kit", btD10: "The template behind every practice, free for other learning designers.",
-        nbKicker: "F / After hours", nbH: "What I make after work.", nbNote: "Free · no ads · no tracking", afLT: "Little Things", afHG: "Home Ground", afD: "A jar, a town, a home your people build together, a way to stay close, a few words in someone else's language. Small, free things built on one idea: people aren't the means, people are the point.", afGo: "See them all",
+        nbKicker: "F / After hours", nbH: "What I make after work.", nbNote: "Free · no ads · no tracking", afK: "Five windows are still lit.", afLT: "Little Things", afHG: "Home Ground", afD: "A jar, a town, a home your people build together, a way to stay close, a few words in someone else's language. Small, free things built on one idea: people aren't the means, people are the point.", afGo: "See them all",
         moreLabel: "More in the lab:", moreSales: "Sales Psychology Academy", moreQuestions: "Question Deck", moreDiscovery: "Discovery Duet", moreTeach: "Teach-Back Chain", moreThanks: "Specific Thanks", moreFB: "Work with FREE//BUILDER →",
 
         eggLTag: "Listening check · pick your reply",
@@ -990,7 +1011,7 @@ img{filter:none}
         m2Badge: "已上线 · 新", m2Caption: "1 件任务 · 2 个私下的刻度 · 1 场对话", m2Category: "自主 · 授权", m2Title: "授权刻度盘", m2Desc: "针对一件真实任务，管理者和团队成员各自私下设定由谁来决定。揭晓时看到差距，而这个差距就是避免管得太细的那场对话。", m2Action: "拨刻度",
         m3Badge: "已上线 · 新", m3Caption: "介绍 · 澄清 · 回应 · 同意", m3Category: "决策 · 整个团队", m3Title: "决策室", m3Desc: "15 分钟做一个真实的团队决定。每人被听到一次，反对必须说出伤害，标准是“试一试安全吗？”。管理者的声音只算一次。", m3Action: "做一个决定",
         gcKicker: "E / 屏幕之外", gcTitle: "我如何判断、证明并传开真正有效的东西。", gcNote: "诊断 · 证明 · 传播 · 本地化", btConcept: "概念", btCap1: "诊断", btT1: "要不要培训？", btD1: "两分钟判断培训是否有用——或者该先解决什么。", btCap2: "证明", btT2: "不排名的影响力报告", btD2: "30 天报告示例：感到被倾听、继续交谈、在工作中用上。不点名，不排行。", btCap3: "证明", btT3: "没人用上的培训，代价有多大", btD3: "把培训教室里的小时数，变成一场诚实的预算对话。", btCap4: "传播", btT4: "学习圈", btD4: "六周、五位同事、每周一项人际能力——由学习圈自己运转。", btCap5: "传播", btT5: "团队小仪式", btD5: "十二周、每周五分钟的小练习，放进你本来就有的团队例会。", btCap6: "传播", btT6: "引导师培养", btD6: "两周在内部培养引导师——以证据认证，而不是考试分数。", btCap7: "本地化", btT7: "本地化，而不是翻译", btD7: "英文、中文、西语的真实句子并排对照，附上每个选择的理由。", btCap8: "本地化", btT8: "面向一线的学习", btD8: "给没有电脑的人：交接班时 60 秒的两人练习。", btCap9: "有判断地用 AI", btT9: "AI 起草，人来表达", btD9: "AI 在学习中该出现在哪、不该出现在哪，以及一页护栏政策。", btCap10: "回馈", btT10: "开放入门套件", btD10: "每个练习背后的模板，免费提供给其他学习设计师。",
-        nbKicker: "F / 下班以后", nbH: "下班后我做的东西。", nbNote: "免费 · 无广告 · 不追踪", afLT: "小事", afHG: "我们的家园", afD: "一个罐子、一座小镇、一个家人朋友一起盖的家园、一种保持亲近的方式、几句别人语言里的话。小小的、免费的东西，都基于一个想法：人不是手段，人本身就是意义。", afGo: "全部看看",
+        nbKicker: "F / 下班以后", nbH: "下班后我做的东西。", nbNote: "免费 · 无广告 · 不追踪", afK: "还有五扇窗亮着。", afLT: "小事", afHG: "我们的家园", afD: "一个罐子、一座小镇、一个家人朋友一起盖的家园、一种保持亲近的方式、几句别人语言里的话。小小的、免费的东西，都基于一个想法：人不是手段，人本身就是意义。", afGo: "全部看看",
         moreLabel: "实验室里还有：", moreSales: "销售心理学实战学院", moreQuestions: "问题卡组", moreDiscovery: "探询二重奏", moreTeach: "教回去链条", moreThanks: "具体的感谢", moreFB: "与 FREE//BUILDER 合作 →",
 
         eggLTag: "倾听测试 · 选择你的回应",
@@ -1074,7 +1095,7 @@ img{filter:none}
         m2Badge: "En vivo · nuevo", m2Caption: "1 tarea · 2 ajustes privados · 1 conversación", m2Category: "Autonomía · Delegación", m2Title: "Dial de Delegación", m2Desc: "Para una tarea real, responsable y miembro del equipo deciden en privado quién debería decidir. La revelación muestra la diferencia, y esa diferencia es la conversación que evita controlar de más.", m2Action: "Ajustar el dial",
         m3Badge: "En vivo · nuevo", m3Caption: "Presentar · aclarar · reaccionar · consentir", m3Category: "Decisiones · Todo el equipo", m3Title: "Sala de Decisiones", m3Desc: "Una decisión real de equipo en 15 minutos. Todos hablan una vez, las objeciones deben nombrar un daño y la prueba es “¿segura para probar?”. La voz del responsable cuenta una vez.", m3Action: "Tomar una decisión",
         gcKicker: "E / Más allá de la pantalla", gcTitle: "Cómo decido, demuestro y extiendo lo que funciona.", gcNote: "Diagnosticar · Demostrar · Extender · Adaptar", btConcept: "concepto", btCap1: "Diagnosticar", btT1: "¿Formación o no?", btD1: "Una comprobación de 2 minutos que dice si la formación ayudará, o qué arreglar antes.", btCap2: "Demostrar", btT2: "Impacto sin clasificar", btD2: "Un informe de 30 días de ejemplo: escuchados, siguieron hablando, lo usaron. Sin nombres ni rankings.", btCap3: "Demostrar", btT3: "El coste de la formación que nadie usa", btD3: "Una calculadora que convierte horas de aula en una conversación honesta sobre presupuesto.", btCap4: "Extender", btT4: "Círculos de aprendizaje", btD4: "Seis semanas, cinco colegas, una habilidad humana por semana, gestionado por el propio círculo.", btCap5: "Extender", btT5: "Rituales de equipo", btD5: "Doce semanas de prácticas de cinco minutos para la reunión de equipo que ya tienes.", btCap6: "Extender", btT6: "Formar facilitadores", btD6: "Dos semanas para formar facilitadores internos, certificados por evidencias, no por notas.", btCap7: "Adaptar", btT7: "Adaptado, no traducido", btD7: "Frases reales en inglés, chino y español, lado a lado, con el porqué de cada una.", btCap8: "Adaptar", btT8: "Aprendizaje para primera línea", btD8: "Para quien no tiene portátil: 60 segundos de práctica en pareja en el cambio de turno.", btCap9: "IA, con criterio", btT9: "La IA redacta, las personas entregan", btD9: "Dónde encaja la IA en el aprendizaje, dónde no, y una política de una página.", btCap10: "Devolver", btT10: "El kit abierto", btD10: "La plantilla detrás de cada práctica, gratis para otros diseñadores de aprendizaje.",
-        nbKicker: "F / Fuera de horario", nbH: "Lo que hago después del trabajo.", nbNote: "Gratis · sin anuncios · sin rastreo", afLT: "Cosas pequeñas", afHG: "Nuestro Rincón", afD: "Un tarro, un pueblo, un rincón que construyen los tuyos, una forma de seguir cerca, unas palabras en el idioma de otra persona. Cosas pequeñas y gratuitas con una sola idea: las personas no son el medio, son lo que importa.", afGo: "Verlas todas",
+        nbKicker: "F / Fuera de horario", nbH: "Lo que hago después del trabajo.", nbNote: "Gratis · sin anuncios · sin rastreo", afK: "Cinco ventanas siguen encendidas.", afLT: "Cosas pequeñas", afHG: "Nuestro Rincón", afD: "Un tarro, un pueblo, un rincón que construyen los tuyos, una forma de seguir cerca, unas palabras en el idioma de otra persona. Cosas pequeñas y gratuitas con una sola idea: las personas no son el medio, son lo que importa.", afGo: "Verlas todas",
         moreLabel: "Más en el laboratorio:", moreSales: "Academia de Psicología de Ventas", moreQuestions: "Mazo de Preguntas", moreDiscovery: "Dúo de Descubrimiento", moreTeach: "Cadena de Enseñar de Vuelta", moreThanks: "Gracias Concretas", moreFB: "Trabaja con FREE//BUILDER →",
 
         eggLTag: "Prueba de escucha · elige tu respuesta",
@@ -1157,7 +1178,7 @@ img{filter:none}
         m2Badge: "已上線 · 新", m2Caption: "1 件任務 · 2 個私下的刻度 · 1 場對話", m2Category: "自主 · 授權", m2Title: "授權刻度盤", m2Desc: "針對一件真實任務，管理者和團隊成員各自私下設定由誰來決定。揭曉時看到差距，而這個差距就是避免管得太細的那場對話。", m2Action: "撥刻度",
         m3Badge: "已上線 · 新", m3Caption: "介紹 · 澄清 · 回應 · 同意", m3Category: "決策 · 整個團隊", m3Title: "決策室", m3Desc: "15 分鐘做一個真實的團隊決定。每人被聽到一次，反對必須說出傷害，標準是“試一試安全嗎？”。管理者的聲音只算一次。", m3Action: "做一個決定",
         gcKicker: "E / 螢幕之外", gcTitle: "我如何判斷、證明並傳開真正有效的東西。", gcNote: "診斷 · 證明 · 傳播 · 本地化", btConcept: "概念", btCap1: "診斷", btT1: "要不要培訓？", btD1: "兩分鐘判斷培訓是否有用——或者該先解決什麼。", btCap2: "證明", btT2: "不排名的影響力報告", btD2: "30 天報告示例：感到被傾聽、繼續交談、在工作中用上。不點名，不排行。", btCap3: "證明", btT3: "沒人用上的培訓，代價有多大", btD3: "把培訓教室裡的小時數，變成一場誠實的預算對話。", btCap4: "傳播", btT4: "學習圈", btD4: "六週、五位同事、每週一項人際能力——由學習圈自己運轉。", btCap5: "傳播", btT5: "團隊小儀式", btD5: "十二週、每週五分鐘的小練習，放進你本來就有的團隊例會。", btCap6: "傳播", btT6: "引導師培養", btD6: "兩週在內部培養引導師——以證據認證，而不是考試分數。", btCap7: "本地化", btT7: "本地化，而不是翻譯", btD7: "英文、中文、西語的真實句子並排對照，附上每個選擇的理由。", btCap8: "本地化", btT8: "面向一線的學習", btD8: "給沒有電腦的人：交接班時 60 秒的兩人練習。", btCap9: "有判斷地用 AI", btT9: "AI 起草，人來表達", btD9: "AI 在學習中該出現在哪、不該出現在哪，以及一頁護欄政策。", btCap10: "回饋", btT10: "開放入門套件", btD10: "每個練習背後的模板，免費提供給其他學習設計師。",
-        nbKicker: "F / 下班以後", nbH: "下班後我做的東西。", nbNote: "免費 · 無廣告 · 不追蹤", afLT: "小事", afHG: "我們的家園", afD: "一個罐子、一座小鎮、一個家人朋友一起蓋的家園、一種保持親近的方式、幾句別人語言裡的話。小小的、免費的東西，都基於一個想法：人不是手段，人本身就是意義。", afGo: "全部看看",
+        nbKicker: "F / 下班以後", nbH: "下班後我做的東西。", nbNote: "免費 · 無廣告 · 不追蹤", afK: "還有五扇窗亮著。", afLT: "小事", afHG: "我們的家園", afD: "一個罐子、一座小鎮、一個家人朋友一起蓋的家園、一種保持親近的方式、幾句別人語言裡的話。小小的、免費的東西，都基於一個想法：人不是手段，人本身就是意義。", afGo: "全部看看",
         moreLabel: "實驗室裡還有：", moreSales: "銷售心理學實戰學院", moreQuestions: "問題卡組", moreDiscovery: "探詢二重奏", moreTeach: "教回去鏈條", moreThanks: "具體的感謝", moreFB: "與 FREE//BUILDER 合作 →",
 
         eggLTag: "傾聽測試 · 選擇你的回應",
@@ -1240,7 +1261,7 @@ img{filter:none}
         m2Badge: "En directe · nou", m2Caption: "1 tasca · 2 ajustos privats · 1 conversa", m2Category: "Autonomia · Delegació", m2Title: "Dial de Delegació", m2Desc: "Per a una tasca real, responsable i membre de l'equip decideixen en privat qui hauria de decidir. La revelació mostra la diferència, i aquesta diferència és la conversa que evita controlar de més.", m2Action: "Ajustar el dial",
         m3Badge: "En directe · nou", m3Caption: "Presentar · aclarir · reaccionar · consentir", m3Category: "Decisions · Tot l'equip", m3Title: "Sala de Decisions", m3Desc: "Una decisió real d'equip en 15 minuts. Tothom parla una vegada, les objeccions han d'anomenar un dany i la prova és “és segur provar-ho?”. La veu del responsable compta una vegada.", m3Action: "Prendre una decisió",
         gcKicker: "E / Més enllà de la pantalla", gcTitle: "Com decideixo, demostro i estenc el que funciona.", gcNote: "Diagnosticar · Demostrar · Estendre · Adaptar", btConcept: "concepte", btCap1: "Diagnosticar", btT1: "Formació o no?", btD1: "Una comprovació de 2 minuts que diu si la formació ajudarà, o què cal arreglar abans.", btCap2: "Demostrar", btT2: "Impacte sense classificar", btD2: "Un informe de 30 dies d'exemple: escoltats, van continuar parlant, ho van fer servir. Sense noms ni rànquings.", btCap3: "Demostrar", btT3: "El cost de la formació que ningú no fa servir", btD3: "Una calculadora que converteix hores d'aula en una conversa honesta sobre pressupost.", btCap4: "Estendre", btT4: "Cercles d'aprenentatge", btD4: "Sis setmanes, cinc col·legues, una habilitat humana per setmana, gestionat pel mateix cercle.", btCap5: "Estendre", btT5: "Rituals d'equip", btD5: "Dotze setmanes de pràctiques de cinc minuts per a la reunió d'equip que ja tens.", btCap6: "Estendre", btT6: "Formar facilitadors", btD6: "Dues setmanes per formar facilitadors interns, certificats per evidències, no per notes.", btCap7: "Adaptar", btT7: "Adaptat, no traduït", btD7: "Frases reals en anglès, xinès i espanyol, costat a costat, amb el perquè de cadascuna.", btCap8: "Adaptar", btT8: "Aprenentatge per a primera línia", btD8: "Per a qui no té portàtil: 60 segons de pràctica en parella al canvi de torn.", btCap9: "IA, amb criteri", btT9: "La IA redacta, les persones lliuren", btD9: "On encaixa la IA en l'aprenentatge, on no, i una política d'una pàgina.", btCap10: "Retornar", btT10: "El kit obert", btD10: "La plantilla darrere de cada pràctica, gratis per a altres dissenyadors d'aprenentatge.",
-        nbKicker: "F / Fora d'hores", nbH: "El que faig després de la feina.", nbNote: "Gratis · sense anuncis · sense rastreig", afLT: "Petites coses", afHG: "El Nostre Racó", afD: "Un pot, un poble, un racó que construeixen els teus, una manera de seguir a prop, unes paraules en la llengua d'una altra persona. Coses petites i gratuïtes amb una sola idea: les persones no són el mitjà, són el que importa.", afGo: "Veure-les totes",
+        nbKicker: "F / Fora d'hores", nbH: "El que faig després de la feina.", nbNote: "Gratis · sense anuncis · sense rastreig", afK: "Cinc finestres encara són enceses.", afLT: "Petites coses", afHG: "El Nostre Racó", afD: "Un pot, un poble, un racó que construeixen els teus, una manera de seguir a prop, unes paraules en la llengua d'una altra persona. Coses petites i gratuïtes amb una sola idea: les persones no són el mitjà, són el que importa.", afGo: "Veure-les totes",
         moreLabel: "Més al laboratori:", moreSales: "Acadèmia de Psicologia de Vendes", moreQuestions: "Baralla de Preguntes", moreDiscovery: "Duo de Descobriment", moreTeach: "Cadena d'Ensenyar de Tornada", moreThanks: "Gràcies Concretes", moreFB: "Treballa amb FREE//BUILDER →",
 
         eggLTag: "Prova d'escolta · tria la teva resposta",
