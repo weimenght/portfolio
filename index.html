@@ -62,7 +62,7 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7 Q 12 1 22 7 T 42 7 T 62 7 T 82 7 T 102 7 T 118 6' fill='none' stroke='%23E2553F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: left bottom;
-      background-size: 0% .32em;
+      background-size: 0% .3em;
       animation: draw 1.1s .5s var(--ease) forwards;
     }
     @keyframes draw { to { background-size: 100% .32em; } }
@@ -170,6 +170,68 @@
     .wm-h { font-family:Syne,"Plus Jakarta Sans","PingFang SC",sans-serif; font-weight:700; font-size:17px; line-height:1.3; letter-spacing:-.01em; }
     .wm-d { margin-top:5px; font-size:14px; line-height:1.6; color:rgba(var(--ink-rgb,23,23,26),.7); max-width:42rem; }
     .wm-facts { max-width:42rem; }
+    /* ===== Nov 6: a little more life (stylish and fun, still quiet) ===== */
+    /* a warm lamplight on the paper, where the dot grid was strongest */
+    .bg-glow { position:fixed; inset:0; z-index:-1; pointer-events:none;
+      background: radial-gradient(60% 42% at 18% 0%, rgba(226,85,63,.13), transparent 70%), radial-gradient(40% 30% at 92% 12%, rgba(251,191,36,.12), transparent 70%); }
+    @media (prefers-color-scheme: dark) { .bg-glow { background: radial-gradient(60% 42% at 18% 0%, rgba(242,140,118,.14), transparent 70%), radial-gradient(40% 30% at 92% 12%, rgba(251,191,36,.08), transparent 70%); } }
+
+    /* hero: bigger, tighter, the accent word in ink with its coral stroke */
+    #hero h1 { font-size:clamp(2.5rem, 7vw, 3.75rem); line-height:1.04; letter-spacing:-.03em; }
+    .accent-word { color:var(--ink,#17171A); padding-bottom:.06em; }
+    #hero .wm-facts span { white-space:nowrap; }
+    /* the hand waves once, then again if you hover it */
+    .wm-wave { display:inline-block; width:22px; height:22px; vertical-align:-5px; transform-origin:70% 90%; animation: wave 1.6s .9s ease-in-out 1; }
+    .wm-wave:hover, #hero p:hover .wm-wave { animation: wave 1.2s ease-in-out 1; }
+    @keyframes wave { 0%,100% { transform:rotate(0); } 15% { transform:rotate(16deg); } 35% { transform:rotate(-10deg); } 55% { transform:rotate(14deg); } 75% { transform:rotate(-6deg); } }
+
+    /* nav links underline themselves in coral */
+    header nav a { position:relative; }
+    header nav a::after { content:''; position:absolute; left:0; right:0; bottom:-3px; height:2px; border-radius:2px; background:#E2553F; transform:scaleX(0); transform-origin:left; transition:transform .3s var(--ease); }
+    header nav a:hover::after, header nav a:focus-visible::after { transform:scaleX(1); }
+    header a[data-i18n="navContact"]:hover, .nb-go:hover { background:#E2553F !important; }
+
+    /* section marks: the number in coral serif, the words beside it */
+    .sec-lab { display:inline-flex; align-items:baseline; gap:10px; }
+    .sec-n { font:italic 400 1.9rem/1 'Instrument Serif', Georgia, serif; color:var(--accent-text,#E2553F); letter-spacing:-.02em; transform:translateY(.12em); }
+
+    /* 01 the dossier: lifts a touch when you reach for it */
+    .flip-viewport { transition: transform .5s var(--ease); }
+    .flip-viewport:hover { transform: translateY(-3px) rotate(-.4deg); }
+    .flip-face { box-shadow: 0 1px 2px rgba(23,23,26,.04), 0 18px 40px -30px rgba(23,23,26,.35); }
+
+    /* 02 what I do: a small coral drawing per row that moves when you reach it */
+    .wm-row { grid-template-columns: 34px 1fr; }
+    @media (min-width:640px) { .wm-row { grid-template-columns: 38px 150px 1fr; } }
+    .wm-row { transition: background .25s; }
+    .wm-row:hover { background:var(--white,#FBF8F3); }
+    .wm-ic { width:28px; height:28px; color:var(--accent-text,#E2553F); }
+    .wm-ic svg { width:28px; height:28px; display:block; overflow:visible; }
+    .wm-ic * { transition: transform .5s var(--ease), opacity .4s; transform-box:fill-box; transform-origin:center; }
+    @media (max-width:639px) { .wm-row .wm-tag { grid-column:2; } .wm-row .wm-body { grid-column:1 / -1; } }
+    /* listening: the sound arcs ripple */
+    .wm-row:hover .ic-ear .w1 { transform:scale(1.08); } .wm-row:hover .ic-ear .w2 { transform:scale(1.18); } .wm-row:hover .ic-ear .w3 { transform:scale(1.28); opacity:.5; }
+    /* two bubbles lean in */
+    .wm-row:hover .ic-talk .ba { transform:translate(2px,0) rotate(-6deg); } .wm-row:hover .ic-talk .bb { transform:translate(-2px,0) rotate(6deg); }
+    /* the die rolls */
+    .wm-row:hover .ic-die .cube { transform:rotate(90deg); }
+    /* the baton passes */
+    .wm-row:hover .ic-pass .arrow { transform:translateX(5px); } .wm-row:hover .ic-pass .p2 { transform:scale(1.25); }
+
+    /* 03 the portfolio card: the work itself, laid out like photos on a table, drifting under the edge */
+    .work-card { padding-bottom:1.5rem !important; }
+    .work-strip { position:relative; display:flex; gap:12px; margin:26px -2rem 0 -1rem; padding-left:1rem; width:max-content; animation: strip 36s linear infinite; }
+    @media (min-width:640px) { .work-strip { margin:34px -3rem 0 -1.5rem; padding-left:1.5rem; gap:16px; } }
+    .work-plate { display:block; width:168px; aspect-ratio:320/190; flex:none; border-radius:14px; overflow:hidden; background:var(--white,#fff); box-shadow:0 14px 30px -14px rgba(0,0,0,.6); transform:rotate(var(--r)); transition: transform .6s var(--ease); }
+    @media (min-width:640px) { .work-plate { width:210px; } }
+    .work-plate .card-art { width:100%; height:100%; display:block; }
+    .work-card:hover .work-plate { transform:rotate(0) translateY(-4px); }
+    @keyframes strip { to { transform:translateX(-33.333%); } }
+    .work-card:hover .work-strip { animation-play-state:paused; }
+    @media (prefers-reduced-motion: reduce) { .work-strip { animation:none; } .wm-wave { animation:none; } }
+
+    /* 04: the email goes coral too */
+    #contact a[href^="mailto"]:hover { background:#E2553F !important; }
 </style>
   <script>document.documentElement.classList.add('js');</script>
 <meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)"><style id="fb-dark">
@@ -201,6 +263,7 @@ img{filter:none}
 
 <body class="font-sans min-h-screen antialiased selection:bg-ink selection:text-white">
   <div class="bg-dots" aria-hidden="true"></div>
+  <div class="bg-glow" aria-hidden="true"></div>
 
   <!-- NAV -->
   <header class="sticky top-0 z-40 bg-paper/85 backdrop-blur-md border-b border-line/80 px-4 sm:px-10 py-3">
@@ -246,7 +309,7 @@ img{filter:none}
     <!-- HERO -->
     <section id="hero" class="space-y-7 sm:space-y-9">
       <p class="reveal inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.18em] text-muted">
-        <span class="w-6 h-px bg-ink/40"></span>
+        <svg class="wm-wave" viewBox="0 0 24 24" fill="none" stroke="#E2553F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11V5.5a1.5 1.5 0 0 1 3 0V11M10 10V4.5a1.5 1.5 0 0 1 3 0V11M13 10V5.5a1.5 1.5 0 0 1 3 0V12M16 12V8a1.5 1.5 0 0 1 3 0v6.5A6.5 6.5 0 0 1 12.5 21h-1A6.5 6.5 0 0 1 5 14.5V12.6a1.4 1.4 0 0 1 2.5-.9L9 13.5"/></svg>
         <span data-i18n="heroKicker">Hello, I'm Wei</span>
       </p>
 
@@ -266,7 +329,7 @@ img{filter:none}
     <!-- 01 WHO I AM -->
     <section id="identity" class="reveal scroll-mt-24 space-y-5">
       <div class="flex items-center justify-between border-b border-line pb-3">
-        <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="identityLabel">01 / Who I Am</span>
+        <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted sec-lab" data-i18n="identityLabel">01 / Who I Am</span>
         <div class="inline-flex p-0.5 rounded-lg bg-line/70 text-[11px] font-mono" role="group">
           <button type="button" id="tab-formal" onclick="setCardFace('formal')" aria-pressed="true"
             class="tab px-3 py-1 rounded-md transition-all" data-i18n="btnFormal">Dossier</button>
@@ -323,7 +386,7 @@ img{filter:none}
     <!-- 02 WHAT I DO -->
     <section id="methodology" class="reveal scroll-mt-24 space-y-5">
       <div class="flex items-center justify-between border-b border-line pb-3">
-        <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="methodologyLabel">02 / What I Do</span>
+        <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted sec-lab" data-i18n="methodologyLabel">02 / What I Do</span>
       </div>
       <ol id="whatido" class="wm-list bg-white rounded-3xl border border-line overflow-hidden"></ol>
     </section>
@@ -331,7 +394,7 @@ img{filter:none}
     <!-- 03 PORTFOLIO -->
     <section id="work" class="reveal scroll-mt-24 space-y-5">
       <div class="flex items-center justify-between border-b border-line pb-3">
-        <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="workLabel">03 / Portfolio</span>
+        <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted sec-lab" data-i18n="workLabel">03 / Portfolio</span>
         <span class="inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald-700">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
           <span data-i18n="workLive">Live demos</span>
@@ -339,7 +402,7 @@ img{filter:none}
       </div>
 
       <a href="https://www.wei-meng.org/portfolio" target="_blank" rel="noopener noreferrer"
-         class="group relative block overflow-hidden bg-ink text-white rounded-3xl p-7 sm:p-12 transition-transform duration-500 hover:-translate-y-0.5">
+         class="group work-card relative block overflow-hidden bg-ink text-white rounded-3xl p-7 sm:p-12 transition-transform duration-500 hover:-translate-y-0.5">
         <!-- whimsical floaters -->
         <span class="floater w-40 h-40 sm:w-56 sm:h-56 -right-10 -top-12 border border-white/10" aria-hidden="true"></span>
         <span class="floater w-2.5 h-2.5 right-16 top-14 bg-accent" style="animation-delay:-3s" aria-hidden="true"></span>
@@ -360,6 +423,64 @@ img{filter:none}
             </span>
           </div>
         </div>
+        <div class="work-strip" aria-hidden="true"><span class="work-plate" style="--r:-3deg;--d:0s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice">
+                <defs><pattern id="dots-l" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs>
+                <rect width="320" height="190" fill="url(#dots-l)"/>
+                <g class="bubble-a"><rect x="52" y="44" width="126" height="64" rx="22" fill="#17171A"/><path d="M78 106 l-6 18 22-16z" fill="#17171A"/>
+                  <g fill="#F7F6F2"><rect class="wave" x="84" y="66" width="5" height="20" rx="2.5"/><rect class="wave" x="96" y="60" width="5" height="32" rx="2.5"/><rect class="wave" x="108" y="68" width="5" height="16" rx="2.5"/></g>
+                  <rect x="124" y="70" width="36" height="5" rx="2.5" fill="rgba(247,246,242,.4)"/><rect x="124" y="80" width="24" height="5" rx="2.5" fill="rgba(247,246,242,.4)"/></g>
+                <g class="bubble-b"><rect x="150" y="96" width="122" height="56" rx="22" fill="#E2553F"/><path d="M246 150 l6 18 -22-16z" fill="#E2553F"/>
+                  <text x="211" y="130" text-anchor="middle" font-family="Space Mono, monospace" font-size="15" font-weight="700" fill="#fff">“so you…”</text></g>
+              </svg></span><span class="work-plate" style="--r:2deg;--d:-1.3s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-drama" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-drama)"/><rect x="118" y="26" width="84" height="138" rx="14" fill="#17171A"/><g fill="rgba(247,246,242,.5)"><circle cx="146" cy="48" r="8"/><path d="M132 68c0-8 6-12 14-12s14 4 14 12z"/></g><g fill="#E2553F"><circle cx="176" cy="48" r="8"/><path d="M162 68c0-8 6-12 14-12s14 4 14 12z"/></g><rect x="132" y="134" width="56" height="5" rx="2.5" fill="rgba(247,246,242,.5)"/><rect x="140" y="144" width="40" height="5" rx="2.5" fill="rgba(247,246,242,.3)"/><g fill="none" stroke="#17171A" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="2 6"><path d="M114 96C96 96 92 82 84 76"/><path d="M206 104c18 0 22 12 30 18"/></g><g class="bubble-a"><rect x="38" y="52" width="52" height="34" rx="14" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/><text x="64" y="74" text-anchor="middle" font-family="Space Mono, monospace" font-size="14" font-weight="700" fill="#17171A">A?</text></g><g class="bubble-b"><rect x="230" y="112" width="52" height="34" rx="14" fill="#E2553F"/><text x="256" y="134" text-anchor="middle" font-family="Space Mono, monospace" font-size="14" font-weight="700" fill="#fff">B?</text></g></svg></span><span class="work-plate" style="--r:-1.5deg;--d:-2.6s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-odyssey" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-odyssey)"/><g fill="rgba(23,23,26,.14)"><rect x="60" y="48" width="4" height="4"/><rect x="130" y="40" width="4" height="4"/><rect x="200" y="36" width="4" height="4"/><rect x="30" y="92" width="4" height="4"/><rect x="176" y="58" width="3" height="3"/></g><rect x="22" y="132" width="46" height="14" rx="4" fill="#17171A"/><text x="45" y="142.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">E</text><rect x="78" y="114" width="46" height="14" rx="4" fill="#17171A"/><text x="101" y="124.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">D</text><rect x="134" y="96" width="46" height="14" rx="4" fill="#17171A"/><text x="157" y="106.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">I</text><rect x="190" y="78" width="46" height="14" rx="4" fill="#17171A"/><text x="213" y="88.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">P</text><rect x="246" y="60" width="46" height="14" rx="4" fill="#17171A"/><text x="269" y="70.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">T</text><path d="M112 96c10-22 30-26 44-10" fill="none" stroke="#E2553F" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 5"/><g class="hop"><rect x="93" y="98" width="16" height="16" rx="3" fill="#E2553F"/><rect x="102" y="102" width="3" height="4" fill="#fff"/></g><path d="M256 60V34" stroke="#17171A" stroke-width="2.5" stroke-linecap="round"/><path class="flag" d="M257 35h18l-5 7 5 7h-18z" fill="#E2553F"/></svg></span><span class="work-plate" style="--r:2.5deg;--d:-3.9s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-mm" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-mm)"/><path d="M14 156h292" stroke="#E5E2DA" stroke-width="2"/>
+  <g class="bubble-a"><g transform="rotate(-3 72 92)"><rect x="22" y="48" width="100" height="84" rx="4" fill="#fff" stroke="#17171A" stroke-width="3"/><rect x="32" y="58" width="80" height="64" fill="#F1EEE6"/>
+  <path d="M44 108l18-22 14 14 10-8 16 16" fill="none" stroke="#17171A" stroke-width="2.5" stroke-linejoin="round"/><circle cx="92" cy="74" r="6" fill="#E2553F"/></g></g>
+  <rect x="134" y="40" width="70" height="100" rx="4" fill="#17171A"/><rect x="142" y="48" width="54" height="84" fill="#2A2A2F"/>
+  <path d="M156 76c0-10 26-10 26 0 0 8-13 9-13 18M169 106v1" fill="none" stroke="#E2553F" stroke-width="3.5" stroke-linecap="round"/>
+  <g class="bubble-b"><g transform="rotate(4 258 92)"><rect x="216" y="54" width="86" height="76" rx="4" fill="#fff" stroke="#17171A" stroke-width="3"/><rect x="226" y="64" width="66" height="56" fill="#F1EEE6"/>
+  <text x="259" y="101" text-anchor="middle" font-family="Space Mono, monospace" font-size="22" font-weight="700" fill="#17171A">oops</text></g></g></svg></span><span class="work-plate" style="--r:-2deg;--d:-5.2s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-coach" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-coach)"/><g class="bubble-a"><rect x="34" y="42" width="66" height="112" rx="14" fill="#17171A"/><rect x="44" y="60" width="38" height="13" rx="6.5" fill="rgba(247,246,242,.45)"/><rect x="54" y="80" width="36" height="13" rx="6.5" fill="#E2553F"/><rect x="44" y="100" width="30" height="13" rx="6.5" fill="rgba(247,246,242,.45)"/><rect x="54" y="120" width="36" height="13" rx="6.5" fill="#E2553F" opacity=".55"/><rect x="58" y="144" width="18" height="3" rx="1.5" fill="rgba(247,246,242,.35)"/></g><g fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 6"><path d="M110 98h26"/></g><path d="M134 92l7 6-7 6" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><g class="bubble-a"><rect x="152" y="50" width="88" height="54" rx="22" fill="#17171A"/><path d="M174 102l-6 16 20-14z" fill="#17171A"/><rect x="170" y="70" width="40" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/><rect x="170" y="80" width="28" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/></g><g class="bubble-b"><rect x="206" y="96" width="88" height="54" rx="22" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/><path d="M272 148l6 16-20-14z" fill="#fff" stroke="#E5E2DA" stroke-width="1.5" stroke-linejoin="round"/><rect x="226" y="116" width="44" height="5" rx="2.5" fill="#E5E2DA"/><rect x="226" y="126" width="30" height="5" rx="2.5" fill="#E5E2DA"/></g><g transform="rotate(-32 226 100)"><rect x="198" y="90" width="56" height="20" rx="10" fill="#E2553F"/><rect x="217" y="93" width="18" height="14" rx="3" fill="rgba(255,255,255,.35)"/><g fill="rgba(255,255,255,.55)"><circle cx="206" cy="97" r="1.3"/><circle cx="206" cy="103" r="1.3"/><circle cx="246" cy="97" r="1.3"/><circle cx="246" cy="103" r="1.3"/></g></g></svg></span><span class="work-plate" style="--r:1.5deg;--d:-6.5s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-tt" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-tt)"/><g class="bubble-a"><g transform="rotate(-6 92 96)"><rect x="24" y="48" width="136" height="96" rx="18" fill="#17171A"/>
+  <circle cx="56" cy="82" r="14" fill="none" stroke="#F7F6F2" stroke-width="2.5"/><circle cx="56" cy="82" r="5" fill="#E2553F"/>
+  <rect x="80" y="74" width="56" height="6" rx="3" fill="rgba(247,246,242,.55)"/><rect x="80" y="86" width="40" height="6" rx="3" fill="rgba(247,246,242,.3)"/><rect x="40" y="114" width="96" height="6" rx="3" fill="rgba(247,246,242,.3)"/></g></g>
+  <g class="bubble-b"><g transform="rotate(6 228 100)"><rect x="160" y="52" width="136" height="96" rx="18" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/>
+  <path d="M186 80c4-10 22-10 22 0 0 7-9 8-11 15M197 104v.5" fill="none" stroke="#E2553F" stroke-width="3" stroke-linecap="round"/>
+  <rect x="222" y="78" width="52" height="6" rx="3" fill="#E5E2DA"/><rect x="222" y="90" width="36" height="6" rx="3" fill="#E5E2DA"/><rect x="180" y="120" width="92" height="6" rx="3" fill="#E5E2DA"/></g></g></svg></span><span class="work-plate" style="--r:-3deg;--d:0s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice">
+                <defs><pattern id="dots-l" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs>
+                <rect width="320" height="190" fill="url(#dots-l)"/>
+                <g class="bubble-a"><rect x="52" y="44" width="126" height="64" rx="22" fill="#17171A"/><path d="M78 106 l-6 18 22-16z" fill="#17171A"/>
+                  <g fill="#F7F6F2"><rect class="wave" x="84" y="66" width="5" height="20" rx="2.5"/><rect class="wave" x="96" y="60" width="5" height="32" rx="2.5"/><rect class="wave" x="108" y="68" width="5" height="16" rx="2.5"/></g>
+                  <rect x="124" y="70" width="36" height="5" rx="2.5" fill="rgba(247,246,242,.4)"/><rect x="124" y="80" width="24" height="5" rx="2.5" fill="rgba(247,246,242,.4)"/></g>
+                <g class="bubble-b"><rect x="150" y="96" width="122" height="56" rx="22" fill="#E2553F"/><path d="M246 150 l6 18 -22-16z" fill="#E2553F"/>
+                  <text x="211" y="130" text-anchor="middle" font-family="Space Mono, monospace" font-size="15" font-weight="700" fill="#fff">“so you…”</text></g>
+              </svg></span><span class="work-plate" style="--r:2deg;--d:-1.3s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-drama" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-drama)"/><rect x="118" y="26" width="84" height="138" rx="14" fill="#17171A"/><g fill="rgba(247,246,242,.5)"><circle cx="146" cy="48" r="8"/><path d="M132 68c0-8 6-12 14-12s14 4 14 12z"/></g><g fill="#E2553F"><circle cx="176" cy="48" r="8"/><path d="M162 68c0-8 6-12 14-12s14 4 14 12z"/></g><rect x="132" y="134" width="56" height="5" rx="2.5" fill="rgba(247,246,242,.5)"/><rect x="140" y="144" width="40" height="5" rx="2.5" fill="rgba(247,246,242,.3)"/><g fill="none" stroke="#17171A" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="2 6"><path d="M114 96C96 96 92 82 84 76"/><path d="M206 104c18 0 22 12 30 18"/></g><g class="bubble-a"><rect x="38" y="52" width="52" height="34" rx="14" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/><text x="64" y="74" text-anchor="middle" font-family="Space Mono, monospace" font-size="14" font-weight="700" fill="#17171A">A?</text></g><g class="bubble-b"><rect x="230" y="112" width="52" height="34" rx="14" fill="#E2553F"/><text x="256" y="134" text-anchor="middle" font-family="Space Mono, monospace" font-size="14" font-weight="700" fill="#fff">B?</text></g></svg></span><span class="work-plate" style="--r:-1.5deg;--d:-2.6s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-odyssey" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-odyssey)"/><g fill="rgba(23,23,26,.14)"><rect x="60" y="48" width="4" height="4"/><rect x="130" y="40" width="4" height="4"/><rect x="200" y="36" width="4" height="4"/><rect x="30" y="92" width="4" height="4"/><rect x="176" y="58" width="3" height="3"/></g><rect x="22" y="132" width="46" height="14" rx="4" fill="#17171A"/><text x="45" y="142.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">E</text><rect x="78" y="114" width="46" height="14" rx="4" fill="#17171A"/><text x="101" y="124.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">D</text><rect x="134" y="96" width="46" height="14" rx="4" fill="#17171A"/><text x="157" y="106.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">I</text><rect x="190" y="78" width="46" height="14" rx="4" fill="#17171A"/><text x="213" y="88.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">P</text><rect x="246" y="60" width="46" height="14" rx="4" fill="#17171A"/><text x="269" y="70.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">T</text><path d="M112 96c10-22 30-26 44-10" fill="none" stroke="#E2553F" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 5"/><g class="hop"><rect x="93" y="98" width="16" height="16" rx="3" fill="#E2553F"/><rect x="102" y="102" width="3" height="4" fill="#fff"/></g><path d="M256 60V34" stroke="#17171A" stroke-width="2.5" stroke-linecap="round"/><path class="flag" d="M257 35h18l-5 7 5 7h-18z" fill="#E2553F"/></svg></span><span class="work-plate" style="--r:2.5deg;--d:-3.9s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-mm" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-mm)"/><path d="M14 156h292" stroke="#E5E2DA" stroke-width="2"/>
+  <g class="bubble-a"><g transform="rotate(-3 72 92)"><rect x="22" y="48" width="100" height="84" rx="4" fill="#fff" stroke="#17171A" stroke-width="3"/><rect x="32" y="58" width="80" height="64" fill="#F1EEE6"/>
+  <path d="M44 108l18-22 14 14 10-8 16 16" fill="none" stroke="#17171A" stroke-width="2.5" stroke-linejoin="round"/><circle cx="92" cy="74" r="6" fill="#E2553F"/></g></g>
+  <rect x="134" y="40" width="70" height="100" rx="4" fill="#17171A"/><rect x="142" y="48" width="54" height="84" fill="#2A2A2F"/>
+  <path d="M156 76c0-10 26-10 26 0 0 8-13 9-13 18M169 106v1" fill="none" stroke="#E2553F" stroke-width="3.5" stroke-linecap="round"/>
+  <g class="bubble-b"><g transform="rotate(4 258 92)"><rect x="216" y="54" width="86" height="76" rx="4" fill="#fff" stroke="#17171A" stroke-width="3"/><rect x="226" y="64" width="66" height="56" fill="#F1EEE6"/>
+  <text x="259" y="101" text-anchor="middle" font-family="Space Mono, monospace" font-size="22" font-weight="700" fill="#17171A">oops</text></g></g></svg></span><span class="work-plate" style="--r:-2deg;--d:-5.2s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-coach" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-coach)"/><g class="bubble-a"><rect x="34" y="42" width="66" height="112" rx="14" fill="#17171A"/><rect x="44" y="60" width="38" height="13" rx="6.5" fill="rgba(247,246,242,.45)"/><rect x="54" y="80" width="36" height="13" rx="6.5" fill="#E2553F"/><rect x="44" y="100" width="30" height="13" rx="6.5" fill="rgba(247,246,242,.45)"/><rect x="54" y="120" width="36" height="13" rx="6.5" fill="#E2553F" opacity=".55"/><rect x="58" y="144" width="18" height="3" rx="1.5" fill="rgba(247,246,242,.35)"/></g><g fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 6"><path d="M110 98h26"/></g><path d="M134 92l7 6-7 6" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><g class="bubble-a"><rect x="152" y="50" width="88" height="54" rx="22" fill="#17171A"/><path d="M174 102l-6 16 20-14z" fill="#17171A"/><rect x="170" y="70" width="40" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/><rect x="170" y="80" width="28" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/></g><g class="bubble-b"><rect x="206" y="96" width="88" height="54" rx="22" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/><path d="M272 148l6 16-20-14z" fill="#fff" stroke="#E5E2DA" stroke-width="1.5" stroke-linejoin="round"/><rect x="226" y="116" width="44" height="5" rx="2.5" fill="#E5E2DA"/><rect x="226" y="126" width="30" height="5" rx="2.5" fill="#E5E2DA"/></g><g transform="rotate(-32 226 100)"><rect x="198" y="90" width="56" height="20" rx="10" fill="#E2553F"/><rect x="217" y="93" width="18" height="14" rx="3" fill="rgba(255,255,255,.35)"/><g fill="rgba(255,255,255,.55)"><circle cx="206" cy="97" r="1.3"/><circle cx="206" cy="103" r="1.3"/><circle cx="246" cy="97" r="1.3"/><circle cx="246" cy="103" r="1.3"/></g></g></svg></span><span class="work-plate" style="--r:1.5deg;--d:-6.5s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-tt" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-tt)"/><g class="bubble-a"><g transform="rotate(-6 92 96)"><rect x="24" y="48" width="136" height="96" rx="18" fill="#17171A"/>
+  <circle cx="56" cy="82" r="14" fill="none" stroke="#F7F6F2" stroke-width="2.5"/><circle cx="56" cy="82" r="5" fill="#E2553F"/>
+  <rect x="80" y="74" width="56" height="6" rx="3" fill="rgba(247,246,242,.55)"/><rect x="80" y="86" width="40" height="6" rx="3" fill="rgba(247,246,242,.3)"/><rect x="40" y="114" width="96" height="6" rx="3" fill="rgba(247,246,242,.3)"/></g></g>
+  <g class="bubble-b"><g transform="rotate(6 228 100)"><rect x="160" y="52" width="136" height="96" rx="18" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/>
+  <path d="M186 80c4-10 22-10 22 0 0 7-9 8-11 15M197 104v.5" fill="none" stroke="#E2553F" stroke-width="3" stroke-linecap="round"/>
+  <rect x="222" y="78" width="52" height="6" rx="3" fill="#E5E2DA"/><rect x="222" y="90" width="36" height="6" rx="3" fill="#E5E2DA"/><rect x="180" y="120" width="92" height="6" rx="3" fill="#E5E2DA"/></g></g></svg></span><span class="work-plate" style="--r:-3deg;--d:0s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice">
+                <defs><pattern id="dots-l" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs>
+                <rect width="320" height="190" fill="url(#dots-l)"/>
+                <g class="bubble-a"><rect x="52" y="44" width="126" height="64" rx="22" fill="#17171A"/><path d="M78 106 l-6 18 22-16z" fill="#17171A"/>
+                  <g fill="#F7F6F2"><rect class="wave" x="84" y="66" width="5" height="20" rx="2.5"/><rect class="wave" x="96" y="60" width="5" height="32" rx="2.5"/><rect class="wave" x="108" y="68" width="5" height="16" rx="2.5"/></g>
+                  <rect x="124" y="70" width="36" height="5" rx="2.5" fill="rgba(247,246,242,.4)"/><rect x="124" y="80" width="24" height="5" rx="2.5" fill="rgba(247,246,242,.4)"/></g>
+                <g class="bubble-b"><rect x="150" y="96" width="122" height="56" rx="22" fill="#E2553F"/><path d="M246 150 l6 18 -22-16z" fill="#E2553F"/>
+                  <text x="211" y="130" text-anchor="middle" font-family="Space Mono, monospace" font-size="15" font-weight="700" fill="#fff">“so you…”</text></g>
+              </svg></span><span class="work-plate" style="--r:2deg;--d:-1.3s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-drama" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-drama)"/><rect x="118" y="26" width="84" height="138" rx="14" fill="#17171A"/><g fill="rgba(247,246,242,.5)"><circle cx="146" cy="48" r="8"/><path d="M132 68c0-8 6-12 14-12s14 4 14 12z"/></g><g fill="#E2553F"><circle cx="176" cy="48" r="8"/><path d="M162 68c0-8 6-12 14-12s14 4 14 12z"/></g><rect x="132" y="134" width="56" height="5" rx="2.5" fill="rgba(247,246,242,.5)"/><rect x="140" y="144" width="40" height="5" rx="2.5" fill="rgba(247,246,242,.3)"/><g fill="none" stroke="#17171A" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="2 6"><path d="M114 96C96 96 92 82 84 76"/><path d="M206 104c18 0 22 12 30 18"/></g><g class="bubble-a"><rect x="38" y="52" width="52" height="34" rx="14" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/><text x="64" y="74" text-anchor="middle" font-family="Space Mono, monospace" font-size="14" font-weight="700" fill="#17171A">A?</text></g><g class="bubble-b"><rect x="230" y="112" width="52" height="34" rx="14" fill="#E2553F"/><text x="256" y="134" text-anchor="middle" font-family="Space Mono, monospace" font-size="14" font-weight="700" fill="#fff">B?</text></g></svg></span><span class="work-plate" style="--r:-1.5deg;--d:-2.6s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-odyssey" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-odyssey)"/><g fill="rgba(23,23,26,.14)"><rect x="60" y="48" width="4" height="4"/><rect x="130" y="40" width="4" height="4"/><rect x="200" y="36" width="4" height="4"/><rect x="30" y="92" width="4" height="4"/><rect x="176" y="58" width="3" height="3"/></g><rect x="22" y="132" width="46" height="14" rx="4" fill="#17171A"/><text x="45" y="142.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">E</text><rect x="78" y="114" width="46" height="14" rx="4" fill="#17171A"/><text x="101" y="124.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">D</text><rect x="134" y="96" width="46" height="14" rx="4" fill="#17171A"/><text x="157" y="106.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">I</text><rect x="190" y="78" width="46" height="14" rx="4" fill="#17171A"/><text x="213" y="88.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">P</text><rect x="246" y="60" width="46" height="14" rx="4" fill="#17171A"/><text x="269" y="70.5" text-anchor="middle" font-family="Space Mono, monospace" font-size="9" font-weight="700" fill="#F7F6F2">T</text><path d="M112 96c10-22 30-26 44-10" fill="none" stroke="#E2553F" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 5"/><g class="hop"><rect x="93" y="98" width="16" height="16" rx="3" fill="#E2553F"/><rect x="102" y="102" width="3" height="4" fill="#fff"/></g><path d="M256 60V34" stroke="#17171A" stroke-width="2.5" stroke-linecap="round"/><path class="flag" d="M257 35h18l-5 7 5 7h-18z" fill="#E2553F"/></svg></span><span class="work-plate" style="--r:2.5deg;--d:-3.9s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-mm" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-mm)"/><path d="M14 156h292" stroke="#E5E2DA" stroke-width="2"/>
+  <g class="bubble-a"><g transform="rotate(-3 72 92)"><rect x="22" y="48" width="100" height="84" rx="4" fill="#fff" stroke="#17171A" stroke-width="3"/><rect x="32" y="58" width="80" height="64" fill="#F1EEE6"/>
+  <path d="M44 108l18-22 14 14 10-8 16 16" fill="none" stroke="#17171A" stroke-width="2.5" stroke-linejoin="round"/><circle cx="92" cy="74" r="6" fill="#E2553F"/></g></g>
+  <rect x="134" y="40" width="70" height="100" rx="4" fill="#17171A"/><rect x="142" y="48" width="54" height="84" fill="#2A2A2F"/>
+  <path d="M156 76c0-10 26-10 26 0 0 8-13 9-13 18M169 106v1" fill="none" stroke="#E2553F" stroke-width="3.5" stroke-linecap="round"/>
+  <g class="bubble-b"><g transform="rotate(4 258 92)"><rect x="216" y="54" width="86" height="76" rx="4" fill="#fff" stroke="#17171A" stroke-width="3"/><rect x="226" y="64" width="66" height="56" fill="#F1EEE6"/>
+  <text x="259" y="101" text-anchor="middle" font-family="Space Mono, monospace" font-size="22" font-weight="700" fill="#17171A">oops</text></g></g></svg></span><span class="work-plate" style="--r:-2deg;--d:-5.2s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="dots-coach" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-coach)"/><g class="bubble-a"><rect x="34" y="42" width="66" height="112" rx="14" fill="#17171A"/><rect x="44" y="60" width="38" height="13" rx="6.5" fill="rgba(247,246,242,.45)"/><rect x="54" y="80" width="36" height="13" rx="6.5" fill="#E2553F"/><rect x="44" y="100" width="30" height="13" rx="6.5" fill="rgba(247,246,242,.45)"/><rect x="54" y="120" width="36" height="13" rx="6.5" fill="#E2553F" opacity=".55"/><rect x="58" y="144" width="18" height="3" rx="1.5" fill="rgba(247,246,242,.35)"/></g><g fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 6"><path d="M110 98h26"/></g><path d="M134 92l7 6-7 6" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><g class="bubble-a"><rect x="152" y="50" width="88" height="54" rx="22" fill="#17171A"/><path d="M174 102l-6 16 20-14z" fill="#17171A"/><rect x="170" y="70" width="40" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/><rect x="170" y="80" width="28" height="5" rx="2.5" fill="rgba(247,246,242,.45)"/></g><g class="bubble-b"><rect x="206" y="96" width="88" height="54" rx="22" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/><path d="M272 148l6 16-20-14z" fill="#fff" stroke="#E5E2DA" stroke-width="1.5" stroke-linejoin="round"/><rect x="226" y="116" width="44" height="5" rx="2.5" fill="#E5E2DA"/><rect x="226" y="126" width="30" height="5" rx="2.5" fill="#E5E2DA"/></g><g transform="rotate(-32 226 100)"><rect x="198" y="90" width="56" height="20" rx="10" fill="#E2553F"/><rect x="217" y="93" width="18" height="14" rx="3" fill="rgba(255,255,255,.35)"/><g fill="rgba(255,255,255,.55)"><circle cx="206" cy="97" r="1.3"/><circle cx="206" cy="103" r="1.3"/><circle cx="246" cy="97" r="1.3"/><circle cx="246" cy="103" r="1.3"/></g></g></svg></span><span class="work-plate" style="--r:1.5deg;--d:-6.5s"><svg class="card-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><defs><pattern id="dots-tt" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(23,23,26,.12)"/></pattern></defs><rect width="320" height="190" fill="url(#dots-tt)"/><g class="bubble-a"><g transform="rotate(-6 92 96)"><rect x="24" y="48" width="136" height="96" rx="18" fill="#17171A"/>
+  <circle cx="56" cy="82" r="14" fill="none" stroke="#F7F6F2" stroke-width="2.5"/><circle cx="56" cy="82" r="5" fill="#E2553F"/>
+  <rect x="80" y="74" width="56" height="6" rx="3" fill="rgba(247,246,242,.55)"/><rect x="80" y="86" width="40" height="6" rx="3" fill="rgba(247,246,242,.3)"/><rect x="40" y="114" width="96" height="6" rx="3" fill="rgba(247,246,242,.3)"/></g></g>
+  <g class="bubble-b"><g transform="rotate(6 228 100)"><rect x="160" y="52" width="136" height="96" rx="18" fill="#fff" stroke="#E5E2DA" stroke-width="1.5"/>
+  <path d="M186 80c4-10 22-10 22 0 0 7-9 8-11 15M197 104v.5" fill="none" stroke="#E2553F" stroke-width="3" stroke-linecap="round"/>
+  <rect x="222" y="78" width="52" height="6" rx="3" fill="#E5E2DA"/><rect x="222" y="90" width="36" height="6" rx="3" fill="#E5E2DA"/><rect x="180" y="120" width="92" height="6" rx="3" fill="#E5E2DA"/></g></g></svg></span></div>
       </a>
     </section>
 
@@ -367,7 +488,7 @@ img{filter:none}
     <!-- 04 CONTACT -->
     <section id="contact" class="reveal scroll-mt-24">
       <div class="text-center py-6 sm:py-10 space-y-6">
-        <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="contactLabel">04 / Say Hello</span>
+        <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted sec-lab" data-i18n="contactLabel">04 / Say Hello</span>
         <h2 class="font-syne text-3xl sm:text-5xl font-bold tracking-tight leading-[1.1] max-w-2xl mx-auto" data-i18n-html="contactTitle">
           Let's build learning people <span class="accent-word">share</span>.
         </h2>
@@ -652,15 +773,22 @@ img{filter:none}
     function toggleCardFace() { setCardFace(isFlipped ? 'formal' : 'reality'); }
 
     /* ---------- 02 What I do: four rows ---------- */
+    const WM_ICONS = [
+      '<svg class="ic-ear" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 20a5 5 0 0 0 10 0c0-3 2-4 2-7.5a7 7 0 0 0-14 0"/><path class="w1" d="M12.5 13.5a2.5 2.5 0 0 1 5 0"/><path class="w2" d="M7 9a8 8 0 0 1 2-2.5" opacity=".7"/><path class="w3" d="M4.5 7.5A11 11 0 0 1 7 4" opacity=".45"/></svg>',
+      '<svg class="ic-talk" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="ba" d="M3 6h12v8H8l-3 3v-3H3z"/><path class="bb" d="M25 12H14v8h7l3 3v-3h1z" fill="currentColor" fill-opacity=".18"/></svg>',
+      '<svg class="ic-die" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2"><g class="cube"><rect x="5" y="5" width="18" height="18" rx="4"/><circle cx="10" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="14" cy="14" r="1.4" fill="currentColor" stroke="none"/><circle cx="18" cy="18" r="1.4" fill="currentColor" stroke="none"/></g></svg>',
+      '<svg class="ic-pass" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle class="p1" cx="6" cy="14" r="3.2"/><path class="arrow" d="M11 14h7m-3-3 3 3-3 3"/><circle class="p2" cx="22.5" cy="14" r="3.2" fill="currentColor" fill-opacity=".18"/></svg>'
+    ];
     function renderSlide() {
       const box = document.getElementById('whatido'); if (!box) return; box.innerHTML = '';
-      t().protocols.forEach(p => {
+      t().protocols.forEach((p, i) => {
         const li = document.createElement('li'); li.className = 'wm-row';
+        const ic = document.createElement('span'); ic.className = 'wm-ic'; ic.setAttribute('aria-hidden', 'true'); ic.innerHTML = WM_ICONS[i] || '';
         const tag = document.createElement('span'); tag.className = 'wm-tag'; tag.textContent = p.tag;
         const body = document.createElement('div'); body.className = 'wm-body';
         const h = document.createElement('h3'); h.className = 'wm-h'; h.textContent = p.title;
         const d = document.createElement('p'); d.className = 'wm-d'; d.textContent = p.desc;
-        body.append(h, d); li.append(tag, body); box.appendChild(li);
+        body.append(h, d); li.append(ic, tag, body); box.appendChild(li);
       });
     }
 
@@ -685,6 +813,10 @@ img{filter:none}
         if (v) el.innerHTML = v;
       });
       document.getElementById('drink-link').setAttribute('aria-label', t().drinkTooltip);
+      document.querySelectorAll('.sec-lab').forEach(el => {
+        const m = /^(\d+)\s*\/\s*(.*)$/.exec(el.textContent.trim()); if (!m) return;
+        el.textContent = ''; const n = document.createElement('b'); n.className = 'sec-n'; n.textContent = m[1]; el.append(n, m[2]);
+      });
 
       renderSlide();
       if (typeof renderGames === 'function') renderGames();
