@@ -101,10 +101,16 @@
     .bg-accent.text-white.text-\[10px\] { background:#C2412D; }
     html, body { overflow-x:clip; }
     @media (max-width:359px) { header .px-3\.5 { padding-left:.6rem; padding-right:.6rem; } header .gap-2, header .gap-3 { gap:.4rem; } header button[onclick="cycleLanguage()"] svg { display:none; } }
-    /* F / After work: three small things, each with its own page */
-    .af-grid { grid-template-columns:1fr; }
-    @media (min-width:700px) { .af-grid { grid-template-columns:repeat(3,1fr); } }
-    .af-grid .bts-k { font-size:1.3rem; letter-spacing:0; }
+    /* F / After hours: one card into /after-hours/ */
+    .af-one { display:grid; gap:14px 22px; align-items:center; grid-template-columns:1fr; padding:22px 24px; border-radius:24px; border:1px solid #E5E2DA; background:var(--white,#fff); color:var(--ink,#17171A); text-decoration:none; transition:border-color .2s, transform .2s; }
+    @media (min-width:760px) { .af-one { grid-template-columns:auto 1fr auto; padding:26px 30px; } }
+    .af-one:hover { border-color:rgba(var(--ink-rgb,23,23,26),.4); transform:translateY(-2px); }
+    .af-icons { display:flex; gap:4px; font-size:26px; line-height:1; }
+    .af-txt { display:flex; flex-direction:column; gap:6px; }
+    .af-names { font-family:Syne,"Plus Jakarta Sans","PingFang SC",sans-serif; font-weight:700; font-size:19px; line-height:1.25; }
+    .af-d { font-size:14px; line-height:1.55; color:rgba(var(--ink-rgb,23,23,26),.7); max-width:44rem; }
+    .af-go { justify-self:start; display:inline-flex; gap:6px; padding:11px 17px; border-radius:999px; background:#17171A; color:#fff; font:700 12px "Space Mono",monospace; white-space:nowrap; }
+    .af-one:hover .af-go { background:#E2553F; }
 </style>
   <script>document.documentElement.classList.add('js');</script>
 <meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)"><style id="fb-dark">
@@ -779,31 +785,19 @@ img{filter:none}
     <section id="nearby" class="space-y-5" aria-labelledby="nb-h">
       <div class="reveal flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
         <div>
-          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="nbKicker">F / After work</span>
-          <h2 id="nb-h" class="font-syne text-2xl sm:text-3xl font-bold tracking-tight mt-1" data-i18n="nbH">Small things I make after work.</h2>
+          <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-muted" data-i18n="nbKicker">F / After hours</span>
+          <h2 id="nb-h" class="font-syne text-2xl sm:text-3xl font-bold tracking-tight mt-1" data-i18n="nbH">What I make after work.</h2>
         </div>
         <span class="text-[11px] font-mono text-muted" data-i18n="nbNote">Free · no ads · no tracking</span>
       </div>
-      <div class="bts-grid af-grid">
-        <a class="bts-card reveal" href="https://www.freebuilder.net/nearby/about/" target="_blank" rel="noopener noreferrer">
-          <span class="bts-k" aria-hidden="true">🏘️</span>
-          <span class="bts-t" data-i18n="af1T">Nearby</span>
-          <span class="bts-d" data-i18n="af1D">A little world that sends you back to yours.</span>
-          <span class="bts-go" aria-hidden="true">↗</span>
-        </a>
-        <a class="bts-card reveal" href="https://www.freebuilder.net/handoff/" target="_blank" rel="noopener noreferrer">
-          <span class="bts-k" aria-hidden="true">💌</span>
-          <span class="bts-t" data-i18n="af2T">Handoff</span>
-          <span class="bts-d" data-i18n="af2D">For two people in different cities: notes, voice messages and a capsule that opens later.</span>
-          <span class="bts-go" aria-hidden="true">↗</span>
-        </a>
-        <a class="bts-card reveal" href="https://www.freebuilder.net/vocab/" target="_blank" rel="noopener noreferrer">
-          <span class="bts-k" aria-hidden="true">🗣️</span>
-          <span class="bts-t" data-i18n="af3T">Vocab</span>
-          <span class="bts-d" data-i18n="af3D">Little language rooms: Catalan, Spanish, Welsh, Cantonese and Chinese idioms. Everything stays on your device.</span>
-          <span class="bts-go" aria-hidden="true">↗</span>
-        </a>
-      </div>
+      <a class="af-one reveal" href="/after-hours/">
+        <span class="af-icons" aria-hidden="true"><span>🏘️</span><span>🫙</span><span>💌</span><span>🗣️</span></span>
+        <span class="af-txt">
+          <span class="af-names">Nearby · <span data-i18n="afLT">Little Things</span> · Handoff · Vocab</span>
+          <span class="af-d" data-i18n="afD">A town, a jar, a way to stay close, a few words in someone else's language. Small, free things built on one idea: people aren't the means, people are the point.</span>
+        </span>
+        <span class="af-go"><span data-i18n="afGo">See them all</span> <span aria-hidden="true">→</span></span>
+      </a>
     </section>
 
     <!-- MORE IN THE LAB -->
@@ -884,7 +878,7 @@ img{filter:none}
         m2Badge: "Live · new", m2Caption: "1 task · 2 private settings · 1 conversation", m2Category: "Autonomy · Delegation", m2Title: "Delegation Dial", m2Desc: "For a real task, manager and team member each set who should decide, privately. The reveal shows the gap, and the gap is the conversation that prevents micromanaging.", m2Action: "Set the dial",
         m3Badge: "Live · new", m3Caption: "Present · clarify · react · consent", m3Category: "Decisions · Whole team", m3Title: "Decision Room", m3Desc: "A real team decision in 15 minutes. Everyone is heard once, objections must name a harm, and the test is “safe enough to try?”. The manager's voice counts once.", m3Action: "Run a decision",
         gcKicker: "E / Beyond the screen", gcTitle: "How I decide, prove and spread what works.", gcNote: "Diagnose · Prove · Spread · Adapt", btConcept: "concept", btCap1: "Diagnose", btT1: "Training or not?", btD1: "A 2-minute check that tells a manager whether training will help — or what to fix instead.", btCap2: "Prove", btT2: "Impact, without ranking", btD2: "A sample 30-day report: felt heard, kept talking, used it at work. No names, no leaderboards.", btCap3: "Prove", btT3: "The cost of training nobody uses", btD3: "A calculator that turns hours in a training room into an honest budget conversation.", btCap4: "Spread", btT4: "Learning circles", btD4: "Six weeks, five colleagues, one human skill a week — run by the circle itself.", btCap5: "Spread", btT5: "Team rituals", btD5: "Twelve weeks of five-minute practices for the team meeting you already have.", btCap6: "Spread", btT6: "Train the facilitator", btD6: "Two weeks to grow facilitators inside — certified by evidence, not test scores.", btCap7: "Adapt", btT7: "Adapted, not translated", btD7: "Real lines in English, Chinese and Spanish, side by side, with the reasoning behind each.", btCap8: "Adapt", btT8: "Learning for the frontline", btD8: "For people without laptops: 60-second paired practice at shift handover.", btCap9: "AI, with judgement", btT9: "AI drafts, people deliver", btD9: "Where AI belongs in learning, where it doesn't, and a one-page guardrail policy.", btCap10: "Give back", btT10: "The open starter kit", btD10: "The template behind every practice, free for other learning designers.",
-        nbKicker: "F / After work", nbH: "Small things I make after work.", nbNote: "Free · no ads · no tracking", af1T: "Nearby", af1D: "A little world that sends you back to yours.", af2T: "Handoff", af2D: "For two people in different cities: notes, voice messages and a capsule that opens later.", af3T: "Vocab", af3D: "Little language rooms: Catalan, Spanish, Welsh, Cantonese and Chinese idioms. Everything stays on your device.",
+        nbKicker: "F / After hours", nbH: "What I make after work.", nbNote: "Free · no ads · no tracking", afLT: "Little Things", afD: "A town, a jar, a way to stay close, a few words in someone else's language. Small, free things built on one idea: people aren't the means, people are the point.", afGo: "See them all",
         moreLabel: "More in the lab:", moreSales: "Sales Psychology Academy", moreQuestions: "Question Deck", moreDiscovery: "Discovery Duet", moreTeach: "Teach-Back Chain", moreThanks: "Specific Thanks", moreFB: "Work with FREE//BUILDER →",
 
         eggLTag: "Listening check · pick your reply",
@@ -967,7 +961,7 @@ img{filter:none}
         m2Badge: "已上线 · 新", m2Caption: "1 件任务 · 2 个私下的刻度 · 1 场对话", m2Category: "自主 · 授权", m2Title: "授权刻度盘", m2Desc: "针对一件真实任务，管理者和团队成员各自私下设定由谁来决定。揭晓时看到差距，而这个差距就是避免管得太细的那场对话。", m2Action: "拨刻度",
         m3Badge: "已上线 · 新", m3Caption: "介绍 · 澄清 · 回应 · 同意", m3Category: "决策 · 整个团队", m3Title: "决策室", m3Desc: "15 分钟做一个真实的团队决定。每人被听到一次，反对必须说出伤害，标准是“试一试安全吗？”。管理者的声音只算一次。", m3Action: "做一个决定",
         gcKicker: "E / 屏幕之外", gcTitle: "我如何判断、证明并传开真正有效的东西。", gcNote: "诊断 · 证明 · 传播 · 本地化", btConcept: "概念", btCap1: "诊断", btT1: "要不要培训？", btD1: "两分钟判断培训是否有用——或者该先解决什么。", btCap2: "证明", btT2: "不排名的影响力报告", btD2: "30 天报告示例：感到被倾听、继续交谈、在工作中用上。不点名，不排行。", btCap3: "证明", btT3: "没人用上的培训，代价有多大", btD3: "把培训教室里的小时数，变成一场诚实的预算对话。", btCap4: "传播", btT4: "学习圈", btD4: "六周、五位同事、每周一项人际能力——由学习圈自己运转。", btCap5: "传播", btT5: "团队小仪式", btD5: "十二周、每周五分钟的小练习，放进你本来就有的团队例会。", btCap6: "传播", btT6: "引导师培养", btD6: "两周在内部培养引导师——以证据认证，而不是考试分数。", btCap7: "本地化", btT7: "本地化，而不是翻译", btD7: "英文、中文、西语的真实句子并排对照，附上每个选择的理由。", btCap8: "本地化", btT8: "面向一线的学习", btD8: "给没有电脑的人：交接班时 60 秒的两人练习。", btCap9: "有判断地用 AI", btT9: "AI 起草，人来表达", btD9: "AI 在学习中该出现在哪、不该出现在哪，以及一页护栏政策。", btCap10: "回馈", btT10: "开放入门套件", btD10: "每个练习背后的模板，免费提供给其他学习设计师。",
-        nbKicker: "F / 下班以后", nbH: "下班后做的几样小东西。", nbNote: "免费 · 无广告 · 不追踪", af1T: "近邻", af1D: "一个小小的世界，把你送回你自己的世界。", af2T: "Handoff", af2D: "给分隔两座城市的两个人：留言、语音，和一个以后才打开的时间胶囊。", af3T: "Vocab", af3D: "几间小小的语言教室：加泰罗尼亚语、西班牙语、威尔士语、粤语和成语。一切都只留在你的设备上。",
+        nbKicker: "F / 下班以后", nbH: "下班后我做的东西。", nbNote: "免费 · 无广告 · 不追踪", afLT: "小事", afD: "一座小镇、一个罐子、一种保持亲近的方式、几句别人语言里的话。小小的、免费的东西，都基于一个想法：人不是手段，人本身就是意义。", afGo: "全部看看",
         moreLabel: "实验室里还有：", moreSales: "销售心理学实战学院", moreQuestions: "问题卡组", moreDiscovery: "探询二重奏", moreTeach: "教回去链条", moreThanks: "具体的感谢", moreFB: "与 FREE//BUILDER 合作 →",
 
         eggLTag: "倾听测试 · 选择你的回应",
@@ -1050,7 +1044,7 @@ img{filter:none}
         m2Badge: "En vivo · nuevo", m2Caption: "1 tarea · 2 ajustes privados · 1 conversación", m2Category: "Autonomía · Delegación", m2Title: "Dial de Delegación", m2Desc: "Para una tarea real, responsable y miembro del equipo deciden en privado quién debería decidir. La revelación muestra la diferencia, y esa diferencia es la conversación que evita controlar de más.", m2Action: "Ajustar el dial",
         m3Badge: "En vivo · nuevo", m3Caption: "Presentar · aclarar · reaccionar · consentir", m3Category: "Decisiones · Todo el equipo", m3Title: "Sala de Decisiones", m3Desc: "Una decisión real de equipo en 15 minutos. Todos hablan una vez, las objeciones deben nombrar un daño y la prueba es “¿segura para probar?”. La voz del responsable cuenta una vez.", m3Action: "Tomar una decisión",
         gcKicker: "E / Más allá de la pantalla", gcTitle: "Cómo decido, demuestro y extiendo lo que funciona.", gcNote: "Diagnosticar · Demostrar · Extender · Adaptar", btConcept: "concepto", btCap1: "Diagnosticar", btT1: "¿Formación o no?", btD1: "Una comprobación de 2 minutos que dice si la formación ayudará, o qué arreglar antes.", btCap2: "Demostrar", btT2: "Impacto sin clasificar", btD2: "Un informe de 30 días de ejemplo: escuchados, siguieron hablando, lo usaron. Sin nombres ni rankings.", btCap3: "Demostrar", btT3: "El coste de la formación que nadie usa", btD3: "Una calculadora que convierte horas de aula en una conversación honesta sobre presupuesto.", btCap4: "Extender", btT4: "Círculos de aprendizaje", btD4: "Seis semanas, cinco colegas, una habilidad humana por semana, gestionado por el propio círculo.", btCap5: "Extender", btT5: "Rituales de equipo", btD5: "Doce semanas de prácticas de cinco minutos para la reunión de equipo que ya tienes.", btCap6: "Extender", btT6: "Formar facilitadores", btD6: "Dos semanas para formar facilitadores internos, certificados por evidencias, no por notas.", btCap7: "Adaptar", btT7: "Adaptado, no traducido", btD7: "Frases reales en inglés, chino y español, lado a lado, con el porqué de cada una.", btCap8: "Adaptar", btT8: "Aprendizaje para primera línea", btD8: "Para quien no tiene portátil: 60 segundos de práctica en pareja en el cambio de turno.", btCap9: "IA, con criterio", btT9: "La IA redacta, las personas entregan", btD9: "Dónde encaja la IA en el aprendizaje, dónde no, y una política de una página.", btCap10: "Devolver", btT10: "El kit abierto", btD10: "La plantilla detrás de cada práctica, gratis para otros diseñadores de aprendizaje.",
-        nbKicker: "F / Después del trabajo", nbH: "Cosas pequeñas que hago después del trabajo.", nbNote: "Gratis · sin anuncios · sin rastreo", af1T: "Cerca", af1D: "Un mundo pequeño que te devuelve al tuyo.", af2T: "Handoff", af2D: "Para dos personas en ciudades distintas: notas, mensajes de voz y una cápsula que se abre más adelante.", af3T: "Vocab", af3D: "Pequeñas salas de idiomas: catalán, español, galés, cantonés y chengyu chinos. Todo se queda en tu dispositivo.",
+        nbKicker: "F / Fuera de horario", nbH: "Lo que hago después del trabajo.", nbNote: "Gratis · sin anuncios · sin rastreo", afLT: "Cosas pequeñas", afD: "Un pueblo, un tarro, una forma de seguir cerca, unas palabras en el idioma de otra persona. Cosas pequeñas y gratuitas con una sola idea: las personas no son el medio, son lo que importa.", afGo: "Verlas todas",
         moreLabel: "Más en el laboratorio:", moreSales: "Academia de Psicología de Ventas", moreQuestions: "Mazo de Preguntas", moreDiscovery: "Dúo de Descubrimiento", moreTeach: "Cadena de Enseñar de Vuelta", moreThanks: "Gracias Concretas", moreFB: "Trabaja con FREE//BUILDER →",
 
         eggLTag: "Prueba de escucha · elige tu respuesta",
@@ -1132,7 +1126,7 @@ img{filter:none}
         m2Badge: "已上線 · 新", m2Caption: "1 件任務 · 2 個私下的刻度 · 1 場對話", m2Category: "自主 · 授權", m2Title: "授權刻度盤", m2Desc: "針對一件真實任務，管理者和團隊成員各自私下設定由誰來決定。揭曉時看到差距，而這個差距就是避免管得太細的那場對話。", m2Action: "撥刻度",
         m3Badge: "已上線 · 新", m3Caption: "介紹 · 澄清 · 回應 · 同意", m3Category: "決策 · 整個團隊", m3Title: "決策室", m3Desc: "15 分鐘做一個真實的團隊決定。每人被聽到一次，反對必須說出傷害，標準是“試一試安全嗎？”。管理者的聲音只算一次。", m3Action: "做一個決定",
         gcKicker: "E / 螢幕之外", gcTitle: "我如何判斷、證明並傳開真正有效的東西。", gcNote: "診斷 · 證明 · 傳播 · 本地化", btConcept: "概念", btCap1: "診斷", btT1: "要不要培訓？", btD1: "兩分鐘判斷培訓是否有用——或者該先解決什麼。", btCap2: "證明", btT2: "不排名的影響力報告", btD2: "30 天報告示例：感到被傾聽、繼續交談、在工作中用上。不點名，不排行。", btCap3: "證明", btT3: "沒人用上的培訓，代價有多大", btD3: "把培訓教室裡的小時數，變成一場誠實的預算對話。", btCap4: "傳播", btT4: "學習圈", btD4: "六週、五位同事、每週一項人際能力——由學習圈自己運轉。", btCap5: "傳播", btT5: "團隊小儀式", btD5: "十二週、每週五分鐘的小練習，放進你本來就有的團隊例會。", btCap6: "傳播", btT6: "引導師培養", btD6: "兩週在內部培養引導師——以證據認證，而不是考試分數。", btCap7: "本地化", btT7: "本地化，而不是翻譯", btD7: "英文、中文、西語的真實句子並排對照，附上每個選擇的理由。", btCap8: "本地化", btT8: "面向一線的學習", btD8: "給沒有電腦的人：交接班時 60 秒的兩人練習。", btCap9: "有判斷地用 AI", btT9: "AI 起草，人來表達", btD9: "AI 在學習中該出現在哪、不該出現在哪，以及一頁護欄政策。", btCap10: "回饋", btT10: "開放入門套件", btD10: "每個練習背後的模板，免費提供給其他學習設計師。",
-        nbKicker: "F / 下班以後", nbH: "下班後做的幾樣小東西。", nbNote: "免費 · 無廣告 · 不追蹤", af1T: "近鄰", af1D: "一個小小的世界，把你送回你自己的世界。", af2T: "Handoff", af2D: "給分隔兩座城市的兩個人：留言、語音，和一個以後才打開的時間膠囊。", af3T: "Vocab", af3D: "幾間小小的語言教室：加泰羅尼亞語、西班牙語、威爾士語、粵語和成語。一切都只留在你的裝置上。",
+        nbKicker: "F / 下班以後", nbH: "下班後我做的東西。", nbNote: "免費 · 無廣告 · 不追蹤", afLT: "小事", afD: "一座小鎮、一個罐子、一種保持親近的方式、幾句別人語言裡的話。小小的、免費的東西，都基於一個想法：人不是手段，人本身就是意義。", afGo: "全部看看",
         moreLabel: "實驗室裡還有：", moreSales: "銷售心理學實戰學院", moreQuestions: "問題卡組", moreDiscovery: "探詢二重奏", moreTeach: "教回去鏈條", moreThanks: "具體的感謝", moreFB: "與 FREE//BUILDER 合作 →",
 
         eggLTag: "傾聽測試 · 選擇你的回應",
@@ -1214,7 +1208,7 @@ img{filter:none}
         m2Badge: "En directe · nou", m2Caption: "1 tasca · 2 ajustos privats · 1 conversa", m2Category: "Autonomia · Delegació", m2Title: "Dial de Delegació", m2Desc: "Per a una tasca real, responsable i membre de l'equip decideixen en privat qui hauria de decidir. La revelació mostra la diferència, i aquesta diferència és la conversa que evita controlar de més.", m2Action: "Ajustar el dial",
         m3Badge: "En directe · nou", m3Caption: "Presentar · aclarir · reaccionar · consentir", m3Category: "Decisions · Tot l'equip", m3Title: "Sala de Decisions", m3Desc: "Una decisió real d'equip en 15 minuts. Tothom parla una vegada, les objeccions han d'anomenar un dany i la prova és “és segur provar-ho?”. La veu del responsable compta una vegada.", m3Action: "Prendre una decisió",
         gcKicker: "E / Més enllà de la pantalla", gcTitle: "Com decideixo, demostro i estenc el que funciona.", gcNote: "Diagnosticar · Demostrar · Estendre · Adaptar", btConcept: "concepte", btCap1: "Diagnosticar", btT1: "Formació o no?", btD1: "Una comprovació de 2 minuts que diu si la formació ajudarà, o què cal arreglar abans.", btCap2: "Demostrar", btT2: "Impacte sense classificar", btD2: "Un informe de 30 dies d'exemple: escoltats, van continuar parlant, ho van fer servir. Sense noms ni rànquings.", btCap3: "Demostrar", btT3: "El cost de la formació que ningú no fa servir", btD3: "Una calculadora que converteix hores d'aula en una conversa honesta sobre pressupost.", btCap4: "Estendre", btT4: "Cercles d'aprenentatge", btD4: "Sis setmanes, cinc col·legues, una habilitat humana per setmana, gestionat pel mateix cercle.", btCap5: "Estendre", btT5: "Rituals d'equip", btD5: "Dotze setmanes de pràctiques de cinc minuts per a la reunió d'equip que ja tens.", btCap6: "Estendre", btT6: "Formar facilitadors", btD6: "Dues setmanes per formar facilitadors interns, certificats per evidències, no per notes.", btCap7: "Adaptar", btT7: "Adaptat, no traduït", btD7: "Frases reals en anglès, xinès i espanyol, costat a costat, amb el perquè de cadascuna.", btCap8: "Adaptar", btT8: "Aprenentatge per a primera línia", btD8: "Per a qui no té portàtil: 60 segons de pràctica en parella al canvi de torn.", btCap9: "IA, amb criteri", btT9: "La IA redacta, les persones lliuren", btD9: "On encaixa la IA en l'aprenentatge, on no, i una política d'una pàgina.", btCap10: "Retornar", btT10: "El kit obert", btD10: "La plantilla darrere de cada pràctica, gratis per a altres dissenyadors d'aprenentatge.",
-        nbKicker: "F / Després de la feina", nbH: "Coses petites que faig després de la feina.", nbNote: "Gratis · sense anuncis · sense rastreig", af1T: "A Prop", af1D: "Un món petit que et torna al teu.", af2T: "Handoff", af2D: "Per a dues persones en ciutats diferents: notes, missatges de veu i una càpsula que s'obre més endavant.", af3T: "Vocab", af3D: "Petites sales d'idiomes: català, castellà, gal·lès, cantonès i chengyu xinesos. Tot es queda al teu dispositiu.",
+        nbKicker: "F / Fora d'hores", nbH: "El que faig després de la feina.", nbNote: "Gratis · sense anuncis · sense rastreig", afLT: "Petites coses", afD: "Un poble, un pot, una manera de seguir a prop, unes paraules en la llengua d'una altra persona. Coses petites i gratuïtes amb una sola idea: les persones no són el mitjà, són el que importa.", afGo: "Veure-les totes",
         moreLabel: "Més al laboratori:", moreSales: "Acadèmia de Psicologia de Vendes", moreQuestions: "Baralla de Preguntes", moreDiscovery: "Duo de Descobriment", moreTeach: "Cadena d'Ensenyar de Tornada", moreThanks: "Gràcies Concretes", moreFB: "Treballa amb FREE//BUILDER →",
 
         eggLTag: "Prova d'escolta · tria la teva resposta",
