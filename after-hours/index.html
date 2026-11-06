@@ -38,16 +38,15 @@
     .top { position:sticky; top:0; z-index:30; background:rgba(18,15,24,.74); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); }
     .top-in { display:flex; align-items:center; justify-content:space-between; gap:12px; height:60px; }
     .mark { display:flex; align-items:center; gap:10px; text-decoration:none; min-width:0; }
-    .markg { width:26px; height:26px; flex:none; overflow:visible; }
-    .mark b { font:700 13px 'Syne', 'Plus Jakarta Sans', sans-serif; letter-spacing:.04em; white-space:nowrap; }
-    .mark i { font:400 12px 'Space Mono', monospace; font-style:normal; color:var(--mut); white-space:nowrap; }
+    .mark { color:#F4ECDD; }
+    .markg { width:24px; height:24px; flex:none; }
+    .mark em { font:italic 400 23px/1 'Instrument Serif', Georgia, serif; letter-spacing:-.005em; white-space:nowrap; color:inherit; }
     .top-r { display:flex; align-items:center; gap:14px; flex:none; }
     .back { font:400 12px 'Space Mono', monospace; color:var(--mut); text-decoration:none; white-space:nowrap; }
     .back:hover { color:var(--cream); }
     .lang { height:32px; min-width:44px; padding:0 12px; border-radius:999px; border:1px solid rgba(244,236,221,.22); background:transparent; color:var(--cream); font:700 11px 'Space Mono', monospace; cursor:pointer; }
     .lang:hover { border-color:var(--lamp); color:var(--lamp); }
     .lang:focus-visible, .go:focus-visible, .why:focus-visible, .jump a:focus-visible, .sub-d:focus-visible { outline:2px solid var(--lamp); outline-offset:3px; }
-    @media (max-width:479px) { .mark i { display:none; } }
 
     /* hero */
     .hero { padding-top:clamp(44px,8vw,104px); }
@@ -226,9 +225,9 @@ img{filter:none}
 <body>
   <header class="top">
     <div class="wrap top-in">
-      <a class="mark" href="https://wei-meng.org" aria-label="WEI MENG">
-        <svg viewBox="0 0 24 24" class="markg" aria-hidden="true"><polyline points="3.5,7 7.75,17 12,9.5 16.25,17 20.5,7" fill="none" stroke="#F4ECDD" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="3.4" r="1.45" fill="#F6B65B"/></svg>
-        <b>WEI MENG</b><i data-i18n="headerSubtitle">After hours</i>
+      <a class="mark" href="https://wei-meng.org" aria-label="after-hours · Wei Meng">
+        <svg viewBox="0 0 24 24" class="markg" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 4.5v15M4.5 12h15" stroke="currentColor" stroke-width="2"/><rect x="13.2" y="13.2" width="6" height="6" rx="1.2" fill="#F2A33A"/></svg>
+        <em>after-hours</em>
       </a>
       <div class="top-r">
         <a class="back" href="/portfolio/"><span data-i18n="backHome">Portfolio</span> <span aria-hidden="true">→</span></a>
