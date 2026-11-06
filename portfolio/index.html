@@ -227,8 +227,15 @@
     .nt-l { font-size:12.5px; line-height:1.45; color:rgba(244,236,221,.65); }
     .nt-go { margin-top:6px; font:700 11px/1 'Space Mono', monospace; color:#F6B65B; }
     .nt-more { color:#F4ECDD; text-decoration-color:#F6B65B; }
-    html[data-mode="night"] #hero-t, html[data-mode="night"] #hero-d, html[data-mode="night"] section[data-g="f"] .sec-lab { display:none; }
-    html[data-mode="night"] #intro { margin-bottom:-1.5rem; }
+    html[data-mode="night"] section[data-g="f"] .sec-lab { display:none; }
+    /* Nov 7 (the owner): one slogan for day and night; under the switch, one line for each, the chosen one lit */
+    .md { display:grid; gap:12px; max-width:42rem; }
+    .md-i { display:grid; grid-template-columns:4.2rem 1fr; gap:12px; align-items:baseline; text-align:left; padding:0; background:none; border:0; cursor:pointer; color:inherit; opacity:.42; transition:opacity .25s; }
+    .md-i:hover { opacity:.7; } .md-i.on { opacity:1; cursor:default; }
+    .md-i b { font:700 11px/1.6 'Space Mono', monospace; letter-spacing:.08em; text-transform:uppercase; }
+    .md-i span { font-size:1rem; line-height:1.6; }
+    @media (min-width:640px) { .md-i span { font-size:1.125rem; } }
+    html[data-mode="night"] .md-i b { color:#F6B65B; }
     html[data-mode="night"] section[data-g="f"] .border-b { border-color:#2A2540; }
 
     /* ===== Nov 6: the portfolio, quieter (show the work, say less) ===== */
@@ -426,16 +433,18 @@ img{filter:none}
 
     <!-- INTRO -->
     <section class="max-w-3xl space-y-6" id="intro">
+
+      <h1 class="reveal font-syne text-[2.35rem] sm:text-6xl font-bold tracking-tight leading-[1.08]" data-i18n-html="heroTitle" id="hero-t">
+        Small experiences. <br class="hidden sm:inline"><span class="accent-word">Meaningful</span> possibilities.
+      </h1>
       <div class="dn reveal" role="group" aria-label="Day or night" id="dn">
         <button type="button" class="dn-b on" data-mode="day"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></g></svg><span data-i18n="modeDay">Day</span></button>
         <button type="button" class="dn-b" data-mode="night"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg><span data-i18n="modeNight">Night</span></button>
       </div>
-      <h1 class="reveal font-syne text-[2.35rem] sm:text-6xl font-bold tracking-tight leading-[1.08]" data-i18n-html="heroTitle" id="hero-t">
-        Small experiences. <br class="hidden sm:inline"><span class="accent-word">Meaningful</span> possibilities.
-      </h1>
-      <p class="reveal text-base sm:text-lg text-ink/75 leading-relaxed max-w-2xl" data-i18n="heroDesc" id="hero-d">
-        Learning experiences, interactive tools and creative experiments exploring how we understand, connect with and learn from one another. All of it playable.
-      </p>
+      <div class="md reveal" id="md" aria-label="What each one shows">
+        <button type="button" class="md-i on" data-mode="day"><b data-i18n="modeDay">Day</b><span data-i18n="heroDesc">Thirteen workplace problems, each told as one year at one invented company, each ending in a real conversation. All of it playable.</span></button>
+        <button type="button" class="md-i" data-mode="night"><b data-i18n="modeNight">Night</b><span data-i18n="mdNight">Sixteen small apps made after work, each ending off the screen, next to someone. Free, no ads, no tracking.</span></button>
+      </div>
       <!--
       <div class="reveal flex flex-wrap items-center gap-x-3 gap-y-2 text-[12px] font-mono text-muted">
         <span data-i18n="heroHint">Psst — want to see the alternative first?</span>
@@ -1039,7 +1048,7 @@ img{filter:none}
         contactTitle: 'Let\'s build learning people <span class="accent-word">choose</span> to finish.',
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
         deckEject: "I can't do this", dkFelt: "Felt time", dkM: "{m} min", dkH: "{h} h {m} min", dkCheck: "Attention check: are you still there?", dkYes: "Yes", dkWakeK: "Sudden realization", dkWake1: "That was {s} seconds. It felt like {f} hours.", dkWake2: "Your people sit through sixty of these a year and remember none of it. The slide was never the point. The person next to them was.", dkWake3: "What if the screen only set it up, and then went down?", dkGo: "I want this to change", dkStay: "Back to the deck", dkJ: {"mod": ["Module", "Section", "Appendix", "Sub-module"], "adj": ["Synergistic", "Cross-functional", "Holistic", "Strategic", "Scalable", "Mission-critical", "Agile", "Paradigm-shifting"], "noun": ["Alignment", "Bandwidth", "Cadence", "Compliance", "Stakeholder Value", "Workflow Optimization", "Governance", "Best Practices"], "noun2": ["Policy", "Onboarding", "Synergy", "Deliverables", "KPIs", "Frameworks"], "verb": ["Leverage", "Operationalize", "Socialize", "Cascade", "Double-click on", "Circle back to"], "tail": ["going forward.", "at scale.", "end to end.", "as per the above.", "by EOD.", "across all verticals."], "and": "&"},
-        modeDay: "Day", modeNight: "Night", nightKicker: "After hours", ntH: "Sixteen small things, made after work.", ntMore: "The story behind each one, and why I make them", nightDesc: "What I make after work: free, no ads, no tracking. Sixteen windows are lit.",
+        modeDay: "Day", modeNight: "Night", mdNight: "Sixteen small apps made after work, each ending off the screen, next to someone. Free, no ads, no tracking.", nightKicker: "After hours", ntH: "Sixteen small things, made after work.", ntMore: "The story behind each one, and why I make them", nightDesc: "What I make after work: free, no ads, no tracking. Sixteen windows are lit.",
         storyKicker: "The story",
         storyLead: "One invented company. One year. Thirteen conversations that would not have happened otherwise.",
         storyCast: "Ana, an engineer promoted to manager in January · Leo, her most senior report · Mei, the graduate who joins in September · Sam, the MD who is always sure · Priya, who leads the Bengaluru team on the Monday call · Jordi, in sales · Nadia, in HR, who gets every request for training · Tomás, in product.",
@@ -1265,7 +1274,7 @@ img{filter:none}
         contactTitle: '一起做让人<span class="accent-word">主动</span>学完的学习体验。',
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
         deckEject: "我受不了了", dkFelt: "体感时长", dkM: "{m} 分钟", dkH: "{h} 小时 {m} 分钟", dkCheck: "注意力检查：你还在吗？", dkYes: "在", dkWakeK: "突然醒悟", dkWake1: "刚才只过了 {s} 秒。感觉像 {f} 个小时。", dkWake2: "你的人每年要坐完六十场这样的培训，什么都记不住。幻灯片从来不是重点。身边那个人才是。", dkWake3: "如果屏幕只负责开场，然后就退下呢？", dkGo: "我想改变这件事", dkStay: "回到课件", dkJ: {"mod": ["模块", "章节", "附录", "子模块"], "adj": ["协同", "跨部门", "全局", "战略", "可扩展", "关键", "敏捷", "颠覆性"], "noun": ["对齐", "带宽", "节奏", "合规", "干系人价值", "流程优化", "治理", "最佳实践"], "noun2": ["政策", "入职", "协同效应", "交付物", "关键指标", "框架"], "verb": ["充分利用", "落地", "推广", "层层传达", "深挖", "回头再看"], "tail": ["，持续推进。", "，规模化实施。", "，端到端执行。", "，如上所述。", "，今日内完成。", "，覆盖全部条线。"], "and": "与"},
-        modeDay: "白天", modeNight: "夜晚", nightKicker: "下班以后", ntH: "下班以后做的十六件小东西。", ntMore: "每一件背后的故事，和我为什么做它们", nightDesc: "下班以后做的东西：免费、无广告、不追踪。十六扇窗亮着。",
+        modeDay: "白天", modeNight: "夜晚", mdNight: "下班以后做的十六个小应用，每一个都在屏幕之外、在某个人身边收尾。免费、无广告、不追踪。", nightKicker: "下班以后", ntH: "下班以后做的十六件小东西。", ntMore: "每一件背后的故事，和我为什么做它们", nightDesc: "下班以后做的东西：免费、无广告、不追踪。十六扇窗亮着。",
         storyKicker: "故事",
         storyLead: "一家虚构的公司。一年。十三场原本不会发生的对话。",
         storyCast: "Ana，一月升任经理的工程师 · Leo，她最资深的下属 · Mei，九月入职的毕业生 · Sam，永远笃定的总监 · Priya，周一电话会上班加罗尔团队的负责人 · Jordi，做销售 · Nadia，人力资源，收下每一个培训需求 · Tomás，做产品。",
@@ -1491,7 +1500,7 @@ img{filter:none}
         contactTitle: 'Creemos aprendizajes que la gente <span class="accent-word">elija</span> terminar.',
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
         deckEject: "No puedo más", dkFelt: "Tiempo sentido", dkM: "{m} min", dkH: "{h} h {m} min", dkCheck: "Control de atención: ¿sigues ahí?", dkYes: "Sí", dkWakeK: "Revelación repentina", dkWake1: "Han sido {s} segundos. Se han sentido como {f} horas.", dkWake2: "Tu gente se traga sesenta de estas al año y no recuerda ninguna. La diapositiva nunca fue el punto. La persona de al lado, sí.", dkWake3: "¿Y si la pantalla solo preparara el terreno, y luego se apagara?", dkGo: "Quiero que esto cambie", dkStay: "Volver a las diapositivas", dkJ: {"mod": ["Módulo", "Sección", "Anexo", "Submódulo"], "adj": ["Sinérgico", "Transversal", "Holístico", "Estratégico", "Escalable", "Crítico", "Ágil", "Disruptivo"], "noun": ["Alineamiento", "Ancho de banda", "Cadencia", "Cumplimiento", "Valor para el stakeholder", "Optimización del flujo", "Gobernanza", "Buenas prácticas"], "noun2": ["Política", "Onboarding", "Sinergia", "Entregables", "KPIs", "Marcos"], "verb": ["Apalancar", "Operativizar", "Socializar", "Cascadear", "Profundizar en", "Retomar"], "tail": ["de cara al futuro.", "a escala.", "de principio a fin.", "según lo anterior.", "antes del cierre.", "en todas las verticales."], "and": "y"},
-        modeDay: "Día", modeNight: "Noche", nightKicker: "Fuera de horario", ntH: "Dieciséis cosas pequeñas, hechas fuera de horario.", ntMore: "La historia detrás de cada una, y por qué las hago", nightDesc: "Lo que hago fuera de horario: gratis, sin anuncios, sin rastreo. Dieciséis ventanas están encendidas.",
+        modeDay: "Día", modeNight: "Noche", mdNight: "Dieciséis pequeñas apps hechas fuera de horario; cada una acaba fuera de la pantalla, junto a alguien. Gratis, sin anuncios, sin rastreo.", nightKicker: "Fuera de horario", ntH: "Dieciséis cosas pequeñas, hechas fuera de horario.", ntMore: "La historia detrás de cada una, y por qué las hago", nightDesc: "Lo que hago fuera de horario: gratis, sin anuncios, sin rastreo. Dieciséis ventanas están encendidas.",
         storyKicker: "La historia",
         storyLead: "Una empresa inventada. Un año. Trece conversaciones que no habrían ocurrido.",
         storyCast: "Ana, ingeniera ascendida a jefa en enero · Leo, su colaborador más veterano · Mei, la graduada que entra en septiembre · Sam, el director que siempre está seguro · Priya, que lleva el equipo de Bengaluru en la llamada del lunes · Jordi, en ventas · Nadia, en RR. HH., a quien llega cada petición de formación · Tomás, en producto.",
@@ -1716,7 +1725,7 @@ img{filter:none}
         contactTitle: "一起做讓人<span class=\"accent-word\">主動</span>學完的學習體驗。",
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
         deckEject: "我受不了了", dkFelt: "體感時長", dkM: "{m} 分鐘", dkH: "{h} 小時 {m} 分鐘", dkCheck: "注意力檢查：你還在嗎？", dkYes: "在", dkWakeK: "突然醒悟", dkWake1: "剛才只過了 {s} 秒。感覺像 {f} 個小時。", dkWake2: "你的人每年要坐完六十場這樣的培訓，什麼都記不住。幻燈片從來不是重點。身邊那個人才是。", dkWake3: "如果螢幕只負責開場，然後就退下呢？", dkGo: "我想改變這件事", dkStay: "回到課件", dkJ: {"mod": ["模組", "章節", "附錄", "子模組"], "adj": ["協同", "跨部門", "全域性", "戰略", "可擴充套件", "關鍵", "敏捷", "顛覆性"], "noun": ["對齊", "頻寬", "節奏", "合規", "干係人價值", "流程最佳化", "治理", "最佳實踐"], "noun2": ["政策", "入職", "協同效應", "交付物", "關鍵指標", "框架"], "verb": ["充分利用", "落地", "推廣", "層層傳達", "深挖", "回頭再看"], "tail": ["，持續推進。", "，規模化實施。", "，端到端執行。", "，如上所述。", "，今日內完成。", "，覆蓋全部條線。"], "and": "與"},
-        modeDay: "白天", modeNight: "夜晚", nightKicker: "下班以後", ntH: "下班以後做的十六件小東西。", ntMore: "每一件背後的故事，和我為什麼做它們", nightDesc: "下班以後做的東西：免費、無廣告、不追蹤。十六扇窗亮著。",
+        modeDay: "白天", modeNight: "夜晚", mdNight: "下班以後做的十六個小應用，每一個都在螢幕之外、在某個人身邊收尾。免費、無廣告、不追蹤。", nightKicker: "下班以後", ntH: "下班以後做的十六件小東西。", ntMore: "每一件背後的故事，和我為什麼做它們", nightDesc: "下班以後做的東西：免費、無廣告、不追蹤。十六扇窗亮著。",
         storyKicker: "故事",
         storyLead: "一家虛構的公司。一年。十三場原本不會發生的對話。",
         storyCast: "Ana，一月升任經理的工程師 · Leo，她最資深的下屬 · Mei，九月入職的畢業生 · Sam，永遠篤定的總監 · Priya，週一電話會上班加羅爾團隊的負責人 · Jordi，做銷售 · Nadia，人力資源，收下每一個培訓需求 · Tomás，做產品。",
@@ -1941,7 +1950,7 @@ img{filter:none}
         contactTitle: "Creem aprenentatges que la gent <span class=\"accent-word\">triï</span> acabar.",
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
         deckEject: "No puc més", dkFelt: "Temps sentit", dkM: "{m} min", dkH: "{h} h {m} min", dkCheck: "Control d'atenció: encara hi ets?", dkYes: "Sí", dkWakeK: "Revelació sobtada", dkWake1: "Han estat {s} segons. S'han sentit com {f} hores.", dkWake2: "La teva gent s'empassa seixanta d'aquestes l'any i no en recorda cap. La diapositiva mai no va ser el punt. La persona del costat, sí.", dkWake3: "I si la pantalla només preparés el terreny, i després s'apagués?", dkGo: "Vull que això canviï", dkStay: "Tornar a les diapositives", dkJ: {"mod": ["Mòdul", "Secció", "Annex", "Submòdul"], "adj": ["Sinèrgic", "Transversal", "Holístic", "Estratègic", "Escalable", "Crític", "Àgil", "Disruptiu"], "noun": ["Alineament", "Ample de banda", "Cadència", "Compliment", "Valor per a l'stakeholder", "Optimització del flux", "Governança", "Bones pràctiques"], "noun2": ["Política", "Onboarding", "Sinergia", "Lliurables", "KPIs", "Marcs"], "verb": ["Palanquejar", "Operativitzar", "Socialitzar", "Cascadejar", "Aprofundir en", "Reprendre"], "tail": ["de cara al futur.", "a escala.", "de principi a fi.", "segons l'anterior.", "abans del tancament.", "a totes les verticals."], "and": "y"},
-        modeDay: "Dia", modeNight: "Nit", nightKicker: "Fora d'hores", ntH: "Setze coses petites, fetes fora d'horari.", ntMore: "La història darrere de cadascuna, i per què les faig", nightDesc: "El que faig fora d'horari: gratuït, sense anuncis, sense rastreig. Setze finestres estan enceses.",
+        modeDay: "Dia", modeNight: "Nit", mdNight: "Setze petites apps fetes fora d'hores; cadascuna acaba fora de la pantalla, al costat d'algú. Gratis, sense anuncis, sense rastreig.", nightKicker: "Fora d'hores", ntH: "Setze coses petites, fetes fora d'horari.", ntMore: "La història darrere de cadascuna, i per què les faig", nightDesc: "El que faig fora d'horari: gratuït, sense anuncis, sense rastreig. Setze finestres estan enceses.",
         storyKicker: "La història",
         storyLead: "Una empresa inventada. Un any. Tretze converses que no haurien passat.",
         storyCast: "L'Ana, enginyera ascendida a cap al gener · en Leo, el seu col·laborador més veterà · la Mei, la graduada que entra al setembre · en Sam, el director que sempre n'està segur · la Priya, que porta l'equip de Bengaluru a la trucada del dilluns · en Jordi, a vendes · la Nadia, a RR. HH., a qui arriba cada petició de formació · en Tomás, a producte.",
@@ -2308,16 +2317,13 @@ img{filter:none}
       document.documentElement.dataset.mode = mode;
       document.querySelectorAll('#dn .dn-b').forEach(b => b.classList.toggle('on', b.dataset.mode === mode));
       const d = t();
-      if (mode === 'night') {
-        $('hero-t').textContent = d.nbH || ''; $('hero-d').textContent = d.nightDesc || '';
-      } else {
-        $('hero-t').innerHTML = d.heroTitle; $('hero-d').textContent = d.heroDesc;
-      }
+      document.querySelectorAll('#md .md-i').forEach(b => { b.classList.toggle('on', b.dataset.mode === mode); b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false'); });
       document.querySelectorAll('#intro .reveal').forEach(e => e.classList.add('in'));
 
       if (!keep) { try { sessionStorage.setItem('pf_mode', mode); history.replaceState(null, '', location.pathname + location.search + (mode === 'night' ? '#night' : '')); } catch (e) {} }
     }
     document.getElementById('dn').addEventListener('click', e => { const b = e.target.closest('.dn-b'); if (b) setMode(b.dataset.mode); });
+    document.getElementById('md').addEventListener('click', e => { const b = e.target.closest('.md-i'); if (b) setMode(b.dataset.mode); });
 
     /* ---------- Chips: one group or all ---------- */
     (function chips() {
