@@ -157,6 +157,21 @@
     .dk-check { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 14px; border-radius:12px; background:#FFF4E0; border:1px solid #F2C47A; font:12px 'Space Mono', monospace; color:var(--warn-ink,#8F5E12); animation:dk-in .4s both; }
     .dk-check button { padding:6px 12px; border-radius:999px; border:0; background:#17171A; color:#fff; font:700 11px 'Space Mono', monospace; cursor:pointer; }
     .dk-wake { animation:dk-wake .6s both; } @keyframes dk-wake { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:none } }
+    .dk-scene { display:block; width:100%; height:auto; max-width:420px; margin:14px auto 0; }
+    .dk-glowbg { opacity:0; animation:dk-fade .8s 3.2s forwards; }
+    .dk-off { animation:dk-fade .5s 1.1s forwards; }
+    .dk-screen { transform-box:fill-box; transform-origin:50% 100%; animation:dk-down .6s 2.6s forwards; } @keyframes dk-down { to { transform:translateY(40px) scaleY(.1); opacity:0 } }
+    .dk-head { transform-box:fill-box; transform-origin:50% 100%; transform:translateY(5px) rotate(14deg); animation:dk-lift .6s 1.6s forwards; }
+    .dk-p2 .dk-head, .dk-p4 .dk-head { transform:translateY(5px) rotate(-14deg); }
+    .dk-z { animation:dk-fadeout .3s 1.5s forwards; }
+    .dk-p { transform-box:fill-box; transform-origin:50% 100%; }
+    .dk-p1 { animation:dk-turn-r .7s 2.3s forwards; } .dk-p2 { animation:dk-turn-l .7s 2.3s forwards; } .dk-p3 { animation:dk-turn-r .7s 2.5s forwards; } .dk-p4 { animation:dk-turn-l .7s 2.5s forwards; }
+    .dk-bub { opacity:0; transform-box:fill-box; transform-origin:50% 100%; transform:scale(.6); animation:dk-pop .4s forwards; } .dk-b1 { animation-delay:3.2s } .dk-b2 { animation-delay:3.9s }
+    @keyframes dk-fade { to { opacity:1 } } @keyframes dk-fadeout { to { opacity:0 } }
+    @keyframes dk-lift { to { transform:none } }
+    @keyframes dk-turn-r { to { transform:translateX(14px) scaleX(.72) } } @keyframes dk-turn-l { to { transform:translateX(-14px) scaleX(.72) } }
+    @keyframes dk-pop { to { opacity:1; transform:none } }
+    @media (prefers-reduced-motion: reduce) { .dk-glowbg, .dk-off, .dk-bub { animation:none; opacity:1; transform:none } .dk-head, .dk-p { animation:none; transform:none } .dk-z, .dk-screen { display:none } }
     .dk-glow { animation:dk-glow 1.6s 2; } @keyframes dk-glow { 0%,100% { box-shadow:0 0 0 0 rgba(226,85,63,0) } 50% { box-shadow:0 0 0 8px rgba(226,85,63,.25) } }
     @media (prefers-reduced-motion: reduce) { .dk-bul li, .dk.shake .dk-slide, .dk.crack .dk-slide, .dk-wake, .dk-glow { animation:none !important; } .dk.crack .dk-slide { opacity:0; } }
     /* day / night (Nov 6, the owner's idea): day is the cases (FREE//BUILDER), night is after-hours */
@@ -330,8 +345,19 @@ img{filter:none}
       <div class="dk-wake" id="dk-wake" hidden>
         <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-accent" data-i18n="dkWakeK">Sudden realization</span>
         <h3 class="font-syne text-2xl sm:text-3xl font-bold tracking-tight leading-tight mt-2" id="dk-wake-t"></h3>
-        <p class="text-sm sm:text-base text-ink/75 leading-relaxed mt-3" data-i18n="dkWake2">Your people sit through sixty of these a year and remember none of it. The slide was never the point. The person next to them was.</p>
-        <p class="text-sm sm:text-base text-ink/75 leading-relaxed mt-2" data-i18n="dkWake3">What if the screen only set it up, and then went down?</p>
+        <svg class="dk-scene" viewBox="0 0 320 170" aria-hidden="true">
+          <defs><radialGradient id="dk-lamp" cx="50%" cy="30%" r="60%"><stop offset="0" stop-color="#F6B65B" stop-opacity=".55"/><stop offset="1" stop-color="#F6B65B" stop-opacity="0"/></radialGradient></defs>
+          <rect class="dk-glowbg" width="320" height="170" fill="url(#dk-lamp)"/>
+          <g class="dk-screen"><rect x="90" y="10" width="140" height="78" rx="6" fill="#F3F3F3" stroke="#DADADA" stroke-width="1.5"/><rect x="104" y="24" width="86" height="6" rx="3" fill="#333"/><rect x="104" y="38" width="112" height="4" rx="2" fill="#BBB"/><rect x="104" y="48" width="100" height="4" rx="2" fill="#BBB"/><rect x="104" y="58" width="108" height="4" rx="2" fill="#BBB"/><rect x="104" y="68" width="60" height="4" rx="2" fill="#BBB"/><rect class="dk-off" x="90" y="10" width="140" height="78" rx="6" fill="#17171A" opacity="0"/></g>
+          <g class="dk-floor"><rect x="20" y="146" width="280" height="2" rx="1" fill="#E5E2DA"/></g>
+          <g class="dk-p dk-p1"><g class="dk-head"><circle cx="70" cy="112" r="11" fill="#17171A"/></g><path d="M52 146c0-14 8-22 18-22s18 8 18 22z" fill="#17171A"/></g>
+          <g class="dk-p dk-p2"><g class="dk-head"><circle cx="130" cy="112" r="11" fill="#E2553F"/></g><path d="M112 146c0-14 8-22 18-22s18 8 18 22z" fill="#E2553F"/></g>
+          <g class="dk-p dk-p3"><g class="dk-head"><circle cx="190" cy="112" r="11" fill="#17171A"/></g><path d="M172 146c0-14 8-22 18-22s18 8 18 22z" fill="#17171A"/></g>
+          <g class="dk-p dk-p4"><g class="dk-head"><circle cx="250" cy="112" r="11" fill="#E2553F"/></g><path d="M232 146c0-14 8-22 18-22s18 8 18 22z" fill="#E2553F"/></g>
+          <g class="dk-z" fill="#999" font-family="Space Mono, monospace" font-size="9"><text x="84" y="100">z</text><text x="204" y="98">z</text><text x="266" y="104">z</text></g>
+          <g class="dk-bub dk-b1"><rect x="78" y="60" width="64" height="30" rx="12" fill="#17171A"/><path d="M92 90l-4 10 14-9z" fill="#17171A"/><rect x="90" y="70" width="4" height="10" rx="2" fill="#F7F6F2"/><rect x="98" y="66" width="4" height="18" rx="2" fill="#F7F6F2"/><rect x="106" y="71" width="4" height="8" rx="2" fill="#F7F6F2"/><rect x="116" y="72" width="18" height="3" rx="1.5" fill="rgba(247,246,242,.5)"/></g>
+          <g class="dk-bub dk-b2"><rect x="186" y="60" width="64" height="30" rx="12" fill="#E2553F"/><path d="M234 90l4 10-14-9z" fill="#E2553F"/><text x="218" y="80" text-anchor="middle" font-family="Space Mono, monospace" font-size="10" font-weight="700" fill="#fff">“so you…”</text></g>
+        </svg>
         <div class="flex flex-col sm:flex-row gap-2.5 mt-5">
           <button type="button" onclick="deckChange()" class="flex-1 py-3 px-5 rounded-full bg-ink hover:bg-accent text-white text-xs font-mono font-bold transition-all flex items-center justify-center gap-2"><span data-i18n="dkGo">I want this to change</span><span aria-hidden="true">→</span></button>
           <button type="button" onclick="closeDeckModal()" class="py-3 px-5 rounded-full border border-line text-xs font-mono hover:border-ink/40" data-i18n="dkStay">Back to the deck</button>
@@ -2208,7 +2234,7 @@ img{filter:none}
       if (deckWoke) return; deckWoke = true; clearInterval(deckIv);
       const box = $('deck-box'), d = t();
       box.classList.add('crack');
-      $('dk-wake-t').textContent = d.dkWake1.replace('{s}', deckSec).replace('{f}', Math.max(1, Math.round(deckSec * 11 / 60)));
+      $('dk-wake-t').textContent = d.dkWake1.replace('{s}', Math.max(1, deckSec)).replace('{f}', Math.max(2, Math.round(deckSec * 11 / 60)));
       setTimeout(() => { box.classList.remove('crack', 'dim'); $('dk-deck').hidden = true; $('dk-wake').hidden = false; const f = $('dk-wake').querySelector('button'); if (f) f.focus(); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 650);
     }
     function closeDeckModal() { clearInterval(deckIv); closeModal(deckModal); }
