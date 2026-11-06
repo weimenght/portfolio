@@ -145,6 +145,20 @@
     .pf-chip.on { background:#17171A; border-color:#17171A; color:#fff; }
     @media (prefers-color-scheme: dark) { .pf-chip.on { background:#ECEBE6; border-color:#ECEBE6; color:#141416; } }
     section[data-g].pf-off { display:none; }
+    /* the 60-slide deck (Nov 6): dread, then a sudden realization */
+    .dk-bar { height:4px; border-radius:2px; background:#ECE9E2; overflow:hidden; } .dk-bar i { display:block; height:100%; width:1%; background:#B7791F; transition:width 1s linear; }
+    .dk-slide { background:#F3F3F3; border:1px solid #DADADA; border-radius:12px; padding:18px 20px; font-family:'Times New Roman', Times, serif; transition:filter .4s, transform .4s; }
+    .dk-h { font-size:17px; font-weight:700; color:#333; margin:0 0 10px; line-height:1.3; }
+    .dk-bul { margin:0; padding-left:18px; color:#555; font-size:14px; line-height:1.7; } .dk-bul li { animation:dk-in .5s both; } .dk-bul li:nth-child(2) { animation-delay:.3s } .dk-bul li:nth-child(3) { animation-delay:.6s }
+    @keyframes dk-in { from { opacity:0; transform:translateY(4px) } to { opacity:1; transform:none } }
+    .dk.dim .dk-slide { filter:grayscale(1) blur(.6px); transform:scale(.99); }
+    .dk.shake .dk-slide { animation:dk-shake .6s; } @keyframes dk-shake { 0%,100% { transform:none } 20% { transform:translateX(-6px) rotate(-.6deg) } 40% { transform:translateX(6px) rotate(.6deg) } 60% { transform:translateX(-4px) } 80% { transform:translateX(4px) } }
+    .dk.crack .dk-slide { animation:dk-crack .7s forwards; } @keyframes dk-crack { 60% { transform:scale(1.02) rotate(.5deg); filter:grayscale(1) contrast(1.4) } 100% { transform:scale(.6) rotate(-6deg); opacity:0; filter:grayscale(1) } }
+    .dk-check { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 14px; border-radius:12px; background:#FFF4E0; border:1px solid #F2C47A; font:12px 'Space Mono', monospace; color:var(--warn-ink,#8F5E12); animation:dk-in .4s both; }
+    .dk-check button { padding:6px 12px; border-radius:999px; border:0; background:#17171A; color:#fff; font:700 11px 'Space Mono', monospace; cursor:pointer; }
+    .dk-wake { animation:dk-wake .6s both; } @keyframes dk-wake { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:none } }
+    .dk-glow { animation:dk-glow 1.6s 2; } @keyframes dk-glow { 0%,100% { box-shadow:0 0 0 0 rgba(226,85,63,0) } 50% { box-shadow:0 0 0 8px rgba(226,85,63,.25) } }
+    @media (prefers-reduced-motion: reduce) { .dk-bul li, .dk.shake .dk-slide, .dk.crack .dk-slide, .dk-wake, .dk-glow { animation:none !important; } .dk.crack .dk-slide { opacity:0; } }
     /* day / night (Nov 6, the owner's idea): day is the cases (FREE//BUILDER), night is after-hours */
     .dn { display:inline-flex; gap:4px; padding:4px; border-radius:999px; border:1px solid var(--line,#E5E2DA); background:var(--white,#fff); }
     .dn-b { display:inline-flex; align-items:center; gap:7px; padding:7px 14px; border-radius:999px; font:700 11px/1 'Space Mono', monospace; letter-spacing:.06em; text-transform:uppercase; color:var(--muted,#6B6A70); transition:background .25s, color .25s; }
@@ -198,7 +212,8 @@
     .nt-l { font-size:12.5px; line-height:1.45; color:rgba(244,236,221,.65); }
     .nt-go { margin-top:6px; font:700 11px/1 'Space Mono', monospace; color:#F6B65B; }
     .nt-more { color:#F4ECDD; text-decoration-color:#F6B65B; }
-    html[data-mode="night"] #hero-d { display:none; }
+    html[data-mode="night"] #hero-t, html[data-mode="night"] #hero-d, html[data-mode="night"] section[data-g="f"] .sec-lab { display:none; }
+    html[data-mode="night"] #intro { margin-bottom:-1.5rem; }
     html[data-mode="night"] section[data-g="f"] .border-b { border-color:#2A2540; }
 
     /* ===== Nov 6: the portfolio, quieter (show the work, say less) ===== */
@@ -280,29 +295,47 @@ img{filter:none}
 
   <!-- EASTER EGG: THE 60-SLIDE DECK -->
   <div id="deck-modal" class="fixed inset-0 z-50 bg-ink/80 backdrop-blur-sm hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="handleBackdrop(event)" role="dialog" aria-modal="true" aria-labelledby="deck-title">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-5">
-      <div class="flex items-center justify-between border-b border-line pb-3 gap-3">
-        <div class="flex items-center gap-2">
-          <span class="relative flex w-2 h-2"><span class="absolute inset-0 rounded-full bg-amber-500 animate-ping"></span><span class="relative w-2 h-2 rounded-full bg-amber-500"></span></span>
-          <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-muted" data-i18n="deckTop">Mandatory Corporate Deck · Sim 2026</span>
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-5 dk" id="deck-box">
+      <div class="dk-deck" id="dk-deck">
+        <div class="flex items-center justify-between border-b border-line pb-3 gap-3">
+          <div class="flex items-center gap-2">
+            <span class="relative flex w-2 h-2"><span class="absolute inset-0 rounded-full bg-amber-500 animate-ping"></span><span class="relative w-2 h-2 rounded-full bg-amber-500"></span></span>
+            <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-muted" data-i18n="deckTop">Mandatory Corporate Deck · Sim 2026</span>
+          </div>
+          <span id="deck-count" class="text-[11px] font-mono text-muted bg-paper px-2 py-0.5 rounded-md border border-line whitespace-nowrap">Slide 1 of 62</span>
         </div>
-        <span id="deck-count" class="text-[11px] font-mono text-muted bg-paper px-2 py-0.5 rounded-md border border-line whitespace-nowrap">Slide 1 of 62</span>
-      </div>
-      <div class="space-y-3 bg-[#F3F3F3] p-5 rounded-xl border border-[#DADADA]" style="font-family: 'Times New Roman', Times, serif;">
-        <h4 id="deck-title" class="text-base sm:text-lg font-bold text-[#333]" data-i18n="deckSlideTitle">Module 1.1: Synergy Paradigms & Policy Compliance</h4>
-        <p class="text-sm text-[#555] leading-relaxed italic" data-i18n="deckSlideText">“All personnel must optimize interdepartmental synchronization through asynchronous documentation workflows. Please avoid interaction until this timer expires.”</p>
-        <div class="pt-2 flex items-center justify-between gap-3 text-[11px] font-mono text-[#999]">
-          <span data-i18n="deckSpeaker">Narrated by: Monotone AI Voice</span>
-          <span id="deck-timer" class="text-amber-700 font-bold whitespace-nowrap">Locked · 00:59</span>
+        <div class="dk-bar" aria-hidden="true"><i id="dk-bar"></i></div>
+        <div class="dk-slide" id="dk-slide">
+          <h4 id="deck-title" class="dk-h"></h4>
+          <ul id="dk-bul" class="dk-bul"></ul>
+          <div class="pt-2 flex items-center justify-between gap-3 text-[11px] font-mono text-[#999]">
+            <span data-i18n="deckSpeaker">Narrated by: Monotone AI Voice</span>
+            <span id="deck-timer" class="text-amber-700 font-bold whitespace-nowrap"></span>
+          </div>
+        </div>
+        <div class="flex items-center justify-between gap-3 text-[11px] font-mono text-muted">
+          <span><span data-i18n="dkFelt">Felt time</span> <b id="dk-felt" class="text-ink">0 min</b></span>
+          <span id="dk-cup" aria-hidden="true">☕☕☕</span>
+        </div>
+        <div id="dk-check" class="dk-check" hidden><span data-i18n="dkCheck">Attention check: are you still there?</span><button type="button" id="dk-yes" data-i18n="dkYes">Yes</button></div>
+        <div class="space-y-2.5 pt-1">
+          <button type="button" disabled class="w-full py-3 rounded-full bg-line/60 text-muted/70 text-xs font-mono cursor-not-allowed flex items-center justify-center gap-2">
+            <span data-i18n="deckNext">Next slide</span><span aria-hidden="true">🔒</span>
+          </button>
+          <button type="button" id="deck-eject" onclick="deckWake()" class="w-full py-3 rounded-full bg-ink hover:bg-accent text-white active:scale-[0.98] text-xs font-mono font-bold transition-all flex items-center justify-center gap-2">
+            <span data-i18n="deckEject">I can't do this</span><span aria-hidden="true">↗</span>
+          </button>
         </div>
       </div>
-      <div class="space-y-2.5">
-        <button type="button" disabled class="w-full py-3 rounded-full bg-line/60 text-muted/70 text-xs font-mono cursor-not-allowed flex items-center justify-center gap-2">
-          <span data-i18n="deckNext">Next slide</span><span aria-hidden="true">🔒</span>
-        </button>
-        <button type="button" id="deck-eject" onclick="ejectToCognitiveDignity()" class="w-full py-3 rounded-full bg-ink hover:bg-accent text-white active:scale-[0.98] text-xs font-mono font-bold transition-all flex items-center justify-center gap-2">
-          <span data-i18n="deckEject">Eject to cognitive dignity</span><span aria-hidden="true">↗</span>
-        </button>
+      <div class="dk-wake" id="dk-wake" hidden>
+        <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-accent" data-i18n="dkWakeK">Sudden realization</span>
+        <h3 class="font-syne text-2xl sm:text-3xl font-bold tracking-tight leading-tight mt-2" id="dk-wake-t"></h3>
+        <p class="text-sm sm:text-base text-ink/75 leading-relaxed mt-3" data-i18n="dkWake2">Your people sit through sixty of these a year and remember none of it. The slide was never the point. The person next to them was.</p>
+        <p class="text-sm sm:text-base text-ink/75 leading-relaxed mt-2" data-i18n="dkWake3">What if the screen only set it up, and then went down?</p>
+        <div class="flex flex-col sm:flex-row gap-2.5 mt-5">
+          <button type="button" onclick="deckChange()" class="flex-1 py-3 px-5 rounded-full bg-ink hover:bg-accent text-white text-xs font-mono font-bold transition-all flex items-center justify-center gap-2"><span data-i18n="dkGo">I want this to change</span><span aria-hidden="true">→</span></button>
+          <button type="button" onclick="closeDeckModal()" class="py-3 px-5 rounded-full border border-line text-xs font-mono hover:border-ink/40" data-i18n="dkStay">Back to the deck</button>
+        </div>
       </div>
     </div>
   </div>
@@ -371,9 +404,6 @@ img{filter:none}
         <button type="button" class="dn-b on" data-mode="day"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></g></svg><span data-i18n="modeDay">Day</span></button>
         <button type="button" class="dn-b" data-mode="night"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg><span data-i18n="modeNight">Night</span></button>
       </div>
-      <p class="reveal inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.18em] text-muted">
-        <span class="w-6 h-px bg-ink/40"></span><span data-i18n="heroKicker" id="hero-k">Portfolio</span>
-      </p>
       <h1 class="reveal font-syne text-[2.35rem] sm:text-6xl font-bold tracking-tight leading-[1.08]" data-i18n-html="heroTitle" id="hero-t">
         Small experiences. <br class="hidden sm:inline"><span class="accent-word">Meaningful</span> possibilities.
       </h1>
@@ -981,6 +1011,7 @@ img{filter:none}
         contactLabel: "Say hello",
         contactTitle: 'Let\'s build learning people <span class="accent-word">choose</span> to finish.',
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
+        deckEject: "I can't do this", dkFelt: "Felt time", dkM: "{m} min", dkH: "{h} h {m} min", dkCheck: "Attention check: are you still there?", dkYes: "Yes", dkWakeK: "Sudden realization", dkWake1: "That was {s} seconds. It felt like {f} hours.", dkWake2: "Your people sit through sixty of these a year and remember none of it. The slide was never the point. The person next to them was.", dkWake3: "What if the screen only set it up, and then went down?", dkGo: "I want this to change", dkStay: "Back to the deck", dkJ: {"mod": ["Module", "Section", "Appendix", "Sub-module"], "adj": ["Synergistic", "Cross-functional", "Holistic", "Strategic", "Scalable", "Mission-critical", "Agile", "Paradigm-shifting"], "noun": ["Alignment", "Bandwidth", "Cadence", "Compliance", "Stakeholder Value", "Workflow Optimization", "Governance", "Best Practices"], "noun2": ["Policy", "Onboarding", "Synergy", "Deliverables", "KPIs", "Frameworks"], "verb": ["Leverage", "Operationalize", "Socialize", "Cascade", "Double-click on", "Circle back to"], "tail": ["going forward.", "at scale.", "end to end.", "as per the above.", "by EOD.", "across all verticals."], "and": "&"},
         modeDay: "Day", modeNight: "Night", nightKicker: "After hours", ntH: "Fifteen small things, made after work.", ntMore: "The story behind each one, and why I make them", nightDesc: "What I make after work: free, no ads, no tracking. Fifteen windows are lit.",
         storyKicker: "The story",
         storyLead: "One invented company. One year. Thirteen conversations that would not have happened otherwise.",
@@ -1206,6 +1237,7 @@ img{filter:none}
         contactLabel: "打个招呼",
         contactTitle: '一起做让人<span class="accent-word">主动</span>学完的学习体验。',
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
+        deckEject: "我受不了了", dkFelt: "体感时长", dkM: "{m} 分钟", dkH: "{h} 小时 {m} 分钟", dkCheck: "注意力检查：你还在吗？", dkYes: "在", dkWakeK: "突然醒悟", dkWake1: "刚才只过了 {s} 秒。感觉像 {f} 个小时。", dkWake2: "你的人每年要坐完六十场这样的培训，什么都记不住。幻灯片从来不是重点。身边那个人才是。", dkWake3: "如果屏幕只负责开场，然后就退下呢？", dkGo: "我想改变这件事", dkStay: "回到课件", dkJ: {"mod": ["模块", "章节", "附录", "子模块"], "adj": ["协同", "跨部门", "全局", "战略", "可扩展", "关键", "敏捷", "颠覆性"], "noun": ["对齐", "带宽", "节奏", "合规", "干系人价值", "流程优化", "治理", "最佳实践"], "noun2": ["政策", "入职", "协同效应", "交付物", "关键指标", "框架"], "verb": ["充分利用", "落地", "推广", "层层传达", "深挖", "回头再看"], "tail": ["，持续推进。", "，规模化实施。", "，端到端执行。", "，如上所述。", "，今日内完成。", "，覆盖全部条线。"], "and": "与"},
         modeDay: "白天", modeNight: "夜晚", nightKicker: "下班以后", ntH: "下班以后做的十五件小东西。", ntMore: "每一件背后的故事，和我为什么做它们", nightDesc: "下班以后做的东西：免费、无广告、不追踪。十五扇窗亮着。",
         storyKicker: "故事",
         storyLead: "一家虚构的公司。一年。十三场原本不会发生的对话。",
@@ -1431,6 +1463,7 @@ img{filter:none}
         contactLabel: "Saludemos",
         contactTitle: 'Creemos aprendizajes que la gente <span class="accent-word">elija</span> terminar.',
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
+        deckEject: "No puedo más", dkFelt: "Tiempo sentido", dkM: "{m} min", dkH: "{h} h {m} min", dkCheck: "Control de atención: ¿sigues ahí?", dkYes: "Sí", dkWakeK: "Revelación repentina", dkWake1: "Han sido {s} segundos. Se han sentido como {f} horas.", dkWake2: "Tu gente se traga sesenta de estas al año y no recuerda ninguna. La diapositiva nunca fue el punto. La persona de al lado, sí.", dkWake3: "¿Y si la pantalla solo preparara el terreno, y luego se apagara?", dkGo: "Quiero que esto cambie", dkStay: "Volver a las diapositivas", dkJ: {"mod": ["Módulo", "Sección", "Anexo", "Submódulo"], "adj": ["Sinérgico", "Transversal", "Holístico", "Estratégico", "Escalable", "Crítico", "Ágil", "Disruptivo"], "noun": ["Alineamiento", "Ancho de banda", "Cadencia", "Cumplimiento", "Valor para el stakeholder", "Optimización del flujo", "Gobernanza", "Buenas prácticas"], "noun2": ["Política", "Onboarding", "Sinergia", "Entregables", "KPIs", "Marcos"], "verb": ["Apalancar", "Operativizar", "Socializar", "Cascadear", "Profundizar en", "Retomar"], "tail": ["de cara al futuro.", "a escala.", "de principio a fin.", "según lo anterior.", "antes del cierre.", "en todas las verticales."], "and": "y"},
         modeDay: "Día", modeNight: "Noche", nightKicker: "Fuera de horario", ntH: "Quince cosas pequeñas, hechas fuera de horario.", ntMore: "La historia detrás de cada una, y por qué las hago", nightDesc: "Lo que hago fuera de horario: gratis, sin anuncios, sin rastreo. Quince ventanas están encendidas.",
         storyKicker: "La historia",
         storyLead: "Una empresa inventada. Un año. Trece conversaciones que no habrían ocurrido.",
@@ -1655,6 +1688,7 @@ img{filter:none}
         contactLabel: "打個招呼",
         contactTitle: "一起做讓人<span class=\"accent-word\">主動</span>學完的學習體驗。",
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
+        deckEject: "我受不了了", dkFelt: "體感時長", dkM: "{m} 分鐘", dkH: "{h} 小時 {m} 分鐘", dkCheck: "注意力檢查：你還在嗎？", dkYes: "在", dkWakeK: "突然醒悟", dkWake1: "剛才只過了 {s} 秒。感覺像 {f} 個小時。", dkWake2: "你的人每年要坐完六十場這樣的培訓，什麼都記不住。幻燈片從來不是重點。身邊那個人才是。", dkWake3: "如果螢幕只負責開場，然後就退下呢？", dkGo: "我想改變這件事", dkStay: "回到課件", dkJ: {"mod": ["模組", "章節", "附錄", "子模組"], "adj": ["協同", "跨部門", "全域性", "戰略", "可擴充套件", "關鍵", "敏捷", "顛覆性"], "noun": ["對齊", "頻寬", "節奏", "合規", "干係人價值", "流程最佳化", "治理", "最佳實踐"], "noun2": ["政策", "入職", "協同效應", "交付物", "關鍵指標", "框架"], "verb": ["充分利用", "落地", "推廣", "層層傳達", "深挖", "回頭再看"], "tail": ["，持續推進。", "，規模化實施。", "，端到端執行。", "，如上所述。", "，今日內完成。", "，覆蓋全部條線。"], "and": "與"},
         modeDay: "白天", modeNight: "夜晚", nightKicker: "下班以後", ntH: "下班以後做的十五件小東西。", ntMore: "每一件背後的故事，和我為什麼做它們", nightDesc: "下班以後做的東西：免費、無廣告、不追蹤。十五扇窗亮著。",
         storyKicker: "故事",
         storyLead: "一家虛構的公司。一年。十三場原本不會發生的對話。",
@@ -1879,6 +1913,7 @@ img{filter:none}
         contactLabel: "Saludem",
         contactTitle: "Creem aprenentatges que la gent <span class=\"accent-word\">triï</span> acabar.",
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
+        deckEject: "No puc més", dkFelt: "Temps sentit", dkM: "{m} min", dkH: "{h} h {m} min", dkCheck: "Control d'atenció: encara hi ets?", dkYes: "Sí", dkWakeK: "Revelació sobtada", dkWake1: "Han estat {s} segons. S'han sentit com {f} hores.", dkWake2: "La teva gent s'empassa seixanta d'aquestes l'any i no en recorda cap. La diapositiva mai no va ser el punt. La persona del costat, sí.", dkWake3: "I si la pantalla només preparés el terreny, i després s'apagués?", dkGo: "Vull que això canviï", dkStay: "Tornar a les diapositives", dkJ: {"mod": ["Mòdul", "Secció", "Annex", "Submòdul"], "adj": ["Sinèrgic", "Transversal", "Holístic", "Estratègic", "Escalable", "Crític", "Àgil", "Disruptiu"], "noun": ["Alineament", "Ample de banda", "Cadència", "Compliment", "Valor per a l'stakeholder", "Optimització del flux", "Governança", "Bones pràctiques"], "noun2": ["Política", "Onboarding", "Sinergia", "Lliurables", "KPIs", "Marcs"], "verb": ["Palanquejar", "Operativitzar", "Socialitzar", "Cascadejar", "Aprofundir en", "Reprendre"], "tail": ["de cara al futur.", "a escala.", "de principi a fi.", "segons l'anterior.", "abans del tancament.", "a totes les verticals."], "and": "y"},
         modeDay: "Dia", modeNight: "Nit", nightKicker: "Fora d'hores", ntH: "Quinze coses petites, fetes fora d'horari.", ntMore: "La història darrere de cadascuna, i per què les faig", nightDesc: "El que faig fora d'horari: gratuït, sense anuncis, sense rastreig. Quinze finestres estan enceses.",
         storyKicker: "La història",
         storyLead: "Una empresa inventada. Un any. Tretze converses que no haurien passat.",
@@ -2133,23 +2168,55 @@ img{filter:none}
     }
 
     const deckModal = $('deck-modal');
-    let deckSlide = 1, deckLeft = 59, deckIv = null;
+    /* the 60-slide deck: every real second is eleven felt minutes; the jargon gets worse; at twelve seconds (or the first tap) the slide cracks and the realization comes */
+    let deckSlide = 1, deckLeft = 59, deckIv = null, deckSec = 0, deckWoke = false;
+    function deckJargon() {
+      const j = t().dkJ, pick = a => a[Math.floor(Math.random() * a.length)];
+      return { title: `${pick(j.mod)} ${deckSlide}.${1 + Math.floor(Math.random() * 4)}: ${pick(j.adj)} ${pick(j.noun)} ${j.and} ${pick(j.noun2)}`, bullets: [0, 1, 2].map(() => `${pick(j.verb)} ${pick(j.adj).toLowerCase()} ${pick(j.noun).toLowerCase()} ${pick(j.tail)}`) };
+    }
     function renderDeck() {
-      $('deck-count').textContent = t().deckCount.replace('{n}', deckSlide);
-      $('deck-timer').textContent = `${t().deckLocked} · 00:${String(deckLeft).padStart(2, '0')}`;
+      const d = t(); if (!$('deck-count')) return;
+      $('deck-count').textContent = d.deckCount.replace('{n}', deckSlide);
+      $('deck-timer').textContent = `${d.deckLocked} · 00:${String(deckLeft).padStart(2, '0')}`;
+      const felt = deckSec * 11, h = Math.floor(felt / 60), m = felt % 60;
+      $('dk-felt').textContent = h ? d.dkH.replace('{h}', h).replace('{m}', m) : d.dkM.replace('{m}', m);
+      $('dk-bar').style.width = Math.min(100, 1 + deckSlide * 1.6) + '%';
+      $('dk-cup').textContent = deckSec < 4 ? '☕☕☕' : deckSec < 8 ? '☕☕' : deckSec < 11 ? '☕' : '🫙';
+    }
+    function deckSlideIn() {
+      const g = deckJargon();
+      $('deck-title').textContent = g.title;
+      $('dk-bul').innerHTML = g.bullets.map(x => `<li>${x}</li>`).join('');
     }
     function openDeckModal() {
-      deckSlide = 1; deckLeft = 59; renderDeck();
+      deckSlide = 1; deckLeft = 59; deckSec = 0; deckWoke = false;
+      const box = $('deck-box'); box.classList.remove('dim', 'shake', 'crack');
+      $('dk-deck').hidden = false; $('dk-wake').hidden = true; $('dk-check').hidden = true;
+      deckSlideIn(); renderDeck();
       clearInterval(deckIv);
       deckIv = setInterval(() => {
-        deckLeft--;
-        if (deckLeft < 0) { deckSlide++; deckLeft = 59; }
+        deckSec++; deckLeft -= 7; if (deckLeft < 0) { deckSlide++; deckLeft = 59; deckSlideIn(); }
+        if (deckSec === 3) { $('dk-check').hidden = false; $('dk-yes').onclick = () => { $('dk-check').hidden = true; }; }
+        if (deckSec === 6) box.classList.add('dim');
+        if (deckSec === 9) { box.classList.remove('dim'); box.classList.add('shake'); setTimeout(() => box.classList.remove('shake'), 700); }
+        if (deckSec >= 12) deckWake();
         renderDeck();
       }, 1000);
       openModal(deckModal, $('deck-eject'));
     }
+    function deckWake() {
+      if (deckWoke) return; deckWoke = true; clearInterval(deckIv);
+      const box = $('deck-box'), d = t();
+      box.classList.add('crack');
+      $('dk-wake-t').textContent = d.dkWake1.replace('{s}', deckSec).replace('{f}', Math.max(1, Math.round(deckSec * 11 / 60)));
+      setTimeout(() => { box.classList.remove('crack', 'dim'); $('dk-deck').hidden = true; $('dk-wake').hidden = false; const f = $('dk-wake').querySelector('button'); if (f) f.focus(); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 650);
+    }
     function closeDeckModal() { clearInterval(deckIv); closeModal(deckModal); }
-    function ejectToCognitiveDignity() { closeDeckModal(); revealCardEasterEggs(true); }
+    function deckChange() {
+      closeDeckModal(); setMode('day');
+      const st = document.querySelector('.story'); if (st) { st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); st.classList.remove('dk-glow'); void st.offsetWidth; st.classList.add('dk-glow'); }
+    }
+    function ejectToCognitiveDignity() { deckChange(); }
 
     function revealCardEasterEggs(announce) {
       if (!document.querySelector('.card-easter-egg')) return;
@@ -2215,9 +2282,9 @@ img{filter:none}
       document.querySelectorAll('#dn .dn-b').forEach(b => b.classList.toggle('on', b.dataset.mode === mode));
       const d = t();
       if (mode === 'night') {
-        $('hero-k').textContent = d.nightKicker || 'After hours'; $('hero-t').textContent = d.nbH || ''; $('hero-d').textContent = d.nightDesc || '';
+        $('hero-t').textContent = d.nbH || ''; $('hero-d').textContent = d.nightDesc || '';
       } else {
-        $('hero-k').textContent = d.heroKicker; $('hero-t').innerHTML = d.heroTitle; $('hero-d').textContent = d.heroDesc;
+        $('hero-t').innerHTML = d.heroTitle; $('hero-d').textContent = d.heroDesc;
       }
       document.querySelectorAll('#intro .reveal').forEach(e => e.classList.add('in'));
 
