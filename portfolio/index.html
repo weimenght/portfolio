@@ -182,6 +182,14 @@
     .dn { display:inline-flex; gap:4px; padding:4px; border-radius:999px; border:1px solid var(--line,#E5E2DA); background:var(--white,#fff); }
     .dn-b { display:inline-flex; align-items:center; gap:7px; padding:7px 14px; border-radius:999px; font:700 11px/1 'Space Mono', monospace; letter-spacing:.06em; text-transform:uppercase; color:var(--muted,#6B6A70); transition:background .25s, color .25s; }
     .dn-b.on { background:#17171A; color:#fff; }
+    /* the switch moves into the header once the one under the slogan scrolls away (Nov 8, the owner) */
+    .dn-nav { padding:3px; gap:2px; height:32px; animation:dnIn .25s ease-out; }
+    .dn-nav .dn-b { padding:0 10px; height:24px; font-size:10px; gap:6px; }
+    .dn-nav[hidden] { display:none; }
+    @media (max-width:639px) { html.dn-in-nav header .leading-none { display:none; } }
+    @keyframes dnIn { from { opacity:0; transform:translateY(-4px); } }
+    @media (max-width:639px) { .dn-nav .dn-b span { display:none; } .dn-nav .dn-b { padding:0 9px; } }
+    @media (prefers-reduced-motion:reduce) { .dn-nav { animation:none; } }
     html[data-mode="night"] { color-scheme:dark; }
     html[data-mode="night"] body { background:#120F18; color:#F4ECDD; }
     html[data-mode="night"] .bg-glow { background: radial-gradient(60% 42% at 18% 0%, rgba(246,182,91,.16), transparent 70%), radial-gradient(40% 30% at 92% 12%, rgba(246,182,91,.07), transparent 70%); }
@@ -233,13 +241,26 @@
     .nt-more { color:#F4ECDD; text-decoration-color:#F6B65B; }
     html[data-mode="night"] section[data-g="f"] .sec-lab { display:none; }
     /* Nov 7 (the owner): one slogan for day and night; under the switch, one line for each, the chosen one lit */
-    .md { display:grid; gap:12px; max-width:42rem; }
-    .md-i { display:grid; grid-template-columns:4.2rem 1fr; gap:12px; align-items:baseline; text-align:left; padding:0; background:none; border:0; cursor:pointer; color:inherit; opacity:.42; transition:opacity .25s; }
-    .md-i:hover { opacity:.7; } .md-i.on { opacity:1; cursor:default; }
-    .md-i b { font:700 11px/1.6 'Space Mono', monospace; letter-spacing:.08em; text-transform:uppercase; }
-    .md-i span { font-size:1rem; line-height:1.6; }
-    @media (min-width:640px) { .md-i span { font-size:1.125rem; } }
-    html[data-mode="night"] .md-i b { color:#F6B65B; }
+    /* the two lines under the switch are two skies (Nov 8, the owner): Day is always sunlit paper, Night always ink with stars, whichever is chosen */
+    .md { display:grid; gap:10px; max-width:46rem; }
+    @media (min-width:720px) { .md { grid-template-columns:1fr 1fr; } }
+    .md-i { position:relative; overflow:hidden; display:block; text-align:left; padding:14px 16px 16px; border-radius:16px; cursor:pointer; transform:scale(.975); transition:filter .25s, transform .25s, box-shadow .25s; }
+    .md-i:not(.on):hover { transform:scale(.99); } .md-i.on { transform:none; cursor:default; }
+    .md-i b { display:flex; align-items:center; gap:7px; font:700 11px/1.6 'Space Mono', monospace; letter-spacing:.08em; text-transform:uppercase; margin-bottom:6px; }
+    .md-i b svg { width:14px; height:14px; flex:none; }
+    .md-i span { display:block; font-size:.95rem; line-height:1.55; }
+    .md-i[data-mode="day"] { background:linear-gradient(160deg,#FFF8E8 0%,#F7F1E3 55%,#F2E7D2 100%); color:rgb(30,26,22); border:1px solid #E5DCC8; }
+    .md-i[data-mode="day"] b { color:#C2410C; }
+    .md-i[data-mode="night"] { background:radial-gradient(1px 1px at 82% 22%,#fff8,transparent),radial-gradient(1px 1px at 91% 48%,#fff6,transparent),radial-gradient(1.4px 1.4px at 74% 64%,#F6B65Baa,transparent),radial-gradient(1px 1px at 62% 18%,#fff5,transparent),linear-gradient(160deg,#221C34 0%,#15111F 100%); color:#F4ECDD; border:1px solid #2E2746; }
+    .md-i[data-mode="night"] b { color:#F6B65B; }
+    .md-i[data-mode="day"].on { box-shadow:0 0 0 2px #17171A, 0 8px 24px -12px rgba(194,65,12,.45); }
+    .md-i[data-mode="night"].on { box-shadow:0 0 0 2px #F6B65B, 0 8px 28px -12px rgba(246,182,91,.5); }
+    @media (prefers-reduced-motion:reduce) { .md-i { transition:none; transform:none; } }
+    html[data-mode] .md-i[data-mode="day"], html[data-mode] .md-i[data-mode="day"] span { color:rgb(30,26,22); }
+    html[data-mode] .md-i[data-mode="night"], html[data-mode] .md-i[data-mode="night"] span { color:#F4ECDD; }
+    html[data-mode="night"] .md-i[data-mode="day"]:not(.on) { filter:brightness(.78) saturate(.7); }
+    html[data-mode="day"] .md-i[data-mode="night"]:not(.on) { filter:brightness(1.12) saturate(.8); }
+    html[data-mode="night"] header .dn-b { color:rgba(244,236,221,.6); } html[data-mode="night"] header .dn-b.on { color:#120F18; }
     html[data-mode="night"] section[data-g="f"] .border-b { border-color:#2A2540; }
 
     /* ===== Nov 6: the portfolio, quieter (show the work, say less) ===== */
@@ -349,7 +370,7 @@ img{filter:none}
             <span data-i18n="deckNext">Next slide</span><span aria-hidden="true">🔒</span>
           </button>
           <button type="button" id="deck-eject" onclick="deckWake()" class="w-full py-3 rounded-full bg-ink hover:bg-accent text-white active:scale-[0.98] text-xs font-mono font-bold transition-all flex items-center justify-center gap-2">
-            <span data-i18n="deckEject">I can't do this</span><span aria-hidden="true">↗</span>
+            <span data-i18n="deckEject">I can't do this</span><span aria-hidden="true">↗︎</span>
           </button>
         </div>
       </div>
@@ -415,6 +436,10 @@ img{filter:none}
         </div>
       </a>
       <div class="flex items-center gap-2 sm:gap-3">
+        <div class="dn dn-nav" role="group" aria-label="Day or night" id="dn2" hidden>
+          <button type="button" class="dn-b on" data-mode="day" aria-label="Day"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></g></svg><span data-i18n="modeDay">Day</span></button>
+          <button type="button" class="dn-b" data-mode="night" aria-label="Night"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg><span data-i18n="modeNight">Night</span></button>
+        </div>
         <button type="button" onclick="openDeckModal()"
           class="hidden md:inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-dashed border-ink/25 hover:border-accent hover:text-accent text-[11px] font-mono text-muted transition-all group">
           <span class="inline-block transition-transform group-hover:rotate-12" aria-hidden="true">⚠</span>
@@ -427,7 +452,7 @@ img{filter:none}
           <span id="lang-btn-label" class="font-bold">EN</span>
         </button>
         <a href="https://wei-meng.org" class="h-8 inline-flex items-center gap-1 px-3.5 rounded-lg bg-ink text-white hover:bg-black text-xs font-semibold transition-colors whitespace-nowrap">
-          <span data-i18n="backHome">About me</span><span aria-hidden="true">↗</span>
+          <span data-i18n="backHome">About me</span><span aria-hidden="true">↗︎</span>
         </a>
       </div>
     </div>
@@ -447,8 +472,8 @@ img{filter:none}
         <button type="button" class="dn-b" data-mode="night"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg><span data-i18n="modeNight">Night</span></button>
       </div>
       <div class="md reveal" id="md" aria-label="What each one shows">
-        <button type="button" class="md-i on" data-mode="day"><b data-i18n="modeDay">Day</b><span data-i18n="heroDesc">Thirteen workplace problems, each told as one year at one invented company, each ending in a real conversation. All of it playable.</span></button>
-        <button type="button" class="md-i" data-mode="night"><b data-i18n="modeNight">Night</b><span data-i18n="mdNight">Twenty small apps made after work, each ending off the screen, next to someone. Free, no ads, no tracking.</span></button>
+        <button type="button" class="md-i on" data-mode="day"><b><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></g></svg><em data-i18n="modeDay" style="font-style:normal">Day</em></b><span data-i18n="heroDesc">Thirteen workplace problems, each told as one year at one invented company, each ending in a real conversation. All of it playable.</span></button>
+        <button type="button" class="md-i" data-mode="night"><b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg><em data-i18n="modeNight" style="font-style:normal">Night</em></b><span data-i18n="mdNight">Twenty small apps made after work, each ending off the screen, next to someone. Free, no ads, no tracking.</span></button>
       </div>
       <!--
       <div class="reveal flex flex-wrap items-center gap-x-3 gap-y-2 text-[12px] font-mono text-muted">
@@ -514,7 +539,7 @@ img{filter:none}
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
             <a href="https://www.freebuilder.net/tools/diagnose" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
-              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗</span>
+              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗︎</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
           </div>
@@ -537,7 +562,7 @@ img{filter:none}
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
             <a href="https://www.freebuilder.net/labs/coach/" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
-              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗</span>
+              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗︎</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
           </div>
@@ -560,7 +585,7 @@ img{filter:none}
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
             <a href="https://www.freebuilder.net/tools/listen" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
-              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗</span>
+              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗︎</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
           </div>
@@ -597,7 +622,7 @@ img{filter:none}
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
             <a href="https://www.freebuilder.net/tools/museum" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
-              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗</span>
+              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗︎</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
           </div>
@@ -620,7 +645,7 @@ img{filter:none}
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
             <a href="https://www.freebuilder.net/labs/cq/" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
-              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗</span>
+              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗︎</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
           </div>
@@ -643,7 +668,7 @@ img{filter:none}
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
             <a href="https://www.freebuilder.net/tools/decide" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
-              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗</span>
+              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗︎</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
           </div>
@@ -666,7 +691,7 @@ img{filter:none}
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
             <a href="https://www.freebuilder.net/tools/twotruths" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
-              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗</span>
+              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗︎</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
           </div>
@@ -703,7 +728,7 @@ img{filter:none}
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
             <a href="https://www.freebuilder.net/labs/launchpad/" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
-              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗</span>
+              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗︎</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
           </div>
@@ -726,7 +751,7 @@ img{filter:none}
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
             <a href="https://www.freebuilder.net/tools/prompt" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
-              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗</span>
+              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗︎</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
           </div>
@@ -749,7 +774,7 @@ img{filter:none}
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
             <a href="https://www.freebuilder.net/tools/discovery" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
-              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗</span>
+              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗︎</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
           </div>
@@ -772,7 +797,7 @@ img{filter:none}
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
             <a href="https://www.freebuilder.net/tools/design/" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
-              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗</span>
+              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗︎</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
           </div>
@@ -795,7 +820,7 @@ img{filter:none}
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
             <a href="https://www.freebuilder.net/tools/listen" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
-              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗</span>
+              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗︎</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
           </div>
@@ -832,7 +857,7 @@ img{filter:none}
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
             <a href="https://www.freebuilder.net/labs/coach/" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
-              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗</span>
+              <span data-i18n="tryLbl">Try it in two minutes</span><span aria-hidden="true">↗︎</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
           </div>
@@ -865,7 +890,7 @@ img{filter:none}
           </div>
           <div class="pt-4 mt-5 border-t border-line flex items-center justify-between gap-3">
             <a href="https://www.freebuilder.net/tools/teachback" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
-              <span data-i18n="tbAction">Teach something now</span><span aria-hidden="true">↗</span>
+              <span data-i18n="tbAction">Teach something now</span><span aria-hidden="true">↗︎</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
           </div>
@@ -884,7 +909,7 @@ img{filter:none}
           </div>
           <div class="pt-4 border-t border-line flex flex-wrap items-center justify-between gap-3">
             <a href="https://www.freebuilder.net/labs/common-ground/" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-ink text-white hover:bg-accent active:scale-95 text-xs font-bold font-mono transition-all">
-              <span data-i18n="g1Action">Build your team's town</span><span aria-hidden="true">↗</span>
+              <span data-i18n="g1Action">Build your team's town</span><span aria-hidden="true">↗︎</span>
             </a>
             <span class="text-[11px] font-mono text-muted" data-i18n="freeMeta">Free · no sign-up</span>
           </div>
@@ -903,27 +928,27 @@ img{filter:none}
         <span class="text-[11px] font-mono text-muted" data-i18n="nbNote">Free · no ads · no tracking</span>
       </div>
       <div class="nt-grid reveal">
-        <a class="nt" href="https://www.after-hours.work/little-things/" target="_blank" rel="noopener noreferrer" style="--glow:#F6B65B"><span class="nt-shot"><img src="/after-hours/little-things.webp?v=671c05d2" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">01</span><b><span data-i18n="ltName">Little Things</span></b><span class="nt-l" data-i18n="ltL">One small offline thing at a time.</span><span class="nt-go"><span data-i18n="ltGo">Open the jar</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/paw-reading/" target="_blank" rel="noopener noreferrer" style="--glow:#E8913A"><span class="nt-shot"><img src="/after-hours/paw-reading.webp?v=20d4b26f" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">02</span><b><span data-i18n="pwName">Paw Reading</span></b><span class="nt-l" data-i18n="pwL">One card a day, from two cats.</span><span class="nt-go"><span data-i18n="pwGo">Ask for a card</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/come-over/" target="_blank" rel="noopener noreferrer" style="--glow:#E0704F"><span class="nt-shot"><img src="/after-hours/come-over.webp?v=577201f0" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">03</span><b><span data-i18n="coName">Come Over</span></b><span class="nt-l" data-i18n="coL">Have people over.</span><span class="nt-go"><span data-i18n="coGo">Plan one</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/a-few-stems/" target="_blank" rel="noopener noreferrer" style="--glow:#E58A9A"><span class="nt-shot"><img src="/after-hours/a-few-stems.webp?v=7800cfe4" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">04</span><b><span data-i18n="fsName">A Few Stems</span></b><span class="nt-l" data-i18n="fsL">A few flowers, for someone real.</span><span class="nt-go"><span data-i18n="fsGo">Tie a bouquet</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/borrowed-pages/" target="_blank" rel="noopener noreferrer" style="--glow:#D9785B"><span class="nt-shot"><img src="/after-hours/borrowed-pages.webp?v=c2c53d80" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">05</span><b><span data-i18n="bpName">Borrowed Pages</span></b><span class="nt-l" data-i18n="bpL">Real books, lent by hand between neighbours.</span><span class="nt-go"><span data-i18n="bpGo">Open Borrowed Pages</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/say-hello/" target="_blank" rel="noopener noreferrer" style="--glow:#E0604A"><span class="nt-shot"><img src="/after-hours/say-hello.webp?v=77ff8381" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">06</span><b><span data-i18n="shName">Say Hello</span></b><span class="nt-l" data-i18n="shL">A postcard that opens on its day.</span><span class="nt-go"><span data-i18n="shGo">Open Say Hello</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/home-ground/" target="_blank" rel="noopener noreferrer" style="--glow:#9CC47A"><span class="nt-shot"><img src="/after-hours/home-ground.webp?v=b5a0209d" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">07</span><b><span data-i18n="hgName">Home Ground</span></b><span class="nt-l" data-i18n="hgL">A town your people build together.</span><span class="nt-go"><span data-i18n="hgGo">Open Home Ground</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/twelve-grapes/" target="_blank" rel="noopener noreferrer" style="--glow:#A8C85A"><span class="nt-shot"><img src="/after-hours/twelve-grapes.webp?v=ff39b87d" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">08</span><b><span data-i18n="tgName">Twelve Grapes</span></b><span class="nt-l" data-i18n="tgL">Twelve grapes, one for each month.</span><span class="nt-go"><span data-i18n="tgGo">Open Twelve Grapes</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/ask-popo/" target="_blank" rel="noopener noreferrer" style="--glow:#E8A838"><span class="nt-shot"><img src="/after-hours/ask-popo.webp?v=5764d504" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">09</span><b><span data-i18n="apName">Ask Popo</span></b><span class="nt-l" data-i18n="apL">One question a week, asked in person.</span><span class="nt-go"><span data-i18n="apGo">Open Ask Popo</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/walk-with/" target="_blank" rel="noopener noreferrer" style="--glow:#9BB08A"><span class="nt-shot"><img src="/after-hours/walk-with.webp?v=f77276fb" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">10</span><b><span data-i18n="wwName">Walk With</span></b><span class="nt-l" data-i18n="wwL">Twenty minutes, one corner, phones away.</span><span class="nt-go"><span data-i18n="wwGo">Open Walk With</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/along-the-way/" target="_blank" rel="noopener noreferrer" style="--glow:#C8303A"><span class="nt-shot"><img src="/after-hours/along-the-way.webp?v=f27de8a8" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">11</span><b><span data-i18n="awName">Along the Way</span></b><span class="nt-l" data-i18n="awL">A few lines a day. A road you can keep.</span><span class="nt-go"><span data-i18n="awGo">Open Along the Way</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/window-radio/" target="_blank" rel="noopener noreferrer" style="--glow:#F0B13A"><span class="nt-shot"><img src="/after-hours/window-radio.webp?v=3e9f151b" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">12</span><b><span data-i18n="wrName">Window Radio</span></b><span class="nt-l" data-i18n="wrL">Lo-fi from your window. The day writes the tape.</span><span class="nt-go"><span data-i18n="wrGo">Open Window Radio</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/get-well-soup/" target="_blank" rel="noopener noreferrer" style="--glow:#E2654A"><span class="nt-shot"><img src="/after-hours/get-well-soup.webp?v=234dbfa1" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">13</span><b><span data-i18n="gwName">Get Well Soup</span></b><span class="nt-l" data-i18n="gwL">Someone's got a cold? Put a pot on for them.</span><span class="nt-go"><span data-i18n="gwGo">Open Get Well Soup</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/cook-for-someone/" target="_blank" rel="noopener noreferrer" style="--glow:#E8A838"><span class="nt-shot"><img src="/after-hours/cook-for-someone.webp?v=8a3390ce" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">14</span><b><span data-i18n="cfName">Cook for Someone</span></b><span class="nt-l" data-i18n="cfL">Popo's recipe box, for whoever's eating.</span><span class="nt-go"><span data-i18n="cfGo">Open Cook for Someone</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/mix-for-someone/" target="_blank" rel="noopener noreferrer" style="--glow:#E3B764"><span class="nt-shot"><img src="/after-hours/mix-for-someone.webp?v=383f558a" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">15</span><b><span data-i18n="mxName">Mix for Someone</span></b><span class="nt-l" data-i18n="mxL">Next Door's House book, zero-proof too.</span><span class="nt-go"><span data-i18n="mxGo">Open Mix for Someone</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/nearby/" target="_blank" rel="noopener noreferrer" style="--glow:#8E7FE6"><span class="nt-shot"><img src="/after-hours/nearby.webp?v=369e0268" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">16</span><b>Nearby</b><span class="nt-l" data-i18n="nbL">A little world that sends you back to yours.</span><span class="nt-go"><span data-i18n="nbGo">Walk in</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/station/" target="_blank" rel="noopener noreferrer" style="--glow:#6F93D8"><span class="nt-shot"><img src="/after-hours/station.webp?v=774e227c" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">17</span><b><span data-i18n="stName">Nearby Station</span></b><span class="nt-l" data-i18n="stL">A window seat on a slow train.</span><span class="nt-go"><span data-i18n="stGo">Board</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/handoff/" target="_blank" rel="noopener noreferrer" style="--glow:#E9825E"><span class="nt-shot"><img src="/after-hours/handoff.webp?v=d103c7ed" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">18</span><b>Handoff</b><span class="nt-l" data-i18n="hoL">For two people in different cities.</span><span class="nt-go"><span data-i18n="hoGo">Open Handoff</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/two-candles/" target="_blank" rel="noopener noreferrer" style="--glow:#F2B54A"><span class="nt-shot"><img src="/after-hours/two-candles.webp?v=88fb2445" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">19</span><b><span data-i18n="tcName">Two Candles</span></b><span class="nt-l" data-i18n="tcL">Dinner for two, however far apart.</span><span class="nt-go"><span data-i18n="tcGo">Book a table</span> ↗</span></span></a>
-        <a class="nt" href="https://www.after-hours.work/vocab/" target="_blank" rel="noopener noreferrer" style="--glow:#7FC9B8"><span class="nt-shot"><img src="/after-hours/vocab.webp?v=526a414d" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">20</span><b>Vocab</b><span class="nt-l" data-i18n="voL">A few words in someone else's language.</span><span class="nt-go"><span data-i18n="voGo">Open Vocab</span> ↗</span></span></a></div>
-      <a href="https://www.after-hours.work/" class="reveal inline-flex items-center gap-2 text-sm font-mono underline decoration-2 underline-offset-4 nt-more"><span data-i18n="ntMore">The story behind each one, and why I make them</span> <span aria-hidden="true">→</span></a>
+        <a class="nt" href="https://www.after-hours.work/little-things/" target="_blank" rel="noopener noreferrer" style="--glow:#F6B65B"><span class="nt-shot"><img src="/after-hours/little-things.webp?v=671c05d2" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">01</span><b><span data-i18n="ltName">Little Things</span></b><span class="nt-l" data-i18n="ltL">One small offline thing at a time.</span><span class="nt-go"><span data-i18n="ltGo">Open the jar</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/paw-reading/" target="_blank" rel="noopener noreferrer" style="--glow:#E8913A"><span class="nt-shot"><img src="/after-hours/paw-reading.webp?v=20d4b26f" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">02</span><b><span data-i18n="pwName">Paw Reading</span></b><span class="nt-l" data-i18n="pwL">One card a day, from two cats.</span><span class="nt-go"><span data-i18n="pwGo">Ask for a card</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/come-over/" target="_blank" rel="noopener noreferrer" style="--glow:#E0704F"><span class="nt-shot"><img src="/after-hours/come-over.webp?v=577201f0" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">03</span><b><span data-i18n="coName">Come Over</span></b><span class="nt-l" data-i18n="coL">Have people over.</span><span class="nt-go"><span data-i18n="coGo">Plan one</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/a-few-stems/" target="_blank" rel="noopener noreferrer" style="--glow:#E58A9A"><span class="nt-shot"><img src="/after-hours/a-few-stems.webp?v=7800cfe4" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">04</span><b><span data-i18n="fsName">A Few Stems</span></b><span class="nt-l" data-i18n="fsL">A few flowers, for someone real.</span><span class="nt-go"><span data-i18n="fsGo">Tie a bouquet</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/borrowed-pages/" target="_blank" rel="noopener noreferrer" style="--glow:#D9785B"><span class="nt-shot"><img src="/after-hours/borrowed-pages.webp?v=c2c53d80" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">05</span><b><span data-i18n="bpName">Borrowed Pages</span></b><span class="nt-l" data-i18n="bpL">Real books, lent by hand between neighbours.</span><span class="nt-go"><span data-i18n="bpGo">Open Borrowed Pages</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/say-hello/" target="_blank" rel="noopener noreferrer" style="--glow:#E0604A"><span class="nt-shot"><img src="/after-hours/say-hello.webp?v=77ff8381" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">06</span><b><span data-i18n="shName">Say Hello</span></b><span class="nt-l" data-i18n="shL">A postcard that opens on its day.</span><span class="nt-go"><span data-i18n="shGo">Open Say Hello</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/home-ground/" target="_blank" rel="noopener noreferrer" style="--glow:#9CC47A"><span class="nt-shot"><img src="/after-hours/home-ground.webp?v=b5a0209d" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">07</span><b><span data-i18n="hgName">Home Ground</span></b><span class="nt-l" data-i18n="hgL">A town your people build together.</span><span class="nt-go"><span data-i18n="hgGo">Open Home Ground</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/twelve-grapes/" target="_blank" rel="noopener noreferrer" style="--glow:#A8C85A"><span class="nt-shot"><img src="/after-hours/twelve-grapes.webp?v=ff39b87d" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">08</span><b><span data-i18n="tgName">Twelve Grapes</span></b><span class="nt-l" data-i18n="tgL">Twelve grapes, one for each month.</span><span class="nt-go"><span data-i18n="tgGo">Open Twelve Grapes</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/ask-popo/" target="_blank" rel="noopener noreferrer" style="--glow:#E8A838"><span class="nt-shot"><img src="/after-hours/ask-popo.webp?v=5764d504" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">09</span><b><span data-i18n="apName">Ask Popo</span></b><span class="nt-l" data-i18n="apL">One question a week, asked in person.</span><span class="nt-go"><span data-i18n="apGo">Open Ask Popo</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/walk-with/" target="_blank" rel="noopener noreferrer" style="--glow:#9BB08A"><span class="nt-shot"><img src="/after-hours/walk-with.webp?v=f77276fb" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">10</span><b><span data-i18n="wwName">Walk With</span></b><span class="nt-l" data-i18n="wwL">Twenty minutes, one corner, phones away.</span><span class="nt-go"><span data-i18n="wwGo">Open Walk With</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/along-the-way/" target="_blank" rel="noopener noreferrer" style="--glow:#C8303A"><span class="nt-shot"><img src="/after-hours/along-the-way.webp?v=f27de8a8" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">11</span><b><span data-i18n="awName">Along the Way</span></b><span class="nt-l" data-i18n="awL">A few lines a day. A road you can keep.</span><span class="nt-go"><span data-i18n="awGo">Open Along the Way</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/window-radio/" target="_blank" rel="noopener noreferrer" style="--glow:#F0B13A"><span class="nt-shot"><img src="/after-hours/window-radio.webp?v=3e9f151b" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">12</span><b><span data-i18n="wrName">Window Radio</span></b><span class="nt-l" data-i18n="wrL">Lo-fi from your window. The day writes the tape.</span><span class="nt-go"><span data-i18n="wrGo">Open Window Radio</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/get-well-soup/" target="_blank" rel="noopener noreferrer" style="--glow:#E2654A"><span class="nt-shot"><img src="/after-hours/get-well-soup.webp?v=234dbfa1" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">13</span><b><span data-i18n="gwName">Get Well Soup</span></b><span class="nt-l" data-i18n="gwL">Someone's got a cold? Put a pot on for them.</span><span class="nt-go"><span data-i18n="gwGo">Open Get Well Soup</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/cook-for-someone/" target="_blank" rel="noopener noreferrer" style="--glow:#E8A838"><span class="nt-shot"><img src="/after-hours/cook-for-someone.webp?v=8a3390ce" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">14</span><b><span data-i18n="cfName">Cook for Someone</span></b><span class="nt-l" data-i18n="cfL">Popo's recipe box, for whoever's eating.</span><span class="nt-go"><span data-i18n="cfGo">Open Cook for Someone</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/mix-for-someone/" target="_blank" rel="noopener noreferrer" style="--glow:#E3B764"><span class="nt-shot"><img src="/after-hours/mix-for-someone.webp?v=383f558a" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">15</span><b><span data-i18n="mxName">Mix for Someone</span></b><span class="nt-l" data-i18n="mxL">Next Door's House book, zero-proof too.</span><span class="nt-go"><span data-i18n="mxGo">Open Mix for Someone</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/nearby/" target="_blank" rel="noopener noreferrer" style="--glow:#8E7FE6"><span class="nt-shot"><img src="/after-hours/nearby.webp?v=369e0268" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">16</span><b>Nearby</b><span class="nt-l" data-i18n="nbL">A little world that sends you back to yours.</span><span class="nt-go"><span data-i18n="nbGo">Walk in</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/station/" target="_blank" rel="noopener noreferrer" style="--glow:#6F93D8"><span class="nt-shot"><img src="/after-hours/station.webp?v=774e227c" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">17</span><b><span data-i18n="stName">Nearby Station</span></b><span class="nt-l" data-i18n="stL">A window seat on a slow train.</span><span class="nt-go"><span data-i18n="stGo">Board</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/handoff/" target="_blank" rel="noopener noreferrer" style="--glow:#E9825E"><span class="nt-shot"><img src="/after-hours/handoff.webp?v=d103c7ed" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">18</span><b>Handoff</b><span class="nt-l" data-i18n="hoL">For two people in different cities.</span><span class="nt-go"><span data-i18n="hoGo">Open Handoff</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/two-candles/" target="_blank" rel="noopener noreferrer" style="--glow:#F2B54A"><span class="nt-shot"><img src="/after-hours/two-candles.webp?v=88fb2445" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">19</span><b><span data-i18n="tcName">Two Candles</span></b><span class="nt-l" data-i18n="tcL">Dinner for two, however far apart.</span><span class="nt-go"><span data-i18n="tcGo">Book a table</span> ↗︎</span></span></a>
+        <a class="nt" href="https://www.after-hours.work/vocab/" target="_blank" rel="noopener noreferrer" style="--glow:#7FC9B8"><span class="nt-shot"><img src="/after-hours/vocab.webp?v=526a414d" width="480" height="800" loading="lazy" alt=""></span><span class="nt-txt"><span class="nt-n">20</span><b>Vocab</b><span class="nt-l" data-i18n="voL">A few words in someone else's language.</span><span class="nt-go"><span data-i18n="voGo">Open Vocab</span> ↗︎</span></span></a></div>
+      <a href="https://www.after-hours.work/" class="reveal inline-flex items-center gap-2 text-sm font-mono underline decoration-2 underline-offset-4 nt-more"><span data-i18n="ntMore">Why I make these, and how each one hands you back to someone</span> <span aria-hidden="true">→</span></a>
     </section>
 
     <!-- CLOSING -->
@@ -1029,7 +1054,7 @@ img{filter:none}
         contactTitle: 'Let\'s build learning people <span class="accent-word">choose</span> to finish.',
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
         deckEject: "I can't do this", dkFelt: "Felt time", dkM: "{m} min", dkH: "{h} h {m} min", dkCheck: "Attention check: are you still there?", dkYes: "Yes", dkWakeK: "Sudden realization", dkWake1: "That was {s} seconds. It felt like {f} hours.", dkWake2: "Your people sit through sixty of these a year and remember none of it. The slide was never the point. The person next to them was.", dkWake3: "What if the screen only set it up, and then went down?", dkGo: "I want this to change", dkStay: "Back to the deck", dkJ: {"mod": ["Module", "Section", "Appendix", "Sub-module"], "adj": ["Synergistic", "Cross-functional", "Holistic", "Strategic", "Scalable", "Mission-critical", "Agile", "Paradigm-shifting"], "noun": ["Alignment", "Bandwidth", "Cadence", "Compliance", "Stakeholder Value", "Workflow Optimization", "Governance", "Best Practices"], "noun2": ["Policy", "Onboarding", "Synergy", "Deliverables", "KPIs", "Frameworks"], "verb": ["Leverage", "Operationalize", "Socialize", "Cascade", "Double-click on", "Circle back to"], "tail": ["going forward.", "at scale.", "end to end.", "as per the above.", "by EOD.", "across all verticals."], "and": "&"},
-        modeDay: "Day", modeNight: "Night", mdNight: "Twenty small apps made after work, each ending off the screen, next to someone. Free, no ads, no tracking.", nightKicker: "After hours", ntH: "Twenty small things, made after work.", ntMore: "The story behind each one, and why I make them", nightDesc: "What I make after work: free, no ads, no tracking. Twenty windows are lit.",
+        modeDay: "Day", modeNight: "Night", mdNight: "Twenty small apps made after work, each ending off the screen, next to someone. Free, no ads, no tracking.", nightKicker: "After hours", ntH: "Twenty small things, made after work.", ntMore: "Why I make these, and how each one hands you back to someone", nightDesc: "What I make after work: free, no ads, no tracking. Twenty windows are lit.",
         storyKicker: "The story",
         storyLead: "One invented company. One year. Thirteen conversations that would not have happened otherwise.",
         storyCast: "Ana, an engineer promoted to manager in January · Leo, her most senior report · Mei, the graduate who joins in September · Sam, the MD who is always sure · Priya, who leads the Bengaluru team on the Monday call · Jordi, in sales · Nadia, in HR, who gets every request for training · Tomás, in product.",
@@ -1256,7 +1281,7 @@ img{filter:none}
         contactTitle: '一起做让人<span class="accent-word">主动</span>学完的学习体验。',
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
         deckEject: "我受不了了", dkFelt: "体感时长", dkM: "{m} 分钟", dkH: "{h} 小时 {m} 分钟", dkCheck: "注意力检查：你还在吗？", dkYes: "在", dkWakeK: "突然醒悟", dkWake1: "刚才只过了 {s} 秒。感觉像 {f} 个小时。", dkWake2: "你的人每年要坐完六十场这样的培训，什么都记不住。幻灯片从来不是重点。身边那个人才是。", dkWake3: "如果屏幕只负责开场，然后就退下呢？", dkGo: "我想改变这件事", dkStay: "回到课件", dkJ: {"mod": ["模块", "章节", "附录", "子模块"], "adj": ["协同", "跨部门", "全局", "战略", "可扩展", "关键", "敏捷", "颠覆性"], "noun": ["对齐", "带宽", "节奏", "合规", "干系人价值", "流程优化", "治理", "最佳实践"], "noun2": ["政策", "入职", "协同效应", "交付物", "关键指标", "框架"], "verb": ["充分利用", "落地", "推广", "层层传达", "深挖", "回头再看"], "tail": ["，持续推进。", "，规模化实施。", "，端到端执行。", "，如上所述。", "，今日内完成。", "，覆盖全部条线。"], "and": "与"},
-        modeDay: "白天", modeNight: "夜晚", mdNight: "下班以后做的二十个小应用，每一个都在屏幕之外、在某个人身边收尾。免费、无广告、不追踪。", nightKicker: "下班以后", ntH: "下班以后做的二十件小东西。", ntMore: "每一件背后的故事，和我为什么做它们", nightDesc: "下班以后做的东西：免费、无广告、不追踪。二十扇窗亮着。",
+        modeDay: "白天", modeNight: "夜晚", mdNight: "下班以后做的二十个小应用，每一个都在屏幕之外、在某个人身边收尾。免费、无广告、不追踪。", nightKicker: "下班以后", ntH: "下班以后做的二十件小东西。", ntMore: "我为什么做这些，以及每一个怎样把你交还给身边的人", nightDesc: "下班以后做的东西：免费、无广告、不追踪。二十扇窗亮着。",
         storyKicker: "故事",
         storyLead: "一家虚构的公司。一年。十三场原本不会发生的对话。",
         storyCast: "Ana，一月升任经理的工程师 · Leo，她最资深的下属 · Mei，九月入职的毕业生 · Sam，永远笃定的总监 · Priya，周一电话会上班加罗尔团队的负责人 · Jordi，做销售 · Nadia，人力资源，收下每一个培训需求 · Tomás，做产品。",
@@ -1483,7 +1508,7 @@ img{filter:none}
         contactTitle: 'Creemos aprendizajes que la gente <span class="accent-word">elija</span> terminar.',
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
         deckEject: "No puedo más", dkFelt: "Tiempo sentido", dkM: "{m} min", dkH: "{h} h {m} min", dkCheck: "Control de atención: ¿sigues ahí?", dkYes: "Sí", dkWakeK: "Revelación repentina", dkWake1: "Han sido {s} segundos. Se han sentido como {f} horas.", dkWake2: "Tu gente se traga sesenta de estas al año y no recuerda ninguna. La diapositiva nunca fue el punto. La persona de al lado, sí.", dkWake3: "¿Y si la pantalla solo preparara el terreno, y luego se apagara?", dkGo: "Quiero que esto cambie", dkStay: "Volver a las diapositivas", dkJ: {"mod": ["Módulo", "Sección", "Anexo", "Submódulo"], "adj": ["Sinérgico", "Transversal", "Holístico", "Estratégico", "Escalable", "Crítico", "Ágil", "Disruptivo"], "noun": ["Alineamiento", "Ancho de banda", "Cadencia", "Cumplimiento", "Valor para el stakeholder", "Optimización del flujo", "Gobernanza", "Buenas prácticas"], "noun2": ["Política", "Onboarding", "Sinergia", "Entregables", "KPIs", "Marcos"], "verb": ["Apalancar", "Operativizar", "Socializar", "Cascadear", "Profundizar en", "Retomar"], "tail": ["de cara al futuro.", "a escala.", "de principio a fin.", "según lo anterior.", "antes del cierre.", "en todas las verticales."], "and": "y"},
-        modeDay: "Día", modeNight: "Noche", mdNight: "Veinte pequeñas apps hechas fuera de horario; cada una acaba fuera de la pantalla, junto a alguien. Gratis, sin anuncios, sin rastreo.", nightKicker: "Fuera de horario", ntH: "Veinte cosas pequeñas, hechas fuera de horario.", ntMore: "La historia detrás de cada una, y por qué las hago", nightDesc: "Lo que hago fuera de horario: gratis, sin anuncios, sin rastreo. Veinte ventanas están encendidas.",
+        modeDay: "Día", modeNight: "Noche", mdNight: "Veinte pequeñas apps hechas fuera de horario; cada una acaba fuera de la pantalla, junto a alguien. Gratis, sin anuncios, sin rastreo.", nightKicker: "Fuera de horario", ntH: "Veinte cosas pequeñas, hechas fuera de horario.", ntMore: "Por qué las hago, y cómo cada una te devuelve a alguien", nightDesc: "Lo que hago fuera de horario: gratis, sin anuncios, sin rastreo. Veinte ventanas están encendidas.",
         storyKicker: "La historia",
         storyLead: "Una empresa inventada. Un año. Trece conversaciones que no habrían ocurrido.",
         storyCast: "Ana, ingeniera ascendida a jefa en enero · Leo, su colaborador más veterano · Mei, la graduada que entra en septiembre · Sam, el director que siempre está seguro · Priya, que lleva el equipo de Bengaluru en la llamada del lunes · Jordi, en ventas · Nadia, en RR. HH., a quien llega cada petición de formación · Tomás, en producto.",
@@ -1709,7 +1734,7 @@ img{filter:none}
         contactTitle: "一起做讓人<span class=\"accent-word\">主動</span>學完的學習體驗。",
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
         deckEject: "我受不了了", dkFelt: "體感時長", dkM: "{m} 分鐘", dkH: "{h} 小時 {m} 分鐘", dkCheck: "注意力檢查：你還在嗎？", dkYes: "在", dkWakeK: "突然醒悟", dkWake1: "剛才只過了 {s} 秒。感覺像 {f} 個小時。", dkWake2: "你的人每年要坐完六十場這樣的培訓，什麼都記不住。幻燈片從來不是重點。身邊那個人才是。", dkWake3: "如果螢幕只負責開場，然後就退下呢？", dkGo: "我想改變這件事", dkStay: "回到課件", dkJ: {"mod": ["模組", "章節", "附錄", "子模組"], "adj": ["協同", "跨部門", "全域性", "戰略", "可擴充套件", "關鍵", "敏捷", "顛覆性"], "noun": ["對齊", "頻寬", "節奏", "合規", "干係人價值", "流程最佳化", "治理", "最佳實踐"], "noun2": ["政策", "入職", "協同效應", "交付物", "關鍵指標", "框架"], "verb": ["充分利用", "落地", "推廣", "層層傳達", "深挖", "回頭再看"], "tail": ["，持續推進。", "，規模化實施。", "，端到端執行。", "，如上所述。", "，今日內完成。", "，覆蓋全部條線。"], "and": "與"},
-        modeDay: "白天", modeNight: "夜晚", mdNight: "下班以後做的二十個小應用，每一個都在螢幕之外、在某個人身邊收尾。免費、無廣告、不追蹤。", nightKicker: "下班以後", ntH: "下班以後做的二十件小東西。", ntMore: "每一件背後的故事，和我為什麼做它們", nightDesc: "下班以後做的東西：免費、無廣告、不追蹤。二十扇窗亮著。",
+        modeDay: "白天", modeNight: "夜晚", mdNight: "下班以後做的二十個小應用，每一個都在螢幕之外、在某個人身邊收尾。免費、無廣告、不追蹤。", nightKicker: "下班以後", ntH: "下班以後做的二十件小東西。", ntMore: "我為什麼做這些，以及每一個怎樣把你交還給身邊的人", nightDesc: "下班以後做的東西：免費、無廣告、不追蹤。二十扇窗亮著。",
         storyKicker: "故事",
         storyLead: "一家虛構的公司。一年。十三場原本不會發生的對話。",
         storyCast: "Ana，一月升任經理的工程師 · Leo，她最資深的下屬 · Mei，九月入職的畢業生 · Sam，永遠篤定的總監 · Priya，週一電話會上班加羅爾團隊的負責人 · Jordi，做銷售 · Nadia，人力資源，收下每一個培訓需求 · Tomás，做產品。",
@@ -1935,7 +1960,7 @@ img{filter:none}
         contactTitle: "Creem aprenentatges que la gent <span class=\"accent-word\">triï</span> acabar.",
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
         deckEject: "No puc més", dkFelt: "Temps sentit", dkM: "{m} min", dkH: "{h} h {m} min", dkCheck: "Control d'atenció: encara hi ets?", dkYes: "Sí", dkWakeK: "Revelació sobtada", dkWake1: "Han estat {s} segons. S'han sentit com {f} hores.", dkWake2: "La teva gent s'empassa seixanta d'aquestes l'any i no en recorda cap. La diapositiva mai no va ser el punt. La persona del costat, sí.", dkWake3: "I si la pantalla només preparés el terreny, i després s'apagués?", dkGo: "Vull que això canviï", dkStay: "Tornar a les diapositives", dkJ: {"mod": ["Mòdul", "Secció", "Annex", "Submòdul"], "adj": ["Sinèrgic", "Transversal", "Holístic", "Estratègic", "Escalable", "Crític", "Àgil", "Disruptiu"], "noun": ["Alineament", "Ample de banda", "Cadència", "Compliment", "Valor per a l'stakeholder", "Optimització del flux", "Governança", "Bones pràctiques"], "noun2": ["Política", "Onboarding", "Sinergia", "Lliurables", "KPIs", "Marcs"], "verb": ["Palanquejar", "Operativitzar", "Socialitzar", "Cascadejar", "Aprofundir en", "Reprendre"], "tail": ["de cara al futur.", "a escala.", "de principi a fi.", "segons l'anterior.", "abans del tancament.", "a totes les verticals."], "and": "y"},
-        modeDay: "Dia", modeNight: "Nit", mdNight: "Vint petites apps fetes fora d'hores; cadascuna acaba fora de la pantalla, al costat d'algú. Gratis, sense anuncis, sense rastreig.", nightKicker: "Fora d'hores", ntH: "Vint coses petites, fetes fora d'horari.", ntMore: "La història darrere de cadascuna, i per què les faig", nightDesc: "El que faig fora d'horari: gratuït, sense anuncis, sense rastreig. Vint finestres estan enceses.",
+        modeDay: "Dia", modeNight: "Nit", mdNight: "Vint petites apps fetes fora d'hores; cadascuna acaba fora de la pantalla, al costat d'algú. Gratis, sense anuncis, sense rastreig.", nightKicker: "Fora d'hores", ntH: "Vint coses petites, fetes fora d'horari.", ntMore: "Per què les faig, i com cadascuna et torna a algú", nightDesc: "El que faig fora d'horari: gratuït, sense anuncis, sense rastreig. Vint finestres estan enceses.",
         storyKicker: "La història",
         storyLead: "Una empresa inventada. Un any. Tretze converses que no haurien passat.",
         storyCast: "L'Ana, enginyera ascendida a cap al gener · en Leo, el seu col·laborador més veterà · la Mei, la graduada que entra al setembre · en Sam, el director que sempre n'està segur · la Priya, que porta l'equip de Bengaluru a la trucada del dilluns · en Jordi, a vendes · la Nadia, a RR. HH., a qui arriba cada petició de formació · en Tomás, a producte.",
@@ -2300,14 +2325,19 @@ img{filter:none}
     function setMode(m, keep) {
       mode = m === 'night' ? 'night' : 'day';
       document.documentElement.dataset.mode = mode;
-      document.querySelectorAll('#dn .dn-b').forEach(b => b.classList.toggle('on', b.dataset.mode === mode));
+      document.querySelectorAll('.dn .dn-b').forEach(b => b.classList.toggle('on', b.dataset.mode === mode));
       const d = t();
       document.querySelectorAll('#md .md-i').forEach(b => { b.classList.toggle('on', b.dataset.mode === mode); b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false'); });
       document.querySelectorAll('#intro .reveal').forEach(e => e.classList.add('in'));
 
       if (!keep) { try { sessionStorage.setItem('pf_mode', mode); history.replaceState(null, '', location.pathname + location.search + (mode === 'night' ? '#night' : '')); } catch (e) {} }
     }
-    document.getElementById('dn').addEventListener('click', e => { const b = e.target.closest('.dn-b'); if (b) setMode(b.dataset.mode); });
+    ['dn', 'dn2'].forEach(id => document.getElementById(id).addEventListener('click', e => { const b = e.target.closest('.dn-b'); if (b) setMode(b.dataset.mode); }));
+    (function () {
+      const big = document.getElementById('dn'), nav = document.getElementById('dn2');
+      if (!('IntersectionObserver' in window)) return;
+      new IntersectionObserver(es => { const e = es[es.length - 1]; nav.hidden = e.isIntersecting || e.boundingClientRect.top > 0; document.documentElement.classList.toggle('dn-in-nav', !nav.hidden); }, { rootMargin: '-60px 0px 0px 0px' }).observe(big);
+    })();
     document.getElementById('md').addEventListener('click', e => { const b = e.target.closest('.md-i'); if (b) setMode(b.dataset.mode); });
 
     /* ---------- Chips: one group or all ---------- */
