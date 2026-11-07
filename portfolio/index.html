@@ -186,7 +186,8 @@
     .dn-nav { padding:3px; gap:2px; height:32px; animation:dnIn .25s ease-out; }
     .dn-nav .dn-b { padding:0 10px; height:24px; font-size:10px; gap:6px; }
     .dn-nav[hidden] { display:none; }
-    @media (max-width:639px) { html.dn-in-nav header .leading-none { display:none; } }
+    /* narrow screens: the W mark alone; the name steps aside for good (Nov 8, the owner) */
+    @media (max-width:639px) { header .leading-none { display:none; } }
     @keyframes dnIn { from { opacity:0; transform:translateY(-4px); } }
     @media (max-width:639px) { .dn-nav .dn-b span { display:none; } .dn-nav .dn-b { padding:0 9px; } }
     @media (prefers-reduced-motion:reduce) { .dn-nav { animation:none; } }
