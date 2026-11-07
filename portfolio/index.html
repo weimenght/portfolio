@@ -468,11 +468,7 @@ img{filter:none}
         Small experiences. <br class="hidden sm:inline"><span class="accent-word">Meaningful</span> possibilities.
       </h1>
       <p class="reveal pf-thread"><span data-i18n="pfThread">Technology should bring us closer to real people and real life. KPIs, scores and algorithms aren't the only way, and they shouldn't be.</span> <a href="/story/" class="pf-thread-by">— Wei</a></p>
-      <div class="dn reveal" role="group" aria-label="Day or night" id="dn">
-        <button type="button" class="dn-b on" data-mode="day"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></g></svg><span data-i18n="modeDay">Day</span></button>
-        <button type="button" class="dn-b" data-mode="night"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg><span data-i18n="modeNight">Night</span></button>
-      </div>
-      <div class="md reveal" id="md" aria-label="What each one shows">
+      <div class="md reveal" id="md" role="group" aria-label="Day or night">
         <button type="button" class="md-i on" data-mode="day"><b><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></g></svg><em data-i18n="modeDay" style="font-style:normal">Day</em></b><span data-i18n="heroDesc">Thirteen workplace problems, each told as one year at one invented company, each ending in a real conversation. All of it playable.</span></button>
         <button type="button" class="md-i" data-mode="night"><b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg><em data-i18n="modeNight" style="font-style:normal">Night</em></b><span data-i18n="mdNight">Twenty small apps made after work, each ending off the screen, next to someone. Free, no ads, no tracking.</span></button>
       </div>
@@ -2333,9 +2329,9 @@ img{filter:none}
 
       if (!keep) { try { sessionStorage.setItem('pf_mode', mode); history.replaceState(null, '', location.pathname + location.search + (mode === 'night' ? '#night' : '')); } catch (e) {} }
     }
-    ['dn', 'dn2'].forEach(id => document.getElementById(id).addEventListener('click', e => { const b = e.target.closest('.dn-b'); if (b) setMode(b.dataset.mode); }));
+    ['dn2'].forEach(id => document.getElementById(id).addEventListener('click', e => { const b = e.target.closest('.dn-b'); if (b) setMode(b.dataset.mode); }));
     (function () {
-      const big = document.getElementById('dn'), nav = document.getElementById('dn2');
+      const big = document.getElementById('md'), nav = document.getElementById('dn2');
       if (!('IntersectionObserver' in window)) return;
       new IntersectionObserver(es => { const e = es[es.length - 1]; nav.hidden = e.isIntersecting || e.boundingClientRect.top > 0; document.documentElement.classList.toggle('dn-in-nav', !nav.hidden); }, { rootMargin: '-60px 0px 0px 0px' }).observe(big);
     })();
