@@ -169,7 +169,16 @@
     .wm-tag { font:400 11px "Space Mono",monospace; letter-spacing:.14em; text-transform:uppercase; color:var(--muted,#6B6A70); padding-top:4px; }
     .wm-h { font-family:Syne,"Plus Jakarta Sans","PingFang SC",sans-serif; font-weight:700; font-size:17px; line-height:1.3; letter-spacing:-.01em; }
     .wm-d { margin-top:5px; font-size:14px; line-height:1.6; color:rgba(var(--ink-rgb,23,23,26),.7); max-width:42rem; }
-    .wm-facts { max-width:42rem; }
+    .wm-facts { max-width:44rem; display:grid; grid-template-columns:repeat(3,auto); justify-content:start; }
+    .wm-facts > div { padding:14px 28px 2px 0; margin-right:28px; border-right-width:1px; }
+    .wm-facts > div:last-child { border-right-width:0; margin-right:0; padding-right:0; }
+    .wm-facts dt { font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; }
+    .wm-facts dd { margin-top:6px; font-size:15px; line-height:1.4; letter-spacing:-.005em; white-space:nowrap; }
+    @media (max-width:719px) {
+      .wm-facts { grid-template-columns:1fr; }
+      .wm-facts > div { display:grid; grid-template-columns:7.2rem 1fr; align-items:baseline; gap:12px; padding:11px 0; margin:0; border-right-width:0; border-bottom-width:1px; }
+      .wm-facts dd { margin-top:0; white-space:normal; }
+    }
     /* ===== Nov 6: a little more life (stylish and fun, still quiet) ===== */
     /* a warm lamplight on the paper, where the dot grid was strongest */
     .bg-glow { position:fixed; inset:0; z-index:-1; pointer-events:none;
@@ -179,7 +188,6 @@
     /* hero: bigger, tighter, the accent word in ink with its coral stroke */
     #hero h1 { font-size:clamp(2.5rem, 7vw, 3.75rem); line-height:1.04; letter-spacing:-.03em; }
     .accent-word { color:var(--ink,#17171A); padding-bottom:.06em; }
-    #hero .wm-facts span { white-space:nowrap; }
     /* the hand waves once, then again if you hover it */
     .wm-wave { display:inline-block; width:22px; height:22px; vertical-align:-5px; transform-origin:70% 90%; animation: wave 1.6s .9s ease-in-out 1; }
     .wm-wave:hover, #hero p:hover .wm-wave { animation: wave 1.2s ease-in-out 1; }
@@ -321,9 +329,11 @@ img{filter:none}
         I'm interested in how we learn, how we relate to one another, and how a thoughtful experience can change the way we see and do things. Most of it becomes workplace learning: hands-on practice in listening, empathy and trust that ends in a real conversation.
       </p>
 
-      <p class="reveal wm-facts text-[12px] sm:text-[13px] font-mono text-muted leading-relaxed">
-        <span data-i18n="stat1Val">8+ yrs</span> <span data-i18n="stat1Label">Enterprise tech L&D</span> · <span data-i18n="stat2Label">Facilitator · Trainer · Coach</span> · English · 中文 · Español
-      </p>
+      <dl class="reveal wm-facts border-t border-line">
+        <div class="border-line"><dt class="font-mono text-muted" data-i18n="fExpK">Experience</dt><dd class="text-ink" data-i18n="fExp">8+ years in enterprise tech L&amp;D</dd></div>
+        <div class="border-line"><dt class="font-mono text-muted" data-i18n="fRoleK">Roles</dt><dd class="text-ink" data-i18n="stat2Label">Facilitator · Trainer · Coach</dd></div>
+        <div class="border-line"><dt class="font-mono text-muted" data-i18n="fLangK">Languages</dt><dd class="text-ink" lang="mul">English · 中文 · Español</dd></div>
+      </dl>
     </section>
 
     <!-- 01 WHO I AM -->
@@ -543,7 +553,7 @@ img{filter:none}
         heroKicker: "Hello, I'm Wei",
         heroTitle: 'I design for what happens <br class="hidden sm:inline"><span class="accent-word">between</span> people.',
         heroDesc: "I'm interested in how we learn, how we relate to one another, and how a thoughtful experience can change the way we see and do things. Most of it becomes workplace learning: hands-on practice in listening, empathy and trust that ends in a real conversation.",
-        stat1Val: "8+ yrs", stat1Label: "Enterprise tech L&D",
+        fExpK: "Experience", fExp: "8+ years in enterprise tech L&D", fRoleK: "Roles", fLangK: "Languages",
         stat2Val: "3 hats", stat2Label: "Facilitator · Trainer · Coach",
         stat3Val: "3 languages",
         stat4Val: "Human first", stat4Label: "Tools as scaffolding",
@@ -588,7 +598,7 @@ img{filter:none}
         heroKicker: "你好，我是孟玮",
         heroTitle: '我为人与人<span class="accent-word">之间</span><br class="hidden sm:inline">发生的事而设计。',
         heroDesc: "我关心我们如何学习、如何彼此相处，以及一段用心的体验如何改变我们看事和做事的方式。它们大多变成职场学习：倾听、共情、信任的上手练习，以一场真实的对话收尾。",
-        stat1Val: "8+ 年", stat1Label: "企业科技 L&D",
+        fExpK: "经验", fExp: "8 年以上企业科技 L&D", fRoleK: "角色", fLangK: "语言",
         stat2Val: "三重身份", stat2Label: "引导师 · 培训师 · 教练",
         stat3Val: "三种语言",
         stat4Val: "以人为本", stat4Label: "工具只是脚手架",
@@ -633,7 +643,7 @@ img{filter:none}
         heroKicker: "Hola, soy Wei",
         heroTitle: 'Diseño para lo que ocurre <br class="hidden sm:inline"><span class="accent-word">entre</span> personas.',
         heroDesc: "Me interesa cómo aprendemos, cómo nos relacionamos y cómo una experiencia bien pensada puede cambiar nuestra forma de ver y de hacer. Casi siempre se convierte en aprendizaje en el trabajo: práctica real de escucha, empatía y confianza que termina en una conversación de verdad.",
-        stat1Val: "8+ años", stat1Label: "L&D en tecnología",
+        fExpK: "Experiencia", fExp: "Más de 8 años de L&D en tecnología", fRoleK: "Roles", fLangK: "Idiomas",
         stat2Val: "3 sombreros", stat2Label: "Facilitador · Formador · Coach",
         stat3Val: "3 idiomas",
         stat4Val: "Primero lo humano", stat4Label: "Herramientas como andamio",
@@ -677,7 +687,7 @@ img{filter:none}
         heroKicker: "你好，我是孟瑋",
         heroTitle: "我為人與人<span class=\"accent-word\">之間</span><br class=\"hidden sm:inline\">發生的事而設計。",
         heroDesc: "我關心我們如何學習、如何彼此相處，以及一段用心的體驗如何改變我們看事和做事的方式。它們大多變成職場學習：傾聽、共情、信任的上手練習，以一場真實的對話收尾。",
-        stat1Val: "8+ 年", stat1Label: "企業科技 L&D",
+        fExpK: "經驗", fExp: "8 年以上企業科技 L&D", fRoleK: "角色", fLangK: "語言",
         stat2Val: "三重身份", stat2Label: "引導師 · 培訓師 · 教練",
         stat3Val: "三種語言",
         stat4Val: "以人為本", stat4Label: "工具只是腳手架",
@@ -721,7 +731,7 @@ img{filter:none}
         heroKicker: "Hola, soc en Wei",
         heroTitle: "Dissenyo per al que passa <br class=\"hidden sm:inline\"><span class=\"accent-word\">entre</span> persones.",
         heroDesc: "M'interessa com aprenem, com ens relacionem i com una experiència ben pensada pot canviar la manera de veure i de fer. Gairebé sempre es converteix en aprenentatge a la feina: pràctica real d'escolta, empatia i confiança que acaba en una conversa de veritat.",
-        stat1Val: "8+ anys", stat1Label: "L&D en tecnologia",
+        fExpK: "Experiència", fExp: "Més de 8 anys de L&D en tecnologia", fRoleK: "Rols", fLangK: "Idiomes",
         stat2Val: "3 barrets", stat2Label: "Facilitador · Formador · Coach",
         stat3Val: "3 idiomes",
         stat4Val: "Primer el que és humà", stat4Label: "Eines com a bastida",
