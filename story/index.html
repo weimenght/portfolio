@@ -229,7 +229,7 @@ function setTrack() {
   document.getElementById("s-lt").textContent = lab()[0];
   if (k !== track) { const was = !au.paused; au.pause(); track = k; { const A = AU["a_" + k]; au.src = "/story/audio/its-all-about-people-" + k + (OPUS && A[2] ? ".webm?v=" + A[2] : ".m4a?v=" + A[1]); } au.playbackRate = SPEEDS[sp]; playing(false); if (was) toggle(); }
   meta(); playing(!au.paused);
-  if ("mediaSession" in navigator) try { navigator.mediaSession.metadata = new MediaMetadata({ title: (P[lang] || P.en).h1.replace(/<[^>]+>/g, ""), artist: "Wei Meng", album: "wei-meng.org/story" }); } catch (e) {}
+  if ("mediaSession" in navigator) try { navigator.mediaSession.metadata = new MediaMetadata({ title: (P[lang] || P.en).h1.replace(/<[^>]+>/g, ""), artist: "Wei Meng", album: "wei-meng.org/story", artwork: [{ src: "/story/audio/cover-512.png", sizes: "512x512", type: "image/png" }, { src: "/story/audio/cover-256.png", sizes: "256x256", type: "image/png" }] }); } catch (e) {}
 }
 function toggle() { if (au.paused) { au.playbackRate = SPEEDS[sp]; const pr = au.play(); if (pr && pr.catch) pr.catch(() => playing(false)); } else au.pause(); }
 lp.addEventListener("click", toggle); tl.addEventListener("click", toggle);
