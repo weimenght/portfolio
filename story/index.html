@@ -196,7 +196,7 @@ function render() {
   try { localStorage.setItem("wm_preferred_lang", lang); } catch (e) {}
 }
 // ---- Wei reads it ----
-const AU = { en: ["en", 408], es: ["es", 496], zh: ["zh", 351], "zh-Hant": ["zh", 351], "ca": ["ca", 496] };
+const AU = {"a_en": [396, "f204627c", "437410d7"], "a_es": [485, "e0970db7", "485af2d4"], "a_zh": [343, "813da0b2", "23851c88"]};
 const AL = {
   en: ["Play the story", "Told by Wei · {m} min", "Play", "Pause"],
   zh: ["播放故事", "孟玮讲述 · {m} 分钟", "播放", "暂停"],
@@ -207,11 +207,12 @@ const au = document.getElementById("s-audio"), box = document.getElementById("s-
 const lbar = document.getElementById("s-lbar"), lfill = document.getElementById("s-lfill"), lmeta = document.getElementById("s-lmeta"), lsp = document.getElementById("s-lsp");
 const SPEEDS = [1, 1.25, 1.5, 0.85];
 let track = null, sp = 0;
-const audKey = l => l === "ca" ? "es" : (l === "zh" || l === "zh-Hant") ? "zh" : AU[l] ? l : "en";
+const OPUS = (() => { try { return /probably|maybe/.test(document.createElement("audio").canPlayType('audio/webm; codecs="opus"')); } catch (e) { return false; } })();
+const audKey = l => l === "ca" ? (AU.a_ca ? "ca" : "es") : (l === "zh" || l === "zh-Hant") ? "zh" : AU["a_" + l] ? l : "en";
 const clock = t => { t = Math.max(0, Math.round(t || 0)); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); };
 function lab() { return AL[lang] || AL.en; }
 function meta() {
-  const a = AU[track], L = lab();
+  const a = [0, AU["a_" + track][0]], L = lab();
   if (au.currentTime > 0 && !au.ended) lmeta.textContent = clock(au.currentTime) + " / " + clock(au.duration || a[1]);
   else lmeta.textContent = L[1].replace("{m}", Math.round(a[1] / 60));
   const p = (au.currentTime || 0) / (au.duration || a[1]);
@@ -226,7 +227,7 @@ function playing(on) {
 function setTrack() {
   const k = audKey(lang);
   document.getElementById("s-lt").textContent = lab()[0];
-  if (k !== track) { const was = !au.paused; au.pause(); track = k; au.src = "/story/audio/its-all-about-people-" + k + ".m4a"; au.playbackRate = SPEEDS[sp]; playing(false); if (was) toggle(); }
+  if (k !== track) { const was = !au.paused; au.pause(); track = k; { const A = AU["a_" + k]; au.src = "/story/audio/its-all-about-people-" + k + (OPUS && A[2] ? ".webm?v=" + A[2] : ".m4a?v=" + A[1]); } au.playbackRate = SPEEDS[sp]; playing(false); if (was) toggle(); }
   meta(); playing(!au.paused);
   if ("mediaSession" in navigator) try { navigator.mediaSession.metadata = new MediaMetadata({ title: (P[lang] || P.en).h1.replace(/<[^>]+>/g, ""), artist: "Wei Meng", album: "wei-meng.org/story" }); } catch (e) {}
 }
@@ -236,7 +237,7 @@ au.addEventListener("play", () => playing(true)); au.addEventListener("pause", (
 au.addEventListener("ended", () => { au.currentTime = 0; playing(false); meta(); });
 au.addEventListener("timeupdate", meta); au.addEventListener("loadedmetadata", meta);
 lsp.addEventListener("click", () => { sp = (sp + 1) % SPEEDS.length; au.playbackRate = SPEEDS[sp]; lsp.textContent = SPEEDS[sp] + "×"; });
-function seekTo(x) { const r = lbar.getBoundingClientRect(), p = Math.min(1, Math.max(0, (x - r.left) / r.width)), d = au.duration || AU[track][1]; if (au.readyState === 0) { au.preload = "metadata"; au.load(); au.addEventListener("loadedmetadata", () => { au.currentTime = p * au.duration; meta(); }, { once: true }); } else au.currentTime = p * d; box.classList.add("on"); meta(); }
+function seekTo(x) { const r = lbar.getBoundingClientRect(), p = Math.min(1, Math.max(0, (x - r.left) / r.width)), d = au.duration || AU["a_" + track][0]; if (au.readyState === 0) { au.preload = "metadata"; au.load(); au.addEventListener("loadedmetadata", () => { au.currentTime = p * au.duration; meta(); }, { once: true }); } else au.currentTime = p * d; box.classList.add("on"); meta(); }
 let drag = false;
 lbar.addEventListener("pointerdown", e => { drag = true; lbar.setPointerCapture(e.pointerId); seekTo(e.clientX); });
 lbar.addEventListener("pointermove", e => { if (drag) seekTo(e.clientX); });
