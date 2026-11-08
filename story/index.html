@@ -65,10 +65,32 @@
     .door.night b em { font-family:var(--serif); font-weight:400; font-size:24px; }
     .door span.l { font-size:14.5px; line-height:1.5; opacity:.8; }
     .door .go { margin-top:auto; font-family:var(--mono); font-size:12px; font-weight:700; }
+    /* listen: Wei reads it (Nov 8, the owner): EN, ZH, ES; Catalan hears the Spanish one */
+    .listen { margin:26px 0 0; display:flex; align-items:center; gap:14px; padding:12px 16px 12px 12px; border:1px solid var(--line); border-radius:20px; background:var(--white); }
+    .lp { width:48px; height:48px; flex:none; border-radius:50%; border:0; background:var(--inkbg,var(--ink)); color:#fff; display:grid; place-items:center; cursor:pointer; transition:transform .2s, background .2s; }
+    .lp:hover { transform:scale(1.04); } .lp:active { transform:scale(.97); }
+    .lp svg { width:18px; height:18px; } .lp .pz { display:none; } .playing .lp .pl { display:none; } .playing .lp .pz { display:block; }
+    .playing .lp { background:var(--accent-ink); }
+    .lm { flex:1; min-width:0; display:flex; flex-direction:column; gap:7px; }
+    .lt { display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+    .lt b { font-family:var(--syne); font-size:15px; letter-spacing:-.01em; }
+    .lt { flex-wrap:wrap; row-gap:2px; }
+    .lt span { font-family:var(--mono); font-size:11.5px; color:var(--muted); min-width:0; }
+    .lbar { position:relative; height:18px; cursor:pointer; touch-action:none; }
+    .lbar::before { content:""; position:absolute; left:0; right:0; top:8px; height:3px; border-radius:3px; background:var(--line); }
+    .lbar i { position:absolute; left:0; top:8px; height:3px; border-radius:3px; background:var(--accent); width:0; }
+    .lbar i::after { content:""; position:absolute; right:-6px; top:-4.5px; width:12px; height:12px; border-radius:50%; background:var(--accent); opacity:0; transition:opacity .2s; }
+    .listen.on .lbar i::after, .lbar:hover i::after { opacity:1; }
+    .lsp { flex:none; font:inherit; font-family:var(--mono); font-size:11px; padding:6px 9px; border-radius:99px; border:1px solid var(--line); background:transparent; color:var(--muted); cursor:pointer; min-width:44px; }
+    .tl { width:34px; height:34px; border-radius:50%; border:1px solid var(--line); background:var(--white); color:var(--ink); display:none; place-items:center; cursor:pointer; margin-left:auto; }
+    .tl svg { width:12px; height:12px; } .tl .pz { display:none; } .tl.playing .pl { display:none; } .tl.playing .pz { display:block; }
+    .tl.show { display:grid; }
+    .top-in .chip { margin-left:0; }
+    @media (max-width:380px) { .lsp { display:none; } .listen { gap:12px; } }
     footer { text-align:center; font-family:var(--mono); font-size:11px; color:var(--muted); padding:20px 16px 40px; }
     :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:6px; }
     @media (max-width:420px) { .brand b { display:none; } }
-    @media print { .top, .doors, footer { display:none !important; } body { background:var(--white,#fff); } }
+    @media print { .top, .doors, footer, .listen { display:none !important; } body { background:var(--white,#fff); } }
   </style>
 <meta name="theme-color" content="#F7F6F2" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)"><style id="fb-dark">
 :root{color-scheme:light dark}
@@ -99,6 +121,7 @@ img{filter:none}
 <body>
   <header class="top"><div class="top-in">
     <a class="brand" href="/" aria-label="Wei Meng"><span class="mark"><svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><polyline points="3.5,8 7.75,18.5 12,10.5 16.25,18.5 20.5,8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="4.2" r="1.9" fill="#E2553F"/></svg></span><b>WEI MENG</b></a>
+    <button class="tl" type="button" id="s-tl" aria-label="Play"><svg class="pl" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><svg class="pz" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4.5" width="4.2" height="15" rx="1" fill="currentColor"/><rect x="13.8" y="4.5" width="4.2" height="15" rx="1" fill="currentColor"/></svg></button>
     <button class="chip" type="button" data-fbl-btn aria-label="Language"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg><span data-fbl-label>EN</span></button>
   </div><div class="prog" aria-hidden="true"><i id="s-prog"></i></div></header>
   <main>
@@ -106,6 +129,13 @@ img{filter:none}
       <p class="kick" id="s-kick">Story</p>
       <h1 id="s-h1">It's all about <span class="acc">people</span></h1>
       <p class="by"><span id="s-home">Wei Meng</span><i class="dot"></i><time datetime="2026-11-07" id="s-date">7 Nov 2026</time><i class="dot"></i><span id="s-mins">4 min read</span></p>
+      <div class="listen" id="s-listen" role="group" aria-label="Listen">
+        <button class="lp" type="button" id="s-lp" aria-label="Play"><svg class="pl" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><svg class="pz" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4.5" width="4.2" height="15" rx="1" fill="currentColor"/><rect x="13.8" y="4.5" width="4.2" height="15" rx="1" fill="currentColor"/></svg></button>
+        <div class="lm"><div class="lt"><b id="s-lt">Listen</b><span id="s-lmeta"></span></div>
+          <div class="lbar" id="s-lbar" role="slider" tabindex="0" aria-label="Position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="s-lfill"></i></div></div>
+        <button class="lsp" type="button" id="s-lsp" aria-label="Speed">1×</button>
+        <audio id="s-audio" preload="none"></audio>
+      </div>
       <div class="essay" id="s-essay">
       <p class="first">I grew up in a small town in northern China, where my parents, and their parents, have lived their whole lives. At seventeen I left for university, the first in my family to go. It was my first glimpse of life in a big city. Only a glimpse.</p>
       <p>I spent four years studying, without much thought, the subjects meant to make me an engineer. They turned out to be of little use, because I never meant to become one. My days went to reading: Wang Xiaobo, A Cheng, Italo Calvino, Gabriel García Márquez. Their minds were open and inventive, and I wanted mine to be like that.</p>
@@ -165,11 +195,61 @@ function render() {
   document.getElementById("s-nightL").textContent = s.nightLine;
   try { localStorage.setItem("wm_preferred_lang", lang); } catch (e) {}
 }
-window.FBL_SET = l => { lang = l; render(); }; window.FBL_GET = () => lang;
+// ---- Wei reads it ----
+const AU = { en: ["en", 408], es: ["es", 496], zh: ["zh", 351], "zh-Hant": ["zh", 351], "ca": ["ca", 496] };
+const AL = {
+  en: ["Listen", "Read by Wei · {m} min", "Play", "Pause"],
+  zh: ["听", "孟玮朗读 · {m} 分钟", "播放", "暂停"],
+  "zh-Hant": ["聽", "孟瑋朗讀 · {m} 分鐘", "播放", "暫停"],
+  es: ["Escuchar", "Leída por Wei · {m} min", "Reproducir", "Pausa"],
+  ca: ["Escolta", "En castellà, llegida per Wei · {m} min", "Reprodueix", "Pausa"] };
+const au = document.getElementById("s-audio"), box = document.getElementById("s-listen"), lp = document.getElementById("s-lp"), tl = document.getElementById("s-tl");
+const lbar = document.getElementById("s-lbar"), lfill = document.getElementById("s-lfill"), lmeta = document.getElementById("s-lmeta"), lsp = document.getElementById("s-lsp");
+const SPEEDS = [1, 1.25, 1.5, 0.85];
+let track = null, sp = 0;
+const audKey = l => l === "ca" ? "es" : (l === "zh" || l === "zh-Hant") ? "zh" : AU[l] ? l : "en";
+const clock = t => { t = Math.max(0, Math.round(t || 0)); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); };
+function lab() { return AL[lang] || AL.en; }
+function meta() {
+  const a = AU[track], L = lab();
+  if (au.currentTime > 0 && !au.ended) lmeta.textContent = clock(au.currentTime) + " / " + clock(au.duration || a[1]);
+  else lmeta.textContent = L[1].replace("{m}", Math.round(a[1] / 60));
+  const p = (au.currentTime || 0) / (au.duration || a[1]);
+  lfill.style.width = (p * 100) + "%"; lbar.setAttribute("aria-valuenow", Math.round(p * 100));
+}
+function playing(on) {
+  box.classList.toggle("playing", on); box.classList.toggle("on", on || au.currentTime > 0);
+  tl.classList.toggle("playing", on); const L = lab();
+  lp.setAttribute("aria-label", on ? L[3] : L[2]); tl.setAttribute("aria-label", on ? L[3] : L[2]);
+  tl.classList.toggle("show", (on || au.currentTime > 0) && !inView);
+}
+function setTrack() {
+  const k = audKey(lang);
+  document.getElementById("s-lt").textContent = lab()[0];
+  if (k !== track) { const was = !au.paused; au.pause(); track = k; au.src = "/story/audio/its-all-about-people-" + k + ".m4a"; au.playbackRate = SPEEDS[sp]; playing(false); if (was) toggle(); }
+  meta(); playing(!au.paused);
+  if ("mediaSession" in navigator) try { navigator.mediaSession.metadata = new MediaMetadata({ title: (P[lang] || P.en).h1.replace(/<[^>]+>/g, ""), artist: "Wei Meng", album: "wei-meng.org/story" }); } catch (e) {}
+}
+function toggle() { if (au.paused) { au.playbackRate = SPEEDS[sp]; const pr = au.play(); if (pr && pr.catch) pr.catch(() => playing(false)); } else au.pause(); }
+lp.addEventListener("click", toggle); tl.addEventListener("click", toggle);
+au.addEventListener("play", () => playing(true)); au.addEventListener("pause", () => playing(false));
+au.addEventListener("ended", () => { au.currentTime = 0; playing(false); meta(); });
+au.addEventListener("timeupdate", meta); au.addEventListener("loadedmetadata", meta);
+lsp.addEventListener("click", () => { sp = (sp + 1) % SPEEDS.length; au.playbackRate = SPEEDS[sp]; lsp.textContent = SPEEDS[sp] + "×"; });
+function seekTo(x) { const r = lbar.getBoundingClientRect(), p = Math.min(1, Math.max(0, (x - r.left) / r.width)), d = au.duration || AU[track][1]; if (au.readyState === 0) { au.preload = "metadata"; au.load(); au.addEventListener("loadedmetadata", () => { au.currentTime = p * au.duration; meta(); }, { once: true }); } else au.currentTime = p * d; box.classList.add("on"); meta(); }
+let drag = false;
+lbar.addEventListener("pointerdown", e => { drag = true; lbar.setPointerCapture(e.pointerId); seekTo(e.clientX); });
+lbar.addEventListener("pointermove", e => { if (drag) seekTo(e.clientX); });
+lbar.addEventListener("pointerup", () => { drag = false; });
+lbar.addEventListener("keydown", e => { const d = { ArrowRight: 10, ArrowLeft: -10 }[e.key]; if (d && au.readyState > 0) { au.currentTime = Math.max(0, au.currentTime + d); e.preventDefault(); } else if (e.key === " " || e.key === "Enter") { toggle(); e.preventDefault(); } });
+if ("mediaSession" in navigator) try { navigator.mediaSession.setActionHandler("play", toggle); navigator.mediaSession.setActionHandler("pause", toggle); navigator.mediaSession.setActionHandler("seekbackward", () => { au.currentTime = Math.max(0, au.currentTime - 10); }); navigator.mediaSession.setActionHandler("seekforward", () => { au.currentTime += 10; }); } catch (e) {}
+let inView = true;
+if ("IntersectionObserver" in window) new IntersectionObserver(es => { inView = es[es.length - 1].isIntersecting; playing(!au.paused); }, { rootMargin: "-56px 0px 0px 0px" }).observe(box);
+window.FBL_SET = l => { lang = l; render(); setTrack(); }; window.FBL_GET = () => lang;
 let saved = null; try { saved = localStorage.getItem("wm_preferred_lang"); } catch (e) {}
 const nav = (navigator.language || "").toLowerCase();
 lang = ["en", "zh", "zh-Hant", "es", "ca"].includes(saved) ? saved : nav.startsWith("zh") ? "zh" : nav.startsWith("es") ? "es" : "en";
-render(); prog();
+render(); setTrack(); prog();
 })();
 </script>
 </body>
