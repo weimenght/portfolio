@@ -202,7 +202,7 @@ const AL = {
   zh: ["播放故事", "孟玮讲述 · {m} 分钟", "播放", "暂停"],
   "zh-Hant": ["播放故事", "孟瑋講述 · {m} 分鐘", "播放", "暫停"],
   es: ["Reproducir la historia", "Contada por Wei · {m} min", "Reproducir", "Pausa"],
-  ca: ["Reprodueix la història", "Explicada per Wei, en castellà · {m} min", "Reprodueix", "Pausa"] };
+  ca: ["Reprodueix la història", "Explicada per en Wei, en castellà · {m} min", "Reprodueix", "Pausa"] };
 const au = document.getElementById("s-audio"), box = document.getElementById("s-listen"), lp = document.getElementById("s-lp"), tl = document.getElementById("s-tl");
 const lbar = document.getElementById("s-lbar"), lfill = document.getElementById("s-lfill"), lmeta = document.getElementById("s-lmeta"), lsp = document.getElementById("s-lsp");
 const SPEEDS = [1, 1.25, 1.5, 0.85];
@@ -214,7 +214,7 @@ function lab() { return AL[lang] || AL.en; }
 function meta() {
   const a = [0, AU["a_" + track][0]], L = lab();
   if (au.currentTime > 0 && !au.ended) lmeta.textContent = clock(au.currentTime) + " / " + clock(au.duration || a[1]);
-  else lmeta.textContent = L[1].replace("{m}", Math.round(a[1] / 60));
+  else lmeta.textContent = L[1].replace("{m}", Math.round(a[1] / 60)).replace(" · ", " · ");
   const p = (au.currentTime || 0) / (au.duration || a[1]);
   lfill.style.width = (p * 100) + "%"; lbar.setAttribute("aria-valuenow", Math.round(p * 100));
 }
