@@ -131,7 +131,7 @@ img{filter:none}
       <p class="by"><span id="s-home">Wei Meng</span><i class="dot"></i><time datetime="2026-11-07" id="s-date">7 Nov 2026</time><i class="dot"></i><span id="s-mins">4 min read</span></p>
       <div class="listen" id="s-listen" role="group" aria-label="Listen">
         <button class="lp" type="button" id="s-lp" aria-label="Play"><svg class="pl" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg><svg class="pz" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4.5" width="4.2" height="15" rx="1" fill="currentColor"/><rect x="13.8" y="4.5" width="4.2" height="15" rx="1" fill="currentColor"/></svg></button>
-        <div class="lm"><div class="lt"><b id="s-lt">Listen</b><span id="s-lmeta"></span></div>
+        <div class="lm"><div class="lt"><b id="s-lt">Play the story</b><span id="s-lmeta"></span></div>
           <div class="lbar" id="s-lbar" role="slider" tabindex="0" aria-label="Position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="s-lfill"></i></div></div>
         <button class="lsp" type="button" id="s-lsp" aria-label="Speed">1×</button>
         <audio id="s-audio" preload="none"></audio>
@@ -198,11 +198,11 @@ function render() {
 // ---- Wei reads it ----
 const AU = { en: ["en", 408], es: ["es", 496], zh: ["zh", 351], "zh-Hant": ["zh", 351], "ca": ["ca", 496] };
 const AL = {
-  en: ["Listen", "Read by Wei · {m} min", "Play", "Pause"],
-  zh: ["听", "孟玮朗读 · {m} 分钟", "播放", "暂停"],
-  "zh-Hant": ["聽", "孟瑋朗讀 · {m} 分鐘", "播放", "暫停"],
-  es: ["Escuchar", "Leída por Wei · {m} min", "Reproducir", "Pausa"],
-  ca: ["Escolta", "En castellà, llegida per Wei · {m} min", "Reprodueix", "Pausa"] };
+  en: ["Play the story", "Told by Wei · {m} min", "Play", "Pause"],
+  zh: ["播放故事", "孟玮讲述 · {m} 分钟", "播放", "暂停"],
+  "zh-Hant": ["播放故事", "孟瑋講述 · {m} 分鐘", "播放", "暫停"],
+  es: ["Reproducir la historia", "Contada por Wei · {m} min", "Reproducir", "Pausa"],
+  ca: ["Reprodueix la història", "Explicada per Wei, en castellà · {m} min", "Reprodueix", "Pausa"] };
 const au = document.getElementById("s-audio"), box = document.getElementById("s-listen"), lp = document.getElementById("s-lp"), tl = document.getElementById("s-tl");
 const lbar = document.getElementById("s-lbar"), lfill = document.getElementById("s-lfill"), lmeta = document.getElementById("s-lmeta"), lsp = document.getElementById("s-lsp");
 const SPEEDS = [1, 1.25, 1.5, 0.85];
