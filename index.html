@@ -238,34 +238,29 @@
     .work-card:hover .work-strip { animation-play-state:paused; }
     @media (prefers-reduced-motion: reduce) { .work-strip { animation:none; } .wm-wave { animation:none; } }
 
-    /* 03 the portfolio card (Nov 12): two panels, day and night, like the portfolio itself */
-    .wk { display:grid; gap:18px; }
-    .wk-hd { display:block; text-decoration:none; color:inherit; max-width:44rem; }
-    .wk-k, .wk-pk { font:600 11px/1.2 var(--wm-sans, 'Space Mono', monospace); letter-spacing:.14em; text-transform:uppercase; color:var(--muted,#6B6A70); display:inline-flex; align-items:center; gap:8px; }
-    .wk-h { margin:10px 0 0; font-size:clamp(1.7rem,4.2vw,2.6rem); line-height:1.08; }
-    .wk-ar { display:inline-block; font-size:.6em; vertical-align:.3em; color:var(--accent,#A4442B); transition:transform .3s; } .wk-hd:hover .wk-ar { transform:translate(3px,-3px); }
-    .wk-d { margin:12px 0 0; font-size:clamp(16px,1.9vw,18px); line-height:1.6; color:rgba(var(--ink-rgb,23,23,26),.74); }
-    .wk-two { display:grid; gap:14px; }
-    @media (min-width:760px) { .wk-two { grid-template-columns:1fr 1fr; } }
-    .wk-p { display:flex; flex-direction:column; gap:8px; padding:22px 22px 18px; border-radius:6px; text-decoration:none; transition:transform .3s, box-shadow .3s; }
-    .wk-p:hover { transform:translateY(-2px); }
-    .wk-ph { font-family:var(--wm-serif, Georgia, serif); font-size:clamp(1.35rem,2.6vw,1.65rem); font-weight:500; line-height:1.15; }
-    .wk-pd { font-size:15px; line-height:1.55; }
-    .wk-go { margin-top:auto; padding-top:10px; font:600 13px/1 var(--wm-sans, 'Space Mono', monospace); letter-spacing:.02em; }
+    /* 03 the portfolio card (Nov 12): one card, two faces; tap flips day to night, like the hero card */
+    .wk-p { display:flex; flex-direction:column; gap:10px; padding:22px 22px 18px; border-radius:6px; }
+    .wk-top { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .wk-ph { font-family:var(--wm-serif, Georgia, serif); font-size:clamp(1.4rem,3vw,1.9rem); font-weight:500; line-height:1.15; }
+    .wk-sw { display:inline-flex; gap:2px; padding:3px; border-radius:999px; border:1px solid currentColor; opacity:.9; }
+    .wk-sw b { display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 11px; border-radius:999px; font:600 11px/1 var(--wm-sans, 'Space Mono', monospace); letter-spacing:.08em; text-transform:uppercase; opacity:.55; }
+    .wk-sw b.on { opacity:1; }
+    .wk-go { align-self:flex-start; margin-top:auto; padding:10px 0 2px; font:600 13.5px/1 var(--wm-sans, 'Space Mono', monospace); letter-spacing:.02em; color:inherit; text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1.5px; }
     .wk-day { background:var(--white,#FBF8F2); color:var(--ink,#241F1B); border:1px solid var(--line,#DED4C4); border-top:2px solid var(--ink,#241F1B); }
-    .wk-day .wk-pk { color:var(--accent,#A4442B); } .wk-day .wk-pd { color:rgba(var(--ink-rgb,36,31,27),.72); } .wk-day:hover .wk-go { color:var(--accent,#A4442B); }
-    .wk-shelf { list-style:none; margin:6px 0 0; padding:0; display:grid; gap:0; }
-    .wk-shelf li { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:7px 0; border-top:1px solid var(--line,#DED4C4); font-size:13px; line-height:1.3; color:rgba(var(--ink-rgb,36,31,27),.8); }
+    .wk-day .wk-sw { border-color:var(--line,#DED4C4); } .wk-day .wk-sw b.on { background:var(--ink,#241F1B); color:var(--paper,#F4EEE3); }
+    .wk-day .wk-go { text-decoration-color:var(--accent,#A4442B); } .wk-day .wk-go:hover { color:var(--accent,#A4442B); }
+    .wk-shelf { list-style:none; margin:4px 0 0; padding:0; display:grid; gap:0; }
+    .wk-shelf li { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 0; border-top:1px solid var(--line,#DED4C4); font-size:14px; line-height:1.3; color:rgba(var(--ink-rgb,36,31,27),.82); }
     .wk-shelf i { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:3px; flex:none; max-width:55%; }
     .wk-shelf b { width:8px; height:8px; border-radius:1.5px; background:var(--ink,#241F1B); opacity:.85; }
     .wk-night { background:#15121D; color:#F4ECDD; border:1px solid #2A2540; border-top:2px solid #F2A33A; }
-    .wk-night .wk-pk { color:#F2A33A; } .wk-night .wk-pd { color:rgba(244,236,221,.72); } .wk-night:hover .wk-go { color:#F2A33A; }
-    .wk-sky { display:block; width:100%; height:auto; margin-top:6px; border-radius:4px; background:linear-gradient(#1D1830,#15121D); }
-    .wk-ft { margin:0; display:flex; flex-wrap:wrap; gap:6px 10px; font-size:13.5px; color:var(--muted,#6B6A70); }
-    .wk-ft a { color:inherit; text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--line,#DED4C4); } .wk-ft a:hover { color:var(--accent,#A4442B); text-decoration-color:currentColor; }
-    @media (max-width:420px) { .wk-dot { display:none; } .wk-ft { flex-direction:column; } }
-    @media (max-width:380px) { .wk-shelf i { gap:2px; max-width:60%; } .wk-shelf b { width:6px; height:6px; } }
-    @media (prefers-color-scheme:dark) { .wk-day { border-top-color:var(--ink); } }
+    .wk-night .wk-sw { border-color:#2A2540; } .wk-night .wk-sw b.on { background:#F2A33A; color:#15121D; }
+    .wk-night .wk-go { text-decoration-color:#F2A33A; } .wk-night .wk-go:hover { color:#F2A33A; }
+    .wk-sky { position:relative; flex:1; min-height:150px; display:flex; align-items:flex-end; gap:10px; margin-top:4px; padding:0 12px; border-bottom:4px solid #0E0B14; border-radius:4px; background:linear-gradient(#1D1830,#15121D); }
+    .wk-moon { position:absolute; right:16px; top:12px; }
+    .wk-bd { flex:1; height:var(--h); background:#221D2E; display:grid; grid-template-columns:repeat(var(--c),9px); gap:7px; justify-content:center; align-content:start; padding-top:10px; }
+    .wk-bd b { width:9px; height:10px; border-radius:1px; background:#2F2940; } .wk-bd b.on { background:#F2A33A; box-shadow:0 0 8px rgba(242,163,58,.45); }
+    @media (max-width:380px) { .wk-shelf i { gap:2px; max-width:60%; } .wk-shelf b { width:6px; height:6px; } .wk-sky { gap:6px; padding:0 8px; } .wk-bd { gap:5px; grid-template-columns:repeat(var(--c),8px); } .wk-bd b { width:8px; } }
     /* 04: the email goes coral too */
     #contact a[href^="mailto"]:hover { background:#E2553F !important; }
 </style>
@@ -441,25 +436,20 @@ img{filter:none}
         </span>
       </div>
 
-      <!-- the portfolio card (Nov 12, the owner: the three sites' current shape): by day the toolbox (a tile per tool, a shelf per capability), after hours the lit windows (one per app); nothing explained (the owner: show, don't tell) -->
-      <div class="wk">
-        <a class="wk-hd" href="https://www.wei-meng.org/portfolio/">
-          <span class="wk-k" data-i18n="workStudio">The portfolio · day and night</span>
-          <h2 class="wk-h"><span data-i18n="wkTitle">Small experiences. Meaningful possibilities.</span> <span class="wk-ar" aria-hidden="true">↗︎</span></h2>
-        </a>
-        <div class="wk-two">
-          <a class="wk-p wk-day" href="https://www.wei-meng.org/portfolio/#day">
-            <span class="wk-pk"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></g></svg><span data-i18n="wkDayK">By day</span></span>
-            <span class="wk-ph" data-i18n="wkDayH">The toolbox.</span>
+      <!-- the portfolio card (Nov 12, the owner: the three sites' current shape): by day the toolbox (a tile per tool, a shelf per capability), after hours the lit windows (one per app); one card that flips between the two, like the hero's (the owner: merge them, show don't tell) -->
+      <div id="wk-flip" class="flip-viewport wk-flip cursor-pointer select-none" role="button" tabindex="0" aria-label="Day / Night" onclick="wkFlip()"
+           onkeydown="if(event.target===this&&(event.key==='Enter'||event.key===' ')){event.preventDefault();wkFlip();}">
+        <div class="flip-inner">
+          <div id="wk-day" class="flip-face wk-p wk-day">
+            <span class="wk-top"><span class="wk-ph" data-i18n="wkDayH">The toolbox.</span><span class="wk-sw" aria-hidden="true"><b class="on"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></g></svg><span data-i18n="wkSwDay">Day</span></b><b class=""><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg><span data-i18n="wkSwNight">Night</span></b></span></span>
             <ul class="wk-shelf"><li><span data-i18n="wkC1">Needs analysis</span><i aria-hidden="true"><b></b><b></b><b></b></i></li><li><span data-i18n="wkC2">Conversation practice</span><i aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></i></li><li><span data-i18n="wkC3">Facilitation</span><i aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></i></li><li><span data-i18n="wkC4">AI-assisted practice</span><i aria-hidden="true"><b></b><b></b><b></b><b></b></i></li><li><span data-i18n="wkC5">Games, simulations and story-led media</span><i aria-hidden="true"><b></b><b></b><b></b><b></b></i></li></ul>
-            <span class="wk-go"><span data-i18n="wkDayGo">Open the toolbox</span> →</span>
-          </a>
-          <a class="wk-p wk-night" href="https://www.wei-meng.org/portfolio/#night">
-            <span class="wk-pk"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg><span data-i18n="wkNightK">After hours</span></span>
-            <span class="wk-ph" data-i18n="wkNightH">The lit windows.</span>
-            <svg class="wk-sky" viewBox="0 0 208 120" aria-hidden="true" focusable="false"><circle cx="186" cy="20" r="7" fill="#F4ECDD" opacity=".85"/><circle cx="190" cy="17" r="6.5" fill="#15121D"/><rect x="8" y="58" width="34" height="62" fill="#221D2E"/><rect x="11.2" y="66" width="7" height="8" rx="1" fill="#F2A33A"/><rect x="21.5" y="66" width="7" height="8" rx="1" fill="#F2A33A"/><rect x="31.8" y="66" width="7" height="8" rx="1" fill="#F2A33A"/><rect x="11.2" y="79" width="7" height="8" rx="1" fill="#F2A33A"/><rect x="21.5" y="79" width="7" height="8" rx="1" fill="#F2A33A"/><rect x="31.8" y="79" width="7" height="8" rx="1" fill="#2F2940"/><rect x="48" y="38" width="30" height="82" fill="#221D2E"/><rect x="53.3" y="46" width="7" height="8" rx="1" fill="#2F2940"/><rect x="65.7" y="46" width="7" height="8" rx="1" fill="#2F2940"/><rect x="53.3" y="59" width="7" height="8" rx="1" fill="#F2A33A"/><rect x="65.7" y="59" width="7" height="8" rx="1" fill="#F2A33A"/><rect x="53.3" y="72" width="7" height="8" rx="1" fill="#F2A33A"/><rect x="65.7" y="72" width="7" height="8" rx="1" fill="#F2A33A"/><rect x="84" y="66" width="40" height="54" fill="#221D2E"/><rect x="88.8" y="74" width="7" height="8" rx="1" fill="#F2A33A"/><rect x="100.5" y="74" width="7" height="8" rx="1" fill="#2F2940"/><rect x="112.2" y="74" width="7" height="8" rx="1" fill="#2F2940"/><rect x="130" y="30" width="28" height="90" fill="#221D2E"/><rect x="134.7" y="38" width="7" height="8" rx="1" fill="#2F2940"/><rect x="146.3" y="38" width="7" height="8" rx="1" fill="#2F2940"/><rect x="134.7" y="51" width="7" height="8" rx="1" fill="#2F2940"/><rect x="146.3" y="51" width="7" height="8" rx="1" fill="#2F2940"/><rect x="164" y="52" width="36" height="68" fill="#221D2E"/><rect x="167.8" y="60" width="7" height="8" rx="1" fill="#2F2940"/><rect x="178.5" y="60" width="7" height="8" rx="1" fill="#2F2940"/><rect x="189.2" y="60" width="7" height="8" rx="1" fill="#2F2940"/><rect y="116" width="208" height="4" fill="#0E0B14"/></svg>
-            <span class="wk-go"><span data-i18n="wkNightGo">See the lit windows</span> →</span>
-          </a>
+            <a class="wk-go" href="https://www.wei-meng.org/portfolio/#day" onclick="event.stopPropagation()"><span data-i18n="wkDayGo">Open the toolbox</span> →</a>
+          </div>
+          <div id="wk-night" class="flip-face flip-back wk-p wk-night" aria-hidden="true" inert>
+            <span class="wk-top"><span class="wk-ph" data-i18n="wkNightH">The lit windows.</span><span class="wk-sw" aria-hidden="true"><b class=""><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></g></svg><span data-i18n="wkSwDay">Day</span></b><b class="on"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg><span data-i18n="wkSwNight">Night</span></b></span></span>
+            <span class="wk-sky" aria-hidden="true"><svg class="wk-moon" viewBox="0 0 24 24" width="22" height="22"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="#F4ECDD"/></svg><span class="wk-bd" style="--h:52%;--c:3"><b></b><b></b><b></b><b></b><b></b><b class="on"></b></span><span class="wk-bd" style="--h:80%;--c:2"><b class="on"></b><b class="on"></b><b class="on"></b><b></b><b></b><b></b></span><span class="wk-bd" style="--h:40%;--c:3"><b class="on"></b><b></b><b class="on"></b></span><span class="wk-bd" style="--h:94%;--c:2"><b></b><b class="on"></b><b class="on"></b><b></b></span><span class="wk-bd" style="--h:62%;--c:3"><b class="on"></b><b></b><b class="on"></b></span></span>
+            <a class="wk-go" href="https://www.wei-meng.org/portfolio/#night" onclick="event.stopPropagation()"><span data-i18n="wkNightGo">See the lit windows</span> →</a>
+          </div>
         </div>
       </div>
     </section>
@@ -550,7 +540,7 @@ img{filter:none}
         ],
         workLabel: "03 / Portfolio", workLive: "Live demos", workStudio: "The portfolio · day and night",
         workTitle: "Learning that ends in conversation",
-        wkTitle: "Small experiences. Meaningful possibilities.", workDesc: "One method, two shifts. By day it builds tools for teams; after hours, small apps for the people in your life. Every one of them ends between two people.", wkDayK: "By day", wkDayH: "The toolbox.", wkDayD: "Thirty-three tools in five capabilities. Each one opens to try.", wkC1: "Needs analysis", wkC2: "Conversation practice", wkC3: "Facilitation", wkC4: "AI-assisted practice", wkC5: "Games, simulations and story-led media", wkDayGo: "Open the toolbox", wkNightK: "After hours", wkNightH: "The lit windows.", wkNightD: "Twenty-two small apps made after work, each ending off the screen, next to someone.", wkNightGo: "See the lit windows", wkFoot1: "How the tools get used, case by case", wkFoot2: "Why I make the night ones",
+        wkSwDay: "Day", wkSwNight: "Night", wkTitle: "Small experiences. Meaningful possibilities.", workDesc: "One method, two shifts. By day it builds tools for teams; after hours, small apps for the people in your life. Every one of them ends between two people.", wkDayK: "By day", wkDayH: "The toolbox.", wkDayD: "Thirty-three tools in five capabilities. Each one opens to try.", wkC1: "Needs analysis", wkC2: "Conversation practice", wkC3: "Facilitation", wkC4: "AI-assisted practice", wkC5: "Games, simulations and story-led media", wkDayGo: "Open the toolbox", wkNightK: "After hours", wkNightH: "The lit windows.", wkNightD: "Twenty-two small apps made after work, each ending off the screen, next to someone.", wkNightGo: "See the lit windows", wkFoot1: "How the tools get used, case by case", wkFoot2: "Why I make the night ones",
         workBtn: "See the work",
         contactLabel: "04 / Say Hello",
         navArcade: "Nearby", arcadeLabel: "04 / Nearby", nbAfter: "after hours", nbWalk: "Walk in →", nbGo: "Walk into Nearby", nbAll: "Every place in town", nbTitle: "A town for <em>your people</em>.", nbP1: "Nearby is a small pixel town. Wander alone or bring a friend. Leave something you made for the neighbours, borrow a real book, or climb together with someone far away.", nbP2: "It's the same belief as my work, after hours: people are the point, and a screen should bring us closer. Doing nothing counts.",
@@ -595,7 +585,7 @@ img{filter:none}
         ],
         workLabel: "03 / 作品", workLive: "已上线演示", workStudio: "作品集 · 白天和夜里",
         workTitle: "以对话收尾的学习",
-        wkTitle: "小小的体验，大大的可能。", workDesc: "一个方法，两个班次。白天为团队做工具；下班以后，为你生活里的人做小应用。每一个都在两个人之间收尾。", wkDayK: "白天", wkDayH: "工具箱。", wkDayD: "五种能力，三十三个工具。每一个都能打开试试。", wkC1: "需求诊断", wkC2: "对话练习", wkC3: "引导", wkC4: "AI 辅助练习", wkC5: "游戏、模拟与故事化内容", wkDayGo: "打开工具箱", wkNightK: "下班以后", wkNightH: "亮着的窗。", wkNightD: "下班以后做的二十二个小应用，每一个都在屏幕之外、某个人身边收尾。", wkNightGo: "看看亮着的窗", wkFoot1: "这些工具怎么被用上，一个案例一个案例", wkFoot2: "我为什么做夜里这些",
+        wkSwDay: "白天", wkSwNight: "夜晚", wkTitle: "小小的体验，大大的可能。", workDesc: "一个方法，两个班次。白天为团队做工具；下班以后，为你生活里的人做小应用。每一个都在两个人之间收尾。", wkDayK: "白天", wkDayH: "工具箱。", wkDayD: "五种能力，三十三个工具。每一个都能打开试试。", wkC1: "需求诊断", wkC2: "对话练习", wkC3: "引导", wkC4: "AI 辅助练习", wkC5: "游戏、模拟与故事化内容", wkDayGo: "打开工具箱", wkNightK: "下班以后", wkNightH: "亮着的窗。", wkNightD: "下班以后做的二十二个小应用，每一个都在屏幕之外、某个人身边收尾。", wkNightGo: "看看亮着的窗", wkFoot1: "这些工具怎么被用上，一个案例一个案例", wkFoot2: "我为什么做夜里这些",
         workBtn: "看看作品",
         contactLabel: "04 / 打个招呼",
         navArcade: "近邻", arcadeLabel: "04 / 近邻", nbAfter: "下班以后", nbWalk: "走进去 →", nbGo: "走进近邻", nbAll: "镇上的每个地方", nbTitle: "一座为<em>身边人</em>而建的小镇。", nbP1: "近邻是一座像素小镇。一个人逛，或者带上朋友。给街坊留下你做的东西，借一本真的书，或者和远方的人一起攀岩。", nbP2: "这和我的工作是同一个信念，只是在下班以后：人才是目的，屏幕应该让我们更近。什么都不做也算数。",
@@ -640,7 +630,7 @@ img{filter:none}
         ],
         workLabel: "03 / Portafolio", workLive: "Demos en vivo", workStudio: "El portafolio · de día y de noche",
         workTitle: "Aprendizaje que termina en conversación",
-        wkTitle: "Pequeñas experiencias. Posibilidades con sentido.", workDesc: "Un método, dos turnos. De día construye herramientas para equipos; fuera de horario, pequeñas apps para la gente de tu vida. Todas terminan entre dos personas.", wkDayK: "De día", wkDayH: "La caja de herramientas.", wkDayD: "Treinta y tres herramientas en cinco capacidades. Cada una se abre para probarla.", wkC1: "Análisis de necesidades", wkC2: "Práctica de conversación", wkC3: "Facilitación", wkC4: "Práctica con IA", wkC5: "Juegos, simulaciones y medios narrativos", wkDayGo: "Abrir la caja de herramientas", wkNightK: "Fuera de horario", wkNightH: "Las ventanas encendidas.", wkNightD: "Veintidós pequeñas apps hechas fuera de horario; cada una termina fuera de la pantalla, junto a alguien.", wkNightGo: "Ver las ventanas encendidas", wkFoot1: "Cómo se usan las herramientas, caso por caso", wkFoot2: "Por qué hago las de la noche",
+        wkSwDay: "Día", wkSwNight: "Noche", wkTitle: "Pequeñas experiencias. Posibilidades con sentido.", workDesc: "Un método, dos turnos. De día construye herramientas para equipos; fuera de horario, pequeñas apps para la gente de tu vida. Todas terminan entre dos personas.", wkDayK: "De día", wkDayH: "La caja de herramientas.", wkDayD: "Treinta y tres herramientas en cinco capacidades. Cada una se abre para probarla.", wkC1: "Análisis de necesidades", wkC2: "Práctica de conversación", wkC3: "Facilitación", wkC4: "Práctica con IA", wkC5: "Juegos, simulaciones y medios narrativos", wkDayGo: "Abrir la caja de herramientas", wkNightK: "Fuera de horario", wkNightH: "Las ventanas encendidas.", wkNightD: "Veintidós pequeñas apps hechas fuera de horario; cada una termina fuera de la pantalla, junto a alguien.", wkNightGo: "Ver las ventanas encendidas", wkFoot1: "Cómo se usan las herramientas, caso por caso", wkFoot2: "Por qué hago las de la noche",
         workBtn: "Ver el trabajo",
         contactLabel: "04 / Saludemos",
         navArcade: "Cerca", arcadeLabel: "04 / Cerca", nbAfter: "fuera de horario", nbWalk: "Entra →", nbGo: "Entrar en Cerca", nbAll: "Todos los sitios del pueblo", nbTitle: "Un pueblo para <em>tu gente</em>.", nbP1: "Cerca es un pueblito pixelado. Pasea solo o con un amigo. Deja a los vecinos algo hecho por ti, toma prestado un libro de verdad, o escala con alguien lejos.", nbP2: "Es la misma idea que mi trabajo, fuera de horario: las personas son lo importante, y una pantalla debería acercarnos. No hacer nada también cuenta.",
@@ -684,7 +674,7 @@ img{filter:none}
         ],
         workLabel: "03 / 作品", workLive: "已上線演示", workStudio: "作品集 · 白天和夜裡",
         workTitle: "以對話收尾的學習",
-        wkTitle: "小小的體驗，大大的可能。", workDesc: "一個方法，兩個班次。白天為團隊做工具；下班以後，為你生活裡的人做小應用。每一個都在兩個人之間收尾。", wkDayK: "白天", wkDayH: "工具箱。", wkDayD: "五種能力，三十三個工具。每一個都能開啟試試。", wkC1: "需求診斷", wkC2: "對話練習", wkC3: "引導", wkC4: "AI 輔助練習", wkC5: "遊戲、模擬與故事化內容", wkDayGo: "開啟工具箱", wkNightK: "下班以後", wkNightH: "亮著的窗。", wkNightD: "下班以後做的二十二個小應用，每一個都在螢幕之外、某個人身邊收尾。", wkNightGo: "看看亮著的窗", wkFoot1: "這些工具怎麼被用上，一個案例一個案例", wkFoot2: "我為什麼做夜裡這些",
+        wkSwDay: "白天", wkSwNight: "夜晚", wkTitle: "小小的體驗，大大的可能。", workDesc: "一個方法，兩個班次。白天為團隊做工具；下班以後，為你生活裡的人做小應用。每一個都在兩個人之間收尾。", wkDayK: "白天", wkDayH: "工具箱。", wkDayD: "五種能力，三十三個工具。每一個都能開啟試試。", wkC1: "需求診斷", wkC2: "對話練習", wkC3: "引導", wkC4: "AI 輔助練習", wkC5: "遊戲、模擬與故事化內容", wkDayGo: "開啟工具箱", wkNightK: "下班以後", wkNightH: "亮著的窗。", wkNightD: "下班以後做的二十二個小應用，每一個都在螢幕之外、某個人身邊收尾。", wkNightGo: "看看亮著的窗", wkFoot1: "這些工具怎麼被用上，一個案例一個案例", wkFoot2: "我為什麼做夜裡這些",
         workBtn: "看看作品",
         contactLabel: "04 / 打個招呼",
         navArcade: "近鄰", arcadeLabel: "04 / 近鄰", nbAfter: "下班以後", nbWalk: "走進去 →", nbGo: "走進近鄰", nbAll: "鎮上的每個地方", nbTitle: "一座為<em>身邊人</em>而建的小鎮。", nbP1: "近鄰是一座畫素小鎮。一個人逛，或者帶上朋友。給街坊留下你做的東西，借一本真的書，或者和遠方的人一起攀岩。", nbP2: "這和我的工作是同一個信念，只是在下班以後：人才是目的，螢幕應該讓我們更近。什麼都不做也算數。",
@@ -728,7 +718,7 @@ img{filter:none}
         ],
         workLabel: "03 / Portafoli", workLive: "Demos en directe", workStudio: "El portafoli · de dia i de nit",
         workTitle: "Aprenentatge que acaba en conversa",
-        wkTitle: "Petites experiències. Possibilitats amb sentit.", workDesc: "Un mètode, dos torns. De dia construeix eines per a equips; fora d'hores, petites apps per a la gent de la teva vida. Totes acaben entre dues persones.", wkDayK: "De dia", wkDayH: "La caixa d'eines.", wkDayD: "Trenta-tres eines en cinc capacitats. Cada una s'obre per provar-la.", wkC1: "Anàlisi de necessitats", wkC2: "Pràctica de conversa", wkC3: "Facilitació", wkC4: "Pràctica amb IA", wkC5: "Jocs, simulacions i mitjans narratius", wkDayGo: "Obrir la caixa d'eines", wkNightK: "Fora d'hores", wkNightH: "Les finestres enceses.", wkNightD: "Vint-i-dues petites apps fetes fora d'hores; cadascuna acaba fora de la pantalla, al costat d'algú.", wkNightGo: "Veure les finestres enceses", wkFoot1: "Com s'usen les eines, cas per cas", wkFoot2: "Per què faig les de la nit",
+        wkSwDay: "Dia", wkSwNight: "Nit", wkTitle: "Petites experiències. Possibilitats amb sentit.", workDesc: "Un mètode, dos torns. De dia construeix eines per a equips; fora d'hores, petites apps per a la gent de la teva vida. Totes acaben entre dues persones.", wkDayK: "De dia", wkDayH: "La caixa d'eines.", wkDayD: "Trenta-tres eines en cinc capacitats. Cada una s'obre per provar-la.", wkC1: "Anàlisi de necessitats", wkC2: "Pràctica de conversa", wkC3: "Facilitació", wkC4: "Pràctica amb IA", wkC5: "Jocs, simulacions i mitjans narratius", wkDayGo: "Obrir la caixa d'eines", wkNightK: "Fora d'hores", wkNightH: "Les finestres enceses.", wkNightD: "Vint-i-dues petites apps fetes fora d'hores; cadascuna acaba fora de la pantalla, al costat d'algú.", wkNightGo: "Veure les finestres enceses", wkFoot1: "Com s'usen les eines, cas per cas", wkFoot2: "Per què faig les de la nit",
         workBtn: "Veure la feina",
         contactLabel: "04 / Saludem-nos",
         navArcade: "A Prop", arcadeLabel: "04 / A Prop", nbAfter: "fora d'hores", nbWalk: "Entra →", nbGo: "Entra a A Prop", nbAll: "Tots els llocs del poble", nbTitle: "Un poble per a <em>la teva gent</em>.", nbP1: "A Prop és un poblet pixelat. Passeja sol o amb un amic. Deixa als veïns alguna cosa feta per tu, agafa en préstec un llibre de veritat o escala amb algú de lluny.", nbP2: "És la mateixa idea que la meva feina, fora d'hores: les persones són el que importa, i una pantalla ens hauria d'acostar. No fer res també compta.",
@@ -761,6 +751,14 @@ img{filter:none}
       document.getElementById('face-reality').setAttribute('aria-hidden', String(!isFlipped));
     }
     function toggleCardFace() { setCardFace(isFlipped ? 'formal' : 'reality'); }
+
+    /* ---------- 03 The portfolio card: day on one face, night on the other ---------- */
+    function wkFlip() {
+      const v = document.getElementById('wk-flip'), night = v.classList.toggle('flipped');
+      const d = document.getElementById('wk-day'), n = document.getElementById('wk-night');
+      d.setAttribute('aria-hidden', String(night)); n.setAttribute('aria-hidden', String(!night));
+      d.toggleAttribute('inert', night); n.toggleAttribute('inert', !night);
+    }
 
     /* ---------- 02 What I do: four rows ---------- */
     const WM_ICONS = [
