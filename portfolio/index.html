@@ -1990,7 +1990,7 @@ img{filter:none}
     $('current-year').textContent = new Date().getFullYear();
     try { if (sessionStorage.getItem('wm_easter_eggs_unlocked') === 'true') revealCardEasterEggs(false); } catch (e) {}
     (function initMode() {
-      let m = /(^|[#&])(night|g=f|nearby)\b/.test(location.hash) ? 'night' : null;
+      let m = /(^|[#&])(night|g=f|nearby)\b/.test(location.hash) ? 'night' : /(^|[#&])day\b/.test(location.hash) ? 'day' : null;   // #day from wei-meng.org's card (Nov 12)
       try { m = m || sessionStorage.getItem('pf_mode'); } catch (e) {}
       if (m === 'night') setMode('night', true);
     })();
