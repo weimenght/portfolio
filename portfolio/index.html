@@ -198,20 +198,34 @@
     .dk-check button { padding:6px 12px; border-radius:999px; border:0; background:#17171A; color:#fff; font:700 11px 'Space Mono', monospace; cursor:pointer; }
     .dk-wake { animation:dk-wake .6s both; } @keyframes dk-wake { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:none } }
     .dk-scene { display:block; width:100%; height:auto; max-width:420px; margin:14px auto 0; }
-    .dk-glowbg { opacity:0; animation:dk-fade .8s 3.2s forwards; }
-    .dk-off { animation:dk-fade .5s 1.1s forwards; }
-    .dk-screen { transform-box:fill-box; transform-origin:50% 100%; animation:dk-down .6s 2.6s forwards; } @keyframes dk-down { to { transform:translateY(40px) scaleY(.1); opacity:0 } }
-    .dk-head { transform-box:fill-box; transform-origin:50% 100%; transform:translateY(5px) rotate(14deg); animation:dk-lift .6s 1.6s forwards; }
+    .dk-glowbg { opacity:0; } .dk-scene.go .dk-glowbg { animation:dk-fade .8s 2.1s forwards; }
+    .dk-scene.go .dk-off { animation:dk-fade .5s .05s forwards; }
+    .dk-screen { transform-box:fill-box; transform-origin:50% 100%; } .dk-scene.go .dk-screen { animation:dk-down .6s 1.5s forwards; } @keyframes dk-down { to { transform:translateY(40px) scaleY(.1); opacity:0 } }
+    .dk-head { transform-box:fill-box; transform-origin:50% 100%; transform:translateY(5px) rotate(14deg); } .dk-scene.go .dk-head { animation:dk-lift .6s .5s forwards; }
     .dk-p2 .dk-head, .dk-p4 .dk-head { transform:translateY(5px) rotate(-14deg); }
-    .dk-z { animation:dk-fadeout .3s 1.5s forwards; }
+    .dk-z { animation:dk-zz 2.4s ease-in-out infinite; } .dk-scene.go .dk-z { animation:dk-fadeout .3s .4s forwards; } @keyframes dk-zz { 50% { opacity:.35; transform:translateY(-3px) } }
     .dk-p { transform-box:fill-box; transform-origin:50% 100%; }
-    .dk-p1 { animation:dk-turn-r .7s 2.3s forwards; } .dk-p2 { animation:dk-turn-l .7s 2.3s forwards; } .dk-p3 { animation:dk-turn-r .7s 2.5s forwards; } .dk-p4 { animation:dk-turn-l .7s 2.5s forwards; }
-    .dk-bub { opacity:0; transform-box:fill-box; transform-origin:50% 100%; transform:scale(.6); animation:dk-pop .4s forwards; } .dk-b1 { animation-delay:3.2s } .dk-b2 { animation-delay:3.9s }
+    .dk-scene.go .dk-p1 { animation:dk-turn-r .7s 1.2s forwards; } .dk-scene.go .dk-p2 { animation:dk-turn-l .7s 1.2s forwards; } .dk-scene.go .dk-p3 { animation:dk-turn-r .7s 1.4s forwards; } .dk-scene.go .dk-p4 { animation:dk-turn-l .7s 1.4s forwards; }
+    .dk-bub { opacity:0; transform-box:fill-box; transform-origin:50% 100%; transform:scale(.6); } .dk-scene.go .dk-bub { animation:dk-pop .4s forwards; } .dk-scene.go .dk-b1 { animation-delay:2.1s } .dk-scene.go .dk-b2 { animation-delay:2.8s }
+    /* Nov 13, the owner: the deck is a first-visit pop-up; the ending is two things to do (can you recall it? switch the screen off) */
+    .dk-pwr { cursor:pointer; } .dk-pwr circle.ring { fill:none; stroke:#E2553F; stroke-width:2; transform-box:fill-box; transform-origin:center; animation:dk-ring 1.8s ease-out infinite; }
+    @keyframes dk-ring { 0% { opacity:.9; transform:scale(.6) } 100% { opacity:0; transform:scale(1.7) } }
+    .dk-scene.go .dk-pwr { pointer-events:none; animation:dk-fadeout .3s forwards; }
+    .dk-tapbtn { display:block; width:100%; max-width:420px; margin:14px auto 0; padding:0; border:0; background:none; cursor:pointer; border-radius:14px; }
+    .dk-tapbtn:focus-visible { outline:2px solid #E2553F; outline-offset:4px; } .dk-tapbtn .dk-scene { margin:0; }
+    .dk-hint { margin:8px 0 0; text-align:center; font:11px 'Space Mono', monospace; color:#8A8A90; transition:opacity .3s; }
+    .dk-q { margin-top:16px; display:grid; gap:8px; }
+    .dk-q button { text-align:left; padding:11px 14px; border-radius:12px; border:1px solid #E5E2DA; background:#F3F3F3; font:600 14px/1.35 'Times New Roman', Times, serif; color:#333; cursor:pointer; transition:background .2s, border-color .2s, opacity .3s; }
+    .dk-q button:hover { border-color:#17171A; } .dk-q.done button { cursor:default; } .dk-q.done button:not(.right):not(.picked) { opacity:.35; }
+    .dk-q button.right { border-color:#2F7D4F; background:#EAF4EE; } .dk-q button.picked:not(.right) { border-color:#E2553F; background:#FDEDEA; text-decoration:line-through; text-decoration-color:rgba(226,85,63,.6); }
+    .dk-qr { min-height:1.4em; margin:12px 0 0; font:12.5px/1.5 'Space Mono', monospace; color:#5A5A60; }
+    .dk-end { animation:dk-wake .5s both; } .dk-end p { margin:14px 0 0; font-size:15px; line-height:1.55; color:#444; }
+    .dk-skip { background:none; border:0; padding:4px 2px; font:11px 'Space Mono', monospace; color:#8A8A90; cursor:pointer; text-decoration:underline; text-underline-offset:3px; } .dk-skip:hover { color:var(--ink,#17171A); }
     @keyframes dk-fade { to { opacity:1 } } @keyframes dk-fadeout { to { opacity:0 } }
     @keyframes dk-lift { to { transform:none } }
     @keyframes dk-turn-r { to { transform:translateX(14px) scaleX(.72) } } @keyframes dk-turn-l { to { transform:translateX(-14px) scaleX(.72) } }
     @keyframes dk-pop { to { opacity:1; transform:none } }
-    @media (prefers-reduced-motion: reduce) { .dk-glowbg, .dk-off, .dk-bub { animation:none; opacity:1; transform:none } .dk-head, .dk-p { animation:none; transform:none } .dk-z, .dk-screen { display:none } }
+    @media (prefers-reduced-motion: reduce) { .dk-z, .dk-pwr circle.ring { animation:none } .dk-scene.go .dk-glowbg, .dk-scene.go .dk-off, .dk-scene.go .dk-bub { animation:none; opacity:1; transform:none } .dk-scene.go .dk-head, .dk-scene.go .dk-p { animation:none; transform:none } .dk-scene.go .dk-z, .dk-scene.go .dk-screen, .dk-scene.go .dk-pwr { display:none } }
     .dk-glow { animation:dk-glow 1.6s 2; } @keyframes dk-glow { 0%,100% { box-shadow:0 0 0 0 rgba(226,85,63,0) } 50% { box-shadow:0 0 0 8px rgba(226,85,63,.25) } }
     @media (prefers-reduced-motion: reduce) { .dk-bul li, .dk.shake .dk-slide, .dk.crack .dk-slide, .dk-wake, .dk-glow { animation:none !important; } .dk.crack .dk-slide { opacity:0; } }
     /* day / night (Nov 6, the owner's idea): day is the cases (FREE//BUILDER), night is after-hours */
@@ -411,9 +425,16 @@ img{filter:none}
           </button>
         </div>
       </div>
-      <div class="dk-wake" id="dk-wake" hidden>
+      <div class="dk-wake" id="dk-wake" tabindex="-1" style="outline:none" hidden>
         <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-accent" data-i18n="dkWakeK">Sudden realization</span>
         <h3 class="font-syne text-2xl sm:text-3xl font-bold tracking-tight leading-tight mt-2" id="dk-wake-t"></h3>
+        <div id="dk-quiz">
+          <p class="dk-qr" style="margin-top:14px;color:var(--ink,#17171A)" data-i18n="dkQ">Quick check: what was the first slide called?</p>
+          <div class="dk-q" id="dk-q"></div>
+          <p class="dk-qr" id="dk-qr" aria-live="polite"></p>
+        </div>
+        <div id="dk-room" hidden>
+        <button type="button" class="dk-tapbtn" id="dk-tap" aria-label="Turn the screen off">
         <svg class="dk-scene" viewBox="0 0 320 170" aria-hidden="true">
           <defs><radialGradient id="dk-lamp" cx="50%" cy="30%" r="60%"><stop offset="0" stop-color="#F6B65B" stop-opacity=".55"/><stop offset="1" stop-color="#F6B65B" stop-opacity="0"/></radialGradient></defs>
           <rect class="dk-glowbg" width="320" height="170" fill="url(#dk-lamp)"/>
@@ -426,10 +447,17 @@ img{filter:none}
           <g class="dk-z" fill="#999" font-family="Space Mono, monospace" font-size="9"><text x="84" y="100">z</text><text x="204" y="98">z</text><text x="266" y="104">z</text></g>
           <g class="dk-bub dk-b1"><rect x="78" y="60" width="64" height="30" rx="12" fill="#17171A"/><path d="M92 90l-4 10 14-9z" fill="#17171A"/><rect x="90" y="70" width="4" height="10" rx="2" fill="#F7F6F2"/><rect x="98" y="66" width="4" height="18" rx="2" fill="#F7F6F2"/><rect x="106" y="71" width="4" height="8" rx="2" fill="#F7F6F2"/><rect x="116" y="72" width="18" height="3" rx="1.5" fill="rgba(247,246,242,.5)"/></g>
           <g class="dk-bub dk-b2"><rect x="186" y="60" width="64" height="30" rx="12" fill="#E2553F"/><path d="M234 90l4 10-14-9z" fill="#E2553F"/><text x="218" y="80" text-anchor="middle" font-family="Space Mono, monospace" font-size="10" font-weight="700" fill="#fff">“so you…”</text></g>
+        <g class="dk-pwr"><circle class="ring" cx="160" cy="49" r="13"/><circle cx="160" cy="49" r="13" fill="#17171A"/><path d="M160 41v7" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><path d="M155 44.5a7 7 0 1 0 10 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></g>
         </svg>
-        <div class="flex flex-col sm:flex-row gap-2.5 mt-5">
-          <button type="button" onclick="deckChange()" class="flex-1 py-3 px-5 rounded-full bg-ink hover:bg-accent text-white text-xs font-mono font-bold transition-all flex items-center justify-center gap-2"><span data-i18n="dkGo">I want this to change</span><span aria-hidden="true">→</span></button>
-          <button type="button" onclick="closeDeckModal()" class="py-3 px-5 rounded-full border border-line text-xs font-mono hover:border-ink/40" data-i18n="dkStay">Back to the deck</button>
+        </button>
+        <p class="dk-hint" id="dk-hint" data-i18n="dkTap">Turn the screen off</p>
+        <div class="dk-end" id="dk-end" hidden>
+          <p id="dk-w2"></p>
+          <div class="flex flex-col sm:flex-row gap-2.5 mt-5">
+            <button type="button" onclick="deckChange()" class="flex-1 py-3 px-5 rounded-full bg-ink hover:bg-accent text-white text-xs font-mono font-bold transition-all flex items-center justify-center gap-2"><span data-i18n="dkGo">I want this to change</span><span aria-hidden="true">→</span></button>
+            <button type="button" onclick="closeDeckModal()" class="py-3 px-5 rounded-full border border-line text-xs font-mono hover:border-ink/40" data-i18n="dkLook">Look around first</button>
+          </div>
+        </div>
         </div>
       </div>
     </div>
@@ -477,11 +505,6 @@ img{filter:none}
           <button type="button" class="dn-b on" data-mode="day" aria-label="Day"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></g></svg><span data-i18n="modeDay">Day</span></button>
           <button type="button" class="dn-b" data-mode="night" aria-label="Night"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="currentColor"/></svg><span data-i18n="modeNight">Night</span></button>
         </div>
-        <button type="button" onclick="openDeckModal()"
-          class="hidden md:inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-dashed border-ink/25 hover:border-accent hover:text-accent text-[11px] font-mono text-muted transition-all group">
-          <span class="inline-block transition-transform group-hover:rotate-12" aria-hidden="true">⚠</span>
-          <span data-i18n="navEasterEgg">60-slide deck?</span>
-        </button>
         <button type="button" onclick="cycleLanguage()"
           class="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg border border-line hover:border-ink/30 bg-white/60 active:scale-95 text-[11px] font-mono text-ink transition-all select-none"
           title="EN / 中文 / ES" aria-label="Switch language">
@@ -656,7 +679,7 @@ img{filter:none}
         contactLabel: "Say hello",
         contactTitle: 'Let\'s build learning people <span class="accent-word">choose</span> to finish.',
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
-        deckEject: "I can't do this", dkFelt: "Felt time", dkM: "{m} min", dkH: "{h} h {m} min", dkCheck: "Attention check: are you still there?", dkYes: "Yes", dkWakeK: "Sudden realization", dkWake1: "That was {s} seconds. It felt like {f} hours.", dkWake2: "Your people sit through sixty of these a year and remember none of it. The slide was never the point. The person next to them was.", dkWake3: "What if the screen only set it up, and then went down?", dkGo: "I want this to change", dkStay: "Back to the deck", dkJ: {"mod": ["Module", "Section", "Appendix", "Sub-module"], "adj": ["Synergistic", "Cross-functional", "Holistic", "Strategic", "Scalable", "Mission-critical", "Agile", "Paradigm-shifting"], "noun": ["Alignment", "Bandwidth", "Cadence", "Compliance", "Stakeholder Value", "Workflow Optimization", "Governance", "Best Practices"], "noun2": ["Policy", "Onboarding", "Synergy", "Deliverables", "KPIs", "Frameworks"], "verb": ["Leverage", "Operationalize", "Socialize", "Cascade", "Double-click on", "Circle back to"], "tail": ["going forward.", "at scale.", "end to end.", "as per the above.", "by EOD.", "across all verticals."], "and": "&"},
+        deckEject: "I can't do this", dkFelt: "Felt time", dkM: "{m} min", dkH: "{h} h {m} min", dkCheck: "Attention check: are you still there?", dkYes: "Yes", dkWakeK: "Sudden realization", dkWake1: "That was {s} seconds. It felt like {f} hours.", dkWake2: "Your people sit through sixty of these a year and remember none of it. The slide was never the point. The person next to them was.", dkWake3: "What if the screen only set it up, and then went down?", dkGo: "I want this to change", dkStay: "Back to the deck", dkQ: "Quick check: what was the first slide called?", dkQok: "Right. Now try again next Tuesday.", dkQno: "Nor would anyone else in the room.", dkTap: "Turn the screen off", dkLook: "Look around first", dkJ: {"mod": ["Module", "Section", "Appendix", "Sub-module"], "adj": ["Synergistic", "Cross-functional", "Holistic", "Strategic", "Scalable", "Mission-critical", "Agile", "Paradigm-shifting"], "noun": ["Alignment", "Bandwidth", "Cadence", "Compliance", "Stakeholder Value", "Workflow Optimization", "Governance", "Best Practices"], "noun2": ["Policy", "Onboarding", "Synergy", "Deliverables", "KPIs", "Frameworks"], "verb": ["Leverage", "Operationalize", "Socialize", "Cascade", "Double-click on", "Circle back to"], "tail": ["going forward.", "at scale.", "end to end.", "as per the above.", "by EOD.", "across all verticals."], "and": "&"},
         modeDay: "Day", modeNight: "Night", mdNight: "Twenty-five small apps made after work, each ending off the screen, next to someone. Free, no ads, no tracking.", nightKicker: "After hours", ntH: "Twenty-five small things, made after work.", ntMore: "Why I make these, and how each one hands you back to someone", nightDesc: "What I make after work: free, no ads, no tracking. Twenty-five windows are lit.",
         storyKicker: "The story",
         storyLead: "One invented company. One year. Thirteen conversations that would not have happened otherwise.",
@@ -883,7 +906,7 @@ img{filter:none}
         contactLabel: "打个招呼",
         contactTitle: '一起做让人<span class="accent-word">主动</span>学完的学习体验。',
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
-        deckEject: "我受不了了", dkFelt: "体感时长", dkM: "{m} 分钟", dkH: "{h} 小时 {m} 分钟", dkCheck: "注意力检查：你还在吗？", dkYes: "在", dkWakeK: "突然醒悟", dkWake1: "刚才只过了 {s} 秒。感觉像 {f} 个小时。", dkWake2: "你的人每年要坐完六十场这样的培训，什么都记不住。幻灯片从来不是重点。身边那个人才是。", dkWake3: "如果屏幕只负责开场，然后就退下呢？", dkGo: "我想改变这件事", dkStay: "回到课件", dkJ: {"mod": ["模块", "章节", "附录", "子模块"], "adj": ["协同", "跨部门", "全局", "战略", "可扩展", "关键", "敏捷", "颠覆性"], "noun": ["对齐", "带宽", "节奏", "合规", "干系人价值", "流程优化", "治理", "最佳实践"], "noun2": ["政策", "入职", "协同效应", "交付物", "关键指标", "框架"], "verb": ["充分利用", "落地", "推广", "层层传达", "深挖", "回头再看"], "tail": ["，持续推进。", "，规模化实施。", "，端到端执行。", "，如上所述。", "，今日内完成。", "，覆盖全部条线。"], "and": "与"},
+        deckEject: "我受不了了", dkFelt: "体感时长", dkM: "{m} 分钟", dkH: "{h} 小时 {m} 分钟", dkCheck: "注意力检查：你还在吗？", dkYes: "在", dkWakeK: "突然醒悟", dkWake1: "刚才只过了 {s} 秒。感觉像 {f} 个小时。", dkWake2: "你的人每年要坐完六十场这样的培训，什么都记不住。幻灯片从来不是重点。身边那个人才是。", dkWake3: "如果屏幕只负责开场，然后就退下呢？", dkGo: "我想改变这件事", dkStay: "回到课件", dkQ: "快速检查：第一张幻灯片叫什么？", dkQok: "答对了。下周二再试试看。", dkQno: "会议室里的其他人也记不住。", dkTap: "把屏幕关掉", dkLook: "先随便看看", dkJ: {"mod": ["模块", "章节", "附录", "子模块"], "adj": ["协同", "跨部门", "全局", "战略", "可扩展", "关键", "敏捷", "颠覆性"], "noun": ["对齐", "带宽", "节奏", "合规", "干系人价值", "流程优化", "治理", "最佳实践"], "noun2": ["政策", "入职", "协同效应", "交付物", "关键指标", "框架"], "verb": ["充分利用", "落地", "推广", "层层传达", "深挖", "回头再看"], "tail": ["，持续推进。", "，规模化实施。", "，端到端执行。", "，如上所述。", "，今日内完成。", "，覆盖全部条线。"], "and": "与"},
         modeDay: "白天", modeNight: "夜晚", mdNight: "下班以后做的二十五个小应用，每一个都在屏幕之外、在某个人身边收尾。免费、无广告、不追踪。", nightKicker: "下班以后", ntH: "下班以后做的二十五件小东西。", ntMore: "我为什么做这些，以及每一个怎样把你交还给身边的人", nightDesc: "下班以后做的东西：免费、无广告、不追踪。二十五扇窗亮着。",
         storyKicker: "故事",
         storyLead: "一家虚构的公司。一年。十三场原本不会发生的对话。",
@@ -1110,7 +1133,7 @@ img{filter:none}
         contactLabel: "Saludemos",
         contactTitle: 'Creemos aprendizajes que la gente <span class="accent-word">elija</span> terminar.',
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
-        deckEject: "No puedo más", dkFelt: "Tiempo sentido", dkM: "{m} min", dkH: "{h} h {m} min", dkCheck: "Control de atención: ¿sigues ahí?", dkYes: "Sí", dkWakeK: "Revelación repentina", dkWake1: "Han sido {s} segundos. Se han sentido como {f} horas.", dkWake2: "Tu gente se traga sesenta de estas al año y no recuerda ninguna. La diapositiva nunca fue el punto. La persona de al lado, sí.", dkWake3: "¿Y si la pantalla solo preparara el terreno, y luego se apagara?", dkGo: "Quiero que esto cambie", dkStay: "Volver a las diapositivas", dkJ: {"mod": ["Módulo", "Sección", "Anexo", "Submódulo"], "adj": ["Sinérgico", "Transversal", "Holístico", "Estratégico", "Escalable", "Crítico", "Ágil", "Disruptivo"], "noun": ["Alineamiento", "Ancho de banda", "Cadencia", "Cumplimiento", "Valor para el stakeholder", "Optimización del flujo", "Gobernanza", "Buenas prácticas"], "noun2": ["Política", "Onboarding", "Sinergia", "Entregables", "KPIs", "Marcos"], "verb": ["Apalancar", "Operativizar", "Socializar", "Cascadear", "Profundizar en", "Retomar"], "tail": ["de cara al futuro.", "a escala.", "de principio a fin.", "según lo anterior.", "antes del cierre.", "en todas las verticales."], "and": "y"},
+        deckEject: "No puedo más", dkFelt: "Tiempo sentido", dkM: "{m} min", dkH: "{h} h {m} min", dkCheck: "Control de atención: ¿sigues ahí?", dkYes: "Sí", dkWakeK: "Revelación repentina", dkWake1: "Han sido {s} segundos. Se han sentido como {f} horas.", dkWake2: "Tu gente se traga sesenta de estas al año y no recuerda ninguna. La diapositiva nunca fue el punto. La persona de al lado, sí.", dkWake3: "¿Y si la pantalla solo preparara el terreno, y luego se apagara?", dkGo: "Quiero que esto cambie", dkStay: "Volver a las diapositivas", dkQ: "Comprobación rápida: ¿cómo se llamaba la primera diapositiva?", dkQok: "Bien. Prueba otra vez el martes que viene.", dkQno: "Nadie más en la sala lo recordaría tampoco.", dkTap: "Apaga la pantalla", dkLook: "Primero, echar un vistazo", dkJ: {"mod": ["Módulo", "Sección", "Anexo", "Submódulo"], "adj": ["Sinérgico", "Transversal", "Holístico", "Estratégico", "Escalable", "Crítico", "Ágil", "Disruptivo"], "noun": ["Alineamiento", "Ancho de banda", "Cadencia", "Cumplimiento", "Valor para el stakeholder", "Optimización del flujo", "Gobernanza", "Buenas prácticas"], "noun2": ["Política", "Onboarding", "Sinergia", "Entregables", "KPIs", "Marcos"], "verb": ["Apalancar", "Operativizar", "Socializar", "Cascadear", "Profundizar en", "Retomar"], "tail": ["de cara al futuro.", "a escala.", "de principio a fin.", "según lo anterior.", "antes del cierre.", "en todas las verticales."], "and": "y"},
         modeDay: "Día", modeNight: "Noche", mdNight: "Veinticinco pequeñas apps hechas fuera de horario; cada una acaba fuera de la pantalla, junto a alguien. Gratis, sin anuncios, sin rastreo.", nightKicker: "Fuera de horario", ntH: "Veinticinco cosas pequeñas, hechas fuera de horario.", ntMore: "Por qué las hago, y cómo cada una te devuelve a alguien", nightDesc: "Lo que hago fuera de horario: gratis, sin anuncios, sin rastreo. Veinticinco ventanas están encendidas.",
         storyKicker: "La historia",
         storyLead: "Una empresa inventada. Un año. Trece conversaciones que no habrían ocurrido.",
@@ -1336,7 +1359,7 @@ img{filter:none}
         contactLabel: "打個招呼",
         contactTitle: "一起做讓人<span class=\"accent-word\">主動</span>學完的學習體驗。",
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
-        deckEject: "我受不了了", dkFelt: "體感時長", dkM: "{m} 分鐘", dkH: "{h} 小時 {m} 分鐘", dkCheck: "注意力檢查：你還在嗎？", dkYes: "在", dkWakeK: "突然醒悟", dkWake1: "剛才只過了 {s} 秒。感覺像 {f} 個小時。", dkWake2: "你的人每年要坐完六十場這樣的培訓，什麼都記不住。幻燈片從來不是重點。身邊那個人才是。", dkWake3: "如果螢幕只負責開場，然後就退下呢？", dkGo: "我想改變這件事", dkStay: "回到課件", dkJ: {"mod": ["模組", "章節", "附錄", "子模組"], "adj": ["協同", "跨部門", "全域性", "戰略", "可擴充套件", "關鍵", "敏捷", "顛覆性"], "noun": ["對齊", "頻寬", "節奏", "合規", "干係人價值", "流程最佳化", "治理", "最佳實踐"], "noun2": ["政策", "入職", "協同效應", "交付物", "關鍵指標", "框架"], "verb": ["充分利用", "落地", "推廣", "層層傳達", "深挖", "回頭再看"], "tail": ["，持續推進。", "，規模化實施。", "，端到端執行。", "，如上所述。", "，今日內完成。", "，覆蓋全部條線。"], "and": "與"},
+        deckEject: "我受不了了", dkFelt: "體感時長", dkM: "{m} 分鐘", dkH: "{h} 小時 {m} 分鐘", dkCheck: "注意力檢查：你還在嗎？", dkYes: "在", dkWakeK: "突然醒悟", dkWake1: "剛才只過了 {s} 秒。感覺像 {f} 個小時。", dkWake2: "你的人每年要坐完六十場這樣的培訓，什麼都記不住。幻燈片從來不是重點。身邊那個人才是。", dkWake3: "如果螢幕只負責開場，然後就退下呢？", dkGo: "我想改變這件事", dkStay: "回到課件", dkQ: "快速檢查：第一張幻燈片叫什麼？", dkQok: "答對了。下週二再試試看。", dkQno: "會議室裡的其他人也記不住。", dkTap: "把螢幕關掉", dkLook: "先隨便看看", dkJ: {"mod": ["模組", "章節", "附錄", "子模組"], "adj": ["協同", "跨部門", "全域性", "戰略", "可擴充套件", "關鍵", "敏捷", "顛覆性"], "noun": ["對齊", "頻寬", "節奏", "合規", "干係人價值", "流程最佳化", "治理", "最佳實踐"], "noun2": ["政策", "入職", "協同效應", "交付物", "關鍵指標", "框架"], "verb": ["充分利用", "落地", "推廣", "層層傳達", "深挖", "回頭再看"], "tail": ["，持續推進。", "，規模化實施。", "，端到端執行。", "，如上所述。", "，今日內完成。", "，覆蓋全部條線。"], "and": "與"},
         modeDay: "白天", modeNight: "夜晚", mdNight: "下班以後做的二十五個小應用，每一個都在螢幕之外、在某個人身邊收尾。免費、無廣告、不追蹤。", nightKicker: "下班以後", ntH: "下班以後做的二十五件小東西。", ntMore: "我為什麼做這些，以及每一個怎樣把你交還給身邊的人", nightDesc: "下班以後做的東西：免費、無廣告、不追蹤。二十五扇窗亮著。",
         storyKicker: "故事",
         storyLead: "一家虛構的公司。一年。十三場原本不會發生的對話。",
@@ -1562,7 +1585,7 @@ img{filter:none}
         contactLabel: "Saludem",
         contactTitle: "Creem aprenentatges que la gent <span class=\"accent-word\">triï</span> acabar.",
         /* cases (Nov 6): the story, the acts, the thirteen cases, the coda */
-        deckEject: "No puc més", dkFelt: "Temps sentit", dkM: "{m} min", dkH: "{h} h {m} min", dkCheck: "Control d'atenció: encara hi ets?", dkYes: "Sí", dkWakeK: "Revelació sobtada", dkWake1: "Han estat {s} segons. S'han sentit com {f} hores.", dkWake2: "La teva gent s'empassa seixanta d'aquestes l'any i no en recorda cap. La diapositiva mai no va ser el punt. La persona del costat, sí.", dkWake3: "I si la pantalla només preparés el terreny, i després s'apagués?", dkGo: "Vull que això canviï", dkStay: "Tornar a les diapositives", dkJ: {"mod": ["Mòdul", "Secció", "Annex", "Submòdul"], "adj": ["Sinèrgic", "Transversal", "Holístic", "Estratègic", "Escalable", "Crític", "Àgil", "Disruptiu"], "noun": ["Alineament", "Ample de banda", "Cadència", "Compliment", "Valor per a l'stakeholder", "Optimització del flux", "Governança", "Bones pràctiques"], "noun2": ["Política", "Onboarding", "Sinergia", "Lliurables", "KPIs", "Marcs"], "verb": ["Palanquejar", "Operativitzar", "Socialitzar", "Cascadejar", "Aprofundir en", "Reprendre"], "tail": ["de cara al futur.", "a escala.", "de principi a fi.", "segons l'anterior.", "abans del tancament.", "a totes les verticals."], "and": "y"},
+        deckEject: "No puc més", dkFelt: "Temps sentit", dkM: "{m} min", dkH: "{h} h {m} min", dkCheck: "Control d'atenció: encara hi ets?", dkYes: "Sí", dkWakeK: "Revelació sobtada", dkWake1: "Han estat {s} segons. S'han sentit com {f} hores.", dkWake2: "La teva gent s'empassa seixanta d'aquestes l'any i no en recorda cap. La diapositiva mai no va ser el punt. La persona del costat, sí.", dkWake3: "I si la pantalla només preparés el terreny, i després s'apagués?", dkGo: "Vull que això canviï", dkStay: "Tornar a les diapositives", dkQ: "Comprovació ràpida: com es deia la primera diapositiva?", dkQok: "Bé. Torna-ho a provar dimarts que ve.", dkQno: "Ningú més a la sala no ho recordaria tampoc.", dkTap: "Apaga la pantalla", dkLook: "Primer, fer un cop d'ull", dkJ: {"mod": ["Mòdul", "Secció", "Annex", "Submòdul"], "adj": ["Sinèrgic", "Transversal", "Holístic", "Estratègic", "Escalable", "Crític", "Àgil", "Disruptiu"], "noun": ["Alineament", "Ample de banda", "Cadència", "Compliment", "Valor per a l'stakeholder", "Optimització del flux", "Governança", "Bones pràctiques"], "noun2": ["Política", "Onboarding", "Sinergia", "Lliurables", "KPIs", "Marcs"], "verb": ["Palanquejar", "Operativitzar", "Socialitzar", "Cascadejar", "Aprofundir en", "Reprendre"], "tail": ["de cara al futur.", "a escala.", "de principi a fi.", "segons l'anterior.", "abans del tancament.", "a totes les verticals."], "and": "y"},
         modeDay: "Dia", modeNight: "Nit", mdNight: "Vint-i-cinc petites apps fetes fora d'hores; cadascuna acaba fora de la pantalla, al costat d'algú. Gratis, sense anuncis, sense rastreig.", nightKicker: "Fora d'hores", ntH: "Vint-i-cinc coses petites, fetes fora d'horari.", ntMore: "Per què les faig, i com cadascuna et torna a algú", nightDesc: "El que faig fora d'horari: gratuït, sense anuncis, sense rastreig. Vint-i-cinc finestres estan enceses.",
         storyKicker: "La història",
         storyLead: "Una empresa inventada. Un any. Tretze converses que no haurien passat.",
@@ -1819,7 +1842,7 @@ img{filter:none}
 
     const deckModal = $('deck-modal');
     /* the 60-slide deck: every real second is eleven felt minutes; the jargon gets worse; at twelve seconds (or the first tap) the slide cracks and the realization comes */
-    let deckSlide = 1, deckLeft = 59, deckIv = null, deckSec = 0, deckWoke = false;
+    let deckSlide = 1, deckLeft = 59, deckIv = null, deckSec = 0, deckWoke = false, deckTitles = [];
     function deckJargon() {
       const j = t().dkJ, pick = a => a[Math.floor(Math.random() * a.length)];
       return { title: `${pick(j.mod)} ${deckSlide}.${1 + Math.floor(Math.random() * 4)}: ${pick(j.adj)} ${pick(j.noun)} ${j.and} ${pick(j.noun2)}`, bullets: [0, 1, 2].map(() => `${pick(j.verb)} ${pick(j.adj).toLowerCase()} ${pick(j.noun).toLowerCase()} ${pick(j.tail)}`) };
@@ -1835,13 +1858,17 @@ img{filter:none}
     }
     function deckSlideIn() {
       const g = deckJargon();
+      deckTitles.push(g.title);
       $('deck-title').textContent = g.title;
       $('dk-bul').innerHTML = g.bullets.map(x => `<li>${x}</li>`).join('');
     }
     function openDeckModal() {
-      deckSlide = 1; deckLeft = 59; deckSec = 0; deckWoke = false;
+      deckSlide = 1; deckLeft = 59; deckSec = 0; deckWoke = false; deckTitles = [];
+      try { localStorage.setItem('wm_deck_seen', '1'); } catch (e) {}
       const box = $('deck-box'); box.classList.remove('dim', 'shake', 'crack');
       $('dk-deck').hidden = false; $('dk-wake').hidden = true; $('dk-check').hidden = true;
+      $('dk-quiz').hidden = false; $('dk-room').hidden = true; $('dk-end').hidden = true; $('dk-hint').style.opacity = '';
+      $('dk-tap').querySelector('.dk-scene').classList.remove('go'); $('dk-tap').disabled = false;
       deckSlideIn(); renderDeck();
       clearInterval(deckIv);
       deckIv = setInterval(() => {
@@ -1859,7 +1886,33 @@ img{filter:none}
       const box = $('deck-box'), d = t();
       box.classList.add('crack');
       $('dk-wake-t').textContent = d.dkWake1.replace('{s}', Math.max(1, deckSec)).replace('{f}', Math.max(2, Math.round(deckSec * 11 / 60)));
-      setTimeout(() => { box.classList.remove('crack', 'dim'); $('dk-deck').hidden = true; $('dk-wake').hidden = false; const f = $('dk-wake').querySelector('button'); if (f) f.focus(); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 650);
+      deckQuiz();
+      setTimeout(() => { box.classList.remove('crack', 'dim'); $('dk-deck').hidden = true; $('dk-wake').hidden = false; $('dk-wake').focus({ preventScroll: true }); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 650);
+    }
+    /* can you recall it? the first slide's real title among two it never showed */
+    function deckQuiz() {
+      const real = deckTitles[0] || deckJargon().title, opts = [real];
+      for (let i = 0; opts.length < 3 && i < 40; i++) { const g = deckJargon().title.replace(/ \d+\.\d+:/, real.match(/ \d+\.\d+:/)[0]); if (!opts.includes(g)) opts.push(g); }
+      opts.sort(() => Math.random() - .5);
+      const q = $('dk-q'); q.classList.remove('done'); $('dk-qr').textContent = '';
+      q.innerHTML = opts.map(o => `<button type="button" data-r="${o === real ? 1 : 0}">${o.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))}</button>`).join('');
+      q.onclick = e => {
+        const b = e.target.closest('button'); if (!b || q.classList.contains('done')) return;
+        q.classList.add('done'); b.classList.add('picked'); q.querySelector('[data-r="1"]').classList.add('right');
+        $('dk-qr').textContent = b.dataset.r === '1' ? t().dkQok : t().dkQno;
+        setTimeout(deckRoom, matchMedia('(prefers-reduced-motion: reduce)').matches ? 900 : 2300);
+      };
+    }
+    /* switch the screen off: heads come up, they turn to each other, someone speaks */
+    function deckRoom() {
+      if (!deckWoke) return;
+      $('dk-quiz').hidden = true; $('dk-room').hidden = false;
+      $('dk-wake-t').textContent = t().dkWake3;
+      const tap = $('dk-tap'); tap.setAttribute('aria-label', t().dkTap); $('dk-wake').focus({ preventScroll: true });
+      tap.onclick = () => {
+        tap.disabled = true; tap.querySelector('.dk-scene').classList.add('go'); $('dk-hint').style.opacity = '0';
+        setTimeout(() => { $('dk-w2').textContent = t().dkWake2; $('dk-end').hidden = false; }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 200 : 3300);
+      };
     }
     function closeDeckModal() { clearInterval(deckIv); closeModal(deckModal); }
     function deckChange() {
@@ -1867,6 +1920,14 @@ img{filter:none}
       const st = document.querySelector('.tb-intro'); if (st) { st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); st.classList.remove('dk-glow'); void st.offsetWidth; st.classList.add('dk-glow'); }
     }
     function ejectToCognitiveDignity() { deckChange(); }
+    /* first visit (Nov 13, the owner: no chip; the deck finds the newcomer once): a breath after the page settles, never over a link to somewhere in the page; ?deck=1 or #deck opens it any time */
+    (function deckFirst() {
+      let seen = false; try { seen = !!localStorage.getItem('wm_deck_seen'); } catch (e) { seen = true; }
+      const force = /[?&]deck=1/.test(location.search) || location.hash === '#deck';
+      if (!force && (seen || (location.hash && location.hash !== '#deck'))) return;
+      const go = () => { if (document.hidden || document.querySelector('[role=dialog]:not(.hidden)')) return setTimeout(go, 1500); openDeckModal(); };
+      setTimeout(go, force ? 300 : 2200);
+    })();
 
     function revealCardEasterEggs(announce) {
       if (!document.querySelector('.card-easter-egg')) return;
