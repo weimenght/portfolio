@@ -41,6 +41,13 @@
     }
 
     /* Logo — W flips vertically into M; the coral dot hops across */
+    /* the logo's dot comes along (Nov 13, the owner: "a small ball, dropping from the logo… while scrolling, until the bottom, then bounce a bit"): it moves only with the scroll,
+       down the page's margin, and lands as the dot of the footer's W */
+    #wm-ball { position:fixed; left:0; top:0; z-index:45; width:7px; height:7px; margin:-3.5px 0 0 -3.5px; pointer-events:none; opacity:0; will-change:transform; }
+    #wm-ball i { display:block; width:100%; height:100%; border-radius:50%; background:var(--accent,#A4442B); transform-origin:50% 100%; }
+    #wm-ball.land i { animation:wmBounce 1.05s cubic-bezier(.3,.6,.4,1) both; }
+    @keyframes wmBounce { 0% { transform:translateY(-22px) } 22% { transform:translateY(0) scale(1.18,.8) } 40% { transform:translateY(-11px) } 58% { transform:translateY(0) scale(1.1,.88) } 72% { transform:translateY(-4px) } 86%,100% { transform:none } }
+    html.wm-ball-on .logo-dot { opacity:0; transition:opacity .15s; } html.wm-ball-own footer .fb-mk circle { opacity:0; }
     .logo-mark { transition: transform .5s var(--ease), box-shadow .5s var(--ease); }
     .logo-stroke, .logo-dot { transform-box: view-box; transform-origin: 12px 12px; }
     .logo-stroke { transition: transform .7s var(--ease); }
@@ -867,5 +874,47 @@ img{filter:none}
     document.addEventListener('pointerdown', function (e) { if (!w.contains(e.target)) w.classList.remove('open'); }, true);
   })();
 </script>
+
+  <script>
+  /* the logo's dot follows the scroll down the margin and lands as the dot of the footer's W (see #wm-ball above) */
+  (function () {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var dot = document.querySelector('header .logo-dot'), root = document.documentElement, ball, end, wrap, busy = false, landed = false, G = {};
+    if (!dot) return;
+    function measure() {
+      end = document.querySelector('footer .fb-mk circle'); wrap = document.querySelector('header .max-w-4xl') || document.querySelector('header > div');
+      if (!end || !wrap) return false;
+      var a = dot.getBoundingClientRect(), b = end.getBoundingClientRect(), w = wrap.getBoundingClientRect(), max = Math.max(1, root.scrollHeight - innerHeight), y = scrollY || root.scrollTop;
+      G = { ax: a.left + a.width / 2, ay: a.top + a.height / 2, as: Math.max(2.4, a.width), bx: b.left + b.width / 2, by: b.top + b.height / 2 + y - max, bs: Math.max(4, b.width),
+            gx: Math.max(7, Math.min(w.left - 20, a.left - 26)), max: max };
+      return G.max > 200;
+    }
+    function mix(a, b, t) { return a + (b - a) * Math.min(1, Math.max(0, t)); }
+    function paint() {
+      busy = false;
+      var y = scrollY || root.scrollTop, p = Math.min(1, Math.max(0, y / G.max));
+      if (p < .004) { ball.style.opacity = 0; root.classList.remove('wm-ball-on'); landed = false; ball.classList.remove('land'); return; }
+      root.classList.add('wm-ball-on'); ball.style.opacity = 1;
+      var out = p / .08, back = (p - .9) / .1;                                   /* leaves the logo, keeps to the margin, comes in to the footer's W */
+      var x = p < .9 ? mix(G.ax, G.gx, out) : mix(G.gx, G.bx, back), yy = mix(G.ay, G.by, p), sz = p < .9 ? mix(G.as, 7, out) : mix(7, G.bs, back);
+      ball.style.transform = 'translate(' + x.toFixed(1) + 'px,' + yy.toFixed(1) + 'px) scale(' + (sz / 7).toFixed(3) + ')';
+      if (p > .995 && !landed) { landed = true; ball.classList.remove('land'); void ball.offsetWidth; ball.classList.add('land'); }
+      else if (p < .97 && landed) { landed = false; ball.classList.remove('land'); }
+    }
+    function ask() { if (!busy) { busy = true; requestAnimationFrame(paint); } }
+    function start() {
+      if (!measure()) return;
+      ball = document.createElement('div'); ball.id = 'wm-ball'; ball.setAttribute('aria-hidden', 'true'); ball.appendChild(document.createElement('i')); document.body.appendChild(ball);
+      try { var f = getComputedStyle(dot).fill; if (f && f !== 'none') ball.firstChild.style.background = f; } catch (e) {}
+      root.classList.add('wm-ball-own');
+      addEventListener('scroll', ask, { passive: true });
+      addEventListener('resize', function () { measure(); ask(); });
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); ask(); });
+      setTimeout(function () { measure(); ask(); }, 1500);
+      paint();
+    }
+    if (document.readyState === 'complete') start(); else addEventListener('load', start);
+  })();
+  </script>
 </body>
 </html>
