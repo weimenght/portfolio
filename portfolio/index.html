@@ -218,8 +218,11 @@
     .dk-q button { text-align:left; padding:11px 14px; border-radius:12px; border:1px solid #E5E2DA; background:#F3F3F3; font:600 14px/1.35 'Times New Roman', Times, serif; color:#333; cursor:pointer; transition:background .2s, border-color .2s, opacity .3s; }
     .dk-q button:hover { border-color:#17171A; } .dk-q.done button { cursor:default; } .dk-q.done button:not(.right):not(.picked) { opacity:.35; }
     .dk-q button.right { border-color:#2F7D4F; background:#EAF4EE; } .dk-q button.picked:not(.right) { border-color:#E2553F; background:#FDEDEA; text-decoration:line-through; text-decoration-color:rgba(226,85,63,.6); }
-    .dk-qr { min-height:1.4em; margin:12px 0 0; font:12.5px/1.5 'Space Mono', monospace; color:#5A5A60; }
-    .dk-end { animation:dk-wake .5s both; } .dk-end p { margin:14px 0 0; font-size:15px; line-height:1.55; color:#444; }
+    .dk-qr { min-height:1.4em; margin:12px 0 0; font:12.5px/1.5 'Space Mono', monospace; color:inherit; opacity:.75; }
+    .dk-end { animation:dk-wake .5s both; } .dk-end p { margin:14px 0 0; font-size:15px; line-height:1.55; color:inherit; opacity:.82; }
+    /* room between everything you can press (Nov 13, the owner) */
+    .dk-deck { display:grid; gap:16px; } .dk-deck[hidden] { display:none; } .dk-deck > * { margin:0 !important; } .dk-deck .space-y-2\.5 { display:grid; gap:14px; } .dk-deck .space-y-2\.5 > * { margin:0 !important; }
+    .dk-check { gap:14px; } .dk-end .flex { gap:14px !important; } .dk-q { gap:12px; }
     .dk-skip { background:none; border:0; padding:4px 2px; font:11px 'Space Mono', monospace; color:#8A8A90; cursor:pointer; text-decoration:underline; text-underline-offset:3px; } .dk-skip:hover { color:var(--ink,#17171A); }
     @keyframes dk-fade { to { opacity:1 } } @keyframes dk-fadeout { to { opacity:0 } }
     @keyframes dk-lift { to { transform:none } }
@@ -393,7 +396,7 @@ img{filter:none}
 
   <!-- EASTER EGG: THE 60-SLIDE DECK -->
   <div id="deck-modal" class="fixed inset-0 z-50 bg-ink/80 backdrop-blur-sm hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="handleBackdrop(event)" role="dialog" aria-modal="true" aria-labelledby="deck-title">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-5 dk" id="deck-box">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-5 dk" id="deck-box" tabindex="-1" style="outline:none">
       <div class="dk-deck" id="dk-deck">
         <div class="flex items-center justify-between border-b border-line pb-3 gap-3">
           <div class="flex items-center gap-2">
@@ -429,7 +432,7 @@ img{filter:none}
         <span class="text-[11px] font-mono uppercase tracking-[0.16em] text-accent" data-i18n="dkWakeK">Sudden realization</span>
         <h3 class="font-syne text-2xl sm:text-3xl font-bold tracking-tight leading-tight mt-2" id="dk-wake-t"></h3>
         <div id="dk-quiz">
-          <p class="dk-qr" style="margin-top:14px;color:var(--ink,#17171A)" data-i18n="dkQ">Quick check: what was the first slide called?</p>
+          <p class="dk-qr" style="margin-top:14px;opacity:1" data-i18n="dkQ">Quick check: what was the first slide called?</p>
           <div class="dk-q" id="dk-q"></div>
           <p class="dk-qr" id="dk-qr" aria-live="polite"></p>
         </div>
@@ -1879,7 +1882,7 @@ img{filter:none}
         if (deckSec >= 12) deckWake();
         renderDeck();
       }, 1000);
-      openModal(deckModal, $('deck-eject'));
+      openModal(deckModal, $('deck-box'));
     }
     function deckWake() {
       if (deckWoke) return; deckWoke = true; clearInterval(deckIv);
