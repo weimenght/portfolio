@@ -1,7 +1,7 @@
 <!doctype html>
 <html class="skin-wm" lang="en">
 <head>
-  <meta charset="utf-8"><meta name="referrer" content="same-origin" data-fbr><script data-fbl data-mode="full" src="/fbkit/fb.js?v=ad5d68b5ce"></script>
+  <meta charset="utf-8"><meta name="referrer" content="same-origin" data-fbr><script data-fbl data-mode="full" src="/fbkit/fb.js?v=109613d842"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>It's all about people — Wei Meng</title>
   <meta name="description" content="Wei Meng's story: a small town in northern China, ten years in Beijing, training at ByteDance and Deloitte, a breakdown, and why people are the point.">
@@ -127,6 +127,8 @@
     .tl.show { display:grid; }
     .top-in .chip { margin-left:0; }
     @media (max-width:380px) { .lsp { display:none; } .listen { gap:12px; } }
+    .essay a { color:inherit; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px; text-decoration-color:var(--accent); }
+    .essay a:hover { color:var(--accent-text,#E2553F); }
     .work { margin:18px 0 0; text-align:center; font-family:var(--mono); font-size:12.5px; }
     .work a { color:var(--muted); text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:5px; text-decoration-color:var(--line); }
     .work a:hover { color:var(--ink); text-decoration-color:var(--ink); }
@@ -205,16 +207,11 @@ img{filter:none}
       <p>And AI gave me something I'd only had in books: the power to build what I imagined. The first thing I built was an escape room for corporate training. With it, a small team with no technical skills could run a whole business simulation: people working together, outdoors, excited, having fun.</p>
       <p class="brk" aria-hidden="true"><i></i><i></i><i></i></p>
       <p>I know the other way well; I worked inside it. KPIs, scores and algorithms keep us on the screen because that's the business model. It isn't the only way, and it shouldn't be.</p>
-      <p>So I build. By day, for work, where we spend a third of our lives: FREE//BUILDER, tools that set up the conversation a team keeps avoiding, then step aside, the way colleagues taught each other Excel. After hours, for everything else: small free things that end the same way: a run with a friend, a dinner across seven hours, someone next to you. The rule that got me through still holds. Each one only has to make today work, with someone.</p>
+      <p><a href="/portfolio/">So I build</a>. By day, for work, where we spend a third of our lives: <a href="https://www.freebuilder.net/" target="_blank" rel="noopener">FREE//BUILDER</a>, tools that set up the conversation a team keeps avoiding, then step aside, the way colleagues taught each other Excel. <a href="https://www.after-hours.work/" target="_blank" rel="noopener">After hours</a>, for everything else: small free things that end the same way: a run with a friend, a dinner across seven hours, someone next to you. The rule that got me through still holds. Each one only has to make today work, with someone.</p>
       <p>This is what I believe. People are the point. When we're at our best, we do what's best for the people around us. We don't work for companies; we work with people. We don't live alone; we live with people.</p>
       <p class="last">It's all about people.</p>
       </div>
     </article>
-    <nav class="doors" aria-label="Two doors">
-      <a class="door" href="https://www.freebuilder.net/"><span class="k" id="s-dayK">By day</span><b><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2" fill="currentColor"/><rect x="13" y="3" width="8" height="8" rx="2" fill="currentColor" opacity=".5"/><rect x="3" y="13" width="8" height="8" rx="2" fill="currentColor" opacity=".5"/><rect x="13" y="13" width="8" height="8" rx="2" fill="#E2553F"/></svg> FREE//BUILDER</b><span class="l" id="s-dayL">An independent L&D practice. Listening, feedback, trust: it ends in real conversations.</span><span class="go">freebuilder.net →</span></a>
-      <a class="door night" href="https://www.after-hours.work/"><span class="k" id="s-nightK">After hours</span><b><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 4.5v15M4.5 12h15" stroke="currentColor" stroke-width="2"/><rect x="13.2" y="13.2" width="6" height="6" rx="1.2" fill="#F2A33A"/></svg> <em>after-hours</em></b><span class="l" id="s-nightL">Small, free things made after work. Each one tries to end off the screen, next to someone.</span><span class="go">after-hours.work →</span></a>
-    </nav>
-    <p class="work"><a href="/portfolio/"><span id="s-work">See the work</span> →</a></p>
   </main>
   <div class="inf" id="s-inf" hidden>
     <div class="inf-card" role="dialog" aria-modal="true" aria-labelledby="inf-name">
@@ -240,6 +237,12 @@ const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&am
 let lang = "en";
 const mins = (paras, l) => { const t = paras.join(" "); return Math.max(1, Math.round((/*i18n*/l === "zh" ? t.replace(/\s/g, "").length / 400 : (l === "zh-Hant" ? t.replace(/\s/g, "").length / 400 : t.split(/\s+/).length / 230)))); };
 /* no reading bar (Nov 13, the owner): the logo's dot shows how far down you are */
+const LINKS = [[["So I build", "所以我动手去做", "所以我動手去做", "Así que construyo", "Així que construeixo"], "/portfolio/"], [["FREE//BUILDER"], "https://www.freebuilder.net/"], [["After hours", "下班后", "下班後", "Fuera de horario", "Fora d'hores"], "https://www.after-hours.work/"]];
+function linked(h) {
+  if (h.indexOf("FREE//BUILDER") < 0) return h;
+  LINKS.forEach(L => { for (const w0 of L[0]) { const w = esc(w0); if (h.indexOf(w) >= 0) { h = h.replace(w, '<a href="' + L[1] + '"' + (L[1][0] === "/" ? "" : ' target="_blank" rel="noopener"') + ">" + w + "</a>"); break; } } });
+  return h;
+}
 function render() {
   const s = P[lang] || P.en;
   document.documentElement.lang = (/*i18n*/lang === "zh" ? "zh-CN" : (lang === "zh-Hant" ? "zh-TW" : lang));
@@ -249,13 +252,9 @@ function render() {
   document.getElementById("s-date").textContent = s.date;
   document.getElementById("s-kick").textContent = s.kick;
   document.querySelectorAll("#s-made > div").forEach((d, i) => { d.querySelector("dt").textContent = s.made[i][0]; d.querySelector("dd").textContent = s.made[i][1]; });
-  document.getElementById("s-work").textContent = s.work;
   document.getElementById("s-mins").textContent = s.mins.replace("{n}", mins(s.paras, lang));
-  document.getElementById("s-essay").innerHTML = s.paras.map((p, i) => (BREAKS.includes(i) ? '<p class="brk" aria-hidden="true"><i></i><i></i><i></i></p>' : "") + `<p${i === 0 ? ' class="first"' : i === s.paras.length - 1 ? ' class="last"' : ""}>${i === 1 ? infNames(esc(p), s) : esc(p)}</p>`).join("");
+  document.getElementById("s-essay").innerHTML = s.paras.map((p, i) => (BREAKS.includes(i) ? '<p class="brk" aria-hidden="true"><i></i><i></i><i></i></p>' : "") + `<p${i === 0 ? ' class="first"' : i === s.paras.length - 1 ? ' class="last"' : ""}>${i === 1 ? infNames(esc(p), s) : linked(esc(p))}</p>`).join("");
   if (!infBox.hidden) infFill(infAt);
-  ["dayK", "nightK"].forEach(k => { document.getElementById("s-" + k).textContent = s[k]; });
-  document.getElementById("s-dayL").textContent = s.dayLine;
-  document.getElementById("s-nightL").textContent = s.nightLine;
   try { localStorage.setItem("wm_preferred_lang", lang); } catch (e) {}
 }
 // ---- the four writers ----
@@ -357,16 +356,16 @@ function typeLast() {
   if (TW.done || still || !("IntersectionObserver" in window)) return;
   const full = el.textContent, chars = Array.from(full), h = el.offsetHeight;
   el.style.minHeight = h + "px"; el.textContent = ""; el.classList.add("tw-wait"); el.setAttribute("aria-label", full);
-  let i = 0, timer = 0, started = false;
-  const B = window.FBBall, tip = () => {   /* where the line has got to: the ball hops along with the typing, then falls to the foot of the page (Nov 13, the owner) */
-    const n = el.lastChild; if (!n || n.nodeType !== 3 || !n.length) { const r = el.getBoundingClientRect(); return { x: r.left + 4, y: r.top + 8 }; }
-    const g = document.createRange(); g.setStart(n, n.length - 1); g.setEnd(n, n.length); const r = g.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + Math.min(8, r.height * .18) };
+  let i = 0, timer = 0, started = false, dive = 0;
+  const B = window.FBBall, tip = () => {   /* the ball goes into the line as it starts, the line is typed, and it comes out of the full stop and falls to the foot of the page (Nov 13, the owner) */
+    const n = el.lastChild; if (!n || n.nodeType !== 3 || !n.length) { const r = el.getBoundingClientRect(); return { x: r.left + 2, y: r.top + r.height * .62 }; }   /* the caret: it goes into the line */
+    const g = document.createRange(); g.setStart(n, n.length - 1); g.setEnd(n, n.length); const r = g.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height * .8 };   /* the full stop: it comes back out of it */
   };
-  const finish = () => { clearTimeout(timer); el.textContent = full; el.classList.remove("tw-wait", "tw-on"); el.style.minHeight = ""; el.removeAttribute("aria-label"); TW.done = true; if (B && started) setTimeout(() => B.free(), 420); };
+  const finish = () => { clearTimeout(timer); el.textContent = full; el.classList.remove("tw-wait", "tw-on"); el.style.minHeight = ""; el.removeAttribute("aria-label"); TW.done = true; clearTimeout(dive); if (B && started) { B.show(); B.hop(); setTimeout(() => B.free(), 560); } };
   el.addEventListener("click", finish, { once: true });
   const step = () => {
     if (i >= chars.length) { finish(); bell(); return; }
-    const ch = chars[i++]; el.textContent += ch; key(ch); if (B && ch.trim()) B.hop();
+    const ch = chars[i++]; el.textContent += ch; key(ch);
     const cjk = /[㐀-鿿]/.test(ch);
     let ms = cjk ? 150 + Math.random() * 110 : ch === " " ? 70 + Math.random() * 60 : 70 + Math.random() * 90;
     if (/[.,;:!?。，；：]/.test(ch)) ms += 320 + Math.random() * 260;
@@ -376,7 +375,7 @@ function typeLast() {
   TW.obs = new IntersectionObserver(es => {
     if (started || !es.some(e => e.isIntersecting)) return;
     started = true; TW.obs.disconnect(); TW.obs = null;
-    if (B) B.perch(tip);
+    if (B) { B.perch(tip); dive = setTimeout(() => B.hide(), 600); }
     timer = setTimeout(() => { el.classList.remove("tw-wait"); el.classList.add("tw-on"); step(); }, 1100);   /* the pen hovers first */
   }, { threshold: 0.9 });
   TW.obs.observe(el);
