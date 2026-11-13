@@ -64,10 +64,6 @@
     .inf-two a:hover span { color:var(--accent-ink); }
     .inf-two svg { width:17px; height:17px; color:var(--muted); }
     .inf-two i { font-style:normal; color:var(--muted); font-size:13px; }
-    .inf-nav { display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
-    .inf-nav button { width:40px; height:36px; border:0; background:none; color:var(--muted); font-size:20px; cursor:pointer; font-family:var(--serif); }
-    .inf-nav button:hover { color:var(--ink); }
-    .inf-dots { display:flex; gap:6px; } .inf-dots i { width:6px; height:6px; border-radius:50%; background:var(--line); } .inf-dots i.on { background:var(--accent); }
     .inf-k { margin:16px 0 8px; font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent-ink); }
     .inf-po span, .inf-tr span { display:block; padding-left:1.1em; text-indent:-1.1em; } .inf-po span.gap, .inf-tr span.gap { height:.85em; }
     .inf-po { font-family:"Fraunces",Georgia,"Songti SC",serif; font-size:16.5px; line-height:1.5; color:var(--ink); }
@@ -229,7 +225,6 @@ img{filter:none}
         <a id="inf-day" href="https://www.freebuilder.net/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"/></svg><span></span><i>→</i></a>
         <a id="inf-night" href="https://www.after-hours.work/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 14.5A8 8 0 0 1 9.5 4.5a8 8 0 1 0 10 10z"/></svg><span></span><i>→</i></a>
       </div>
-      <div class="inf-nav"><button type="button" id="inf-prev" aria-label="Previous">‹</button><span class="inf-dots" id="inf-dots" aria-hidden="true"></span><button type="button" id="inf-next" aria-label="Next">›</button></div>
     </div>
   </div>
   <footer class="fbf" data-fbf-root><div class="fbf-in"><div class="fbf-row"><span class="fbf-own"><a class="fbf-lg fbf-nm fbf-nm-wm" href="/" aria-label="Wei Meng"><svg class="fb-mk" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3.5,8 7.75,18.5 12,10.5 16.25,18.5 20.5,8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="4.2" r="1.9" fill="#E2553F"/></svg><span class="fbf-name">Wei Meng</span></a><span class="fbf-cy"><svg class="fbf-c" viewBox="0 0 24 24" role="img" aria-label="©"><circle cx="12" cy="12" r="9.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M15.3 9.4a4.3 4.3 0 1 0 0 5.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span id="fbf-year">2026</span></span></span><nav aria-label="Footer"><span class="fbf-dot" aria-hidden="true">·</span><a href="/privacy/" data-fbf="privacy">Your privacy</a><span class="fbf-dot" aria-hidden="true">·</span><span data-fbf="made">Made with <a href="https://www.freebuilder.net/notes/ai-use/" class="fbf-ai fbf-ico" aria-label="AI" title="AI" data-fb-emoji><svg viewBox="0 0 24 24" aria-hidden="true"><path class="r-st" d="M12 7.2V4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle class="r-ant" cx="12" cy="3.4" r="1.6" fill="currentColor"/><rect x="4.6" y="7.4" width="14.8" height="12" rx="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/><g class="r-eyes"><circle cx="9.4" cy="12.8" r="1.55" fill="currentColor"/><circle cx="14.6" cy="12.8" r="1.55" fill="currentColor"/></g><path d="M10 16.4h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 12.2v2.6M21 12.2v2.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></a> &amp; <a href="https://www.after-hours.work/" class="fbf-heart fbf-ico" aria-label="♥ after hours" title="♥" data-fb-emoji><svg viewBox="0 0 24 24" aria-hidden="true"><path class="h-b" d="M12 20.4s-7.8-4.7-7.8-10.3A4.4 4.4 0 0 1 12 7.5a4.4 4.4 0 0 1 7.8 2.6c0 5.6-7.8 10.3-7.8 10.3z" fill="currentColor"/><path class="h-s" d="M7.6 9.6a2.2 2.2 0 0 1 2.1-1.7" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.3" stroke-linecap="round"/></svg></a></span></nav></div></div></footer>
@@ -271,7 +266,6 @@ const infBox = document.getElementById("s-inf"); let infAt = 0, infFrom = null;
 // every card in the essay's order: [kind, which, paragraph]; ph = a photograph, inf = a writer or Beijing, own = the diary and the poem
 const CARDS = [["ph", 0, 0], ["ph", 1, 1], ["inf", 0, 1], ["inf", 1, 1], ["inf", 2, 1], ["inf", 3, 1], ["inf", 4, 2], ["ph", 2, 3], ["ph", 5, 4], ["ph", 3, 9], ["own", 1, 10], ["own", 2, 11], ["ph", 6, 13], ["ph", 4, 16]];
 const PH = [["childhood", 900, 1125], ["reading", 900, 687], ["picture-book", 900, 719], ["orientation", 900, 723], ["project-sunrise", 780, 1000], ["team", 900, 614], ["run", 900, 675]];
-document.getElementById("inf-dots").innerHTML = CARDS.map(() => "<i></i>").join("");
 const OWN_EN = [["I was scared when I pondered a fact:", "I am one in a city of twenty million.", "To the world, I am no more than a grain of sand.", "When my triviality almost drove me to despair,", "I saw myself as my only and my whole.", "For years, I couldn't make sense of this contradiction.", "Finally, I know:", "I am as important to myself", "as I am insignificant to the rest."], null,
   ["I really don't know", "what lies ahead.", "At this moment,", "I neither look forward to it", "nor fear what may happen.", "—", "Depression keeps me still", "not out of peace", "but because I have no strength", "to worry about tomorrow.", "—", "Sometimes I wonder", "if depression exists at all", "or if I've simply learned", "to see only what's before me."]];
 function infKey(s, i) { const c = CARDS[i]; return ((s[c[0]] || [])[c[1]] || [])[0] || ""; }
@@ -290,17 +284,13 @@ function infFill(i) { const s = P[lang] || P.en, kind = CARDS[i][0], k = CARDS[i
   if (a) { document.getElementById("inf-meta").textContent = a[2]; document.getElementById("inf-line").textContent = a[3];
     const d = document.getElementById("inf-day"), n = document.getElementById("inf-night");
     d.querySelector("span").textContent = a[4]; d.setAttribute("aria-label", s.dayK + ": " + a[4]); n.querySelector("span").textContent = a[5]; n.href = "https://www.after-hours.work/" + INF_NIGHT[k]; n.setAttribute("aria-label", s.nightK + ": " + a[5]); }
-  card.scrollTop = 0;
-  document.querySelectorAll("#inf-dots i").forEach((x, k) => x.classList.toggle("on", k === i)); }
+  card.scrollTop = 0; }
 function infOpen(i, from) { infFrom = from || null; infFill(i); infBox.hidden = false; document.getElementById("inf-x").focus({ preventScroll: true }); }
 function infClose() { if (infBox.hidden) return; infBox.hidden = true; if (infFrom && infFrom.isConnected) infFrom.focus({ preventScroll: true }); else { const b = document.querySelector('.essay .au[data-a="' + infAt + '"]'); if (b) b.focus({ preventScroll: true }); } }
-function infStep(d) { const n = CARDS.length; infFill((infAt + d + n) % n); }
 document.getElementById("s-essay").addEventListener("click", e => { const b = e.target.closest(".au"); if (b) infOpen(+b.dataset.a, b); });
 infBox.addEventListener("click", e => { if (e.target === infBox) infClose(); });
 document.getElementById("inf-x").addEventListener("click", infClose);
-document.getElementById("inf-prev").addEventListener("click", () => infStep(-1));
-document.getElementById("inf-next").addEventListener("click", () => infStep(1));
-addEventListener("keydown", e => { if (infBox.hidden) return; if (e.key === "Escape") infClose(); else if (e.key === "ArrowRight") infStep(1); else if (e.key === "ArrowLeft") infStep(-1);
+addEventListener("keydown", e => { if (infBox.hidden) return; if (e.key === "Escape") infClose();
   else if (e.key === "Tab") { const f = [...infBox.querySelectorAll("button, a")].filter(x => x.offsetParent), a = document.activeElement; if (e.shiftKey && a === f[0]) { e.preventDefault(); f[f.length - 1].focus(); } else if (!e.shiftKey && a === f[f.length - 1]) { e.preventDefault(); f[0].focus(); } } });
 // ---- Wei reads it ----
 const AU = {"a_en": [367, "96563603", "564e8fee"], "a_es": [455, "1c3fae12", "8b2d3e04"], "a_zh": [396, "4cc87637", "0db1c46b"]};
