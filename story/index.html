@@ -1,7 +1,7 @@
 <!doctype html>
 <html class="skin-wm" lang="en">
 <head>
-  <meta charset="utf-8"><meta name="referrer" content="same-origin" data-fbr><script data-fbl data-mode="full" src="/fbkit/fb.js?v=d9bef98ebf"></script>
+  <meta charset="utf-8"><meta name="referrer" content="same-origin" data-fbr><script data-fbl data-mode="full" src="/fbkit/fb.js?v=8a6e10f66c"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>It's all about people — Wei Meng</title>
   <meta name="description" content="Wei Meng's story: a small town in northern China, ten years in Beijing, training at ByteDance and Deloitte, a breakdown, and why people are the point.">
@@ -46,7 +46,8 @@
     .made i { font-style:normal; font-size:9px; opacity:.6; }
     .made + .listen { margin-top:22px; }
     /* the four writers (the owner, Nov 13): each name in the essay opens a small card, a drawing of their image and what it became by day and after hours */
-    .essay .au { font:inherit; color:inherit; background:none; border:0; padding:0; margin:0; cursor:pointer; border-bottom:1px dotted var(--accent-ink); border-radius:0; transition:color .15s; }
+    .essay .au { cursor:pointer; text-decoration:underline dotted var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:.24em; -webkit-box-decoration-break:clone; box-decoration-break:clone; transition:color .15s; -webkit-tap-highlight-color:transparent; }
+    .essay .au:focus-visible { outline:1px solid var(--accent); outline-offset:3px; border-radius:2px; }
     .essay .au:hover, .essay .au:focus-visible { color:var(--accent-ink); }
     .inf { position:fixed; inset:0; z-index:80; display:grid; place-items:center; padding:20px; background:rgba(18,15,24,.5); -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); animation:inf-in .18s ease-out; }
     .inf[hidden] { display:none; }
@@ -73,7 +74,7 @@
     .inf-card.pg .inf-art { display:none; } .inf-card.pg h2 { margin:4px 40px 14px 0; font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent-ink); line-height:1.5; }
     .inf-card.dia .inf-art { display:block; height:auto; margin:26px 0 14px; -webkit-mask-image:linear-gradient(#000 78%,transparent); mask-image:linear-gradient(#000 78%,transparent); } .inf-card.dia .inf-art img { display:block; width:100%; height:250px; object-fit:cover; object-position:50% 0; border:1px solid var(--line); border-radius:2px; }
     .inf-card.dia .inf-po span { padding-left:0; text-indent:0; margin-bottom:.6em; }
-    .inf-card.pho .inf-art { display:block; height:auto; margin:26px 0 12px; } .inf-card.pho .inf-art img { display:block; width:100%; height:auto; max-height:min(58vh,470px); object-fit:cover; object-position:50% 0; border-radius:2px; background:var(--line); }
+    .inf-card.pho .inf-art { display:block; height:auto; margin:26px 0 12px; } .inf-card.pho .inf-art img { display:block; width:100%; height:auto; max-height:min(58vh,470px); object-fit:cover; object-position:50% 0; box-sizing:border-box; padding:6px; background:var(--paper); border:1px solid var(--line); border-radius:2px; box-shadow:0 1px 2px rgba(0,0,0,.06), 0 8px 22px -14px rgba(0,0,0,.35); }
     .inf-card.pho h2 { margin:0 0 6px; }
     @media (max-width:520px) { .inf-card.bj .inf-art, .inf-card.bj .inf-art svg { height:120px; } .inf-card.bj .inf-art { margin-bottom:8px; } }
     @keyframes inf-in { from { opacity:0; } } @keyframes inf-up { from { opacity:0; transform:translateY(10px); } }
@@ -270,7 +271,7 @@ const PH = [["childhood", 900, 1125], ["reading", 900, 687], ["picture-book", 90
 const OWN_EN = [["I was scared when I pondered a fact:", "I am one in a city of twenty million.", "To the world, I am no more than a grain of sand.", "When my triviality almost drove me to despair,", "I saw myself as my only and my whole.", "For years, I couldn't make sense of this contradiction.", "Finally, I know:", "I am as important to myself", "as I am insignificant to the rest."], null,
   ["I really don't know", "what lies ahead.", "At this moment,", "I neither look forward to it", "nor fear what may happen.", "—", "Depression keeps me still", "not out of peace", "but because I have no strength", "to worry about tomorrow.", "—", "Sometimes I wonder", "if depression exists at all", "or if I've simply learned", "to see only what's before me."]];
 function infKey(s, i) { const c = CARDS[i]; return ((s[c[0]] || [])[c[1]] || [])[0] || ""; }
-function infNames(html, s, pi) { if (!s.inf || !s.own || !s.ph) return html; CARDS.forEach((c, i) => { if (c[2] !== pi) return; const n = esc(infKey(s, i)), k = n ? html.indexOf(n) : -1; if (k >= 0) html = html.slice(0, k) + '<button type="button" class="au" data-a="' + i + '">' + n + "</button>" + html.slice(k + n.length); }); return html; }
+function infNames(html, s, pi) { if (!s.inf || !s.own || !s.ph) return html; CARDS.forEach((c, i) => { if (c[2] !== pi) return; const n = esc(infKey(s, i)), k = n ? html.indexOf(n) : -1; if (k >= 0) html = html.slice(0, k) + '<span class="au" role="button" tabindex="0" data-a="' + i + '">' + n + "</span>" + html.slice(k + n.length); }); return html; }   /* a span, not a button: a button is one box, so long words jumped to their own centred lines on phones (the owner, Nov 13) */
 function infLines(a) { return (a || []).map(x => x === "—" ? '<span class="gap"></span>' : "<span>" + esc(x) + "</span>").join(""); }
 function infFill(i) { const s = P[lang] || P.en, kind = CARDS[i][0], k = CARDS[i][1], a = kind === "inf" ? s.inf[k] : null, ph = kind === "ph" ? PH[k] : null, o = kind === "own" ? k : a && k === s.inf.length - 1 ? 0 : -1; infAt = i;
   const card = infBox.querySelector(".inf-card"), own = document.getElementById("inf-own");
@@ -289,6 +290,7 @@ function infFill(i) { const s = P[lang] || P.en, kind = CARDS[i][0], k = CARDS[i
 function infOpen(i, from) { infFrom = from || null; infFill(i); infBox.hidden = false; document.getElementById("inf-x").focus({ preventScroll: true }); }
 function infClose() { if (infBox.hidden) return; infBox.hidden = true; if (infFrom && infFrom.isConnected) infFrom.focus({ preventScroll: true }); else { const b = document.querySelector('.essay .au[data-a="' + infAt + '"]'); if (b) b.focus({ preventScroll: true }); } }
 document.getElementById("s-essay").addEventListener("click", e => { const b = e.target.closest(".au"); if (b) infOpen(+b.dataset.a, b); });
+document.getElementById("s-essay").addEventListener("keydown", e => { if (e.key !== "Enter" && e.key !== " ") return; const b = e.target.closest(".au"); if (b) { e.preventDefault(); infOpen(+b.dataset.a, b); } });
 infBox.addEventListener("click", e => { if (e.target === infBox) infClose(); });
 document.getElementById("inf-x").addEventListener("click", infClose);
 addEventListener("keydown", e => { if (infBox.hidden) return; if (e.key === "Escape") infClose();
@@ -373,11 +375,11 @@ function typeLast() {
   const full = el.textContent, chars = Array.from(full), h = el.offsetHeight;
   el.style.minHeight = h + "px"; el.textContent = ""; el.classList.add("tw-wait"); el.setAttribute("aria-label", full);
   let i = 0, timer = 0, started = false, dive = 0;
-  const B = window.FBBall, tip = () => {   /* the ball goes into the line as it starts, the line is typed, and it comes out of the full stop and falls to the foot of the page (Nov 13, the owner) */
+  const B = window.FBBall, tip = () => {   /* the ball goes into the line as it starts, the line is typed, and it comes out of the full stop and falls straight onto the footer's W (Nov 13, the owner) */
     const n = el.lastChild; if (!n || n.nodeType !== 3 || !n.length) { const r = el.getBoundingClientRect(); return { x: r.left + 2, y: r.top + r.height * .62 }; }   /* the caret: it goes into the line */
     const g = document.createRange(); g.setStart(n, n.length - 1); g.setEnd(n, n.length); const r = g.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height * .8 };   /* the full stop: it comes back out of it */
   };
-  const finish = () => { clearTimeout(timer); el.textContent = full; el.classList.remove("tw-wait", "tw-on"); el.style.minHeight = ""; el.removeAttribute("aria-label"); TW.done = true; clearTimeout(dive); if (B && started) { B.show(); B.hop(); setTimeout(() => B.free(), 560); } };
+  const finish = () => { clearTimeout(timer); el.textContent = full; el.classList.remove("tw-wait", "tw-on"); el.style.minHeight = ""; el.removeAttribute("aria-label"); TW.done = true; clearTimeout(dive); if (B && started) { B.show(); B.hop(); setTimeout(() => (B.drop ? B.drop() : B.free()), 560); } };
   el.addEventListener("click", finish, { once: true });
   const step = () => {
     if (i >= chars.length) { finish(); bell(); return; }
