@@ -1,7 +1,7 @@
 <!doctype html>
 <html class="skin-wm" lang="en">
 <head>
-  <meta charset="utf-8"><meta name="referrer" content="same-origin" data-fbr><script data-fbl data-mode="full" src="/fbkit/fb.js?v=657b7686c4"></script>
+  <meta charset="utf-8"><meta name="referrer" content="same-origin" data-fbr><script data-fbl data-mode="full" src="/fbkit/fb.js?v=3cb9096605"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>It's all about people — Wei Meng</title>
   <meta name="description" content="Wei Meng's story: a small town in northern China, ten years in Beijing, training at ByteDance and Deloitte, a breakdown, and why people are the point.">
@@ -65,6 +65,11 @@
     .essay p.brk i:nth-child(2) { opacity:.45; } .essay p.brk i:nth-child(3) { opacity:.25; }
     .essay p.last { margin-top:1.4em; font-family:var(--serif); font-style:italic; font-size:clamp(30px,5vw,42px); line-height:1.12; color:var(--accent-ink); text-wrap:balance; }
     .essay p.last::after { content:""; display:inline-block; width:.22em; height:.22em; margin-left:.18em; border-radius:50%; background:var(--accent); vertical-align:.05em; }
+    /* the last line is written in front of you (Nov 13, the owner): a pause, then letter by letter with a typewriter's keys; the dot is the caret until it's done */
+    .essay p.last.tw-wait, .essay p.last.tw-on { white-space:pre-wrap; }
+    .essay p.last.tw-wait::after, .essay p.last.tw-on::after { width:.07em; height:.92em; border-radius:0; margin-left:.06em; vertical-align:-.08em; animation:twBlink 1s steps(1) infinite; }
+    .essay p.last.tw-on::after { animation:none; }
+    @keyframes twBlink { 50% { opacity:0; } }
     html:lang(zh) .essay p.last, html:lang(zh-Hant) .essay p.last { font-family:var(--syne); font-style:normal; font-weight:700; font-size:clamp(24px,4vw,32px); }
     .doors { margin:clamp(48px,8vw,72px) 0 0; display:grid; gap:12px; }
     @media (min-width:600px) { .doors { grid-template-columns:1fr 1fr; } }
@@ -271,11 +276,57 @@ lbar.addEventListener("keydown", e => { const d = { ArrowRight: 10, ArrowLeft: -
 if ("mediaSession" in navigator) try { navigator.mediaSession.setActionHandler("play", toggle); navigator.mediaSession.setActionHandler("pause", toggle); navigator.mediaSession.setActionHandler("seekbackward", () => { au.currentTime = Math.max(0, au.currentTime - 10); }); navigator.mediaSession.setActionHandler("seekforward", () => { au.currentTime += 10; }); } catch (e) {}
 let inView = true;
 if ("IntersectionObserver" in window) new IntersectionObserver(es => { inView = es[es.length - 1].isIntersecting; playing(!au.paused); }, { rootMargin: "-56px 0px 0px 0px" }).observe(box);
-window.FBL_SET = l => { lang = l; render(); setTrack(); }; window.FBL_GET = () => lang;
+// ---- the last line, typed (Nov 13, the owner: "typewriter sound effect with each letter spelled on the screen, like someone is thinking and writing") ----
+const TW = { done: false, ac: null, obs: null };
+const still = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+function twCtx() { if (TW.ac) return TW.ac; const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; try { TW.ac = new C(); } catch (e) { return null; } return TW.ac; }
+["pointerdown", "keydown", "touchend"].forEach(ev => addEventListener(ev, () => { const c = twCtx(); if (c && c.state === "suspended") c.resume().catch(() => {}); }, { passive: true }));
+function key(kind) {   /* a type bar striking paper: a short bright click and a soft thump; spaces are the bar's lower knock */
+  const c = TW.ac; if (!c || c.state !== "running" || (typeof au !== "undefined" && !au.paused)) return;
+  const t = c.currentTime, len = 0.035, buf = c.createBuffer(1, Math.ceil(c.sampleRate * len), c.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3);
+  const n = c.createBufferSource(); n.buffer = buf; n.playbackRate.value = 0.85 + Math.random() * 0.3;
+  const f = c.createBiquadFilter(); f.type = "bandpass"; f.frequency.value = kind === " " ? 1400 : 2600 + Math.random() * 900; f.Q.value = 1.4;
+  const g = c.createGain(); g.gain.setValueAtTime(kind === " " ? 0.10 : 0.16, t); g.gain.exponentialRampToValueAtTime(0.001, t + len);
+  n.connect(f).connect(g).connect(c.destination); n.start(t);
+  const o = c.createOscillator(), og = c.createGain(); o.type = "sine"; o.frequency.setValueAtTime(kind === " " ? 90 : 140, t); o.frequency.exponentialRampToValueAtTime(60, t + 0.05);
+  og.gain.setValueAtTime(0.09, t); og.gain.exponentialRampToValueAtTime(0.001, t + 0.06); o.connect(og).connect(c.destination); o.start(t); o.stop(t + 0.07);
+}
+function bell() {
+  const c = TW.ac; if (!c || c.state !== "running" || (typeof au !== "undefined" && !au.paused)) return;
+  const t = c.currentTime + 0.05;
+  [2093, 3136].forEach((fq, i) => { const o = c.createOscillator(), g = c.createGain(); o.type = "sine"; o.frequency.value = fq; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(i ? 0.02 : 0.05, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.1); o.connect(g).connect(c.destination); o.start(t); o.stop(t + 1.2); });
+}
+function typeLast() {
+  const el = document.querySelector("#s-essay p.last"); if (!el) return;
+  if (TW.obs) { TW.obs.disconnect(); TW.obs = null; }
+  if (TW.done || still || !("IntersectionObserver" in window)) return;
+  const full = el.textContent, chars = Array.from(full), h = el.offsetHeight;
+  el.style.minHeight = h + "px"; el.textContent = ""; el.classList.add("tw-wait"); el.setAttribute("aria-label", full);
+  let i = 0, timer = 0, started = false;
+  const finish = () => { clearTimeout(timer); el.textContent = full; el.classList.remove("tw-wait", "tw-on"); el.style.minHeight = ""; el.removeAttribute("aria-label"); TW.done = true; };
+  el.addEventListener("click", finish, { once: true });
+  const step = () => {
+    if (i >= chars.length) { finish(); bell(); return; }
+    const ch = chars[i++]; el.textContent += ch; key(ch);
+    const cjk = /[㐀-鿿]/.test(ch);
+    let ms = cjk ? 150 + Math.random() * 110 : ch === " " ? 70 + Math.random() * 60 : 70 + Math.random() * 90;
+    if (/[.,;:!?。，；：]/.test(ch)) ms += 320 + Math.random() * 260;
+    else if (Math.random() < 0.06) ms += 280 + Math.random() * 420;   /* a word that needs thinking about */
+    timer = setTimeout(step, ms);
+  };
+  TW.obs = new IntersectionObserver(es => {
+    if (started || !es.some(e => e.isIntersecting)) return;
+    started = true; TW.obs.disconnect(); TW.obs = null;
+    timer = setTimeout(() => { el.classList.remove("tw-wait"); el.classList.add("tw-on"); step(); }, 1100);   /* the pen hovers first */
+  }, { threshold: 0.9 });
+  TW.obs.observe(el);
+}
+window.FBL_SET = l => { lang = l; render(); setTrack(); typeLast(); }; window.FBL_GET = () => lang;
 let saved = null; try { saved = localStorage.getItem("wm_preferred_lang"); } catch (e) {}
 const nav = (navigator.language || "").toLowerCase();
 lang = ["en", "zh", "zh-Hant", "es", "ca"].includes(saved) ? saved : nav.startsWith("zh") ? "zh" : nav.startsWith("es") ? "es" : "en";
-render(); setTrack(); prog();
+render(); setTrack(); prog(); typeLast();
 })();
 </script>
 </body>
